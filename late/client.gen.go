@@ -1090,6 +1090,7 @@ type FoodMenuSection struct {
 // - Call-to-action buttons drive user engagement
 // - Posts appear on your Google Business Profile and in Google Search/Maps
 // - Use locationId to post to multiple locations from the same account connection
+// - Language is auto-detected from content; override with languageCode if needed
 type GoogleBusinessPlatformData struct {
 	// CallToAction Optional call-to-action button displayed on the post
 	CallToAction *struct {
@@ -1105,6 +1106,12 @@ type GoogleBusinessPlatformData struct {
 		// Url Destination URL for the CTA button (required when callToAction is provided)
 		Url string `json:"url"`
 	} `json:"callToAction,omitempty"`
+
+	// LanguageCode BCP 47 language code for the post content (e.g., "en", "de", "es", "fr").
+	// If omitted, the language is automatically detected from the post text.
+	// Setting this explicitly is recommended when auto-detection may not be accurate
+	// (e.g., very short posts, mixed-language content, or transliterated text).
+	LanguageCode *string `json:"languageCode,omitempty"`
 
 	// LocationId Target Google Business location ID for multi-location posting.
 	// Format: "locations/123456789"
@@ -3088,7 +3095,7 @@ type LikeInboxCommentJSONBody struct {
 
 // SendPrivateReplyToCommentJSONBody defines parameters for SendPrivateReplyToComment.
 type SendPrivateReplyToCommentJSONBody struct {
-	// AccountId The Instagram social account ID
+	// AccountId The social account ID (Instagram or Facebook)
 	AccountId string `json:"accountId"`
 
 	// Message The message text to send as a private DM
@@ -18361,9 +18368,9 @@ type SendPrivateReplyToCommentResponse struct {
 		CommentId *string `json:"commentId,omitempty"`
 
 		// MessageId The ID of the sent message
-		MessageId *string `json:"messageId,omitempty"`
-		Platform  *string `json:"platform,omitempty"`
-		Status    *string `json:"status,omitempty"`
+		MessageId *string                               `json:"messageId,omitempty"`
+		Platform  *SendPrivateReplyToComment200Platform `json:"platform,omitempty"`
+		Status    *string                               `json:"status,omitempty"`
 	}
 	JSON400 *struct {
 		Code  *SendPrivateReplyToComment400Code `json:"code,omitempty"`
@@ -18371,6 +18378,7 @@ type SendPrivateReplyToCommentResponse struct {
 	}
 	JSON401 *Unauthorized
 }
+type SendPrivateReplyToComment200Platform string
 type SendPrivateReplyToComment400Code string
 
 // Status returns HTTPResponse.Status
@@ -25400,9 +25408,9 @@ func ParseSendPrivateReplyToCommentResponse(rsp *http.Response) (*SendPrivateRep
 			CommentId *string `json:"commentId,omitempty"`
 
 			// MessageId The ID of the sent message
-			MessageId *string `json:"messageId,omitempty"`
-			Platform  *string `json:"platform,omitempty"`
-			Status    *string `json:"status,omitempty"`
+			MessageId *string                               `json:"messageId,omitempty"`
+			Platform  *SendPrivateReplyToComment200Platform `json:"platform,omitempty"`
+			Status    *string                               `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
