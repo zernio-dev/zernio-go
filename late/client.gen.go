@@ -1135,7 +1135,7 @@ type GoogleBusinessPlatformDataCallToActionType string
 // - Validation happens at post creation; invalid images are rejected immediately with helpful error messages.
 // - Carousels support up to 10 media items.
 // - Stories require media; no captions are published with Stories.
-// - User tags: coordinates range from 0.0 to 1.0 representing position from top-left corner. Tagged users receive notifications.
+// - User tags: coordinates range from 0.0 to 1.0 representing position from top-left corner. For carousels, use `mediaIndex` to tag specific slides. Tagged users receive notifications.
 //
 // **Automatic Compression (similar to Bluesky):**
 // - All images (story, post, carousel, thumbnails) exceeding 8 MB are automatically compressed using quality reduction and resizing.
@@ -1178,8 +1178,15 @@ type InstagramPlatformData struct {
 		GraduationStrategy *InstagramPlatformDataTrialParamsGraduationStrategy `json:"graduationStrategy,omitempty"`
 	} `json:"trialParams,omitempty"`
 
-	// UserTags Tag Instagram users in photos by username and position coordinates. Only works for single image posts and the first image of carousel posts. Not supported for stories or videos.
+	// UserTags Tag Instagram users in photos by username and position coordinates. Not supported for stories or videos.
+	// For carousel posts, use the optional `mediaIndex` field to specify which slide each tag applies to.
+	// Tags without `mediaIndex` default to the first image (index 0) for backwards compatibility.
+	// Tags targeting video items are silently skipped (Instagram only supports tagging on images).
 	UserTags *[]struct {
+		// MediaIndex Zero-based index of the carousel item to tag. Defaults to 0 (first image) if omitted.
+		// Only relevant for carousel posts. Tags targeting video items or out-of-range indices are ignored.
+		MediaIndex *int `json:"mediaIndex,omitempty"`
+
 		// Username Instagram username (@ symbol is optional and will be removed automatically)
 		Username string `json:"username"`
 
