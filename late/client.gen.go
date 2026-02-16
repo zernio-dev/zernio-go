@@ -672,6 +672,20 @@ const (
 	ListPostsLogsParamsActionTokenRefresh   ListPostsLogsParamsAction = "token_refresh"
 )
 
+// Defines values for UnpublishPostJSONBodyPlatform.
+const (
+	Bluesky        UnpublishPostJSONBodyPlatform = "bluesky"
+	Facebook       UnpublishPostJSONBodyPlatform = "facebook"
+	Googlebusiness UnpublishPostJSONBodyPlatform = "googlebusiness"
+	Linkedin       UnpublishPostJSONBodyPlatform = "linkedin"
+	Pinterest      UnpublishPostJSONBodyPlatform = "pinterest"
+	Reddit         UnpublishPostJSONBodyPlatform = "reddit"
+	Telegram       UnpublishPostJSONBodyPlatform = "telegram"
+	Threads        UnpublishPostJSONBodyPlatform = "threads"
+	Twitter        UnpublishPostJSONBodyPlatform = "twitter"
+	Youtube        UnpublishPostJSONBodyPlatform = "youtube"
+)
+
 // Defines values for ListQueueSlotsParamsAll.
 const (
 	True ListQueueSlotsParamsAll = "true"
@@ -3595,6 +3609,15 @@ type GetPostLogsParams struct {
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// UnpublishPostJSONBody defines parameters for UnpublishPost.
+type UnpublishPostJSONBody struct {
+	// Platform The platform to delete the post from
+	Platform UnpublishPostJSONBodyPlatform `json:"platform"`
+}
+
+// UnpublishPostJSONBodyPlatform defines parameters for UnpublishPost.
+type UnpublishPostJSONBodyPlatform string
+
 // ListProfilesParams defines parameters for ListProfiles.
 type ListProfilesParams struct {
 	// IncludeOverLimit When true, includes profiles that exceed the user's plan limit.
@@ -4017,6 +4040,9 @@ type BulkUploadPostsMultipartRequestBody BulkUploadPostsMultipartBody
 
 // UpdatePostJSONRequestBody defines body for UpdatePost for application/json ContentType.
 type UpdatePostJSONRequestBody UpdatePostJSONBody
+
+// UnpublishPostJSONRequestBody defines body for UnpublishPost for application/json ContentType.
+type UnpublishPostJSONRequestBody UnpublishPostJSONBody
 
 // CreateProfileJSONRequestBody defines body for CreateProfile for application/json ContentType.
 type CreateProfileJSONRequestBody CreateProfileJSONBody
@@ -5303,6 +5329,11 @@ type ClientInterface interface {
 
 	// RetryPost request
 	RetryPost(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnpublishPostWithBody request with any body
+	UnpublishPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UnpublishPost(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListProfiles request
 	ListProfiles(ctx context.Context, params *ListProfilesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7060,6 +7091,30 @@ func (c *Client) GetPostLogs(ctx context.Context, postId string, params *GetPost
 
 func (c *Client) RetryPost(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRetryPostRequest(c.Server, postId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnpublishPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnpublishPostRequestWithBody(c.Server, postId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnpublishPost(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnpublishPostRequest(c.Server, postId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -13362,6 +13417,53 @@ func NewRetryPostRequest(server string, postId string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewUnpublishPostRequest calls the generic UnpublishPost builder with application/json body
+func NewUnpublishPostRequest(server string, postId string, body UnpublishPostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUnpublishPostRequestWithBody(server, postId, "application/json", bodyReader)
+}
+
+// NewUnpublishPostRequestWithBody generates requests for UnpublishPost with any type of body
+func NewUnpublishPostRequestWithBody(server string, postId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "postId", runtime.ParamLocationPath, postId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/posts/%s/unpublish", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListProfilesRequest generates requests for ListProfiles
 func NewListProfilesRequest(server string, params *ListProfilesParams) (*http.Request, error) {
 	var err error
@@ -15503,6 +15605,11 @@ type ClientWithResponsesInterface interface {
 
 	// RetryPostWithResponse request
 	RetryPostWithResponse(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*RetryPostResponse, error)
+
+	// UnpublishPostWithBodyWithResponse request with any body
+	UnpublishPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error)
+
+	UnpublishPostWithResponse(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error)
 
 	// ListProfilesWithResponse request
 	ListProfilesWithResponse(ctx context.Context, params *ListProfilesParams, reqEditors ...RequestEditorFn) (*ListProfilesResponse, error)
@@ -19230,6 +19337,33 @@ func (r RetryPostResponse) StatusCode() int {
 	return 0
 }
 
+type UnpublishPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UnpublishPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnpublishPostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListProfilesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -21313,6 +21447,23 @@ func (c *ClientWithResponses) RetryPostWithResponse(ctx context.Context, postId 
 		return nil, err
 	}
 	return ParseRetryPostResponse(rsp)
+}
+
+// UnpublishPostWithBodyWithResponse request with arbitrary body returning *UnpublishPostResponse
+func (c *ClientWithResponses) UnpublishPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error) {
+	rsp, err := c.UnpublishPostWithBody(ctx, postId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnpublishPostResponse(rsp)
+}
+
+func (c *ClientWithResponses) UnpublishPostWithResponse(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error) {
+	rsp, err := c.UnpublishPost(ctx, postId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnpublishPostResponse(rsp)
 }
 
 // ListProfilesWithResponse request returning *ListProfilesResponse
@@ -26563,6 +26714,49 @@ func ParseRetryPostResponse(rsp *http.Response) (*RetryPostResponse, error) {
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnpublishPostResponse parses an HTTP response from a UnpublishPostWithResponse call
+func ParseUnpublishPostResponse(rsp *http.Response) (*UnpublishPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnpublishPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 

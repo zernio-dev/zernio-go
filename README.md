@@ -53,6 +53,7 @@ func main() {
 | `client.UpdatePostWithResponse()` | Update a post |
 | `client.DeletePostWithResponse()` | Delete a post |
 | `client.RetryPostWithResponse()` | Retry publishing a failed or partial post |
+| `client.UnpublishPostWithResponse()` | Delete a published post from a social media platform |
 
 ### Accounts
 | Method | Description |
