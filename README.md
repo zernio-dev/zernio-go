@@ -128,7 +128,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.GetYouTubeTranscriptWithResponse()` | Get YouTube transcript |
-| `client.CheckInstagramHashtagsWithResponse()` | Check Instagram hashtag bans |
+| `client.CheckInstagramHashtagsWithResponse()` | Check IG hashtag bans |
 | `client.DownloadBlueskyMediaWithResponse()` | Download Bluesky media |
 | `client.DownloadFacebookVideoWithResponse()` | Download Facebook video |
 | `client.DownloadInstagramMediaWithResponse()` | Download Instagram media |
@@ -152,22 +152,20 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.ListConnectionLogsWithResponse()` | List connection logs |
-| `client.ListLogsWithResponse()` | List publishing logs (deprecated) |
 | `client.ListPostsLogsWithResponse()` | List publishing logs |
-| `client.GetLogWithResponse()` | Get log entry |
 | `client.GetPostLogsWithResponse()` | Get post logs |
 
 ### Connect (OAuth)
 | Method | Description |
 |--------|-------------|
 | `client.ListFacebookPagesWithResponse()` | List Facebook pages |
-| `client.ListGoogleBusinessLocationsWithResponse()` | List Google Business locations |
+| `client.ListGoogleBusinessLocationsWithResponse()` | List GBP locations |
 | `client.ListLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
 | `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest boards |
 | `client.ListSnapchatProfilesWithResponse()` | List Snapchat profiles |
 | `client.GetConnectUrlWithResponse()` | Get OAuth connect URL |
 | `client.GetFacebookPagesWithResponse()` | List Facebook pages |
-| `client.GetGmbLocationsWithResponse()` | List Google Business locations |
+| `client.GetGmbLocationsWithResponse()` | List GBP locations |
 | `client.GetLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
 | `client.GetPendingOAuthDataWithResponse()` | Get pending OAuth data |
 | `client.GetPinterestBoardsWithResponse()` | List Pinterest boards |
@@ -175,7 +173,7 @@ func main() {
 | `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits |
 | `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram code |
 | `client.UpdateFacebookPageWithResponse()` | Update Facebook page |
-| `client.UpdateGmbLocationWithResponse()` | Update Google Business location |
+| `client.UpdateGmbLocationWithResponse()` | Update GBP location |
 | `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type |
 | `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board |
 | `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
@@ -184,7 +182,7 @@ func main() {
 | `client.HandleOAuthCallbackWithResponse()` | Complete OAuth callback |
 | `client.InitiateTelegramConnectWithResponse()` | Connect Telegram directly |
 | `client.SelectFacebookPageWithResponse()` | Select Facebook page |
-| `client.SelectGoogleBusinessLocationWithResponse()` | Select Google Business location |
+| `client.SelectGoogleBusinessLocationWithResponse()` | Select GBP location |
 | `client.SelectLinkedInOrganizationWithResponse()` | Select LinkedIn org |
 | `client.SelectPinterestBoardWithResponse()` | Select Pinterest board |
 | `client.SelectSnapchatProfileWithResponse()` | Select Snapchat profile |
@@ -198,15 +196,15 @@ func main() {
 ### Account Settings
 | Method | Description |
 |--------|-------------|
-| `client.GetInstagramIceBreakersWithResponse()` | Get Instagram ice breakers |
-| `client.GetMessengerMenuWithResponse()` | Get Facebook persistent menu |
-| `client.GetTelegramCommandsWithResponse()` | Get Telegram bot commands |
-| `client.DeleteInstagramIceBreakersWithResponse()` | Delete Instagram ice breakers |
-| `client.DeleteMessengerMenuWithResponse()` | Delete Facebook persistent menu |
-| `client.DeleteTelegramCommandsWithResponse()` | Delete Telegram bot commands |
-| `client.SetInstagramIceBreakersWithResponse()` | Set Instagram ice breakers |
-| `client.SetMessengerMenuWithResponse()` | Set Facebook persistent menu |
-| `client.SetTelegramCommandsWithResponse()` | Set Telegram bot commands |
+| `client.GetInstagramIceBreakersWithResponse()` | Get IG ice breakers |
+| `client.GetMessengerMenuWithResponse()` | Get FB persistent menu |
+| `client.GetTelegramCommandsWithResponse()` | Get TG bot commands |
+| `client.DeleteInstagramIceBreakersWithResponse()` | Delete IG ice breakers |
+| `client.DeleteMessengerMenuWithResponse()` | Delete FB persistent menu |
+| `client.DeleteTelegramCommandsWithResponse()` | Delete TG bot commands |
+| `client.SetInstagramIceBreakersWithResponse()` | Set IG ice breakers |
+| `client.SetMessengerMenuWithResponse()` | Set FB persistent menu |
+| `client.SetTelegramCommandsWithResponse()` | Set TG bot commands |
 
 ### Comments (Inbox)
 | Method | Description |

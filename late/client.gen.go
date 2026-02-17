@@ -179,41 +179,6 @@ const (
 	PostLogStatusSuccess PostLogStatus = "success"
 )
 
-// Defines values for PostLogDetailAction.
-const (
-	PostLogDetailActionCancelled      PostLogDetailAction = "cancelled"
-	PostLogDetailActionMediaUpload    PostLogDetailAction = "media_upload"
-	PostLogDetailActionPublish        PostLogDetailAction = "publish"
-	PostLogDetailActionRateLimitPause PostLogDetailAction = "rate_limit_pause"
-	PostLogDetailActionRetry          PostLogDetailAction = "retry"
-	PostLogDetailActionTokenRefresh   PostLogDetailAction = "token_refresh"
-)
-
-// Defines values for PostLogDetailPlatform.
-const (
-	PostLogDetailPlatformBluesky        PostLogDetailPlatform = "bluesky"
-	PostLogDetailPlatformFacebook       PostLogDetailPlatform = "facebook"
-	PostLogDetailPlatformGooglebusiness PostLogDetailPlatform = "googlebusiness"
-	PostLogDetailPlatformInstagram      PostLogDetailPlatform = "instagram"
-	PostLogDetailPlatformLinkedin       PostLogDetailPlatform = "linkedin"
-	PostLogDetailPlatformPinterest      PostLogDetailPlatform = "pinterest"
-	PostLogDetailPlatformReddit         PostLogDetailPlatform = "reddit"
-	PostLogDetailPlatformSnapchat       PostLogDetailPlatform = "snapchat"
-	PostLogDetailPlatformTelegram       PostLogDetailPlatform = "telegram"
-	PostLogDetailPlatformThreads        PostLogDetailPlatform = "threads"
-	PostLogDetailPlatformTiktok         PostLogDetailPlatform = "tiktok"
-	PostLogDetailPlatformTwitter        PostLogDetailPlatform = "twitter"
-	PostLogDetailPlatformYoutube        PostLogDetailPlatform = "youtube"
-)
-
-// Defines values for PostLogDetailStatus.
-const (
-	PostLogDetailStatusFailed  PostLogDetailStatus = "failed"
-	PostLogDetailStatusPending PostLogDetailStatus = "pending"
-	PostLogDetailStatusSkipped PostLogDetailStatus = "skipped"
-	PostLogDetailStatusSuccess PostLogDetailStatus = "success"
-)
-
 // Defines values for SnapchatPlatformDataContentType.
 const (
 	SavedStory SnapchatPlatformDataContentType = "saved_story"
@@ -555,44 +520,6 @@ const (
 	CreateInviteTokenJSONBodyScopeProfiles CreateInviteTokenJSONBodyScope = "profiles"
 )
 
-// Defines values for ListLogsParamsStatus.
-const (
-	ListLogsParamsStatusAll     ListLogsParamsStatus = "all"
-	ListLogsParamsStatusFailed  ListLogsParamsStatus = "failed"
-	ListLogsParamsStatusPending ListLogsParamsStatus = "pending"
-	ListLogsParamsStatusSkipped ListLogsParamsStatus = "skipped"
-	ListLogsParamsStatusSuccess ListLogsParamsStatus = "success"
-)
-
-// Defines values for ListLogsParamsPlatform.
-const (
-	ListLogsParamsPlatformAll            ListLogsParamsPlatform = "all"
-	ListLogsParamsPlatformBluesky        ListLogsParamsPlatform = "bluesky"
-	ListLogsParamsPlatformFacebook       ListLogsParamsPlatform = "facebook"
-	ListLogsParamsPlatformGooglebusiness ListLogsParamsPlatform = "googlebusiness"
-	ListLogsParamsPlatformInstagram      ListLogsParamsPlatform = "instagram"
-	ListLogsParamsPlatformLinkedin       ListLogsParamsPlatform = "linkedin"
-	ListLogsParamsPlatformPinterest      ListLogsParamsPlatform = "pinterest"
-	ListLogsParamsPlatformReddit         ListLogsParamsPlatform = "reddit"
-	ListLogsParamsPlatformSnapchat       ListLogsParamsPlatform = "snapchat"
-	ListLogsParamsPlatformTelegram       ListLogsParamsPlatform = "telegram"
-	ListLogsParamsPlatformThreads        ListLogsParamsPlatform = "threads"
-	ListLogsParamsPlatformTiktok         ListLogsParamsPlatform = "tiktok"
-	ListLogsParamsPlatformTwitter        ListLogsParamsPlatform = "twitter"
-	ListLogsParamsPlatformYoutube        ListLogsParamsPlatform = "youtube"
-)
-
-// Defines values for ListLogsParamsAction.
-const (
-	ListLogsParamsActionAll            ListLogsParamsAction = "all"
-	ListLogsParamsActionCancelled      ListLogsParamsAction = "cancelled"
-	ListLogsParamsActionMediaUpload    ListLogsParamsAction = "media_upload"
-	ListLogsParamsActionPublish        ListLogsParamsAction = "publish"
-	ListLogsParamsActionRateLimitPause ListLogsParamsAction = "rate_limit_pause"
-	ListLogsParamsActionRetry          ListLogsParamsAction = "retry"
-	ListLogsParamsActionTokenRefresh   ListLogsParamsAction = "token_refresh"
-)
-
 // Defines values for GetMediaPresignedUrlJSONBodyContentType.
 const (
 	Applicationpdf GetMediaPresignedUrlJSONBodyContentType = "application/pdf"
@@ -910,12 +837,7 @@ type ApiKey struct {
 	Name       *string `json:"name,omitempty"`
 }
 
-// BlueskyPlatformData Bluesky post settings:
-// - Supports text posts with up to 4 images per post
-// - Videos supported (single video per post)
-// - threadItems creates a reply chain (Bluesky thread)
-// - Images exceeding Bluesky's 1MB limit are automatically compressed
-// - Alt text for images is supported via mediaItem properties
+// BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties.
 type BlueskyPlatformData struct {
 	// ThreadItems Sequence of posts in a Bluesky thread (root then replies in order).
 	ThreadItems *[]struct {
@@ -962,12 +884,7 @@ type ConnectionLog struct {
 		RawResponse *string `json:"rawResponse,omitempty"`
 	} `json:"error,omitempty"`
 
-	// EventType Type of connection event:
-	// - `connect_success` - New account connected successfully
-	// - `connect_failed` - Connection attempt failed
-	// - `disconnect` - Account was disconnected
-	// - `reconnect_success` - Existing account reconnected successfully
-	// - `reconnect_failed` - Reconnection attempt failed
+	// EventType Type of connection event: connect_success, connect_failed, disconnect, reconnect_success, reconnect_failed
 	EventType *ConnectionLogEventType `json:"eventType,omitempty"`
 
 	// Metadata Additional metadata
@@ -995,12 +912,7 @@ type ConnectionLog struct {
 // ConnectionLogConnectionMethod How the connection was initiated
 type ConnectionLogConnectionMethod string
 
-// ConnectionLogEventType Type of connection event:
-// - `connect_success` - New account connected successfully
-// - `connect_failed` - Connection attempt failed
-// - `disconnect` - Account was disconnected
-// - `reconnect_success` - Existing account reconnected successfully
-// - `reconnect_failed` - Reconnection attempt failed
+// ConnectionLogEventType Type of connection event: connect_success, connect_failed, disconnect, reconnect_success, reconnect_failed
 type ConnectionLogEventType string
 
 // ConnectionLogPlatform defines model for ConnectionLog.Platform.
@@ -1012,13 +924,7 @@ type ErrorResponse struct {
 	Error   *string                 `json:"error,omitempty"`
 }
 
-// FacebookPlatformData Constraints:
-// - Posts cannot mix videos and images.
-// - Multiple images supported via attached_media (up to 10 images for feed posts).
-// - Multiple videos in the same post are not supported.
-// - Stories require media (single image or video); text captions are not displayed with stories.
-// - Stories are ephemeral (disappear after 24 hours).
-// - Use pageId to post to multiple pages from the same account connection.
+// FacebookPlatformData Cannot mix videos and images. Up to 10 images for feed posts. Stories require single image or video (no captions, ephemeral 24h). Use pageId for multi-page posting.
 type FacebookPlatformData struct {
 	// ContentType Set to 'story' to publish as a Facebook Page Story (24-hour ephemeral content). Requires media.
 	ContentType *FacebookPlatformDataContentType `json:"contentType,omitempty"`
@@ -1098,23 +1004,11 @@ type FoodMenuSection struct {
 	Labels []FoodMenuLabel `json:"labels"`
 }
 
-// GoogleBusinessPlatformData Google Business Profile post settings:
-// - Posts support text content and a single image (no videos)
-// - Images must be publicly accessible URLs
-// - Call-to-action buttons drive user engagement
-// - Posts appear on your Google Business Profile and in Google Search/Maps
-// - Use locationId to post to multiple locations from the same account connection
-// - Language is auto-detected from content; override with languageCode if needed
+// GoogleBusinessPlatformData Posts support text and a single image (no videos). Images must be publicly accessible URLs. Optional call-to-action button. Posts appear on GBP, Google Search, and Maps. Use locationId for multi-location posting. Language is auto-detected; override with languageCode.
 type GoogleBusinessPlatformData struct {
 	// CallToAction Optional call-to-action button displayed on the post
 	CallToAction *struct {
-		// Type Button action type:
-		// - LEARN_MORE: Link to more information
-		// - BOOK: Booking/reservation link
-		// - ORDER: Online ordering link
-		// - SHOP: E-commerce/shopping link
-		// - SIGN_UP: Registration/signup link
-		// - CALL: Phone call action
+		// Type Button action type: LEARN_MORE, BOOK, ORDER, SHOP, SIGN_UP, CALL
 		Type GoogleBusinessPlatformDataCallToActionType `json:"type"`
 
 		// Url Destination URL for the CTA button (required when callToAction is provided)
@@ -1134,33 +1028,12 @@ type GoogleBusinessPlatformData struct {
 	LocationId *string `json:"locationId,omitempty"`
 }
 
-// GoogleBusinessPlatformDataCallToActionType Button action type:
-// - LEARN_MORE: Link to more information
-// - BOOK: Booking/reservation link
-// - ORDER: Online ordering link
-// - SHOP: E-commerce/shopping link
-// - SIGN_UP: Registration/signup link
-// - CALL: Phone call action
+// GoogleBusinessPlatformDataCallToActionType Button action type: LEARN_MORE, BOOK, ORDER, SHOP, SIGN_UP, CALL
 type GoogleBusinessPlatformDataCallToActionType string
 
-// InstagramPlatformData Constraints:
-// - Feed posts require images with aspect ratio between 0.8 (4:5 portrait) and 1.91 (1.91:1 landscape).
-// - Images outside this range (e.g., 9:16 Stories/TikTok format) must use contentType 'story'.
-// - Validation happens at post creation; invalid images are rejected immediately with helpful error messages.
-// - Carousels support up to 10 media items.
-// - Stories require media; no captions are published with Stories.
-// - User tags: coordinates range from 0.0 to 1.0 representing position from top-left corner. For carousels, use `mediaIndex` to tag specific slides. Tagged users receive notifications.
-//
-// **Automatic Compression (similar to Bluesky):**
-// - All images (story, post, carousel, thumbnails) exceeding 8 MB are automatically compressed using quality reduction and resizing.
-// - Story videos exceeding 100 MB are automatically compressed.
-// - Reel videos exceeding 300 MB are automatically compressed.
-// - Compression uses Sharp (images) and FFmpeg (videos) to maintain quality while meeting size limits.
-// - Original files are preserved; compressed versions are uploaded to blob storage automatically.
+// InstagramPlatformData Feed posts require aspect ratio 0.8-1.91; images outside this range must use contentType story. Carousels up to 10 items. Stories require media, no captions. User tag coordinates 0.0-1.0 from top-left. Images over 8 MB and videos over 100 MB (stories) or 300 MB (reels) are auto-compressed.
 type InstagramPlatformData struct {
-	// AudioName Custom name for the original audio in Reels. Replaces the default "Original Audio" label.
-	// Only applies to Reels (video posts). Can only be set once - either during creation or
-	// later from the Instagram audio page in the app.
+	// AudioName Custom name for original audio in Reels. Replaces the default "Original Audio" label. Can only be set once.
 	AudioName *string `json:"audioName,omitempty"`
 
 	// Collaborators Up to 3 Instagram usernames to invite as collaborators (feed/Reels only)
@@ -1175,30 +1048,18 @@ type InstagramPlatformData struct {
 	// ShareToFeed For Reels only. When true (default), the Reel appears on both the Reels tab and your main profile feed. Set to false to post to the Reels tab only.
 	ShareToFeed *bool `json:"shareToFeed,omitempty"`
 
-	// ThumbOffset Millisecond offset from the start of the video to use as the Reel thumbnail.
-	// Only applies to Reels (video posts). If a custom thumbnail URL (instagramThumbnail
-	// in mediaItems) is provided, it takes priority and this offset is ignored.
-	// Defaults to 0 (first frame).
+	// ThumbOffset Millisecond offset from video start for the Reel thumbnail. Ignored if a custom thumbnail URL is provided. Defaults to 0.
 	ThumbOffset *int `json:"thumbOffset,omitempty"`
 
-	// TrialParams Trial Reels configuration. Trial reels are only shared to non-followers initially.
-	// They can later be "graduated" (converted to regular reels visible to followers)
-	// either manually in the Instagram app or automatically based on performance.
-	// Only applies to Reels (video posts).
+	// TrialParams Trial Reels configuration. Trial reels are shared to non-followers first and can later be graduated to regular reels manually or automatically based on performance. Only applies to Reels.
 	TrialParams *struct {
-		// GraduationStrategy The graduation strategy specifies when a trial reel becomes a regular reel:
-		// - MANUAL: The trial reel can only be manually graduated from the native Instagram app.
-		// - SS_PERFORMANCE: The trial reel will be automatically graduated if it performs well with non-followers.
+		// GraduationStrategy MANUAL (graduate from Instagram app) or SS_PERFORMANCE (auto-graduate if performs well with non-followers)
 		GraduationStrategy *InstagramPlatformDataTrialParamsGraduationStrategy `json:"graduationStrategy,omitempty"`
 	} `json:"trialParams,omitempty"`
 
-	// UserTags Tag Instagram users in photos by username and position coordinates. Not supported for stories or videos.
-	// For carousel posts, use the optional `mediaIndex` field to specify which slide each tag applies to.
-	// Tags without `mediaIndex` default to the first image (index 0) for backwards compatibility.
-	// Tags targeting video items are silently skipped (Instagram only supports tagging on images).
+	// UserTags Tag Instagram users in photos by username and position. Not supported for stories or videos. For carousels, use mediaIndex to target specific slides (defaults to 0). Tags on video items are silently skipped.
 	UserTags *[]struct {
-		// MediaIndex Zero-based index of the carousel item to tag. Defaults to 0 (first image) if omitted.
-		// Only relevant for carousel posts. Tags targeting video items or out-of-range indices are ignored.
+		// MediaIndex Zero-based index of the carousel item to tag. Defaults to 0. Tags on video items or out-of-range indices are ignored.
 		MediaIndex *int `json:"mediaIndex,omitempty"`
 
 		// Username Instagram username (@ symbol is optional and will be removed automatically)
@@ -1215,9 +1076,7 @@ type InstagramPlatformData struct {
 // InstagramPlatformDataContentType Set to 'story' to publish as a Story. Default posts become Reels or feed depending on media.
 type InstagramPlatformDataContentType string
 
-// InstagramPlatformDataTrialParamsGraduationStrategy The graduation strategy specifies when a trial reel becomes a regular reel:
-// - MANUAL: The trial reel can only be manually graduated from the native Instagram app.
-// - SS_PERFORMANCE: The trial reel will be automatically graduated if it performs well with non-followers.
+// InstagramPlatformDataTrialParamsGraduationStrategy MANUAL (graduate from Instagram app) or SS_PERFORMANCE (auto-graduate if performs well with non-followers)
 type InstagramPlatformDataTrialParamsGraduationStrategy string
 
 // LinkedInAggregateAnalyticsDailyResponse Response for DAILY aggregation (time series breakdown)
@@ -1299,13 +1158,7 @@ type LinkedInAggregateAnalyticsTotalResponse struct {
 // LinkedInAggregateAnalyticsTotalResponseAggregation defines model for LinkedInAggregateAnalyticsTotalResponse.Aggregation.
 type LinkedInAggregateAnalyticsTotalResponseAggregation string
 
-// LinkedInPlatformData Constraints:
-// - Multi-image posts support up to 20 images.
-// - Multi-video posts are not supported.
-// - Single PDF document posts are supported (max 100MB, ~300 pages). Documents cannot be mixed with other media.
-// - Post ID is returned in the x-restli-id response header.
-// - Link previews are automatically generated for URLs when no media is attached (can be disabled with disableLinkPreview).
-// - Use organizationUrn to post to multiple organizations from the same account connection.
+// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB, ~300 pages, cannot mix with other media). Link previews auto-generated when no media attached (disable with disableLinkPreview). Use organizationUrn for multi-org posting.
 type LinkedInPlatformData struct {
 	// DisableLinkPreview Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool `json:"disableLinkPreview,omitempty"`
@@ -1320,15 +1173,8 @@ type LinkedInPlatformData struct {
 	OrganizationUrn *string `json:"organizationUrn,omitempty"`
 }
 
-// MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS by the destination platforms.
-// When using third-party storage, ensure signed links remain valid until upload completes.
-//
-// **Uploading Media:**
-// Use `POST /v1/media/presign` to get a presigned URL, then upload your file directly to cloud storage.
-// Supports files up to 5GB. See the `/v1/media/presign` endpoint documentation for details.
-//
-// **Automatic Media Compression:**
-// Late automatically compresses images and videos that exceed platform limits. Compression happens server-side during publishing. Videos larger than 200 MB may not be compressed due to server timeout constraints.
+// MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. When using third-party storage, ensure signed links remain valid until upload completes.
+// Use POST /v1/media/presign to get a presigned URL for direct cloud storage upload (up to 5GB). Late automatically compresses images and videos that exceed platform limits server-side during publishing. Videos larger than 200 MB may not be compressed due to timeout constraints.
 type MediaItem struct {
 	Filename *string `json:"filename,omitempty"`
 
@@ -1416,30 +1262,13 @@ type PlatformTarget struct {
 	CustomContent *string      `json:"customContent,omitempty"`
 	CustomMedia   *[]MediaItem `json:"customMedia,omitempty"`
 
-	// ErrorCategory Error category for programmatic handling:
-	// - auth_expired: Token expired or revoked, account needs reconnection
-	// - user_content: Content doesn't meet platform requirements (too long, wrong format, etc.)
-	// - user_abuse: Rate limits, spam detection, excessive posting
-	// - account_issue: Account configuration problems (missing board, inactive account)
-	// - platform_rejected: Platform rules violated (banned, suspended, policy violation)
-	// - platform_error: Platform-side issues (5xx errors, maintenance)
-	// - system_error: Late infrastructure issues (timeouts, network errors)
-	// - unknown: Unclassified error
+	// ErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Late infra), unknown
 	ErrorCategory *PlatformTargetErrorCategory `json:"errorCategory,omitempty"`
 
-	// ErrorMessage Human-readable error message when status is 'failed'.
-	// Contains platform-specific error details explaining why the publish failed.
-	// Examples:
-	// - "Instagram access token has expired. Please reconnect your account."
-	// - "Post text exceeds the 500 character limit for Threads."
-	// - "You do not have enough karma to post in this subreddit."
-	// - "Video is too long for Reels. Facebook Reels must be 90 seconds or less."
+	// ErrorMessage Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 
-	// ErrorSource Who/what caused the error:
-	// - user: User action required (fix content, reconnect account)
-	// - platform: Platform-side issue (outage, API change)
-	// - system: Late system issue (rare)
+	// ErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Late issue, rare)
 	ErrorSource *PlatformTargetErrorSource `json:"errorSource,omitempty"`
 
 	// Platform Supported values: twitter, threads, instagram, youtube, facebook, linkedin, pinterest, reddit, tiktok, bluesky, googlebusiness, telegram
@@ -1475,21 +1304,10 @@ type PlatformTarget_AccountId struct {
 	union json.RawMessage
 }
 
-// PlatformTargetErrorCategory Error category for programmatic handling:
-// - auth_expired: Token expired or revoked, account needs reconnection
-// - user_content: Content doesn't meet platform requirements (too long, wrong format, etc.)
-// - user_abuse: Rate limits, spam detection, excessive posting
-// - account_issue: Account configuration problems (missing board, inactive account)
-// - platform_rejected: Platform rules violated (banned, suspended, policy violation)
-// - platform_error: Platform-side issues (5xx errors, maintenance)
-// - system_error: Late infrastructure issues (timeouts, network errors)
-// - unknown: Unclassified error
+// PlatformTargetErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Late infra), unknown
 type PlatformTargetErrorCategory string
 
-// PlatformTargetErrorSource Who/what caused the error:
-// - user: User action required (fix content, reconnect account)
-// - platform: Platform-side issue (outage, API change)
-// - system: Late system issue (rare)
+// PlatformTargetErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Late issue, rare)
 type PlatformTargetErrorSource string
 
 // PlatformTarget_PlatformSpecificData Platform-specific overrides and options.
@@ -1517,10 +1335,7 @@ type Post struct {
 	ScheduledFor      *time.Time  `json:"scheduledFor,omitempty"`
 	Status            *PostStatus `json:"status,omitempty"`
 
-	// Tags YouTube tag constraints when targeting YouTube:
-	// - No count cap; duplicates removed.
-	// - Each tag must be ≤ 100 chars.
-	// - Combined characters across all tags ≤ 500.
+	// Tags YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
 	Tags     *[]string `json:"tags,omitempty"`
 	Timezone *string   `json:"timezone,omitempty"`
 
@@ -1583,13 +1398,7 @@ type PostLog struct {
 	AccountId       *string `json:"accountId,omitempty"`
 	AccountUsername *string `json:"accountUsername,omitempty"`
 
-	// Action Type of action logged:
-	// - `publish` - Initial publish attempt
-	// - `retry` - Retry after failure
-	// - `media_upload` - Media upload step
-	// - `rate_limit_pause` - Account paused due to rate limits
-	// - `token_refresh` - Token was refreshed
-	// - `cancelled` - Post was cancelled
+	// Action Type of action logged: publish (initial attempt), retry (after failure), media_upload, rate_limit_pause, token_refresh, cancelled
 	Action *PostLogAction `json:"action,omitempty"`
 
 	// AttemptNumber Attempt number (1 for first try, 2+ for retries)
@@ -1640,13 +1449,7 @@ type PostLog struct {
 	UserId     *string `json:"userId,omitempty"`
 }
 
-// PostLogAction Type of action logged:
-// - `publish` - Initial publish attempt
-// - `retry` - Retry after failure
-// - `media_upload` - Media upload step
-// - `rate_limit_pause` - Account paused due to rate limits
-// - `token_refresh` - Token was refreshed
-// - `cancelled` - Post was cancelled
+// PostLogAction Type of action logged: publish (initial attempt), retry (after failure), media_upload, rate_limit_pause, token_refresh, cancelled
 type PostLogAction string
 
 // PostLogPlatform defines model for PostLog.Platform.
@@ -1669,103 +1472,6 @@ type PostLog_PostId struct {
 
 // PostLogStatus defines model for PostLog.Status.
 type PostLogStatus string
-
-// PostLogDetail defines model for PostLogDetail.
-type PostLogDetail struct {
-	UnderscoreId *string `json:"_id,omitempty"`
-
-	// AccountId Populated account reference
-	AccountId *struct {
-		UnderscoreId *string `json:"_id,omitempty"`
-		DisplayName  *string `json:"displayName,omitempty"`
-		Platform     *string `json:"platform,omitempty"`
-		Username     *string `json:"username,omitempty"`
-	} `json:"accountId,omitempty"`
-	AccountUsername *string `json:"accountUsername,omitempty"`
-
-	// Action Type of action logged:
-	// - `publish` - Initial publish attempt
-	// - `retry` - Retry after failure
-	// - `media_upload` - Media upload step
-	// - `rate_limit_pause` - Account paused due to rate limits
-	// - `token_refresh` - Token was refreshed
-	// - `cancelled` - Post was cancelled
-	Action *PostLogDetailAction `json:"action,omitempty"`
-
-	// AttemptNumber Attempt number (1 for first try, 2+ for retries)
-	AttemptNumber *int       `json:"attemptNumber,omitempty"`
-	CreatedAt     *time.Time `json:"createdAt,omitempty"`
-
-	// DurationMs How long the operation took in milliseconds
-	DurationMs *int `json:"durationMs,omitempty"`
-
-	// Endpoint Platform API endpoint called
-	Endpoint *string `json:"endpoint,omitempty"`
-
-	// Metadata Additional metadata (e.g., rate limit info)
-	Metadata *map[string]interface{} `json:"metadata,omitempty"`
-	Platform *PostLogDetailPlatform  `json:"platform,omitempty"`
-
-	// PostId Populated post with full details
-	PostId *struct {
-		UnderscoreId *string                   `json:"_id,omitempty"`
-		Content      *string                   `json:"content,omitempty"`
-		MediaItems   *[]map[string]interface{} `json:"mediaItems,omitempty"`
-		Platforms    *[]map[string]interface{} `json:"platforms,omitempty"`
-		ScheduledFor *time.Time                `json:"scheduledFor,omitempty"`
-		Status       *string                   `json:"status,omitempty"`
-	} `json:"postId,omitempty"`
-	ProfileId *string `json:"profileId,omitempty"`
-	Request   *struct {
-		// ContentPreview First 200 chars of caption
-		ContentPreview *string   `json:"contentPreview,omitempty"`
-		MediaCount     *int      `json:"mediaCount,omitempty"`
-		MediaTypes     *[]string `json:"mediaTypes,omitempty"`
-
-		// MediaUrls URLs of media items sent to platform
-		MediaUrls *[]string `json:"mediaUrls,omitempty"`
-
-		// RawBody Full request body JSON (max 5000 chars)
-		RawBody      *string    `json:"rawBody,omitempty"`
-		ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
-	} `json:"request,omitempty"`
-	Response *struct {
-		// ErrorCode Platform-specific error code
-		ErrorCode *string `json:"errorCode,omitempty"`
-
-		// ErrorMessage Error message on failure
-		ErrorMessage *string `json:"errorMessage,omitempty"`
-
-		// PlatformPostId ID returned by platform on success
-		PlatformPostId *string `json:"platformPostId,omitempty"`
-
-		// PlatformPostUrl URL of published post
-		PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
-
-		// RawBody Full response body JSON (max 5000 chars)
-		RawBody *string `json:"rawBody,omitempty"`
-	} `json:"response,omitempty"`
-	Status *PostLogDetailStatus `json:"status,omitempty"`
-
-	// StatusCode HTTP status code from platform API
-	StatusCode *int    `json:"statusCode,omitempty"`
-	UserId     *string `json:"userId,omitempty"`
-}
-
-// PostLogDetailAction Type of action logged:
-// - `publish` - Initial publish attempt
-// - `retry` - Retry after failure
-// - `media_upload` - Media upload step
-// - `rate_limit_pause` - Account paused due to rate limits
-// - `token_refresh` - Token was refreshed
-// - `cancelled` - Post was cancelled
-type PostLogDetailAction string
-
-// PostLogDetailPlatform defines model for PostLogDetail.Platform.
-type PostLogDetailPlatform string
-
-// PostLogDetailStatus defines model for PostLogDetail.Status.
-type PostLogDetailStatus string
 
 // PostRetryResponse defines model for PostRetryResponse.
 type PostRetryResponse struct {
@@ -1793,9 +1499,7 @@ type Profile struct {
 	Description  *string    `json:"description,omitempty"`
 	IsDefault    *bool      `json:"isDefault,omitempty"`
 
-	// IsOverLimit Only present when `includeOverLimit=true` is used. Indicates if this profile
-	// exceeds the user's plan limit. Over-limit profiles cannot be used for posting
-	// but can be managed (disconnected accounts, deleted).
+	// IsOverLimit Only present when includeOverLimit=true is used. Indicates if this profile exceeds the user's plan limit. Over-limit profiles cannot be used for posting but can be managed (disconnected accounts, deleted).
 	IsOverLimit *bool   `json:"isOverLimit,omitempty"`
 	Name        *string `json:"name,omitempty"`
 	UserId      *string `json:"userId,omitempty"`
@@ -1845,14 +1549,7 @@ type QueueSlot struct {
 	Time *string `json:"time,omitempty"`
 }
 
-// RedditPlatformData Reddit post settings:
-// - Posts are either "link" (with URL/media) or "self" (text-only)
-// - If media is provided, the first media item's URL is used as the link
-// - Use forceSelf to override and create a text post with the URL in the body
-// - Subreddit defaults to the account's configured subreddit if omitted
-// - Use the same accountId multiple times with different subreddit values in platformSpecificData to post to multiple subreddits
-// - Images are automatically compressed if they exceed Reddit's 20MB limit
-// - Some subreddits require a flair; if not provided, the API will attempt to use the first available flair as fallback
+// RedditPlatformData Posts are either link (with URL/media) or self (text-only). If media is provided, the first item URL is used as the link; use forceSelf to override. Subreddit defaults to the account's configured one. Images over 20 MB are auto-compressed. Some subreddits require a flair; if missing, the first available flair is used as fallback.
 type RedditPlatformData struct {
 	// FlairId Flair ID for the post. Required by some subreddits.
 	// Use GET /api/v1/accounts/{id}/reddit-flairs?subreddit=name to list available flairs.
@@ -1873,23 +1570,15 @@ type RedditPlatformData struct {
 	Url *string `json:"url,omitempty"`
 }
 
-// SnapchatPlatformData Snapchat requires a Public Profile. Media is required for all content types (single item only, auto-encrypted before upload).
-//
-// **Content types:** Story (ephemeral 24h, no caption), Saved Story (permanent, title max 45 chars), Spotlight (video, description max 160 chars).
-//
-// **Media limits:** Images max 20 MB (JPEG/PNG), videos max 500 MB (MP4, 5-60s, min 540x960px, 9:16 recommended).
+// SnapchatPlatformData Requires a Public Profile. Media required for all content types (single item only, auto-encrypted).
+// Content types: story (ephemeral 24h, no caption), saved_story (permanent, title max 45 chars), spotlight (video, description max 160 chars).
+// Images max 20 MB (JPEG/PNG), videos max 500 MB (MP4, 5-60s, min 540x960px).
 type SnapchatPlatformData struct {
-	// ContentType Type of Snapchat content to publish:
-	// - `story` - Ephemeral snap visible for 24 hours (default)
-	// - `saved_story` - Permanent story saved to Public Profile
-	// - `spotlight` - Video posted to Spotlight (Snapchat's TikTok-like feed)
+	// ContentType Content type: story (ephemeral 24h, default), saved_story (permanent on Public Profile), spotlight (video feed)
 	ContentType *SnapchatPlatformDataContentType `json:"contentType,omitempty"`
 }
 
-// SnapchatPlatformDataContentType Type of Snapchat content to publish:
-// - `story` - Ephemeral snap visible for 24 hours (default)
-// - `saved_story` - Permanent story saved to Public Profile
-// - `spotlight` - Video posted to Spotlight (Snapchat's TikTok-like feed)
+// SnapchatPlatformDataContentType Content type: story (ephemeral 24h, default), saved_story (permanent on Public Profile), spotlight (video feed)
 type SnapchatPlatformDataContentType string
 
 // SocialAccount defines model for SocialAccount.
@@ -1931,17 +1620,7 @@ type SocialAccount_ProfileId struct {
 	union json.RawMessage
 }
 
-// TelegramPlatformData Telegram channel/group posting settings:
-// - Supports text, images (up to 10), videos (up to 10), and mixed media albums
-// - Posts to channels display the channel name and logo as author
-// - Posts to groups display the bot name (Late) as author
-// - Message IDs are returned for analytics tracking
-// - Captions support up to 1024 characters for media posts, 4096 for text-only
-//
-// **Analytics:**
-// - **Not available via API.** The Telegram Bot API does not expose message analytics (views, forwards, reactions).
-// - View counts are only visible to channel admins directly in the Telegram app.
-// - This is a Telegram platform limitation that affects all third-party tools.
+// TelegramPlatformData Supports text, images (up to 10), videos (up to 10), and mixed media albums. Captions up to 1024 chars for media posts, 4096 for text-only. Channel posts show channel name as author; group posts show bot name. Analytics not available via Telegram Bot API.
 type TelegramPlatformData struct {
 	// DisableNotification Send the message silently (users will receive notification without sound)
 	DisableNotification *bool `json:"disableNotification,omitempty"`
@@ -1959,12 +1638,7 @@ type TelegramPlatformData struct {
 // TelegramPlatformDataParseMode Text formatting mode for the message (default is HTML)
 type TelegramPlatformDataParseMode string
 
-// ThreadsPlatformData Constraints:
-// - Carousel posts support up to 10 images (no videos in carousels).
-// - Single posts support one image or one video.
-// - Videos must be H.264/AAC MP4 format, max 5 minutes duration.
-// - Images must be JPEG or PNG, max 8 MB each.
-// - threadItems creates a reply chain (Threads equivalent of Twitter threads).
+// ThreadsPlatformData Carousels support up to 10 images (no videos). Single posts support one image or video. Videos must be H.264/AAC MP4, max 5 min. Images must be JPEG/PNG, max 8 MB. threadItems creates a reply chain.
 type ThreadsPlatformData struct {
 	// ThreadItems Sequence of posts in a Threads thread (root then replies in order).
 	ThreadItems *[]struct {
@@ -1973,20 +1647,7 @@ type ThreadsPlatformData struct {
 	} `json:"threadItems,omitempty"`
 }
 
-// TikTokPlatformData TikTok platform-specific settings for video/photo posting.
-//
-// **Constraints:**
-// - Photo carousels support up to 35 images.
-// - **Title length limits**:
-//   - Videos: up to 2200 chars (full content used as title)
-//   - Photos: content is automatically truncated to 90 chars for title (hashtags/URLs stripped). Use 'description' field for longer text (up to 4000 chars).
-//
-// - privacyLevel must be chosen from creator_info.privacy_level_options (no defaulting).
-// - allowDuet and allowStitch required for videos; allowComment for all.
-// - contentPreviewConfirmed and expressConsentGiven must be true before posting.
-//
-// **Note:** Both camelCase and snake_case field names are accepted for backwards compatibility.
-// The nested `tiktokSettings` object format is also still supported but deprecated.
+// TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars; photo titles auto-truncated to 90 chars (use description field for longer text up to 4000 chars). privacyLevel must match creator_info options. allowDuet/allowStitch required for videos. contentPreviewConfirmed and expressConsentGiven must be true. Both camelCase and snake_case accepted.
 type TikTokPlatformData struct {
 	// AllowComment Allow comments on the post
 	AllowComment *bool `json:"allowComment,omitempty"`
@@ -2009,11 +1670,10 @@ type TikTokPlatformData struct {
 	// ContentPreviewConfirmed User has confirmed they previewed the content
 	ContentPreviewConfirmed *bool `json:"contentPreviewConfirmed,omitempty"`
 
-	// Description Optional long-form description for photo posts (max 4000 chars).
-	// Recommended for photo posts when content exceeds 90 characters, as photo titles are automatically truncated to 90 chars (after stripping hashtags/URLs).
+	// Description Optional long-form description for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated.
 	Description *string `json:"description,omitempty"`
 
-	// Draft When true, Late sends the post to the TikTok Creator Inbox as a draft instead of publishing it immediately. When omitted or false, TikTok uses direct posting (live publish) as usual.
+	// Draft When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing immediately.
 	Draft *bool `json:"draft,omitempty"`
 
 	// ExpressConsentGiven User has given express consent for posting
@@ -2186,57 +1846,28 @@ type YouTubeDailyViewsResponse struct {
 	VideoId *string `json:"videoId,omitempty"`
 }
 
-// YouTubePlatformData YouTube video upload settings:
-// - Videos ≤ 3 minutes are automatically detected as YouTube Shorts
-// - Videos > 3 minutes become regular YouTube videos
-// - Custom thumbnails supported for regular videos (via mediaItem.thumbnail)
-// - Custom thumbnails NOT supported for Shorts via API
-// - Scheduled videos are uploaded immediately as the specified visibility and published at scheduled time
-// - Visibility defaults to "public" if not specified
-// - madeForKids defaults to false (not child-directed)
-// - Set containsSyntheticMedia: true if your video contains AI-generated content
+// YouTubePlatformData Videos up to 3 min are auto-detected as Shorts, longer as regular videos. Custom thumbnails supported for regular videos only (via mediaItem.thumbnail). Scheduled videos are uploaded immediately with the specified visibility. madeForKids defaults to false.
 type YouTubePlatformData struct {
-	// CategoryId YouTube video category ID. Defaults to '22' (People & Blogs).
-	// Common categories: 1 (Film & Animation), 2 (Autos & Vehicles), 10 (Music),
-	// 15 (Pets & Animals), 17 (Sports), 20 (Gaming), 22 (People & Blogs),
-	// 23 (Comedy), 24 (Entertainment), 25 (News & Politics), 26 (Howto & Style),
-	// 27 (Education), 28 (Science & Technology).
+	// CategoryId YouTube video category ID. Defaults to 22 (People & Blogs). Common: 1 (Film), 2 (Autos), 10 (Music), 15 (Pets), 17 (Sports), 20 (Gaming), 23 (Comedy), 24 (Entertainment), 25 (News), 26 (Howto), 27 (Education), 28 (Science & Tech).
 	CategoryId *string `json:"categoryId,omitempty"`
 
-	// ContainsSyntheticMedia AI-generated content disclosure flag. Set to true if your video contains AI-generated or synthetic content
-	// that could be mistaken for real people, places, or events. This helps viewers understand when realistic
-	// content has been created or altered using AI. YouTube may add a label to videos when this is set.
-	// Added to YouTube Data API in October 2024.
+	// ContainsSyntheticMedia AI-generated content disclosure. Set true if the video contains synthetic content that could be mistaken for real. YouTube may add a label.
 	ContainsSyntheticMedia *bool `json:"containsSyntheticMedia,omitempty"`
 
 	// FirstComment Optional first comment to post immediately after video upload. Up to 10,000 characters (YouTube's comment limit).
 	FirstComment *string `json:"firstComment,omitempty"`
 
-	// MadeForKids COPPA compliance: Audience designation for the video.
-	// - true: Video is made for kids (child-directed content)
-	// - false: Video is NOT made for kids (default)
-	//
-	// This field maps to YouTube's `selfDeclaredMadeForKids` setting. Videos marked as made for kids
-	// have restricted features (no comments, no notifications, limited ad targeting).
-	//
-	// IMPORTANT: If not specified, defaults to false. YouTube requires this to be explicitly set,
-	// otherwise the video may be blocked from views until configured in YouTube Studio.
+	// MadeForKids COPPA compliance flag. Set true for child-directed content (restricts comments, notifications, ad targeting). Defaults to false. YouTube may block views if not explicitly set.
 	MadeForKids *bool `json:"madeForKids,omitempty"`
 
 	// Title Video title. Defaults to first line of content or "Untitled Video". Must be ≤ 100 characters.
 	Title *string `json:"title,omitempty"`
 
-	// Visibility Video visibility setting:
-	// - public: Anyone can search for and watch (default)
-	// - unlisted: Only people with the link can watch
-	// - private: Only you and people you specifically share with can watch
+	// Visibility Video visibility: public (default, anyone can watch), unlisted (link only), private (invite only)
 	Visibility *YouTubePlatformDataVisibility `json:"visibility,omitempty"`
 }
 
-// YouTubePlatformDataVisibility Video visibility setting:
-// - public: Anyone can search for and watch (default)
-// - unlisted: Only people with the link can watch
-// - private: Only you and people you specifically share with can watch
+// YouTubePlatformDataVisibility Video visibility: public (default, anyone can watch), unlisted (link only), private (invite only)
 type YouTubePlatformDataVisibility string
 
 // YouTubeScopeMissingResponse defines model for YouTubeScopeMissingResponse.
@@ -2494,11 +2125,7 @@ type SetInstagramIceBreakersJSONBody struct {
 
 // GetLinkedInAggregateAnalyticsParams defines parameters for GetLinkedInAggregateAnalytics.
 type GetLinkedInAggregateAnalyticsParams struct {
-	// Aggregation Type of aggregation for the analytics data.
-	// - `TOTAL` (default): Returns single totals for each metric
-	// - `DAILY`: Returns daily breakdown of metrics
-	//
-	// Note: `MEMBERS_REACHED` metric is not available with `DAILY` aggregation.
+	// Aggregation Type of aggregation: TOTAL (default, returns single totals) or DAILY (returns daily breakdown). Note: MEMBERS_REACHED is not available with DAILY aggregation.
 	Aggregation *GetLinkedInAggregateAnalyticsParamsAggregation `form:"aggregation,omitempty" json:"aggregation,omitempty"`
 
 	// StartDate Start date for analytics data in YYYY-MM-DD format.
@@ -2520,14 +2147,10 @@ type GetLinkedInAggregateAnalyticsParamsAggregation string
 
 // GetLinkedInMentionsParams defines parameters for GetLinkedInMentions.
 type GetLinkedInMentionsParams struct {
-	// Url LinkedIn profile URL, company URL, or vanity name.
-	// - Person: `miquelpalet`, `linkedin.com/in/miquelpalet`
-	// - Organization: `company/microsoft`, `linkedin.com/company/microsoft`
+	// Url LinkedIn profile URL, company URL, or vanity name. Person examples: miquelpalet, linkedin.com/in/miquelpalet. Organization examples: company/microsoft, linkedin.com/company/microsoft.
 	Url string `form:"url" json:"url"`
 
-	// DisplayName The exact display name as shown on LinkedIn.
-	// - **Person mentions:** Required for clickable mentions. If not provided, a name is derived from the vanity URL which may not match exactly.
-	// - **Organization mentions:** Optional. If not provided, the company name is automatically retrieved from LinkedIn.
+	// DisplayName The exact display name as shown on LinkedIn. Required for person mentions (for clickable mentions; if not provided, a name is derived from the vanity URL which may not match). Optional for organization mentions (company name is auto-retrieved from LinkedIn).
 	DisplayName *string `form:"displayName,omitempty" json:"displayName,omitempty"`
 }
 
@@ -2582,9 +2205,7 @@ type SetTelegramCommandsJSONBody struct {
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
-	// PostId Returns analytics for a single post. Accepts both Late Post IDs (from `POST /v1/posts`)
-	// and External Post IDs (from this endpoint's list response). The API automatically
-	// resolves Late Post IDs to their corresponding External Post analytics.
+	// PostId Returns analytics for a single post. Accepts both Late Post IDs and External Post IDs. Late IDs are auto-resolved to External Post analytics.
 	PostId *string `form:"postId,omitempty" json:"postId,omitempty"`
 
 	// Platform Filter by platform (default "all")
@@ -2593,10 +2214,7 @@ type GetAnalyticsParams struct {
 	// ProfileId Filter by profile ID (default "all")
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Source Filter by post source:
-	// - `late` - Only posts scheduled/published via Late API
-	// - `external` - Only posts synced from the platform (not posted via Late)
-	// - `all` - All posts (default)
+	// Source Filter by post source: late (posted via Late API), external (synced from platform), all (default)
 	Source *GetAnalyticsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 
 	// FromDate Inclusive lower bound
@@ -2660,9 +2278,7 @@ type ConnectBlueskyCredentialsJSONBody struct {
 	// RedirectUri Optional URL to redirect to after successful connection
 	RedirectUri *string `json:"redirectUri,omitempty"`
 
-	// State Required state parameter formatted as `{userId}-{profileId}`.
-	// - `userId`: Your Late user ID (get from `GET /v1/users` → `currentUserId`)
-	// - `profileId`: The profile ID to connect the account to (get from `GET /v1/profiles`)
+	// State Required state parameter formatted as {userId}-{profileId}. userId is your Late user ID (from GET /v1/users, currentUserId field), profileId is the profile to connect the account to (from GET /v1/profiles).
 	State string `json:"state"`
 }
 
@@ -2720,8 +2336,7 @@ type SelectGoogleBusinessLocationJSONBody struct {
 	// TempToken Temporary Google access token from OAuth
 	TempToken string `json:"tempToken"`
 
-	// UserProfile Decoded user profile object from the OAuth callback. **Important:** This contains
-	// the refresh token needed for token refresh. Always include this field.
+	// UserProfile Decoded user profile object from the OAuth callback. Contains the refresh token needed for token refresh. Always include this field.
 	UserProfile *struct {
 		Id   *string `json:"id,omitempty"`
 		Name *string `json:"name,omitempty"`
@@ -2761,7 +2376,7 @@ type SelectLinkedInOrganizationJSONBodyAccountType string
 
 // GetPendingOAuthDataParams defines parameters for GetPendingOAuthData.
 type GetPendingOAuthDataParams struct {
-	// Token The pending data token from the OAuth redirect URL (`pendingDataToken` parameter)
+	// Token The pending data token from the OAuth redirect URL (pendingDataToken parameter)
 	Token string `form:"token" json:"token"`
 }
 
@@ -2890,12 +2505,8 @@ type GetConnectUrlParams struct {
 	ProfileId string `form:"profileId" json:"profileId"`
 
 	// RedirectUrl Your custom redirect URL after connection completes.
-	//
-	// **Standard Mode:** After the user selects an account, Late redirects here with `?connected={platform}&profileId=X&username=Y`.
-	//
-	// **Headless Mode:** Pass `headless=true` as a query parameter on this endpoint. After OAuth, the user is redirected to your URL with OAuth data (`profileId`, `tempToken`, `userProfile`, `connect_token`, `platform`, `step`). See the main endpoint description for details.
-	//
-	// Example: `https://yourdomain.com/integrations/callback`
+	// Standard mode: Late redirects here with ?connected={platform}&profileId=X&username=Y.
+	// Headless mode: pass headless=true on this endpoint. User is redirected to your URL with OAuth data (profileId, tempToken, userProfile, connect_token, platform, step). See endpoint description for details.
 	RedirectUrl *string `form:"redirect_url,omitempty" json:"redirect_url,omitempty"`
 }
 
@@ -3328,36 +2939,6 @@ type CreateInviteTokenJSONBody struct {
 // CreateInviteTokenJSONBodyScope defines parameters for CreateInviteToken.
 type CreateInviteTokenJSONBodyScope string
 
-// ListLogsParams defines parameters for ListLogs.
-type ListLogsParams struct {
-	// Status Filter by log status
-	Status *ListLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-
-	// Platform Filter by platform
-	Platform *ListLogsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
-
-	// Action Filter by action type
-	Action *ListLogsParamsAction `form:"action,omitempty" json:"action,omitempty"`
-
-	// Days Number of days to look back (max 7)
-	Days *int `form:"days,omitempty" json:"days,omitempty"`
-
-	// Limit Maximum number of logs to return (max 100)
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Skip Number of logs to skip (for pagination)
-	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
-}
-
-// ListLogsParamsStatus defines parameters for ListLogs.
-type ListLogsParamsStatus string
-
-// ListLogsParamsPlatform defines parameters for ListLogs.
-type ListLogsParamsPlatform string
-
-// ListLogsParamsAction defines parameters for ListLogs.
-type ListLogsParamsAction string
-
 // GetMediaPresignedUrlJSONBody defines parameters for GetMediaPresignedUrl.
 type GetMediaPresignedUrlJSONBody struct {
 	// ContentType MIME type of the file
@@ -3394,8 +2975,7 @@ type ListPostsParamsStatus string
 
 // CreatePostJSONBody defines parameters for CreatePost.
 type CreatePostJSONBody struct {
-	// Content Post caption/text content. Optional when media is attached (images, videos, etc.).
-	// Required for text-only posts. Can also be omitted if all platforms have customContent set.
+	// Content Post caption/text. Optional when media is attached or all platforms have customContent. Required for text-only posts.
 	Content             *string   `json:"content,omitempty"`
 	CrosspostingEnabled *bool     `json:"crosspostingEnabled,omitempty"`
 	Hashtags            *[]string `json:"hashtags,omitempty"`
@@ -3428,35 +3008,14 @@ type CreatePostJSONBody struct {
 	// If omitted, uses the profile's default queue.
 	QueueId *string `json:"queueId,omitempty"`
 
-	// QueuedFromProfile Profile ID to schedule via queue.
-	//
-	// When provided (without `scheduledFor`), the post will be automatically assigned
-	// to the next available slot from the profile's queue. The system uses distributed
-	// locking to prevent race conditions when multiple posts are scheduled concurrently.
-	// Do not call `/v1/queue/next-slot` and then use that time in `scheduledFor`.
-	// That bypasses the queue system and can cause duplicate slot assignments.
+	// QueuedFromProfile Profile ID to schedule via queue. When provided without scheduledFor, the post is auto-assigned to the next available slot. Do not call /v1/queue/next-slot and use that time in scheduledFor, as that bypasses queue locking.
 	QueuedFromProfile *string    `json:"queuedFromProfile,omitempty"`
 	ScheduledFor      *time.Time `json:"scheduledFor,omitempty"`
 
-	// Tags Tags/keywords for the post. YouTube-specific constraints:
-	// - No count limit; duplicates are automatically removed
-	// - Each tag must be ≤ 100 characters
-	// - Combined total across all tags ≤ 500 characters (YouTube's limit)
+	// Tags Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
 	Tags *[]string `json:"tags,omitempty"`
 
-	// TiktokSettings TikTok platform-specific settings for video/photo posting.
-	//
-	// **Constraints:**
-	// - Photo carousels support up to 35 images.
-	// - **Title length limits**:
-	//   - Videos: up to 2200 chars (full content used as title)
-	//   - Photos: content is automatically truncated to 90 chars for title (hashtags/URLs stripped). Use 'description' field for longer text (up to 4000 chars).
-	// - privacyLevel must be chosen from creator_info.privacy_level_options (no defaulting).
-	// - allowDuet and allowStitch required for videos; allowComment for all.
-	// - contentPreviewConfirmed and expressConsentGiven must be true before posting.
-	//
-	// **Note:** Both camelCase and snake_case field names are accepted for backwards compatibility.
-	// The nested `tiktokSettings` object format is also still supported but deprecated.
+	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars; photo titles auto-truncated to 90 chars (use description field for longer text up to 4000 chars). privacyLevel must match creator_info options. allowDuet/allowStitch required for videos. contentPreviewConfirmed and expressConsentGiven must be true. Both camelCase and snake_case accepted.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
 	Timezone       *string             `json:"timezone,omitempty"`
 	Title          *string             `json:"title,omitempty"`
@@ -3518,19 +3077,7 @@ type UpdatePostJSONBody struct {
 	Content      *string    `json:"content,omitempty"`
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 
-	// TiktokSettings TikTok platform-specific settings for video/photo posting.
-	//
-	// **Constraints:**
-	// - Photo carousels support up to 35 images.
-	// - **Title length limits**:
-	//   - Videos: up to 2200 chars (full content used as title)
-	//   - Photos: content is automatically truncated to 90 chars for title (hashtags/URLs stripped). Use 'description' field for longer text (up to 4000 chars).
-	// - privacyLevel must be chosen from creator_info.privacy_level_options (no defaulting).
-	// - allowDuet and allowStitch required for videos; allowComment for all.
-	// - contentPreviewConfirmed and expressConsentGiven must be true before posting.
-	//
-	// **Note:** Both camelCase and snake_case field names are accepted for backwards compatibility.
-	// The nested `tiktokSettings` object format is also still supported but deprecated.
+	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars; photo titles auto-truncated to 90 chars (use description field for longer text up to 4000 chars). privacyLevel must match creator_info options. allowDuet/allowStitch required for videos. contentPreviewConfirmed and expressConsentGiven must be true. Both camelCase and snake_case accepted.
 	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
@@ -3552,9 +3099,7 @@ type UnpublishPostJSONBodyPlatform string
 
 // ListProfilesParams defines parameters for ListProfiles.
 type ListProfilesParams struct {
-	// IncludeOverLimit When true, includes profiles that exceed the user's plan limit.
-	// Over-limit profiles will have `isOverLimit: true` in the response.
-	// Useful for managing/deleting profiles after a plan downgrade.
+	// IncludeOverLimit When true, includes profiles that exceed the user's plan limit. Over-limit profiles will have isOverLimit: true in the response. Useful for managing/deleting profiles after a plan downgrade.
 	IncludeOverLimit *bool `form:"includeOverLimit,omitempty" json:"includeOverLimit,omitempty"`
 }
 
@@ -5220,12 +4765,6 @@ type ClientInterface interface {
 
 	CreateInviteToken(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ListLogs request
-	ListLogs(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetLog request
-	GetLog(ctx context.Context, logId string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetMediaPresignedUrlWithBody request with any body
 	GetMediaPresignedUrlWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -6843,30 +6382,6 @@ func (c *Client) CreateInviteTokenWithBody(ctx context.Context, contentType stri
 
 func (c *Client) CreateInviteToken(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateInviteTokenRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ListLogs(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListLogsRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetLog(ctx context.Context, logId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetLogRequest(c.Server, logId)
 	if err != nil {
 		return nil, err
 	}
@@ -12544,169 +12059,6 @@ func NewCreateInviteTokenRequestWithBody(server string, contentType string, body
 	return req, nil
 }
 
-// NewListLogsRequest generates requests for ListLogs
-func NewListLogsRequest(server string, params *ListLogsParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/logs")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Status != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Platform != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Action != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "action", runtime.ParamLocationQuery, *params.Action); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Days != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "days", runtime.ParamLocationQuery, *params.Days); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Limit != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Skip != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "skip", runtime.ParamLocationQuery, *params.Skip); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetLogRequest generates requests for GetLog
-func NewGetLogRequest(server string, logId string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "logId", runtime.ParamLocationPath, logId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/logs/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewGetMediaPresignedUrlRequest calls the generic GetMediaPresignedUrl builder with application/json body
 func NewGetMediaPresignedUrlRequest(server string, body GetMediaPresignedUrlJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -15495,12 +14847,6 @@ type ClientWithResponsesInterface interface {
 	CreateInviteTokenWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInviteTokenResponse, error)
 
 	CreateInviteTokenWithResponse(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInviteTokenResponse, error)
-
-	// ListLogsWithResponse request
-	ListLogsWithResponse(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*ListLogsResponse, error)
-
-	// GetLogWithResponse request
-	GetLogWithResponse(ctx context.Context, logId string, reqEditors ...RequestEditorFn) (*GetLogResponse, error)
 
 	// GetMediaPresignedUrlWithBodyWithResponse request with any body
 	GetMediaPresignedUrlWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetMediaPresignedUrlResponse, error)
@@ -18901,68 +18247,6 @@ func (r CreateInviteTokenResponse) StatusCode() int {
 	return 0
 }
 
-type ListLogsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Logs       *[]PostLog `json:"logs,omitempty"`
-		Pagination *struct {
-			HasMore *bool `json:"hasMore,omitempty"`
-			Limit   *int  `json:"limit,omitempty"`
-
-			// Pages Total number of pages
-			Pages *int `json:"pages,omitempty"`
-			Skip  *int `json:"skip,omitempty"`
-
-			// Total Total number of logs matching the query
-			Total *int `json:"total,omitempty"`
-		} `json:"pagination,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-
-// Status returns HTTPResponse.Status
-func (r ListLogsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListLogsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetLogResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Log *PostLogDetail `json:"log,omitempty"`
-	}
-	JSON401 *Unauthorized
-	JSON404 *NotFound
-}
-
-// Status returns HTTPResponse.Status
-func (r GetLogResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetLogResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type GetMediaPresignedUrlResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -21247,24 +20531,6 @@ func (c *ClientWithResponses) CreateInviteTokenWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseCreateInviteTokenResponse(rsp)
-}
-
-// ListLogsWithResponse request returning *ListLogsResponse
-func (c *ClientWithResponses) ListLogsWithResponse(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*ListLogsResponse, error) {
-	rsp, err := c.ListLogs(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListLogsResponse(rsp)
-}
-
-// GetLogWithResponse request returning *GetLogResponse
-func (c *ClientWithResponses) GetLogWithResponse(ctx context.Context, logId string, reqEditors ...RequestEditorFn) (*GetLogResponse, error) {
-	rsp, err := c.GetLog(ctx, logId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetLogResponse(rsp)
 }
 
 // GetMediaPresignedUrlWithBodyWithResponse request with arbitrary body returning *GetMediaPresignedUrlResponse
@@ -26081,94 +25347,6 @@ func ParseCreateInviteTokenResponse(rsp *http.Response) (*CreateInviteTokenRespo
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseListLogsResponse parses an HTTP response from a ListLogsWithResponse call
-func ParseListLogsResponse(rsp *http.Response) (*ListLogsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListLogsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Logs       *[]PostLog `json:"logs,omitempty"`
-			Pagination *struct {
-				HasMore *bool `json:"hasMore,omitempty"`
-				Limit   *int  `json:"limit,omitempty"`
-
-				// Pages Total number of pages
-				Pages *int `json:"pages,omitempty"`
-				Skip  *int `json:"skip,omitempty"`
-
-				// Total Total number of logs matching the query
-				Total *int `json:"total,omitempty"`
-			} `json:"pagination,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetLogResponse parses an HTTP response from a GetLogWithResponse call
-func ParseGetLogResponse(rsp *http.Response) (*GetLogResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetLogResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Log *PostLogDetail `json:"log,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
 
 	}
 
