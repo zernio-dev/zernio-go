@@ -46,154 +46,154 @@ func main() {
 ### Posts
 | Method | Description |
 |--------|-------------|
-| `client.ListPostsWithResponse()` | List posts visible to the authenticated user |
-| `client.BulkUploadPostsWithResponse()` | Validate and schedule multiple posts from CSV |
-| `client.CreatePostWithResponse()` | Create a draft, scheduled, or immediate post |
-| `client.GetPostWithResponse()` | Get a single post |
-| `client.UpdatePostWithResponse()` | Update a post |
-| `client.DeletePostWithResponse()` | Delete a post |
-| `client.RetryPostWithResponse()` | Retry publishing a failed or partial post |
-| `client.UnpublishPostWithResponse()` | Delete a published post from a social media platform |
+| `client.ListPostsWithResponse()` | List posts |
+| `client.BulkUploadPostsWithResponse()` | Bulk upload from CSV |
+| `client.CreatePostWithResponse()` | Create post |
+| `client.GetPostWithResponse()` | Get post |
+| `client.UpdatePostWithResponse()` | Update post |
+| `client.DeletePostWithResponse()` | Delete post |
+| `client.RetryPostWithResponse()` | Retry failed post |
+| `client.UnpublishPostWithResponse()` | Unpublish post |
 
 ### Accounts
 | Method | Description |
 |--------|-------------|
-| `client.GetAllAccountsHealthWithResponse()` | Check health of all connected accounts |
-| `client.ListAccountsWithResponse()` | List connected social accounts |
-| `client.GetAccountHealthWithResponse()` | Check health of a specific account |
-| `client.GetFollowerStatsWithResponse()` | Get follower stats and growth metrics |
-| `client.GetGoogleBusinessReviewsWithResponse()` | Get Google Business Profile reviews |
-| `client.GetLinkedInMentionsWithResponse()` | Resolve a LinkedIn profile or company URL to a URN for @mentions |
-| `client.UpdateAccountWithResponse()` | Update a social account |
-| `client.DeleteAccountWithResponse()` | Disconnect a social account |
+| `client.GetAllAccountsHealthWithResponse()` | Check accounts health |
+| `client.ListAccountsWithResponse()` | List accounts |
+| `client.GetAccountHealthWithResponse()` | Check account health |
+| `client.GetFollowerStatsWithResponse()` | Get follower stats |
+| `client.GetGoogleBusinessReviewsWithResponse()` | Get reviews |
+| `client.GetLinkedInMentionsWithResponse()` | Resolve LinkedIn mention |
+| `client.UpdateAccountWithResponse()` | Update account |
+| `client.DeleteAccountWithResponse()` | Disconnect account |
 
 ### Profiles
 | Method | Description |
 |--------|-------------|
-| `client.ListProfilesWithResponse()` | List profiles visible to the authenticated user |
-| `client.CreateProfileWithResponse()` | Create a new profile |
-| `client.GetProfileWithResponse()` | Get a profile by id |
-| `client.UpdateProfileWithResponse()` | Update a profile |
-| `client.DeleteProfileWithResponse()` | Delete a profile (must have no connected accounts) |
+| `client.ListProfilesWithResponse()` | List profiles |
+| `client.CreateProfileWithResponse()` | Create profile |
+| `client.GetProfileWithResponse()` | Get profile |
+| `client.UpdateProfileWithResponse()` | Update profile |
+| `client.DeleteProfileWithResponse()` | Delete profile |
 
 ### Analytics
 | Method | Description |
 |--------|-------------|
-| `client.GetAnalyticsWithResponse()` | Unified analytics for posts |
-| `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get aggregate analytics for a LinkedIn personal account |
-| `client.GetLinkedInPostAnalyticsWithResponse()` | Get analytics for a specific LinkedIn post by URN |
-| `client.GetYouTubeDailyViewsWithResponse()` | YouTube daily views breakdown |
+| `client.GetAnalyticsWithResponse()` | Get post analytics |
+| `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
+| `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
+| `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
 
 ### Account Groups
 | Method | Description |
 |--------|-------------|
-| `client.ListAccountGroupsWithResponse()` | List account groups for the authenticated user |
-| `client.CreateAccountGroupWithResponse()` | Create a new account group |
-| `client.UpdateAccountGroupWithResponse()` | Update an account group |
-| `client.DeleteAccountGroupWithResponse()` | Delete an account group |
+| `client.ListAccountGroupsWithResponse()` | List groups |
+| `client.CreateAccountGroupWithResponse()` | Create group |
+| `client.UpdateAccountGroupWithResponse()` | Update group |
+| `client.DeleteAccountGroupWithResponse()` | Delete group |
 
 ### Queue
 | Method | Description |
 |--------|-------------|
-| `client.ListQueueSlotsWithResponse()` | Get queue schedules for a profile |
-| `client.CreateQueueSlotWithResponse()` | Create a new queue for a profile |
-| `client.GetNextQueueSlotWithResponse()` | Preview the next available queue slot (informational only) |
-| `client.UpdateQueueSlotWithResponse()` | Create or update a queue schedule |
-| `client.DeleteQueueSlotWithResponse()` | Delete a queue schedule |
-| `client.PreviewQueueWithResponse()` | Preview upcoming queue slots for a profile |
+| `client.ListQueueSlotsWithResponse()` | List schedules |
+| `client.CreateQueueSlotWithResponse()` | Create schedule |
+| `client.GetNextQueueSlotWithResponse()` | Get next available slot |
+| `client.UpdateQueueSlotWithResponse()` | Update schedule |
+| `client.DeleteQueueSlotWithResponse()` | Delete schedule |
+| `client.PreviewQueueWithResponse()` | Preview upcoming slots |
 
 ### Webhooks
 | Method | Description |
 |--------|-------------|
-| `client.CreateWebhookSettingsWithResponse()` | Create a new webhook |
-| `client.GetWebhookLogsWithResponse()` | Get webhook delivery logs |
-| `client.GetWebhookSettingsWithResponse()` | List all webhooks |
-| `client.UpdateWebhookSettingsWithResponse()` | Update a webhook |
-| `client.DeleteWebhookSettingsWithResponse()` | Delete a webhook |
+| `client.CreateWebhookSettingsWithResponse()` | Create webhook |
+| `client.GetWebhookLogsWithResponse()` | Get delivery logs |
+| `client.GetWebhookSettingsWithResponse()` | List webhooks |
+| `client.UpdateWebhookSettingsWithResponse()` | Update webhook |
+| `client.DeleteWebhookSettingsWithResponse()` | Delete webhook |
 | `client.TestWebhookWithResponse()` | Send test webhook |
 
 ### API Keys
 | Method | Description |
 |--------|-------------|
-| `client.ListApiKeysWithResponse()` | List API keys for the current user |
-| `client.CreateApiKeyWithResponse()` | Create a new API key |
-| `client.DeleteApiKeyWithResponse()` | Delete an API key |
+| `client.ListApiKeysWithResponse()` | List keys |
+| `client.CreateApiKeyWithResponse()` | Create key |
+| `client.DeleteApiKeyWithResponse()` | Delete key |
 
 ### Media
 | Method | Description |
 |--------|-------------|
-| `client.GetMediaPresignedUrlWithResponse()` | Get a presigned URL for direct file upload (up to 5GB) |
+| `client.GetMediaPresignedUrlWithResponse()` | Get presigned upload URL |
 
 ### Tools
 | Method | Description |
 |--------|-------------|
-| `client.GetYouTubeTranscriptWithResponse()` | Get YouTube video transcript |
-| `client.CheckInstagramHashtagsWithResponse()` | Check Instagram hashtags for bans |
-| `client.DownloadBlueskyMediaWithResponse()` | Download Bluesky video |
+| `client.GetYouTubeTranscriptWithResponse()` | Get YouTube transcript |
+| `client.CheckInstagramHashtagsWithResponse()` | Check Instagram hashtag bans |
+| `client.DownloadBlueskyMediaWithResponse()` | Download Bluesky media |
 | `client.DownloadFacebookVideoWithResponse()` | Download Facebook video |
-| `client.DownloadInstagramMediaWithResponse()` | Download Instagram reel or post |
+| `client.DownloadInstagramMediaWithResponse()` | Download Instagram media |
 | `client.DownloadLinkedInVideoWithResponse()` | Download LinkedIn video |
 | `client.DownloadTikTokVideoWithResponse()` | Download TikTok video |
-| `client.DownloadTwitterMediaWithResponse()` | Download Twitter/X video |
-| `client.DownloadYouTubeVideoWithResponse()` | Download YouTube video or audio |
+| `client.DownloadTwitterMediaWithResponse()` | Download Twitter/X media |
+| `client.DownloadYouTubeVideoWithResponse()` | Download YouTube video |
 
 ### Users
 | Method | Description |
 |--------|-------------|
-| `client.ListUsersWithResponse()` | List team users (root + invited) |
-| `client.GetUserWithResponse()` | Get user by id (self or invited) |
+| `client.ListUsersWithResponse()` | List users |
+| `client.GetUserWithResponse()` | Get user |
 
 ### Usage
 | Method | Description |
 |--------|-------------|
-| `client.GetUsageStatsWithResponse()` | Get plan and usage stats for current account |
+| `client.GetUsageStatsWithResponse()` | Get plan and usage stats |
 
 ### Logs
 | Method | Description |
 |--------|-------------|
-| `client.ListConnectionLogsWithResponse()` | Get connection logs |
-| `client.ListLogsWithResponse()` | Get publishing logs (deprecated) |
-| `client.ListPostsLogsWithResponse()` | Get publishing logs |
-| `client.GetLogWithResponse()` | Get a single log entry |
-| `client.GetPostLogsWithResponse()` | Get logs for a specific post |
+| `client.ListConnectionLogsWithResponse()` | List connection logs |
+| `client.ListLogsWithResponse()` | List publishing logs (deprecated) |
+| `client.ListPostsLogsWithResponse()` | List publishing logs |
+| `client.GetLogWithResponse()` | Get log entry |
+| `client.GetPostLogsWithResponse()` | Get post logs |
 
 ### Connect (OAuth)
 | Method | Description |
 |--------|-------------|
-| `client.ListFacebookPagesWithResponse()` | List Facebook Pages after OAuth (Headless Mode) |
-| `client.ListGoogleBusinessLocationsWithResponse()` | List Google Business Locations after OAuth (Headless Mode) |
-| `client.ListLinkedInOrganizationsWithResponse()` | Fetch full LinkedIn organization details (Headless Mode) |
-| `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest Boards after OAuth (Headless Mode) |
-| `client.ListSnapchatProfilesWithResponse()` | List Snapchat Public Profiles after OAuth (Headless Mode) |
-| `client.GetConnectUrlWithResponse()` | Start OAuth connection for a platform |
-| `client.GetFacebookPagesWithResponse()` | List available Facebook pages for a connected account |
-| `client.GetGmbLocationsWithResponse()` | List available Google Business Profile locations for a connected account |
-| `client.GetLinkedInOrganizationsWithResponse()` | Get available LinkedIn organizations for a connected account |
-| `client.GetPendingOAuthDataWithResponse()` | Fetch pending OAuth selection data (Headless Mode) |
-| `client.GetPinterestBoardsWithResponse()` | List Pinterest boards for a connected account |
-| `client.GetRedditFlairsWithResponse()` | List available post flairs for a Reddit subreddit |
-| `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits for a connected account |
-| `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram access code |
-| `client.UpdateFacebookPageWithResponse()` | Update selected Facebook page for a connected account |
-| `client.UpdateGmbLocationWithResponse()` | Update selected Google Business Profile location for a connected account |
-| `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type (personal/organization) |
-| `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board on the connection |
-| `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit on the connection |
-| `client.CompleteTelegramConnectWithResponse()` | Check Telegram connection status |
-| `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky using app password |
-| `client.HandleOAuthCallbackWithResponse()` | Complete OAuth token exchange manually (for server-side flows) |
-| `client.InitiateTelegramConnectWithResponse()` | Direct Telegram connection (power users) |
-| `client.SelectFacebookPageWithResponse()` | Select a Facebook Page to complete the connection (Headless Mode) |
-| `client.SelectGoogleBusinessLocationWithResponse()` | Select a Google Business location to complete the connection (Headless Mode) |
-| `client.SelectLinkedInOrganizationWithResponse()` | Select LinkedIn organization or personal account after OAuth |
-| `client.SelectPinterestBoardWithResponse()` | Select a Pinterest Board to complete the connection (Headless Mode) |
-| `client.SelectSnapchatProfileWithResponse()` | Select a Snapchat Public Profile to complete the connection (Headless Mode) |
+| `client.ListFacebookPagesWithResponse()` | List Facebook pages |
+| `client.ListGoogleBusinessLocationsWithResponse()` | List Google Business locations |
+| `client.ListLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
+| `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest boards |
+| `client.ListSnapchatProfilesWithResponse()` | List Snapchat profiles |
+| `client.GetConnectUrlWithResponse()` | Get OAuth connect URL |
+| `client.GetFacebookPagesWithResponse()` | List Facebook pages |
+| `client.GetGmbLocationsWithResponse()` | List Google Business locations |
+| `client.GetLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
+| `client.GetPendingOAuthDataWithResponse()` | Get pending OAuth data |
+| `client.GetPinterestBoardsWithResponse()` | List Pinterest boards |
+| `client.GetRedditFlairsWithResponse()` | List subreddit flairs |
+| `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits |
+| `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram code |
+| `client.UpdateFacebookPageWithResponse()` | Update Facebook page |
+| `client.UpdateGmbLocationWithResponse()` | Update Google Business location |
+| `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type |
+| `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board |
+| `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
+| `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
+| `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
+| `client.HandleOAuthCallbackWithResponse()` | Complete OAuth callback |
+| `client.InitiateTelegramConnectWithResponse()` | Connect Telegram directly |
+| `client.SelectFacebookPageWithResponse()` | Select Facebook page |
+| `client.SelectGoogleBusinessLocationWithResponse()` | Select Google Business location |
+| `client.SelectLinkedInOrganizationWithResponse()` | Select LinkedIn org |
+| `client.SelectPinterestBoardWithResponse()` | Select Pinterest board |
+| `client.SelectSnapchatProfileWithResponse()` | Select Snapchat profile |
 
 ### Reddit
 | Method | Description |
 |--------|-------------|
-| `client.GetRedditFeedWithResponse()` | Fetch subreddit feed via a connected account |
-| `client.SearchRedditWithResponse()` | Search Reddit posts via a connected account |
+| `client.GetRedditFeedWithResponse()` | Get subreddit feed |
+| `client.SearchRedditWithResponse()` | Search posts |
 
 ### Account Settings
 | Method | Description |
@@ -211,69 +211,69 @@ func main() {
 ### Comments (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxCommentsWithResponse()` | List posts with comments across all accounts |
-| `client.GetInboxPostCommentsWithResponse()` | Get comments for a post |
-| `client.DeleteInboxCommentWithResponse()` | Delete a comment |
-| `client.HideInboxCommentWithResponse()` | Hide a comment |
-| `client.LikeInboxCommentWithResponse()` | Like a comment |
-| `client.ReplyToInboxPostWithResponse()` | Reply to a post or comment |
-| `client.SendPrivateReplyToCommentWithResponse()` | Send private reply to comment author |
-| `client.UnhideInboxCommentWithResponse()` | Unhide a comment |
-| `client.UnlikeInboxCommentWithResponse()` | Unlike a comment |
+| `client.ListInboxCommentsWithResponse()` | List commented posts |
+| `client.GetInboxPostCommentsWithResponse()` | Get post comments |
+| `client.DeleteInboxCommentWithResponse()` | Delete comment |
+| `client.HideInboxCommentWithResponse()` | Hide comment |
+| `client.LikeInboxCommentWithResponse()` | Like comment |
+| `client.ReplyToInboxPostWithResponse()` | Reply to comment |
+| `client.SendPrivateReplyToCommentWithResponse()` | Send private reply |
+| `client.UnhideInboxCommentWithResponse()` | Unhide comment |
+| `client.UnlikeInboxCommentWithResponse()` | Unlike comment |
 
 ### GMB Attributes
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessAttributesWithResponse()` | Get Google Business Profile location attributes |
-| `client.UpdateGoogleBusinessAttributesWithResponse()` | Update Google Business Profile location attributes |
+| `client.GetGoogleBusinessAttributesWithResponse()` | Get attributes |
+| `client.UpdateGoogleBusinessAttributesWithResponse()` | Update attributes |
 
 ### GMB Food Menus
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessFoodMenusWithResponse()` | Get Google Business Profile food menus |
-| `client.UpdateGoogleBusinessFoodMenusWithResponse()` | Update Google Business Profile food menus |
+| `client.GetGoogleBusinessFoodMenusWithResponse()` | Get food menus |
+| `client.UpdateGoogleBusinessFoodMenusWithResponse()` | Update food menus |
 
 ### GMB Location Details
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessLocationDetailsWithResponse()` | Get Google Business Profile location details |
-| `client.UpdateGoogleBusinessLocationDetailsWithResponse()` | Update Google Business Profile location details |
+| `client.GetGoogleBusinessLocationDetailsWithResponse()` | Get location details |
+| `client.UpdateGoogleBusinessLocationDetailsWithResponse()` | Update location details |
 
 ### GMB Media
 | Method | Description |
 |--------|-------------|
-| `client.ListGoogleBusinessMediaWithResponse()` | List Google Business Profile media (photos) |
-| `client.CreateGoogleBusinessMediaWithResponse()` | Upload a photo to Google Business Profile |
-| `client.DeleteGoogleBusinessMediaWithResponse()` | Delete a photo from Google Business Profile |
+| `client.ListGoogleBusinessMediaWithResponse()` | List media |
+| `client.CreateGoogleBusinessMediaWithResponse()` | Upload photo |
+| `client.DeleteGoogleBusinessMediaWithResponse()` | Delete photo |
 
 ### GMB Place Actions
 | Method | Description |
 |--------|-------------|
-| `client.ListGoogleBusinessPlaceActionsWithResponse()` | List place action links (booking, ordering, reservations) |
-| `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create a place action link (booking, ordering, reservation) |
-| `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete a place action link |
+| `client.ListGoogleBusinessPlaceActionsWithResponse()` | List action links |
+| `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create action link |
+| `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete action link |
 
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxConversationsWithResponse()` | List conversations across all accounts |
-| `client.GetInboxConversationWithResponse()` | Get conversation details |
-| `client.GetInboxConversationMessagesWithResponse()` | Get messages in a conversation |
+| `client.ListInboxConversationsWithResponse()` | List conversations |
+| `client.GetInboxConversationWithResponse()` | Get conversation |
+| `client.GetInboxConversationMessagesWithResponse()` | List messages |
 | `client.UpdateInboxConversationWithResponse()` | Update conversation status |
-| `client.EditInboxMessageWithResponse()` | Edit a message (Telegram only) |
-| `client.SendInboxMessageWithResponse()` | Send a message |
+| `client.EditInboxMessageWithResponse()` | Edit message |
+| `client.SendInboxMessageWithResponse()` | Send message |
 
 ### Reviews (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxReviewsWithResponse()` | List reviews across all accounts |
-| `client.DeleteInboxReviewReplyWithResponse()` | Delete a review reply |
-| `client.ReplyToInboxReviewWithResponse()` | Reply to a review |
+| `client.ListInboxReviewsWithResponse()` | List reviews |
+| `client.DeleteInboxReviewReplyWithResponse()` | Delete review reply |
+| `client.ReplyToInboxReviewWithResponse()` | Reply to review |
 
 ### Invites
 | Method | Description |
 |--------|-------------|
-| `client.CreateInviteTokenWithResponse()` | Create a team member invite token |
+| `client.CreateInviteTokenWithResponse()` | Create invite token |
 
 ## Documentation
 
