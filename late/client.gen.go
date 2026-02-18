@@ -66,6 +66,7 @@ const (
 
 // Defines values for FacebookPlatformDataContentType.
 const (
+	FacebookPlatformDataContentTypeReel  FacebookPlatformDataContentType = "reel"
 	FacebookPlatformDataContentTypeStory FacebookPlatformDataContentType = "story"
 )
 
@@ -912,19 +913,22 @@ type ErrorResponse struct {
 	Error   *string                 `json:"error,omitempty"`
 }
 
-// FacebookPlatformData Up to 10 images for feed posts, cannot mix videos and images. Stories require single image or video (ephemeral 24h, no captions). Use pageId for multi-page posting.
+// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
 type FacebookPlatformData struct {
-	// ContentType Set to 'story' to publish as a Facebook Page Story (24-hour ephemeral content). Requires media.
+	// ContentType Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *FacebookPlatformDataContentType `json:"contentType,omitempty"`
 
-	// FirstComment Optional first comment to post immediately after publishing (feed posts only, not stories)
+	// FirstComment Optional first comment to post immediately after publishing (feed posts only, not stories or reels)
 	FirstComment *string `json:"firstComment,omitempty"`
 
 	// PageId Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
 	PageId *string `json:"pageId,omitempty"`
+
+	// Title Reel title (only for contentType=reel). Separate from the caption/content field.
+	Title *string `json:"title,omitempty"`
 }
 
-// FacebookPlatformDataContentType Set to 'story' to publish as a Facebook Page Story (24-hour ephemeral content). Requires media.
+// FacebookPlatformDataContentType Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 type FacebookPlatformDataContentType string
 
 // FoodMenu defines model for FoodMenu.
