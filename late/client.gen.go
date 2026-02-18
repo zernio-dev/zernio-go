@@ -31,6 +31,18 @@ const (
 	AnalyticsListResponsePostsMediaTypeVideo    AnalyticsListResponsePostsMediaType = "video"
 )
 
+// Defines values for ApiKeyPermission.
+const (
+	ApiKeyPermissionRead      ApiKeyPermission = "read"
+	ApiKeyPermissionReadWrite ApiKeyPermission = "read-write"
+)
+
+// Defines values for ApiKeyScope.
+const (
+	ApiKeyScopeFull     ApiKeyScope = "full"
+	ApiKeyScopeProfiles ApiKeyScope = "profiles"
+)
+
 // Defines values for ConnectionLogConnectionMethod.
 const (
 	Credentials ConnectionLogConnectionMethod = "credentials"
@@ -340,6 +352,18 @@ const (
 const (
 	GetAnalyticsParamsOrderAsc  GetAnalyticsParamsOrder = "asc"
 	GetAnalyticsParamsOrderDesc GetAnalyticsParamsOrder = "desc"
+)
+
+// Defines values for CreateApiKeyJSONBodyPermission.
+const (
+	CreateApiKeyJSONBodyPermissionRead      CreateApiKeyJSONBodyPermission = "read"
+	CreateApiKeyJSONBodyPermissionReadWrite CreateApiKeyJSONBodyPermission = "read-write"
+)
+
+// Defines values for CreateApiKeyJSONBodyScope.
+const (
+	CreateApiKeyJSONBodyScopeFull     CreateApiKeyJSONBodyScope = "full"
+	CreateApiKeyJSONBodyScopeProfiles CreateApiKeyJSONBodyScope = "profiles"
 )
 
 // Defines values for SelectLinkedInOrganizationJSONBodyAccountType.
@@ -824,7 +848,26 @@ type ApiKey struct {
 	Key        *string `json:"key,omitempty"`
 	KeyPreview *string `json:"keyPreview,omitempty"`
 	Name       *string `json:"name,omitempty"`
+
+	// Permission 'read-write' allows all operations, 'read' restricts to GET requests only
+	Permission *ApiKeyPermission `json:"permission,omitempty"`
+
+	// ProfileIds Profiles this key can access (populated with name and color). Only present when scope is 'profiles'.
+	ProfileIds *[]struct {
+		UnderscoreId *string `json:"_id,omitempty"`
+		Color        *string `json:"color,omitempty"`
+		Name         *string `json:"name,omitempty"`
+	} `json:"profileIds,omitempty"`
+
+	// Scope 'full' grants access to all profiles, 'profiles' restricts to specific profiles
+	Scope *ApiKeyScope `json:"scope,omitempty"`
 }
+
+// ApiKeyPermission 'read-write' allows all operations, 'read' restricts to GET requests only
+type ApiKeyPermission string
+
+// ApiKeyScope 'full' grants access to all profiles, 'profiles' restricts to specific profiles
+type ApiKeyScope string
 
 // BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties.
 type BlueskyPlatformData struct {
@@ -2217,7 +2260,22 @@ type CreateApiKeyJSONBody struct {
 	// ExpiresIn Days until expiry
 	ExpiresIn *int   `json:"expiresIn,omitempty"`
 	Name      string `json:"name"`
+
+	// Permission 'read-write' allows all operations (default), 'read' restricts to GET requests only
+	Permission *CreateApiKeyJSONBodyPermission `json:"permission,omitempty"`
+
+	// ProfileIds Profile IDs this key can access. Required when scope is 'profiles'.
+	ProfileIds *[]string `json:"profileIds,omitempty"`
+
+	// Scope 'full' grants access to all profiles (default), 'profiles' restricts to specific profiles
+	Scope *CreateApiKeyJSONBodyScope `json:"scope,omitempty"`
 }
+
+// CreateApiKeyJSONBodyPermission defines parameters for CreateApiKey.
+type CreateApiKeyJSONBodyPermission string
+
+// CreateApiKeyJSONBodyScope defines parameters for CreateApiKey.
+type CreateApiKeyJSONBodyScope string
 
 // ConnectBlueskyCredentialsJSONBody defines parameters for ConnectBlueskyCredentials.
 type ConnectBlueskyCredentialsJSONBody struct {
