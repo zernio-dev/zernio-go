@@ -1189,6 +1189,9 @@ type LinkedInPlatformData struct {
 	// DisableLinkPreview Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool `json:"disableLinkPreview,omitempty"`
 
+	// DocumentTitle Title displayed on LinkedIn document (PDF/carousel) posts. Required by LinkedIn for document posts. If omitted, falls back to the media item title, then the filename.
+	DocumentTitle *string `json:"documentTitle,omitempty"`
+
 	// FirstComment Optional first comment to add after the post is created
 	FirstComment *string `json:"firstComment,omitempty"`
 
@@ -1213,9 +1216,12 @@ type MediaItem struct {
 	Thumbnail *string `json:"thumbnail,omitempty"`
 
 	// TiktokProcessed Internal flag indicating the image was resized for TikTok
-	TiktokProcessed *bool          `json:"tiktokProcessed,omitempty"`
-	Type            *MediaItemType `json:"type,omitempty"`
-	Url             *string        `json:"url,omitempty"`
+	TiktokProcessed *bool `json:"tiktokProcessed,omitempty"`
+
+	// Title Optional title for the media item. Used as the document title for LinkedIn PDF/carousel posts. If omitted, falls back to the post title, then the filename.
+	Title *string        `json:"title,omitempty"`
+	Type  *MediaItemType `json:"type,omitempty"`
+	Url   *string        `json:"url,omitempty"`
 }
 
 // MediaItemType defines model for MediaItem.Type.
