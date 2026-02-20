@@ -432,7 +432,6 @@ const (
 	ListInboxCommentsParamsPlatformLinkedin  ListInboxCommentsParamsPlatform = "linkedin"
 	ListInboxCommentsParamsPlatformReddit    ListInboxCommentsParamsPlatform = "reddit"
 	ListInboxCommentsParamsPlatformThreads   ListInboxCommentsParamsPlatform = "threads"
-	ListInboxCommentsParamsPlatformTiktok    ListInboxCommentsParamsPlatform = "tiktok"
 	ListInboxCommentsParamsPlatformTwitter   ListInboxCommentsParamsPlatform = "twitter"
 	ListInboxCommentsParamsPlatformYoutube   ListInboxCommentsParamsPlatform = "youtube"
 )
