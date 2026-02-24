@@ -229,6 +229,7 @@ const (
 const (
 	WebhookEventsAccountConnected    WebhookEvents = "account.connected"
 	WebhookEventsAccountDisconnected WebhookEvents = "account.disconnected"
+	WebhookEventsCommentReceived     WebhookEvents = "comment.received"
 	WebhookEventsMessageReceived     WebhookEvents = "message.received"
 	WebhookEventsPostFailed          WebhookEvents = "post.failed"
 	WebhookEventsPostPartial         WebhookEvents = "post.partial"
@@ -240,6 +241,7 @@ const (
 const (
 	WebhookLogEventAccountConnected    WebhookLogEvent = "account.connected"
 	WebhookLogEventAccountDisconnected WebhookLogEvent = "account.disconnected"
+	WebhookLogEventCommentReceived     WebhookLogEvent = "comment.received"
 	WebhookLogEventMessageReceived     WebhookLogEvent = "message.received"
 	WebhookLogEventPostFailed          WebhookLogEvent = "post.failed"
 	WebhookLogEventPostPartial         WebhookLogEvent = "post.partial"
@@ -715,6 +717,7 @@ const (
 const (
 	GetWebhookLogsParamsEventAccountConnected    GetWebhookLogsParamsEvent = "account.connected"
 	GetWebhookLogsParamsEventAccountDisconnected GetWebhookLogsParamsEvent = "account.disconnected"
+	GetWebhookLogsParamsEventCommentReceived     GetWebhookLogsParamsEvent = "comment.received"
 	GetWebhookLogsParamsEventMessageReceived     GetWebhookLogsParamsEvent = "message.received"
 	GetWebhookLogsParamsEventPostFailed          GetWebhookLogsParamsEvent = "post.failed"
 	GetWebhookLogsParamsEventPostPartial         GetWebhookLogsParamsEvent = "post.partial"
@@ -727,6 +730,7 @@ const (
 const (
 	CreateWebhookSettingsJSONBodyEventsAccountConnected    CreateWebhookSettingsJSONBodyEvents = "account.connected"
 	CreateWebhookSettingsJSONBodyEventsAccountDisconnected CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CreateWebhookSettingsJSONBodyEventsCommentReceived     CreateWebhookSettingsJSONBodyEvents = "comment.received"
 	CreateWebhookSettingsJSONBodyEventsMessageReceived     CreateWebhookSettingsJSONBodyEvents = "message.received"
 	CreateWebhookSettingsJSONBodyEventsPostFailed          CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial         CreateWebhookSettingsJSONBodyEvents = "post.partial"
@@ -738,6 +742,7 @@ const (
 const (
 	AccountConnected    UpdateWebhookSettingsJSONBodyEvents = "account.connected"
 	AccountDisconnected UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CommentReceived     UpdateWebhookSettingsJSONBodyEvents = "comment.received"
 	MessageReceived     UpdateWebhookSettingsJSONBodyEvents = "message.received"
 	PostFailed          UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	PostPartial         UpdateWebhookSettingsJSONBodyEvents = "post.partial"
