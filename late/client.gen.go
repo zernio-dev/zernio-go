@@ -219,6 +219,13 @@ const (
 	TikTokPlatformDataMediaTypeVideo TikTokPlatformDataMediaType = "video"
 )
 
+// Defines values for TwitterPlatformDataReplySettings.
+const (
+	Following      TwitterPlatformDataReplySettings = "following"
+	MentionedUsers TwitterPlatformDataReplySettings = "mentionedUsers"
+	Subscribers    TwitterPlatformDataReplySettings = "subscribers"
+)
+
 // Defines values for UsageStatsBillingPeriod.
 const (
 	UsageStatsBillingPeriodMonthly UsageStatsBillingPeriod = "monthly"
@@ -1718,12 +1725,18 @@ type TikTokPlatformDataMediaType string
 
 // TwitterPlatformData defines model for TwitterPlatformData.
 type TwitterPlatformData struct {
+	// ReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers. Omit for default (everyone can reply). For threads, applies to the first tweet only.
+	ReplySettings *TwitterPlatformDataReplySettings `json:"replySettings,omitempty"`
+
 	// ThreadItems Sequence of tweets in a thread. First item is the root tweet.
 	ThreadItems *[]struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
 	} `json:"threadItems,omitempty"`
 }
+
+// TwitterPlatformDataReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers. Omit for default (everyone can reply). For threads, applies to the first tweet only.
+type TwitterPlatformDataReplySettings string
 
 // UsageStats defines model for UsageStats.
 type UsageStats struct {
