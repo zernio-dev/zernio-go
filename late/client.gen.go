@@ -2263,6 +2263,48 @@ type GetAnalyticsParamsSortBy string
 // GetAnalyticsParamsOrder defines parameters for GetAnalytics.
 type GetAnalyticsParamsOrder string
 
+// GetBestTimeToPostParams defines parameters for GetBestTimeToPost.
+type GetBestTimeToPostParams struct {
+	// Platform Filter by platform (e.g. "instagram", "tiktok"). Omit for all platforms.
+	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// ProfileId Filter by profile ID. Omit for all profiles.
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
+// GetContentDecayParams defines parameters for GetContentDecay.
+type GetContentDecayParams struct {
+	// Platform Filter by platform (e.g. "instagram", "tiktok"). Omit for all platforms.
+	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// ProfileId Filter by profile ID. Omit for all profiles.
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
+// GetDailyMetricsParams defines parameters for GetDailyMetrics.
+type GetDailyMetricsParams struct {
+	// Platform Filter by platform (e.g. "instagram", "tiktok"). Omit for all platforms.
+	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// ProfileId Filter by profile ID. Omit for all profiles.
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// FromDate Inclusive start date (ISO 8601). Defaults to 180 days ago.
+	FromDate *time.Time `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate Inclusive end date (ISO 8601). Defaults to now.
+	ToDate *time.Time `form:"toDate,omitempty" json:"toDate,omitempty"`
+}
+
+// GetPostingFrequencyParams defines parameters for GetPostingFrequency.
+type GetPostingFrequencyParams struct {
+	// Platform Filter by platform (e.g. "instagram", "tiktok"). Omit for all platforms.
+	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// ProfileId Filter by profile ID. Omit for all profiles.
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
 // GetYouTubeDailyViewsParams defines parameters for GetYouTubeDailyViews.
 type GetYouTubeDailyViewsParams struct {
 	// VideoId The YouTube video ID (e.g., "dQw4w9WgXcQ")
@@ -4631,6 +4673,18 @@ type ClientInterface interface {
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetBestTimeToPost request
+	GetBestTimeToPost(ctx context.Context, params *GetBestTimeToPostParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContentDecay request
+	GetContentDecay(ctx context.Context, params *GetContentDecayParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDailyMetrics request
+	GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPostingFrequency request
+	GetPostingFrequency(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetYouTubeDailyViews request
 	GetYouTubeDailyViews(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -5689,6 +5743,54 @@ func (c *Client) SetTelegramCommands(ctx context.Context, accountId string, body
 
 func (c *Client) GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAnalyticsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetBestTimeToPost(ctx context.Context, params *GetBestTimeToPostParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBestTimeToPostRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetContentDecay(ctx context.Context, params *GetContentDecayParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContentDecayRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDailyMetricsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPostingFrequency(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPostingFrequencyRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -9463,6 +9565,298 @@ func NewGetAnalyticsRequest(server string, params *GetAnalyticsParams) (*http.Re
 		if params.Order != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "order", runtime.ParamLocationQuery, *params.Order); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetBestTimeToPostRequest generates requests for GetBestTimeToPost
+func NewGetBestTimeToPostRequest(server string, params *GetBestTimeToPostParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/best-time")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "profileId", runtime.ParamLocationQuery, *params.ProfileId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetContentDecayRequest generates requests for GetContentDecay
+func NewGetContentDecayRequest(server string, params *GetContentDecayParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/content-decay")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "profileId", runtime.ParamLocationQuery, *params.ProfileId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDailyMetricsRequest generates requests for GetDailyMetrics
+func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/daily-metrics")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "profileId", runtime.ParamLocationQuery, *params.ProfileId); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "fromDate", runtime.ParamLocationQuery, *params.FromDate); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "toDate", runtime.ParamLocationQuery, *params.ToDate); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPostingFrequencyRequest generates requests for GetPostingFrequency
+func NewGetPostingFrequencyRequest(server string, params *GetPostingFrequencyParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/posting-frequency")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "platform", runtime.ParamLocationQuery, *params.Platform); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "profileId", runtime.ParamLocationQuery, *params.ProfileId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -14714,6 +15108,18 @@ type ClientWithResponsesInterface interface {
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
 
+	// GetBestTimeToPostWithResponse request
+	GetBestTimeToPostWithResponse(ctx context.Context, params *GetBestTimeToPostParams, reqEditors ...RequestEditorFn) (*GetBestTimeToPostResponse, error)
+
+	// GetContentDecayWithResponse request
+	GetContentDecayWithResponse(ctx context.Context, params *GetContentDecayParams, reqEditors ...RequestEditorFn) (*GetContentDecayResponse, error)
+
+	// GetDailyMetricsWithResponse request
+	GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error)
+
+	// GetPostingFrequencyWithResponse request
+	GetPostingFrequencyWithResponse(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*GetPostingFrequencyResponse, error)
+
 	// GetYouTubeDailyViewsWithResponse request
 	GetYouTubeDailyViewsWithResponse(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDailyViewsResponse, error)
 
@@ -16627,6 +17033,185 @@ func (r GetAnalyticsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetBestTimeToPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Slots *[]struct {
+			// AvgEngagement Average engagement (likes + comments + shares + saves)
+			AvgEngagement *float32 `json:"avg_engagement,omitempty"`
+
+			// DayOfWeek 0=Monday, 6=Sunday
+			DayOfWeek *int `json:"day_of_week,omitempty"`
+
+			// Hour Hour in UTC (0-23)
+			Hour *int `json:"hour,omitempty"`
+
+			// PostCount Number of posts in this slot
+			PostCount *int `json:"post_count,omitempty"`
+		} `json:"slots,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON403 *struct {
+		Error         *string `json:"error,omitempty"`
+		RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBestTimeToPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBestTimeToPostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetContentDecayResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Buckets *[]struct {
+			// AvgPctOfFinal Average % of final engagement reached (0-100)
+			AvgPctOfFinal *float32 `json:"avg_pct_of_final,omitempty"`
+
+			// BucketLabel Human-readable label
+			BucketLabel *string `json:"bucket_label,omitempty"`
+
+			// BucketOrder Sort order (0 = earliest, 6 = latest)
+			BucketOrder *int `json:"bucket_order,omitempty"`
+
+			// PostCount Number of posts with data in this bucket
+			PostCount *int `json:"post_count,omitempty"`
+		} `json:"buckets,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON403 *struct {
+		Error         *string `json:"error,omitempty"`
+		RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContentDecayResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContentDecayResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDailyMetricsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DailyData *[]struct {
+			Date    *string `json:"date,omitempty"`
+			Metrics *struct {
+				Clicks      *int `json:"clicks,omitempty"`
+				Comments    *int `json:"comments,omitempty"`
+				Impressions *int `json:"impressions,omitempty"`
+				Likes       *int `json:"likes,omitempty"`
+				Reach       *int `json:"reach,omitempty"`
+				Saves       *int `json:"saves,omitempty"`
+				Shares      *int `json:"shares,omitempty"`
+				Views       *int `json:"views,omitempty"`
+			} `json:"metrics,omitempty"`
+			Platforms *map[string]int `json:"platforms,omitempty"`
+			PostCount *int            `json:"postCount,omitempty"`
+		} `json:"dailyData,omitempty"`
+		PlatformBreakdown *[]struct {
+			Clicks      *int    `json:"clicks,omitempty"`
+			Comments    *int    `json:"comments,omitempty"`
+			Impressions *int    `json:"impressions,omitempty"`
+			Likes       *int    `json:"likes,omitempty"`
+			Platform    *string `json:"platform,omitempty"`
+			PostCount   *int    `json:"postCount,omitempty"`
+			Reach       *int    `json:"reach,omitempty"`
+			Saves       *int    `json:"saves,omitempty"`
+			Shares      *int    `json:"shares,omitempty"`
+			Views       *int    `json:"views,omitempty"`
+		} `json:"platformBreakdown,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDailyMetricsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDailyMetricsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPostingFrequencyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Frequency *[]struct {
+			// AvgEngagement Average raw engagement (likes+comments+shares+saves)
+			AvgEngagement *float32 `json:"avg_engagement,omitempty"`
+
+			// AvgEngagementRate Average engagement rate as percentage (0-100)
+			AvgEngagementRate *float32 `json:"avg_engagement_rate,omitempty"`
+			Platform          *string  `json:"platform,omitempty"`
+
+			// PostsPerWeek Number of posts published that week
+			PostsPerWeek *int `json:"posts_per_week,omitempty"`
+
+			// WeeksCount Number of calendar weeks observed at this frequency
+			WeeksCount *int `json:"weeks_count,omitempty"`
+		} `json:"frequency,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON403 *struct {
+		Error         *string `json:"error,omitempty"`
+		RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPostingFrequencyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPostingFrequencyResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -20039,6 +20624,42 @@ func (c *ClientWithResponses) GetAnalyticsWithResponse(ctx context.Context, para
 	return ParseGetAnalyticsResponse(rsp)
 }
 
+// GetBestTimeToPostWithResponse request returning *GetBestTimeToPostResponse
+func (c *ClientWithResponses) GetBestTimeToPostWithResponse(ctx context.Context, params *GetBestTimeToPostParams, reqEditors ...RequestEditorFn) (*GetBestTimeToPostResponse, error) {
+	rsp, err := c.GetBestTimeToPost(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBestTimeToPostResponse(rsp)
+}
+
+// GetContentDecayWithResponse request returning *GetContentDecayResponse
+func (c *ClientWithResponses) GetContentDecayWithResponse(ctx context.Context, params *GetContentDecayParams, reqEditors ...RequestEditorFn) (*GetContentDecayResponse, error) {
+	rsp, err := c.GetContentDecay(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContentDecayResponse(rsp)
+}
+
+// GetDailyMetricsWithResponse request returning *GetDailyMetricsResponse
+func (c *ClientWithResponses) GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error) {
+	rsp, err := c.GetDailyMetrics(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDailyMetricsResponse(rsp)
+}
+
+// GetPostingFrequencyWithResponse request returning *GetPostingFrequencyResponse
+func (c *ClientWithResponses) GetPostingFrequencyWithResponse(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*GetPostingFrequencyResponse, error) {
+	rsp, err := c.GetPostingFrequency(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPostingFrequencyResponse(rsp)
+}
+
 // GetYouTubeDailyViewsWithResponse request returning *GetYouTubeDailyViewsResponse
 func (c *ClientWithResponses) GetYouTubeDailyViewsWithResponse(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDailyViewsResponse, error) {
 	rsp, err := c.GetYouTubeDailyViews(ctx, params, reqEditors...)
@@ -23307,6 +23928,249 @@ func ParseGetAnalyticsResponse(rsp *http.Response) (*GetAnalyticsResponse, error
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBestTimeToPostResponse parses an HTTP response from a GetBestTimeToPostWithResponse call
+func ParseGetBestTimeToPostResponse(rsp *http.Response) (*GetBestTimeToPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBestTimeToPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Slots *[]struct {
+				// AvgEngagement Average engagement (likes + comments + shares + saves)
+				AvgEngagement *float32 `json:"avg_engagement,omitempty"`
+
+				// DayOfWeek 0=Monday, 6=Sunday
+				DayOfWeek *int `json:"day_of_week,omitempty"`
+
+				// Hour Hour in UTC (0-23)
+				Hour *int `json:"hour,omitempty"`
+
+				// PostCount Number of posts in this slot
+				PostCount *int `json:"post_count,omitempty"`
+			} `json:"slots,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error         *string `json:"error,omitempty"`
+			RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetContentDecayResponse parses an HTTP response from a GetContentDecayWithResponse call
+func ParseGetContentDecayResponse(rsp *http.Response) (*GetContentDecayResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContentDecayResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Buckets *[]struct {
+				// AvgPctOfFinal Average % of final engagement reached (0-100)
+				AvgPctOfFinal *float32 `json:"avg_pct_of_final,omitempty"`
+
+				// BucketLabel Human-readable label
+				BucketLabel *string `json:"bucket_label,omitempty"`
+
+				// BucketOrder Sort order (0 = earliest, 6 = latest)
+				BucketOrder *int `json:"bucket_order,omitempty"`
+
+				// PostCount Number of posts with data in this bucket
+				PostCount *int `json:"post_count,omitempty"`
+			} `json:"buckets,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error         *string `json:"error,omitempty"`
+			RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDailyMetricsResponse parses an HTTP response from a GetDailyMetricsWithResponse call
+func ParseGetDailyMetricsResponse(rsp *http.Response) (*GetDailyMetricsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDailyMetricsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DailyData *[]struct {
+				Date    *string `json:"date,omitempty"`
+				Metrics *struct {
+					Clicks      *int `json:"clicks,omitempty"`
+					Comments    *int `json:"comments,omitempty"`
+					Impressions *int `json:"impressions,omitempty"`
+					Likes       *int `json:"likes,omitempty"`
+					Reach       *int `json:"reach,omitempty"`
+					Saves       *int `json:"saves,omitempty"`
+					Shares      *int `json:"shares,omitempty"`
+					Views       *int `json:"views,omitempty"`
+				} `json:"metrics,omitempty"`
+				Platforms *map[string]int `json:"platforms,omitempty"`
+				PostCount *int            `json:"postCount,omitempty"`
+			} `json:"dailyData,omitempty"`
+			PlatformBreakdown *[]struct {
+				Clicks      *int    `json:"clicks,omitempty"`
+				Comments    *int    `json:"comments,omitempty"`
+				Impressions *int    `json:"impressions,omitempty"`
+				Likes       *int    `json:"likes,omitempty"`
+				Platform    *string `json:"platform,omitempty"`
+				PostCount   *int    `json:"postCount,omitempty"`
+				Reach       *int    `json:"reach,omitempty"`
+				Saves       *int    `json:"saves,omitempty"`
+				Shares      *int    `json:"shares,omitempty"`
+				Views       *int    `json:"views,omitempty"`
+			} `json:"platformBreakdown,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPostingFrequencyResponse parses an HTTP response from a GetPostingFrequencyWithResponse call
+func ParseGetPostingFrequencyResponse(rsp *http.Response) (*GetPostingFrequencyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPostingFrequencyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Frequency *[]struct {
+				// AvgEngagement Average raw engagement (likes+comments+shares+saves)
+				AvgEngagement *float32 `json:"avg_engagement,omitempty"`
+
+				// AvgEngagementRate Average engagement rate as percentage (0-100)
+				AvgEngagementRate *float32 `json:"avg_engagement_rate,omitempty"`
+				Platform          *string  `json:"platform,omitempty"`
+
+				// PostsPerWeek Number of posts published that week
+				PostsPerWeek *int `json:"posts_per_week,omitempty"`
+
+				// WeeksCount Number of calendar weeks observed at this frequency
+				WeeksCount *int `json:"weeks_count,omitempty"`
+			} `json:"frequency,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error         *string `json:"error,omitempty"`
+			RequiresAddon *bool   `json:"requiresAddon,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	}
 

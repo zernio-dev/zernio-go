@@ -80,8 +80,12 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.GetAnalyticsWithResponse()` | Get post analytics |
+| `client.GetBestTimeToPostWithResponse()` | Get best times to post |
+| `client.GetContentDecayWithResponse()` | Get content performance decay |
+| `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
 | `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
 | `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
+| `client.GetPostingFrequencyWithResponse()` | Get posting frequency vs engagement |
 | `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
 
 ### Account Groups
