@@ -272,6 +272,14 @@ func main() {
 | `client.DeleteInboxReviewReplyWithResponse()` | Delete review reply |
 | `client.ReplyToInboxReviewWithResponse()` | Reply to review |
 
+### Validate
+| Method | Description |
+|--------|-------------|
+| `client.ValidateMediaWithResponse()` | Validate media URL |
+| `client.ValidatePostWithResponse()` | Validate post content |
+| `client.ValidatePostLengthWithResponse()` | Validate post character count |
+| `client.ValidateSubredditWithResponse()` | Check subreddit existence |
+
 ### Invites
 | Method | Description |
 |--------|-------------|

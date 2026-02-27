@@ -634,16 +634,16 @@ const (
 
 // Defines values for UnpublishPostJSONBodyPlatform.
 const (
-	Bluesky        UnpublishPostJSONBodyPlatform = "bluesky"
-	Facebook       UnpublishPostJSONBodyPlatform = "facebook"
-	Googlebusiness UnpublishPostJSONBodyPlatform = "googlebusiness"
-	Linkedin       UnpublishPostJSONBodyPlatform = "linkedin"
-	Pinterest      UnpublishPostJSONBodyPlatform = "pinterest"
-	Reddit         UnpublishPostJSONBodyPlatform = "reddit"
-	Telegram       UnpublishPostJSONBodyPlatform = "telegram"
-	Threads        UnpublishPostJSONBodyPlatform = "threads"
-	Twitter        UnpublishPostJSONBodyPlatform = "twitter"
-	Youtube        UnpublishPostJSONBodyPlatform = "youtube"
+	UnpublishPostJSONBodyPlatformBluesky        UnpublishPostJSONBodyPlatform = "bluesky"
+	UnpublishPostJSONBodyPlatformFacebook       UnpublishPostJSONBodyPlatform = "facebook"
+	UnpublishPostJSONBodyPlatformGooglebusiness UnpublishPostJSONBodyPlatform = "googlebusiness"
+	UnpublishPostJSONBodyPlatformLinkedin       UnpublishPostJSONBodyPlatform = "linkedin"
+	UnpublishPostJSONBodyPlatformPinterest      UnpublishPostJSONBodyPlatform = "pinterest"
+	UnpublishPostJSONBodyPlatformReddit         UnpublishPostJSONBodyPlatform = "reddit"
+	UnpublishPostJSONBodyPlatformTelegram       UnpublishPostJSONBodyPlatform = "telegram"
+	UnpublishPostJSONBodyPlatformThreads        UnpublishPostJSONBodyPlatform = "threads"
+	UnpublishPostJSONBodyPlatformTwitter        UnpublishPostJSONBodyPlatform = "twitter"
+	UnpublishPostJSONBodyPlatformYoutube        UnpublishPostJSONBodyPlatform = "youtube"
 )
 
 // Defines values for ListQueueSlotsParamsAll.
@@ -694,6 +694,35 @@ const (
 const (
 	DownloadTwitterMediaParamsActionDownload DownloadTwitterMediaParamsAction = "download"
 	DownloadTwitterMediaParamsActionFormats  DownloadTwitterMediaParamsAction = "formats"
+)
+
+// Defines values for ValidatePostJSONBodyMediaItemsType.
+const (
+	ValidatePostJSONBodyMediaItemsTypeImage ValidatePostJSONBodyMediaItemsType = "image"
+	ValidatePostJSONBodyMediaItemsTypeVideo ValidatePostJSONBodyMediaItemsType = "video"
+)
+
+// Defines values for ValidatePostJSONBodyPlatformsCustomMediaType.
+const (
+	ValidatePostJSONBodyPlatformsCustomMediaTypeImage ValidatePostJSONBodyPlatformsCustomMediaType = "image"
+	ValidatePostJSONBodyPlatformsCustomMediaTypeVideo ValidatePostJSONBodyPlatformsCustomMediaType = "video"
+)
+
+// Defines values for ValidatePostJSONBodyPlatformsPlatform.
+const (
+	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
+	ValidatePostJSONBodyPlatformsPlatformFacebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
+	ValidatePostJSONBodyPlatformsPlatformGooglebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
+	ValidatePostJSONBodyPlatformsPlatformInstagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
+	ValidatePostJSONBodyPlatformsPlatformLinkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
+	ValidatePostJSONBodyPlatformsPlatformPinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
+	ValidatePostJSONBodyPlatformsPlatformReddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
+	ValidatePostJSONBodyPlatformsPlatformSnapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
+	ValidatePostJSONBodyPlatformsPlatformTelegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
+	ValidatePostJSONBodyPlatformsPlatformThreads        ValidatePostJSONBodyPlatformsPlatform = "threads"
+	ValidatePostJSONBodyPlatformsPlatformTiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
+	ValidatePostJSONBodyPlatformsPlatformTwitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
+	ValidatePostJSONBodyPlatformsPlatformYoutube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
 )
 
 // Defines values for DownloadYouTubeVideoParamsAction.
@@ -3347,6 +3376,56 @@ type DownloadTwitterMediaParams struct {
 // DownloadTwitterMediaParamsAction defines parameters for DownloadTwitterMedia.
 type DownloadTwitterMediaParamsAction string
 
+// ValidateMediaJSONBody defines parameters for ValidateMedia.
+type ValidateMediaJSONBody struct {
+	// Url Public media URL to validate
+	Url string `json:"url"`
+}
+
+// ValidatePostJSONBody defines parameters for ValidatePost.
+type ValidatePostJSONBody struct {
+	// Content Post text content
+	Content *string `json:"content,omitempty"`
+
+	// MediaItems Root media items shared across platforms
+	MediaItems *[]struct {
+		Type *ValidatePostJSONBodyMediaItemsType `json:"type,omitempty"`
+		Url  *string                             `json:"url,omitempty"`
+	} `json:"mediaItems,omitempty"`
+
+	// Platforms Target platforms (same format as POST /v1/posts)
+	Platforms []struct {
+		CustomContent *string `json:"customContent,omitempty"`
+		CustomMedia   *[]struct {
+			Type *ValidatePostJSONBodyPlatformsCustomMediaType `json:"type,omitempty"`
+			Url  *string                                       `json:"url,omitempty"`
+		} `json:"customMedia,omitempty"`
+		Platform             ValidatePostJSONBodyPlatformsPlatform `json:"platform"`
+		PlatformSpecificData *map[string]interface{}               `json:"platformSpecificData,omitempty"`
+	} `json:"platforms"`
+}
+
+// ValidatePostJSONBodyMediaItemsType defines parameters for ValidatePost.
+type ValidatePostJSONBodyMediaItemsType string
+
+// ValidatePostJSONBodyPlatformsCustomMediaType defines parameters for ValidatePost.
+type ValidatePostJSONBodyPlatformsCustomMediaType string
+
+// ValidatePostJSONBodyPlatformsPlatform defines parameters for ValidatePost.
+type ValidatePostJSONBodyPlatformsPlatform string
+
+// ValidatePostLengthJSONBody defines parameters for ValidatePostLength.
+type ValidatePostLengthJSONBody struct {
+	// Text The post text to check
+	Text string `json:"text"`
+}
+
+// ValidateSubredditParams defines parameters for ValidateSubreddit.
+type ValidateSubredditParams struct {
+	// Name Subreddit name (with or without "r/" prefix)
+	Name string `form:"name" json:"name"`
+}
+
 // DownloadYouTubeVideoParams defines parameters for DownloadYouTubeVideo.
 type DownloadYouTubeVideoParams struct {
 	// Url YouTube video URL or video ID
@@ -3604,6 +3683,15 @@ type UpdateQueueSlotJSONRequestBody UpdateQueueSlotJSONBody
 
 // CheckInstagramHashtagsJSONRequestBody defines body for CheckInstagramHashtags for application/json ContentType.
 type CheckInstagramHashtagsJSONRequestBody CheckInstagramHashtagsJSONBody
+
+// ValidateMediaJSONRequestBody defines body for ValidateMedia for application/json ContentType.
+type ValidateMediaJSONRequestBody ValidateMediaJSONBody
+
+// ValidatePostJSONRequestBody defines body for ValidatePost for application/json ContentType.
+type ValidatePostJSONRequestBody ValidatePostJSONBody
+
+// ValidatePostLengthJSONRequestBody defines body for ValidatePostLength for application/json ContentType.
+type ValidatePostLengthJSONRequestBody ValidatePostLengthJSONBody
 
 // CreateWebhookSettingsJSONRequestBody defines body for CreateWebhookSettings for application/json ContentType.
 type CreateWebhookSettingsJSONRequestBody CreateWebhookSettingsJSONBody
@@ -4956,6 +5044,24 @@ type ClientInterface interface {
 
 	// DownloadTwitterMedia request
 	DownloadTwitterMedia(ctx context.Context, params *DownloadTwitterMediaParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateMediaWithBody request with any body
+	ValidateMediaWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidateMedia(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidatePostWithBody request with any body
+	ValidatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidatePost(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidatePostLengthWithBody request with any body
+	ValidatePostLengthWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidatePostLength(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateSubreddit request
+	ValidateSubreddit(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadYouTubeVideo request
 	DownloadYouTubeVideo(ctx context.Context, params *DownloadYouTubeVideoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -6991,6 +7097,90 @@ func (c *Client) DownloadTikTokVideo(ctx context.Context, params *DownloadTikTok
 
 func (c *Client) DownloadTwitterMedia(ctx context.Context, params *DownloadTwitterMediaParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadTwitterMediaRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateMediaWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateMediaRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateMedia(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateMediaRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePost(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostLengthWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostLengthRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostLength(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostLengthRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateSubreddit(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateSubredditRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -14345,6 +14535,171 @@ func NewDownloadTwitterMediaRequest(server string, params *DownloadTwitterMediaP
 	return req, nil
 }
 
+// NewValidateMediaRequest calls the generic ValidateMedia builder with application/json body
+func NewValidateMediaRequest(server string, body ValidateMediaJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidateMediaRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidateMediaRequestWithBody generates requests for ValidateMedia with any type of body
+func NewValidateMediaRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/media")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidatePostRequest calls the generic ValidatePost builder with application/json body
+func NewValidatePostRequest(server string, body ValidatePostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidatePostRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidatePostRequestWithBody generates requests for ValidatePost with any type of body
+func NewValidatePostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/post")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidatePostLengthRequest calls the generic ValidatePostLength builder with application/json body
+func NewValidatePostLengthRequest(server string, body ValidatePostLengthJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidatePostLengthRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidatePostLengthRequestWithBody generates requests for ValidatePostLength with any type of body
+func NewValidatePostLengthRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/post-length")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidateSubredditRequest generates requests for ValidateSubreddit
+func NewValidateSubredditRequest(server string, params *ValidateSubredditParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/subreddit")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "name", runtime.ParamLocationQuery, params.Name); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDownloadYouTubeVideoRequest generates requests for DownloadYouTubeVideo
 func NewDownloadYouTubeVideoRequest(server string, params *DownloadYouTubeVideoParams) (*http.Request, error) {
 	var err error
@@ -15391,6 +15746,24 @@ type ClientWithResponsesInterface interface {
 
 	// DownloadTwitterMediaWithResponse request
 	DownloadTwitterMediaWithResponse(ctx context.Context, params *DownloadTwitterMediaParams, reqEditors ...RequestEditorFn) (*DownloadTwitterMediaResponse, error)
+
+	// ValidateMediaWithBodyWithResponse request with any body
+	ValidateMediaWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error)
+
+	ValidateMediaWithResponse(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error)
+
+	// ValidatePostWithBodyWithResponse request with any body
+	ValidatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error)
+
+	ValidatePostWithResponse(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error)
+
+	// ValidatePostLengthWithBodyWithResponse request with any body
+	ValidatePostLengthWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error)
+
+	ValidatePostLengthWithResponse(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error)
+
+	// ValidateSubredditWithResponse request
+	ValidateSubredditWithResponse(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*ValidateSubredditResponse, error)
 
 	// DownloadYouTubeVideoWithResponse request
 	DownloadYouTubeVideoWithResponse(ctx context.Context, params *DownloadYouTubeVideoParams, reqEditors ...RequestEditorFn) (*DownloadYouTubeVideoResponse, error)
@@ -19754,6 +20127,172 @@ func (r DownloadTwitterMediaResponse) StatusCode() int {
 	return 0
 }
 
+type ValidateMediaResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ContentType *string `json:"contentType,omitempty"`
+
+		// Error Error message if valid is false
+		Error *string `json:"error,omitempty"`
+
+		// PlatformLimits Per-platform size limit comparison (only present when size and type are known)
+		PlatformLimits *map[string]struct {
+			// Limit Platform size limit in bytes
+			Limit          *int    `json:"limit,omitempty"`
+			LimitFormatted *string `json:"limitFormatted,omitempty"`
+			WithinLimit    *bool   `json:"withinLimit,omitempty"`
+		} `json:"platformLimits,omitempty"`
+
+		// Size File size in bytes
+		Size          *int                  `json:"size"`
+		SizeFormatted *string               `json:"sizeFormatted,omitempty"`
+		Type          *ValidateMedia200Type `json:"type,omitempty"`
+		Url           *string               `json:"url,omitempty"`
+		Valid         *bool                 `json:"valid,omitempty"`
+	}
+}
+type ValidateMedia200Type string
+
+// Status returns HTTPResponse.Status
+func (r ValidateMediaResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateMediaResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidatePostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+}
+type ValidatePost2000 struct {
+	Message  *string                `json:"message,omitempty"`
+	Valid    *ValidatePost2000Valid `json:"valid,omitempty"`
+	Warnings *[]struct {
+		Platform *string `json:"platform,omitempty"`
+		Warning  *string `json:"warning,omitempty"`
+	} `json:"warnings,omitempty"`
+}
+type ValidatePost2000Valid bool
+type ValidatePost2001 struct {
+	Errors *[]struct {
+		Error    *string `json:"error,omitempty"`
+		Platform *string `json:"platform,omitempty"`
+	} `json:"errors,omitempty"`
+	Valid    *ValidatePost2001Valid `json:"valid,omitempty"`
+	Warnings *[]struct {
+		Platform *string `json:"platform,omitempty"`
+		Warning  *string `json:"warning,omitempty"`
+	} `json:"warnings,omitempty"`
+}
+type ValidatePost2001Valid bool
+
+// Status returns HTTPResponse.Status
+func (r ValidatePostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidatePostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidatePostLengthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platforms *map[string]struct {
+			// Count Character count for this platform
+			Count *int `json:"count,omitempty"`
+
+			// Limit Maximum allowed characters
+			Limit *int `json:"limit,omitempty"`
+
+			// Valid Whether the text is within the limit
+			Valid *bool `json:"valid,omitempty"`
+		} `json:"platforms,omitempty"`
+		Text *string `json:"text,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidatePostLengthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidatePostLengthResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidateSubredditResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+}
+type ValidateSubreddit2000 struct {
+	Exists    *ValidateSubreddit2000Exists `json:"exists,omitempty"`
+	Subreddit *struct {
+		AllowImages *bool                               `json:"allowImages,omitempty"`
+		AllowVideos *bool                               `json:"allowVideos,omitempty"`
+		Description *string                             `json:"description,omitempty"`
+		IsNSFW      *bool                               `json:"isNSFW,omitempty"`
+		Name        *string                             `json:"name,omitempty"`
+		Subscribers *int                                `json:"subscribers,omitempty"`
+		Title       *string                             `json:"title,omitempty"`
+		Type        *ValidateSubreddit2000SubredditType `json:"type,omitempty"`
+	} `json:"subreddit,omitempty"`
+}
+type ValidateSubreddit2000Exists bool
+type ValidateSubreddit2000SubredditType string
+type ValidateSubreddit2001 struct {
+	Error  *string                      `json:"error,omitempty"`
+	Exists *ValidateSubreddit2001Exists `json:"exists,omitempty"`
+}
+type ValidateSubreddit2001Exists bool
+
+// Status returns HTTPResponse.Status
+func (r ValidateSubredditResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateSubredditResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DownloadYouTubeVideoResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -21530,6 +22069,66 @@ func (c *ClientWithResponses) DownloadTwitterMediaWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseDownloadTwitterMediaResponse(rsp)
+}
+
+// ValidateMediaWithBodyWithResponse request with arbitrary body returning *ValidateMediaResponse
+func (c *ClientWithResponses) ValidateMediaWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error) {
+	rsp, err := c.ValidateMediaWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateMediaResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidateMediaWithResponse(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error) {
+	rsp, err := c.ValidateMedia(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateMediaResponse(rsp)
+}
+
+// ValidatePostWithBodyWithResponse request with arbitrary body returning *ValidatePostResponse
+func (c *ClientWithResponses) ValidatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error) {
+	rsp, err := c.ValidatePostWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidatePostWithResponse(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error) {
+	rsp, err := c.ValidatePost(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostResponse(rsp)
+}
+
+// ValidatePostLengthWithBodyWithResponse request with arbitrary body returning *ValidatePostLengthResponse
+func (c *ClientWithResponses) ValidatePostLengthWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error) {
+	rsp, err := c.ValidatePostLengthWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostLengthResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidatePostLengthWithResponse(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error) {
+	rsp, err := c.ValidatePostLength(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostLengthResponse(rsp)
+}
+
+// ValidateSubredditWithResponse request returning *ValidateSubredditResponse
+func (c *ClientWithResponses) ValidateSubredditWithResponse(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*ValidateSubredditResponse, error) {
+	rsp, err := c.ValidateSubreddit(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateSubredditResponse(rsp)
 }
 
 // DownloadYouTubeVideoWithResponse request returning *DownloadYouTubeVideoResponse
@@ -27481,6 +28080,146 @@ func ParseDownloadTwitterMediaResponse(rsp *http.Response) (*DownloadTwitterMedi
 			DownloadUrl *string `json:"downloadUrl,omitempty"`
 			Success     *bool   `json:"success,omitempty"`
 			Title       *string `json:"title,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateMediaResponse parses an HTTP response from a ValidateMediaWithResponse call
+func ParseValidateMediaResponse(rsp *http.Response) (*ValidateMediaResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateMediaResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ContentType *string `json:"contentType,omitempty"`
+
+			// Error Error message if valid is false
+			Error *string `json:"error,omitempty"`
+
+			// PlatformLimits Per-platform size limit comparison (only present when size and type are known)
+			PlatformLimits *map[string]struct {
+				// Limit Platform size limit in bytes
+				Limit          *int    `json:"limit,omitempty"`
+				LimitFormatted *string `json:"limitFormatted,omitempty"`
+				WithinLimit    *bool   `json:"withinLimit,omitempty"`
+			} `json:"platformLimits,omitempty"`
+
+			// Size File size in bytes
+			Size          *int                  `json:"size"`
+			SizeFormatted *string               `json:"sizeFormatted,omitempty"`
+			Type          *ValidateMedia200Type `json:"type,omitempty"`
+			Url           *string               `json:"url,omitempty"`
+			Valid         *bool                 `json:"valid,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidatePostResponse parses an HTTP response from a ValidatePostWithResponse call
+func ParseValidatePostResponse(rsp *http.Response) (*ValidatePostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidatePostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidatePostLengthResponse parses an HTTP response from a ValidatePostLengthWithResponse call
+func ParseValidatePostLengthResponse(rsp *http.Response) (*ValidatePostLengthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidatePostLengthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platforms *map[string]struct {
+				// Count Character count for this platform
+				Count *int `json:"count,omitempty"`
+
+				// Limit Maximum allowed characters
+				Limit *int `json:"limit,omitempty"`
+
+				// Valid Whether the text is within the limit
+				Valid *bool `json:"valid,omitempty"`
+			} `json:"platforms,omitempty"`
+			Text *string `json:"text,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateSubredditResponse parses an HTTP response from a ValidateSubredditWithResponse call
+func ParseValidateSubredditResponse(rsp *http.Response) (*ValidateSubredditResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateSubredditResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
