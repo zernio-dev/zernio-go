@@ -21701,26 +21701,24 @@ type ValidatePostResponse struct {
 	}
 }
 type ValidatePost2000 struct {
-	Message  *string                `json:"message,omitempty"`
-	Valid    *ValidatePost2000Valid `json:"valid,omitempty"`
+	Message  *string `json:"message,omitempty"`
+	Valid    *bool   `json:"valid,omitempty"`
 	Warnings *[]struct {
 		Platform *string `json:"platform,omitempty"`
 		Warning  *string `json:"warning,omitempty"`
 	} `json:"warnings,omitempty"`
 }
-type ValidatePost2000Valid bool
 type ValidatePost2001 struct {
 	Errors *[]struct {
 		Error    *string `json:"error,omitempty"`
 		Platform *string `json:"platform,omitempty"`
 	} `json:"errors,omitempty"`
-	Valid    *ValidatePost2001Valid `json:"valid,omitempty"`
+	Valid    *bool `json:"valid,omitempty"`
 	Warnings *[]struct {
 		Platform *string `json:"platform,omitempty"`
 		Warning  *string `json:"warning,omitempty"`
 	} `json:"warnings,omitempty"`
 }
-type ValidatePost2001Valid bool
 
 // Status returns HTTPResponse.Status
 func (r ValidatePostResponse) Status() string {
@@ -21780,7 +21778,7 @@ type ValidateSubredditResponse struct {
 	}
 }
 type ValidateSubreddit2000 struct {
-	Exists    *ValidateSubreddit2000Exists `json:"exists,omitempty"`
+	Exists    *bool `json:"exists,omitempty"`
 	Subreddit *struct {
 		AllowImages *bool                               `json:"allowImages,omitempty"`
 		AllowVideos *bool                               `json:"allowVideos,omitempty"`
@@ -21792,13 +21790,11 @@ type ValidateSubreddit2000 struct {
 		Type        *ValidateSubreddit2000SubredditType `json:"type,omitempty"`
 	} `json:"subreddit,omitempty"`
 }
-type ValidateSubreddit2000Exists bool
 type ValidateSubreddit2000SubredditType string
 type ValidateSubreddit2001 struct {
-	Error  *string                      `json:"error,omitempty"`
-	Exists *ValidateSubreddit2001Exists `json:"exists,omitempty"`
+	Error  *string `json:"error,omitempty"`
+	Exists *bool   `json:"exists,omitempty"`
 }
-type ValidateSubreddit2001Exists bool
 
 // Status returns HTTPResponse.Status
 func (r ValidateSubredditResponse) Status() string {
