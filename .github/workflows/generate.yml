@@ -41,6 +41,12 @@ jobs:
       - name: Tidy modules
         run: go mod tidy
 
+      - name: Build
+        run: go build ./...
+
+      - name: Run tests
+        run: go test ./...
+
       - name: Generate README SDK Reference
         run: |
           pip install pyyaml --quiet
