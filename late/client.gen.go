@@ -1043,6 +1043,90 @@ func (e GetAnalyticsParamsOrder) Valid() bool {
 	}
 }
 
+// Defines values for GetBestTimeToPostParamsSource.
+const (
+	GetBestTimeToPostParamsSourceAll      GetBestTimeToPostParamsSource = "all"
+	GetBestTimeToPostParamsSourceExternal GetBestTimeToPostParamsSource = "external"
+	GetBestTimeToPostParamsSourceLate     GetBestTimeToPostParamsSource = "late"
+)
+
+// Valid indicates whether the value is a known member of the GetBestTimeToPostParamsSource enum.
+func (e GetBestTimeToPostParamsSource) Valid() bool {
+	switch e {
+	case GetBestTimeToPostParamsSourceAll:
+		return true
+	case GetBestTimeToPostParamsSourceExternal:
+		return true
+	case GetBestTimeToPostParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetContentDecayParamsSource.
+const (
+	GetContentDecayParamsSourceAll      GetContentDecayParamsSource = "all"
+	GetContentDecayParamsSourceExternal GetContentDecayParamsSource = "external"
+	GetContentDecayParamsSourceLate     GetContentDecayParamsSource = "late"
+)
+
+// Valid indicates whether the value is a known member of the GetContentDecayParamsSource enum.
+func (e GetContentDecayParamsSource) Valid() bool {
+	switch e {
+	case GetContentDecayParamsSourceAll:
+		return true
+	case GetContentDecayParamsSourceExternal:
+		return true
+	case GetContentDecayParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetDailyMetricsParamsSource.
+const (
+	GetDailyMetricsParamsSourceAll      GetDailyMetricsParamsSource = "all"
+	GetDailyMetricsParamsSourceExternal GetDailyMetricsParamsSource = "external"
+	GetDailyMetricsParamsSourceLate     GetDailyMetricsParamsSource = "late"
+)
+
+// Valid indicates whether the value is a known member of the GetDailyMetricsParamsSource enum.
+func (e GetDailyMetricsParamsSource) Valid() bool {
+	switch e {
+	case GetDailyMetricsParamsSourceAll:
+		return true
+	case GetDailyMetricsParamsSourceExternal:
+		return true
+	case GetDailyMetricsParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPostingFrequencyParamsSource.
+const (
+	GetPostingFrequencyParamsSourceAll      GetPostingFrequencyParamsSource = "all"
+	GetPostingFrequencyParamsSourceExternal GetPostingFrequencyParamsSource = "external"
+	GetPostingFrequencyParamsSourceLate     GetPostingFrequencyParamsSource = "late"
+)
+
+// Valid indicates whether the value is a known member of the GetPostingFrequencyParamsSource enum.
+func (e GetPostingFrequencyParamsSource) Valid() bool {
+	switch e {
+	case GetPostingFrequencyParamsSourceAll:
+		return true
+	case GetPostingFrequencyParamsSourceExternal:
+		return true
+	case GetPostingFrequencyParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateApiKeyJSONBodyPermission.
 const (
 	CreateApiKeyJSONBodyPermissionRead      CreateApiKeyJSONBodyPermission = "read"
@@ -1682,6 +1766,36 @@ func (e ListPostsParamsStatus) Valid() bool {
 	case ListPostsParamsStatusPublished:
 		return true
 	case ListPostsParamsStatusScheduled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListPostsParamsSortBy.
+const (
+	ListPostsParamsSortByCreatedAsc    ListPostsParamsSortBy = "created-asc"
+	ListPostsParamsSortByCreatedDesc   ListPostsParamsSortBy = "created-desc"
+	ListPostsParamsSortByPlatform      ListPostsParamsSortBy = "platform"
+	ListPostsParamsSortByScheduledAsc  ListPostsParamsSortBy = "scheduled-asc"
+	ListPostsParamsSortByScheduledDesc ListPostsParamsSortBy = "scheduled-desc"
+	ListPostsParamsSortByStatus        ListPostsParamsSortBy = "status"
+)
+
+// Valid indicates whether the value is a known member of the ListPostsParamsSortBy enum.
+func (e ListPostsParamsSortBy) Valid() bool {
+	switch e {
+	case ListPostsParamsSortByCreatedAsc:
+		return true
+	case ListPostsParamsSortByCreatedDesc:
+		return true
+	case ListPostsParamsSortByPlatform:
+		return true
+	case ListPostsParamsSortByScheduledAsc:
+		return true
+	case ListPostsParamsSortByScheduledDesc:
+		return true
+	case ListPostsParamsSortByStatus:
 		return true
 	default:
 		return false
@@ -3497,6 +3611,9 @@ type ListAccountsParams struct {
 	// ProfileId Filter accounts by profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
+	// Platform Filter accounts by platform (e.g. "instagram", "twitter").
+	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
+
 	// IncludeOverLimit When true, includes accounts from over-limit profiles.
 	IncludeOverLimit *bool `form:"includeOverLimit,omitempty" json:"includeOverLimit,omitempty"`
 }
@@ -3825,7 +3942,13 @@ type GetBestTimeToPostParams struct {
 
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	Source *GetBestTimeToPostParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
+
+// GetBestTimeToPostParamsSource defines parameters for GetBestTimeToPost.
+type GetBestTimeToPostParamsSource string
 
 // GetContentDecayParams defines parameters for GetContentDecay.
 type GetContentDecayParams struct {
@@ -3834,7 +3957,13 @@ type GetContentDecayParams struct {
 
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	Source *GetContentDecayParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
+
+// GetContentDecayParamsSource defines parameters for GetContentDecay.
+type GetContentDecayParamsSource string
 
 // GetDailyMetricsParams defines parameters for GetDailyMetrics.
 type GetDailyMetricsParams struct {
@@ -3849,7 +3978,13 @@ type GetDailyMetricsParams struct {
 
 	// ToDate Inclusive end date (ISO 8601). Defaults to now.
 	ToDate *time.Time `form:"toDate,omitempty" json:"toDate,omitempty"`
+
+	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	Source *GetDailyMetricsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
+
+// GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
+type GetDailyMetricsParamsSource string
 
 // GetPostingFrequencyParams defines parameters for GetPostingFrequency.
 type GetPostingFrequencyParams struct {
@@ -3858,7 +3993,13 @@ type GetPostingFrequencyParams struct {
 
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	Source *GetPostingFrequencyParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
+
+// GetPostingFrequencyParamsSource defines parameters for GetPostingFrequency.
+type GetPostingFrequencyParamsSource string
 
 // GetYouTubeDailyViewsParams defines parameters for GetYouTubeDailyViews.
 type GetYouTubeDailyViewsParams struct {
@@ -4134,6 +4275,9 @@ type GetConnectUrlParams struct {
 
 	// RedirectUrl Your custom redirect URL after connection completes. Standard mode appends ?connected={platform}&profileId=X&username=Y. Headless mode appends OAuth data params.
 	RedirectUrl *string `form:"redirect_url,omitempty" json:"redirect_url,omitempty"`
+
+	// Headless When true, the user is redirected to your redirect_url with raw OAuth data (code, state) instead of Late's default account selection UI. Use this to build a custom connect experience.
+	Headless *bool `form:"headless,omitempty" json:"headless,omitempty"`
 }
 
 // GetConnectUrlParamsPlatform defines parameters for GetConnectUrl.
@@ -4589,10 +4733,19 @@ type ListPostsParams struct {
 	DateFrom      *openapi_types.Date    `form:"dateFrom,omitempty" json:"dateFrom,omitempty"`
 	DateTo        *openapi_types.Date    `form:"dateTo,omitempty" json:"dateTo,omitempty"`
 	IncludeHidden *bool                  `form:"includeHidden,omitempty" json:"includeHidden,omitempty"`
+
+	// Search Search posts by text content.
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// SortBy Sort order for results.
+	SortBy *ListPostsParamsSortBy `form:"sortBy,omitempty" json:"sortBy,omitempty"`
 }
 
 // ListPostsParamsStatus defines parameters for ListPosts.
 type ListPostsParamsStatus string
+
+// ListPostsParamsSortBy defines parameters for ListPosts.
+type ListPostsParamsSortBy string
 
 // CreatePostJSONBody defines parameters for CreatePost.
 type CreatePostJSONBody struct {
@@ -4682,6 +4835,9 @@ type ListPostsLogsParams struct {
 
 	// Skip Number of logs to skip (for pagination)
 	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+
+	// Search Search through log entries by text content.
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
 }
 
 // ListPostsLogsParamsStatus defines parameters for ListPostsLogs.
@@ -4750,7 +4906,10 @@ type GetNextQueueSlotParams struct {
 // PreviewQueueParams defines parameters for PreviewQueue.
 type PreviewQueueParams struct {
 	ProfileId string `form:"profileId" json:"profileId"`
-	Count     *int   `form:"count,omitempty" json:"count,omitempty"`
+
+	// QueueId Filter by specific queue ID. Omit to use the default queue.
+	QueueId *string `form:"queueId,omitempty" json:"queueId,omitempty"`
+	Count   *int    `form:"count,omitempty" json:"count,omitempty"`
 }
 
 // DeleteQueueSlotParams defines parameters for DeleteQueueSlot.
@@ -9068,6 +9227,22 @@ func NewListAccountsRequest(server string, params *ListAccountsParams) (*http.Re
 
 		}
 
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.IncludeOverLimit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "includeOverLimit", *params.IncludeOverLimit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
@@ -11356,6 +11531,22 @@ func NewGetBestTimeToPostRequest(server string, params *GetBestTimeToPostParams)
 
 		}
 
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -11408,6 +11599,22 @@ func NewGetContentDecayRequest(server string, params *GetContentDecayParams) (*h
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -11518,6 +11725,22 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 
 		}
 
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -11570,6 +11793,22 @@ func NewGetPostingFrequencyRequest(server string, params *GetPostingFrequencyPar
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -12569,6 +12808,22 @@ func NewGetConnectUrlRequest(server string, platform GetConnectUrlParamsPlatform
 		if params.RedirectUrl != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "redirect_url", *params.RedirectUrl, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uri"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Headless != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "headless", *params.Headless, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -14399,6 +14654,38 @@ func NewListPostsRequest(server string, params *ListPostsParams) (*http.Request,
 
 		}
 
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.SortBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sortBy", *params.SortBy, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -14606,6 +14893,22 @@ func NewListPostsLogsRequest(server string, params *ListPostsLogsParams) (*http.
 		if params.Skip != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -15179,6 +15482,22 @@ func NewPreviewQueueRequest(server string, params *PreviewQueueParams) (*http.Re
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		if params.QueueId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "queueId", *params.QueueId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		if params.Count != nil {
