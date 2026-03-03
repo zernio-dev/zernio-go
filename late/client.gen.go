@@ -3986,6 +3986,18 @@ type GetDailyMetricsParams struct {
 // GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
 type GetDailyMetricsParamsSource string
 
+// GetPostTimelineParams defines parameters for GetPostTimeline.
+type GetPostTimelineParams struct {
+	// PostId The post to fetch timeline for. Accepts an ExternalPost ID, a platformPostId, or a Late Post ID.
+	PostId string `form:"postId" json:"postId"`
+
+	// FromDate Start of date range (ISO 8601). Defaults to 90 days ago.
+	FromDate *time.Time `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate End of date range (ISO 8601). Defaults to now.
+	ToDate *time.Time `form:"toDate,omitempty" json:"toDate,omitempty"`
+}
+
 // GetPostingFrequencyParams defines parameters for GetPostingFrequency.
 type GetPostingFrequencyParams struct {
 	// Platform Filter by platform (e.g. "instagram", "tiktok"). Omit for all platforms.
@@ -6452,6 +6464,9 @@ type ClientInterface interface {
 	// GetDailyMetrics request
 	GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetPostTimeline request
+	GetPostTimeline(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPostingFrequency request
 	GetPostingFrequency(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -7567,6 +7582,18 @@ func (c *Client) GetContentDecay(ctx context.Context, params *GetContentDecayPar
 
 func (c *Client) GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetDailyMetricsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPostTimeline(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPostTimelineRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -11728,6 +11755,83 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPostTimelineRequest generates requests for GetPostTimeline
+func NewGetPostTimelineRequest(server string, params *GetPostTimelineParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/post-timeline")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "postId", params.PostId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -17314,6 +17418,9 @@ type ClientWithResponsesInterface interface {
 	// GetDailyMetricsWithResponse request
 	GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error)
 
+	// GetPostTimelineWithResponse request
+	GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error)
+
 	// GetPostingFrequencyWithResponse request
 	GetPostingFrequencyWithResponse(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*GetPostingFrequencyResponse, error)
 
@@ -19385,6 +19492,79 @@ func (r GetDailyMetricsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetDailyMetricsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPostTimelineResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// PostId The postId that was requested
+		PostId   *string `json:"postId,omitempty"`
+		Timeline *[]struct {
+			// Clicks Total clicks on this date
+			Clicks *int `json:"clicks,omitempty"`
+
+			// Comments Total comments on this date
+			Comments *int `json:"comments,omitempty"`
+
+			// Date Date in YYYY-MM-DD format
+			Date *openapi_types.Date `json:"date,omitempty"`
+
+			// Impressions Total impressions on this date
+			Impressions *int `json:"impressions,omitempty"`
+
+			// Likes Total likes on this date
+			Likes *int `json:"likes,omitempty"`
+
+			// Platform Platform name (e.g. instagram, tiktok)
+			Platform *string `json:"platform,omitempty"`
+
+			// PlatformPostId Platform-specific post ID
+			PlatformPostId *string `json:"platformPostId,omitempty"`
+
+			// Reach Total reach on this date
+			Reach *int `json:"reach,omitempty"`
+
+			// Saves Total saves on this date
+			Saves *int `json:"saves,omitempty"`
+
+			// Shares Total shares on this date
+			Shares *int `json:"shares,omitempty"`
+
+			// Views Total views on this date
+			Views *int `json:"views,omitempty"`
+		} `json:"timeline,omitempty"`
+	}
+	JSON400 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON404 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPostTimelineResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPostTimelineResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -23028,6 +23208,15 @@ func (c *ClientWithResponses) GetDailyMetricsWithResponse(ctx context.Context, p
 	return ParseGetDailyMetricsResponse(rsp)
 }
 
+// GetPostTimelineWithResponse request returning *GetPostTimelineResponse
+func (c *ClientWithResponses) GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error) {
+	rsp, err := c.GetPostTimeline(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPostTimelineResponse(rsp)
+}
+
 // GetPostingFrequencyWithResponse request returning *GetPostingFrequencyResponse
 func (c *ClientWithResponses) GetPostingFrequencyWithResponse(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*GetPostingFrequencyResponse, error) {
 	rsp, err := c.GetPostingFrequency(ctx, params, reqEditors...)
@@ -26550,6 +26739,113 @@ func ParseGetDailyMetricsResponse(rsp *http.Response) (*GetDailyMetricsResponse,
 			return nil, err
 		}
 		response.JSON402 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPostTimelineResponse parses an HTTP response from a GetPostTimelineWithResponse call
+func ParseGetPostTimelineResponse(rsp *http.Response) (*GetPostTimelineResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPostTimelineResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// PostId The postId that was requested
+			PostId   *string `json:"postId,omitempty"`
+			Timeline *[]struct {
+				// Clicks Total clicks on this date
+				Clicks *int `json:"clicks,omitempty"`
+
+				// Comments Total comments on this date
+				Comments *int `json:"comments,omitempty"`
+
+				// Date Date in YYYY-MM-DD format
+				Date *openapi_types.Date `json:"date,omitempty"`
+
+				// Impressions Total impressions on this date
+				Impressions *int `json:"impressions,omitempty"`
+
+				// Likes Total likes on this date
+				Likes *int `json:"likes,omitempty"`
+
+				// Platform Platform name (e.g. instagram, tiktok)
+				Platform *string `json:"platform,omitempty"`
+
+				// PlatformPostId Platform-specific post ID
+				PlatformPostId *string `json:"platformPostId,omitempty"`
+
+				// Reach Total reach on this date
+				Reach *int `json:"reach,omitempty"`
+
+				// Saves Total saves on this date
+				Saves *int `json:"saves,omitempty"`
+
+				// Shares Total shares on this date
+				Shares *int `json:"shares,omitempty"`
+
+				// Views Total views on this date
+				Views *int `json:"views,omitempty"`
+			} `json:"timeline,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
