@@ -20506,6 +20506,9 @@ type DeleteInboxCommentResponse struct {
 		} `json:"data,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
+	JSON400 *struct {
+		Error *string `json:"error,omitempty"`
+	}
 	JSON401 *Unauthorized
 }
 
@@ -28061,6 +28064,15 @@ func ParseDeleteInboxCommentResponse(rsp *http.Response) (*DeleteInboxCommentRes
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
