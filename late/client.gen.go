@@ -530,6 +530,42 @@ func (e PostLogStatus) Valid() bool {
 	}
 }
 
+// Defines values for RecyclingConfigGapFreq.
+const (
+	RecyclingConfigGapFreqMonth RecyclingConfigGapFreq = "month"
+	RecyclingConfigGapFreqWeek  RecyclingConfigGapFreq = "week"
+)
+
+// Valid indicates whether the value is a known member of the RecyclingConfigGapFreq enum.
+func (e RecyclingConfigGapFreq) Valid() bool {
+	switch e {
+	case RecyclingConfigGapFreqMonth:
+		return true
+	case RecyclingConfigGapFreqWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecyclingStateGapFreq.
+const (
+	RecyclingStateGapFreqMonth RecyclingStateGapFreq = "month"
+	RecyclingStateGapFreqWeek  RecyclingStateGapFreq = "week"
+)
+
+// Valid indicates whether the value is a known member of the RecyclingStateGapFreq enum.
+func (e RecyclingStateGapFreq) Valid() bool {
+	switch e {
+	case RecyclingStateGapFreqMonth:
+		return true
+	case RecyclingStateGapFreqWeek:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SnapchatPlatformDataContentType.
 const (
 	SavedStory SnapchatPlatformDataContentType = "saved_story"
@@ -659,6 +695,7 @@ const (
 	WebhookEventsPostFailed          WebhookEvents = "post.failed"
 	WebhookEventsPostPartial         WebhookEvents = "post.partial"
 	WebhookEventsPostPublished       WebhookEvents = "post.published"
+	WebhookEventsPostRecycled        WebhookEvents = "post.recycled"
 	WebhookEventsPostScheduled       WebhookEvents = "post.scheduled"
 )
 
@@ -679,6 +716,8 @@ func (e WebhookEvents) Valid() bool {
 		return true
 	case WebhookEventsPostPublished:
 		return true
+	case WebhookEventsPostRecycled:
+		return true
 	case WebhookEventsPostScheduled:
 		return true
 	default:
@@ -695,6 +734,7 @@ const (
 	WebhookLogEventPostFailed          WebhookLogEvent = "post.failed"
 	WebhookLogEventPostPartial         WebhookLogEvent = "post.partial"
 	WebhookLogEventPostPublished       WebhookLogEvent = "post.published"
+	WebhookLogEventPostRecycled        WebhookLogEvent = "post.recycled"
 	WebhookLogEventPostScheduled       WebhookLogEvent = "post.scheduled"
 	WebhookLogEventWebhookTest         WebhookLogEvent = "webhook.test"
 )
@@ -715,6 +755,8 @@ func (e WebhookLogEvent) Valid() bool {
 	case WebhookLogEventPostPartial:
 		return true
 	case WebhookLogEventPostPublished:
+		return true
+	case WebhookLogEventPostRecycled:
 		return true
 	case WebhookLogEventPostScheduled:
 		return true
@@ -2324,6 +2366,7 @@ const (
 	GetWebhookLogsParamsEventPostFailed          GetWebhookLogsParamsEvent = "post.failed"
 	GetWebhookLogsParamsEventPostPartial         GetWebhookLogsParamsEvent = "post.partial"
 	GetWebhookLogsParamsEventPostPublished       GetWebhookLogsParamsEvent = "post.published"
+	GetWebhookLogsParamsEventPostRecycled        GetWebhookLogsParamsEvent = "post.recycled"
 	GetWebhookLogsParamsEventPostScheduled       GetWebhookLogsParamsEvent = "post.scheduled"
 	GetWebhookLogsParamsEventWebhookTest         GetWebhookLogsParamsEvent = "webhook.test"
 )
@@ -2345,6 +2388,8 @@ func (e GetWebhookLogsParamsEvent) Valid() bool {
 		return true
 	case GetWebhookLogsParamsEventPostPublished:
 		return true
+	case GetWebhookLogsParamsEventPostRecycled:
+		return true
 	case GetWebhookLogsParamsEventPostScheduled:
 		return true
 	case GetWebhookLogsParamsEventWebhookTest:
@@ -2363,6 +2408,7 @@ const (
 	CreateWebhookSettingsJSONBodyEventsPostFailed          CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial         CreateWebhookSettingsJSONBodyEvents = "post.partial"
 	CreateWebhookSettingsJSONBodyEventsPostPublished       CreateWebhookSettingsJSONBodyEvents = "post.published"
+	CreateWebhookSettingsJSONBodyEventsPostRecycled        CreateWebhookSettingsJSONBodyEvents = "post.recycled"
 	CreateWebhookSettingsJSONBodyEventsPostScheduled       CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
 )
 
@@ -2383,6 +2429,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostPublished:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsPostRecycled:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsPostScheduled:
 		return true
 	default:
@@ -2399,6 +2447,7 @@ const (
 	PostFailed          UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	PostPartial         UpdateWebhookSettingsJSONBodyEvents = "post.partial"
 	PostPublished       UpdateWebhookSettingsJSONBodyEvents = "post.published"
+	PostRecycled        UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
 	PostScheduled       UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
 )
 
@@ -2418,6 +2467,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case PostPartial:
 		return true
 	case PostPublished:
+		return true
+	case PostRecycled:
 		return true
 	case PostScheduled:
 		return true
@@ -3036,9 +3087,15 @@ type Post struct {
 	QueueId *string `json:"queueId,omitempty"`
 
 	// QueuedFromProfile Profile ID if the post was scheduled via the queue
-	QueuedFromProfile *string     `json:"queuedFromProfile,omitempty"`
-	ScheduledFor      *time.Time  `json:"scheduledFor,omitempty"`
-	Status            *PostStatus `json:"status,omitempty"`
+	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
+
+	// RecycledFromPostId ID of the original post if this post was created via recycling
+	RecycledFromPostId *string `json:"recycledFromPostId,omitempty"`
+
+	// Recycling Current recycling configuration and state on a post
+	Recycling    *RecyclingState `json:"recycling,omitempty"`
+	ScheduledFor *time.Time      `json:"scheduledFor,omitempty"`
+	Status       *PostStatus     `json:"status,omitempty"`
 
 	// Tags YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
 	Tags     *[]string `json:"tags,omitempty"`
@@ -3253,6 +3310,76 @@ type QueueSlot struct {
 	// Time Time in HH:mm format (24-hour)
 	Time *string `json:"time,omitempty"`
 }
+
+// RecyclingConfig Configure automatic post recycling (reposting at regular intervals).
+// After the post is published, the system creates new scheduled copies at the
+// specified interval until expiration conditions are met. Supports weekly or
+// monthly intervals. Maximum 10 active recycling posts per account.
+// YouTube and TikTok platforms are excluded from recycling.
+// Content variations are recommended for Twitter and Pinterest to avoid duplicate flags.
+type RecyclingConfig struct {
+	// ContentVariations Array of content variations for recycled copies. On each recycle, the next
+	// variation is used in round-robin order. Recommended for Twitter and Pinterest
+	// to avoid duplicate content flags. If omitted, the original post content is
+	// used for all recycled copies. Send an empty array [] to clear existing
+	// variations. Must have 2+ entries when setting variations. Platform-level
+	// customContent still overrides the base content per platform.
+	ContentVariations *[]string `json:"contentVariations,omitempty"`
+
+	// Enabled Set to false to disable recycling on this post
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// ExpireCount Stop recycling after this many copies have been created
+	ExpireCount *int `json:"expireCount,omitempty"`
+
+	// ExpireDate Stop recycling after this date, regardless of count
+	ExpireDate *time.Time `json:"expireDate,omitempty"`
+
+	// Gap Number of interval units between each repost. Required when enabling recycling.
+	Gap *int `json:"gap,omitempty"`
+
+	// GapFreq Interval unit for the gap. Defaults to 'month'.
+	GapFreq *RecyclingConfigGapFreq `json:"gapFreq,omitempty"`
+
+	// StartDate When to start the recycling cycle. Defaults to the post's scheduledFor date.
+	StartDate *time.Time `json:"startDate,omitempty"`
+}
+
+// RecyclingConfigGapFreq Interval unit for the gap. Defaults to 'month'.
+type RecyclingConfigGapFreq string
+
+// RecyclingState Current recycling configuration and state on a post
+type RecyclingState struct {
+	// ContentVariationIndex Current position in the content variations rotation (read-only)
+	ContentVariationIndex *int `json:"contentVariationIndex,omitempty"`
+
+	// ContentVariations Content variations for recycled copies (if configured)
+	ContentVariations *[]string `json:"contentVariations,omitempty"`
+
+	// Enabled Whether recycling is currently active
+	Enabled     *bool      `json:"enabled,omitempty"`
+	ExpireCount *int       `json:"expireCount,omitempty"`
+	ExpireDate  *time.Time `json:"expireDate,omitempty"`
+
+	// Gap Number of interval units between reposts
+	Gap *int `json:"gap,omitempty"`
+
+	// GapFreq Interval unit (week or month)
+	GapFreq *RecyclingStateGapFreq `json:"gapFreq,omitempty"`
+
+	// LastRecycledAt When the last recycled copy was created (read-only)
+	LastRecycledAt *time.Time `json:"lastRecycledAt,omitempty"`
+
+	// NextRecycleAt When the next recycled copy will be created (read-only)
+	NextRecycleAt *time.Time `json:"nextRecycleAt,omitempty"`
+
+	// RecycleCount How many recycled copies have been created so far (read-only)
+	RecycleCount *int       `json:"recycleCount,omitempty"`
+	StartDate    *time.Time `json:"startDate,omitempty"`
+}
+
+// RecyclingStateGapFreq Interval unit (week or month)
+type RecyclingStateGapFreq string
 
 // RedditPlatformData Posts are either link (with URL/media) or self (text-only). Use forceSelf to override. Subreddit defaults to the account's configured one. Some subreddits require a flair.
 type RedditPlatformData struct {
@@ -4795,8 +4922,16 @@ type CreatePostJSONBody struct {
 	QueueId *string `json:"queueId,omitempty"`
 
 	// QueuedFromProfile Profile ID to schedule via queue. When provided without scheduledFor, the post is auto-assigned to the next available slot. Do not call /v1/queue/next-slot and use that time in scheduledFor, as that bypasses queue locking.
-	QueuedFromProfile *string    `json:"queuedFromProfile,omitempty"`
-	ScheduledFor      *time.Time `json:"scheduledFor,omitempty"`
+	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
+
+	// Recycling Configure automatic post recycling (reposting at regular intervals).
+	// After the post is published, the system creates new scheduled copies at the
+	// specified interval until expiration conditions are met. Supports weekly or
+	// monthly intervals. Maximum 10 active recycling posts per account.
+	// YouTube and TikTok platforms are excluded from recycling.
+	// Content variations are recommended for Twitter and Pinterest to avoid duplicate flags.
+	Recycling    *RecyclingConfig `json:"recycling,omitempty"`
+	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
 
 	// Tags Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
 	Tags *[]string `json:"tags,omitempty"`
@@ -4863,8 +4998,16 @@ type ListPostsLogsParamsAction string
 
 // UpdatePostJSONBody defines parameters for UpdatePost.
 type UpdatePostJSONBody struct {
-	Content      *string    `json:"content,omitempty"`
-	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	Content *string `json:"content,omitempty"`
+
+	// Recycling Configure automatic post recycling (reposting at regular intervals).
+	// After the post is published, the system creates new scheduled copies at the
+	// specified interval until expiration conditions are met. Supports weekly or
+	// monthly intervals. Maximum 10 active recycling posts per account.
+	// YouTube and TikTok platforms are excluded from recycling.
+	// Content variations are recommended for Twitter and Pinterest to avoid duplicate flags.
+	Recycling    *RecyclingConfig `json:"recycling,omitempty"`
+	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
 
 	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
 	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
@@ -5429,6 +5572,14 @@ func (a *UpdatePostJSONBody) UnmarshalJSON(b []byte) error {
 		delete(object, "content")
 	}
 
+	if raw, found := object["recycling"]; found {
+		err = json.Unmarshal(raw, &a.Recycling)
+		if err != nil {
+			return fmt.Errorf("error reading 'recycling': %w", err)
+		}
+		delete(object, "recycling")
+	}
+
 	if raw, found := object["scheduledFor"]; found {
 		err = json.Unmarshal(raw, &a.ScheduledFor)
 		if err != nil {
@@ -5468,6 +5619,13 @@ func (a UpdatePostJSONBody) MarshalJSON() ([]byte, error) {
 		object["content"], err = json.Marshal(a.Content)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'content': %w", err)
+		}
+	}
+
+	if a.Recycling != nil {
+		object["recycling"], err = json.Marshal(a.Recycling)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'recycling': %w", err)
 		}
 	}
 
