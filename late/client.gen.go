@@ -3986,6 +3986,18 @@ type GetLinkedInPostAnalyticsParams struct {
 	Urn string `form:"urn" json:"urn"`
 }
 
+// GetLinkedInPostReactionsParams defines parameters for GetLinkedInPostReactions.
+type GetLinkedInPostReactionsParams struct {
+	// Urn The LinkedIn post URN
+	Urn string `form:"urn" json:"urn"`
+
+	// Limit Maximum number of reactions to return per page
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Cursor Offset-based pagination start index
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+}
+
 // SetMessengerMenuJSONBody defines parameters for SetMessengerMenu.
 type SetMessengerMenuJSONBody struct {
 	// PersistentMenu Persistent menu configuration array (Meta format)
@@ -4792,18 +4804,6 @@ type EditInboxMessageJSONBody struct {
 
 // EditInboxMessageJSONBodyReplyMarkupType defines parameters for EditInboxMessage.
 type EditInboxMessageJSONBodyReplyMarkupType string
-
-// GetPostReactionsParams defines parameters for GetPostReactions.
-type GetPostReactionsParams struct {
-	// AccountId The social account ID (must be a LinkedIn organization account).
-	AccountId string `form:"accountId" json:"accountId"`
-
-	// Limit Maximum number of reactions to return per page.
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Cursor Offset-based pagination start index.
-	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
-}
 
 // ListInboxReviewsParams defines parameters for ListInboxReviews.
 type ListInboxReviewsParams struct {
@@ -6581,6 +6581,9 @@ type ClientInterface interface {
 	// GetLinkedInPostAnalytics request
 	GetLinkedInPostAnalytics(ctx context.Context, accountId string, params *GetLinkedInPostAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetLinkedInPostReactions request
+	GetLinkedInPostReactions(ctx context.Context, accountId string, params *GetLinkedInPostReactionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteMessengerMenu request
 	DeleteMessengerMenu(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -6782,9 +6785,6 @@ type ClientInterface interface {
 	EditInboxMessageWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetPostReactions request
-	GetPostReactions(ctx context.Context, postId string, params *GetPostReactionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListInboxReviews request
 	ListInboxReviews(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7527,6 +7527,18 @@ func (c *Client) GetLinkedInOrganizations(ctx context.Context, accountId string,
 
 func (c *Client) GetLinkedInPostAnalytics(ctx context.Context, accountId string, params *GetLinkedInPostAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetLinkedInPostAnalyticsRequest(c.Server, accountId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLinkedInPostReactions(ctx context.Context, accountId string, params *GetLinkedInPostReactionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLinkedInPostReactionsRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -8415,18 +8427,6 @@ func (c *Client) EditInboxMessageWithBody(ctx context.Context, conversationId st
 
 func (c *Client) EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEditInboxMessageRequest(c.Server, conversationId, messageId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetPostReactions(ctx context.Context, postId string, params *GetPostReactionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPostReactionsRequest(c.Server, postId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -11039,6 +11039,90 @@ func NewGetLinkedInPostAnalyticsRequest(server string, accountId string, params 
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLinkedInPostReactionsRequest generates requests for GetLinkedInPostReactions
+func NewGetLinkedInPostReactionsRequest(server string, accountId string, params *GetLinkedInPostReactionsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/linkedin-post-reactions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "urn", params.Urn, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
@@ -14410,90 +14494,6 @@ func NewEditInboxMessageRequestWithBody(server string, conversationId string, me
 	return req, nil
 }
 
-// NewGetPostReactionsRequest generates requests for GetPostReactions
-func NewGetPostReactionsRequest(server string, postId string, params *GetPostReactionsParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "postId", postId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/inbox/reactions/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-		if params.Limit != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Cursor != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewListInboxReviewsRequest generates requests for ListInboxReviews
 func NewListInboxReviewsRequest(server string, params *ListInboxReviewsParams) (*http.Request, error) {
 	var err error
@@ -17634,6 +17634,9 @@ type ClientWithResponsesInterface interface {
 	// GetLinkedInPostAnalyticsWithResponse request
 	GetLinkedInPostAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInPostAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInPostAnalyticsResponse, error)
 
+	// GetLinkedInPostReactionsWithResponse request
+	GetLinkedInPostReactionsWithResponse(ctx context.Context, accountId string, params *GetLinkedInPostReactionsParams, reqEditors ...RequestEditorFn) (*GetLinkedInPostReactionsResponse, error)
+
 	// DeleteMessengerMenuWithResponse request
 	DeleteMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteMessengerMenuResponse, error)
 
@@ -17835,9 +17838,6 @@ type ClientWithResponsesInterface interface {
 	EditInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
 
 	EditInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
-
-	// GetPostReactionsWithResponse request
-	GetPostReactionsWithResponse(ctx context.Context, postId string, params *GetPostReactionsParams, reqEditors ...RequestEditorFn) (*GetPostReactionsResponse, error)
 
 	// ListInboxReviewsWithResponse request
 	ListInboxReviewsWithResponse(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*ListInboxReviewsResponse, error)
@@ -19295,6 +19295,77 @@ func (r GetLinkedInPostAnalyticsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetLinkedInPostAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetLinkedInPostReactionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId   *string    `json:"accountId,omitempty"`
+		AccountType *string    `json:"accountType,omitempty"`
+		LastUpdated *time.Time `json:"lastUpdated,omitempty"`
+		Pagination  *struct {
+			// Cursor Offset for next page
+			Cursor  *string `json:"cursor,omitempty"`
+			HasMore *bool   `json:"hasMore,omitempty"`
+
+			// Total Total number of reactions (when available)
+			Total *int `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Platform  *string `json:"platform,omitempty"`
+		PostUrn   *string `json:"postUrn,omitempty"`
+		Reactions *[]struct {
+			From *struct {
+				// Headline Reactor's headline/job title
+				Headline *string `json:"headline,omitempty"`
+
+				// Name Reactor's display name
+				Name *string `json:"name,omitempty"`
+
+				// ProfilePicture Profile picture URL
+				ProfilePicture *string `json:"profilePicture,omitempty"`
+
+				// ProfileUrl Direct link to LinkedIn profile
+				ProfileUrl *string `json:"profileUrl,omitempty"`
+
+				// Urn LinkedIn person or organization URN
+				Urn *string `json:"urn,omitempty"`
+
+				// Username LinkedIn vanity name
+				Username *string `json:"username,omitempty"`
+			} `json:"from,omitempty"`
+			ReactedAt *time.Time `json:"reactedAt,omitempty"`
+
+			// ReactionLabel User-friendly label (Like, Celebrate, Love, Insightful, Support, Funny)
+			ReactionLabel *string `json:"reactionLabel,omitempty"`
+
+			// ReactionType LinkedIn reaction enum (LIKE, PRAISE, EMPATHY, INTEREST, APPRECIATION, ENTERTAINMENT)
+			ReactionType *string `json:"reactionType,omitempty"`
+		} `json:"reactions,omitempty"`
+		Username *string `json:"username,omitempty"`
+	}
+	JSON400 *struct {
+		Code  *GetLinkedInPostReactions400Code `json:"code,omitempty"`
+		Error *string                          `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetLinkedInPostReactions400Code string
+
+// Status returns HTTPResponse.Status
+func (r GetLinkedInPostReactionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLinkedInPostReactionsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -21371,78 +21442,6 @@ func (r EditInboxMessageResponse) StatusCode() int {
 	return 0
 }
 
-type GetPostReactionsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Meta *struct {
-			AccountId   *string    `json:"accountId,omitempty"`
-			LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-			Platform    *string    `json:"platform,omitempty"`
-			PostId      *string    `json:"postId,omitempty"`
-		} `json:"meta,omitempty"`
-		Pagination *struct {
-			// Cursor Offset for next page
-			Cursor  *string `json:"cursor,omitempty"`
-			HasMore *bool   `json:"hasMore,omitempty"`
-
-			// Total Total number of reactions (when available)
-			Total *int `json:"total,omitempty"`
-		} `json:"pagination,omitempty"`
-		Reactions *[]struct {
-			From *struct {
-				// Headline Reactor's headline/job title (LinkedIn only)
-				Headline *string `json:"headline,omitempty"`
-
-				// Name Reactor's display name
-				Name *string `json:"name,omitempty"`
-
-				// ProfilePicture Profile picture URL
-				ProfilePicture *string `json:"profilePicture,omitempty"`
-
-				// ProfileUrl Direct link to reactor's LinkedIn profile
-				ProfileUrl *string `json:"profileUrl,omitempty"`
-
-				// Urn LinkedIn person or organization URN
-				Urn *string `json:"urn,omitempty"`
-
-				// Username LinkedIn vanity name
-				Username *string `json:"username,omitempty"`
-			} `json:"from,omitempty"`
-			ReactedAt *time.Time `json:"reactedAt,omitempty"`
-
-			// ReactionLabel User-friendly label (Like, Celebrate, Love, Insightful, Support, Funny)
-			ReactionLabel *string `json:"reactionLabel,omitempty"`
-
-			// ReactionType LinkedIn reaction enum (LIKE, PRAISE, EMPATHY, INTEREST, APPRECIATION, ENTERTAINMENT)
-			ReactionType *string `json:"reactionType,omitempty"`
-		} `json:"reactions,omitempty"`
-		Status *string `json:"status,omitempty"`
-	}
-	JSON400 *struct {
-		Code  *GetPostReactions400Code `json:"code,omitempty"`
-		Error *string                  `json:"error,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-type GetPostReactions400Code string
-
-// Status returns HTTPResponse.Status
-func (r GetPostReactionsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetPostReactionsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type ListInboxReviewsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -23388,6 +23387,15 @@ func (c *ClientWithResponses) GetLinkedInPostAnalyticsWithResponse(ctx context.C
 	return ParseGetLinkedInPostAnalyticsResponse(rsp)
 }
 
+// GetLinkedInPostReactionsWithResponse request returning *GetLinkedInPostReactionsResponse
+func (c *ClientWithResponses) GetLinkedInPostReactionsWithResponse(ctx context.Context, accountId string, params *GetLinkedInPostReactionsParams, reqEditors ...RequestEditorFn) (*GetLinkedInPostReactionsResponse, error) {
+	rsp, err := c.GetLinkedInPostReactions(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLinkedInPostReactionsResponse(rsp)
+}
+
 // DeleteMessengerMenuWithResponse request returning *DeleteMessengerMenuResponse
 func (c *ClientWithResponses) DeleteMessengerMenuWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteMessengerMenuResponse, error) {
 	rsp, err := c.DeleteMessengerMenu(ctx, accountId, reqEditors...)
@@ -24032,15 +24040,6 @@ func (c *ClientWithResponses) EditInboxMessageWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseEditInboxMessageResponse(rsp)
-}
-
-// GetPostReactionsWithResponse request returning *GetPostReactionsResponse
-func (c *ClientWithResponses) GetPostReactionsWithResponse(ctx context.Context, postId string, params *GetPostReactionsParams, reqEditors ...RequestEditorFn) (*GetPostReactionsResponse, error) {
-	rsp, err := c.GetPostReactions(ctx, postId, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetPostReactionsResponse(rsp)
 }
 
 // ListInboxReviewsWithResponse request returning *ListInboxReviewsResponse
@@ -26464,6 +26463,92 @@ func ParseGetLinkedInPostAnalyticsResponse(rsp *http.Response) (*GetLinkedInPost
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLinkedInPostReactionsResponse parses an HTTP response from a GetLinkedInPostReactionsWithResponse call
+func ParseGetLinkedInPostReactionsResponse(rsp *http.Response) (*GetLinkedInPostReactionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLinkedInPostReactionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId   *string    `json:"accountId,omitempty"`
+			AccountType *string    `json:"accountType,omitempty"`
+			LastUpdated *time.Time `json:"lastUpdated,omitempty"`
+			Pagination  *struct {
+				// Cursor Offset for next page
+				Cursor  *string `json:"cursor,omitempty"`
+				HasMore *bool   `json:"hasMore,omitempty"`
+
+				// Total Total number of reactions (when available)
+				Total *int `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Platform  *string `json:"platform,omitempty"`
+			PostUrn   *string `json:"postUrn,omitempty"`
+			Reactions *[]struct {
+				From *struct {
+					// Headline Reactor's headline/job title
+					Headline *string `json:"headline,omitempty"`
+
+					// Name Reactor's display name
+					Name *string `json:"name,omitempty"`
+
+					// ProfilePicture Profile picture URL
+					ProfilePicture *string `json:"profilePicture,omitempty"`
+
+					// ProfileUrl Direct link to LinkedIn profile
+					ProfileUrl *string `json:"profileUrl,omitempty"`
+
+					// Urn LinkedIn person or organization URN
+					Urn *string `json:"urn,omitempty"`
+
+					// Username LinkedIn vanity name
+					Username *string `json:"username,omitempty"`
+				} `json:"from,omitempty"`
+				ReactedAt *time.Time `json:"reactedAt,omitempty"`
+
+				// ReactionLabel User-friendly label (Like, Celebrate, Love, Insightful, Support, Funny)
+				ReactionLabel *string `json:"reactionLabel,omitempty"`
+
+				// ReactionType LinkedIn reaction enum (LIKE, PRAISE, EMPATHY, INTEREST, APPRECIATION, ENTERTAINMENT)
+				ReactionType *string `json:"reactionType,omitempty"`
+			} `json:"reactions,omitempty"`
+			Username *string `json:"username,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Code  *GetLinkedInPostReactions400Code `json:"code,omitempty"`
+			Error *string                          `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
@@ -29131,93 +29216,6 @@ func ParseEditInboxMessageResponse(rsp *http.Response) (*EditInboxMessageRespons
 			return nil, err
 		}
 		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetPostReactionsResponse parses an HTTP response from a GetPostReactionsWithResponse call
-func ParseGetPostReactionsResponse(rsp *http.Response) (*GetPostReactionsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetPostReactionsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Meta *struct {
-				AccountId   *string    `json:"accountId,omitempty"`
-				LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-				Platform    *string    `json:"platform,omitempty"`
-				PostId      *string    `json:"postId,omitempty"`
-			} `json:"meta,omitempty"`
-			Pagination *struct {
-				// Cursor Offset for next page
-				Cursor  *string `json:"cursor,omitempty"`
-				HasMore *bool   `json:"hasMore,omitempty"`
-
-				// Total Total number of reactions (when available)
-				Total *int `json:"total,omitempty"`
-			} `json:"pagination,omitempty"`
-			Reactions *[]struct {
-				From *struct {
-					// Headline Reactor's headline/job title (LinkedIn only)
-					Headline *string `json:"headline,omitempty"`
-
-					// Name Reactor's display name
-					Name *string `json:"name,omitempty"`
-
-					// ProfilePicture Profile picture URL
-					ProfilePicture *string `json:"profilePicture,omitempty"`
-
-					// ProfileUrl Direct link to reactor's LinkedIn profile
-					ProfileUrl *string `json:"profileUrl,omitempty"`
-
-					// Urn LinkedIn person or organization URN
-					Urn *string `json:"urn,omitempty"`
-
-					// Username LinkedIn vanity name
-					Username *string `json:"username,omitempty"`
-				} `json:"from,omitempty"`
-				ReactedAt *time.Time `json:"reactedAt,omitempty"`
-
-				// ReactionLabel User-friendly label (Like, Celebrate, Love, Insightful, Support, Funny)
-				ReactionLabel *string `json:"reactionLabel,omitempty"`
-
-				// ReactionType LinkedIn reaction enum (LIKE, PRAISE, EMPATHY, INTEREST, APPRECIATION, ENTERTAINMENT)
-				ReactionType *string `json:"reactionType,omitempty"`
-			} `json:"reactions,omitempty"`
-			Status *string `json:"status,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest struct {
-			Code  *GetPostReactions400Code `json:"code,omitempty"`
-			Error *string                  `json:"error,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized

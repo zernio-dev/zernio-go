@@ -85,6 +85,7 @@ func main() {
 | `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
 | `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
 | `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
+| `client.GetLinkedInPostReactionsWithResponse()` | Get LinkedIn post reactions (who reacted) |
 | `client.GetPostTimelineWithResponse()` | Get post analytics timeline |
 | `client.GetPostingFrequencyWithResponse()` | Get posting frequency vs engagement |
 | `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
@@ -216,7 +217,6 @@ func main() {
 |--------|-------------|
 | `client.ListInboxCommentsWithResponse()` | List commented posts |
 | `client.GetInboxPostCommentsWithResponse()` | Get post comments |
-| `client.GetPostReactionsWithResponse()` | Get post reactions (who reacted) |
 | `client.DeleteInboxCommentWithResponse()` | Delete comment |
 | `client.HideInboxCommentWithResponse()` | Hide comment |
 | `client.LikeInboxCommentWithResponse()` | Like comment |
