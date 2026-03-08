@@ -85,7 +85,7 @@ func main() {
 | `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
 | `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
 | `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
-| `client.GetLinkedInPostReactionsWithResponse()` | Get LinkedIn post reactions (who reacted) |
+| `client.GetLinkedInPostReactionsWithResponse()` | Get LinkedIn post reactions |
 | `client.GetPostTimelineWithResponse()` | Get post analytics timeline |
 | `client.GetPostingFrequencyWithResponse()` | Get posting frequency vs engagement |
 | `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
