@@ -2053,13 +2053,13 @@ func (e UnpublishPostJSONBodyPlatform) Valid() bool {
 
 // Defines values for ListQueueSlotsParamsAll.
 const (
-	True ListQueueSlotsParamsAll = "true"
+	ListQueueSlotsParamsAllTrue ListQueueSlotsParamsAll = "true"
 )
 
 // Valid indicates whether the value is a known member of the ListQueueSlotsParamsAll enum.
 func (e ListQueueSlotsParamsAll) Valid() bool {
 	switch e {
-	case True:
+	case ListQueueSlotsParamsAllTrue:
 		return true
 	default:
 		return false
@@ -2474,6 +2474,183 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case PostRecycled:
 		return true
 	case PostScheduled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppBroadcastsParamsStatus.
+const (
+	GetWhatsAppBroadcastsParamsStatusCancelled GetWhatsAppBroadcastsParamsStatus = "cancelled"
+	GetWhatsAppBroadcastsParamsStatusCompleted GetWhatsAppBroadcastsParamsStatus = "completed"
+	GetWhatsAppBroadcastsParamsStatusDraft     GetWhatsAppBroadcastsParamsStatus = "draft"
+	GetWhatsAppBroadcastsParamsStatusFailed    GetWhatsAppBroadcastsParamsStatus = "failed"
+	GetWhatsAppBroadcastsParamsStatusScheduled GetWhatsAppBroadcastsParamsStatus = "scheduled"
+	GetWhatsAppBroadcastsParamsStatusSending   GetWhatsAppBroadcastsParamsStatus = "sending"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppBroadcastsParamsStatus enum.
+func (e GetWhatsAppBroadcastsParamsStatus) Valid() bool {
+	switch e {
+	case GetWhatsAppBroadcastsParamsStatusCancelled:
+		return true
+	case GetWhatsAppBroadcastsParamsStatusCompleted:
+		return true
+	case GetWhatsAppBroadcastsParamsStatusDraft:
+		return true
+	case GetWhatsAppBroadcastsParamsStatusFailed:
+		return true
+	case GetWhatsAppBroadcastsParamsStatusScheduled:
+		return true
+	case GetWhatsAppBroadcastsParamsStatusSending:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppBroadcastRecipientsParamsStatus.
+const (
+	GetWhatsAppBroadcastRecipientsParamsStatusDelivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
+	GetWhatsAppBroadcastRecipientsParamsStatusFailed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
+	GetWhatsAppBroadcastRecipientsParamsStatusPending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
+	GetWhatsAppBroadcastRecipientsParamsStatusRead      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
+	GetWhatsAppBroadcastRecipientsParamsStatusSent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppBroadcastRecipientsParamsStatus enum.
+func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
+	switch e {
+	case GetWhatsAppBroadcastRecipientsParamsStatusDelivered:
+		return true
+	case GetWhatsAppBroadcastRecipientsParamsStatusFailed:
+		return true
+	case GetWhatsAppBroadcastRecipientsParamsStatusPending:
+		return true
+	case GetWhatsAppBroadcastRecipientsParamsStatusRead:
+		return true
+	case GetWhatsAppBroadcastRecipientsParamsStatusSent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppContactsParamsOptedIn.
+const (
+	GetWhatsAppContactsParamsOptedInFalse GetWhatsAppContactsParamsOptedIn = "false"
+	GetWhatsAppContactsParamsOptedInTrue  GetWhatsAppContactsParamsOptedIn = "true"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppContactsParamsOptedIn enum.
+func (e GetWhatsAppContactsParamsOptedIn) Valid() bool {
+	switch e {
+	case GetWhatsAppContactsParamsOptedInFalse:
+		return true
+	case GetWhatsAppContactsParamsOptedInTrue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BulkUpdateWhatsAppContactsJSONBodyAction.
+const (
+	AddGroups    BulkUpdateWhatsAppContactsJSONBodyAction = "addGroups"
+	AddTags      BulkUpdateWhatsAppContactsJSONBodyAction = "addTags"
+	Block        BulkUpdateWhatsAppContactsJSONBodyAction = "block"
+	OptIn        BulkUpdateWhatsAppContactsJSONBodyAction = "optIn"
+	OptOut       BulkUpdateWhatsAppContactsJSONBodyAction = "optOut"
+	RemoveGroups BulkUpdateWhatsAppContactsJSONBodyAction = "removeGroups"
+	RemoveTags   BulkUpdateWhatsAppContactsJSONBodyAction = "removeTags"
+	Unblock      BulkUpdateWhatsAppContactsJSONBodyAction = "unblock"
+)
+
+// Valid indicates whether the value is a known member of the BulkUpdateWhatsAppContactsJSONBodyAction enum.
+func (e BulkUpdateWhatsAppContactsJSONBodyAction) Valid() bool {
+	switch e {
+	case AddGroups:
+		return true
+	case AddTags:
+		return true
+	case Block:
+		return true
+	case OptIn:
+		return true
+	case OptOut:
+		return true
+	case RemoveGroups:
+		return true
+	case RemoveTags:
+		return true
+	case Unblock:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppPhoneNumbersParamsStatus.
+const (
+	Active       GetWhatsAppPhoneNumbersParamsStatus = "active"
+	Provisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
+	Released     GetWhatsAppPhoneNumbersParamsStatus = "released"
+	Releasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
+	Suspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumbersParamsStatus enum.
+func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
+	switch e {
+	case Active:
+		return true
+	case Provisioning:
+		return true
+	case Released:
+		return true
+	case Releasing:
+		return true
+	case Suspended:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RequestWhatsAppVerificationCodeJSONBodyMethod.
+const (
+	SMS   RequestWhatsAppVerificationCodeJSONBodyMethod = "SMS"
+	VOICE RequestWhatsAppVerificationCodeJSONBodyMethod = "VOICE"
+)
+
+// Valid indicates whether the value is a known member of the RequestWhatsAppVerificationCodeJSONBodyMethod enum.
+func (e RequestWhatsAppVerificationCodeJSONBodyMethod) Valid() bool {
+	switch e {
+	case SMS:
+		return true
+	case VOICE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateWhatsAppTemplateJSONBodyCategory.
+const (
+	AUTHENTICATION CreateWhatsAppTemplateJSONBodyCategory = "AUTHENTICATION"
+	MARKETING      CreateWhatsAppTemplateJSONBodyCategory = "MARKETING"
+	UTILITY        CreateWhatsAppTemplateJSONBodyCategory = "UTILITY"
+)
+
+// Valid indicates whether the value is a known member of the CreateWhatsAppTemplateJSONBodyCategory enum.
+func (e CreateWhatsAppTemplateJSONBodyCategory) Valid() bool {
+	switch e {
+	case AUTHENTICATION:
+		return true
+	case MARKETING:
+		return true
+	case UTILITY:
 		return true
 	default:
 		return false
@@ -5401,6 +5578,428 @@ type TestWebhookJSONBody struct {
 	WebhookId string `json:"webhookId"`
 }
 
+// GetWhatsAppBroadcastsParams defines parameters for GetWhatsAppBroadcasts.
+type GetWhatsAppBroadcastsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Status Filter by broadcast status
+	Status *GetWhatsAppBroadcastsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Limit Maximum results (default 50)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Offset for pagination
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// GetWhatsAppBroadcastsParamsStatus defines parameters for GetWhatsAppBroadcasts.
+type GetWhatsAppBroadcastsParamsStatus string
+
+// CreateWhatsAppBroadcastJSONBody defines parameters for CreateWhatsAppBroadcast.
+type CreateWhatsAppBroadcastJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Description Broadcast description
+	Description *string `json:"description,omitempty"`
+
+	// Name Broadcast name
+	Name string `json:"name"`
+
+	// Recipients Initial recipients (optional)
+	Recipients *[]struct {
+		Name *string `json:"name,omitempty"`
+
+		// Phone Phone number in E.164 format
+		Phone string `json:"phone"`
+
+		// Variables Per-recipient template variables
+		Variables *map[string]string `json:"variables,omitempty"`
+	} `json:"recipients,omitempty"`
+	Template struct {
+		// Components Base template components
+		Components *[]map[string]interface{} `json:"components,omitempty"`
+
+		// Language Template language code
+		Language string `json:"language"`
+
+		// Name Template name
+		Name string `json:"name"`
+	} `json:"template"`
+}
+
+// RemoveWhatsAppBroadcastRecipientsJSONBody defines parameters for RemoveWhatsAppBroadcastRecipients.
+type RemoveWhatsAppBroadcastRecipientsJSONBody struct {
+	// Phones Phone numbers to remove
+	Phones []string `json:"phones"`
+}
+
+// GetWhatsAppBroadcastRecipientsParams defines parameters for GetWhatsAppBroadcastRecipients.
+type GetWhatsAppBroadcastRecipientsParams struct {
+	// Status Filter by recipient delivery status
+	Status *GetWhatsAppBroadcastRecipientsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Limit Maximum results (default 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Offset for pagination
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// GetWhatsAppBroadcastRecipientsParamsStatus defines parameters for GetWhatsAppBroadcastRecipients.
+type GetWhatsAppBroadcastRecipientsParamsStatus string
+
+// AddWhatsAppBroadcastRecipientsJSONBody defines parameters for AddWhatsAppBroadcastRecipients.
+type AddWhatsAppBroadcastRecipientsJSONBody struct {
+	// Recipients Recipients to add (max 1000)
+	Recipients []struct {
+		Name *string `json:"name,omitempty"`
+
+		// Phone Phone number in E.164 format
+		Phone     string             `json:"phone"`
+		Variables *map[string]string `json:"variables,omitempty"`
+	} `json:"recipients"`
+}
+
+// ScheduleWhatsAppBroadcastJSONBody defines parameters for ScheduleWhatsAppBroadcast.
+type ScheduleWhatsAppBroadcastJSONBody struct {
+	// ScheduledAt ISO 8601 date-time for sending (must be in the future, max 30 days)
+	ScheduledAt time.Time `json:"scheduledAt"`
+}
+
+// SendWhatsAppBulkJSONBody defines parameters for SendWhatsAppBulk.
+type SendWhatsAppBulkJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Recipients List of recipients (max 100)
+	Recipients []struct {
+		// Phone Recipient phone number in E.164 format
+		Phone string `json:"phone"`
+
+		// Variables Per-recipient template variables keyed by index (e.g., "1", "2")
+		Variables *map[string]string `json:"variables,omitempty"`
+	} `json:"recipients"`
+	Template struct {
+		// Components Base template components
+		Components *[]map[string]interface{} `json:"components,omitempty"`
+
+		// Language Template language code
+		Language string `json:"language"`
+
+		// Name Template name
+		Name string `json:"name"`
+	} `json:"template"`
+}
+
+// GetWhatsAppBusinessProfileParams defines parameters for GetWhatsAppBusinessProfile.
+type GetWhatsAppBusinessProfileParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppBusinessProfileJSONBody defines parameters for UpdateWhatsAppBusinessProfile.
+type UpdateWhatsAppBusinessProfileJSONBody struct {
+	// About Short business description (max 139 characters)
+	About *string `json:"about,omitempty"`
+
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Address Business address
+	Address *string `json:"address,omitempty"`
+
+	// Description Full business description (max 512 characters)
+	Description *string `json:"description,omitempty"`
+
+	// Email Business email
+	Email *openapi_types.Email `json:"email,omitempty"`
+
+	// ProfilePictureHandle Handle from resumable upload for profile picture
+	ProfilePictureHandle *string `json:"profilePictureHandle,omitempty"`
+
+	// Vertical Business category (e.g., RETAIL, ENTERTAINMENT, etc.)
+	Vertical *string `json:"vertical,omitempty"`
+
+	// Websites Business websites (max 2)
+	Websites *[]string `json:"websites,omitempty"`
+}
+
+// GetWhatsAppContactsParams defines parameters for GetWhatsAppContacts.
+type GetWhatsAppContactsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Search Search contacts by name, phone, email, or company
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Tag Filter by tag
+	Tag *string `form:"tag,omitempty" json:"tag,omitempty"`
+
+	// Group Filter by group
+	Group *string `form:"group,omitempty" json:"group,omitempty"`
+
+	// OptedIn Filter by opt-in status
+	OptedIn *GetWhatsAppContactsParamsOptedIn `form:"optedIn,omitempty" json:"optedIn,omitempty"`
+
+	// Limit Maximum results (default 50)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Offset for pagination
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// GetWhatsAppContactsParamsOptedIn defines parameters for GetWhatsAppContacts.
+type GetWhatsAppContactsParamsOptedIn string
+
+// CreateWhatsAppContactJSONBody defines parameters for CreateWhatsAppContact.
+type CreateWhatsAppContactJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Company Company name
+	Company *string `json:"company,omitempty"`
+
+	// CustomFields Custom key-value fields
+	CustomFields *map[string]string `json:"customFields,omitempty"`
+
+	// Email Contact email
+	Email *string `json:"email,omitempty"`
+
+	// Groups Groups the contact belongs to
+	Groups *[]string `json:"groups,omitempty"`
+
+	// IsOptedIn Whether the contact has opted in to receive messages
+	IsOptedIn *bool `json:"isOptedIn,omitempty"`
+
+	// Name Contact name
+	Name string `json:"name"`
+
+	// Notes Notes about the contact
+	Notes *string `json:"notes,omitempty"`
+
+	// Phone Phone number in E.164 format
+	Phone string `json:"phone"`
+
+	// Tags Tags for categorization
+	Tags *[]string `json:"tags,omitempty"`
+}
+
+// BulkDeleteWhatsAppContactsJSONBody defines parameters for BulkDeleteWhatsAppContacts.
+type BulkDeleteWhatsAppContactsJSONBody struct {
+	// ContactIds Contact IDs to delete (max 500)
+	ContactIds []string `json:"contactIds"`
+}
+
+// BulkUpdateWhatsAppContactsJSONBody defines parameters for BulkUpdateWhatsAppContacts.
+type BulkUpdateWhatsAppContactsJSONBody struct {
+	// Action Bulk action to perform
+	Action BulkUpdateWhatsAppContactsJSONBodyAction `json:"action"`
+
+	// ContactIds Contact IDs to update (max 500)
+	ContactIds []string `json:"contactIds"`
+
+	// Groups Groups to add or remove (required for addGroups/removeGroups)
+	Groups *[]string `json:"groups,omitempty"`
+
+	// Tags Tags to add or remove (required for addTags/removeTags)
+	Tags *[]string `json:"tags,omitempty"`
+}
+
+// BulkUpdateWhatsAppContactsJSONBodyAction defines parameters for BulkUpdateWhatsAppContacts.
+type BulkUpdateWhatsAppContactsJSONBodyAction string
+
+// ImportWhatsAppContactsJSONBody defines parameters for ImportWhatsAppContacts.
+type ImportWhatsAppContactsJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Contacts Contacts to import (max 1000)
+	Contacts []struct {
+		Company      *string            `json:"company,omitempty"`
+		CustomFields *map[string]string `json:"customFields,omitempty"`
+		Email        *string            `json:"email,omitempty"`
+		Groups       *[]string          `json:"groups,omitempty"`
+
+		// Name Contact name
+		Name  string  `json:"name"`
+		Notes *string `json:"notes,omitempty"`
+
+		// Phone Phone number in E.164 format
+		Phone string    `json:"phone"`
+		Tags  *[]string `json:"tags,omitempty"`
+	} `json:"contacts"`
+
+	// DefaultGroups Groups applied to all imported contacts
+	DefaultGroups *[]string `json:"defaultGroups,omitempty"`
+
+	// DefaultTags Tags applied to all imported contacts
+	DefaultTags *[]string `json:"defaultTags,omitempty"`
+
+	// SkipDuplicates Skip contacts with existing phone numbers
+	SkipDuplicates *bool `json:"skipDuplicates,omitempty"`
+}
+
+// UpdateWhatsAppContactJSONBody defines parameters for UpdateWhatsAppContact.
+type UpdateWhatsAppContactJSONBody struct {
+	// Company Company name
+	Company *string `json:"company,omitempty"`
+
+	// CustomFields Custom fields to merge (set value to null to remove a field)
+	CustomFields *map[string]*string `json:"customFields,omitempty"`
+
+	// Email Contact email
+	Email *string `json:"email,omitempty"`
+
+	// Groups Groups (replaces existing)
+	Groups *[]string `json:"groups,omitempty"`
+
+	// IsBlocked Block status
+	IsBlocked *bool `json:"isBlocked,omitempty"`
+
+	// IsOptedIn Opt-in status (changes are timestamped)
+	IsOptedIn *bool `json:"isOptedIn,omitempty"`
+
+	// Name Contact name
+	Name *string `json:"name,omitempty"`
+
+	// Notes Notes about the contact
+	Notes *string `json:"notes,omitempty"`
+
+	// Tags Tags (replaces existing)
+	Tags *[]string `json:"tags,omitempty"`
+}
+
+// DeleteWhatsAppGroupJSONBody defines parameters for DeleteWhatsAppGroup.
+type DeleteWhatsAppGroupJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// GroupName Group name to delete
+	GroupName string `json:"groupName"`
+}
+
+// GetWhatsAppGroupsParams defines parameters for GetWhatsAppGroups.
+type GetWhatsAppGroupsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// RenameWhatsAppGroupJSONBody defines parameters for RenameWhatsAppGroup.
+type RenameWhatsAppGroupJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// NewName New group name
+	NewName string `json:"newName"`
+
+	// OldName Current group name
+	OldName string `json:"oldName"`
+}
+
+// GetWhatsAppPhoneNumbersParams defines parameters for GetWhatsAppPhoneNumbers.
+type GetWhatsAppPhoneNumbersParams struct {
+	// Status Filter by status (by default excludes released numbers)
+	Status *GetWhatsAppPhoneNumbersParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// ProfileId Filter by profile
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
+// GetWhatsAppPhoneNumbersParamsStatus defines parameters for GetWhatsAppPhoneNumbers.
+type GetWhatsAppPhoneNumbersParamsStatus string
+
+// SearchAvailableWhatsAppNumbersParams defines parameters for SearchAvailableWhatsAppNumbers.
+type SearchAvailableWhatsAppNumbersParams struct {
+	// Prefix Area code to search (e.g., "212" for New York)
+	Prefix *string `form:"prefix,omitempty" json:"prefix,omitempty"`
+
+	// Locality City name (e.g., "New York")
+	Locality *string `form:"locality,omitempty" json:"locality,omitempty"`
+
+	// Contains Pattern to match within the phone number
+	Contains *string `form:"contains,omitempty" json:"contains,omitempty"`
+
+	// Limit Maximum results (default 20, max 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// GetPreverifiedWhatsAppNumbersParams defines parameters for GetPreverifiedWhatsAppNumbers.
+type GetPreverifiedWhatsAppNumbersParams struct {
+	// ProfileId Profile ID to filter by
+	ProfileId string `form:"profileId" json:"profileId"`
+}
+
+// PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
+type PurchaseWhatsAppPhoneNumberJSONBody struct {
+	// ProfileId Profile to associate the number with
+	ProfileId string `json:"profileId"`
+}
+
+// RequestWhatsAppVerificationCodeJSONBody defines parameters for RequestWhatsAppVerificationCode.
+type RequestWhatsAppVerificationCodeJSONBody struct {
+	// Method Delivery method for the verification code
+	Method *RequestWhatsAppVerificationCodeJSONBodyMethod `json:"method,omitempty"`
+}
+
+// RequestWhatsAppVerificationCodeJSONBodyMethod defines parameters for RequestWhatsAppVerificationCode.
+type RequestWhatsAppVerificationCodeJSONBodyMethod string
+
+// VerifyWhatsAppPhoneNumberJSONBody defines parameters for VerifyWhatsAppPhoneNumber.
+type VerifyWhatsAppPhoneNumberJSONBody struct {
+	// Code 6-digit verification code
+	Code string `json:"code"`
+}
+
+// GetWhatsAppTemplatesParams defines parameters for GetWhatsAppTemplates.
+type GetWhatsAppTemplatesParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// CreateWhatsAppTemplateJSONBody defines parameters for CreateWhatsAppTemplate.
+type CreateWhatsAppTemplateJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Category Template category
+	Category CreateWhatsAppTemplateJSONBodyCategory `json:"category"`
+
+	// Components Template components (header, body, footer, buttons)
+	Components []map[string]interface{} `json:"components"`
+
+	// Language Template language code (e.g., en_US)
+	Language string `json:"language"`
+
+	// Name Template name (lowercase, letters/numbers/underscores, must start with a letter)
+	Name string `json:"name"`
+}
+
+// CreateWhatsAppTemplateJSONBodyCategory defines parameters for CreateWhatsAppTemplate.
+type CreateWhatsAppTemplateJSONBodyCategory string
+
+// DeleteWhatsAppTemplateParams defines parameters for DeleteWhatsAppTemplate.
+type DeleteWhatsAppTemplateParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// GetWhatsAppTemplateParams defines parameters for GetWhatsAppTemplate.
+type GetWhatsAppTemplateParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppTemplateJSONBody defines parameters for UpdateWhatsAppTemplate.
+type UpdateWhatsAppTemplateJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Components Updated template components
+	Components []map[string]interface{} `json:"components"`
+}
+
 // CreateAccountGroupJSONRequestBody defines body for CreateAccountGroup for application/json ContentType.
 type CreateAccountGroupJSONRequestBody CreateAccountGroupJSONBody
 
@@ -5556,6 +6155,60 @@ type UpdateWebhookSettingsJSONRequestBody UpdateWebhookSettingsJSONBody
 
 // TestWebhookJSONRequestBody defines body for TestWebhook for application/json ContentType.
 type TestWebhookJSONRequestBody TestWebhookJSONBody
+
+// CreateWhatsAppBroadcastJSONRequestBody defines body for CreateWhatsAppBroadcast for application/json ContentType.
+type CreateWhatsAppBroadcastJSONRequestBody CreateWhatsAppBroadcastJSONBody
+
+// RemoveWhatsAppBroadcastRecipientsJSONRequestBody defines body for RemoveWhatsAppBroadcastRecipients for application/json ContentType.
+type RemoveWhatsAppBroadcastRecipientsJSONRequestBody RemoveWhatsAppBroadcastRecipientsJSONBody
+
+// AddWhatsAppBroadcastRecipientsJSONRequestBody defines body for AddWhatsAppBroadcastRecipients for application/json ContentType.
+type AddWhatsAppBroadcastRecipientsJSONRequestBody AddWhatsAppBroadcastRecipientsJSONBody
+
+// ScheduleWhatsAppBroadcastJSONRequestBody defines body for ScheduleWhatsAppBroadcast for application/json ContentType.
+type ScheduleWhatsAppBroadcastJSONRequestBody ScheduleWhatsAppBroadcastJSONBody
+
+// SendWhatsAppBulkJSONRequestBody defines body for SendWhatsAppBulk for application/json ContentType.
+type SendWhatsAppBulkJSONRequestBody SendWhatsAppBulkJSONBody
+
+// UpdateWhatsAppBusinessProfileJSONRequestBody defines body for UpdateWhatsAppBusinessProfile for application/json ContentType.
+type UpdateWhatsAppBusinessProfileJSONRequestBody UpdateWhatsAppBusinessProfileJSONBody
+
+// CreateWhatsAppContactJSONRequestBody defines body for CreateWhatsAppContact for application/json ContentType.
+type CreateWhatsAppContactJSONRequestBody CreateWhatsAppContactJSONBody
+
+// BulkDeleteWhatsAppContactsJSONRequestBody defines body for BulkDeleteWhatsAppContacts for application/json ContentType.
+type BulkDeleteWhatsAppContactsJSONRequestBody BulkDeleteWhatsAppContactsJSONBody
+
+// BulkUpdateWhatsAppContactsJSONRequestBody defines body for BulkUpdateWhatsAppContacts for application/json ContentType.
+type BulkUpdateWhatsAppContactsJSONRequestBody BulkUpdateWhatsAppContactsJSONBody
+
+// ImportWhatsAppContactsJSONRequestBody defines body for ImportWhatsAppContacts for application/json ContentType.
+type ImportWhatsAppContactsJSONRequestBody ImportWhatsAppContactsJSONBody
+
+// UpdateWhatsAppContactJSONRequestBody defines body for UpdateWhatsAppContact for application/json ContentType.
+type UpdateWhatsAppContactJSONRequestBody UpdateWhatsAppContactJSONBody
+
+// DeleteWhatsAppGroupJSONRequestBody defines body for DeleteWhatsAppGroup for application/json ContentType.
+type DeleteWhatsAppGroupJSONRequestBody DeleteWhatsAppGroupJSONBody
+
+// RenameWhatsAppGroupJSONRequestBody defines body for RenameWhatsAppGroup for application/json ContentType.
+type RenameWhatsAppGroupJSONRequestBody RenameWhatsAppGroupJSONBody
+
+// PurchaseWhatsAppPhoneNumberJSONRequestBody defines body for PurchaseWhatsAppPhoneNumber for application/json ContentType.
+type PurchaseWhatsAppPhoneNumberJSONRequestBody PurchaseWhatsAppPhoneNumberJSONBody
+
+// RequestWhatsAppVerificationCodeJSONRequestBody defines body for RequestWhatsAppVerificationCode for application/json ContentType.
+type RequestWhatsAppVerificationCodeJSONRequestBody RequestWhatsAppVerificationCodeJSONBody
+
+// VerifyWhatsAppPhoneNumberJSONRequestBody defines body for VerifyWhatsAppPhoneNumber for application/json ContentType.
+type VerifyWhatsAppPhoneNumberJSONRequestBody VerifyWhatsAppPhoneNumberJSONBody
+
+// CreateWhatsAppTemplateJSONRequestBody defines body for CreateWhatsAppTemplate for application/json ContentType.
+type CreateWhatsAppTemplateJSONRequestBody CreateWhatsAppTemplateJSONBody
+
+// UpdateWhatsAppTemplateJSONRequestBody defines body for UpdateWhatsAppTemplate for application/json ContentType.
+type UpdateWhatsAppTemplateJSONRequestBody UpdateWhatsAppTemplateJSONBody
 
 // Getter for additional properties for UpdatePostJSONBody. Returns the specified
 // element and whether it was found
@@ -6977,6 +7630,153 @@ type ClientInterface interface {
 	TestWebhookWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	TestWebhook(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppBroadcasts request
+	GetWhatsAppBroadcasts(ctx context.Context, params *GetWhatsAppBroadcastsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppBroadcastWithBody request with any body
+	CreateWhatsAppBroadcastWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppBroadcast(ctx context.Context, body CreateWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppBroadcast request
+	DeleteWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppBroadcast request
+	GetWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveWhatsAppBroadcastRecipientsWithBody request with any body
+	RemoveWhatsAppBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RemoveWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, body RemoveWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppBroadcastRecipients request
+	GetWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, params *GetWhatsAppBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddWhatsAppBroadcastRecipientsWithBody request with any body
+	AddWhatsAppBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, body AddWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelWhatsAppBroadcastSchedule request
+	CancelWhatsAppBroadcastSchedule(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ScheduleWhatsAppBroadcastWithBody request with any body
+	ScheduleWhatsAppBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ScheduleWhatsAppBroadcast(ctx context.Context, broadcastId string, body ScheduleWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendWhatsAppBroadcast request
+	SendWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendWhatsAppBulkWithBody request with any body
+	SendWhatsAppBulkWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendWhatsAppBulk(ctx context.Context, body SendWhatsAppBulkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppBusinessProfile request
+	GetWhatsAppBusinessProfile(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppBusinessProfileWithBody request with any body
+	UpdateWhatsAppBusinessProfileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppBusinessProfile(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppContacts request
+	GetWhatsAppContacts(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppContactWithBody request with any body
+	CreateWhatsAppContactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppContact(ctx context.Context, body CreateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkDeleteWhatsAppContactsWithBody request with any body
+	BulkDeleteWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkDeleteWhatsAppContacts(ctx context.Context, body BulkDeleteWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkUpdateWhatsAppContactsWithBody request with any body
+	BulkUpdateWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkUpdateWhatsAppContacts(ctx context.Context, body BulkUpdateWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ImportWhatsAppContactsWithBody request with any body
+	ImportWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ImportWhatsAppContacts(ctx context.Context, body ImportWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppContact request
+	DeleteWhatsAppContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppContact request
+	GetWhatsAppContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppContactWithBody request with any body
+	UpdateWhatsAppContactWithBody(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppContact(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppGroupWithBody request with any body
+	DeleteWhatsAppGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeleteWhatsAppGroup(ctx context.Context, body DeleteWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppGroups request
+	GetWhatsAppGroups(ctx context.Context, params *GetWhatsAppGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RenameWhatsAppGroupWithBody request with any body
+	RenameWhatsAppGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RenameWhatsAppGroup(ctx context.Context, body RenameWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppPhoneNumbers request
+	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SearchAvailableWhatsAppNumbers request
+	SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPreverifiedWhatsAppNumbers request
+	GetPreverifiedWhatsAppNumbers(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PurchaseWhatsAppPhoneNumberWithBody request with any body
+	PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PurchaseWhatsAppPhoneNumber(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReleaseWhatsAppPhoneNumber request
+	ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppPhoneNumber request
+	GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RequestWhatsAppVerificationCodeWithBody request with any body
+	RequestWhatsAppVerificationCodeWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RequestWhatsAppVerificationCode(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyWhatsAppPhoneNumberWithBody request with any body
+	VerifyWhatsAppPhoneNumberWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	VerifyWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppTemplates request
+	GetWhatsAppTemplates(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppTemplateWithBody request with any body
+	CreateWhatsAppTemplateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppTemplate(ctx context.Context, body CreateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppTemplate request
+	DeleteWhatsAppTemplate(ctx context.Context, templateName string, params *DeleteWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppTemplate request
+	GetWhatsAppTemplate(ctx context.Context, templateName string, params *GetWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppTemplateWithBody request with any body
+	UpdateWhatsAppTemplateWithBody(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppTemplate(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ListAccountGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -9249,6 +10049,666 @@ func (c *Client) TestWebhookWithBody(ctx context.Context, contentType string, bo
 
 func (c *Client) TestWebhook(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewTestWebhookRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBroadcasts(ctx context.Context, params *GetWhatsAppBroadcastsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBroadcastsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppBroadcastWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppBroadcastRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppBroadcast(ctx context.Context, body CreateWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppBroadcastRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveWhatsAppBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveWhatsAppBroadcastRecipientsRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, body RemoveWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveWhatsAppBroadcastRecipientsRequest(c.Server, broadcastId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, params *GetWhatsAppBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBroadcastRecipientsRequest(c.Server, broadcastId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddWhatsAppBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddWhatsAppBroadcastRecipientsRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddWhatsAppBroadcastRecipients(ctx context.Context, broadcastId string, body AddWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddWhatsAppBroadcastRecipientsRequest(c.Server, broadcastId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CancelWhatsAppBroadcastSchedule(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelWhatsAppBroadcastScheduleRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ScheduleWhatsAppBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewScheduleWhatsAppBroadcastRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ScheduleWhatsAppBroadcast(ctx context.Context, broadcastId string, body ScheduleWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewScheduleWhatsAppBroadcastRequest(c.Server, broadcastId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppBulkWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppBulkRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppBulk(ctx context.Context, body SendWhatsAppBulkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppBulkRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBusinessProfile(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBusinessProfileRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppBusinessProfileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppBusinessProfileRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppBusinessProfile(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppBusinessProfileRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppContacts(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppContactsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppContactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppContactRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppContact(ctx context.Context, body CreateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppContactRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkDeleteWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkDeleteWhatsAppContactsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkDeleteWhatsAppContacts(ctx context.Context, body BulkDeleteWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkDeleteWhatsAppContactsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateWhatsAppContactsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateWhatsAppContacts(ctx context.Context, body BulkUpdateWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateWhatsAppContactsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ImportWhatsAppContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewImportWhatsAppContactsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ImportWhatsAppContacts(ctx context.Context, body ImportWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewImportWhatsAppContactsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppContactRequest(c.Server, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppContactRequest(c.Server, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppContactWithBody(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppContactRequestWithBody(c.Server, contactId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppContact(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppContactRequest(c.Server, contactId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppGroupRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppGroup(ctx context.Context, body DeleteWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppGroupRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppGroups(ctx context.Context, params *GetWhatsAppGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppGroupsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RenameWhatsAppGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRenameWhatsAppGroupRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RenameWhatsAppGroup(ctx context.Context, body RenameWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRenameWhatsAppGroupRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppPhoneNumbersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchAvailableWhatsAppNumbersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPreverifiedWhatsAppNumbers(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPreverifiedWhatsAppNumbersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPurchaseWhatsAppPhoneNumberRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PurchaseWhatsAppPhoneNumber(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPurchaseWhatsAppPhoneNumberRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReleaseWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestWhatsAppVerificationCodeWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestWhatsAppVerificationCodeRequestWithBody(c.Server, phoneNumberId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestWhatsAppVerificationCode(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestWhatsAppVerificationCodeRequest(c.Server, phoneNumberId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) VerifyWhatsAppPhoneNumberWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyWhatsAppPhoneNumberRequestWithBody(c.Server, phoneNumberId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) VerifyWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyWhatsAppPhoneNumberRequest(c.Server, phoneNumberId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppTemplates(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppTemplatesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppTemplateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppTemplateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppTemplate(ctx context.Context, body CreateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppTemplateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppTemplate(ctx context.Context, templateName string, params *DeleteWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppTemplateRequest(c.Server, templateName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppTemplate(ctx context.Context, templateName string, params *GetWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppTemplateRequest(c.Server, templateName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppTemplateWithBody(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppTemplateRequestWithBody(c.Server, templateName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppTemplate(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppTemplateRequest(c.Server, templateName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -17468,6 +18928,1815 @@ func NewTestWebhookRequestWithBody(server string, contentType string, body io.Re
 	return req, nil
 }
 
+// NewGetWhatsAppBroadcastsRequest generates requests for GetWhatsAppBroadcasts
+func NewGetWhatsAppBroadcastsRequest(server string, params *GetWhatsAppBroadcastsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppBroadcastRequest calls the generic CreateWhatsAppBroadcast builder with application/json body
+func NewCreateWhatsAppBroadcastRequest(server string, body CreateWhatsAppBroadcastJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppBroadcastRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppBroadcastRequestWithBody generates requests for CreateWhatsAppBroadcast with any type of body
+func NewCreateWhatsAppBroadcastRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppBroadcastRequest generates requests for DeleteWhatsAppBroadcast
+func NewDeleteWhatsAppBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppBroadcastRequest generates requests for GetWhatsAppBroadcast
+func NewGetWhatsAppBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRemoveWhatsAppBroadcastRecipientsRequest calls the generic RemoveWhatsAppBroadcastRecipients builder with application/json body
+func NewRemoveWhatsAppBroadcastRecipientsRequest(server string, broadcastId string, body RemoveWhatsAppBroadcastRecipientsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRemoveWhatsAppBroadcastRecipientsRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewRemoveWhatsAppBroadcastRecipientsRequestWithBody generates requests for RemoveWhatsAppBroadcastRecipients with any type of body
+func NewRemoveWhatsAppBroadcastRecipientsRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/recipients", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppBroadcastRecipientsRequest generates requests for GetWhatsAppBroadcastRecipients
+func NewGetWhatsAppBroadcastRecipientsRequest(server string, broadcastId string, params *GetWhatsAppBroadcastRecipientsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/recipients", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddWhatsAppBroadcastRecipientsRequest calls the generic AddWhatsAppBroadcastRecipients builder with application/json body
+func NewAddWhatsAppBroadcastRecipientsRequest(server string, broadcastId string, body AddWhatsAppBroadcastRecipientsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddWhatsAppBroadcastRecipientsRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewAddWhatsAppBroadcastRecipientsRequestWithBody generates requests for AddWhatsAppBroadcastRecipients with any type of body
+func NewAddWhatsAppBroadcastRecipientsRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/recipients", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCancelWhatsAppBroadcastScheduleRequest generates requests for CancelWhatsAppBroadcastSchedule
+func NewCancelWhatsAppBroadcastScheduleRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/schedule", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewScheduleWhatsAppBroadcastRequest calls the generic ScheduleWhatsAppBroadcast builder with application/json body
+func NewScheduleWhatsAppBroadcastRequest(server string, broadcastId string, body ScheduleWhatsAppBroadcastJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewScheduleWhatsAppBroadcastRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewScheduleWhatsAppBroadcastRequestWithBody generates requests for ScheduleWhatsAppBroadcast with any type of body
+func NewScheduleWhatsAppBroadcastRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/schedule", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendWhatsAppBroadcastRequest generates requests for SendWhatsAppBroadcast
+func NewSendWhatsAppBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/broadcasts/%s/send", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSendWhatsAppBulkRequest calls the generic SendWhatsAppBulk builder with application/json body
+func NewSendWhatsAppBulkRequest(server string, body SendWhatsAppBulkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendWhatsAppBulkRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendWhatsAppBulkRequestWithBody generates requests for SendWhatsAppBulk with any type of body
+func NewSendWhatsAppBulkRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppBusinessProfileRequest generates requests for GetWhatsAppBusinessProfile
+func NewGetWhatsAppBusinessProfileRequest(server string, params *GetWhatsAppBusinessProfileParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/business-profile")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppBusinessProfileRequest calls the generic UpdateWhatsAppBusinessProfile builder with application/json body
+func NewUpdateWhatsAppBusinessProfileRequest(server string, body UpdateWhatsAppBusinessProfileJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppBusinessProfileRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppBusinessProfileRequestWithBody generates requests for UpdateWhatsAppBusinessProfile with any type of body
+func NewUpdateWhatsAppBusinessProfileRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/business-profile")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppContactsRequest generates requests for GetWhatsAppContacts
+func NewGetWhatsAppContactsRequest(server string, params *GetWhatsAppContactsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Tag != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tag", *params.Tag, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Group != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "group", *params.Group, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.OptedIn != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "optedIn", *params.OptedIn, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppContactRequest calls the generic CreateWhatsAppContact builder with application/json body
+func NewCreateWhatsAppContactRequest(server string, body CreateWhatsAppContactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppContactRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppContactRequestWithBody generates requests for CreateWhatsAppContact with any type of body
+func NewCreateWhatsAppContactRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBulkDeleteWhatsAppContactsRequest calls the generic BulkDeleteWhatsAppContacts builder with application/json body
+func NewBulkDeleteWhatsAppContactsRequest(server string, body BulkDeleteWhatsAppContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkDeleteWhatsAppContactsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBulkDeleteWhatsAppContactsRequestWithBody generates requests for BulkDeleteWhatsAppContacts with any type of body
+func NewBulkDeleteWhatsAppContactsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBulkUpdateWhatsAppContactsRequest calls the generic BulkUpdateWhatsAppContacts builder with application/json body
+func NewBulkUpdateWhatsAppContactsRequest(server string, body BulkUpdateWhatsAppContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkUpdateWhatsAppContactsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBulkUpdateWhatsAppContactsRequestWithBody generates requests for BulkUpdateWhatsAppContacts with any type of body
+func NewBulkUpdateWhatsAppContactsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewImportWhatsAppContactsRequest calls the generic ImportWhatsAppContacts builder with application/json body
+func NewImportWhatsAppContactsRequest(server string, body ImportWhatsAppContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewImportWhatsAppContactsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewImportWhatsAppContactsRequestWithBody generates requests for ImportWhatsAppContacts with any type of body
+func NewImportWhatsAppContactsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/import")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppContactRequest generates requests for DeleteWhatsAppContact
+func NewDeleteWhatsAppContactRequest(server string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppContactRequest generates requests for GetWhatsAppContact
+func NewGetWhatsAppContactRequest(server string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppContactRequest calls the generic UpdateWhatsAppContact builder with application/json body
+func NewUpdateWhatsAppContactRequest(server string, contactId string, body UpdateWhatsAppContactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppContactRequestWithBody(server, contactId, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppContactRequestWithBody generates requests for UpdateWhatsAppContact with any type of body
+func NewUpdateWhatsAppContactRequestWithBody(server string, contactId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppGroupRequest calls the generic DeleteWhatsAppGroup builder with application/json body
+func NewDeleteWhatsAppGroupRequest(server string, body DeleteWhatsAppGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteWhatsAppGroupRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewDeleteWhatsAppGroupRequestWithBody generates requests for DeleteWhatsAppGroup with any type of body
+func NewDeleteWhatsAppGroupRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppGroupsRequest generates requests for GetWhatsAppGroups
+func NewGetWhatsAppGroupsRequest(server string, params *GetWhatsAppGroupsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRenameWhatsAppGroupRequest calls the generic RenameWhatsAppGroup builder with application/json body
+func NewRenameWhatsAppGroupRequest(server string, body RenameWhatsAppGroupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRenameWhatsAppGroupRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewRenameWhatsAppGroupRequestWithBody generates requests for RenameWhatsAppGroup with any type of body
+func NewRenameWhatsAppGroupRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppPhoneNumbersRequest generates requests for GetWhatsAppPhoneNumbers
+func NewGetWhatsAppPhoneNumbersRequest(server string, params *GetWhatsAppPhoneNumbersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSearchAvailableWhatsAppNumbersRequest generates requests for SearchAvailableWhatsAppNumbers
+func NewSearchAvailableWhatsAppNumbersRequest(server string, params *SearchAvailableWhatsAppNumbersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/available")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Prefix != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "prefix", *params.Prefix, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Locality != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locality", *params.Locality, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Contains != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "contains", *params.Contains, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPreverifiedWhatsAppNumbersRequest generates requests for GetPreverifiedWhatsAppNumbers
+func NewGetPreverifiedWhatsAppNumbersRequest(server string, params *GetPreverifiedWhatsAppNumbersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/preverified")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPurchaseWhatsAppPhoneNumberRequest calls the generic PurchaseWhatsAppPhoneNumber builder with application/json body
+func NewPurchaseWhatsAppPhoneNumberRequest(server string, body PurchaseWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPurchaseWhatsAppPhoneNumberRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPurchaseWhatsAppPhoneNumberRequestWithBody generates requests for PurchaseWhatsAppPhoneNumber with any type of body
+func NewPurchaseWhatsAppPhoneNumberRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/purchase")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReleaseWhatsAppPhoneNumberRequest generates requests for ReleaseWhatsAppPhoneNumber
+func NewReleaseWhatsAppPhoneNumberRequest(server string, phoneNumberId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppPhoneNumberRequest generates requests for GetWhatsAppPhoneNumber
+func NewGetWhatsAppPhoneNumberRequest(server string, phoneNumberId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRequestWhatsAppVerificationCodeRequest calls the generic RequestWhatsAppVerificationCode builder with application/json body
+func NewRequestWhatsAppVerificationCodeRequest(server string, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRequestWhatsAppVerificationCodeRequestWithBody(server, phoneNumberId, "application/json", bodyReader)
+}
+
+// NewRequestWhatsAppVerificationCodeRequestWithBody generates requests for RequestWhatsAppVerificationCode with any type of body
+func NewRequestWhatsAppVerificationCodeRequestWithBody(server string, phoneNumberId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/request-code", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewVerifyWhatsAppPhoneNumberRequest calls the generic VerifyWhatsAppPhoneNumber builder with application/json body
+func NewVerifyWhatsAppPhoneNumberRequest(server string, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewVerifyWhatsAppPhoneNumberRequestWithBody(server, phoneNumberId, "application/json", bodyReader)
+}
+
+// NewVerifyWhatsAppPhoneNumberRequestWithBody generates requests for VerifyWhatsAppPhoneNumber with any type of body
+func NewVerifyWhatsAppPhoneNumberRequestWithBody(server string, phoneNumberId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/verify", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppTemplatesRequest generates requests for GetWhatsAppTemplates
+func NewGetWhatsAppTemplatesRequest(server string, params *GetWhatsAppTemplatesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/templates")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppTemplateRequest calls the generic CreateWhatsAppTemplate builder with application/json body
+func NewCreateWhatsAppTemplateRequest(server string, body CreateWhatsAppTemplateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppTemplateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppTemplateRequestWithBody generates requests for CreateWhatsAppTemplate with any type of body
+func NewCreateWhatsAppTemplateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/templates")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppTemplateRequest generates requests for DeleteWhatsAppTemplate
+func NewDeleteWhatsAppTemplateRequest(server string, templateName string, params *DeleteWhatsAppTemplateParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "templateName", templateName, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/templates/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppTemplateRequest generates requests for GetWhatsAppTemplate
+func NewGetWhatsAppTemplateRequest(server string, templateName string, params *GetWhatsAppTemplateParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "templateName", templateName, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/templates/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppTemplateRequest calls the generic UpdateWhatsAppTemplate builder with application/json body
+func NewUpdateWhatsAppTemplateRequest(server string, templateName string, body UpdateWhatsAppTemplateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppTemplateRequestWithBody(server, templateName, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppTemplateRequestWithBody generates requests for UpdateWhatsAppTemplate with any type of body
+func NewUpdateWhatsAppTemplateRequestWithBody(server string, templateName string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "templateName", templateName, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/templates/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -18030,6 +21299,153 @@ type ClientWithResponsesInterface interface {
 	TestWebhookWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestWebhookResponse, error)
 
 	TestWebhookWithResponse(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*TestWebhookResponse, error)
+
+	// GetWhatsAppBroadcastsWithResponse request
+	GetWhatsAppBroadcastsWithResponse(ctx context.Context, params *GetWhatsAppBroadcastsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastsResponse, error)
+
+	// CreateWhatsAppBroadcastWithBodyWithResponse request with any body
+	CreateWhatsAppBroadcastWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppBroadcastResponse, error)
+
+	CreateWhatsAppBroadcastWithResponse(ctx context.Context, body CreateWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppBroadcastResponse, error)
+
+	// DeleteWhatsAppBroadcastWithResponse request
+	DeleteWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppBroadcastResponse, error)
+
+	// GetWhatsAppBroadcastWithResponse request
+	GetWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastResponse, error)
+
+	// RemoveWhatsAppBroadcastRecipientsWithBodyWithResponse request with any body
+	RemoveWhatsAppBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveWhatsAppBroadcastRecipientsResponse, error)
+
+	RemoveWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body RemoveWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveWhatsAppBroadcastRecipientsResponse, error)
+
+	// GetWhatsAppBroadcastRecipientsWithResponse request
+	GetWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, params *GetWhatsAppBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastRecipientsResponse, error)
+
+	// AddWhatsAppBroadcastRecipientsWithBodyWithResponse request with any body
+	AddWhatsAppBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddWhatsAppBroadcastRecipientsResponse, error)
+
+	AddWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body AddWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddWhatsAppBroadcastRecipientsResponse, error)
+
+	// CancelWhatsAppBroadcastScheduleWithResponse request
+	CancelWhatsAppBroadcastScheduleWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*CancelWhatsAppBroadcastScheduleResponse, error)
+
+	// ScheduleWhatsAppBroadcastWithBodyWithResponse request with any body
+	ScheduleWhatsAppBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ScheduleWhatsAppBroadcastResponse, error)
+
+	ScheduleWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, body ScheduleWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*ScheduleWhatsAppBroadcastResponse, error)
+
+	// SendWhatsAppBroadcastWithResponse request
+	SendWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*SendWhatsAppBroadcastResponse, error)
+
+	// SendWhatsAppBulkWithBodyWithResponse request with any body
+	SendWhatsAppBulkWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppBulkResponse, error)
+
+	SendWhatsAppBulkWithResponse(ctx context.Context, body SendWhatsAppBulkJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppBulkResponse, error)
+
+	// GetWhatsAppBusinessProfileWithResponse request
+	GetWhatsAppBusinessProfileWithResponse(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBusinessProfileResponse, error)
+
+	// UpdateWhatsAppBusinessProfileWithBodyWithResponse request with any body
+	UpdateWhatsAppBusinessProfileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error)
+
+	UpdateWhatsAppBusinessProfileWithResponse(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error)
+
+	// GetWhatsAppContactsWithResponse request
+	GetWhatsAppContactsWithResponse(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppContactsResponse, error)
+
+	// CreateWhatsAppContactWithBodyWithResponse request with any body
+	CreateWhatsAppContactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppContactResponse, error)
+
+	CreateWhatsAppContactWithResponse(ctx context.Context, body CreateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppContactResponse, error)
+
+	// BulkDeleteWhatsAppContactsWithBodyWithResponse request with any body
+	BulkDeleteWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkDeleteWhatsAppContactsResponse, error)
+
+	BulkDeleteWhatsAppContactsWithResponse(ctx context.Context, body BulkDeleteWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkDeleteWhatsAppContactsResponse, error)
+
+	// BulkUpdateWhatsAppContactsWithBodyWithResponse request with any body
+	BulkUpdateWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateWhatsAppContactsResponse, error)
+
+	BulkUpdateWhatsAppContactsWithResponse(ctx context.Context, body BulkUpdateWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateWhatsAppContactsResponse, error)
+
+	// ImportWhatsAppContactsWithBodyWithResponse request with any body
+	ImportWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ImportWhatsAppContactsResponse, error)
+
+	ImportWhatsAppContactsWithResponse(ctx context.Context, body ImportWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*ImportWhatsAppContactsResponse, error)
+
+	// DeleteWhatsAppContactWithResponse request
+	DeleteWhatsAppContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppContactResponse, error)
+
+	// GetWhatsAppContactWithResponse request
+	GetWhatsAppContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetWhatsAppContactResponse, error)
+
+	// UpdateWhatsAppContactWithBodyWithResponse request with any body
+	UpdateWhatsAppContactWithBodyWithResponse(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error)
+
+	UpdateWhatsAppContactWithResponse(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error)
+
+	// DeleteWhatsAppGroupWithBodyWithResponse request with any body
+	DeleteWhatsAppGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupResponse, error)
+
+	DeleteWhatsAppGroupWithResponse(ctx context.Context, body DeleteWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupResponse, error)
+
+	// GetWhatsAppGroupsWithResponse request
+	GetWhatsAppGroupsWithResponse(ctx context.Context, params *GetWhatsAppGroupsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppGroupsResponse, error)
+
+	// RenameWhatsAppGroupWithBodyWithResponse request with any body
+	RenameWhatsAppGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RenameWhatsAppGroupResponse, error)
+
+	RenameWhatsAppGroupWithResponse(ctx context.Context, body RenameWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*RenameWhatsAppGroupResponse, error)
+
+	// GetWhatsAppPhoneNumbersWithResponse request
+	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
+
+	// SearchAvailableWhatsAppNumbersWithResponse request
+	SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error)
+
+	// GetPreverifiedWhatsAppNumbersWithResponse request
+	GetPreverifiedWhatsAppNumbersWithResponse(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*GetPreverifiedWhatsAppNumbersResponse, error)
+
+	// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with any body
+	PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
+
+	PurchaseWhatsAppPhoneNumberWithResponse(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
+
+	// ReleaseWhatsAppPhoneNumberWithResponse request
+	ReleaseWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*ReleaseWhatsAppPhoneNumberResponse, error)
+
+	// GetWhatsAppPhoneNumberWithResponse request
+	GetWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumberResponse, error)
+
+	// RequestWhatsAppVerificationCodeWithBodyWithResponse request with any body
+	RequestWhatsAppVerificationCodeWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error)
+
+	RequestWhatsAppVerificationCodeWithResponse(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error)
+
+	// VerifyWhatsAppPhoneNumberWithBodyWithResponse request with any body
+	VerifyWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error)
+
+	VerifyWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error)
+
+	// GetWhatsAppTemplatesWithResponse request
+	GetWhatsAppTemplatesWithResponse(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplatesResponse, error)
+
+	// CreateWhatsAppTemplateWithBodyWithResponse request with any body
+	CreateWhatsAppTemplateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppTemplateResponse, error)
+
+	CreateWhatsAppTemplateWithResponse(ctx context.Context, body CreateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppTemplateResponse, error)
+
+	// DeleteWhatsAppTemplateWithResponse request
+	DeleteWhatsAppTemplateWithResponse(ctx context.Context, templateName string, params *DeleteWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppTemplateResponse, error)
+
+	// GetWhatsAppTemplateWithResponse request
+	GetWhatsAppTemplateWithResponse(ctx context.Context, templateName string, params *GetWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplateResponse, error)
+
+	// UpdateWhatsAppTemplateWithBodyWithResponse request with any body
+	UpdateWhatsAppTemplateWithBodyWithResponse(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error)
+
+	UpdateWhatsAppTemplateWithResponse(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error)
 }
 
 type ListAccountGroupsResponse struct {
@@ -22982,6 +26398,1306 @@ func (r TestWebhookResponse) StatusCode() int {
 	return 0
 }
 
+type GetWhatsAppBroadcastsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Broadcasts *[]struct {
+			CompletedAt    *time.Time                                `json:"completedAt,omitempty"`
+			CreatedAt      *time.Time                                `json:"createdAt,omitempty"`
+			DeliveredCount *int                                      `json:"deliveredCount,omitempty"`
+			Description    *string                                   `json:"description,omitempty"`
+			FailedCount    *int                                      `json:"failedCount,omitempty"`
+			Id             *string                                   `json:"id,omitempty"`
+			Name           *string                                   `json:"name,omitempty"`
+			ReadCount      *int                                      `json:"readCount,omitempty"`
+			RecipientCount *int                                      `json:"recipientCount,omitempty"`
+			ScheduledAt    *time.Time                                `json:"scheduledAt,omitempty"`
+			SentCount      *int                                      `json:"sentCount,omitempty"`
+			StartedAt      *time.Time                                `json:"startedAt,omitempty"`
+			Status         *GetWhatsAppBroadcasts200BroadcastsStatus `json:"status,omitempty"`
+			Template       *struct {
+				Language *string `json:"language,omitempty"`
+				Name     *string `json:"name,omitempty"`
+			} `json:"template,omitempty"`
+		} `json:"broadcasts,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetWhatsAppBroadcasts200BroadcastsStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBroadcastsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBroadcastsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Broadcast *struct {
+			CreatedAt      *time.Time `json:"createdAt,omitempty"`
+			Description    *string    `json:"description,omitempty"`
+			Id             *string    `json:"id,omitempty"`
+			Name           *string    `json:"name,omitempty"`
+			RecipientCount *int       `json:"recipientCount,omitempty"`
+
+			// Status Always "draft" for new broadcasts
+			Status   *string                 `json:"status,omitempty"`
+			Template *map[string]interface{} `json:"template,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Broadcast *struct {
+			CompletedAt    *time.Time                              `json:"completedAt,omitempty"`
+			CreatedAt      *time.Time                              `json:"createdAt,omitempty"`
+			DeliveredCount *int                                    `json:"deliveredCount,omitempty"`
+			Description    *string                                 `json:"description,omitempty"`
+			FailedCount    *int                                    `json:"failedCount,omitempty"`
+			Id             *string                                 `json:"id,omitempty"`
+			Name           *string                                 `json:"name,omitempty"`
+			ReadCount      *int                                    `json:"readCount,omitempty"`
+			RecipientCount *int                                    `json:"recipientCount,omitempty"`
+			ScheduledAt    *time.Time                              `json:"scheduledAt,omitempty"`
+			SentCount      *int                                    `json:"sentCount,omitempty"`
+			StartedAt      *time.Time                              `json:"startedAt,omitempty"`
+			Status         *GetWhatsAppBroadcast200BroadcastStatus `json:"status,omitempty"`
+			Template       *map[string]interface{}                 `json:"template,omitempty"`
+			UpdatedAt      *time.Time                              `json:"updatedAt,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type GetWhatsAppBroadcast200BroadcastStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveWhatsAppBroadcastRecipientsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Removed Number of recipients removed
+		Removed *int  `json:"removed,omitempty"`
+		Success *bool `json:"success,omitempty"`
+
+		// TotalRecipients Remaining recipient count
+		TotalRecipients *int `json:"totalRecipients,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveWhatsAppBroadcastRecipientsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveWhatsAppBroadcastRecipientsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppBroadcastRecipientsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Recipients *[]struct {
+			DeliveredAt *time.Time                                         `json:"deliveredAt,omitempty"`
+			Error       *string                                            `json:"error,omitempty"`
+			MessageId   *string                                            `json:"messageId,omitempty"`
+			Name        *string                                            `json:"name,omitempty"`
+			Phone       *string                                            `json:"phone,omitempty"`
+			ReadAt      *time.Time                                         `json:"readAt,omitempty"`
+			SentAt      *time.Time                                         `json:"sentAt,omitempty"`
+			Status      *GetWhatsAppBroadcastRecipients200RecipientsStatus `json:"status,omitempty"`
+			Variables   *map[string]interface{}                            `json:"variables,omitempty"`
+		} `json:"recipients,omitempty"`
+		Success *bool `json:"success,omitempty"`
+		Summary *struct {
+			Delivered *int `json:"delivered,omitempty"`
+			Failed    *int `json:"failed,omitempty"`
+			Pending   *int `json:"pending,omitempty"`
+			Read      *int `json:"read,omitempty"`
+			Sent      *int `json:"sent,omitempty"`
+			Total     *int `json:"total,omitempty"`
+		} `json:"summary,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type GetWhatsAppBroadcastRecipients200RecipientsStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBroadcastRecipientsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBroadcastRecipientsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddWhatsAppBroadcastRecipientsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Added Number of new recipients added
+		Added *int `json:"added,omitempty"`
+
+		// Duplicates Number of duplicate phone numbers skipped
+		Duplicates *int  `json:"duplicates,omitempty"`
+		Success    *bool `json:"success,omitempty"`
+
+		// TotalRecipients Total recipient count after addition
+		TotalRecipients *int `json:"totalRecipients,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r AddWhatsAppBroadcastRecipientsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddWhatsAppBroadcastRecipientsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CancelWhatsAppBroadcastScheduleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Broadcast *struct {
+			Id *string `json:"id,omitempty"`
+
+			// Status "draft"
+			Status *string `json:"status,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelWhatsAppBroadcastScheduleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelWhatsAppBroadcastScheduleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ScheduleWhatsAppBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Broadcast *struct {
+			Id          *string    `json:"id,omitempty"`
+			ScheduledAt *time.Time `json:"scheduledAt,omitempty"`
+
+			// Status "scheduled"
+			Status *string `json:"status,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ScheduleWhatsAppBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ScheduleWhatsAppBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendWhatsAppBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Failed Number of messages that failed
+		Failed *int `json:"failed,omitempty"`
+
+		// Sent Number of messages sent successfully
+		Sent *int `json:"sent,omitempty"`
+
+		// Status Final broadcast status
+		Status  *SendWhatsAppBroadcast200Status `json:"status,omitempty"`
+		Success *bool                           `json:"success,omitempty"`
+
+		// Total Total recipient count
+		Total *int `json:"total,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type SendWhatsAppBroadcast200Status string
+
+// Status returns HTTPResponse.Status
+func (r SendWhatsAppBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendWhatsAppBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendWhatsAppBulkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Results *[]struct {
+			Error     *string `json:"error,omitempty"`
+			MessageId *string `json:"messageId,omitempty"`
+			Phone     *string `json:"phone,omitempty"`
+			Success   *bool   `json:"success,omitempty"`
+		} `json:"results,omitempty"`
+		Success *bool `json:"success,omitempty"`
+		Summary *struct {
+			Failed *int `json:"failed,omitempty"`
+			Sent   *int `json:"sent,omitempty"`
+			Total  *int `json:"total,omitempty"`
+		} `json:"summary,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SendWhatsAppBulkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendWhatsAppBulkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppBusinessProfileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		BusinessProfile *struct {
+			// About Short description (max 139 chars)
+			About   *string `json:"about,omitempty"`
+			Address *string `json:"address,omitempty"`
+
+			// Description Full description (max 512 chars)
+			Description       *string `json:"description,omitempty"`
+			Email             *string `json:"email,omitempty"`
+			ProfilePictureUrl *string `json:"profilePictureUrl,omitempty"`
+
+			// Vertical Business category
+			Vertical *string   `json:"vertical,omitempty"`
+			Websites *[]string `json:"websites,omitempty"`
+		} `json:"businessProfile,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBusinessProfileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBusinessProfileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppBusinessProfileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppBusinessProfileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppBusinessProfileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Contacts *[]struct {
+			Company               *string                 `json:"company,omitempty"`
+			CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+			CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+			Email                 *string                 `json:"email,omitempty"`
+			Groups                *[]string               `json:"groups,omitempty"`
+			Id                    *string                 `json:"id,omitempty"`
+			IsOptedIn             *bool                   `json:"isOptedIn,omitempty"`
+			LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+			LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+			MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+			MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+			Name                  *string                 `json:"name,omitempty"`
+			Notes                 *string                 `json:"notes,omitempty"`
+			Phone                 *string                 `json:"phone,omitempty"`
+			Tags                  *[]string               `json:"tags,omitempty"`
+			WaId                  *string                 `json:"waId,omitempty"`
+		} `json:"contacts,omitempty"`
+		Filters *struct {
+			Groups *[]string `json:"groups,omitempty"`
+			Tags   *[]string `json:"tags,omitempty"`
+		} `json:"filters,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Contact *struct {
+			Company   *string    `json:"company,omitempty"`
+			CreatedAt *time.Time `json:"createdAt,omitempty"`
+			Email     *string    `json:"email,omitempty"`
+			Groups    *[]string  `json:"groups,omitempty"`
+			Id        *string    `json:"id,omitempty"`
+			IsOptedIn *bool      `json:"isOptedIn,omitempty"`
+			Name      *string    `json:"name,omitempty"`
+			Phone     *string    `json:"phone,omitempty"`
+			Tags      *[]string  `json:"tags,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkDeleteWhatsAppContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Deleted Number of contacts deleted
+		Deleted *int  `json:"deleted,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkDeleteWhatsAppContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkDeleteWhatsAppContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkUpdateWhatsAppContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Action *string `json:"action,omitempty"`
+
+		// Matched Number of contacts matched
+		Matched *int `json:"matched,omitempty"`
+
+		// Modified Number of contacts modified
+		Modified *int  `json:"modified,omitempty"`
+		Success  *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkUpdateWhatsAppContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkUpdateWhatsAppContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ImportWhatsAppContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Results *[]struct {
+			ContactId *string `json:"contactId,omitempty"`
+			Error     *string `json:"error,omitempty"`
+			Name      *string `json:"name,omitempty"`
+			Phone     *string `json:"phone,omitempty"`
+			Success   *bool   `json:"success,omitempty"`
+		} `json:"results,omitempty"`
+		Success *bool `json:"success,omitempty"`
+		Summary *struct {
+			Created *int `json:"created,omitempty"`
+			Failed  *int `json:"failed,omitempty"`
+			Skipped *int `json:"skipped,omitempty"`
+			Total   *int `json:"total,omitempty"`
+		} `json:"summary,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ImportWhatsAppContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ImportWhatsAppContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Contact *struct {
+			Company               *string                 `json:"company,omitempty"`
+			CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+			CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+			Email                 *string                 `json:"email,omitempty"`
+			Groups                *[]string               `json:"groups,omitempty"`
+			Id                    *string                 `json:"id,omitempty"`
+			IsBlocked             *bool                   `json:"isBlocked,omitempty"`
+			IsOptedIn             *bool                   `json:"isOptedIn,omitempty"`
+			LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+			LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+			MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+			MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+			Name                  *string                 `json:"name,omitempty"`
+			Notes                 *string                 `json:"notes,omitempty"`
+			OptInDate             *time.Time              `json:"optInDate,omitempty"`
+			OptOutDate            *time.Time              `json:"optOutDate,omitempty"`
+			Phone                 *string                 `json:"phone,omitempty"`
+			Tags                  *[]string               `json:"tags,omitempty"`
+			UpdatedAt             *time.Time              `json:"updatedAt,omitempty"`
+			WaId                  *string                 `json:"waId,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Contact *struct {
+			Company      *string                 `json:"company,omitempty"`
+			CustomFields *map[string]interface{} `json:"customFields,omitempty"`
+			Email        *string                 `json:"email,omitempty"`
+			Groups       *[]string               `json:"groups,omitempty"`
+			Id           *string                 `json:"id,omitempty"`
+			IsBlocked    *bool                   `json:"isBlocked,omitempty"`
+			IsOptedIn    *bool                   `json:"isOptedIn,omitempty"`
+			Name         *string                 `json:"name,omitempty"`
+			Notes        *string                 `json:"notes,omitempty"`
+			Phone        *string                 `json:"phone,omitempty"`
+			Tags         *[]string               `json:"tags,omitempty"`
+			UpdatedAt    *time.Time              `json:"updatedAt,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppGroupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+
+		// Modified Number of contacts updated
+		Modified *int  `json:"modified,omitempty"`
+		Success  *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppGroupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppGroupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppGroupsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Groups *[]struct {
+			Name *string `json:"name,omitempty"`
+
+			// OptedInCount Opted-in contacts in this group
+			OptedInCount *int `json:"optedInCount,omitempty"`
+
+			// TotalCount Total contacts in this group
+			TotalCount *int `json:"totalCount,omitempty"`
+		} `json:"groups,omitempty"`
+		Success *bool `json:"success,omitempty"`
+		Summary *struct {
+			GroupCount      *int `json:"groupCount,omitempty"`
+			OptedInContacts *int `json:"optedInContacts,omitempty"`
+			TotalContacts   *int `json:"totalContacts,omitempty"`
+		} `json:"summary,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppGroupsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppGroupsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RenameWhatsAppGroupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+
+		// Modified Number of contacts updated
+		Modified *int  `json:"modified,omitempty"`
+		Success  *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RenameWhatsAppGroupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RenameWhatsAppGroupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppPhoneNumbersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Numbers *[]struct {
+			UnderscoreId           *string                                  `json:"_id,omitempty"`
+			Country                *string                                  `json:"country,omitempty"`
+			CreatedAt              *time.Time                               `json:"createdAt,omitempty"`
+			MetaPreverifiedId      *string                                  `json:"metaPreverifiedId,omitempty"`
+			MetaVerificationStatus *string                                  `json:"metaVerificationStatus,omitempty"`
+			PhoneNumber            *string                                  `json:"phoneNumber,omitempty"`
+			ProfileId              *map[string]interface{}                  `json:"profileId,omitempty"`
+			ProvisionedAt          *time.Time                               `json:"provisionedAt,omitempty"`
+			Status                 *GetWhatsAppPhoneNumbers200NumbersStatus `json:"status,omitempty"`
+		} `json:"numbers,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetWhatsAppPhoneNumbers200NumbersStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppPhoneNumbersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppPhoneNumbersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SearchAvailableWhatsAppNumbersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Numbers *[]map[string]interface{} `json:"numbers,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchAvailableWhatsAppNumbersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchAvailableWhatsAppNumbersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPreverifiedWhatsAppNumbersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Numbers *[]struct {
+			Id                        *string    `json:"id,omitempty"`
+			MetaPreverifiedId         *string    `json:"metaPreverifiedId,omitempty"`
+			MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
+			MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
+			PhoneNumber               *string    `json:"phoneNumber,omitempty"`
+		} `json:"numbers,omitempty"`
+
+		// PreVerifiedIds IDs to pass in FB.login() extras.setup.preVerifiedPhone.ids
+		PreVerifiedIds *[]string `json:"preVerifiedIds,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPreverifiedWhatsAppNumbersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPreverifiedWhatsAppNumbersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PurchaseWhatsAppPhoneNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+	JSON401 *Unauthorized
+}
+type PurchaseWhatsAppPhoneNumber2000 struct {
+	CheckoutUrl *string `json:"checkoutUrl,omitempty"`
+	Message     *string `json:"message,omitempty"`
+}
+type PurchaseWhatsAppPhoneNumber2001 struct {
+	Message     *string `json:"message,omitempty"`
+	PhoneNumber *struct {
+		Country                *string    `json:"country,omitempty"`
+		Id                     *string    `json:"id,omitempty"`
+		MetaPreverifiedId      *string    `json:"metaPreverifiedId,omitempty"`
+		MetaVerificationStatus *string    `json:"metaVerificationStatus,omitempty"`
+		PhoneNumber            *string    `json:"phoneNumber,omitempty"`
+		ProvisionedAt          *time.Time `json:"provisionedAt,omitempty"`
+		Status                 *string    `json:"status,omitempty"`
+	} `json:"phoneNumber,omitempty"`
+}
+
+// Status returns HTTPResponse.Status
+func (r PurchaseWhatsAppPhoneNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PurchaseWhatsAppPhoneNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReleaseWhatsAppPhoneNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message     *string `json:"message,omitempty"`
+		PhoneNumber *struct {
+			Id          *string    `json:"id,omitempty"`
+			PhoneNumber *string    `json:"phoneNumber,omitempty"`
+			ReleasedAt  *time.Time `json:"releasedAt,omitempty"`
+
+			// Status "released"
+			Status *string `json:"status,omitempty"`
+		} `json:"phoneNumber,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ReleaseWhatsAppPhoneNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReleaseWhatsAppPhoneNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppPhoneNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		PhoneNumber *struct {
+			Country                *string                                     `json:"country,omitempty"`
+			Id                     *string                                     `json:"id,omitempty"`
+			MetaPreverifiedId      *string                                     `json:"metaPreverifiedId,omitempty"`
+			MetaVerificationStatus *string                                     `json:"metaVerificationStatus,omitempty"`
+			PhoneNumber            *string                                     `json:"phoneNumber,omitempty"`
+			ProvisionedAt          *time.Time                                  `json:"provisionedAt,omitempty"`
+			Status                 *GetWhatsAppPhoneNumber200PhoneNumberStatus `json:"status,omitempty"`
+		} `json:"phoneNumber,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type GetWhatsAppPhoneNumber200PhoneNumberStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppPhoneNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppPhoneNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RequestWhatsAppVerificationCodeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string                                   `json:"message,omitempty"`
+		Method  *RequestWhatsAppVerificationCode200Method `json:"method,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type RequestWhatsAppVerificationCode200Method string
+
+// Status returns HTTPResponse.Status
+func (r RequestWhatsAppVerificationCodeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RequestWhatsAppVerificationCodeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type VerifyWhatsAppPhoneNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message                   *string    `json:"message,omitempty"`
+		MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
+		MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r VerifyWhatsAppPhoneNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r VerifyWhatsAppPhoneNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppTemplatesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success   *bool `json:"success,omitempty"`
+		Templates *[]struct {
+			Category   *GetWhatsAppTemplates200TemplatesCategory `json:"category,omitempty"`
+			Components *[]map[string]interface{}                 `json:"components,omitempty"`
+
+			// Id WhatsApp template ID
+			Id       *string                                 `json:"id,omitempty"`
+			Language *string                                 `json:"language,omitempty"`
+			Name     *string                                 `json:"name,omitempty"`
+			Status   *GetWhatsAppTemplates200TemplatesStatus `json:"status,omitempty"`
+		} `json:"templates,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetWhatsAppTemplates200TemplatesCategory string
+type GetWhatsAppTemplates200TemplatesStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppTemplatesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppTemplatesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Template *struct {
+			Category *string `json:"category,omitempty"`
+			Id       *string `json:"id,omitempty"`
+			Language *string `json:"language,omitempty"`
+			Name     *string `json:"name,omitempty"`
+			Status   *string `json:"status,omitempty"`
+		} `json:"template,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Template *struct {
+			Category   *string                   `json:"category,omitempty"`
+			Components *[]map[string]interface{} `json:"components,omitempty"`
+			Id         *string                   `json:"id,omitempty"`
+			Language   *string                   `json:"language,omitempty"`
+			Name       *string                   `json:"name,omitempty"`
+			Status     *string                   `json:"status,omitempty"`
+		} `json:"template,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Template *struct {
+			Id     *string `json:"id,omitempty"`
+			Name   *string `json:"name,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"template,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // ListAccountGroupsWithResponse request returning *ListAccountGroupsResponse
 func (c *ClientWithResponses) ListAccountGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAccountGroupsResponse, error) {
 	rsp, err := c.ListAccountGroups(ctx, reqEditors...)
@@ -24640,6 +29356,483 @@ func (c *ClientWithResponses) TestWebhookWithResponse(ctx context.Context, body 
 		return nil, err
 	}
 	return ParseTestWebhookResponse(rsp)
+}
+
+// GetWhatsAppBroadcastsWithResponse request returning *GetWhatsAppBroadcastsResponse
+func (c *ClientWithResponses) GetWhatsAppBroadcastsWithResponse(ctx context.Context, params *GetWhatsAppBroadcastsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastsResponse, error) {
+	rsp, err := c.GetWhatsAppBroadcasts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBroadcastsResponse(rsp)
+}
+
+// CreateWhatsAppBroadcastWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppBroadcastResponse
+func (c *ClientWithResponses) CreateWhatsAppBroadcastWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppBroadcastResponse, error) {
+	rsp, err := c.CreateWhatsAppBroadcastWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppBroadcastResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppBroadcastWithResponse(ctx context.Context, body CreateWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppBroadcastResponse, error) {
+	rsp, err := c.CreateWhatsAppBroadcast(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppBroadcastResponse(rsp)
+}
+
+// DeleteWhatsAppBroadcastWithResponse request returning *DeleteWhatsAppBroadcastResponse
+func (c *ClientWithResponses) DeleteWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppBroadcastResponse, error) {
+	rsp, err := c.DeleteWhatsAppBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppBroadcastResponse(rsp)
+}
+
+// GetWhatsAppBroadcastWithResponse request returning *GetWhatsAppBroadcastResponse
+func (c *ClientWithResponses) GetWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastResponse, error) {
+	rsp, err := c.GetWhatsAppBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBroadcastResponse(rsp)
+}
+
+// RemoveWhatsAppBroadcastRecipientsWithBodyWithResponse request with arbitrary body returning *RemoveWhatsAppBroadcastRecipientsResponse
+func (c *ClientWithResponses) RemoveWhatsAppBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveWhatsAppBroadcastRecipientsResponse, error) {
+	rsp, err := c.RemoveWhatsAppBroadcastRecipientsWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveWhatsAppBroadcastRecipientsResponse(rsp)
+}
+
+func (c *ClientWithResponses) RemoveWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body RemoveWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveWhatsAppBroadcastRecipientsResponse, error) {
+	rsp, err := c.RemoveWhatsAppBroadcastRecipients(ctx, broadcastId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveWhatsAppBroadcastRecipientsResponse(rsp)
+}
+
+// GetWhatsAppBroadcastRecipientsWithResponse request returning *GetWhatsAppBroadcastRecipientsResponse
+func (c *ClientWithResponses) GetWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, params *GetWhatsAppBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBroadcastRecipientsResponse, error) {
+	rsp, err := c.GetWhatsAppBroadcastRecipients(ctx, broadcastId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBroadcastRecipientsResponse(rsp)
+}
+
+// AddWhatsAppBroadcastRecipientsWithBodyWithResponse request with arbitrary body returning *AddWhatsAppBroadcastRecipientsResponse
+func (c *ClientWithResponses) AddWhatsAppBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddWhatsAppBroadcastRecipientsResponse, error) {
+	rsp, err := c.AddWhatsAppBroadcastRecipientsWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddWhatsAppBroadcastRecipientsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddWhatsAppBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body AddWhatsAppBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddWhatsAppBroadcastRecipientsResponse, error) {
+	rsp, err := c.AddWhatsAppBroadcastRecipients(ctx, broadcastId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddWhatsAppBroadcastRecipientsResponse(rsp)
+}
+
+// CancelWhatsAppBroadcastScheduleWithResponse request returning *CancelWhatsAppBroadcastScheduleResponse
+func (c *ClientWithResponses) CancelWhatsAppBroadcastScheduleWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*CancelWhatsAppBroadcastScheduleResponse, error) {
+	rsp, err := c.CancelWhatsAppBroadcastSchedule(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelWhatsAppBroadcastScheduleResponse(rsp)
+}
+
+// ScheduleWhatsAppBroadcastWithBodyWithResponse request with arbitrary body returning *ScheduleWhatsAppBroadcastResponse
+func (c *ClientWithResponses) ScheduleWhatsAppBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ScheduleWhatsAppBroadcastResponse, error) {
+	rsp, err := c.ScheduleWhatsAppBroadcastWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseScheduleWhatsAppBroadcastResponse(rsp)
+}
+
+func (c *ClientWithResponses) ScheduleWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, body ScheduleWhatsAppBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*ScheduleWhatsAppBroadcastResponse, error) {
+	rsp, err := c.ScheduleWhatsAppBroadcast(ctx, broadcastId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseScheduleWhatsAppBroadcastResponse(rsp)
+}
+
+// SendWhatsAppBroadcastWithResponse request returning *SendWhatsAppBroadcastResponse
+func (c *ClientWithResponses) SendWhatsAppBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*SendWhatsAppBroadcastResponse, error) {
+	rsp, err := c.SendWhatsAppBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppBroadcastResponse(rsp)
+}
+
+// SendWhatsAppBulkWithBodyWithResponse request with arbitrary body returning *SendWhatsAppBulkResponse
+func (c *ClientWithResponses) SendWhatsAppBulkWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppBulkResponse, error) {
+	rsp, err := c.SendWhatsAppBulkWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppBulkResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendWhatsAppBulkWithResponse(ctx context.Context, body SendWhatsAppBulkJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppBulkResponse, error) {
+	rsp, err := c.SendWhatsAppBulk(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppBulkResponse(rsp)
+}
+
+// GetWhatsAppBusinessProfileWithResponse request returning *GetWhatsAppBusinessProfileResponse
+func (c *ClientWithResponses) GetWhatsAppBusinessProfileWithResponse(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBusinessProfileResponse, error) {
+	rsp, err := c.GetWhatsAppBusinessProfile(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBusinessProfileResponse(rsp)
+}
+
+// UpdateWhatsAppBusinessProfileWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppBusinessProfileResponse
+func (c *ClientWithResponses) UpdateWhatsAppBusinessProfileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error) {
+	rsp, err := c.UpdateWhatsAppBusinessProfileWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppBusinessProfileResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppBusinessProfileWithResponse(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error) {
+	rsp, err := c.UpdateWhatsAppBusinessProfile(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppBusinessProfileResponse(rsp)
+}
+
+// GetWhatsAppContactsWithResponse request returning *GetWhatsAppContactsResponse
+func (c *ClientWithResponses) GetWhatsAppContactsWithResponse(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppContactsResponse, error) {
+	rsp, err := c.GetWhatsAppContacts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppContactsResponse(rsp)
+}
+
+// CreateWhatsAppContactWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppContactResponse
+func (c *ClientWithResponses) CreateWhatsAppContactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppContactResponse, error) {
+	rsp, err := c.CreateWhatsAppContactWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppContactResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppContactWithResponse(ctx context.Context, body CreateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppContactResponse, error) {
+	rsp, err := c.CreateWhatsAppContact(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppContactResponse(rsp)
+}
+
+// BulkDeleteWhatsAppContactsWithBodyWithResponse request with arbitrary body returning *BulkDeleteWhatsAppContactsResponse
+func (c *ClientWithResponses) BulkDeleteWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkDeleteWhatsAppContactsResponse, error) {
+	rsp, err := c.BulkDeleteWhatsAppContactsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkDeleteWhatsAppContactsResponse(rsp)
+}
+
+func (c *ClientWithResponses) BulkDeleteWhatsAppContactsWithResponse(ctx context.Context, body BulkDeleteWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkDeleteWhatsAppContactsResponse, error) {
+	rsp, err := c.BulkDeleteWhatsAppContacts(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkDeleteWhatsAppContactsResponse(rsp)
+}
+
+// BulkUpdateWhatsAppContactsWithBodyWithResponse request with arbitrary body returning *BulkUpdateWhatsAppContactsResponse
+func (c *ClientWithResponses) BulkUpdateWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateWhatsAppContactsResponse, error) {
+	rsp, err := c.BulkUpdateWhatsAppContactsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateWhatsAppContactsResponse(rsp)
+}
+
+func (c *ClientWithResponses) BulkUpdateWhatsAppContactsWithResponse(ctx context.Context, body BulkUpdateWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateWhatsAppContactsResponse, error) {
+	rsp, err := c.BulkUpdateWhatsAppContacts(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateWhatsAppContactsResponse(rsp)
+}
+
+// ImportWhatsAppContactsWithBodyWithResponse request with arbitrary body returning *ImportWhatsAppContactsResponse
+func (c *ClientWithResponses) ImportWhatsAppContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ImportWhatsAppContactsResponse, error) {
+	rsp, err := c.ImportWhatsAppContactsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseImportWhatsAppContactsResponse(rsp)
+}
+
+func (c *ClientWithResponses) ImportWhatsAppContactsWithResponse(ctx context.Context, body ImportWhatsAppContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*ImportWhatsAppContactsResponse, error) {
+	rsp, err := c.ImportWhatsAppContacts(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseImportWhatsAppContactsResponse(rsp)
+}
+
+// DeleteWhatsAppContactWithResponse request returning *DeleteWhatsAppContactResponse
+func (c *ClientWithResponses) DeleteWhatsAppContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppContactResponse, error) {
+	rsp, err := c.DeleteWhatsAppContact(ctx, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppContactResponse(rsp)
+}
+
+// GetWhatsAppContactWithResponse request returning *GetWhatsAppContactResponse
+func (c *ClientWithResponses) GetWhatsAppContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetWhatsAppContactResponse, error) {
+	rsp, err := c.GetWhatsAppContact(ctx, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppContactResponse(rsp)
+}
+
+// UpdateWhatsAppContactWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppContactResponse
+func (c *ClientWithResponses) UpdateWhatsAppContactWithBodyWithResponse(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error) {
+	rsp, err := c.UpdateWhatsAppContactWithBody(ctx, contactId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppContactResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppContactWithResponse(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error) {
+	rsp, err := c.UpdateWhatsAppContact(ctx, contactId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppContactResponse(rsp)
+}
+
+// DeleteWhatsAppGroupWithBodyWithResponse request with arbitrary body returning *DeleteWhatsAppGroupResponse
+func (c *ClientWithResponses) DeleteWhatsAppGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupResponse, error) {
+	rsp, err := c.DeleteWhatsAppGroupWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppGroupResponse(rsp)
+}
+
+func (c *ClientWithResponses) DeleteWhatsAppGroupWithResponse(ctx context.Context, body DeleteWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupResponse, error) {
+	rsp, err := c.DeleteWhatsAppGroup(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppGroupResponse(rsp)
+}
+
+// GetWhatsAppGroupsWithResponse request returning *GetWhatsAppGroupsResponse
+func (c *ClientWithResponses) GetWhatsAppGroupsWithResponse(ctx context.Context, params *GetWhatsAppGroupsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppGroupsResponse, error) {
+	rsp, err := c.GetWhatsAppGroups(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppGroupsResponse(rsp)
+}
+
+// RenameWhatsAppGroupWithBodyWithResponse request with arbitrary body returning *RenameWhatsAppGroupResponse
+func (c *ClientWithResponses) RenameWhatsAppGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RenameWhatsAppGroupResponse, error) {
+	rsp, err := c.RenameWhatsAppGroupWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRenameWhatsAppGroupResponse(rsp)
+}
+
+func (c *ClientWithResponses) RenameWhatsAppGroupWithResponse(ctx context.Context, body RenameWhatsAppGroupJSONRequestBody, reqEditors ...RequestEditorFn) (*RenameWhatsAppGroupResponse, error) {
+	rsp, err := c.RenameWhatsAppGroup(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRenameWhatsAppGroupResponse(rsp)
+}
+
+// GetWhatsAppPhoneNumbersWithResponse request returning *GetWhatsAppPhoneNumbersResponse
+func (c *ClientWithResponses) GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error) {
+	rsp, err := c.GetWhatsAppPhoneNumbers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppPhoneNumbersResponse(rsp)
+}
+
+// SearchAvailableWhatsAppNumbersWithResponse request returning *SearchAvailableWhatsAppNumbersResponse
+func (c *ClientWithResponses) SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error) {
+	rsp, err := c.SearchAvailableWhatsAppNumbers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchAvailableWhatsAppNumbersResponse(rsp)
+}
+
+// GetPreverifiedWhatsAppNumbersWithResponse request returning *GetPreverifiedWhatsAppNumbersResponse
+func (c *ClientWithResponses) GetPreverifiedWhatsAppNumbersWithResponse(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*GetPreverifiedWhatsAppNumbersResponse, error) {
+	rsp, err := c.GetPreverifiedWhatsAppNumbers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPreverifiedWhatsAppNumbersResponse(rsp)
+}
+
+// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *PurchaseWhatsAppPhoneNumberResponse
+func (c *ClientWithResponses) PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.PurchaseWhatsAppPhoneNumberWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePurchaseWhatsAppPhoneNumberResponse(rsp)
+}
+
+func (c *ClientWithResponses) PurchaseWhatsAppPhoneNumberWithResponse(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.PurchaseWhatsAppPhoneNumber(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePurchaseWhatsAppPhoneNumberResponse(rsp)
+}
+
+// ReleaseWhatsAppPhoneNumberWithResponse request returning *ReleaseWhatsAppPhoneNumberResponse
+func (c *ClientWithResponses) ReleaseWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*ReleaseWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.ReleaseWhatsAppPhoneNumber(ctx, phoneNumberId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReleaseWhatsAppPhoneNumberResponse(rsp)
+}
+
+// GetWhatsAppPhoneNumberWithResponse request returning *GetWhatsAppPhoneNumberResponse
+func (c *ClientWithResponses) GetWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.GetWhatsAppPhoneNumber(ctx, phoneNumberId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppPhoneNumberResponse(rsp)
+}
+
+// RequestWhatsAppVerificationCodeWithBodyWithResponse request with arbitrary body returning *RequestWhatsAppVerificationCodeResponse
+func (c *ClientWithResponses) RequestWhatsAppVerificationCodeWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error) {
+	rsp, err := c.RequestWhatsAppVerificationCodeWithBody(ctx, phoneNumberId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestWhatsAppVerificationCodeResponse(rsp)
+}
+
+func (c *ClientWithResponses) RequestWhatsAppVerificationCodeWithResponse(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error) {
+	rsp, err := c.RequestWhatsAppVerificationCode(ctx, phoneNumberId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestWhatsAppVerificationCodeResponse(rsp)
+}
+
+// VerifyWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *VerifyWhatsAppPhoneNumberResponse
+func (c *ClientWithResponses) VerifyWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.VerifyWhatsAppPhoneNumberWithBody(ctx, phoneNumberId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyWhatsAppPhoneNumberResponse(rsp)
+}
+
+func (c *ClientWithResponses) VerifyWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error) {
+	rsp, err := c.VerifyWhatsAppPhoneNumber(ctx, phoneNumberId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyWhatsAppPhoneNumberResponse(rsp)
+}
+
+// GetWhatsAppTemplatesWithResponse request returning *GetWhatsAppTemplatesResponse
+func (c *ClientWithResponses) GetWhatsAppTemplatesWithResponse(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplatesResponse, error) {
+	rsp, err := c.GetWhatsAppTemplates(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppTemplatesResponse(rsp)
+}
+
+// CreateWhatsAppTemplateWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppTemplateResponse
+func (c *ClientWithResponses) CreateWhatsAppTemplateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppTemplateResponse, error) {
+	rsp, err := c.CreateWhatsAppTemplateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppTemplateResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppTemplateWithResponse(ctx context.Context, body CreateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppTemplateResponse, error) {
+	rsp, err := c.CreateWhatsAppTemplate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppTemplateResponse(rsp)
+}
+
+// DeleteWhatsAppTemplateWithResponse request returning *DeleteWhatsAppTemplateResponse
+func (c *ClientWithResponses) DeleteWhatsAppTemplateWithResponse(ctx context.Context, templateName string, params *DeleteWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppTemplateResponse, error) {
+	rsp, err := c.DeleteWhatsAppTemplate(ctx, templateName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppTemplateResponse(rsp)
+}
+
+// GetWhatsAppTemplateWithResponse request returning *GetWhatsAppTemplateResponse
+func (c *ClientWithResponses) GetWhatsAppTemplateWithResponse(ctx context.Context, templateName string, params *GetWhatsAppTemplateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplateResponse, error) {
+	rsp, err := c.GetWhatsAppTemplate(ctx, templateName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppTemplateResponse(rsp)
+}
+
+// UpdateWhatsAppTemplateWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppTemplateResponse
+func (c *ClientWithResponses) UpdateWhatsAppTemplateWithBodyWithResponse(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error) {
+	rsp, err := c.UpdateWhatsAppTemplateWithBody(ctx, templateName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppTemplateResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppTemplateWithResponse(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error) {
+	rsp, err := c.UpdateWhatsAppTemplate(ctx, templateName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppTemplateResponse(rsp)
 }
 
 // ParseListAccountGroupsResponse parses an HTTP response from a ListAccountGroupsWithResponse call
@@ -31256,6 +36449,1759 @@ func ParseTestWebhookResponse(rsp *http.Response) (*TestWebhookResponse, error) 
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBroadcastsResponse parses an HTTP response from a GetWhatsAppBroadcastsWithResponse call
+func ParseGetWhatsAppBroadcastsResponse(rsp *http.Response) (*GetWhatsAppBroadcastsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBroadcastsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcasts *[]struct {
+				CompletedAt    *time.Time                                `json:"completedAt,omitempty"`
+				CreatedAt      *time.Time                                `json:"createdAt,omitempty"`
+				DeliveredCount *int                                      `json:"deliveredCount,omitempty"`
+				Description    *string                                   `json:"description,omitempty"`
+				FailedCount    *int                                      `json:"failedCount,omitempty"`
+				Id             *string                                   `json:"id,omitempty"`
+				Name           *string                                   `json:"name,omitempty"`
+				ReadCount      *int                                      `json:"readCount,omitempty"`
+				RecipientCount *int                                      `json:"recipientCount,omitempty"`
+				ScheduledAt    *time.Time                                `json:"scheduledAt,omitempty"`
+				SentCount      *int                                      `json:"sentCount,omitempty"`
+				StartedAt      *time.Time                                `json:"startedAt,omitempty"`
+				Status         *GetWhatsAppBroadcasts200BroadcastsStatus `json:"status,omitempty"`
+				Template       *struct {
+					Language *string `json:"language,omitempty"`
+					Name     *string `json:"name,omitempty"`
+				} `json:"template,omitempty"`
+			} `json:"broadcasts,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppBroadcastResponse parses an HTTP response from a CreateWhatsAppBroadcastWithResponse call
+func ParseCreateWhatsAppBroadcastResponse(rsp *http.Response) (*CreateWhatsAppBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				CreatedAt      *time.Time `json:"createdAt,omitempty"`
+				Description    *string    `json:"description,omitempty"`
+				Id             *string    `json:"id,omitempty"`
+				Name           *string    `json:"name,omitempty"`
+				RecipientCount *int       `json:"recipientCount,omitempty"`
+
+				// Status Always "draft" for new broadcasts
+				Status   *string                 `json:"status,omitempty"`
+				Template *map[string]interface{} `json:"template,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppBroadcastResponse parses an HTTP response from a DeleteWhatsAppBroadcastWithResponse call
+func ParseDeleteWhatsAppBroadcastResponse(rsp *http.Response) (*DeleteWhatsAppBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBroadcastResponse parses an HTTP response from a GetWhatsAppBroadcastWithResponse call
+func ParseGetWhatsAppBroadcastResponse(rsp *http.Response) (*GetWhatsAppBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				CompletedAt    *time.Time                              `json:"completedAt,omitempty"`
+				CreatedAt      *time.Time                              `json:"createdAt,omitempty"`
+				DeliveredCount *int                                    `json:"deliveredCount,omitempty"`
+				Description    *string                                 `json:"description,omitempty"`
+				FailedCount    *int                                    `json:"failedCount,omitempty"`
+				Id             *string                                 `json:"id,omitempty"`
+				Name           *string                                 `json:"name,omitempty"`
+				ReadCount      *int                                    `json:"readCount,omitempty"`
+				RecipientCount *int                                    `json:"recipientCount,omitempty"`
+				ScheduledAt    *time.Time                              `json:"scheduledAt,omitempty"`
+				SentCount      *int                                    `json:"sentCount,omitempty"`
+				StartedAt      *time.Time                              `json:"startedAt,omitempty"`
+				Status         *GetWhatsAppBroadcast200BroadcastStatus `json:"status,omitempty"`
+				Template       *map[string]interface{}                 `json:"template,omitempty"`
+				UpdatedAt      *time.Time                              `json:"updatedAt,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveWhatsAppBroadcastRecipientsResponse parses an HTTP response from a RemoveWhatsAppBroadcastRecipientsWithResponse call
+func ParseRemoveWhatsAppBroadcastRecipientsResponse(rsp *http.Response) (*RemoveWhatsAppBroadcastRecipientsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveWhatsAppBroadcastRecipientsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Removed Number of recipients removed
+			Removed *int  `json:"removed,omitempty"`
+			Success *bool `json:"success,omitempty"`
+
+			// TotalRecipients Remaining recipient count
+			TotalRecipients *int `json:"totalRecipients,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBroadcastRecipientsResponse parses an HTTP response from a GetWhatsAppBroadcastRecipientsWithResponse call
+func ParseGetWhatsAppBroadcastRecipientsResponse(rsp *http.Response) (*GetWhatsAppBroadcastRecipientsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBroadcastRecipientsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Recipients *[]struct {
+				DeliveredAt *time.Time                                         `json:"deliveredAt,omitempty"`
+				Error       *string                                            `json:"error,omitempty"`
+				MessageId   *string                                            `json:"messageId,omitempty"`
+				Name        *string                                            `json:"name,omitempty"`
+				Phone       *string                                            `json:"phone,omitempty"`
+				ReadAt      *time.Time                                         `json:"readAt,omitempty"`
+				SentAt      *time.Time                                         `json:"sentAt,omitempty"`
+				Status      *GetWhatsAppBroadcastRecipients200RecipientsStatus `json:"status,omitempty"`
+				Variables   *map[string]interface{}                            `json:"variables,omitempty"`
+			} `json:"recipients,omitempty"`
+			Success *bool `json:"success,omitempty"`
+			Summary *struct {
+				Delivered *int `json:"delivered,omitempty"`
+				Failed    *int `json:"failed,omitempty"`
+				Pending   *int `json:"pending,omitempty"`
+				Read      *int `json:"read,omitempty"`
+				Sent      *int `json:"sent,omitempty"`
+				Total     *int `json:"total,omitempty"`
+			} `json:"summary,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddWhatsAppBroadcastRecipientsResponse parses an HTTP response from a AddWhatsAppBroadcastRecipientsWithResponse call
+func ParseAddWhatsAppBroadcastRecipientsResponse(rsp *http.Response) (*AddWhatsAppBroadcastRecipientsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddWhatsAppBroadcastRecipientsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Added Number of new recipients added
+			Added *int `json:"added,omitempty"`
+
+			// Duplicates Number of duplicate phone numbers skipped
+			Duplicates *int  `json:"duplicates,omitempty"`
+			Success    *bool `json:"success,omitempty"`
+
+			// TotalRecipients Total recipient count after addition
+			TotalRecipients *int `json:"totalRecipients,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelWhatsAppBroadcastScheduleResponse parses an HTTP response from a CancelWhatsAppBroadcastScheduleWithResponse call
+func ParseCancelWhatsAppBroadcastScheduleResponse(rsp *http.Response) (*CancelWhatsAppBroadcastScheduleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelWhatsAppBroadcastScheduleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				Id *string `json:"id,omitempty"`
+
+				// Status "draft"
+				Status *string `json:"status,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseScheduleWhatsAppBroadcastResponse parses an HTTP response from a ScheduleWhatsAppBroadcastWithResponse call
+func ParseScheduleWhatsAppBroadcastResponse(rsp *http.Response) (*ScheduleWhatsAppBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ScheduleWhatsAppBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				Id          *string    `json:"id,omitempty"`
+				ScheduledAt *time.Time `json:"scheduledAt,omitempty"`
+
+				// Status "scheduled"
+				Status *string `json:"status,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendWhatsAppBroadcastResponse parses an HTTP response from a SendWhatsAppBroadcastWithResponse call
+func ParseSendWhatsAppBroadcastResponse(rsp *http.Response) (*SendWhatsAppBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendWhatsAppBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Failed Number of messages that failed
+			Failed *int `json:"failed,omitempty"`
+
+			// Sent Number of messages sent successfully
+			Sent *int `json:"sent,omitempty"`
+
+			// Status Final broadcast status
+			Status  *SendWhatsAppBroadcast200Status `json:"status,omitempty"`
+			Success *bool                           `json:"success,omitempty"`
+
+			// Total Total recipient count
+			Total *int `json:"total,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendWhatsAppBulkResponse parses an HTTP response from a SendWhatsAppBulkWithResponse call
+func ParseSendWhatsAppBulkResponse(rsp *http.Response) (*SendWhatsAppBulkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendWhatsAppBulkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Results *[]struct {
+				Error     *string `json:"error,omitempty"`
+				MessageId *string `json:"messageId,omitempty"`
+				Phone     *string `json:"phone,omitempty"`
+				Success   *bool   `json:"success,omitempty"`
+			} `json:"results,omitempty"`
+			Success *bool `json:"success,omitempty"`
+			Summary *struct {
+				Failed *int `json:"failed,omitempty"`
+				Sent   *int `json:"sent,omitempty"`
+				Total  *int `json:"total,omitempty"`
+			} `json:"summary,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBusinessProfileResponse parses an HTTP response from a GetWhatsAppBusinessProfileWithResponse call
+func ParseGetWhatsAppBusinessProfileResponse(rsp *http.Response) (*GetWhatsAppBusinessProfileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBusinessProfileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			BusinessProfile *struct {
+				// About Short description (max 139 chars)
+				About   *string `json:"about,omitempty"`
+				Address *string `json:"address,omitempty"`
+
+				// Description Full description (max 512 chars)
+				Description       *string `json:"description,omitempty"`
+				Email             *string `json:"email,omitempty"`
+				ProfilePictureUrl *string `json:"profilePictureUrl,omitempty"`
+
+				// Vertical Business category
+				Vertical *string   `json:"vertical,omitempty"`
+				Websites *[]string `json:"websites,omitempty"`
+			} `json:"businessProfile,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppBusinessProfileResponse parses an HTTP response from a UpdateWhatsAppBusinessProfileWithResponse call
+func ParseUpdateWhatsAppBusinessProfileResponse(rsp *http.Response) (*UpdateWhatsAppBusinessProfileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppBusinessProfileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppContactsResponse parses an HTTP response from a GetWhatsAppContactsWithResponse call
+func ParseGetWhatsAppContactsResponse(rsp *http.Response) (*GetWhatsAppContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contacts *[]struct {
+				Company               *string                 `json:"company,omitempty"`
+				CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+				CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+				Email                 *string                 `json:"email,omitempty"`
+				Groups                *[]string               `json:"groups,omitempty"`
+				Id                    *string                 `json:"id,omitempty"`
+				IsOptedIn             *bool                   `json:"isOptedIn,omitempty"`
+				LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+				LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+				MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+				MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+				Name                  *string                 `json:"name,omitempty"`
+				Notes                 *string                 `json:"notes,omitempty"`
+				Phone                 *string                 `json:"phone,omitempty"`
+				Tags                  *[]string               `json:"tags,omitempty"`
+				WaId                  *string                 `json:"waId,omitempty"`
+			} `json:"contacts,omitempty"`
+			Filters *struct {
+				Groups *[]string `json:"groups,omitempty"`
+				Tags   *[]string `json:"tags,omitempty"`
+			} `json:"filters,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppContactResponse parses an HTTP response from a CreateWhatsAppContactWithResponse call
+func ParseCreateWhatsAppContactResponse(rsp *http.Response) (*CreateWhatsAppContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contact *struct {
+				Company   *string    `json:"company,omitempty"`
+				CreatedAt *time.Time `json:"createdAt,omitempty"`
+				Email     *string    `json:"email,omitempty"`
+				Groups    *[]string  `json:"groups,omitempty"`
+				Id        *string    `json:"id,omitempty"`
+				IsOptedIn *bool      `json:"isOptedIn,omitempty"`
+				Name      *string    `json:"name,omitempty"`
+				Phone     *string    `json:"phone,omitempty"`
+				Tags      *[]string  `json:"tags,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkDeleteWhatsAppContactsResponse parses an HTTP response from a BulkDeleteWhatsAppContactsWithResponse call
+func ParseBulkDeleteWhatsAppContactsResponse(rsp *http.Response) (*BulkDeleteWhatsAppContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkDeleteWhatsAppContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Deleted Number of contacts deleted
+			Deleted *int  `json:"deleted,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkUpdateWhatsAppContactsResponse parses an HTTP response from a BulkUpdateWhatsAppContactsWithResponse call
+func ParseBulkUpdateWhatsAppContactsResponse(rsp *http.Response) (*BulkUpdateWhatsAppContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkUpdateWhatsAppContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Action *string `json:"action,omitempty"`
+
+			// Matched Number of contacts matched
+			Matched *int `json:"matched,omitempty"`
+
+			// Modified Number of contacts modified
+			Modified *int  `json:"modified,omitempty"`
+			Success  *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseImportWhatsAppContactsResponse parses an HTTP response from a ImportWhatsAppContactsWithResponse call
+func ParseImportWhatsAppContactsResponse(rsp *http.Response) (*ImportWhatsAppContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ImportWhatsAppContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Results *[]struct {
+				ContactId *string `json:"contactId,omitempty"`
+				Error     *string `json:"error,omitempty"`
+				Name      *string `json:"name,omitempty"`
+				Phone     *string `json:"phone,omitempty"`
+				Success   *bool   `json:"success,omitempty"`
+			} `json:"results,omitempty"`
+			Success *bool `json:"success,omitempty"`
+			Summary *struct {
+				Created *int `json:"created,omitempty"`
+				Failed  *int `json:"failed,omitempty"`
+				Skipped *int `json:"skipped,omitempty"`
+				Total   *int `json:"total,omitempty"`
+			} `json:"summary,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppContactResponse parses an HTTP response from a DeleteWhatsAppContactWithResponse call
+func ParseDeleteWhatsAppContactResponse(rsp *http.Response) (*DeleteWhatsAppContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppContactResponse parses an HTTP response from a GetWhatsAppContactWithResponse call
+func ParseGetWhatsAppContactResponse(rsp *http.Response) (*GetWhatsAppContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contact *struct {
+				Company               *string                 `json:"company,omitempty"`
+				CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+				CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+				Email                 *string                 `json:"email,omitempty"`
+				Groups                *[]string               `json:"groups,omitempty"`
+				Id                    *string                 `json:"id,omitempty"`
+				IsBlocked             *bool                   `json:"isBlocked,omitempty"`
+				IsOptedIn             *bool                   `json:"isOptedIn,omitempty"`
+				LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+				LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+				MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+				MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+				Name                  *string                 `json:"name,omitempty"`
+				Notes                 *string                 `json:"notes,omitempty"`
+				OptInDate             *time.Time              `json:"optInDate,omitempty"`
+				OptOutDate            *time.Time              `json:"optOutDate,omitempty"`
+				Phone                 *string                 `json:"phone,omitempty"`
+				Tags                  *[]string               `json:"tags,omitempty"`
+				UpdatedAt             *time.Time              `json:"updatedAt,omitempty"`
+				WaId                  *string                 `json:"waId,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppContactResponse parses an HTTP response from a UpdateWhatsAppContactWithResponse call
+func ParseUpdateWhatsAppContactResponse(rsp *http.Response) (*UpdateWhatsAppContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contact *struct {
+				Company      *string                 `json:"company,omitempty"`
+				CustomFields *map[string]interface{} `json:"customFields,omitempty"`
+				Email        *string                 `json:"email,omitempty"`
+				Groups       *[]string               `json:"groups,omitempty"`
+				Id           *string                 `json:"id,omitempty"`
+				IsBlocked    *bool                   `json:"isBlocked,omitempty"`
+				IsOptedIn    *bool                   `json:"isOptedIn,omitempty"`
+				Name         *string                 `json:"name,omitempty"`
+				Notes        *string                 `json:"notes,omitempty"`
+				Phone        *string                 `json:"phone,omitempty"`
+				Tags         *[]string               `json:"tags,omitempty"`
+				UpdatedAt    *time.Time              `json:"updatedAt,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppGroupResponse parses an HTTP response from a DeleteWhatsAppGroupWithResponse call
+func ParseDeleteWhatsAppGroupResponse(rsp *http.Response) (*DeleteWhatsAppGroupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppGroupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+
+			// Modified Number of contacts updated
+			Modified *int  `json:"modified,omitempty"`
+			Success  *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppGroupsResponse parses an HTTP response from a GetWhatsAppGroupsWithResponse call
+func ParseGetWhatsAppGroupsResponse(rsp *http.Response) (*GetWhatsAppGroupsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppGroupsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Groups *[]struct {
+				Name *string `json:"name,omitempty"`
+
+				// OptedInCount Opted-in contacts in this group
+				OptedInCount *int `json:"optedInCount,omitempty"`
+
+				// TotalCount Total contacts in this group
+				TotalCount *int `json:"totalCount,omitempty"`
+			} `json:"groups,omitempty"`
+			Success *bool `json:"success,omitempty"`
+			Summary *struct {
+				GroupCount      *int `json:"groupCount,omitempty"`
+				OptedInContacts *int `json:"optedInContacts,omitempty"`
+				TotalContacts   *int `json:"totalContacts,omitempty"`
+			} `json:"summary,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRenameWhatsAppGroupResponse parses an HTTP response from a RenameWhatsAppGroupWithResponse call
+func ParseRenameWhatsAppGroupResponse(rsp *http.Response) (*RenameWhatsAppGroupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RenameWhatsAppGroupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+
+			// Modified Number of contacts updated
+			Modified *int  `json:"modified,omitempty"`
+			Success  *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppPhoneNumbersResponse parses an HTTP response from a GetWhatsAppPhoneNumbersWithResponse call
+func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhoneNumbersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppPhoneNumbersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Numbers *[]struct {
+				UnderscoreId           *string                                  `json:"_id,omitempty"`
+				Country                *string                                  `json:"country,omitempty"`
+				CreatedAt              *time.Time                               `json:"createdAt,omitempty"`
+				MetaPreverifiedId      *string                                  `json:"metaPreverifiedId,omitempty"`
+				MetaVerificationStatus *string                                  `json:"metaVerificationStatus,omitempty"`
+				PhoneNumber            *string                                  `json:"phoneNumber,omitempty"`
+				ProfileId              *map[string]interface{}                  `json:"profileId,omitempty"`
+				ProvisionedAt          *time.Time                               `json:"provisionedAt,omitempty"`
+				Status                 *GetWhatsAppPhoneNumbers200NumbersStatus `json:"status,omitempty"`
+			} `json:"numbers,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchAvailableWhatsAppNumbersResponse parses an HTTP response from a SearchAvailableWhatsAppNumbersWithResponse call
+func ParseSearchAvailableWhatsAppNumbersResponse(rsp *http.Response) (*SearchAvailableWhatsAppNumbersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchAvailableWhatsAppNumbersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Numbers *[]map[string]interface{} `json:"numbers,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPreverifiedWhatsAppNumbersResponse parses an HTTP response from a GetPreverifiedWhatsAppNumbersWithResponse call
+func ParseGetPreverifiedWhatsAppNumbersResponse(rsp *http.Response) (*GetPreverifiedWhatsAppNumbersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPreverifiedWhatsAppNumbersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Numbers *[]struct {
+				Id                        *string    `json:"id,omitempty"`
+				MetaPreverifiedId         *string    `json:"metaPreverifiedId,omitempty"`
+				MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
+				MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
+				PhoneNumber               *string    `json:"phoneNumber,omitempty"`
+			} `json:"numbers,omitempty"`
+
+			// PreVerifiedIds IDs to pass in FB.login() extras.setup.preVerifiedPhone.ids
+			PreVerifiedIds *[]string `json:"preVerifiedIds,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePurchaseWhatsAppPhoneNumberResponse parses an HTTP response from a PurchaseWhatsAppPhoneNumberWithResponse call
+func ParsePurchaseWhatsAppPhoneNumberResponse(rsp *http.Response) (*PurchaseWhatsAppPhoneNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PurchaseWhatsAppPhoneNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReleaseWhatsAppPhoneNumberResponse parses an HTTP response from a ReleaseWhatsAppPhoneNumberWithResponse call
+func ParseReleaseWhatsAppPhoneNumberResponse(rsp *http.Response) (*ReleaseWhatsAppPhoneNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReleaseWhatsAppPhoneNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message     *string `json:"message,omitempty"`
+			PhoneNumber *struct {
+				Id          *string    `json:"id,omitempty"`
+				PhoneNumber *string    `json:"phoneNumber,omitempty"`
+				ReleasedAt  *time.Time `json:"releasedAt,omitempty"`
+
+				// Status "released"
+				Status *string `json:"status,omitempty"`
+			} `json:"phoneNumber,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppPhoneNumberResponse parses an HTTP response from a GetWhatsAppPhoneNumberWithResponse call
+func ParseGetWhatsAppPhoneNumberResponse(rsp *http.Response) (*GetWhatsAppPhoneNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppPhoneNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			PhoneNumber *struct {
+				Country                *string                                     `json:"country,omitempty"`
+				Id                     *string                                     `json:"id,omitempty"`
+				MetaPreverifiedId      *string                                     `json:"metaPreverifiedId,omitempty"`
+				MetaVerificationStatus *string                                     `json:"metaVerificationStatus,omitempty"`
+				PhoneNumber            *string                                     `json:"phoneNumber,omitempty"`
+				ProvisionedAt          *time.Time                                  `json:"provisionedAt,omitempty"`
+				Status                 *GetWhatsAppPhoneNumber200PhoneNumberStatus `json:"status,omitempty"`
+			} `json:"phoneNumber,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRequestWhatsAppVerificationCodeResponse parses an HTTP response from a RequestWhatsAppVerificationCodeWithResponse call
+func ParseRequestWhatsAppVerificationCodeResponse(rsp *http.Response) (*RequestWhatsAppVerificationCodeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RequestWhatsAppVerificationCodeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string                                   `json:"message,omitempty"`
+			Method  *RequestWhatsAppVerificationCode200Method `json:"method,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseVerifyWhatsAppPhoneNumberResponse parses an HTTP response from a VerifyWhatsAppPhoneNumberWithResponse call
+func ParseVerifyWhatsAppPhoneNumberResponse(rsp *http.Response) (*VerifyWhatsAppPhoneNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &VerifyWhatsAppPhoneNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message                   *string    `json:"message,omitempty"`
+			MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
+			MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppTemplatesResponse parses an HTTP response from a GetWhatsAppTemplatesWithResponse call
+func ParseGetWhatsAppTemplatesResponse(rsp *http.Response) (*GetWhatsAppTemplatesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppTemplatesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success   *bool `json:"success,omitempty"`
+			Templates *[]struct {
+				Category   *GetWhatsAppTemplates200TemplatesCategory `json:"category,omitempty"`
+				Components *[]map[string]interface{}                 `json:"components,omitempty"`
+
+				// Id WhatsApp template ID
+				Id       *string                                 `json:"id,omitempty"`
+				Language *string                                 `json:"language,omitempty"`
+				Name     *string                                 `json:"name,omitempty"`
+				Status   *GetWhatsAppTemplates200TemplatesStatus `json:"status,omitempty"`
+			} `json:"templates,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppTemplateResponse parses an HTTP response from a CreateWhatsAppTemplateWithResponse call
+func ParseCreateWhatsAppTemplateResponse(rsp *http.Response) (*CreateWhatsAppTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Template *struct {
+				Category *string `json:"category,omitempty"`
+				Id       *string `json:"id,omitempty"`
+				Language *string `json:"language,omitempty"`
+				Name     *string `json:"name,omitempty"`
+				Status   *string `json:"status,omitempty"`
+			} `json:"template,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppTemplateResponse parses an HTTP response from a DeleteWhatsAppTemplateWithResponse call
+func ParseDeleteWhatsAppTemplateResponse(rsp *http.Response) (*DeleteWhatsAppTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppTemplateResponse parses an HTTP response from a GetWhatsAppTemplateWithResponse call
+func ParseGetWhatsAppTemplateResponse(rsp *http.Response) (*GetWhatsAppTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Template *struct {
+				Category   *string                   `json:"category,omitempty"`
+				Components *[]map[string]interface{} `json:"components,omitempty"`
+				Id         *string                   `json:"id,omitempty"`
+				Language   *string                   `json:"language,omitempty"`
+				Name       *string                   `json:"name,omitempty"`
+				Status     *string                   `json:"status,omitempty"`
+			} `json:"template,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppTemplateResponse parses an HTTP response from a UpdateWhatsAppTemplateWithResponse call
+func ParseUpdateWhatsAppTemplateResponse(rsp *http.Response) (*UpdateWhatsAppTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Template *struct {
+				Id     *string `json:"id,omitempty"`
+				Name   *string `json:"name,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"template,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
