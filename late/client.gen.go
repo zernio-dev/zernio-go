@@ -652,6 +652,7 @@ const (
 	Following      TwitterPlatformDataReplySettings = "following"
 	MentionedUsers TwitterPlatformDataReplySettings = "mentionedUsers"
 	Subscribers    TwitterPlatformDataReplySettings = "subscribers"
+	Verified       TwitterPlatformDataReplySettings = "verified"
 )
 
 // Valid indicates whether the value is a known member of the TwitterPlatformDataReplySettings enum.
@@ -662,6 +663,8 @@ func (e TwitterPlatformDataReplySettings) Valid() bool {
 	case MentionedUsers:
 		return true
 	case Subscribers:
+		return true
+	case Verified:
 		return true
 	default:
 		return false
@@ -3521,8 +3524,11 @@ type TikTokPlatformDataMediaType string
 
 // TwitterPlatformData defines model for TwitterPlatformData.
 type TwitterPlatformData struct {
-	// ReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers. Omit for default (everyone can reply). For threads, applies to the first tweet only.
+	// ReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers, "verified" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 	ReplySettings *TwitterPlatformDataReplySettings `json:"replySettings,omitempty"`
+
+	// ReplyToTweetId ID of an existing tweet to reply to. The published tweet will appear as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally.
+	ReplyToTweetId *string `json:"replyToTweetId,omitempty"`
 
 	// ThreadItems Sequence of tweets in a thread. First item is the root tweet.
 	ThreadItems *[]struct {
@@ -3531,7 +3537,7 @@ type TwitterPlatformData struct {
 	} `json:"threadItems,omitempty"`
 }
 
-// TwitterPlatformDataReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers. Omit for default (everyone can reply). For threads, applies to the first tweet only.
+// TwitterPlatformDataReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers, "verified" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 type TwitterPlatformDataReplySettings string
 
 // UsageStats defines model for UsageStats.
