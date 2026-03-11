@@ -2618,24 +2618,6 @@ func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
 	}
 }
 
-// Defines values for RequestWhatsAppVerificationCodeJSONBodyMethod.
-const (
-	SMS   RequestWhatsAppVerificationCodeJSONBodyMethod = "SMS"
-	VOICE RequestWhatsAppVerificationCodeJSONBodyMethod = "VOICE"
-)
-
-// Valid indicates whether the value is a known member of the RequestWhatsAppVerificationCodeJSONBodyMethod enum.
-func (e RequestWhatsAppVerificationCodeJSONBodyMethod) Valid() bool {
-	switch e {
-	case SMS:
-		return true
-	case VOICE:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for CreateWhatsAppTemplateJSONBodyCategory.
 const (
 	AUTHENTICATION CreateWhatsAppTemplateJSONBodyCategory = "AUTHENTICATION"
@@ -5910,46 +5892,10 @@ type GetWhatsAppPhoneNumbersParams struct {
 // GetWhatsAppPhoneNumbersParamsStatus defines parameters for GetWhatsAppPhoneNumbers.
 type GetWhatsAppPhoneNumbersParamsStatus string
 
-// SearchAvailableWhatsAppNumbersParams defines parameters for SearchAvailableWhatsAppNumbers.
-type SearchAvailableWhatsAppNumbersParams struct {
-	// Prefix Area code to search (e.g., "212" for New York)
-	Prefix *string `form:"prefix,omitempty" json:"prefix,omitempty"`
-
-	// Locality City name (e.g., "New York")
-	Locality *string `form:"locality,omitempty" json:"locality,omitempty"`
-
-	// Contains Pattern to match within the phone number
-	Contains *string `form:"contains,omitempty" json:"contains,omitempty"`
-
-	// Limit Maximum results (default 20, max 100)
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
-}
-
-// GetPreverifiedWhatsAppNumbersParams defines parameters for GetPreverifiedWhatsAppNumbers.
-type GetPreverifiedWhatsAppNumbersParams struct {
-	// ProfileId Profile ID to filter by
-	ProfileId string `form:"profileId" json:"profileId"`
-}
-
 // PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumberJSONBody struct {
 	// ProfileId Profile to associate the number with
 	ProfileId string `json:"profileId"`
-}
-
-// RequestWhatsAppVerificationCodeJSONBody defines parameters for RequestWhatsAppVerificationCode.
-type RequestWhatsAppVerificationCodeJSONBody struct {
-	// Method Delivery method for the verification code
-	Method *RequestWhatsAppVerificationCodeJSONBodyMethod `json:"method,omitempty"`
-}
-
-// RequestWhatsAppVerificationCodeJSONBodyMethod defines parameters for RequestWhatsAppVerificationCode.
-type RequestWhatsAppVerificationCodeJSONBodyMethod string
-
-// VerifyWhatsAppPhoneNumberJSONBody defines parameters for VerifyWhatsAppPhoneNumber.
-type VerifyWhatsAppPhoneNumberJSONBody struct {
-	// Code 6-digit verification code
-	Code string `json:"code"`
 }
 
 // GetWhatsAppTemplatesParams defines parameters for GetWhatsAppTemplates.
@@ -6197,12 +6143,6 @@ type RenameWhatsAppGroupJSONRequestBody RenameWhatsAppGroupJSONBody
 
 // PurchaseWhatsAppPhoneNumberJSONRequestBody defines body for PurchaseWhatsAppPhoneNumber for application/json ContentType.
 type PurchaseWhatsAppPhoneNumberJSONRequestBody PurchaseWhatsAppPhoneNumberJSONBody
-
-// RequestWhatsAppVerificationCodeJSONRequestBody defines body for RequestWhatsAppVerificationCode for application/json ContentType.
-type RequestWhatsAppVerificationCodeJSONRequestBody RequestWhatsAppVerificationCodeJSONBody
-
-// VerifyWhatsAppPhoneNumberJSONRequestBody defines body for VerifyWhatsAppPhoneNumber for application/json ContentType.
-type VerifyWhatsAppPhoneNumberJSONRequestBody VerifyWhatsAppPhoneNumberJSONBody
 
 // CreateWhatsAppTemplateJSONRequestBody defines body for CreateWhatsAppTemplate for application/json ContentType.
 type CreateWhatsAppTemplateJSONRequestBody CreateWhatsAppTemplateJSONBody
@@ -7732,12 +7672,6 @@ type ClientInterface interface {
 	// GetWhatsAppPhoneNumbers request
 	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// SearchAvailableWhatsAppNumbers request
-	SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetPreverifiedWhatsAppNumbers request
-	GetPreverifiedWhatsAppNumbers(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// PurchaseWhatsAppPhoneNumberWithBody request with any body
 	PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -7748,16 +7682,6 @@ type ClientInterface interface {
 
 	// GetWhatsAppPhoneNumber request
 	GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// RequestWhatsAppVerificationCodeWithBody request with any body
-	RequestWhatsAppVerificationCodeWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	RequestWhatsAppVerificationCode(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// VerifyWhatsAppPhoneNumberWithBody request with any body
-	VerifyWhatsAppPhoneNumberWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	VerifyWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppTemplates request
 	GetWhatsAppTemplates(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10515,30 +10439,6 @@ func (c *Client) GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAp
 	return c.Client.Do(req)
 }
 
-func (c *Client) SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSearchAvailableWhatsAppNumbersRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetPreverifiedWhatsAppNumbers(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPreverifiedWhatsAppNumbersRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPurchaseWhatsAppPhoneNumberRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -10577,54 +10477,6 @@ func (c *Client) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId s
 
 func (c *Client) GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) RequestWhatsAppVerificationCodeWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRequestWhatsAppVerificationCodeRequestWithBody(c.Server, phoneNumberId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) RequestWhatsAppVerificationCode(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRequestWhatsAppVerificationCodeRequest(c.Server, phoneNumberId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) VerifyWhatsAppPhoneNumberWithBody(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewVerifyWhatsAppPhoneNumberRequestWithBody(c.Server, phoneNumberId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) VerifyWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewVerifyWhatsAppPhoneNumberRequest(c.Server, phoneNumberId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -20157,148 +20009,6 @@ func NewGetWhatsAppPhoneNumbersRequest(server string, params *GetWhatsAppPhoneNu
 	return req, nil
 }
 
-// NewSearchAvailableWhatsAppNumbersRequest generates requests for SearchAvailableWhatsAppNumbers
-func NewSearchAvailableWhatsAppNumbersRequest(server string, params *SearchAvailableWhatsAppNumbersParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/available")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Prefix != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "prefix", *params.Prefix, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Locality != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locality", *params.Locality, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Contains != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "contains", *params.Contains, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Limit != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetPreverifiedWhatsAppNumbersRequest generates requests for GetPreverifiedWhatsAppNumbers
-func NewGetPreverifiedWhatsAppNumbersRequest(server string, params *GetPreverifiedWhatsAppNumbersParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/preverified")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewPurchaseWhatsAppPhoneNumberRequest calls the generic PurchaseWhatsAppPhoneNumber builder with application/json body
 func NewPurchaseWhatsAppPhoneNumberRequest(server string, body PurchaseWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -20403,100 +20113,6 @@ func NewGetWhatsAppPhoneNumberRequest(server string, phoneNumberId string) (*htt
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewRequestWhatsAppVerificationCodeRequest calls the generic RequestWhatsAppVerificationCode builder with application/json body
-func NewRequestWhatsAppVerificationCodeRequest(server string, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewRequestWhatsAppVerificationCodeRequestWithBody(server, phoneNumberId, "application/json", bodyReader)
-}
-
-// NewRequestWhatsAppVerificationCodeRequestWithBody generates requests for RequestWhatsAppVerificationCode with any type of body
-func NewRequestWhatsAppVerificationCodeRequestWithBody(server string, phoneNumberId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/request-code", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewVerifyWhatsAppPhoneNumberRequest calls the generic VerifyWhatsAppPhoneNumber builder with application/json body
-func NewVerifyWhatsAppPhoneNumberRequest(server string, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewVerifyWhatsAppPhoneNumberRequestWithBody(server, phoneNumberId, "application/json", bodyReader)
-}
-
-// NewVerifyWhatsAppPhoneNumberRequestWithBody generates requests for VerifyWhatsAppPhoneNumber with any type of body
-func NewVerifyWhatsAppPhoneNumberRequestWithBody(server string, phoneNumberId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "phoneNumberId", phoneNumberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/verify", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -21401,12 +21017,6 @@ type ClientWithResponsesInterface interface {
 	// GetWhatsAppPhoneNumbersWithResponse request
 	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
 
-	// SearchAvailableWhatsAppNumbersWithResponse request
-	SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error)
-
-	// GetPreverifiedWhatsAppNumbersWithResponse request
-	GetPreverifiedWhatsAppNumbersWithResponse(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*GetPreverifiedWhatsAppNumbersResponse, error)
-
 	// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with any body
 	PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
 
@@ -21417,16 +21027,6 @@ type ClientWithResponsesInterface interface {
 
 	// GetWhatsAppPhoneNumberWithResponse request
 	GetWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumberResponse, error)
-
-	// RequestWhatsAppVerificationCodeWithBodyWithResponse request with any body
-	RequestWhatsAppVerificationCodeWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error)
-
-	RequestWhatsAppVerificationCodeWithResponse(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error)
-
-	// VerifyWhatsAppPhoneNumberWithBodyWithResponse request with any body
-	VerifyWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error)
-
-	VerifyWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error)
 
 	// GetWhatsAppTemplatesWithResponse request
 	GetWhatsAppTemplatesWithResponse(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplatesResponse, error)
@@ -27312,65 +26912,6 @@ func (r GetWhatsAppPhoneNumbersResponse) StatusCode() int {
 	return 0
 }
 
-type SearchAvailableWhatsAppNumbersResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Numbers *[]map[string]interface{} `json:"numbers,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-
-// Status returns HTTPResponse.Status
-func (r SearchAvailableWhatsAppNumbersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r SearchAvailableWhatsAppNumbersResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetPreverifiedWhatsAppNumbersResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Numbers *[]struct {
-			Id                        *string    `json:"id,omitempty"`
-			MetaPreverifiedId         *string    `json:"metaPreverifiedId,omitempty"`
-			MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
-			MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
-			PhoneNumber               *string    `json:"phoneNumber,omitempty"`
-		} `json:"numbers,omitempty"`
-
-		// PreVerifiedIds IDs to pass in FB.login() extras.setup.preVerifiedPhone.ids
-		PreVerifiedIds *[]string `json:"preVerifiedIds,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-
-// Status returns HTTPResponse.Status
-func (r GetPreverifiedWhatsAppNumbersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetPreverifiedWhatsAppNumbersResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type PurchaseWhatsAppPhoneNumberResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -27475,62 +27016,6 @@ func (r GetWhatsAppPhoneNumberResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetWhatsAppPhoneNumberResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type RequestWhatsAppVerificationCodeResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Message *string                                   `json:"message,omitempty"`
-		Method  *RequestWhatsAppVerificationCode200Method `json:"method,omitempty"`
-	}
-	JSON401 *Unauthorized
-	JSON404 *NotFound
-}
-type RequestWhatsAppVerificationCode200Method string
-
-// Status returns HTTPResponse.Status
-func (r RequestWhatsAppVerificationCodeResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r RequestWhatsAppVerificationCodeResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type VerifyWhatsAppPhoneNumberResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		Message                   *string    `json:"message,omitempty"`
-		MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
-		MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
-	}
-	JSON401 *Unauthorized
-	JSON404 *NotFound
-}
-
-// Status returns HTTPResponse.Status
-func (r VerifyWhatsAppPhoneNumberResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r VerifyWhatsAppPhoneNumberResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -29687,24 +29172,6 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumbersWithResponse(ctx context.Co
 	return ParseGetWhatsAppPhoneNumbersResponse(rsp)
 }
 
-// SearchAvailableWhatsAppNumbersWithResponse request returning *SearchAvailableWhatsAppNumbersResponse
-func (c *ClientWithResponses) SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error) {
-	rsp, err := c.SearchAvailableWhatsAppNumbers(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSearchAvailableWhatsAppNumbersResponse(rsp)
-}
-
-// GetPreverifiedWhatsAppNumbersWithResponse request returning *GetPreverifiedWhatsAppNumbersResponse
-func (c *ClientWithResponses) GetPreverifiedWhatsAppNumbersWithResponse(ctx context.Context, params *GetPreverifiedWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*GetPreverifiedWhatsAppNumbersResponse, error) {
-	rsp, err := c.GetPreverifiedWhatsAppNumbers(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetPreverifiedWhatsAppNumbersResponse(rsp)
-}
-
 // PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *PurchaseWhatsAppPhoneNumberResponse
 func (c *ClientWithResponses) PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error) {
 	rsp, err := c.PurchaseWhatsAppPhoneNumberWithBody(ctx, contentType, body, reqEditors...)
@@ -29738,40 +29205,6 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumberWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseGetWhatsAppPhoneNumberResponse(rsp)
-}
-
-// RequestWhatsAppVerificationCodeWithBodyWithResponse request with arbitrary body returning *RequestWhatsAppVerificationCodeResponse
-func (c *ClientWithResponses) RequestWhatsAppVerificationCodeWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error) {
-	rsp, err := c.RequestWhatsAppVerificationCodeWithBody(ctx, phoneNumberId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRequestWhatsAppVerificationCodeResponse(rsp)
-}
-
-func (c *ClientWithResponses) RequestWhatsAppVerificationCodeWithResponse(ctx context.Context, phoneNumberId string, body RequestWhatsAppVerificationCodeJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestWhatsAppVerificationCodeResponse, error) {
-	rsp, err := c.RequestWhatsAppVerificationCode(ctx, phoneNumberId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRequestWhatsAppVerificationCodeResponse(rsp)
-}
-
-// VerifyWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *VerifyWhatsAppPhoneNumberResponse
-func (c *ClientWithResponses) VerifyWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, phoneNumberId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error) {
-	rsp, err := c.VerifyWhatsAppPhoneNumberWithBody(ctx, phoneNumberId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseVerifyWhatsAppPhoneNumberResponse(rsp)
-}
-
-func (c *ClientWithResponses) VerifyWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, body VerifyWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyWhatsAppPhoneNumberResponse, error) {
-	rsp, err := c.VerifyWhatsAppPhoneNumber(ctx, phoneNumberId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseVerifyWhatsAppPhoneNumberResponse(rsp)
 }
 
 // GetWhatsAppTemplatesWithResponse request returning *GetWhatsAppTemplatesResponse
@@ -37680,85 +37113,6 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 	return response, nil
 }
 
-// ParseSearchAvailableWhatsAppNumbersResponse parses an HTTP response from a SearchAvailableWhatsAppNumbersWithResponse call
-func ParseSearchAvailableWhatsAppNumbersResponse(rsp *http.Response) (*SearchAvailableWhatsAppNumbersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SearchAvailableWhatsAppNumbersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Numbers *[]map[string]interface{} `json:"numbers,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetPreverifiedWhatsAppNumbersResponse parses an HTTP response from a GetPreverifiedWhatsAppNumbersWithResponse call
-func ParseGetPreverifiedWhatsAppNumbersResponse(rsp *http.Response) (*GetPreverifiedWhatsAppNumbersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetPreverifiedWhatsAppNumbersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Numbers *[]struct {
-				Id                        *string    `json:"id,omitempty"`
-				MetaPreverifiedId         *string    `json:"metaPreverifiedId,omitempty"`
-				MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
-				MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
-				PhoneNumber               *string    `json:"phoneNumber,omitempty"`
-			} `json:"numbers,omitempty"`
-
-			// PreVerifiedIds IDs to pass in FB.login() extras.setup.preVerifiedPhone.ids
-			PreVerifiedIds *[]string `json:"preVerifiedIds,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParsePurchaseWhatsAppPhoneNumberResponse parses an HTTP response from a PurchaseWhatsAppPhoneNumberWithResponse call
 func ParsePurchaseWhatsAppPhoneNumberResponse(rsp *http.Response) (*PurchaseWhatsAppPhoneNumberResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -37869,93 +37223,6 @@ func ParseGetWhatsAppPhoneNumberResponse(rsp *http.Response) (*GetWhatsAppPhoneN
 				ProvisionedAt          *time.Time                                  `json:"provisionedAt,omitempty"`
 				Status                 *GetWhatsAppPhoneNumber200PhoneNumberStatus `json:"status,omitempty"`
 			} `json:"phoneNumber,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseRequestWhatsAppVerificationCodeResponse parses an HTTP response from a RequestWhatsAppVerificationCodeWithResponse call
-func ParseRequestWhatsAppVerificationCodeResponse(rsp *http.Response) (*RequestWhatsAppVerificationCodeResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &RequestWhatsAppVerificationCodeResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Message *string                                   `json:"message,omitempty"`
-			Method  *RequestWhatsAppVerificationCode200Method `json:"method,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseVerifyWhatsAppPhoneNumberResponse parses an HTTP response from a VerifyWhatsAppPhoneNumberWithResponse call
-func ParseVerifyWhatsAppPhoneNumberResponse(rsp *http.Response) (*VerifyWhatsAppPhoneNumberResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &VerifyWhatsAppPhoneNumberResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Message                   *string    `json:"message,omitempty"`
-			MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
-			MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

@@ -318,14 +318,10 @@ func main() {
 ### WhatsApp Phone Numbers
 | Method | Description |
 |--------|-------------|
-| `client.GetPreverifiedWhatsAppNumbersWithResponse()` | Get pre-verified numbers |
 | `client.GetWhatsAppPhoneNumberWithResponse()` | Get phone number |
 | `client.GetWhatsAppPhoneNumbersWithResponse()` | List phone numbers |
 | `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |
 | `client.ReleaseWhatsAppPhoneNumberWithResponse()` | Release phone number |
-| `client.RequestWhatsAppVerificationCodeWithResponse()` | Request OTP |
-| `client.SearchAvailableWhatsAppNumbersWithResponse()` | Search available numbers |
-| `client.VerifyWhatsAppPhoneNumberWithResponse()` | Verify OTP |
 
 ### Invites
 | Method | Description |
