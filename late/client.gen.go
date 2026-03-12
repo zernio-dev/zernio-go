@@ -2639,6 +2639,27 @@ func (e CreateWhatsAppTemplateJSONBodyCategory) Valid() bool {
 	}
 }
 
+// Defines values for CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType.
+const (
+	PHONENUMBER CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "PHONE_NUMBER"
+	QUICKREPLY  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "QUICK_REPLY"
+	URL         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "URL"
+)
+
+// Valid indicates whether the value is a known member of the CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType enum.
+func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() bool {
+	switch e {
+	case PHONENUMBER:
+		return true
+	case QUICKREPLY:
+		return true
+	case URL:
+		return true
+	default:
+		return false
+	}
+}
+
 // AccountWithFollowerStats defines model for AccountWithFollowerStats.
 type AccountWithFollowerStats struct {
 	UnderscoreId *string `json:"_id,omitempty"`
@@ -4584,6 +4605,21 @@ type InitiateTelegramConnectJSONBody struct {
 	ProfileId string `json:"profileId"`
 }
 
+// ConnectWhatsAppCredentialsJSONBody defines parameters for ConnectWhatsAppCredentials.
+type ConnectWhatsAppCredentialsJSONBody struct {
+	// AccessToken Permanent System User access token from Meta Business Suite
+	AccessToken string `json:"accessToken"`
+
+	// PhoneNumberId Phone Number ID from Meta WhatsApp Manager
+	PhoneNumberId string `json:"phoneNumberId"`
+
+	// ProfileId Your Late profile ID
+	ProfileId string `json:"profileId"`
+
+	// WabaId WhatsApp Business Account ID from Meta
+	WabaId string `json:"wabaId"`
+}
+
 // GetConnectUrlParams defines parameters for GetConnectUrl.
 type GetConnectUrlParams struct {
 	// ProfileId Your Late profile ID (get from /v1/profiles)
@@ -5912,11 +5948,31 @@ type CreateWhatsAppTemplateJSONBody struct {
 	// Category Template category
 	Category CreateWhatsAppTemplateJSONBodyCategory `json:"category"`
 
-	// Components Template components (header, body, footer, buttons)
-	Components []map[string]interface{} `json:"components"`
+	// Components Template components (header, body, footer, buttons). Required for custom templates, omit when using library_template_name.
+	Components *[]map[string]interface{} `json:"components,omitempty"`
 
 	// Language Template language code (e.g., en_US)
 	Language string `json:"language"`
+
+	// LibraryTemplateBodyInputs Optional body customizations for library templates. Available options depend on the
+	// template (e.g., add_contact_number, add_learn_more_link, add_security_recommendation,
+	// add_track_package_link, code_expiration_minutes).
+	LibraryTemplateBodyInputs *map[string]interface{} `json:"library_template_body_inputs,omitempty"`
+
+	// LibraryTemplateButtonInputs Optional button customizations for library templates. Each item specifies button type
+	// and configuration (e.g., URL, phone number, quick reply).
+	LibraryTemplateButtonInputs *[]struct {
+		PhoneNumber *string                                                        `json:"phone_number,omitempty"`
+		Type        *CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType `json:"type,omitempty"`
+		Url         *struct {
+			BaseUrl *string `json:"base_url,omitempty"`
+		} `json:"url,omitempty"`
+	} `json:"library_template_button_inputs,omitempty"`
+
+	// LibraryTemplateName Name of a pre-built template from Meta's template library (e.g., "appointment_reminder",
+	// "auto_pay_reminder_1", "address_update"). When provided, the template is pre-approved
+	// by Meta with no review wait. Omit `components` when using this field.
+	LibraryTemplateName *string `json:"library_template_name,omitempty"`
 
 	// Name Template name (lowercase, letters/numbers/underscores, must start with a letter)
 	Name string `json:"name"`
@@ -5924,6 +5980,9 @@ type CreateWhatsAppTemplateJSONBody struct {
 
 // CreateWhatsAppTemplateJSONBodyCategory defines parameters for CreateWhatsAppTemplate.
 type CreateWhatsAppTemplateJSONBodyCategory string
+
+// CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType defines parameters for CreateWhatsAppTemplate.
+type CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType string
 
 // DeleteWhatsAppTemplateParams defines parameters for DeleteWhatsAppTemplate.
 type DeleteWhatsAppTemplateParams struct {
@@ -6017,6 +6076,9 @@ type SelectSnapchatProfileJSONRequestBody SelectSnapchatProfileJSONBody
 
 // InitiateTelegramConnectJSONRequestBody defines body for InitiateTelegramConnect for application/json ContentType.
 type InitiateTelegramConnectJSONRequestBody InitiateTelegramConnectJSONBody
+
+// ConnectWhatsAppCredentialsJSONRequestBody defines body for ConnectWhatsAppCredentials for application/json ContentType.
+type ConnectWhatsAppCredentialsJSONRequestBody ConnectWhatsAppCredentialsJSONBody
 
 // HandleOAuthCallbackJSONRequestBody defines body for HandleOAuthCallback for application/json ContentType.
 type HandleOAuthCallbackJSONRequestBody HandleOAuthCallbackJSONBody
@@ -7314,6 +7376,11 @@ type ClientInterface interface {
 	InitiateTelegramConnectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	InitiateTelegramConnect(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ConnectWhatsAppCredentialsWithBody request with any body
+	ConnectWhatsAppCredentialsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ConnectWhatsAppCredentials(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetConnectUrl request
 	GetConnectUrl(ctx context.Context, platform GetConnectUrlParamsPlatform, params *GetConnectUrlParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -8845,6 +8912,30 @@ func (c *Client) InitiateTelegramConnectWithBody(ctx context.Context, contentTyp
 
 func (c *Client) InitiateTelegramConnect(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInitiateTelegramConnectRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConnectWhatsAppCredentialsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConnectWhatsAppCredentialsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConnectWhatsAppCredentials(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConnectWhatsAppCredentialsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -14436,6 +14527,46 @@ func NewInitiateTelegramConnectRequestWithBody(server string, contentType string
 	}
 
 	operationPath := fmt.Sprintf("/v1/connect/telegram")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewConnectWhatsAppCredentialsRequest calls the generic ConnectWhatsAppCredentials builder with application/json body
+func NewConnectWhatsAppCredentialsRequest(server string, body ConnectWhatsAppCredentialsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewConnectWhatsAppCredentialsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewConnectWhatsAppCredentialsRequestWithBody generates requests for ConnectWhatsAppCredentials with any type of body
+func NewConnectWhatsAppCredentialsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connect/whatsapp/credentials")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -20660,6 +20791,11 @@ type ClientWithResponsesInterface interface {
 
 	InitiateTelegramConnectWithResponse(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*InitiateTelegramConnectResponse, error)
 
+	// ConnectWhatsAppCredentialsWithBodyWithResponse request with any body
+	ConnectWhatsAppCredentialsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error)
+
+	ConnectWhatsAppCredentialsWithResponse(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error)
+
 	// GetConnectUrlWithResponse request
 	GetConnectUrlWithResponse(ctx context.Context, platform GetConnectUrlParamsPlatform, params *GetConnectUrlParams, reqEditors ...RequestEditorFn) (*GetConnectUrlResponse, error)
 
@@ -23706,6 +23842,47 @@ func (r InitiateTelegramConnectResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r InitiateTelegramConnectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ConnectWhatsAppCredentialsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Account *struct {
+			AccountId *string `json:"accountId,omitempty"`
+
+			// DisplayName Meta-verified business name
+			DisplayName *string                                       `json:"displayName,omitempty"`
+			IsActive    *bool                                         `json:"isActive,omitempty"`
+			PhoneNumber *string                                       `json:"phoneNumber,omitempty"`
+			Platform    *ConnectWhatsAppCredentials200AccountPlatform `json:"platform,omitempty"`
+
+			// QualityRating GREEN, YELLOW, or RED
+			QualityRating *string `json:"qualityRating,omitempty"`
+
+			// Username Display phone number
+			Username     *string `json:"username,omitempty"`
+			VerifiedName *string `json:"verifiedName,omitempty"`
+		} `json:"account,omitempty"`
+		Message *string `json:"message,omitempty"`
+	}
+}
+type ConnectWhatsAppCredentials200AccountPlatform string
+
+// Status returns HTTPResponse.Status
+func (r ConnectWhatsAppCredentialsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConnectWhatsAppCredentialsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -27069,7 +27246,9 @@ type CreateWhatsAppTemplateResponse struct {
 			Id       *string `json:"id,omitempty"`
 			Language *string `json:"language,omitempty"`
 			Name     *string `json:"name,omitempty"`
-			Status   *string `json:"status,omitempty"`
+
+			// Status APPROVED for library templates, PENDING for custom
+			Status *string `json:"status,omitempty"`
 		} `json:"template,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -28021,6 +28200,23 @@ func (c *ClientWithResponses) InitiateTelegramConnectWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseInitiateTelegramConnectResponse(rsp)
+}
+
+// ConnectWhatsAppCredentialsWithBodyWithResponse request with arbitrary body returning *ConnectWhatsAppCredentialsResponse
+func (c *ClientWithResponses) ConnectWhatsAppCredentialsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error) {
+	rsp, err := c.ConnectWhatsAppCredentialsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConnectWhatsAppCredentialsResponse(rsp)
+}
+
+func (c *ClientWithResponses) ConnectWhatsAppCredentialsWithResponse(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error) {
+	rsp, err := c.ConnectWhatsAppCredentials(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConnectWhatsAppCredentialsResponse(rsp)
 }
 
 // GetConnectUrlWithResponse request returning *GetConnectUrlResponse
@@ -32925,6 +33121,50 @@ func ParseInitiateTelegramConnectResponse(rsp *http.Response) (*InitiateTelegram
 	return response, nil
 }
 
+// ParseConnectWhatsAppCredentialsResponse parses an HTTP response from a ConnectWhatsAppCredentialsWithResponse call
+func ParseConnectWhatsAppCredentialsResponse(rsp *http.Response) (*ConnectWhatsAppCredentialsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConnectWhatsAppCredentialsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Account *struct {
+				AccountId *string `json:"accountId,omitempty"`
+
+				// DisplayName Meta-verified business name
+				DisplayName *string                                       `json:"displayName,omitempty"`
+				IsActive    *bool                                         `json:"isActive,omitempty"`
+				PhoneNumber *string                                       `json:"phoneNumber,omitempty"`
+				Platform    *ConnectWhatsAppCredentials200AccountPlatform `json:"platform,omitempty"`
+
+				// QualityRating GREEN, YELLOW, or RED
+				QualityRating *string `json:"qualityRating,omitempty"`
+
+				// Username Display phone number
+				Username     *string `json:"username,omitempty"`
+				VerifiedName *string `json:"verifiedName,omitempty"`
+			} `json:"account,omitempty"`
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetConnectUrlResponse parses an HTTP response from a GetConnectUrlWithResponse call
 func ParseGetConnectUrlResponse(rsp *http.Response) (*GetConnectUrlResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -37315,7 +37555,9 @@ func ParseCreateWhatsAppTemplateResponse(rsp *http.Response) (*CreateWhatsAppTem
 				Id       *string `json:"id,omitempty"`
 				Language *string `json:"language,omitempty"`
 				Name     *string `json:"name,omitempty"`
-				Status   *string `json:"status,omitempty"`
+
+				// Status APPROVED for library templates, PENDING for custom
+				Status *string `json:"status,omitempty"`
 			} `json:"template,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

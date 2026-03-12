@@ -185,6 +185,7 @@ func main() {
 | `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
 | `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
 | `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
+| `client.ConnectWhatsAppCredentialsWithResponse()` | Connect WhatsApp via credentials |
 | `client.HandleOAuthCallbackWithResponse()` | Complete OAuth callback |
 | `client.InitiateTelegramConnectWithResponse()` | Connect Telegram directly |
 | `client.SelectFacebookPageWithResponse()` | Select Facebook page |
