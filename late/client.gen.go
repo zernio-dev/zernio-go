@@ -3759,8 +3759,10 @@ type TwitterPlatformDataReplySettings string
 
 // UsageStats defines model for UsageStats.
 type UsageStats struct {
-	BillingPeriod *UsageStatsBillingPeriod `json:"billingPeriod,omitempty"`
-	Limits        *struct {
+	// BillingAnchorDay Day of month (1-31) when the billing cycle resets
+	BillingAnchorDay *int                     `json:"billingAnchorDay,omitempty"`
+	BillingPeriod    *UsageStatsBillingPeriod `json:"billingPeriod,omitempty"`
+	Limits           *struct {
 		Profiles *int `json:"profiles,omitempty"`
 		Uploads  *int `json:"uploads,omitempty"`
 	} `json:"limits,omitempty"`
