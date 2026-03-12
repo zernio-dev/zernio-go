@@ -3981,6 +3981,12 @@ type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
 }
 
+// GetGoogleBusinessAttributesParams defines parameters for GetGoogleBusinessAttributes.
+type GetGoogleBusinessAttributesParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // UpdateGoogleBusinessAttributesJSONBody defines parameters for UpdateGoogleBusinessAttributes.
 type UpdateGoogleBusinessAttributesJSONBody struct {
 	// AttributeMask Comma-separated attribute names to update (e.g. 'has_delivery,has_takeout')
@@ -3995,6 +4001,18 @@ type UpdateGoogleBusinessAttributesJSONBody struct {
 	} `json:"attributes"`
 }
 
+// UpdateGoogleBusinessAttributesParams defines parameters for UpdateGoogleBusinessAttributes.
+type UpdateGoogleBusinessAttributesParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
+// GetGoogleBusinessFoodMenusParams defines parameters for GetGoogleBusinessFoodMenus.
+type GetGoogleBusinessFoodMenusParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // UpdateGoogleBusinessFoodMenusJSONBody defines parameters for UpdateGoogleBusinessFoodMenus.
 type UpdateGoogleBusinessFoodMenusJSONBody struct {
 	// Menus Array of food menus to set
@@ -4004,8 +4022,17 @@ type UpdateGoogleBusinessFoodMenusJSONBody struct {
 	UpdateMask *string `json:"updateMask,omitempty"`
 }
 
+// UpdateGoogleBusinessFoodMenusParams defines parameters for UpdateGoogleBusinessFoodMenus.
+type UpdateGoogleBusinessFoodMenusParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // GetGoogleBusinessLocationDetailsParams defines parameters for GetGoogleBusinessLocationDetails.
 type GetGoogleBusinessLocationDetailsParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
 	// ReadMask Comma-separated fields to return. Available: name, title, phoneNumbers, categories, storefrontAddress, websiteUri, regularHours, specialHours, serviceArea, profile, openInfo, metadata, moreHours.
 	ReadMask *string `form:"readMask,omitempty" json:"readMask,omitempty"`
 }
@@ -4050,6 +4077,12 @@ type UpdateGoogleBusinessLocationDetailsJSONBody struct {
 	WebsiteUri *string `json:"websiteUri,omitempty"`
 }
 
+// UpdateGoogleBusinessLocationDetailsParams defines parameters for UpdateGoogleBusinessLocationDetails.
+type UpdateGoogleBusinessLocationDetailsParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // UpdateGmbLocationJSONBody defines parameters for UpdateGmbLocation.
 type UpdateGmbLocationJSONBody struct {
 	SelectedLocationId string `json:"selectedLocationId"`
@@ -4057,12 +4090,18 @@ type UpdateGmbLocationJSONBody struct {
 
 // DeleteGoogleBusinessMediaParams defines parameters for DeleteGoogleBusinessMedia.
 type DeleteGoogleBusinessMediaParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
 	// MediaId The media item ID to delete
 	MediaId string `form:"mediaId" json:"mediaId"`
 }
 
 // ListGoogleBusinessMediaParams defines parameters for ListGoogleBusinessMedia.
 type ListGoogleBusinessMediaParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
 	// PageSize Number of items to return (max 100)
 	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 
@@ -4083,6 +4122,12 @@ type CreateGoogleBusinessMediaJSONBody struct {
 	SourceUrl string `json:"sourceUrl"`
 }
 
+// CreateGoogleBusinessMediaParams defines parameters for CreateGoogleBusinessMedia.
+type CreateGoogleBusinessMediaParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // CreateGoogleBusinessMediaJSONBodyCategory defines parameters for CreateGoogleBusinessMedia.
 type CreateGoogleBusinessMediaJSONBodyCategory string
 
@@ -4091,14 +4136,19 @@ type CreateGoogleBusinessMediaJSONBodyMediaFormat string
 
 // DeleteGoogleBusinessPlaceActionParams defines parameters for DeleteGoogleBusinessPlaceAction.
 type DeleteGoogleBusinessPlaceActionParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
 	// Name The resource name of the place action link (e.g. locations/123/placeActionLinks/456)
 	Name string `form:"name" json:"name"`
 }
 
 // ListGoogleBusinessPlaceActionsParams defines parameters for ListGoogleBusinessPlaceActions.
 type ListGoogleBusinessPlaceActionsParams struct {
-	PageSize  *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
-	PageToken *string `form:"pageToken,omitempty" json:"pageToken,omitempty"`
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+	PageSize   *int    `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+	PageToken  *string `form:"pageToken,omitempty" json:"pageToken,omitempty"`
 }
 
 // CreateGoogleBusinessPlaceActionJSONBody defines parameters for CreateGoogleBusinessPlaceAction.
@@ -4110,11 +4160,20 @@ type CreateGoogleBusinessPlaceActionJSONBody struct {
 	Uri string `json:"uri"`
 }
 
+// CreateGoogleBusinessPlaceActionParams defines parameters for CreateGoogleBusinessPlaceAction.
+type CreateGoogleBusinessPlaceActionParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
 // CreateGoogleBusinessPlaceActionJSONBodyPlaceActionType defines parameters for CreateGoogleBusinessPlaceAction.
 type CreateGoogleBusinessPlaceActionJSONBodyPlaceActionType string
 
 // GetGoogleBusinessReviewsParams defines parameters for GetGoogleBusinessReviews.
 type GetGoogleBusinessReviewsParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
 	// PageSize Number of reviews to fetch per page (max 50)
 	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 
@@ -7155,28 +7214,28 @@ type ClientInterface interface {
 	UpdateFacebookPage(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGoogleBusinessAttributes request
-	GetGoogleBusinessAttributes(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetGoogleBusinessAttributes(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateGoogleBusinessAttributesWithBody request with any body
-	UpdateGoogleBusinessAttributesWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessAttributesWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateGoogleBusinessAttributes(ctx context.Context, accountId string, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessAttributes(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGoogleBusinessFoodMenus request
-	GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, params *GetGoogleBusinessFoodMenusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateGoogleBusinessFoodMenusWithBody request with any body
-	UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGoogleBusinessLocationDetails request
 	GetGoogleBusinessLocationDetails(ctx context.Context, accountId string, params *GetGoogleBusinessLocationDetailsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateGoogleBusinessLocationDetailsWithBody request with any body
-	UpdateGoogleBusinessLocationDetailsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessLocationDetailsWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateGoogleBusinessLocationDetails(ctx context.Context, accountId string, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateGoogleBusinessLocationDetails(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGmbLocations request
 	GetGmbLocations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7193,9 +7252,9 @@ type ClientInterface interface {
 	ListGoogleBusinessMedia(ctx context.Context, accountId string, params *ListGoogleBusinessMediaParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateGoogleBusinessMediaWithBody request with any body
-	CreateGoogleBusinessMediaWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateGoogleBusinessMediaWithBody(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateGoogleBusinessMedia(ctx context.Context, accountId string, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateGoogleBusinessMedia(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteGoogleBusinessPlaceAction request
 	DeleteGoogleBusinessPlaceAction(ctx context.Context, accountId string, params *DeleteGoogleBusinessPlaceActionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7204,9 +7263,9 @@ type ClientInterface interface {
 	ListGoogleBusinessPlaceActions(ctx context.Context, accountId string, params *ListGoogleBusinessPlaceActionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateGoogleBusinessPlaceActionWithBody request with any body
-	CreateGoogleBusinessPlaceActionWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateGoogleBusinessPlaceActionWithBody(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateGoogleBusinessPlaceAction(ctx context.Context, accountId string, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateGoogleBusinessPlaceAction(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGoogleBusinessReviews request
 	GetGoogleBusinessReviews(ctx context.Context, accountId string, params *GetGoogleBusinessReviewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7950,8 +8009,8 @@ func (c *Client) UpdateFacebookPage(ctx context.Context, accountId string, body 
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetGoogleBusinessAttributes(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetGoogleBusinessAttributesRequest(c.Server, accountId)
+func (c *Client) GetGoogleBusinessAttributes(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessAttributesRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -7962,8 +8021,8 @@ func (c *Client) GetGoogleBusinessAttributes(ctx context.Context, accountId stri
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessAttributesWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessAttributesRequestWithBody(c.Server, accountId, contentType, body)
+func (c *Client) UpdateGoogleBusinessAttributesWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessAttributesRequestWithBody(c.Server, accountId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -7974,8 +8033,8 @@ func (c *Client) UpdateGoogleBusinessAttributesWithBody(ctx context.Context, acc
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessAttributes(ctx context.Context, accountId string, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessAttributesRequest(c.Server, accountId, body)
+func (c *Client) UpdateGoogleBusinessAttributes(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessAttributesRequest(c.Server, accountId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -7986,8 +8045,8 @@ func (c *Client) UpdateGoogleBusinessAttributes(ctx context.Context, accountId s
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetGoogleBusinessFoodMenusRequest(c.Server, accountId)
+func (c *Client) GetGoogleBusinessFoodMenus(ctx context.Context, accountId string, params *GetGoogleBusinessFoodMenusParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessFoodMenusRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -7998,8 +8057,8 @@ func (c *Client) GetGoogleBusinessFoodMenus(ctx context.Context, accountId strin
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessFoodMenusRequestWithBody(c.Server, accountId, contentType, body)
+func (c *Client) UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessFoodMenusRequestWithBody(c.Server, accountId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8010,8 +8069,8 @@ func (c *Client) UpdateGoogleBusinessFoodMenusWithBody(ctx context.Context, acco
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessFoodMenusRequest(c.Server, accountId, body)
+func (c *Client) UpdateGoogleBusinessFoodMenus(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessFoodMenusRequest(c.Server, accountId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8034,8 +8093,8 @@ func (c *Client) GetGoogleBusinessLocationDetails(ctx context.Context, accountId
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessLocationDetailsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessLocationDetailsRequestWithBody(c.Server, accountId, contentType, body)
+func (c *Client) UpdateGoogleBusinessLocationDetailsWithBody(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessLocationDetailsRequestWithBody(c.Server, accountId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8046,8 +8105,8 @@ func (c *Client) UpdateGoogleBusinessLocationDetailsWithBody(ctx context.Context
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateGoogleBusinessLocationDetails(ctx context.Context, accountId string, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateGoogleBusinessLocationDetailsRequest(c.Server, accountId, body)
+func (c *Client) UpdateGoogleBusinessLocationDetails(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGoogleBusinessLocationDetailsRequest(c.Server, accountId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8118,8 +8177,8 @@ func (c *Client) ListGoogleBusinessMedia(ctx context.Context, accountId string, 
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateGoogleBusinessMediaWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateGoogleBusinessMediaRequestWithBody(c.Server, accountId, contentType, body)
+func (c *Client) CreateGoogleBusinessMediaWithBody(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGoogleBusinessMediaRequestWithBody(c.Server, accountId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8130,8 +8189,8 @@ func (c *Client) CreateGoogleBusinessMediaWithBody(ctx context.Context, accountI
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateGoogleBusinessMedia(ctx context.Context, accountId string, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateGoogleBusinessMediaRequest(c.Server, accountId, body)
+func (c *Client) CreateGoogleBusinessMedia(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGoogleBusinessMediaRequest(c.Server, accountId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8166,8 +8225,8 @@ func (c *Client) ListGoogleBusinessPlaceActions(ctx context.Context, accountId s
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateGoogleBusinessPlaceActionWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateGoogleBusinessPlaceActionRequestWithBody(c.Server, accountId, contentType, body)
+func (c *Client) CreateGoogleBusinessPlaceActionWithBody(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGoogleBusinessPlaceActionRequestWithBody(c.Server, accountId, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8178,8 +8237,8 @@ func (c *Client) CreateGoogleBusinessPlaceActionWithBody(ctx context.Context, ac
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateGoogleBusinessPlaceAction(ctx context.Context, accountId string, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateGoogleBusinessPlaceActionRequest(c.Server, accountId, body)
+func (c *Client) CreateGoogleBusinessPlaceAction(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateGoogleBusinessPlaceActionRequest(c.Server, accountId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -11248,7 +11307,7 @@ func NewUpdateFacebookPageRequestWithBody(server string, accountId string, conte
 }
 
 // NewGetGoogleBusinessAttributesRequest generates requests for GetGoogleBusinessAttributes
-func NewGetGoogleBusinessAttributesRequest(server string, accountId string) (*http.Request, error) {
+func NewGetGoogleBusinessAttributesRequest(server string, accountId string, params *GetGoogleBusinessAttributesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11271,6 +11330,28 @@ func NewGetGoogleBusinessAttributesRequest(server string, accountId string) (*ht
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -11282,18 +11363,18 @@ func NewGetGoogleBusinessAttributesRequest(server string, accountId string) (*ht
 }
 
 // NewUpdateGoogleBusinessAttributesRequest calls the generic UpdateGoogleBusinessAttributes builder with application/json body
-func NewUpdateGoogleBusinessAttributesRequest(server string, accountId string, body UpdateGoogleBusinessAttributesJSONRequestBody) (*http.Request, error) {
+func NewUpdateGoogleBusinessAttributesRequest(server string, accountId string, params *UpdateGoogleBusinessAttributesParams, body UpdateGoogleBusinessAttributesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateGoogleBusinessAttributesRequestWithBody(server, accountId, "application/json", bodyReader)
+	return NewUpdateGoogleBusinessAttributesRequestWithBody(server, accountId, params, "application/json", bodyReader)
 }
 
 // NewUpdateGoogleBusinessAttributesRequestWithBody generates requests for UpdateGoogleBusinessAttributes with any type of body
-func NewUpdateGoogleBusinessAttributesRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateGoogleBusinessAttributesRequestWithBody(server string, accountId string, params *UpdateGoogleBusinessAttributesParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11316,6 +11397,28 @@ func NewUpdateGoogleBusinessAttributesRequestWithBody(server string, accountId s
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
@@ -11329,7 +11432,7 @@ func NewUpdateGoogleBusinessAttributesRequestWithBody(server string, accountId s
 }
 
 // NewGetGoogleBusinessFoodMenusRequest generates requests for GetGoogleBusinessFoodMenus
-func NewGetGoogleBusinessFoodMenusRequest(server string, accountId string) (*http.Request, error) {
+func NewGetGoogleBusinessFoodMenusRequest(server string, accountId string, params *GetGoogleBusinessFoodMenusParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11352,6 +11455,28 @@ func NewGetGoogleBusinessFoodMenusRequest(server string, accountId string) (*htt
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -11363,18 +11488,18 @@ func NewGetGoogleBusinessFoodMenusRequest(server string, accountId string) (*htt
 }
 
 // NewUpdateGoogleBusinessFoodMenusRequest calls the generic UpdateGoogleBusinessFoodMenus builder with application/json body
-func NewUpdateGoogleBusinessFoodMenusRequest(server string, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody) (*http.Request, error) {
+func NewUpdateGoogleBusinessFoodMenusRequest(server string, accountId string, params *UpdateGoogleBusinessFoodMenusParams, body UpdateGoogleBusinessFoodMenusJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateGoogleBusinessFoodMenusRequestWithBody(server, accountId, "application/json", bodyReader)
+	return NewUpdateGoogleBusinessFoodMenusRequestWithBody(server, accountId, params, "application/json", bodyReader)
 }
 
 // NewUpdateGoogleBusinessFoodMenusRequestWithBody generates requests for UpdateGoogleBusinessFoodMenus with any type of body
-func NewUpdateGoogleBusinessFoodMenusRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateGoogleBusinessFoodMenusRequestWithBody(server string, accountId string, params *UpdateGoogleBusinessFoodMenusParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11397,6 +11522,28 @@ func NewUpdateGoogleBusinessFoodMenusRequestWithBody(server string, accountId st
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
@@ -11438,6 +11585,22 @@ func NewGetGoogleBusinessLocationDetailsRequest(server string, accountId string,
 	if params != nil {
 		queryValues := queryURL.Query()
 
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.ReadMask != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "readMask", *params.ReadMask, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -11466,18 +11629,18 @@ func NewGetGoogleBusinessLocationDetailsRequest(server string, accountId string,
 }
 
 // NewUpdateGoogleBusinessLocationDetailsRequest calls the generic UpdateGoogleBusinessLocationDetails builder with application/json body
-func NewUpdateGoogleBusinessLocationDetailsRequest(server string, accountId string, body UpdateGoogleBusinessLocationDetailsJSONRequestBody) (*http.Request, error) {
+func NewUpdateGoogleBusinessLocationDetailsRequest(server string, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server, accountId, "application/json", bodyReader)
+	return NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server, accountId, params, "application/json", bodyReader)
 }
 
 // NewUpdateGoogleBusinessLocationDetailsRequestWithBody generates requests for UpdateGoogleBusinessLocationDetails with any type of body
-func NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server string, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11500,6 +11663,28 @@ func NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server string, accoun
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
@@ -11622,6 +11807,22 @@ func NewDeleteGoogleBusinessMediaRequest(server string, accountId string, params
 	if params != nil {
 		queryValues := queryURL.Query()
 
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mediaId", params.MediaId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
@@ -11674,6 +11875,22 @@ func NewListGoogleBusinessMediaRequest(server string, accountId string, params *
 	if params != nil {
 		queryValues := queryURL.Query()
 
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.PageSize != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pageSize", *params.PageSize, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
@@ -11718,18 +11935,18 @@ func NewListGoogleBusinessMediaRequest(server string, accountId string, params *
 }
 
 // NewCreateGoogleBusinessMediaRequest calls the generic CreateGoogleBusinessMedia builder with application/json body
-func NewCreateGoogleBusinessMediaRequest(server string, accountId string, body CreateGoogleBusinessMediaJSONRequestBody) (*http.Request, error) {
+func NewCreateGoogleBusinessMediaRequest(server string, accountId string, params *CreateGoogleBusinessMediaParams, body CreateGoogleBusinessMediaJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreateGoogleBusinessMediaRequestWithBody(server, accountId, "application/json", bodyReader)
+	return NewCreateGoogleBusinessMediaRequestWithBody(server, accountId, params, "application/json", bodyReader)
 }
 
 // NewCreateGoogleBusinessMediaRequestWithBody generates requests for CreateGoogleBusinessMedia with any type of body
-func NewCreateGoogleBusinessMediaRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreateGoogleBusinessMediaRequestWithBody(server string, accountId string, params *CreateGoogleBusinessMediaParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11752,6 +11969,28 @@ func NewCreateGoogleBusinessMediaRequestWithBody(server string, accountId string
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), body)
@@ -11792,6 +12031,22 @@ func NewDeleteGoogleBusinessPlaceActionRequest(server string, accountId string, 
 
 	if params != nil {
 		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
 
 		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "name", params.Name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 			return nil, err
@@ -11845,6 +12100,22 @@ func NewListGoogleBusinessPlaceActionsRequest(server string, accountId string, p
 	if params != nil {
 		queryValues := queryURL.Query()
 
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.PageSize != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pageSize", *params.PageSize, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
@@ -11889,18 +12160,18 @@ func NewListGoogleBusinessPlaceActionsRequest(server string, accountId string, p
 }
 
 // NewCreateGoogleBusinessPlaceActionRequest calls the generic CreateGoogleBusinessPlaceAction builder with application/json body
-func NewCreateGoogleBusinessPlaceActionRequest(server string, accountId string, body CreateGoogleBusinessPlaceActionJSONRequestBody) (*http.Request, error) {
+func NewCreateGoogleBusinessPlaceActionRequest(server string, accountId string, params *CreateGoogleBusinessPlaceActionParams, body CreateGoogleBusinessPlaceActionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreateGoogleBusinessPlaceActionRequestWithBody(server, accountId, "application/json", bodyReader)
+	return NewCreateGoogleBusinessPlaceActionRequestWithBody(server, accountId, params, "application/json", bodyReader)
 }
 
 // NewCreateGoogleBusinessPlaceActionRequestWithBody generates requests for CreateGoogleBusinessPlaceAction with any type of body
-func NewCreateGoogleBusinessPlaceActionRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreateGoogleBusinessPlaceActionRequestWithBody(server string, accountId string, params *CreateGoogleBusinessPlaceActionParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11923,6 +12194,28 @@ func NewCreateGoogleBusinessPlaceActionRequestWithBody(server string, accountId 
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), body)
@@ -11963,6 +12256,22 @@ func NewGetGoogleBusinessReviewsRequest(server string, accountId string, params 
 
 	if params != nil {
 		queryValues := queryURL.Query()
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
 
 		if params.PageSize != nil {
 
@@ -20569,28 +20878,28 @@ type ClientWithResponsesInterface interface {
 	UpdateFacebookPageWithResponse(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFacebookPageResponse, error)
 
 	// GetGoogleBusinessAttributesWithResponse request
-	GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error)
+	GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error)
 
 	// UpdateGoogleBusinessAttributesWithBodyWithResponse request with any body
-	UpdateGoogleBusinessAttributesWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error)
+	UpdateGoogleBusinessAttributesWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error)
 
-	UpdateGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error)
+	UpdateGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error)
 
 	// GetGoogleBusinessFoodMenusWithResponse request
-	GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error)
+	GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessFoodMenusParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error)
 
 	// UpdateGoogleBusinessFoodMenusWithBodyWithResponse request with any body
-	UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
+	UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
 
-	UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
+	UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error)
 
 	// GetGoogleBusinessLocationDetailsWithResponse request
 	GetGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessLocationDetailsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessLocationDetailsResponse, error)
 
 	// UpdateGoogleBusinessLocationDetailsWithBodyWithResponse request with any body
-	UpdateGoogleBusinessLocationDetailsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error)
+	UpdateGoogleBusinessLocationDetailsWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error)
 
-	UpdateGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error)
+	UpdateGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error)
 
 	// GetGmbLocationsWithResponse request
 	GetGmbLocationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error)
@@ -20607,9 +20916,9 @@ type ClientWithResponsesInterface interface {
 	ListGoogleBusinessMediaWithResponse(ctx context.Context, accountId string, params *ListGoogleBusinessMediaParams, reqEditors ...RequestEditorFn) (*ListGoogleBusinessMediaResponse, error)
 
 	// CreateGoogleBusinessMediaWithBodyWithResponse request with any body
-	CreateGoogleBusinessMediaWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error)
+	CreateGoogleBusinessMediaWithBodyWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error)
 
-	CreateGoogleBusinessMediaWithResponse(ctx context.Context, accountId string, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error)
+	CreateGoogleBusinessMediaWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error)
 
 	// DeleteGoogleBusinessPlaceActionWithResponse request
 	DeleteGoogleBusinessPlaceActionWithResponse(ctx context.Context, accountId string, params *DeleteGoogleBusinessPlaceActionParams, reqEditors ...RequestEditorFn) (*DeleteGoogleBusinessPlaceActionResponse, error)
@@ -20618,9 +20927,9 @@ type ClientWithResponsesInterface interface {
 	ListGoogleBusinessPlaceActionsWithResponse(ctx context.Context, accountId string, params *ListGoogleBusinessPlaceActionsParams, reqEditors ...RequestEditorFn) (*ListGoogleBusinessPlaceActionsResponse, error)
 
 	// CreateGoogleBusinessPlaceActionWithBodyWithResponse request with any body
-	CreateGoogleBusinessPlaceActionWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error)
+	CreateGoogleBusinessPlaceActionWithBodyWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error)
 
-	CreateGoogleBusinessPlaceActionWithResponse(ctx context.Context, accountId string, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error)
+	CreateGoogleBusinessPlaceActionWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error)
 
 	// GetGoogleBusinessReviewsWithResponse request
 	GetGoogleBusinessReviewsWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessReviewsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessReviewsResponse, error)
@@ -27494,8 +27803,8 @@ func (c *ClientWithResponses) UpdateFacebookPageWithResponse(ctx context.Context
 }
 
 // GetGoogleBusinessAttributesWithResponse request returning *GetGoogleBusinessAttributesResponse
-func (c *ClientWithResponses) GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error) {
-	rsp, err := c.GetGoogleBusinessAttributes(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error) {
+	rsp, err := c.GetGoogleBusinessAttributes(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27503,16 +27812,16 @@ func (c *ClientWithResponses) GetGoogleBusinessAttributesWithResponse(ctx contex
 }
 
 // UpdateGoogleBusinessAttributesWithBodyWithResponse request with arbitrary body returning *UpdateGoogleBusinessAttributesResponse
-func (c *ClientWithResponses) UpdateGoogleBusinessAttributesWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessAttributesWithBody(ctx, accountId, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessAttributesWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessAttributesWithBody(ctx, accountId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateGoogleBusinessAttributesResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessAttributes(ctx, accountId, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessAttributesParams, body UpdateGoogleBusinessAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessAttributesResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessAttributes(ctx, accountId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27520,8 +27829,8 @@ func (c *ClientWithResponses) UpdateGoogleBusinessAttributesWithResponse(ctx con
 }
 
 // GetGoogleBusinessFoodMenusWithResponse request returning *GetGoogleBusinessFoodMenusResponse
-func (c *ClientWithResponses) GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error) {
-	rsp, err := c.GetGoogleBusinessFoodMenus(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) GetGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessFoodMenusParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.GetGoogleBusinessFoodMenus(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27529,16 +27838,16 @@ func (c *ClientWithResponses) GetGoogleBusinessFoodMenusWithResponse(ctx context
 }
 
 // UpdateGoogleBusinessFoodMenusWithBodyWithResponse request with arbitrary body returning *UpdateGoogleBusinessFoodMenusResponse
-func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessFoodMenusWithBody(ctx, accountId, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessFoodMenusWithBody(ctx, accountId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateGoogleBusinessFoodMenusResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessFoodMenus(ctx, accountId, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessFoodMenusWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessFoodMenusParams, body UpdateGoogleBusinessFoodMenusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessFoodMenusResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessFoodMenus(ctx, accountId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27555,16 +27864,16 @@ func (c *ClientWithResponses) GetGoogleBusinessLocationDetailsWithResponse(ctx c
 }
 
 // UpdateGoogleBusinessLocationDetailsWithBodyWithResponse request with arbitrary body returning *UpdateGoogleBusinessLocationDetailsResponse
-func (c *ClientWithResponses) UpdateGoogleBusinessLocationDetailsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessLocationDetailsWithBody(ctx, accountId, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessLocationDetailsWithBodyWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessLocationDetailsWithBody(ctx, accountId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateGoogleBusinessLocationDetailsResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error) {
-	rsp, err := c.UpdateGoogleBusinessLocationDetails(ctx, accountId, body, reqEditors...)
+func (c *ClientWithResponses) UpdateGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error) {
+	rsp, err := c.UpdateGoogleBusinessLocationDetails(ctx, accountId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27616,16 +27925,16 @@ func (c *ClientWithResponses) ListGoogleBusinessMediaWithResponse(ctx context.Co
 }
 
 // CreateGoogleBusinessMediaWithBodyWithResponse request with arbitrary body returning *CreateGoogleBusinessMediaResponse
-func (c *ClientWithResponses) CreateGoogleBusinessMediaWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error) {
-	rsp, err := c.CreateGoogleBusinessMediaWithBody(ctx, accountId, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreateGoogleBusinessMediaWithBodyWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error) {
+	rsp, err := c.CreateGoogleBusinessMediaWithBody(ctx, accountId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreateGoogleBusinessMediaResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateGoogleBusinessMediaWithResponse(ctx context.Context, accountId string, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error) {
-	rsp, err := c.CreateGoogleBusinessMedia(ctx, accountId, body, reqEditors...)
+func (c *ClientWithResponses) CreateGoogleBusinessMediaWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessMediaParams, body CreateGoogleBusinessMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessMediaResponse, error) {
+	rsp, err := c.CreateGoogleBusinessMedia(ctx, accountId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -27651,16 +27960,16 @@ func (c *ClientWithResponses) ListGoogleBusinessPlaceActionsWithResponse(ctx con
 }
 
 // CreateGoogleBusinessPlaceActionWithBodyWithResponse request with arbitrary body returning *CreateGoogleBusinessPlaceActionResponse
-func (c *ClientWithResponses) CreateGoogleBusinessPlaceActionWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error) {
-	rsp, err := c.CreateGoogleBusinessPlaceActionWithBody(ctx, accountId, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreateGoogleBusinessPlaceActionWithBodyWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error) {
+	rsp, err := c.CreateGoogleBusinessPlaceActionWithBody(ctx, accountId, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreateGoogleBusinessPlaceActionResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateGoogleBusinessPlaceActionWithResponse(ctx context.Context, accountId string, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error) {
-	rsp, err := c.CreateGoogleBusinessPlaceAction(ctx, accountId, body, reqEditors...)
+func (c *ClientWithResponses) CreateGoogleBusinessPlaceActionWithResponse(ctx context.Context, accountId string, params *CreateGoogleBusinessPlaceActionParams, body CreateGoogleBusinessPlaceActionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGoogleBusinessPlaceActionResponse, error) {
+	rsp, err := c.CreateGoogleBusinessPlaceAction(ctx, accountId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
