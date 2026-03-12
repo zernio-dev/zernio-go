@@ -3126,7 +3126,7 @@ type MediaItem struct {
 	// Size Optional file size in bytes
 	Size *int `json:"size,omitempty"`
 
-	// Thumbnail Optional thumbnail image URL for videos
+	// Thumbnail Optional custom thumbnail/cover image URL for videos. Supported for Facebook video posts, Facebook Reels, and regular video uploads. Max 10MB, JPG/PNG recommended.
 	Thumbnail *string `json:"thumbnail,omitempty"`
 
 	// TiktokProcessed Internal flag indicating the image was resized for TikTok
