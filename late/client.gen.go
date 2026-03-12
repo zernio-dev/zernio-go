@@ -4072,12 +4072,23 @@ type GetGoogleBusinessLocationDetailsParams struct {
 	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
 	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
 
-	// ReadMask Comma-separated fields to return. Available: name, title, phoneNumbers, categories, storefrontAddress, websiteUri, regularHours, specialHours, serviceArea, profile, openInfo, metadata, moreHours.
+	// ReadMask Comma-separated fields to return. Available: name, title, phoneNumbers, categories, storefrontAddress, websiteUri, regularHours, specialHours, serviceArea, serviceItems, profile, openInfo, metadata, moreHours.
 	ReadMask *string `form:"readMask,omitempty" json:"readMask,omitempty"`
 }
 
 // UpdateGoogleBusinessLocationDetailsJSONBody defines parameters for UpdateGoogleBusinessLocationDetails.
 type UpdateGoogleBusinessLocationDetailsJSONBody struct {
+	// Categories Primary and additional business categories. Use updateMask='categories' to update.
+	Categories *struct {
+		AdditionalCategories *[]struct {
+			// Name Category resource name (e.g. 'categories/gcid:dry_cleaner')
+			Name *string `json:"name,omitempty"`
+		} `json:"additionalCategories,omitempty"`
+		PrimaryCategory *struct {
+			// Name Category resource name (e.g. 'categories/gcid:laundromat'). Use Google's Categories API to look up valid IDs.
+			Name *string `json:"name,omitempty"`
+		} `json:"primaryCategory,omitempty"`
+	} `json:"categories,omitempty"`
 	PhoneNumbers *struct {
 		AdditionalPhones *[]string `json:"additionalPhones,omitempty"`
 		PrimaryPhone     *string   `json:"primaryPhone,omitempty"`
@@ -4093,6 +4104,43 @@ type UpdateGoogleBusinessLocationDetailsJSONBody struct {
 			OpenTime  *string `json:"openTime,omitempty"`
 		} `json:"periods,omitempty"`
 	} `json:"regularHours,omitempty"`
+
+	// ServiceItems Services offered by the business. Use updateMask='serviceItems' to update.
+	ServiceItems *[]struct {
+		// FreeFormServiceItem A custom service not in Google's catalog
+		FreeFormServiceItem *struct {
+			// Category Category resource name this service belongs to (e.g. 'categories/gcid:laundromat')
+			Category *string `json:"category,omitempty"`
+			Label    *struct {
+				// DisplayName Service name as displayed to users
+				DisplayName *string `json:"displayName,omitempty"`
+
+				// LanguageCode Language code (e.g. 'en')
+				LanguageCode *string `json:"languageCode,omitempty"`
+			} `json:"label,omitempty"`
+		} `json:"freeFormServiceItem,omitempty"`
+
+		// Price Optional price for the service
+		Price *struct {
+			// CurrencyCode ISO 4217 currency code (e.g. 'USD')
+			CurrencyCode *string `json:"currencyCode,omitempty"`
+
+			// Nanos Nano units (10^-9) of the amount
+			Nanos *int `json:"nanos,omitempty"`
+
+			// Units Whole units of the amount
+			Units *string `json:"units,omitempty"`
+		} `json:"price,omitempty"`
+
+		// StructuredServiceItem A predefined service from Google's service type catalog
+		StructuredServiceItem *struct {
+			// Description Optional description of the service
+			Description *string `json:"description,omitempty"`
+
+			// ServiceTypeId Service type ID from Google's catalog (e.g. 'job_type_id:plumbing_drain_repair')
+			ServiceTypeId *string `json:"serviceTypeId,omitempty"`
+		} `json:"structuredServiceItem,omitempty"`
+	} `json:"serviceItems,omitempty"`
 	SpecialHours *struct {
 		SpecialHourPeriods *[]struct {
 			CloseTime *string `json:"closeTime,omitempty"`
@@ -4111,7 +4159,7 @@ type UpdateGoogleBusinessLocationDetailsJSONBody struct {
 		} `json:"specialHourPeriods,omitempty"`
 	} `json:"specialHours,omitempty"`
 
-	// UpdateMask Required. Comma-separated fields to update (e.g. 'regularHours', 'specialHours', 'profile.description')
+	// UpdateMask Required. Comma-separated fields to update (e.g. 'regularHours', 'specialHours', 'profile.description', 'categories', 'serviceItems'). Any valid Google Business Information API updateMask field is supported.
 	UpdateMask string  `json:"updateMask"`
 	WebsiteUri *string `json:"websiteUri,omitempty"`
 }
@@ -22237,7 +22285,22 @@ type GetGoogleBusinessLocationDetailsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		AccountId    *string `json:"accountId,omitempty"`
+		AccountId *string `json:"accountId,omitempty"`
+
+		// Categories Business categories (returned when readMask includes 'categories')
+		Categories *struct {
+			AdditionalCategories *[]struct {
+				DisplayName *string `json:"displayName,omitempty"`
+				Name        *string `json:"name,omitempty"`
+			} `json:"additionalCategories,omitempty"`
+			PrimaryCategory *struct {
+				// DisplayName Human-readable category name
+				DisplayName *string `json:"displayName,omitempty"`
+
+				// Name Category resource name
+				Name *string `json:"name,omitempty"`
+			} `json:"primaryCategory,omitempty"`
+		} `json:"categories,omitempty"`
 		LocationId   *string `json:"locationId,omitempty"`
 		PhoneNumbers *struct {
 			AdditionalPhones *[]string `json:"additionalPhones,omitempty"`
@@ -22257,6 +22320,26 @@ type GetGoogleBusinessLocationDetailsResponse struct {
 				OpenTime *string `json:"openTime,omitempty"`
 			} `json:"periods,omitempty"`
 		} `json:"regularHours,omitempty"`
+
+		// ServiceItems Services offered (returned when readMask includes 'serviceItems')
+		ServiceItems *[]struct {
+			FreeFormServiceItem *struct {
+				Category *string `json:"category,omitempty"`
+				Label    *struct {
+					DisplayName  *string `json:"displayName,omitempty"`
+					LanguageCode *string `json:"languageCode,omitempty"`
+				} `json:"label,omitempty"`
+			} `json:"freeFormServiceItem,omitempty"`
+			Price *struct {
+				CurrencyCode *string `json:"currencyCode,omitempty"`
+				Nanos        *int    `json:"nanos,omitempty"`
+				Units        *string `json:"units,omitempty"`
+			} `json:"price,omitempty"`
+			StructuredServiceItem *struct {
+				Description   *string `json:"description,omitempty"`
+				ServiceTypeId *string `json:"serviceTypeId,omitempty"`
+			} `json:"structuredServiceItem,omitempty"`
+		} `json:"serviceItems,omitempty"`
 		SpecialHours *struct {
 			SpecialHourPeriods *[]struct {
 				CloseTime *string `json:"closeTime,omitempty"`
@@ -30896,7 +30979,22 @@ func ParseGetGoogleBusinessLocationDetailsResponse(rsp *http.Response) (*GetGoog
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			AccountId    *string `json:"accountId,omitempty"`
+			AccountId *string `json:"accountId,omitempty"`
+
+			// Categories Business categories (returned when readMask includes 'categories')
+			Categories *struct {
+				AdditionalCategories *[]struct {
+					DisplayName *string `json:"displayName,omitempty"`
+					Name        *string `json:"name,omitempty"`
+				} `json:"additionalCategories,omitempty"`
+				PrimaryCategory *struct {
+					// DisplayName Human-readable category name
+					DisplayName *string `json:"displayName,omitempty"`
+
+					// Name Category resource name
+					Name *string `json:"name,omitempty"`
+				} `json:"primaryCategory,omitempty"`
+			} `json:"categories,omitempty"`
 			LocationId   *string `json:"locationId,omitempty"`
 			PhoneNumbers *struct {
 				AdditionalPhones *[]string `json:"additionalPhones,omitempty"`
@@ -30916,6 +31014,26 @@ func ParseGetGoogleBusinessLocationDetailsResponse(rsp *http.Response) (*GetGoog
 					OpenTime *string `json:"openTime,omitempty"`
 				} `json:"periods,omitempty"`
 			} `json:"regularHours,omitempty"`
+
+			// ServiceItems Services offered (returned when readMask includes 'serviceItems')
+			ServiceItems *[]struct {
+				FreeFormServiceItem *struct {
+					Category *string `json:"category,omitempty"`
+					Label    *struct {
+						DisplayName  *string `json:"displayName,omitempty"`
+						LanguageCode *string `json:"languageCode,omitempty"`
+					} `json:"label,omitempty"`
+				} `json:"freeFormServiceItem,omitempty"`
+				Price *struct {
+					CurrencyCode *string `json:"currencyCode,omitempty"`
+					Nanos        *int    `json:"nanos,omitempty"`
+					Units        *string `json:"units,omitempty"`
+				} `json:"price,omitempty"`
+				StructuredServiceItem *struct {
+					Description   *string `json:"description,omitempty"`
+					ServiceTypeId *string `json:"serviceTypeId,omitempty"`
+				} `json:"structuredServiceItem,omitempty"`
+			} `json:"serviceItems,omitempty"`
 			SpecialHours *struct {
 				SpecialHourPeriods *[]struct {
 					CloseTime *string `json:"closeTime,omitempty"`
