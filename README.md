@@ -297,11 +297,13 @@ func main() {
 | `client.GetWhatsAppBusinessProfileWithResponse()` | Get business profile |
 | `client.GetWhatsAppContactWithResponse()` | Get contact |
 | `client.GetWhatsAppContactsWithResponse()` | List contacts |
+| `client.GetWhatsAppDisplayNameWithResponse()` | Get display name and review status |
 | `client.GetWhatsAppGroupsWithResponse()` | List contact groups |
 | `client.GetWhatsAppTemplateWithResponse()` | Get template |
 | `client.GetWhatsAppTemplatesWithResponse()` | List templates |
 | `client.UpdateWhatsAppBusinessProfileWithResponse()` | Update business profile |
 | `client.UpdateWhatsAppContactWithResponse()` | Update contact |
+| `client.UpdateWhatsAppDisplayNameWithResponse()` | Request display name change |
 | `client.UpdateWhatsAppTemplateWithResponse()` | Update template |
 | `client.DeleteWhatsAppBroadcastWithResponse()` | Delete broadcast |
 | `client.DeleteWhatsAppContactWithResponse()` | Delete contact |
@@ -315,6 +317,7 @@ func main() {
 | `client.ScheduleWhatsAppBroadcastWithResponse()` | Schedule broadcast |
 | `client.SendWhatsAppBroadcastWithResponse()` | Send broadcast |
 | `client.SendWhatsAppBulkWithResponse()` | Bulk send template messages |
+| `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
 
 ### WhatsApp Phone Numbers
 | Method | Description |

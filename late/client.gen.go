@@ -2664,6 +2664,43 @@ func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() b
 type AccountWithFollowerStats struct {
 	UnderscoreId *string `json:"_id,omitempty"`
 
+	// AccountStats Platform-specific account stats from the latest daily snapshot.
+	// Fields vary by platform. Only present if metadata has been captured.
+	AccountStats *struct {
+		// BoardCount Total boards (Pinterest)
+		BoardCount *float32 `json:"boardCount,omitempty"`
+
+		// FollowingCount Number of accounts being followed
+		FollowingCount *float32 `json:"followingCount,omitempty"`
+
+		// LikesCount Total likes received (TikTok)
+		LikesCount *float32 `json:"likesCount,omitempty"`
+
+		// ListedCount Lists the user appears on (X/Twitter)
+		ListedCount *float32 `json:"listedCount,omitempty"`
+
+		// MediaCount Total media posts (Instagram)
+		MediaCount *float32 `json:"mediaCount,omitempty"`
+
+		// MonthlyViews Monthly profile views (Pinterest)
+		MonthlyViews *float32 `json:"monthlyViews,omitempty"`
+
+		// PinCount Total pins (Pinterest)
+		PinCount *float32 `json:"pinCount,omitempty"`
+
+		// PostsCount Total posts (Bluesky)
+		PostsCount *float32 `json:"postsCount,omitempty"`
+
+		// TotalViews Total channel views (YouTube)
+		TotalViews *float32 `json:"totalViews,omitempty"`
+
+		// TweetCount Total tweets (X/Twitter)
+		TweetCount *float32 `json:"tweetCount,omitempty"`
+
+		// VideoCount Total videos (YouTube
+		VideoCount *float32 `json:"videoCount,omitempty"`
+	} `json:"accountStats,omitempty"`
+
 	// CurrentFollowers Current follower count
 	CurrentFollowers *float32 `json:"currentFollowers,omitempty"`
 
@@ -5803,6 +5840,30 @@ type UpdateWhatsAppBusinessProfileJSONBody struct {
 	Websites *[]string `json:"websites,omitempty"`
 }
 
+// GetWhatsAppDisplayNameParams defines parameters for GetWhatsAppDisplayName.
+type GetWhatsAppDisplayNameParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppDisplayNameJSONBody defines parameters for UpdateWhatsAppDisplayName.
+type UpdateWhatsAppDisplayNameJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// DisplayName New display name (must follow WhatsApp naming guidelines)
+	DisplayName string `json:"displayName"`
+}
+
+// UploadWhatsAppProfilePhotoMultipartBody defines parameters for UploadWhatsAppProfilePhoto.
+type UploadWhatsAppProfilePhotoMultipartBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// File Image file (JPEG or PNG, max 5MB, recommended 640x640)
+	File openapi_types.File `json:"file"`
+}
+
 // GetWhatsAppContactsParams defines parameters for GetWhatsAppContacts.
 type GetWhatsAppContactsParams struct {
 	// AccountId WhatsApp social account ID
@@ -6240,6 +6301,12 @@ type SendWhatsAppBulkJSONRequestBody SendWhatsAppBulkJSONBody
 
 // UpdateWhatsAppBusinessProfileJSONRequestBody defines body for UpdateWhatsAppBusinessProfile for application/json ContentType.
 type UpdateWhatsAppBusinessProfileJSONRequestBody UpdateWhatsAppBusinessProfileJSONBody
+
+// UpdateWhatsAppDisplayNameJSONRequestBody defines body for UpdateWhatsAppDisplayName for application/json ContentType.
+type UpdateWhatsAppDisplayNameJSONRequestBody UpdateWhatsAppDisplayNameJSONBody
+
+// UploadWhatsAppProfilePhotoMultipartRequestBody defines body for UploadWhatsAppProfilePhoto for multipart/form-data ContentType.
+type UploadWhatsAppProfilePhotoMultipartRequestBody UploadWhatsAppProfilePhotoMultipartBody
 
 // CreateWhatsAppContactJSONRequestBody defines body for CreateWhatsAppContact for application/json ContentType.
 type CreateWhatsAppContactJSONRequestBody CreateWhatsAppContactJSONBody
@@ -7747,6 +7814,17 @@ type ClientInterface interface {
 	UpdateWhatsAppBusinessProfileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateWhatsAppBusinessProfile(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppDisplayName request
+	GetWhatsAppDisplayName(ctx context.Context, params *GetWhatsAppDisplayNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppDisplayNameWithBody request with any body
+	UpdateWhatsAppDisplayNameWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppDisplayName(ctx context.Context, body UpdateWhatsAppDisplayNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadWhatsAppProfilePhotoWithBody request with any body
+	UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppContacts request
 	GetWhatsAppContacts(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10351,6 +10429,54 @@ func (c *Client) UpdateWhatsAppBusinessProfileWithBody(ctx context.Context, cont
 
 func (c *Client) UpdateWhatsAppBusinessProfile(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateWhatsAppBusinessProfileRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppDisplayName(ctx context.Context, params *GetWhatsAppDisplayNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppDisplayNameRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppDisplayNameWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppDisplayNameRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppDisplayName(ctx context.Context, body UpdateWhatsAppDisplayNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppDisplayNameRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadWhatsAppProfilePhotoRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19843,6 +19969,120 @@ func NewUpdateWhatsAppBusinessProfileRequestWithBody(server string, contentType 
 	return req, nil
 }
 
+// NewGetWhatsAppDisplayNameRequest generates requests for GetWhatsAppDisplayName
+func NewGetWhatsAppDisplayNameRequest(server string, params *GetWhatsAppDisplayNameParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/business-profile/display-name")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppDisplayNameRequest calls the generic UpdateWhatsAppDisplayName builder with application/json body
+func NewUpdateWhatsAppDisplayNameRequest(server string, body UpdateWhatsAppDisplayNameJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppDisplayNameRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppDisplayNameRequestWithBody generates requests for UpdateWhatsAppDisplayName with any type of body
+func NewUpdateWhatsAppDisplayNameRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/business-profile/display-name")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUploadWhatsAppProfilePhotoRequestWithBody generates requests for UploadWhatsAppProfilePhoto with any type of body
+func NewUploadWhatsAppProfilePhotoRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/business-profile/photo")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetWhatsAppContactsRequest generates requests for GetWhatsAppContacts
 func NewGetWhatsAppContactsRequest(server string, params *GetWhatsAppContactsParams) (*http.Request, error) {
 	var err error
@@ -21411,6 +21651,17 @@ type ClientWithResponsesInterface interface {
 	UpdateWhatsAppBusinessProfileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error)
 
 	UpdateWhatsAppBusinessProfileWithResponse(ctx context.Context, body UpdateWhatsAppBusinessProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppBusinessProfileResponse, error)
+
+	// GetWhatsAppDisplayNameWithResponse request
+	GetWhatsAppDisplayNameWithResponse(ctx context.Context, params *GetWhatsAppDisplayNameParams, reqEditors ...RequestEditorFn) (*GetWhatsAppDisplayNameResponse, error)
+
+	// UpdateWhatsAppDisplayNameWithBodyWithResponse request with any body
+	UpdateWhatsAppDisplayNameWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppDisplayNameResponse, error)
+
+	UpdateWhatsAppDisplayNameWithResponse(ctx context.Context, body UpdateWhatsAppDisplayNameJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppDisplayNameResponse, error)
+
+	// UploadWhatsAppProfilePhotoWithBodyWithResponse request with any body
+	UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppProfilePhotoResponse, error)
 
 	// GetWhatsAppContactsWithResponse request
 	GetWhatsAppContactsWithResponse(ctx context.Context, params *GetWhatsAppContactsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppContactsResponse, error)
@@ -26964,6 +27215,99 @@ func (r UpdateWhatsAppBusinessProfileResponse) StatusCode() int {
 	return 0
 }
 
+type GetWhatsAppDisplayNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DisplayName *struct {
+			// Name Current verified display name
+			Name *string `json:"name,omitempty"`
+
+			// PhoneNumber Display phone number
+			PhoneNumber *string `json:"phoneNumber,omitempty"`
+
+			// Status Meta review status for the display name
+			Status *GetWhatsAppDisplayName200DisplayNameStatus `json:"status,omitempty"`
+		} `json:"displayName,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetWhatsAppDisplayName200DisplayNameStatus string
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppDisplayNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppDisplayNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppDisplayNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DisplayName *struct {
+			Name   *string                                        `json:"name,omitempty"`
+			Status *UpdateWhatsAppDisplayName200DisplayNameStatus `json:"status,omitempty"`
+		} `json:"displayName,omitempty"`
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type UpdateWhatsAppDisplayName200DisplayNameStatus string
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppDisplayNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppDisplayNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UploadWhatsAppProfilePhotoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadWhatsAppProfilePhotoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadWhatsAppProfilePhotoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetWhatsAppContactsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -29511,6 +29855,41 @@ func (c *ClientWithResponses) UpdateWhatsAppBusinessProfileWithResponse(ctx cont
 		return nil, err
 	}
 	return ParseUpdateWhatsAppBusinessProfileResponse(rsp)
+}
+
+// GetWhatsAppDisplayNameWithResponse request returning *GetWhatsAppDisplayNameResponse
+func (c *ClientWithResponses) GetWhatsAppDisplayNameWithResponse(ctx context.Context, params *GetWhatsAppDisplayNameParams, reqEditors ...RequestEditorFn) (*GetWhatsAppDisplayNameResponse, error) {
+	rsp, err := c.GetWhatsAppDisplayName(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppDisplayNameResponse(rsp)
+}
+
+// UpdateWhatsAppDisplayNameWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppDisplayNameResponse
+func (c *ClientWithResponses) UpdateWhatsAppDisplayNameWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppDisplayNameResponse, error) {
+	rsp, err := c.UpdateWhatsAppDisplayNameWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppDisplayNameResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppDisplayNameWithResponse(ctx context.Context, body UpdateWhatsAppDisplayNameJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppDisplayNameResponse, error) {
+	rsp, err := c.UpdateWhatsAppDisplayName(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppDisplayNameResponse(rsp)
+}
+
+// UploadWhatsAppProfilePhotoWithBodyWithResponse request with arbitrary body returning *UploadWhatsAppProfilePhotoResponse
+func (c *ClientWithResponses) UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppProfilePhotoResponse, error) {
+	rsp, err := c.UploadWhatsAppProfilePhotoWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadWhatsAppProfilePhotoResponse(rsp)
 }
 
 // GetWhatsAppContactsWithResponse request returning *GetWhatsAppContactsResponse
@@ -37064,6 +37443,127 @@ func ParseUpdateWhatsAppBusinessProfileResponse(rsp *http.Response) (*UpdateWhat
 	}
 
 	response := &UpdateWhatsAppBusinessProfileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppDisplayNameResponse parses an HTTP response from a GetWhatsAppDisplayNameWithResponse call
+func ParseGetWhatsAppDisplayNameResponse(rsp *http.Response) (*GetWhatsAppDisplayNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppDisplayNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DisplayName *struct {
+				// Name Current verified display name
+				Name *string `json:"name,omitempty"`
+
+				// PhoneNumber Display phone number
+				PhoneNumber *string `json:"phoneNumber,omitempty"`
+
+				// Status Meta review status for the display name
+				Status *GetWhatsAppDisplayName200DisplayNameStatus `json:"status,omitempty"`
+			} `json:"displayName,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppDisplayNameResponse parses an HTTP response from a UpdateWhatsAppDisplayNameWithResponse call
+func ParseUpdateWhatsAppDisplayNameResponse(rsp *http.Response) (*UpdateWhatsAppDisplayNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppDisplayNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DisplayName *struct {
+				Name   *string                                        `json:"name,omitempty"`
+				Status *UpdateWhatsAppDisplayName200DisplayNameStatus `json:"status,omitempty"`
+			} `json:"displayName,omitempty"`
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadWhatsAppProfilePhotoResponse parses an HTTP response from a UploadWhatsAppProfilePhotoWithResponse call
+func ParseUploadWhatsAppProfilePhotoResponse(rsp *http.Response) (*UploadWhatsAppProfilePhotoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadWhatsAppProfilePhotoResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
