@@ -5754,6 +5754,57 @@ type GetYouTubeTranscriptParams struct {
 	Lang *string `form:"lang,omitempty" json:"lang,omitempty"`
 }
 
+// RemoveBookmarkParams defines parameters for RemoveBookmark.
+type RemoveBookmarkParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// TweetId The ID of the tweet to unbookmark
+	TweetId string `form:"tweetId" json:"tweetId"`
+}
+
+// BookmarkPostJSONBody defines parameters for BookmarkPost.
+type BookmarkPostJSONBody struct {
+	// AccountId The social account ID
+	AccountId string `json:"accountId"`
+
+	// TweetId The ID of the tweet to bookmark
+	TweetId string `json:"tweetId"`
+}
+
+// UnfollowUserParams defines parameters for UnfollowUser.
+type UnfollowUserParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// TargetUserId The Twitter ID of the user to unfollow
+	TargetUserId string `form:"targetUserId" json:"targetUserId"`
+}
+
+// FollowUserJSONBody defines parameters for FollowUser.
+type FollowUserJSONBody struct {
+	// AccountId The social account ID
+	AccountId string `json:"accountId"`
+
+	// TargetUserId The Twitter ID of the user to follow
+	TargetUserId string `json:"targetUserId"`
+}
+
+// UndoRetweetParams defines parameters for UndoRetweet.
+type UndoRetweetParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// TweetId The ID of the original tweet to un-retweet
+	TweetId string `form:"tweetId" json:"tweetId"`
+}
+
+// RetweetPostJSONBody defines parameters for RetweetPost.
+type RetweetPostJSONBody struct {
+	// AccountId The social account ID
+	AccountId string `json:"accountId"`
+
+	// TweetId The ID of the tweet to retweet
+	TweetId string `json:"tweetId"`
+}
+
 // GetWebhookLogsParams defines parameters for GetWebhookLogs.
 type GetWebhookLogsParams struct {
 	// Limit Maximum number of logs to return (max 100)
@@ -6420,6 +6471,15 @@ type ValidatePostJSONRequestBody ValidatePostJSONBody
 
 // ValidatePostLengthJSONRequestBody defines body for ValidatePostLength for application/json ContentType.
 type ValidatePostLengthJSONRequestBody ValidatePostLengthJSONBody
+
+// BookmarkPostJSONRequestBody defines body for BookmarkPost for application/json ContentType.
+type BookmarkPostJSONRequestBody BookmarkPostJSONBody
+
+// FollowUserJSONRequestBody defines body for FollowUser for application/json ContentType.
+type FollowUserJSONRequestBody FollowUserJSONBody
+
+// RetweetPostJSONRequestBody defines body for RetweetPost for application/json ContentType.
+type RetweetPostJSONRequestBody RetweetPostJSONBody
 
 // CreateWebhookSettingsJSONRequestBody defines body for CreateWebhookSettings for application/json ContentType.
 type CreateWebhookSettingsJSONRequestBody CreateWebhookSettingsJSONBody
@@ -7876,6 +7936,30 @@ type ClientInterface interface {
 
 	// GetYouTubeTranscript request
 	GetYouTubeTranscript(ctx context.Context, params *GetYouTubeTranscriptParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveBookmark request
+	RemoveBookmark(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BookmarkPostWithBody request with any body
+	BookmarkPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BookmarkPost(ctx context.Context, body BookmarkPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnfollowUser request
+	UnfollowUser(ctx context.Context, params *UnfollowUserParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FollowUserWithBody request with any body
+	FollowUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	FollowUser(ctx context.Context, body FollowUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UndoRetweet request
+	UndoRetweet(ctx context.Context, params *UndoRetweetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RetweetPostWithBody request with any body
+	RetweetPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RetweetPost(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUsageStats request
 	GetUsageStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10203,6 +10287,114 @@ func (c *Client) DownloadYouTubeVideo(ctx context.Context, params *DownloadYouTu
 
 func (c *Client) GetYouTubeTranscript(ctx context.Context, params *GetYouTubeTranscriptParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetYouTubeTranscriptRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveBookmark(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveBookmarkRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BookmarkPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBookmarkPostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BookmarkPost(ctx context.Context, body BookmarkPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBookmarkPostRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnfollowUser(ctx context.Context, params *UnfollowUserParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnfollowUserRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FollowUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFollowUserRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FollowUser(ctx context.Context, body FollowUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFollowUserRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UndoRetweet(ctx context.Context, params *UndoRetweetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUndoRetweetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RetweetPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetweetPostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RetweetPost(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetweetPostRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19115,6 +19307,297 @@ func NewGetYouTubeTranscriptRequest(server string, params *GetYouTubeTranscriptP
 	return req, nil
 }
 
+// NewRemoveBookmarkRequest generates requests for RemoveBookmark
+func NewRemoveBookmarkRequest(server string, params *RemoveBookmarkParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/bookmark")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tweetId", params.TweetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBookmarkPostRequest calls the generic BookmarkPost builder with application/json body
+func NewBookmarkPostRequest(server string, body BookmarkPostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBookmarkPostRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBookmarkPostRequestWithBody generates requests for BookmarkPost with any type of body
+func NewBookmarkPostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/bookmark")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnfollowUserRequest generates requests for UnfollowUser
+func NewUnfollowUserRequest(server string, params *UnfollowUserParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/follow")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "targetUserId", params.TargetUserId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFollowUserRequest calls the generic FollowUser builder with application/json body
+func NewFollowUserRequest(server string, body FollowUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFollowUserRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewFollowUserRequestWithBody generates requests for FollowUser with any type of body
+func NewFollowUserRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/follow")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUndoRetweetRequest generates requests for UndoRetweet
+func NewUndoRetweetRequest(server string, params *UndoRetweetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/retweet")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tweetId", params.TweetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRetweetPostRequest calls the generic RetweetPost builder with application/json body
+func NewRetweetPostRequest(server string, body RetweetPostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRetweetPostRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewRetweetPostRequestWithBody generates requests for RetweetPost with any type of body
+func NewRetweetPostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/twitter/retweet")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetUsageStatsRequest generates requests for GetUsageStats
 func NewGetUsageStatsRequest(server string) (*http.Request, error) {
 	var err error
@@ -21713,6 +22196,30 @@ type ClientWithResponsesInterface interface {
 
 	// GetYouTubeTranscriptWithResponse request
 	GetYouTubeTranscriptWithResponse(ctx context.Context, params *GetYouTubeTranscriptParams, reqEditors ...RequestEditorFn) (*GetYouTubeTranscriptResponse, error)
+
+	// RemoveBookmarkWithResponse request
+	RemoveBookmarkWithResponse(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*RemoveBookmarkResponse, error)
+
+	// BookmarkPostWithBodyWithResponse request with any body
+	BookmarkPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BookmarkPostResponse, error)
+
+	BookmarkPostWithResponse(ctx context.Context, body BookmarkPostJSONRequestBody, reqEditors ...RequestEditorFn) (*BookmarkPostResponse, error)
+
+	// UnfollowUserWithResponse request
+	UnfollowUserWithResponse(ctx context.Context, params *UnfollowUserParams, reqEditors ...RequestEditorFn) (*UnfollowUserResponse, error)
+
+	// FollowUserWithBodyWithResponse request with any body
+	FollowUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FollowUserResponse, error)
+
+	FollowUserWithResponse(ctx context.Context, body FollowUserJSONRequestBody, reqEditors ...RequestEditorFn) (*FollowUserResponse, error)
+
+	// UndoRetweetWithResponse request
+	UndoRetweetWithResponse(ctx context.Context, params *UndoRetweetParams, reqEditors ...RequestEditorFn) (*UndoRetweetResponse, error)
+
+	// RetweetPostWithBodyWithResponse request with any body
+	RetweetPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RetweetPostResponse, error)
+
+	RetweetPostWithResponse(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*RetweetPostResponse, error)
 
 	// GetUsageStatsWithResponse request
 	GetUsageStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUsageStatsResponse, error)
@@ -26664,6 +27171,177 @@ func (r GetYouTubeTranscriptResponse) StatusCode() int {
 	return 0
 }
 
+type RemoveBookmarkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Bookmarked *bool   `json:"bookmarked,omitempty"`
+		Platform   *string `json:"platform,omitempty"`
+		Status     *string `json:"status,omitempty"`
+		TweetId    *string `json:"tweetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveBookmarkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveBookmarkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BookmarkPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Bookmarked *bool   `json:"bookmarked,omitempty"`
+		Platform   *string `json:"platform,omitempty"`
+		Status     *string `json:"status,omitempty"`
+		TweetId    *string `json:"tweetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BookmarkPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BookmarkPostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnfollowUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Following    *bool   `json:"following,omitempty"`
+		Platform     *string `json:"platform,omitempty"`
+		Status       *string `json:"status,omitempty"`
+		TargetUserId *string `json:"targetUserId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UnfollowUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnfollowUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type FollowUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Following *bool `json:"following,omitempty"`
+
+		// PendingFollow True if the target account is protected and a follow request was sent
+		PendingFollow *bool   `json:"pending_follow,omitempty"`
+		Platform      *string `json:"platform,omitempty"`
+		Status        *string `json:"status,omitempty"`
+		TargetUserId  *string `json:"targetUserId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r FollowUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FollowUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UndoRetweetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform  *string `json:"platform,omitempty"`
+		Retweeted *bool   `json:"retweeted,omitempty"`
+		Status    *string `json:"status,omitempty"`
+		TweetId   *string `json:"tweetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UndoRetweetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UndoRetweetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RetweetPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform  *string `json:"platform,omitempty"`
+		Retweeted *bool   `json:"retweeted,omitempty"`
+		Status    *string `json:"status,omitempty"`
+		TweetId   *string `json:"tweetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RetweetPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RetweetPostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetUsageStatsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -29766,6 +30444,84 @@ func (c *ClientWithResponses) GetYouTubeTranscriptWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetYouTubeTranscriptResponse(rsp)
+}
+
+// RemoveBookmarkWithResponse request returning *RemoveBookmarkResponse
+func (c *ClientWithResponses) RemoveBookmarkWithResponse(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*RemoveBookmarkResponse, error) {
+	rsp, err := c.RemoveBookmark(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveBookmarkResponse(rsp)
+}
+
+// BookmarkPostWithBodyWithResponse request with arbitrary body returning *BookmarkPostResponse
+func (c *ClientWithResponses) BookmarkPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BookmarkPostResponse, error) {
+	rsp, err := c.BookmarkPostWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBookmarkPostResponse(rsp)
+}
+
+func (c *ClientWithResponses) BookmarkPostWithResponse(ctx context.Context, body BookmarkPostJSONRequestBody, reqEditors ...RequestEditorFn) (*BookmarkPostResponse, error) {
+	rsp, err := c.BookmarkPost(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBookmarkPostResponse(rsp)
+}
+
+// UnfollowUserWithResponse request returning *UnfollowUserResponse
+func (c *ClientWithResponses) UnfollowUserWithResponse(ctx context.Context, params *UnfollowUserParams, reqEditors ...RequestEditorFn) (*UnfollowUserResponse, error) {
+	rsp, err := c.UnfollowUser(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnfollowUserResponse(rsp)
+}
+
+// FollowUserWithBodyWithResponse request with arbitrary body returning *FollowUserResponse
+func (c *ClientWithResponses) FollowUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FollowUserResponse, error) {
+	rsp, err := c.FollowUserWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFollowUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) FollowUserWithResponse(ctx context.Context, body FollowUserJSONRequestBody, reqEditors ...RequestEditorFn) (*FollowUserResponse, error) {
+	rsp, err := c.FollowUser(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFollowUserResponse(rsp)
+}
+
+// UndoRetweetWithResponse request returning *UndoRetweetResponse
+func (c *ClientWithResponses) UndoRetweetWithResponse(ctx context.Context, params *UndoRetweetParams, reqEditors ...RequestEditorFn) (*UndoRetweetResponse, error) {
+	rsp, err := c.UndoRetweet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUndoRetweetResponse(rsp)
+}
+
+// RetweetPostWithBodyWithResponse request with arbitrary body returning *RetweetPostResponse
+func (c *ClientWithResponses) RetweetPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RetweetPostResponse, error) {
+	rsp, err := c.RetweetPostWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetweetPostResponse(rsp)
+}
+
+func (c *ClientWithResponses) RetweetPostWithResponse(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*RetweetPostResponse, error) {
+	rsp, err := c.RetweetPost(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetweetPostResponse(rsp)
 }
 
 // GetUsageStatsWithResponse request returning *GetUsageStatsResponse
@@ -36666,6 +37422,237 @@ func ParseGetYouTubeTranscriptResponse(rsp *http.Response) (*GetYouTubeTranscrip
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveBookmarkResponse parses an HTTP response from a RemoveBookmarkWithResponse call
+func ParseRemoveBookmarkResponse(rsp *http.Response) (*RemoveBookmarkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveBookmarkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Bookmarked *bool   `json:"bookmarked,omitempty"`
+			Platform   *string `json:"platform,omitempty"`
+			Status     *string `json:"status,omitempty"`
+			TweetId    *string `json:"tweetId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBookmarkPostResponse parses an HTTP response from a BookmarkPostWithResponse call
+func ParseBookmarkPostResponse(rsp *http.Response) (*BookmarkPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BookmarkPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Bookmarked *bool   `json:"bookmarked,omitempty"`
+			Platform   *string `json:"platform,omitempty"`
+			Status     *string `json:"status,omitempty"`
+			TweetId    *string `json:"tweetId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnfollowUserResponse parses an HTTP response from a UnfollowUserWithResponse call
+func ParseUnfollowUserResponse(rsp *http.Response) (*UnfollowUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnfollowUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Following    *bool   `json:"following,omitempty"`
+			Platform     *string `json:"platform,omitempty"`
+			Status       *string `json:"status,omitempty"`
+			TargetUserId *string `json:"targetUserId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFollowUserResponse parses an HTTP response from a FollowUserWithResponse call
+func ParseFollowUserResponse(rsp *http.Response) (*FollowUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FollowUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Following *bool `json:"following,omitempty"`
+
+			// PendingFollow True if the target account is protected and a follow request was sent
+			PendingFollow *bool   `json:"pending_follow,omitempty"`
+			Platform      *string `json:"platform,omitempty"`
+			Status        *string `json:"status,omitempty"`
+			TargetUserId  *string `json:"targetUserId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUndoRetweetResponse parses an HTTP response from a UndoRetweetWithResponse call
+func ParseUndoRetweetResponse(rsp *http.Response) (*UndoRetweetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UndoRetweetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform  *string `json:"platform,omitempty"`
+			Retweeted *bool   `json:"retweeted,omitempty"`
+			Status    *string `json:"status,omitempty"`
+			TweetId   *string `json:"tweetId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRetweetPostResponse parses an HTTP response from a RetweetPostWithResponse call
+func ParseRetweetPostResponse(rsp *http.Response) (*RetweetPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RetweetPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform  *string `json:"platform,omitempty"`
+			Retweeted *bool   `json:"retweeted,omitempty"`
+			Status    *string `json:"status,omitempty"`
+			TweetId   *string `json:"tweetId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
