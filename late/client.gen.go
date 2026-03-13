@@ -23,24 +23,90 @@ const (
 	ConnectTokenScopes = "connectToken.Scopes"
 )
 
+// Defines values for AnalyticsListResponsePostsMediaItemsType.
+const (
+	AnalyticsListResponsePostsMediaItemsTypeImage AnalyticsListResponsePostsMediaItemsType = "image"
+	AnalyticsListResponsePostsMediaItemsTypeVideo AnalyticsListResponsePostsMediaItemsType = "video"
+)
+
+// Valid indicates whether the value is a known member of the AnalyticsListResponsePostsMediaItemsType enum.
+func (e AnalyticsListResponsePostsMediaItemsType) Valid() bool {
+	switch e {
+	case AnalyticsListResponsePostsMediaItemsTypeImage:
+		return true
+	case AnalyticsListResponsePostsMediaItemsTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AnalyticsListResponsePostsMediaType.
 const (
+	AnalyticsListResponsePostsMediaTypeCarousel AnalyticsListResponsePostsMediaType = "carousel"
 	AnalyticsListResponsePostsMediaTypeDocument AnalyticsListResponsePostsMediaType = "document"
 	AnalyticsListResponsePostsMediaTypeGif      AnalyticsListResponsePostsMediaType = "gif"
 	AnalyticsListResponsePostsMediaTypeImage    AnalyticsListResponsePostsMediaType = "image"
+	AnalyticsListResponsePostsMediaTypeText     AnalyticsListResponsePostsMediaType = "text"
 	AnalyticsListResponsePostsMediaTypeVideo    AnalyticsListResponsePostsMediaType = "video"
 )
 
 // Valid indicates whether the value is a known member of the AnalyticsListResponsePostsMediaType enum.
 func (e AnalyticsListResponsePostsMediaType) Valid() bool {
 	switch e {
+	case AnalyticsListResponsePostsMediaTypeCarousel:
+		return true
 	case AnalyticsListResponsePostsMediaTypeDocument:
 		return true
 	case AnalyticsListResponsePostsMediaTypeGif:
 		return true
 	case AnalyticsListResponsePostsMediaTypeImage:
 		return true
+	case AnalyticsListResponsePostsMediaTypeText:
+		return true
 	case AnalyticsListResponsePostsMediaTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AnalyticsSinglePostResponseMediaItemsType.
+const (
+	AnalyticsSinglePostResponseMediaItemsTypeImage AnalyticsSinglePostResponseMediaItemsType = "image"
+	AnalyticsSinglePostResponseMediaItemsTypeVideo AnalyticsSinglePostResponseMediaItemsType = "video"
+)
+
+// Valid indicates whether the value is a known member of the AnalyticsSinglePostResponseMediaItemsType enum.
+func (e AnalyticsSinglePostResponseMediaItemsType) Valid() bool {
+	switch e {
+	case AnalyticsSinglePostResponseMediaItemsTypeImage:
+		return true
+	case AnalyticsSinglePostResponseMediaItemsTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AnalyticsSinglePostResponseMediaType.
+const (
+	AnalyticsSinglePostResponseMediaTypeCarousel AnalyticsSinglePostResponseMediaType = "carousel"
+	AnalyticsSinglePostResponseMediaTypeImage    AnalyticsSinglePostResponseMediaType = "image"
+	AnalyticsSinglePostResponseMediaTypeText     AnalyticsSinglePostResponseMediaType = "text"
+	AnalyticsSinglePostResponseMediaTypeVideo    AnalyticsSinglePostResponseMediaType = "video"
+)
+
+// Valid indicates whether the value is a known member of the AnalyticsSinglePostResponseMediaType enum.
+func (e AnalyticsSinglePostResponseMediaType) Valid() bool {
+	switch e {
+	case AnalyticsSinglePostResponseMediaTypeCarousel:
+		return true
+	case AnalyticsSinglePostResponseMediaTypeImage:
+		return true
+	case AnalyticsSinglePostResponseMediaTypeText:
+		return true
+	case AnalyticsSinglePostResponseMediaTypeVideo:
 		return true
 	default:
 		return false
@@ -2308,16 +2374,16 @@ func (e DownloadYouTubeVideoParamsAction) Valid() bool {
 
 // Defines values for DownloadYouTubeVideoParamsFormat.
 const (
-	DownloadYouTubeVideoParamsFormatAudio DownloadYouTubeVideoParamsFormat = "audio"
-	DownloadYouTubeVideoParamsFormatVideo DownloadYouTubeVideoParamsFormat = "video"
+	Audio DownloadYouTubeVideoParamsFormat = "audio"
+	Video DownloadYouTubeVideoParamsFormat = "video"
 )
 
 // Valid indicates whether the value is a known member of the DownloadYouTubeVideoParamsFormat enum.
 func (e DownloadYouTubeVideoParamsFormat) Valid() bool {
 	switch e {
-	case DownloadYouTubeVideoParamsFormatAudio:
+	case Audio:
 		return true
-	case DownloadYouTubeVideoParamsFormatVideo:
+	case Video:
 		return true
 	default:
 		return false
@@ -2748,11 +2814,20 @@ type AnalyticsListResponse struct {
 	Overview           *AnalyticsOverview `json:"overview,omitempty"`
 	Pagination         *Pagination        `json:"pagination,omitempty"`
 	Posts              *[]struct {
-		UnderscoreId    *string                              `json:"_id,omitempty"`
-		Analytics       *PostAnalytics                       `json:"analytics,omitempty"`
-		Content         *string                              `json:"content,omitempty"`
-		IsExternal      *bool                                `json:"isExternal,omitempty"`
-		MediaItems      *[]MediaItem                         `json:"mediaItems,omitempty"`
+		UnderscoreId *string        `json:"_id,omitempty"`
+		Analytics    *PostAnalytics `json:"analytics,omitempty"`
+		Content      *string        `json:"content,omitempty"`
+		IsExternal   *bool          `json:"isExternal,omitempty"`
+
+		// MediaItems All media items for this post. Carousel posts contain one entry per slide.
+		MediaItems *[]struct {
+			// Thumbnail Thumbnail URL (same as url for images)
+			Thumbnail *string                                   `json:"thumbnail,omitempty"`
+			Type      *AnalyticsListResponsePostsMediaItemsType `json:"type,omitempty"`
+
+			// Url Direct URL to the media
+			Url *string `json:"url,omitempty"`
+		} `json:"mediaItems,omitempty"`
 		MediaType       *AnalyticsListResponsePostsMediaType `json:"mediaType,omitempty"`
 		Platform        *string                              `json:"platform,omitempty"`
 		PlatformPostUrl *string                              `json:"platformPostUrl,omitempty"`
@@ -2763,6 +2838,9 @@ type AnalyticsListResponse struct {
 		ThumbnailUrl    *string                              `json:"thumbnailUrl,omitempty"`
 	} `json:"posts,omitempty"`
 }
+
+// AnalyticsListResponsePostsMediaItemsType defines model for AnalyticsListResponse.Posts.MediaItems.Type.
+type AnalyticsListResponsePostsMediaItemsType string
 
 // AnalyticsListResponsePostsMediaType defines model for AnalyticsListResponse.Posts.MediaType.
 type AnalyticsListResponsePostsMediaType string
@@ -2777,17 +2855,35 @@ type AnalyticsOverview struct {
 
 // AnalyticsSinglePostResponse defines model for AnalyticsSinglePostResponse.
 type AnalyticsSinglePostResponse struct {
-	Analytics         *PostAnalytics       `json:"analytics,omitempty"`
-	Content           *string              `json:"content,omitempty"`
-	IsExternal        *bool                `json:"isExternal,omitempty"`
-	Platform          *string              `json:"platform,omitempty"`
-	PlatformAnalytics *[]PlatformAnalytics `json:"platformAnalytics,omitempty"`
-	PlatformPostUrl   *string              `json:"platformPostUrl,omitempty"`
-	PostId            *string              `json:"postId,omitempty"`
-	PublishedAt       *time.Time           `json:"publishedAt,omitempty"`
-	ScheduledFor      *time.Time           `json:"scheduledFor,omitempty"`
-	Status            *string              `json:"status,omitempty"`
+	Analytics  *PostAnalytics `json:"analytics,omitempty"`
+	Content    *string        `json:"content,omitempty"`
+	IsExternal *bool          `json:"isExternal,omitempty"`
+
+	// MediaItems All media items for this post. Carousel posts contain one entry per slide.
+	MediaItems *[]struct {
+		// Thumbnail Thumbnail URL (same as url for images)
+		Thumbnail *string                                    `json:"thumbnail,omitempty"`
+		Type      *AnalyticsSinglePostResponseMediaItemsType `json:"type,omitempty"`
+
+		// Url Direct URL to the media
+		Url *string `json:"url,omitempty"`
+	} `json:"mediaItems,omitempty"`
+	MediaType         *AnalyticsSinglePostResponseMediaType `json:"mediaType,omitempty"`
+	Platform          *string                               `json:"platform,omitempty"`
+	PlatformAnalytics *[]PlatformAnalytics                  `json:"platformAnalytics,omitempty"`
+	PlatformPostUrl   *string                               `json:"platformPostUrl,omitempty"`
+	PostId            *string                               `json:"postId,omitempty"`
+	PublishedAt       *time.Time                            `json:"publishedAt,omitempty"`
+	ScheduledFor      *time.Time                            `json:"scheduledFor,omitempty"`
+	Status            *string                               `json:"status,omitempty"`
+	ThumbnailUrl      *string                               `json:"thumbnailUrl,omitempty"`
 }
+
+// AnalyticsSinglePostResponseMediaItemsType defines model for AnalyticsSinglePostResponse.MediaItems.Type.
+type AnalyticsSinglePostResponseMediaItemsType string
+
+// AnalyticsSinglePostResponseMediaType defines model for AnalyticsSinglePostResponse.MediaType.
+type AnalyticsSinglePostResponseMediaType string
 
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
