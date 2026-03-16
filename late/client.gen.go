@@ -113,6 +113,51 @@ func (e AnalyticsSinglePostResponseMediaType) Valid() bool {
 	}
 }
 
+// Defines values for AnalyticsSinglePostResponseStatus.
+const (
+	AnalyticsSinglePostResponseStatusFailed    AnalyticsSinglePostResponseStatus = "failed"
+	AnalyticsSinglePostResponseStatusPartial   AnalyticsSinglePostResponseStatus = "partial"
+	AnalyticsSinglePostResponseStatusPublished AnalyticsSinglePostResponseStatus = "published"
+)
+
+// Valid indicates whether the value is a known member of the AnalyticsSinglePostResponseStatus enum.
+func (e AnalyticsSinglePostResponseStatus) Valid() bool {
+	switch e {
+	case AnalyticsSinglePostResponseStatusFailed:
+		return true
+	case AnalyticsSinglePostResponseStatusPartial:
+		return true
+	case AnalyticsSinglePostResponseStatusPublished:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AnalyticsSinglePostResponseSyncStatus.
+const (
+	AnalyticsSinglePostResponseSyncStatusPartial     AnalyticsSinglePostResponseSyncStatus = "partial"
+	AnalyticsSinglePostResponseSyncStatusPending     AnalyticsSinglePostResponseSyncStatus = "pending"
+	AnalyticsSinglePostResponseSyncStatusSynced      AnalyticsSinglePostResponseSyncStatus = "synced"
+	AnalyticsSinglePostResponseSyncStatusUnavailable AnalyticsSinglePostResponseSyncStatus = "unavailable"
+)
+
+// Valid indicates whether the value is a known member of the AnalyticsSinglePostResponseSyncStatus enum.
+func (e AnalyticsSinglePostResponseSyncStatus) Valid() bool {
+	switch e {
+	case AnalyticsSinglePostResponseSyncStatusPartial:
+		return true
+	case AnalyticsSinglePostResponseSyncStatusPending:
+		return true
+	case AnalyticsSinglePostResponseSyncStatusSynced:
+		return true
+	case AnalyticsSinglePostResponseSyncStatusUnavailable:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ApiKeyPermission.
 const (
 	ApiKeyPermissionRead      ApiKeyPermission = "read"
@@ -377,6 +422,45 @@ func (e MediaItemType) Valid() bool {
 	case MediaItemTypeImage:
 		return true
 	case MediaItemTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PlatformAnalyticsStatus.
+const (
+	PlatformAnalyticsStatusFailed    PlatformAnalyticsStatus = "failed"
+	PlatformAnalyticsStatusPublished PlatformAnalyticsStatus = "published"
+)
+
+// Valid indicates whether the value is a known member of the PlatformAnalyticsStatus enum.
+func (e PlatformAnalyticsStatus) Valid() bool {
+	switch e {
+	case PlatformAnalyticsStatusFailed:
+		return true
+	case PlatformAnalyticsStatusPublished:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PlatformAnalyticsSyncStatus.
+const (
+	PlatformAnalyticsSyncStatusPending     PlatformAnalyticsSyncStatus = "pending"
+	PlatformAnalyticsSyncStatusSynced      PlatformAnalyticsSyncStatus = "synced"
+	PlatformAnalyticsSyncStatusUnavailable PlatformAnalyticsSyncStatus = "unavailable"
+)
+
+// Valid indicates whether the value is a known member of the PlatformAnalyticsSyncStatus enum.
+func (e PlatformAnalyticsSyncStatus) Valid() bool {
+	switch e {
+	case PlatformAnalyticsSyncStatusPending:
+		return true
+	case PlatformAnalyticsSyncStatusSynced:
+		return true
+	case PlatformAnalyticsSyncStatusUnavailable:
 		return true
 	default:
 		return false
@@ -1120,16 +1204,40 @@ func (e GetAnalyticsParamsSource) Valid() bool {
 
 // Defines values for GetAnalyticsParamsSortBy.
 const (
-	GetAnalyticsParamsSortByDate       GetAnalyticsParamsSortBy = "date"
-	GetAnalyticsParamsSortByEngagement GetAnalyticsParamsSortBy = "engagement"
+	GetAnalyticsParamsSortByClicks      GetAnalyticsParamsSortBy = "clicks"
+	GetAnalyticsParamsSortByComments    GetAnalyticsParamsSortBy = "comments"
+	GetAnalyticsParamsSortByDate        GetAnalyticsParamsSortBy = "date"
+	GetAnalyticsParamsSortByEngagement  GetAnalyticsParamsSortBy = "engagement"
+	GetAnalyticsParamsSortByImpressions GetAnalyticsParamsSortBy = "impressions"
+	GetAnalyticsParamsSortByLikes       GetAnalyticsParamsSortBy = "likes"
+	GetAnalyticsParamsSortByReach       GetAnalyticsParamsSortBy = "reach"
+	GetAnalyticsParamsSortBySaves       GetAnalyticsParamsSortBy = "saves"
+	GetAnalyticsParamsSortByShares      GetAnalyticsParamsSortBy = "shares"
+	GetAnalyticsParamsSortByViews       GetAnalyticsParamsSortBy = "views"
 )
 
 // Valid indicates whether the value is a known member of the GetAnalyticsParamsSortBy enum.
 func (e GetAnalyticsParamsSortBy) Valid() bool {
 	switch e {
+	case GetAnalyticsParamsSortByClicks:
+		return true
+	case GetAnalyticsParamsSortByComments:
+		return true
 	case GetAnalyticsParamsSortByDate:
 		return true
 	case GetAnalyticsParamsSortByEngagement:
+		return true
+	case GetAnalyticsParamsSortByImpressions:
+		return true
+	case GetAnalyticsParamsSortByLikes:
+		return true
+	case GetAnalyticsParamsSortByReach:
+		return true
+	case GetAnalyticsParamsSortBySaves:
+		return true
+	case GetAnalyticsParamsSortByShares:
+		return true
+	case GetAnalyticsParamsSortByViews:
 		return true
 	default:
 		return false
@@ -2819,6 +2927,9 @@ type AnalyticsListResponse struct {
 		Content      *string        `json:"content,omitempty"`
 		IsExternal   *bool          `json:"isExternal,omitempty"`
 
+		// LatePostId Original Late post ID if scheduled via Late
+		LatePostId *string `json:"latePostId,omitempty"`
+
 		// MediaItems All media items for this post. Carousel posts contain one entry per slide.
 		MediaItems *[]struct {
 			// Thumbnail Thumbnail URL (same as url for images)
@@ -2832,6 +2943,7 @@ type AnalyticsListResponse struct {
 		Platform        *string                              `json:"platform,omitempty"`
 		PlatformPostUrl *string                              `json:"platformPostUrl,omitempty"`
 		Platforms       *[]PlatformAnalytics                 `json:"platforms,omitempty"`
+		ProfileId       *string                              `json:"profileId,omitempty"`
 		PublishedAt     *time.Time                           `json:"publishedAt,omitempty"`
 		ScheduledFor    *time.Time                           `json:"scheduledFor,omitempty"`
 		Status          *string                              `json:"status,omitempty"`
@@ -2847,6 +2959,13 @@ type AnalyticsListResponsePostsMediaType string
 
 // AnalyticsOverview defines model for AnalyticsOverview.
 type AnalyticsOverview struct {
+	DataStaleness *struct {
+		// StaleAccountCount Number of accounts with stale analytics data
+		StaleAccountCount *int `json:"staleAccountCount,omitempty"`
+
+		// SyncTriggered Whether a background sync was triggered for stale accounts
+		SyncTriggered *bool `json:"syncTriggered,omitempty"`
+	} `json:"dataStaleness,omitempty"`
 	LastSync       *time.Time `json:"lastSync,omitempty"`
 	PublishedPosts *int       `json:"publishedPosts,omitempty"`
 	ScheduledPosts *int       `json:"scheduledPosts,omitempty"`
@@ -2859,6 +2978,9 @@ type AnalyticsSinglePostResponse struct {
 	Content    *string        `json:"content,omitempty"`
 	IsExternal *bool          `json:"isExternal,omitempty"`
 
+	// LatePostId Original Late post ID if scheduled via Late
+	LatePostId *string `json:"latePostId,omitempty"`
+
 	// MediaItems All media items for this post. Carousel posts contain one entry per slide.
 	MediaItems *[]struct {
 		// Thumbnail Thumbnail URL (same as url for images)
@@ -2868,15 +2990,23 @@ type AnalyticsSinglePostResponse struct {
 		// Url Direct URL to the media
 		Url *string `json:"url,omitempty"`
 	} `json:"mediaItems,omitempty"`
-	MediaType         *AnalyticsSinglePostResponseMediaType `json:"mediaType,omitempty"`
-	Platform          *string                               `json:"platform,omitempty"`
-	PlatformAnalytics *[]PlatformAnalytics                  `json:"platformAnalytics,omitempty"`
-	PlatformPostUrl   *string                               `json:"platformPostUrl,omitempty"`
-	PostId            *string                               `json:"postId,omitempty"`
-	PublishedAt       *time.Time                            `json:"publishedAt,omitempty"`
-	ScheduledFor      *time.Time                            `json:"scheduledFor,omitempty"`
-	Status            *string                               `json:"status,omitempty"`
-	ThumbnailUrl      *string                               `json:"thumbnailUrl,omitempty"`
+	MediaType *AnalyticsSinglePostResponseMediaType `json:"mediaType,omitempty"`
+
+	// Message Human-readable status message for pending, partial, or failed states
+	Message           *string              `json:"message,omitempty"`
+	Platform          *string              `json:"platform,omitempty"`
+	PlatformAnalytics *[]PlatformAnalytics `json:"platformAnalytics,omitempty"`
+	PlatformPostUrl   *string              `json:"platformPostUrl,omitempty"`
+	PostId            *string              `json:"postId,omitempty"`
+	PublishedAt       *time.Time           `json:"publishedAt,omitempty"`
+	ScheduledFor      *time.Time           `json:"scheduledFor,omitempty"`
+
+	// Status Overall post status. "partial" when some platforms published and others failed.
+	Status *AnalyticsSinglePostResponseStatus `json:"status,omitempty"`
+
+	// SyncStatus Overall sync state across all platforms
+	SyncStatus   *AnalyticsSinglePostResponseSyncStatus `json:"syncStatus,omitempty"`
+	ThumbnailUrl *string                                `json:"thumbnailUrl,omitempty"`
 }
 
 // AnalyticsSinglePostResponseMediaItemsType defines model for AnalyticsSinglePostResponse.MediaItems.Type.
@@ -2884,6 +3014,12 @@ type AnalyticsSinglePostResponseMediaItemsType string
 
 // AnalyticsSinglePostResponseMediaType defines model for AnalyticsSinglePostResponse.MediaType.
 type AnalyticsSinglePostResponseMediaType string
+
+// AnalyticsSinglePostResponseStatus Overall post status. "partial" when some platforms published and others failed.
+type AnalyticsSinglePostResponseStatus string
+
+// AnalyticsSinglePostResponseSyncStatus Overall sync state across all platforms
+type AnalyticsSinglePostResponseSyncStatus string
 
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
@@ -3314,20 +3450,25 @@ type PinterestPlatformData struct {
 
 // PlatformAnalytics defines model for PlatformAnalytics.
 type PlatformAnalytics struct {
-	AccountId      *string `json:"accountId,omitempty"`
-	AccountMetrics *struct {
-		// Followers Followers/fans count (e.g., Instagram, Facebook Pages, Twitter)
-		Followers   *int       `json:"followers,omitempty"`
-		LastUpdated *time.Time `json:"lastUpdated,omitempty"`
-
-		// Subscribers Subscribers count (e.g., YouTube)
-		Subscribers *int `json:"subscribers,omitempty"`
-	} `json:"accountMetrics,omitempty"`
+	AccountId       *string        `json:"accountId,omitempty"`
 	AccountUsername *string        `json:"accountUsername,omitempty"`
 	Analytics       *PostAnalytics `json:"analytics,omitempty"`
-	Platform        *string        `json:"platform,omitempty"`
-	Status          *string        `json:"status,omitempty"`
+
+	// ErrorMessage Error details when status is failed
+	ErrorMessage    *string                  `json:"errorMessage,omitempty"`
+	Platform        *string                  `json:"platform,omitempty"`
+	PlatformPostUrl *string                  `json:"platformPostUrl,omitempty"`
+	Status          *PlatformAnalyticsStatus `json:"status,omitempty"`
+
+	// SyncStatus Sync state of analytics for this platform
+	SyncStatus *PlatformAnalyticsSyncStatus `json:"syncStatus,omitempty"`
 }
+
+// PlatformAnalyticsStatus defines model for PlatformAnalytics.Status.
+type PlatformAnalyticsStatus string
+
+// PlatformAnalyticsSyncStatus Sync state of analytics for this platform
+type PlatformAnalyticsSyncStatus string
 
 // PlatformTarget defines model for PlatformTarget.
 type PlatformTarget struct {
@@ -4474,10 +4615,10 @@ type GetAnalyticsParams struct {
 	// Source Filter by post source: late (posted via Late API), external (synced from platform), all (default)
 	Source *GetAnalyticsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 
-	// FromDate Inclusive lower bound
+	// FromDate Inclusive lower bound (YYYY-MM-DD). Defaults to 90 days ago if omitted. Max range is 366 days.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
-	// ToDate Inclusive upper bound
+	// ToDate Inclusive upper bound (YYYY-MM-DD). Defaults to today if omitted.
 	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 
 	// Limit Page size (default 50)
@@ -4486,7 +4627,7 @@ type GetAnalyticsParams struct {
 	// Page Page number (default 1)
 	Page *int `form:"page,omitempty" json:"page,omitempty"`
 
-	// SortBy Sort by date or engagement
+	// SortBy Sort by date, engagement, or a specific metric
 	SortBy *GetAnalyticsParamsSortBy `form:"sortBy,omitempty" json:"sortBy,omitempty"`
 
 	// Order Sort order
@@ -24087,12 +24228,19 @@ type GetAnalyticsResponse struct {
 	JSON200      *struct {
 		union json.RawMessage
 	}
+	JSON202 *AnalyticsSinglePostResponse
+	JSON400 *struct {
+		// Details Detailed validation errors
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
 	JSON401 *Unauthorized
 	JSON402 *struct {
 		Code  *string `json:"code,omitempty"`
 		Error *string `json:"error,omitempty"`
 	}
 	JSON404 *NotFound
+	JSON424 *AnalyticsSinglePostResponse
 	JSON500 *ErrorResponse
 }
 
@@ -33455,6 +33603,24 @@ func ParseGetAnalyticsResponse(rsp *http.Response) (*GetAnalyticsResponse, error
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest AnalyticsSinglePostResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			// Details Detailed validation errors
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -33478,6 +33644,13 @@ func ParseGetAnalyticsResponse(rsp *http.Response) (*GetAnalyticsResponse, error
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 424:
+		var dest AnalyticsSinglePostResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON424 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest ErrorResponse
