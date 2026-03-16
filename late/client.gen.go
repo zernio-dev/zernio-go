@@ -5347,8 +5347,10 @@ type CreatePostJSONBody struct {
 	Content             *string   `json:"content,omitempty"`
 	CrosspostingEnabled *bool     `json:"crosspostingEnabled,omitempty"`
 	Hashtags            *[]string `json:"hashtags,omitempty"`
-	IsDraft             *bool     `json:"isDraft,omitempty"`
-	MediaItems          *[]struct {
+
+	// IsDraft When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
+	IsDraft    *bool `json:"isDraft,omitempty"`
+	MediaItems *[]struct {
 		Type *CreatePostJSONBodyMediaItemsType `json:"type,omitempty"`
 		Url  *string                           `json:"url,omitempty"`
 	} `json:"mediaItems,omitempty"`
