@@ -1,4 +1,4 @@
-module github.com/getlate-dev/late-go
+module github.com/zernio-dev/zernio-go
 
 go 1.21
 

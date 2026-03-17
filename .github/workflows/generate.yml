@@ -29,13 +29,13 @@ jobs:
 
       - name: Fetch latest OpenAPI spec
         run: |
-          curl -f -o openapi.yaml https://getlate.dev/openapi.yaml
+          curl -f -o openapi.yaml https://zernio.com/openapi.yaml
           echo "Fetched OpenAPI spec"
 
       - name: Generate SDK
         run: |
-          mkdir -p late
-          oapi-codegen -generate types,client -package late openapi.yaml > late/client.gen.go
+          mkdir -p zernio
+          oapi-codegen -generate types,client -package zernio openapi.yaml > zernio/client.gen.go
           echo "Generated SDK"
 
       - name: Tidy modules
@@ -97,7 +97,7 @@ jobs:
             This release was automatically generated from the latest OpenAPI spec.
 
             ```bash
-            go get github.com/getlate-dev/late-go@${{ steps.version.outputs.new_version }}
+            go get github.com/zernio-dev/zernio-go@${{ steps.version.outputs.new_version }}
             ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

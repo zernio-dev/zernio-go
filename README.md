@@ -1,11 +1,11 @@
-# Late Go SDK
+# Zernio Go SDK
 
-Official Go client library for the [Late API](https://docs.getlate.dev) - Schedule and manage social media posts across multiple platforms.
+Official Go client library for the [Zernio API](https://docs.zernio.com) - Schedule and manage social media posts across multiple platforms.
 
 ## Installation
 
 ```bash
-go get github.com/getlate-dev/late-go
+go get github.com/zernio-dev/zernio-go
 ```
 
 ## Quick Start
@@ -18,12 +18,12 @@ import (
     "fmt"
     "log"
 
-    late "github.com/getlate-dev/late-go/late"
+    zernio "github.com/zernio-dev/zernio-go/zernio"
 )
 
 func main() {
-    client, err := late.NewClientWithResponses("https://api.getlate.dev",
-        late.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+    client, err := zernio.NewClientWithResponses("https://api.zernio.com",
+        zernio.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
             req.Header.Set("Authorization", "Bearer YOUR_API_KEY")
             return nil
         }),
@@ -344,8 +344,8 @@ func main() {
 
 ## Documentation
 
-- [API Reference](https://docs.getlate.dev/api-reference)
-- [Getting Started Guide](https://docs.getlate.dev/quickstart)
+- [API Reference](https://docs.zernio.com/api-reference)
+- [Getting Started Guide](https://docs.zernio.com/quickstart)
 
 ## License
 
