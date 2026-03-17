@@ -3382,7 +3382,7 @@ type LinkedInPlatformData struct {
 	OrganizationUrn *string `json:"organizationUrn,omitempty"`
 }
 
-// MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Late auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
+// MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Zernio auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
 type MediaItem struct {
 	Filename *string `json:"filename,omitempty"`
 
@@ -3478,13 +3478,13 @@ type PlatformTarget struct {
 	CustomContent *string      `json:"customContent,omitempty"`
 	CustomMedia   *[]MediaItem `json:"customMedia,omitempty"`
 
-	// ErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Late infra), unknown
+	// ErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Zernio infra), unknown
 	ErrorCategory *PlatformTargetErrorCategory `json:"errorCategory,omitempty"`
 
 	// ErrorMessage Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 
-	// ErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Late issue, rare)
+	// ErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Zernio issue, rare)
 	ErrorSource *PlatformTargetErrorSource `json:"errorSource,omitempty"`
 
 	// Platform Supported values: twitter, threads, instagram, youtube, facebook, linkedin, pinterest, reddit, tiktok, bluesky, googlebusiness, telegram
@@ -3517,10 +3517,10 @@ type PlatformTarget_AccountId struct {
 	union json.RawMessage
 }
 
-// PlatformTargetErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Late infra), unknown
+// PlatformTargetErrorCategory Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Zernio infra), unknown
 type PlatformTargetErrorCategory string
 
-// PlatformTargetErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Late issue, rare)
+// PlatformTargetErrorSource Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Zernio issue, rare)
 type PlatformTargetErrorSource string
 
 // PlatformTarget_PlatformSpecificData Platform-specific overrides and options.
@@ -4603,7 +4603,7 @@ type SetTelegramCommandsJSONBody struct {
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
-	// PostId Returns analytics for a single post. Accepts both Late Post IDs and External Post IDs. Late IDs are auto-resolved to External Post analytics.
+	// PostId Returns analytics for a single post. Accepts both Zernio Post IDs and External Post IDs. Zernio IDs are auto-resolved to External Post analytics.
 	PostId *string `form:"postId,omitempty" json:"postId,omitempty"`
 
 	// Platform Filter by platform (default "all")
@@ -4612,7 +4612,7 @@ type GetAnalyticsParams struct {
 	// ProfileId Filter by profile ID (default "all")
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Source Filter by post source: late (posted via Late API), external (synced from platform), all (default)
+	// Source Filter by post source: late (posted via Zernio API), external (synced from platform), all (default)
 	Source *GetAnalyticsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 
 	// FromDate Inclusive lower bound (YYYY-MM-DD). Defaults to 90 days ago if omitted. Max range is 366 days.
@@ -4651,7 +4651,7 @@ type GetBestTimeToPostParams struct {
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	// Source Filter by post origin. "late" for posts published via Zernio, "external" for posts imported from platforms.
 	Source *GetBestTimeToPostParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
 
@@ -4666,7 +4666,7 @@ type GetContentDecayParams struct {
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	// Source Filter by post origin. "late" for posts published via Zernio, "external" for posts imported from platforms.
 	Source *GetContentDecayParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
 
@@ -4687,7 +4687,7 @@ type GetDailyMetricsParams struct {
 	// ToDate Inclusive end date (ISO 8601). Defaults to now.
 	ToDate *time.Time `form:"toDate,omitempty" json:"toDate,omitempty"`
 
-	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	// Source Filter by post origin. "late" for posts published via Zernio, "external" for posts imported from platforms.
 	Source *GetDailyMetricsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
 
@@ -4696,7 +4696,7 @@ type GetDailyMetricsParamsSource string
 
 // GetPostTimelineParams defines parameters for GetPostTimeline.
 type GetPostTimelineParams struct {
-	// PostId The post to fetch timeline for. Accepts an ExternalPost ID, a platformPostId, or a Late Post ID.
+	// PostId The post to fetch timeline for. Accepts an ExternalPost ID, a platformPostId, or a Zernio Post ID.
 	PostId string `form:"postId" json:"postId"`
 
 	// FromDate Start of date range (ISO 8601). Defaults to 90 days ago.
@@ -4714,7 +4714,7 @@ type GetPostingFrequencyParams struct {
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Source Filter by post origin. "late" for posts published via Late, "external" for posts imported from platforms.
+	// Source Filter by post origin. "late" for posts published via Zernio, "external" for posts imported from platforms.
 	Source *GetPostingFrequencyParamsSource `form:"source,omitempty" json:"source,omitempty"`
 }
 
@@ -4726,7 +4726,7 @@ type GetYouTubeDailyViewsParams struct {
 	// VideoId The YouTube video ID (e.g., "dQw4w9WgXcQ")
 	VideoId string `form:"videoId" json:"videoId"`
 
-	// AccountId The Late account ID for the YouTube account
+	// AccountId The Zernio account ID for the YouTube account
 	AccountId string `form:"accountId" json:"accountId"`
 
 	// StartDate Start date (YYYY-MM-DD). Defaults to 30 days ago.
@@ -4873,7 +4873,7 @@ type GetPendingOAuthDataParams struct {
 
 // ListPinterestBoardsForSelectionParams defines parameters for ListPinterestBoardsForSelection.
 type ListPinterestBoardsForSelectionParams struct {
-	// ProfileId Your Late profile ID
+	// ProfileId Your Zernio profile ID
 	ProfileId string `form:"profileId" json:"profileId"`
 
 	// TempToken Temporary Pinterest access token from the OAuth callback redirect
@@ -4894,7 +4894,7 @@ type SelectPinterestBoardJSONBody struct {
 	// ExpiresIn Token expiration time in seconds
 	ExpiresIn *int `json:"expiresIn,omitempty"`
 
-	// ProfileId Your Late profile ID
+	// ProfileId Your Zernio profile ID
 	ProfileId string `json:"profileId"`
 
 	// RedirectUrl Custom redirect URL after connection completes
@@ -4912,7 +4912,7 @@ type SelectPinterestBoardJSONBody struct {
 
 // ListSnapchatProfilesParams defines parameters for ListSnapchatProfiles.
 type ListSnapchatProfilesParams struct {
-	// ProfileId Your Late profile ID
+	// ProfileId Your Zernio profile ID
 	ProfileId string `form:"profileId" json:"profileId"`
 
 	// TempToken Temporary Snapchat access token from the OAuth callback redirect
@@ -4927,7 +4927,7 @@ type SelectSnapchatProfileJSONBody struct {
 	// ExpiresIn Token expiration time in seconds
 	ExpiresIn *int `json:"expiresIn,omitempty"`
 
-	// ProfileId Your Late profile ID
+	// ProfileId Your Zernio profile ID
 	ProfileId string `json:"profileId"`
 
 	// RedirectUrl Custom redirect URL after connection completes
@@ -5005,13 +5005,13 @@ type ConnectWhatsAppCredentialsJSONBody struct {
 
 // GetConnectUrlParams defines parameters for GetConnectUrl.
 type GetConnectUrlParams struct {
-	// ProfileId Your Late profile ID (get from /v1/profiles)
+	// ProfileId Your Zernio profile ID (get from /v1/profiles)
 	ProfileId string `form:"profileId" json:"profileId"`
 
 	// RedirectUrl Your custom redirect URL after connection completes. Standard mode appends ?connected={platform}&profileId=X&accountId=Y&username=Z. Headless mode appends OAuth data params for platforms requiring selection (e.g. LinkedIn orgs, Facebook pages). If no selection is needed, the account is created directly and the redirect includes accountId.
 	RedirectUrl *string `form:"redirect_url,omitempty" json:"redirect_url,omitempty"`
 
-	// Headless When true, the user is redirected to your redirect_url with raw OAuth data (code, state) instead of Late's default account selection UI. Use this to build a custom connect experience.
+	// Headless When true, the user is redirected to your redirect_url with raw OAuth data (code, state) instead of Zernio's default account selection UI. Use this to build a custom connect experience.
 	Headless *bool `form:"headless,omitempty" json:"headless,omitempty"`
 }
 
@@ -24930,7 +24930,7 @@ type GetPendingOAuthDataResponse struct {
 		// Platform The platform (e.g., "linkedin")
 		Platform *string `json:"platform,omitempty"`
 
-		// ProfileId The Late profile ID
+		// ProfileId The Zernio profile ID
 		ProfileId *string `json:"profileId,omitempty"`
 
 		// RefreshToken Refresh token (if available)
@@ -34598,7 +34598,7 @@ func ParseGetPendingOAuthDataResponse(rsp *http.Response) (*GetPendingOAuthDataR
 			// Platform The platform (e.g., "linkedin")
 			Platform *string `json:"platform,omitempty"`
 
-			// ProfileId The Late profile ID
+			// ProfileId The Zernio profile ID
 			ProfileId *string `json:"profileId,omitempty"`
 
 			// RefreshToken Refresh token (if available)
