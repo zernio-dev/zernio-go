@@ -64,6 +64,7 @@ func main() {
 | `client.GetFollowerStatsWithResponse()` | Get follower stats |
 | `client.GetGoogleBusinessReviewsWithResponse()` | Get reviews |
 | `client.GetLinkedInMentionsWithResponse()` | Resolve LinkedIn mention |
+| `client.GetTikTokCreatorInfoWithResponse()` | Get TikTok creator info |
 | `client.UpdateAccountWithResponse()` | Update account |
 | `client.DeleteAccountWithResponse()` | Disconnect account |
 

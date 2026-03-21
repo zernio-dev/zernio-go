@@ -1181,6 +1181,24 @@ func (e UpdateLinkedInOrganizationJSONBodyAccountType) Valid() bool {
 	}
 }
 
+// Defines values for GetTikTokCreatorInfoParamsMediaType.
+const (
+	GetTikTokCreatorInfoParamsMediaTypePhoto GetTikTokCreatorInfoParamsMediaType = "photo"
+	GetTikTokCreatorInfoParamsMediaTypeVideo GetTikTokCreatorInfoParamsMediaType = "video"
+)
+
+// Valid indicates whether the value is a known member of the GetTikTokCreatorInfoParamsMediaType enum.
+func (e GetTikTokCreatorInfoParamsMediaType) Valid() bool {
+	switch e {
+	case GetTikTokCreatorInfoParamsMediaTypePhoto:
+		return true
+	case GetTikTokCreatorInfoParamsMediaTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAnalyticsParamsSource.
 const (
 	GetAnalyticsParamsSourceAll      GetAnalyticsParamsSource = "all"
@@ -2482,16 +2500,16 @@ func (e DownloadYouTubeVideoParamsAction) Valid() bool {
 
 // Defines values for DownloadYouTubeVideoParamsFormat.
 const (
-	Audio DownloadYouTubeVideoParamsFormat = "audio"
-	Video DownloadYouTubeVideoParamsFormat = "video"
+	DownloadYouTubeVideoParamsFormatAudio DownloadYouTubeVideoParamsFormat = "audio"
+	DownloadYouTubeVideoParamsFormatVideo DownloadYouTubeVideoParamsFormat = "video"
 )
 
 // Valid indicates whether the value is a known member of the DownloadYouTubeVideoParamsFormat enum.
 func (e DownloadYouTubeVideoParamsFormat) Valid() bool {
 	switch e {
-	case Audio:
+	case DownloadYouTubeVideoParamsFormatAudio:
 		return true
-	case Video:
+	case DownloadYouTubeVideoParamsFormatVideo:
 		return true
 	default:
 		return false
@@ -3963,7 +3981,10 @@ type TikTokPlatformData struct {
 	// PrivacyLevel One of the values returned by the TikTok creator info API for the account
 	PrivacyLevel *string `json:"privacyLevel,omitempty"`
 
-	// VideoCoverTimestampMs Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second).
+	// VideoCoverImageUrl Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is prepended as a 1-second still frame to the video and used as the cover. Overrides videoCoverTimestampMs when provided.
+	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
+
+	// VideoCoverTimestampMs Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
 	VideoCoverTimestampMs *int `json:"videoCoverTimestampMs,omitempty"`
 
 	// VideoMadeWithAi Set true to disclose AI-generated content
@@ -4600,6 +4621,15 @@ type SetTelegramCommandsJSONBody struct {
 		Description string `json:"description"`
 	} `json:"commands"`
 }
+
+// GetTikTokCreatorInfoParams defines parameters for GetTikTokCreatorInfo.
+type GetTikTokCreatorInfoParams struct {
+	// MediaType The media type to get creator info for (affects available interaction settings)
+	MediaType *GetTikTokCreatorInfoParamsMediaType `form:"mediaType,omitempty" json:"mediaType,omitempty"`
+}
+
+// GetTikTokCreatorInfoParamsMediaType defines parameters for GetTikTokCreatorInfo.
+type GetTikTokCreatorInfoParamsMediaType string
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
@@ -7761,6 +7791,9 @@ type ClientInterface interface {
 
 	SetTelegramCommands(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetTikTokCreatorInfo request
+	GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -9026,6 +9059,18 @@ func (c *Client) SetTelegramCommandsWithBody(ctx context.Context, accountId stri
 
 func (c *Client) SetTelegramCommands(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSetTelegramCommandsRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTikTokCreatorInfoRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -13901,6 +13946,62 @@ func NewSetTelegramCommandsRequestWithBody(server string, accountId string, cont
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTikTokCreatorInfoRequest generates requests for GetTikTokCreatorInfo
+func NewGetTikTokCreatorInfoRequest(server string, accountId string, params *GetTikTokCreatorInfoParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tiktok/creator-info", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.MediaType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mediaType", *params.MediaType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -22021,6 +22122,9 @@ type ClientWithResponsesInterface interface {
 
 	SetTelegramCommandsWithResponse(ctx context.Context, accountId string, body SetTelegramCommandsJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTelegramCommandsResponse, error)
 
+	// GetTikTokCreatorInfoWithResponse request
+	GetTikTokCreatorInfoWithResponse(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*GetTikTokCreatorInfoResponse, error)
+
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
 
@@ -24216,6 +24320,72 @@ func (r SetTelegramCommandsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SetTelegramCommandsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTikTokCreatorInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// CommercialContentTypes Available commercial content disclosure options
+		CommercialContentTypes *[]struct {
+			Label    *string   `json:"label,omitempty"`
+			Requires *[]string `json:"requires,omitempty"`
+			Value    *string   `json:"value,omitempty"`
+		} `json:"commercialContentTypes,omitempty"`
+		Creator *struct {
+			// AvatarUrl Creator avatar URL
+			AvatarUrl *string `json:"avatarUrl,omitempty"`
+
+			// CanPostMore Whether the creator can publish more posts right now
+			CanPostMore *bool `json:"canPostMore,omitempty"`
+
+			// IsVerified Whether the creator is verified
+			IsVerified *bool `json:"isVerified,omitempty"`
+
+			// Nickname Creator display name
+			Nickname *string `json:"nickname,omitempty"`
+		} `json:"creator,omitempty"`
+		PostingLimits *struct {
+			// InteractionSettings Available interaction toggles (comment, duet, stitch) and their defaults
+			InteractionSettings *map[string]interface{} `json:"interactionSettings,omitempty"`
+
+			// MaxVideoDurationSec Maximum video duration in seconds
+			MaxVideoDurationSec *int `json:"maxVideoDurationSec,omitempty"`
+		} `json:"postingLimits,omitempty"`
+
+		// PrivacyLevels Available privacy level options for this creator
+		PrivacyLevels *[]struct {
+			// Label Human-readable label
+			Label *string `json:"label,omitempty"`
+
+			// Value Privacy level value to use when creating posts (e.g. PUBLIC_TO_EVERYONE, MUTUAL_FOLLOW_FRIENDS, FOLLOWER_OF_CREATOR, SELF_ONLY)
+			Value *string `json:"value,omitempty"`
+		} `json:"privacyLevels,omitempty"`
+	}
+	JSON400 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+	JSON429 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTikTokCreatorInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTikTokCreatorInfoResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -29575,6 +29745,15 @@ func (c *ClientWithResponses) SetTelegramCommandsWithResponse(ctx context.Contex
 	return ParseSetTelegramCommandsResponse(rsp)
 }
 
+// GetTikTokCreatorInfoWithResponse request returning *GetTikTokCreatorInfoResponse
+func (c *ClientWithResponses) GetTikTokCreatorInfoWithResponse(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*GetTikTokCreatorInfoResponse, error) {
+	rsp, err := c.GetTikTokCreatorInfo(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTikTokCreatorInfoResponse(rsp)
+}
+
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
 func (c *ClientWithResponses) GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error) {
 	rsp, err := c.GetAnalytics(ctx, params, reqEditors...)
@@ -33574,6 +33753,100 @@ func ParseSetTelegramCommandsResponse(rsp *http.Response) (*SetTelegramCommandsR
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTikTokCreatorInfoResponse parses an HTTP response from a GetTikTokCreatorInfoWithResponse call
+func ParseGetTikTokCreatorInfoResponse(rsp *http.Response) (*GetTikTokCreatorInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTikTokCreatorInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// CommercialContentTypes Available commercial content disclosure options
+			CommercialContentTypes *[]struct {
+				Label    *string   `json:"label,omitempty"`
+				Requires *[]string `json:"requires,omitempty"`
+				Value    *string   `json:"value,omitempty"`
+			} `json:"commercialContentTypes,omitempty"`
+			Creator *struct {
+				// AvatarUrl Creator avatar URL
+				AvatarUrl *string `json:"avatarUrl,omitempty"`
+
+				// CanPostMore Whether the creator can publish more posts right now
+				CanPostMore *bool `json:"canPostMore,omitempty"`
+
+				// IsVerified Whether the creator is verified
+				IsVerified *bool `json:"isVerified,omitempty"`
+
+				// Nickname Creator display name
+				Nickname *string `json:"nickname,omitempty"`
+			} `json:"creator,omitempty"`
+			PostingLimits *struct {
+				// InteractionSettings Available interaction toggles (comment, duet, stitch) and their defaults
+				InteractionSettings *map[string]interface{} `json:"interactionSettings,omitempty"`
+
+				// MaxVideoDurationSec Maximum video duration in seconds
+				MaxVideoDurationSec *int `json:"maxVideoDurationSec,omitempty"`
+			} `json:"postingLimits,omitempty"`
+
+			// PrivacyLevels Available privacy level options for this creator
+			PrivacyLevels *[]struct {
+				// Label Human-readable label
+				Label *string `json:"label,omitempty"`
+
+				// Value Privacy level value to use when creating posts (e.g. PUBLIC_TO_EVERYONE, MUTUAL_FOLLOW_FRIENDS, FOLLOWER_OF_CREATOR, SELF_ONLY)
+				Value *string `json:"value,omitempty"`
+			} `json:"privacyLevels,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	}
 
