@@ -3981,7 +3981,7 @@ type TikTokPlatformData struct {
 	// PrivacyLevel One of the values returned by the TikTok creator info API for the account
 	PrivacyLevel *string `json:"privacyLevel,omitempty"`
 
-	// VideoCoverImageUrl Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is prepended as a 1-second still frame to the video and used as the cover. Overrides videoCoverTimestampMs when provided.
+	// VideoCoverImageUrl Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is stitched as a single frame at the start of the video and used as the cover. Overrides videoCoverTimestampMs when provided.
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 
 	// VideoCoverTimestampMs Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
