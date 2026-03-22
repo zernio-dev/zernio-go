@@ -341,6 +341,60 @@ func (e GoogleBusinessPlatformDataCallToActionType) Valid() bool {
 	}
 }
 
+// Defines values for InstagramAccountInsightsResponseMetricType.
+const (
+	InstagramAccountInsightsResponseMetricTypeTimeSeries InstagramAccountInsightsResponseMetricType = "time_series"
+	InstagramAccountInsightsResponseMetricTypeTotalValue InstagramAccountInsightsResponseMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the InstagramAccountInsightsResponseMetricType enum.
+func (e InstagramAccountInsightsResponseMetricType) Valid() bool {
+	switch e {
+	case InstagramAccountInsightsResponseMetricTypeTimeSeries:
+		return true
+	case InstagramAccountInsightsResponseMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InstagramDemographicsResponseMetric.
+const (
+	InstagramDemographicsResponseMetricEngagedAudienceDemographics InstagramDemographicsResponseMetric = "engaged_audience_demographics"
+	InstagramDemographicsResponseMetricFollowerDemographics        InstagramDemographicsResponseMetric = "follower_demographics"
+)
+
+// Valid indicates whether the value is a known member of the InstagramDemographicsResponseMetric enum.
+func (e InstagramDemographicsResponseMetric) Valid() bool {
+	switch e {
+	case InstagramDemographicsResponseMetricEngagedAudienceDemographics:
+		return true
+	case InstagramDemographicsResponseMetricFollowerDemographics:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InstagramDemographicsResponseTimeframe.
+const (
+	InstagramDemographicsResponseTimeframeThisMonth InstagramDemographicsResponseTimeframe = "this_month"
+	InstagramDemographicsResponseTimeframeThisWeek  InstagramDemographicsResponseTimeframe = "this_week"
+)
+
+// Valid indicates whether the value is a known member of the InstagramDemographicsResponseTimeframe enum.
+func (e InstagramDemographicsResponseTimeframe) Valid() bool {
+	switch e {
+	case InstagramDemographicsResponseTimeframeThisMonth:
+		return true
+	case InstagramDemographicsResponseTimeframeThisWeek:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for InstagramPlatformDataContentType.
 const (
 	InstagramPlatformDataContentTypeStory InstagramPlatformDataContentType = "story"
@@ -1337,6 +1391,60 @@ func (e GetDailyMetricsParamsSource) Valid() bool {
 	case GetDailyMetricsParamsSourceExternal:
 		return true
 	case GetDailyMetricsParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetInstagramAccountInsightsParamsMetricType.
+const (
+	GetInstagramAccountInsightsParamsMetricTypeTimeSeries GetInstagramAccountInsightsParamsMetricType = "time_series"
+	GetInstagramAccountInsightsParamsMetricTypeTotalValue GetInstagramAccountInsightsParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetInstagramAccountInsightsParamsMetricType enum.
+func (e GetInstagramAccountInsightsParamsMetricType) Valid() bool {
+	switch e {
+	case GetInstagramAccountInsightsParamsMetricTypeTimeSeries:
+		return true
+	case GetInstagramAccountInsightsParamsMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetInstagramDemographicsParamsMetric.
+const (
+	GetInstagramDemographicsParamsMetricEngagedAudienceDemographics GetInstagramDemographicsParamsMetric = "engaged_audience_demographics"
+	GetInstagramDemographicsParamsMetricFollowerDemographics        GetInstagramDemographicsParamsMetric = "follower_demographics"
+)
+
+// Valid indicates whether the value is a known member of the GetInstagramDemographicsParamsMetric enum.
+func (e GetInstagramDemographicsParamsMetric) Valid() bool {
+	switch e {
+	case GetInstagramDemographicsParamsMetricEngagedAudienceDemographics:
+		return true
+	case GetInstagramDemographicsParamsMetricFollowerDemographics:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetInstagramDemographicsParamsTimeframe.
+const (
+	GetInstagramDemographicsParamsTimeframeThisMonth GetInstagramDemographicsParamsTimeframe = "this_month"
+	GetInstagramDemographicsParamsTimeframeThisWeek  GetInstagramDemographicsParamsTimeframe = "this_week"
+)
+
+// Valid indicates whether the value is a known member of the GetInstagramDemographicsParamsTimeframe enum.
+func (e GetInstagramDemographicsParamsTimeframe) Valid() bool {
+	switch e {
+	case GetInstagramDemographicsParamsTimeframeThisMonth:
+		return true
+	case GetInstagramDemographicsParamsTimeframeThisWeek:
 		return true
 	default:
 		return false
@@ -3259,6 +3367,73 @@ type GoogleBusinessPlatformData struct {
 // GoogleBusinessPlatformDataCallToActionType Button action type: LEARN_MORE, BOOK, ORDER, SHOP, SIGN_UP, CALL
 type GoogleBusinessPlatformDataCallToActionType string
 
+// InstagramAccountInsightsResponse defines model for InstagramAccountInsightsResponse.
+type InstagramAccountInsightsResponse struct {
+	// AccountId The Zernio SocialAccount ID
+	AccountId *string `json:"accountId,omitempty"`
+
+	// Breakdown Breakdown dimension used (only present when breakdown was requested)
+	Breakdown *string `json:"breakdown,omitempty"`
+	DataDelay *string `json:"dataDelay,omitempty"`
+	DateRange *struct {
+		Since *openapi_types.Date `json:"since,omitempty"`
+		Until *openapi_types.Date `json:"until,omitempty"`
+	} `json:"dateRange,omitempty"`
+	MetricType *InstagramAccountInsightsResponseMetricType `json:"metricType,omitempty"`
+
+	// Metrics Object keyed by metric name. For time_series: each metric has "total" (number) and "values" (array of {date, value}).
+	// For total_value: each metric has "total" (number) and optionally "breakdowns" (array of {dimension, value}).
+	Metrics *map[string]struct {
+		// Breakdowns Breakdown values (only for total_value with breakdown)
+		Breakdowns *[]struct {
+			Dimension *string  `json:"dimension,omitempty"`
+			Value     *float32 `json:"value,omitempty"`
+		} `json:"breakdowns,omitempty"`
+
+		// Total Sum or aggregate value for the metric
+		Total *float32 `json:"total,omitempty"`
+
+		// Values Daily values (only for time_series)
+		Values *[]struct {
+			Date  *openapi_types.Date `json:"date,omitempty"`
+			Value *float32            `json:"value,omitempty"`
+		} `json:"values,omitempty"`
+	} `json:"metrics,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	Success  *bool   `json:"success,omitempty"`
+}
+
+// InstagramAccountInsightsResponseMetricType defines model for InstagramAccountInsightsResponse.MetricType.
+type InstagramAccountInsightsResponseMetricType string
+
+// InstagramDemographicsResponse defines model for InstagramDemographicsResponse.
+type InstagramDemographicsResponse struct {
+	// AccountId The Zernio SocialAccount ID
+	AccountId *string `json:"accountId,omitempty"`
+
+	// Demographics Object keyed by breakdown dimension (age, city, country, gender)
+	Demographics *map[string][]struct {
+		// Dimension The dimension value (e.g., "25-34", "US", "M")
+		Dimension *string `json:"dimension,omitempty"`
+
+		// Value Count of accounts in this dimension
+		Value *float32 `json:"value,omitempty"`
+	} `json:"demographics,omitempty"`
+	Metric   *InstagramDemographicsResponseMetric `json:"metric,omitempty"`
+	Note     *string                              `json:"note,omitempty"`
+	Platform *string                              `json:"platform,omitempty"`
+	Success  *bool                                `json:"success,omitempty"`
+
+	// Timeframe The timeframe used for demographic data
+	Timeframe *InstagramDemographicsResponseTimeframe `json:"timeframe,omitempty"`
+}
+
+// InstagramDemographicsResponseMetric defines model for InstagramDemographicsResponse.Metric.
+type InstagramDemographicsResponseMetric string
+
+// InstagramDemographicsResponseTimeframe The timeframe used for demographic data
+type InstagramDemographicsResponseTimeframe string
+
 // InstagramPlatformData Feed aspect ratio 0.8-1.91, carousels up to 10 items, stories require media (no captions). User tag coordinates 0.0-1.0 from top-left. Images over 8 MB and videos over platform limits are auto-compressed.
 type InstagramPlatformData struct {
 	// AudioName Custom name for original audio in Reels. Replaces the default "Original Audio" label. Can only be set once.
@@ -4723,6 +4898,57 @@ type GetDailyMetricsParams struct {
 
 // GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
 type GetDailyMetricsParamsSource string
+
+// GetInstagramAccountInsightsParams defines parameters for GetInstagramAccountInsights.
+type GetInstagramAccountInsightsParams struct {
+	// AccountId The Zernio SocialAccount ID for the Instagram account
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list of metrics. Defaults to "reach,views,accounts_engaged,total_interactions".
+	// Valid metrics: reach, views, accounts_engaged, total_interactions, comments, likes, saves, shares,
+	// replies, reposts, follows_and_unfollows, profile_links_taps.
+	// Note: only "reach" supports metricType=time_series. All other metrics are total_value only.
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today.
+	Until *openapi_types.Date `form:"until,omitempty" json:"until,omitempty"`
+
+	// MetricType "total_value" (default) returns aggregated totals and supports breakdowns.
+	// "time_series" returns daily values but only works with the "reach" metric.
+	MetricType *GetInstagramAccountInsightsParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+
+	// Breakdown Breakdown dimension (only valid with metricType=total_value).
+	// Valid values depend on the metric: media_product_type, follow_type, follower_type, contact_button_type.
+	Breakdown *string `form:"breakdown,omitempty" json:"breakdown,omitempty"`
+}
+
+// GetInstagramAccountInsightsParamsMetricType defines parameters for GetInstagramAccountInsights.
+type GetInstagramAccountInsightsParamsMetricType string
+
+// GetInstagramDemographicsParams defines parameters for GetInstagramDemographics.
+type GetInstagramDemographicsParams struct {
+	// AccountId The Zernio SocialAccount ID for the Instagram account
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metric "follower_demographics" for follower audience data, or "engaged_audience_demographics" for engaged viewers.
+	Metric *GetInstagramDemographicsParamsMetric `form:"metric,omitempty" json:"metric,omitempty"`
+
+	// Breakdown Comma-separated list of demographic dimensions: age, city, country, gender.
+	// Defaults to all four if omitted.
+	Breakdown *string `form:"breakdown,omitempty" json:"breakdown,omitempty"`
+
+	// Timeframe Time period for demographic data. Defaults to "this_month".
+	Timeframe *GetInstagramDemographicsParamsTimeframe `form:"timeframe,omitempty" json:"timeframe,omitempty"`
+}
+
+// GetInstagramDemographicsParamsMetric defines parameters for GetInstagramDemographics.
+type GetInstagramDemographicsParamsMetric string
+
+// GetInstagramDemographicsParamsTimeframe defines parameters for GetInstagramDemographics.
+type GetInstagramDemographicsParamsTimeframe string
 
 // GetPostTimelineParams defines parameters for GetPostTimeline.
 type GetPostTimelineParams struct {
@@ -7806,6 +8032,12 @@ type ClientInterface interface {
 	// GetDailyMetrics request
 	GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetInstagramAccountInsights request
+	GetInstagramAccountInsights(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstagramDemographics request
+	GetInstagramDemographics(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPostTimeline request
 	GetPostTimeline(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -9119,6 +9351,30 @@ func (c *Client) GetContentDecay(ctx context.Context, params *GetContentDecayPar
 
 func (c *Client) GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetDailyMetricsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInstagramAccountInsights(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstagramAccountInsightsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInstagramDemographics(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstagramDemographicsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -14450,6 +14706,224 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstagramAccountInsightsRequest generates requests for GetInstagramAccountInsights
+func NewGetInstagramAccountInsightsRequest(server string, params *GetInstagramAccountInsightsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/instagram/account-insights")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Breakdown != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "breakdown", *params.Breakdown, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstagramDemographicsRequest generates requests for GetInstagramDemographics
+func NewGetInstagramDemographicsRequest(server string, params *GetInstagramDemographicsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/instagram/demographics")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metric != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metric", *params.Metric, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Breakdown != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "breakdown", *params.Breakdown, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Timeframe != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timeframe", *params.Timeframe, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -22137,6 +22611,12 @@ type ClientWithResponsesInterface interface {
 	// GetDailyMetricsWithResponse request
 	GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error)
 
+	// GetInstagramAccountInsightsWithResponse request
+	GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error)
+
+	// GetInstagramDemographicsWithResponse request
+	GetInstagramDemographicsWithResponse(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*GetInstagramDemographicsResponse, error)
+
 	// GetPostTimelineWithResponse request
 	GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error)
 
@@ -24561,6 +25041,78 @@ func (r GetDailyMetricsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetDailyMetricsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetInstagramAccountInsightsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON400      *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON404 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstagramAccountInsightsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstagramAccountInsightsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetInstagramDemographicsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramDemographicsResponse
+	JSON400      *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON404 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstagramDemographicsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstagramDemographicsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -29790,6 +30342,24 @@ func (c *ClientWithResponses) GetDailyMetricsWithResponse(ctx context.Context, p
 	return ParseGetDailyMetricsResponse(rsp)
 }
 
+// GetInstagramAccountInsightsWithResponse request returning *GetInstagramAccountInsightsResponse
+func (c *ClientWithResponses) GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error) {
+	rsp, err := c.GetInstagramAccountInsights(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstagramAccountInsightsResponse(rsp)
+}
+
+// GetInstagramDemographicsWithResponse request returning *GetInstagramDemographicsResponse
+func (c *ClientWithResponses) GetInstagramDemographicsWithResponse(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*GetInstagramDemographicsResponse, error) {
+	rsp, err := c.GetInstagramDemographics(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstagramDemographicsResponse(rsp)
+}
+
 // GetPostTimelineWithResponse request returning *GetPostTimelineResponse
 func (c *ClientWithResponses) GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error) {
 	rsp, err := c.GetPostTimeline(ctx, params, reqEditors...)
@@ -34116,6 +34686,146 @@ func ParseGetDailyMetricsResponse(rsp *http.Response) (*GetDailyMetricsResponse,
 			return nil, err
 		}
 		response.JSON402 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstagramAccountInsightsResponse parses an HTTP response from a GetInstagramAccountInsightsWithResponse call
+func ParseGetInstagramAccountInsightsResponse(rsp *http.Response) (*GetInstagramAccountInsightsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstagramAccountInsightsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstagramDemographicsResponse parses an HTTP response from a GetInstagramDemographicsWithResponse call
+func ParseGetInstagramDemographicsResponse(rsp *http.Response) (*GetInstagramDemographicsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstagramDemographicsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramDemographicsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
