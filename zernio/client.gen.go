@@ -29347,8 +29347,29 @@ func (r ListCommentAutomationsResponse) StatusCode() int {
 type CreateCommentAutomationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Automation *struct {
+			CommentReply   *string                                        `json:"commentReply,omitempty"`
+			CreatedAt      *time.Time                                     `json:"createdAt,omitempty"`
+			DmMessage      *string                                        `json:"dmMessage,omitempty"`
+			Id             *string                                        `json:"id,omitempty"`
+			IsActive       *bool                                          `json:"isActive,omitempty"`
+			Keywords       *[]string                                      `json:"keywords,omitempty"`
+			MatchMode      *CreateCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+			Name           *string                                        `json:"name,omitempty"`
+			Platform       *string                                        `json:"platform,omitempty"`
+			PlatformPostId *string                                        `json:"platformPostId,omitempty"`
+			Stats          *struct {
+				TotalFailed    *int `json:"totalFailed,omitempty"`
+				TotalSent      *int `json:"totalSent,omitempty"`
+				TotalTriggered *int `json:"totalTriggered,omitempty"`
+			} `json:"stats,omitempty"`
+		} `json:"automation,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
+type CreateCommentAutomation200AutomationMatchMode string
 
 // Status returns HTTPResponse.Status
 func (r CreateCommentAutomationResponse) Status() string {
@@ -29392,9 +29413,45 @@ func (r DeleteCommentAutomationResponse) StatusCode() int {
 type GetCommentAutomationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Automation *struct {
+			AccountId      *string                                     `json:"accountId,omitempty"`
+			CommentReply   *string                                     `json:"commentReply,omitempty"`
+			CreatedAt      *time.Time                                  `json:"createdAt,omitempty"`
+			DmMessage      *string                                     `json:"dmMessage,omitempty"`
+			Id             *string                                     `json:"id,omitempty"`
+			IsActive       *bool                                       `json:"isActive,omitempty"`
+			Keywords       *[]string                                   `json:"keywords,omitempty"`
+			MatchMode      *GetCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+			Name           *string                                     `json:"name,omitempty"`
+			Platform       *string                                     `json:"platform,omitempty"`
+			PlatformPostId *string                                     `json:"platformPostId,omitempty"`
+			PostId         *string                                     `json:"postId,omitempty"`
+			PostTitle      *string                                     `json:"postTitle,omitempty"`
+			Stats          *struct {
+				TotalFailed    *int `json:"totalFailed,omitempty"`
+				TotalSent      *int `json:"totalSent,omitempty"`
+				TotalTriggered *int `json:"totalTriggered,omitempty"`
+			} `json:"stats,omitempty"`
+			UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		} `json:"automation,omitempty"`
+		Logs *[]struct {
+			CommentId     *string                            `json:"commentId,omitempty"`
+			CommentText   *string                            `json:"commentText,omitempty"`
+			CommenterId   *string                            `json:"commenterId,omitempty"`
+			CommenterName *string                            `json:"commenterName,omitempty"`
+			CreatedAt     *time.Time                         `json:"createdAt,omitempty"`
+			Error         *string                            `json:"error,omitempty"`
+			Id            *string                            `json:"id,omitempty"`
+			Status        *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
+		} `json:"logs,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type GetCommentAutomation200AutomationMatchMode string
+type GetCommentAutomation200LogsStatus string
 
 // Status returns HTTPResponse.Status
 func (r GetCommentAutomationResponse) Status() string {
@@ -29415,9 +29472,23 @@ func (r GetCommentAutomationResponse) StatusCode() int {
 type UpdateCommentAutomationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Automation *struct {
+			CommentReply *string                                        `json:"commentReply,omitempty"`
+			DmMessage    *string                                        `json:"dmMessage,omitempty"`
+			Id           *string                                        `json:"id,omitempty"`
+			IsActive     *bool                                          `json:"isActive,omitempty"`
+			Keywords     *[]string                                      `json:"keywords,omitempty"`
+			MatchMode    *UpdateCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+			Name         *string                                        `json:"name,omitempty"`
+			UpdatedAt    *time.Time                                     `json:"updatedAt,omitempty"`
+		} `json:"automation,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type UpdateCommentAutomation200AutomationMatchMode string
 
 // Status returns HTTPResponse.Status
 func (r UpdateCommentAutomationResponse) Status() string {
@@ -29438,9 +29509,29 @@ func (r UpdateCommentAutomationResponse) StatusCode() int {
 type ListCommentAutomationLogsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Logs *[]struct {
+			CommentId     *string                                 `json:"commentId,omitempty"`
+			CommentText   *string                                 `json:"commentText,omitempty"`
+			CommenterId   *string                                 `json:"commenterId,omitempty"`
+			CommenterName *string                                 `json:"commenterName,omitempty"`
+			CreatedAt     *time.Time                              `json:"createdAt,omitempty"`
+			Error         *string                                 `json:"error,omitempty"`
+			Id            *string                                 `json:"id,omitempty"`
+			Status        *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
+		} `json:"logs,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type ListCommentAutomationLogs200LogsStatus string
 
 // Status returns HTTPResponse.Status
 func (r ListCommentAutomationLogsResponse) Status() string {
@@ -30208,7 +30299,39 @@ func (r ListConnectionLogsResponse) StatusCode() int {
 type ListContactsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Contacts *[]struct {
+			AvatarUrl             *string                 `json:"avatarUrl,omitempty"`
+			Company               *string                 `json:"company,omitempty"`
+			CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+			CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+			DisplayIdentifier     *string                 `json:"displayIdentifier,omitempty"`
+			Email                 *string                 `json:"email,omitempty"`
+			Id                    *string                 `json:"id,omitempty"`
+			IsBlocked             *bool                   `json:"isBlocked,omitempty"`
+			IsSubscribed          *bool                   `json:"isSubscribed,omitempty"`
+			LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+			LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+			MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+			MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+			Name                  *string                 `json:"name,omitempty"`
+			Notes                 *string                 `json:"notes,omitempty"`
+			Platform              *string                 `json:"platform,omitempty"`
+			PlatformIdentifier    *string                 `json:"platformIdentifier,omitempty"`
+			Tags                  *[]string               `json:"tags,omitempty"`
+		} `json:"contacts,omitempty"`
+		Filters *struct {
+			Tags *[]string `json:"tags,omitempty"`
+		} `json:"filters,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -30230,7 +30353,30 @@ func (r ListContactsResponse) StatusCode() int {
 type CreateContactResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		// Channel Created when accountId, platform, and platformIdentifier are provided
+		Channel *struct {
+			DisplayIdentifier  *string `json:"displayIdentifier,omitempty"`
+			Id                 *string `json:"id,omitempty"`
+			Platform           *string `json:"platform,omitempty"`
+			PlatformIdentifier *string `json:"platformIdentifier,omitempty"`
+		} `json:"channel,omitempty"`
+		Contact *struct {
+			Company      *string                 `json:"company,omitempty"`
+			CreatedAt    *time.Time              `json:"createdAt,omitempty"`
+			CustomFields *map[string]interface{} `json:"customFields,omitempty"`
+			Email        *string                 `json:"email,omitempty"`
+			Id           *string                 `json:"id,omitempty"`
+			IsBlocked    *bool                   `json:"isBlocked,omitempty"`
+			IsSubscribed *bool                   `json:"isSubscribed,omitempty"`
+			Name         *string                 `json:"name,omitempty"`
+			Notes        *string                 `json:"notes,omitempty"`
+			Tags         *[]string               `json:"tags,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+		Warning *string `json:"warning,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -30252,7 +30398,14 @@ func (r CreateContactResponse) StatusCode() int {
 type BulkCreateContactsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Created *int                      `json:"created,omitempty"`
+		Errors  *[]map[string]interface{} `json:"errors,omitempty"`
+		Skipped *int                      `json:"skipped,omitempty"`
+		Success *bool                     `json:"success,omitempty"`
+		Total   *int                      `json:"total,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -30297,8 +30450,36 @@ func (r DeleteContactResponse) StatusCode() int {
 type GetContactResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Channels *[]struct {
+			AccountId          *string    `json:"accountId,omitempty"`
+			ConversationId     *string    `json:"conversationId,omitempty"`
+			CreatedAt          *time.Time `json:"createdAt,omitempty"`
+			DisplayIdentifier  *string    `json:"displayIdentifier,omitempty"`
+			Id                 *string    `json:"id,omitempty"`
+			IsSubscribed       *bool      `json:"isSubscribed,omitempty"`
+			Platform           *string    `json:"platform,omitempty"`
+			PlatformIdentifier *string    `json:"platformIdentifier,omitempty"`
+		} `json:"channels,omitempty"`
+		Contact *struct {
+			AvatarUrl       *string                 `json:"avatarUrl,omitempty"`
+			Company         *string                 `json:"company,omitempty"`
+			ConversationIds *[]string               `json:"conversationIds,omitempty"`
+			CreatedAt       *time.Time              `json:"createdAt,omitempty"`
+			CustomFields    *map[string]interface{} `json:"customFields,omitempty"`
+			Email           *string                 `json:"email,omitempty"`
+			Id              *string                 `json:"id,omitempty"`
+			IsBlocked       *bool                   `json:"isBlocked,omitempty"`
+			IsSubscribed    *bool                   `json:"isSubscribed,omitempty"`
+			Name            *string                 `json:"name,omitempty"`
+			Notes           *string                 `json:"notes,omitempty"`
+			Tags            *[]string               `json:"tags,omitempty"`
+			UpdatedAt       *time.Time              `json:"updatedAt,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -30320,8 +30501,23 @@ func (r GetContactResponse) StatusCode() int {
 type UpdateContactResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Contact *struct {
+			AvatarUrl    *string    `json:"avatarUrl,omitempty"`
+			Company      *string    `json:"company,omitempty"`
+			Email        *string    `json:"email,omitempty"`
+			Id           *string    `json:"id,omitempty"`
+			IsBlocked    *bool      `json:"isBlocked,omitempty"`
+			IsSubscribed *bool      `json:"isSubscribed,omitempty"`
+			Name         *string    `json:"name,omitempty"`
+			Notes        *string    `json:"notes,omitempty"`
+			Tags         *[]string  `json:"tags,omitempty"`
+			UpdatedAt    *time.Time `json:"updatedAt,omitempty"`
+		} `json:"contact,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -30343,8 +30539,22 @@ func (r UpdateContactResponse) StatusCode() int {
 type GetContactChannelsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Channels *[]struct {
+			AccountId          *string                 `json:"accountId,omitempty"`
+			ConversationId     *string                 `json:"conversationId,omitempty"`
+			CreatedAt          *time.Time              `json:"createdAt,omitempty"`
+			DisplayIdentifier  *string                 `json:"displayIdentifier,omitempty"`
+			Id                 *string                 `json:"id,omitempty"`
+			IsSubscribed       *bool                   `json:"isSubscribed,omitempty"`
+			Metadata           *map[string]interface{} `json:"metadata,omitempty"`
+			Platform           *string                 `json:"platform,omitempty"`
+			PlatformIdentifier *string                 `json:"platformIdentifier,omitempty"`
+		} `json:"channels,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -30412,8 +30622,20 @@ func (r SetContactFieldValueResponse) StatusCode() int {
 type ListCustomFieldsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Fields *[]struct {
+			CreatedAt *time.Time                     `json:"createdAt,omitempty"`
+			Id        *string                        `json:"id,omitempty"`
+			Name      *string                        `json:"name,omitempty"`
+			Options   *[]string                      `json:"options,omitempty"`
+			Slug      *string                        `json:"slug,omitempty"`
+			Type      *ListCustomFields200FieldsType `json:"type,omitempty"`
+		} `json:"fields,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
+type ListCustomFields200FieldsType string
 
 // Status returns HTTPResponse.Status
 func (r ListCustomFieldsResponse) Status() string {
@@ -30434,8 +30656,20 @@ func (r ListCustomFieldsResponse) StatusCode() int {
 type CreateCustomFieldResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Field *struct {
+			CreatedAt *time.Time                     `json:"createdAt,omitempty"`
+			Id        *string                        `json:"id,omitempty"`
+			Name      *string                        `json:"name,omitempty"`
+			Options   *[]string                      `json:"options,omitempty"`
+			Slug      *string                        `json:"slug,omitempty"`
+			Type      *CreateCustomField200FieldType `json:"type,omitempty"`
+		} `json:"field,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
+type CreateCustomField200FieldType string
 
 // Status returns HTTPResponse.Status
 func (r CreateCustomFieldResponse) Status() string {
@@ -30479,8 +30713,18 @@ func (r DeleteCustomFieldResponse) StatusCode() int {
 type UpdateCustomFieldResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Field *struct {
+			Id      *string   `json:"id,omitempty"`
+			Name    *string   `json:"name,omitempty"`
+			Options *[]string `json:"options,omitempty"`
+			Slug    *string   `json:"slug,omitempty"`
+			Type    *string   `json:"type,omitempty"`
+		} `json:"field,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -40993,6 +41237,32 @@ func ParseCreateCommentAutomationResponse(rsp *http.Response) (*CreateCommentAut
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Automation *struct {
+				CommentReply   *string                                        `json:"commentReply,omitempty"`
+				CreatedAt      *time.Time                                     `json:"createdAt,omitempty"`
+				DmMessage      *string                                        `json:"dmMessage,omitempty"`
+				Id             *string                                        `json:"id,omitempty"`
+				IsActive       *bool                                          `json:"isActive,omitempty"`
+				Keywords       *[]string                                      `json:"keywords,omitempty"`
+				MatchMode      *CreateCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+				Name           *string                                        `json:"name,omitempty"`
+				Platform       *string                                        `json:"platform,omitempty"`
+				PlatformPostId *string                                        `json:"platformPostId,omitempty"`
+				Stats          *struct {
+					TotalFailed    *int `json:"totalFailed,omitempty"`
+					TotalSent      *int `json:"totalSent,omitempty"`
+					TotalTriggered *int `json:"totalTriggered,omitempty"`
+				} `json:"stats,omitempty"`
+			} `json:"automation,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -41052,6 +41322,46 @@ func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomatio
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Automation *struct {
+				AccountId      *string                                     `json:"accountId,omitempty"`
+				CommentReply   *string                                     `json:"commentReply,omitempty"`
+				CreatedAt      *time.Time                                  `json:"createdAt,omitempty"`
+				DmMessage      *string                                     `json:"dmMessage,omitempty"`
+				Id             *string                                     `json:"id,omitempty"`
+				IsActive       *bool                                       `json:"isActive,omitempty"`
+				Keywords       *[]string                                   `json:"keywords,omitempty"`
+				MatchMode      *GetCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+				Name           *string                                     `json:"name,omitempty"`
+				Platform       *string                                     `json:"platform,omitempty"`
+				PlatformPostId *string                                     `json:"platformPostId,omitempty"`
+				PostId         *string                                     `json:"postId,omitempty"`
+				PostTitle      *string                                     `json:"postTitle,omitempty"`
+				Stats          *struct {
+					TotalFailed    *int `json:"totalFailed,omitempty"`
+					TotalSent      *int `json:"totalSent,omitempty"`
+					TotalTriggered *int `json:"totalTriggered,omitempty"`
+				} `json:"stats,omitempty"`
+				UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+			} `json:"automation,omitempty"`
+			Logs *[]struct {
+				CommentId     *string                            `json:"commentId,omitempty"`
+				CommentText   *string                            `json:"commentText,omitempty"`
+				CommenterId   *string                            `json:"commenterId,omitempty"`
+				CommenterName *string                            `json:"commenterName,omitempty"`
+				CreatedAt     *time.Time                         `json:"createdAt,omitempty"`
+				Error         *string                            `json:"error,omitempty"`
+				Id            *string                            `json:"id,omitempty"`
+				Status        *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
+			} `json:"logs,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -41085,6 +41395,25 @@ func ParseUpdateCommentAutomationResponse(rsp *http.Response) (*UpdateCommentAut
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Automation *struct {
+				CommentReply *string                                        `json:"commentReply,omitempty"`
+				DmMessage    *string                                        `json:"dmMessage,omitempty"`
+				Id           *string                                        `json:"id,omitempty"`
+				IsActive     *bool                                          `json:"isActive,omitempty"`
+				Keywords     *[]string                                      `json:"keywords,omitempty"`
+				MatchMode    *UpdateCommentAutomation200AutomationMatchMode `json:"matchMode,omitempty"`
+				Name         *string                                        `json:"name,omitempty"`
+				UpdatedAt    *time.Time                                     `json:"updatedAt,omitempty"`
+			} `json:"automation,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -41118,6 +41447,31 @@ func ParseListCommentAutomationLogsResponse(rsp *http.Response) (*ListCommentAut
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Logs *[]struct {
+				CommentId     *string                                 `json:"commentId,omitempty"`
+				CommentText   *string                                 `json:"commentText,omitempty"`
+				CommenterId   *string                                 `json:"commenterId,omitempty"`
+				CommenterName *string                                 `json:"commenterName,omitempty"`
+				CreatedAt     *time.Time                              `json:"createdAt,omitempty"`
+				Error         *string                                 `json:"error,omitempty"`
+				Id            *string                                 `json:"id,omitempty"`
+				Status        *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
+			} `json:"logs,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42057,6 +42411,44 @@ func ParseListContactsResponse(rsp *http.Response) (*ListContactsResponse, error
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contacts *[]struct {
+				AvatarUrl             *string                 `json:"avatarUrl,omitempty"`
+				Company               *string                 `json:"company,omitempty"`
+				CreatedAt             *time.Time              `json:"createdAt,omitempty"`
+				CustomFields          *map[string]interface{} `json:"customFields,omitempty"`
+				DisplayIdentifier     *string                 `json:"displayIdentifier,omitempty"`
+				Email                 *string                 `json:"email,omitempty"`
+				Id                    *string                 `json:"id,omitempty"`
+				IsBlocked             *bool                   `json:"isBlocked,omitempty"`
+				IsSubscribed          *bool                   `json:"isSubscribed,omitempty"`
+				LastMessageReceivedAt *time.Time              `json:"lastMessageReceivedAt,omitempty"`
+				LastMessageSentAt     *time.Time              `json:"lastMessageSentAt,omitempty"`
+				MessagesReceivedCount *int                    `json:"messagesReceivedCount,omitempty"`
+				MessagesSentCount     *int                    `json:"messagesSentCount,omitempty"`
+				Name                  *string                 `json:"name,omitempty"`
+				Notes                 *string                 `json:"notes,omitempty"`
+				Platform              *string                 `json:"platform,omitempty"`
+				PlatformIdentifier    *string                 `json:"platformIdentifier,omitempty"`
+				Tags                  *[]string               `json:"tags,omitempty"`
+			} `json:"contacts,omitempty"`
+			Filters *struct {
+				Tags *[]string `json:"tags,omitempty"`
+			} `json:"filters,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42083,6 +42475,35 @@ func ParseCreateContactResponse(rsp *http.Response) (*CreateContactResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Channel Created when accountId, platform, and platformIdentifier are provided
+			Channel *struct {
+				DisplayIdentifier  *string `json:"displayIdentifier,omitempty"`
+				Id                 *string `json:"id,omitempty"`
+				Platform           *string `json:"platform,omitempty"`
+				PlatformIdentifier *string `json:"platformIdentifier,omitempty"`
+			} `json:"channel,omitempty"`
+			Contact *struct {
+				Company      *string                 `json:"company,omitempty"`
+				CreatedAt    *time.Time              `json:"createdAt,omitempty"`
+				CustomFields *map[string]interface{} `json:"customFields,omitempty"`
+				Email        *string                 `json:"email,omitempty"`
+				Id           *string                 `json:"id,omitempty"`
+				IsBlocked    *bool                   `json:"isBlocked,omitempty"`
+				IsSubscribed *bool                   `json:"isSubscribed,omitempty"`
+				Name         *string                 `json:"name,omitempty"`
+				Notes        *string                 `json:"notes,omitempty"`
+				Tags         *[]string               `json:"tags,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+			Warning *string `json:"warning,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42109,6 +42530,19 @@ func ParseBulkCreateContactsResponse(rsp *http.Response) (*BulkCreateContactsRes
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Created *int                      `json:"created,omitempty"`
+			Errors  *[]map[string]interface{} `json:"errors,omitempty"`
+			Skipped *int                      `json:"skipped,omitempty"`
+			Success *bool                     `json:"success,omitempty"`
+			Total   *int                      `json:"total,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42168,6 +42602,40 @@ func ParseGetContactResponse(rsp *http.Response) (*GetContactResponse, error) {
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Channels *[]struct {
+				AccountId          *string    `json:"accountId,omitempty"`
+				ConversationId     *string    `json:"conversationId,omitempty"`
+				CreatedAt          *time.Time `json:"createdAt,omitempty"`
+				DisplayIdentifier  *string    `json:"displayIdentifier,omitempty"`
+				Id                 *string    `json:"id,omitempty"`
+				IsSubscribed       *bool      `json:"isSubscribed,omitempty"`
+				Platform           *string    `json:"platform,omitempty"`
+				PlatformIdentifier *string    `json:"platformIdentifier,omitempty"`
+			} `json:"channels,omitempty"`
+			Contact *struct {
+				AvatarUrl       *string                 `json:"avatarUrl,omitempty"`
+				Company         *string                 `json:"company,omitempty"`
+				ConversationIds *[]string               `json:"conversationIds,omitempty"`
+				CreatedAt       *time.Time              `json:"createdAt,omitempty"`
+				CustomFields    *map[string]interface{} `json:"customFields,omitempty"`
+				Email           *string                 `json:"email,omitempty"`
+				Id              *string                 `json:"id,omitempty"`
+				IsBlocked       *bool                   `json:"isBlocked,omitempty"`
+				IsSubscribed    *bool                   `json:"isSubscribed,omitempty"`
+				Name            *string                 `json:"name,omitempty"`
+				Notes           *string                 `json:"notes,omitempty"`
+				Tags            *[]string               `json:"tags,omitempty"`
+				UpdatedAt       *time.Time              `json:"updatedAt,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42201,6 +42669,27 @@ func ParseUpdateContactResponse(rsp *http.Response) (*UpdateContactResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Contact *struct {
+				AvatarUrl    *string    `json:"avatarUrl,omitempty"`
+				Company      *string    `json:"company,omitempty"`
+				Email        *string    `json:"email,omitempty"`
+				Id           *string    `json:"id,omitempty"`
+				IsBlocked    *bool      `json:"isBlocked,omitempty"`
+				IsSubscribed *bool      `json:"isSubscribed,omitempty"`
+				Name         *string    `json:"name,omitempty"`
+				Notes        *string    `json:"notes,omitempty"`
+				Tags         *[]string  `json:"tags,omitempty"`
+				UpdatedAt    *time.Time `json:"updatedAt,omitempty"`
+			} `json:"contact,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42234,6 +42723,26 @@ func ParseGetContactChannelsResponse(rsp *http.Response) (*GetContactChannelsRes
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Channels *[]struct {
+				AccountId          *string                 `json:"accountId,omitempty"`
+				ConversationId     *string                 `json:"conversationId,omitempty"`
+				CreatedAt          *time.Time              `json:"createdAt,omitempty"`
+				DisplayIdentifier  *string                 `json:"displayIdentifier,omitempty"`
+				Id                 *string                 `json:"id,omitempty"`
+				IsSubscribed       *bool                   `json:"isSubscribed,omitempty"`
+				Metadata           *map[string]interface{} `json:"metadata,omitempty"`
+				Platform           *string                 `json:"platform,omitempty"`
+				PlatformIdentifier *string                 `json:"platformIdentifier,omitempty"`
+			} `json:"channels,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42333,6 +42842,23 @@ func ParseListCustomFieldsResponse(rsp *http.Response) (*ListCustomFieldsRespons
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Fields *[]struct {
+				CreatedAt *time.Time                     `json:"createdAt,omitempty"`
+				Id        *string                        `json:"id,omitempty"`
+				Name      *string                        `json:"name,omitempty"`
+				Options   *[]string                      `json:"options,omitempty"`
+				Slug      *string                        `json:"slug,omitempty"`
+				Type      *ListCustomFields200FieldsType `json:"type,omitempty"`
+			} `json:"fields,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42359,6 +42885,23 @@ func ParseCreateCustomFieldResponse(rsp *http.Response) (*CreateCustomFieldRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Field *struct {
+				CreatedAt *time.Time                     `json:"createdAt,omitempty"`
+				Id        *string                        `json:"id,omitempty"`
+				Name      *string                        `json:"name,omitempty"`
+				Options   *[]string                      `json:"options,omitempty"`
+				Slug      *string                        `json:"slug,omitempty"`
+				Type      *CreateCustomField200FieldType `json:"type,omitempty"`
+			} `json:"field,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -42418,6 +42961,22 @@ func ParseUpdateCustomFieldResponse(rsp *http.Response) (*UpdateCustomFieldRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Field *struct {
+				Id      *string   `json:"id,omitempty"`
+				Name    *string   `json:"name,omitempty"`
+				Options *[]string `json:"options,omitempty"`
+				Slug    *string   `json:"slug,omitempty"`
+				Type    *string   `json:"type,omitempty"`
+			} `json:"field,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
