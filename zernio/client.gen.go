@@ -5415,6 +5415,9 @@ type AddBroadcastRecipientsJSONBody struct {
 	// ContactIds Specific contact IDs to add
 	ContactIds *[]string `json:"contactIds,omitempty"`
 
+	// Phones Raw phone numbers (auto-creates contacts). Useful for WhatsApp/Telegram manual entry
+	Phones *[]string `json:"phones,omitempty"`
+
 	// UseSegment Auto-populate from broadcast segment filters
 	UseSegment *bool `json:"useSegment,omitempty"`
 }
