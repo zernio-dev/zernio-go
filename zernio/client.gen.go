@@ -2768,6 +2768,33 @@ func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	}
 }
 
+// Defines values for CreateSequenceJSONBodyStepsTemplateVariableMappingField.
+const (
+	Company CreateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
+	Custom  CreateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
+	Email   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
+	Name    CreateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
+	Phone   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
+)
+
+// Valid indicates whether the value is a known member of the CreateSequenceJSONBodyStepsTemplateVariableMappingField enum.
+func (e CreateSequenceJSONBodyStepsTemplateVariableMappingField) Valid() bool {
+	switch e {
+	case Company:
+		return true
+	case Custom:
+		return true
+	case Email:
+		return true
+	case Name:
+		return true
+	case Phone:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListSequenceEnrollmentsParamsStatus.
 const (
 	ListSequenceEnrollmentsParamsStatusActive    ListSequenceEnrollmentsParamsStatus = "active"
@@ -6623,12 +6650,22 @@ type CreateSequenceJSONBody struct {
 		Template *struct {
 			Language *string `json:"language,omitempty"`
 			Name     *string `json:"name,omitempty"`
+
+			// VariableMapping Maps template variable positions to contact fields. Keys are position strings ("1", "2"), values are objects with field and optional customValue
+			VariableMapping *map[string]struct {
+				// CustomValue Static value when field is "custom"
+				CustomValue *string                                                  `json:"customValue,omitempty"`
+				Field       *CreateSequenceJSONBodyStepsTemplateVariableMappingField `json:"field,omitempty"`
+			} `json:"variableMapping,omitempty"`
 		} `json:"template,omitempty"`
 	} `json:"steps,omitempty"`
 }
 
 // CreateSequenceJSONBodyPlatform defines parameters for CreateSequence.
 type CreateSequenceJSONBodyPlatform string
+
+// CreateSequenceJSONBodyStepsTemplateVariableMappingField defines parameters for CreateSequence.
+type CreateSequenceJSONBodyStepsTemplateVariableMappingField string
 
 // EnrollContactsJSONBody defines parameters for EnrollContacts.
 type EnrollContactsJSONBody struct {
