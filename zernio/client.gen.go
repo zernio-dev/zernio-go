@@ -5153,6 +5153,9 @@ type GetAnalyticsParams struct {
 	// ProfileId Filter by profile ID (default "all")
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
+	// AccountId Filter by social account ID
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
 	// Source Filter by post source: late (posted via Zernio API), external (synced from platform), all (default)
 	Source *GetAnalyticsParamsSource `form:"source,omitempty" json:"source,omitempty"`
 
@@ -5221,6 +5224,9 @@ type GetDailyMetricsParams struct {
 
 	// ProfileId Filter by profile ID. Omit for all profiles.
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// AccountId Filter by social account ID
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 
 	// FromDate Inclusive start date (ISO 8601). Defaults to 180 days ago.
 	FromDate *time.Time `form:"fromDate,omitempty" json:"fromDate,omitempty"`
@@ -15762,6 +15768,22 @@ func NewGetAnalyticsRequest(server string, params *GetAnalyticsParams) (*http.Re
 
 		}
 
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -16088,6 +16110,22 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
