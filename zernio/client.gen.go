@@ -4198,6 +4198,15 @@ type TikTokPlatformDataMediaType string
 
 // TwitterPlatformData defines model for TwitterPlatformData.
 type TwitterPlatformData struct {
+	// Poll Create a poll with this tweet. Mutually exclusive with media attachments and threads.
+	Poll *struct {
+		// DurationMinutes Poll duration in minutes (5 min to 7 days)
+		DurationMinutes int `json:"duration_minutes"`
+
+		// Options Poll options (2-4 choices, max 25 characters each)
+		Options []string `json:"options"`
+	} `json:"poll,omitempty"`
+
 	// ReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers, "verified" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 	ReplySettings *TwitterPlatformDataReplySettings `json:"replySettings,omitempty"`
 
