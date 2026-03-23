@@ -5352,7 +5352,8 @@ type CreateApiKeyJSONBodyScope string
 
 // ListBroadcastsParams defines parameters for ListBroadcasts.
 type ListBroadcastsParams struct {
-	ProfileId string                      `form:"profileId" json:"profileId"`
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId *string                     `form:"profileId,omitempty" json:"profileId,omitempty"`
 	Status    *ListBroadcastsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 	Platform  *string                     `form:"platform,omitempty" json:"platform,omitempty"`
 	Limit     *int                        `form:"limit,omitempty" json:"limit,omitempty"`
@@ -5419,8 +5420,8 @@ type ScheduleBroadcastJSONBody struct {
 
 // ListCommentAutomationsParams defines parameters for ListCommentAutomations.
 type ListCommentAutomationsParams struct {
-	// ProfileId Profile ID
-	ProfileId string `form:"profileId" json:"profileId"`
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 }
 
 // CreateCommentAutomationJSONBody defines parameters for CreateCommentAutomation.
@@ -5778,7 +5779,8 @@ type ListConnectionLogsParamsStatus string
 
 // ListContactsParams defines parameters for ListContacts.
 type ListContactsParams struct {
-	ProfileId    string                          `form:"profileId" json:"profileId"`
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId    *string                         `form:"profileId,omitempty" json:"profileId,omitempty"`
 	Search       *string                         `form:"search,omitempty" json:"search,omitempty"`
 	Tag          *string                         `form:"tag,omitempty" json:"tag,omitempty"`
 	Platform     *ListContactsParamsPlatform     `form:"platform,omitempty" json:"platform,omitempty"`
@@ -5844,7 +5846,8 @@ type SetContactFieldValueJSONBody struct {
 
 // ListCustomFieldsParams defines parameters for ListCustomFields.
 type ListCustomFieldsParams struct {
-	ProfileId string `form:"profileId" json:"profileId"`
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 }
 
 // CreateCustomFieldJSONBody defines parameters for CreateCustomField.
@@ -6581,7 +6584,8 @@ type SearchRedditParamsSort string
 
 // ListSequencesParams defines parameters for ListSequences.
 type ListSequencesParams struct {
-	ProfileId string                     `form:"profileId" json:"profileId"`
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId *string                    `form:"profileId,omitempty" json:"profileId,omitempty"`
 	Status    *ListSequencesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 	Limit     *int                       `form:"limit,omitempty" json:"limit,omitempty"`
 	Skip      *int                       `form:"skip,omitempty" json:"skip,omitempty"`
@@ -16744,16 +16748,20 @@ func NewListBroadcastsRequest(server string, params *ListBroadcastsParams) (*htt
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
 		if params.Status != nil {
@@ -17245,16 +17253,20 @@ func NewListCommentAutomationsRequest(server string, params *ListCommentAutomati
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
@@ -18574,16 +18586,20 @@ func NewListContactsRequest(server string, params *ListContactsParams) (*http.Re
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
 		if params.Search != nil {
@@ -19039,16 +19055,20 @@ func NewListCustomFieldsRequest(server string, params *ListCustomFieldsParams) (
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
@@ -22184,16 +22204,20 @@ func NewListSequencesRequest(server string, params *ListSequencesParams) (*http.
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
 		if params.Status != nil {
