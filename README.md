@@ -216,6 +216,30 @@ func main() {
 | `client.SetMessengerMenuWithResponse()` | Set FB persistent menu |
 | `client.SetTelegramCommandsWithResponse()` | Set TG bot commands |
 
+### Broadcasts
+| Method | Description |
+|--------|-------------|
+| `client.ListBroadcastRecipientsWithResponse()` | List broadcast recipients |
+| `client.ListBroadcastsWithResponse()` | List broadcasts |
+| `client.CreateBroadcastWithResponse()` | Create a broadcast draft |
+| `client.GetBroadcastWithResponse()` | Get broadcast details |
+| `client.UpdateBroadcastWithResponse()` | Update a broadcast |
+| `client.DeleteBroadcastWithResponse()` | Delete a broadcast (draft only) |
+| `client.AddBroadcastRecipientsWithResponse()` | Add recipients to a broadcast |
+| `client.CancelBroadcastWithResponse()` | Cancel a broadcast |
+| `client.ScheduleBroadcastWithResponse()` | Schedule broadcast for later |
+| `client.SendBroadcastWithResponse()` | Trigger immediate send |
+
+### Comment Automations
+| Method | Description |
+|--------|-------------|
+| `client.ListCommentAutomationLogsWithResponse()` | List trigger logs for an automation |
+| `client.ListCommentAutomationsWithResponse()` | List comment-to-DM automations |
+| `client.CreateCommentAutomationWithResponse()` | Create a comment-to-DM automation |
+| `client.GetCommentAutomationWithResponse()` | Get automation details with recent logs |
+| `client.UpdateCommentAutomationWithResponse()` | Update automation settings |
+| `client.DeleteCommentAutomationWithResponse()` | Delete automation and all logs |
+
 ### Comments (Inbox)
 | Method | Description |
 |--------|-------------|
@@ -228,6 +252,27 @@ func main() {
 | `client.SendPrivateReplyToCommentWithResponse()` | Send private reply |
 | `client.UnhideInboxCommentWithResponse()` | Unhide comment |
 | `client.UnlikeInboxCommentWithResponse()` | Unlike comment |
+
+### Contacts
+| Method | Description |
+|--------|-------------|
+| `client.ListContactsWithResponse()` | List contacts |
+| `client.BulkCreateContactsWithResponse()` | Bulk create contacts |
+| `client.CreateContactWithResponse()` | Create a contact |
+| `client.GetContactWithResponse()` | Get contact with channels |
+| `client.GetContactChannelsWithResponse()` | List channels for a contact |
+| `client.UpdateContactWithResponse()` | Update a contact |
+| `client.DeleteContactWithResponse()` | Delete a contact |
+
+### Custom Fields
+| Method | Description |
+|--------|-------------|
+| `client.ListCustomFieldsWithResponse()` | List custom field definitions |
+| `client.CreateCustomFieldWithResponse()` | Create a custom field definition |
+| `client.UpdateCustomFieldWithResponse()` | Update a custom field definition |
+| `client.DeleteCustomFieldWithResponse()` | Delete a custom field definition |
+| `client.ClearContactFieldValueWithResponse()` | Clear a custom field value |
+| `client.SetContactFieldValueWithResponse()` | Set a custom field value |
 
 ### GMB Attributes
 | Method | Description |
@@ -277,6 +322,20 @@ func main() {
 | `client.ListInboxReviewsWithResponse()` | List reviews |
 | `client.DeleteInboxReviewReplyWithResponse()` | Delete review reply |
 | `client.ReplyToInboxReviewWithResponse()` | Reply to review |
+
+### Sequences
+| Method | Description |
+|--------|-------------|
+| `client.ListSequenceEnrollmentsWithResponse()` | List enrollments for a sequence |
+| `client.ListSequencesWithResponse()` | List sequences |
+| `client.CreateSequenceWithResponse()` | Create a sequence |
+| `client.GetSequenceWithResponse()` | Get sequence with steps |
+| `client.UpdateSequenceWithResponse()` | Update a sequence |
+| `client.DeleteSequenceWithResponse()` | Delete a sequence |
+| `client.ActivateSequenceWithResponse()` | Activate a sequence |
+| `client.EnrollContactsWithResponse()` | Enroll contacts in a sequence |
+| `client.PauseSequenceWithResponse()` | Pause a sequence |
+| `client.UnenrollContactWithResponse()` | Unenroll a contact from a sequence |
 
 ### Twitter Engagement
 | Method | Description |

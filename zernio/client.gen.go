@@ -1508,6 +1508,153 @@ func (e CreateApiKeyJSONBodyScope) Valid() bool {
 	}
 }
 
+// Defines values for ListBroadcastsParamsStatus.
+const (
+	ListBroadcastsParamsStatusCancelled ListBroadcastsParamsStatus = "cancelled"
+	ListBroadcastsParamsStatusCompleted ListBroadcastsParamsStatus = "completed"
+	ListBroadcastsParamsStatusDraft     ListBroadcastsParamsStatus = "draft"
+	ListBroadcastsParamsStatusFailed    ListBroadcastsParamsStatus = "failed"
+	ListBroadcastsParamsStatusScheduled ListBroadcastsParamsStatus = "scheduled"
+	ListBroadcastsParamsStatusSending   ListBroadcastsParamsStatus = "sending"
+)
+
+// Valid indicates whether the value is a known member of the ListBroadcastsParamsStatus enum.
+func (e ListBroadcastsParamsStatus) Valid() bool {
+	switch e {
+	case ListBroadcastsParamsStatusCancelled:
+		return true
+	case ListBroadcastsParamsStatusCompleted:
+		return true
+	case ListBroadcastsParamsStatusDraft:
+		return true
+	case ListBroadcastsParamsStatusFailed:
+		return true
+	case ListBroadcastsParamsStatusScheduled:
+		return true
+	case ListBroadcastsParamsStatusSending:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateBroadcastJSONBodyPlatform.
+const (
+	CreateBroadcastJSONBodyPlatformBluesky   CreateBroadcastJSONBodyPlatform = "bluesky"
+	CreateBroadcastJSONBodyPlatformFacebook  CreateBroadcastJSONBodyPlatform = "facebook"
+	CreateBroadcastJSONBodyPlatformInstagram CreateBroadcastJSONBodyPlatform = "instagram"
+	CreateBroadcastJSONBodyPlatformReddit    CreateBroadcastJSONBodyPlatform = "reddit"
+	CreateBroadcastJSONBodyPlatformTelegram  CreateBroadcastJSONBodyPlatform = "telegram"
+	CreateBroadcastJSONBodyPlatformTwitter   CreateBroadcastJSONBodyPlatform = "twitter"
+	CreateBroadcastJSONBodyPlatformWhatsapp  CreateBroadcastJSONBodyPlatform = "whatsapp"
+)
+
+// Valid indicates whether the value is a known member of the CreateBroadcastJSONBodyPlatform enum.
+func (e CreateBroadcastJSONBodyPlatform) Valid() bool {
+	switch e {
+	case CreateBroadcastJSONBodyPlatformBluesky:
+		return true
+	case CreateBroadcastJSONBodyPlatformFacebook:
+		return true
+	case CreateBroadcastJSONBodyPlatformInstagram:
+		return true
+	case CreateBroadcastJSONBodyPlatformReddit:
+		return true
+	case CreateBroadcastJSONBodyPlatformTelegram:
+		return true
+	case CreateBroadcastJSONBodyPlatformTwitter:
+		return true
+	case CreateBroadcastJSONBodyPlatformWhatsapp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListBroadcastRecipientsParamsStatus.
+const (
+	ListBroadcastRecipientsParamsStatusDelivered ListBroadcastRecipientsParamsStatus = "delivered"
+	ListBroadcastRecipientsParamsStatusFailed    ListBroadcastRecipientsParamsStatus = "failed"
+	ListBroadcastRecipientsParamsStatusPending   ListBroadcastRecipientsParamsStatus = "pending"
+	ListBroadcastRecipientsParamsStatusRead      ListBroadcastRecipientsParamsStatus = "read"
+	ListBroadcastRecipientsParamsStatusSent      ListBroadcastRecipientsParamsStatus = "sent"
+)
+
+// Valid indicates whether the value is a known member of the ListBroadcastRecipientsParamsStatus enum.
+func (e ListBroadcastRecipientsParamsStatus) Valid() bool {
+	switch e {
+	case ListBroadcastRecipientsParamsStatusDelivered:
+		return true
+	case ListBroadcastRecipientsParamsStatusFailed:
+		return true
+	case ListBroadcastRecipientsParamsStatusPending:
+		return true
+	case ListBroadcastRecipientsParamsStatusRead:
+		return true
+	case ListBroadcastRecipientsParamsStatusSent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCommentAutomationJSONBodyMatchMode.
+const (
+	CreateCommentAutomationJSONBodyMatchModeContains CreateCommentAutomationJSONBodyMatchMode = "contains"
+	CreateCommentAutomationJSONBodyMatchModeExact    CreateCommentAutomationJSONBodyMatchMode = "exact"
+)
+
+// Valid indicates whether the value is a known member of the CreateCommentAutomationJSONBodyMatchMode enum.
+func (e CreateCommentAutomationJSONBodyMatchMode) Valid() bool {
+	switch e {
+	case CreateCommentAutomationJSONBodyMatchModeContains:
+		return true
+	case CreateCommentAutomationJSONBodyMatchModeExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateCommentAutomationJSONBodyMatchMode.
+const (
+	UpdateCommentAutomationJSONBodyMatchModeContains UpdateCommentAutomationJSONBodyMatchMode = "contains"
+	UpdateCommentAutomationJSONBodyMatchModeExact    UpdateCommentAutomationJSONBodyMatchMode = "exact"
+)
+
+// Valid indicates whether the value is a known member of the UpdateCommentAutomationJSONBodyMatchMode enum.
+func (e UpdateCommentAutomationJSONBodyMatchMode) Valid() bool {
+	switch e {
+	case UpdateCommentAutomationJSONBodyMatchModeContains:
+		return true
+	case UpdateCommentAutomationJSONBodyMatchModeExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListCommentAutomationLogsParamsStatus.
+const (
+	ListCommentAutomationLogsParamsStatusFailed  ListCommentAutomationLogsParamsStatus = "failed"
+	ListCommentAutomationLogsParamsStatusSent    ListCommentAutomationLogsParamsStatus = "sent"
+	ListCommentAutomationLogsParamsStatusSkipped ListCommentAutomationLogsParamsStatus = "skipped"
+)
+
+// Valid indicates whether the value is a known member of the ListCommentAutomationLogsParamsStatus enum.
+func (e ListCommentAutomationLogsParamsStatus) Valid() bool {
+	switch e {
+	case ListCommentAutomationLogsParamsStatusFailed:
+		return true
+	case ListCommentAutomationLogsParamsStatusSent:
+		return true
+	case ListCommentAutomationLogsParamsStatusSkipped:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SelectLinkedInOrganizationJSONBodyAccountType.
 const (
 	SelectLinkedInOrganizationJSONBodyAccountTypeOrganization SelectLinkedInOrganizationJSONBodyAccountType = "organization"
@@ -1676,6 +1823,84 @@ func (e ListConnectionLogsParamsStatus) Valid() bool {
 	case ListConnectionLogsParamsStatusFailed:
 		return true
 	case ListConnectionLogsParamsStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsPlatform.
+const (
+	ListContactsParamsPlatformBluesky   ListContactsParamsPlatform = "bluesky"
+	ListContactsParamsPlatformFacebook  ListContactsParamsPlatform = "facebook"
+	ListContactsParamsPlatformInstagram ListContactsParamsPlatform = "instagram"
+	ListContactsParamsPlatformReddit    ListContactsParamsPlatform = "reddit"
+	ListContactsParamsPlatformTelegram  ListContactsParamsPlatform = "telegram"
+	ListContactsParamsPlatformTwitter   ListContactsParamsPlatform = "twitter"
+	ListContactsParamsPlatformWhatsapp  ListContactsParamsPlatform = "whatsapp"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsPlatform enum.
+func (e ListContactsParamsPlatform) Valid() bool {
+	switch e {
+	case ListContactsParamsPlatformBluesky:
+		return true
+	case ListContactsParamsPlatformFacebook:
+		return true
+	case ListContactsParamsPlatformInstagram:
+		return true
+	case ListContactsParamsPlatformReddit:
+		return true
+	case ListContactsParamsPlatformTelegram:
+		return true
+	case ListContactsParamsPlatformTwitter:
+		return true
+	case ListContactsParamsPlatformWhatsapp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListContactsParamsIsSubscribed.
+const (
+	ListContactsParamsIsSubscribedFalse ListContactsParamsIsSubscribed = "false"
+	ListContactsParamsIsSubscribedTrue  ListContactsParamsIsSubscribed = "true"
+)
+
+// Valid indicates whether the value is a known member of the ListContactsParamsIsSubscribed enum.
+func (e ListContactsParamsIsSubscribed) Valid() bool {
+	switch e {
+	case ListContactsParamsIsSubscribedFalse:
+		return true
+	case ListContactsParamsIsSubscribedTrue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCustomFieldJSONBodyType.
+const (
+	CreateCustomFieldJSONBodyTypeBoolean CreateCustomFieldJSONBodyType = "boolean"
+	CreateCustomFieldJSONBodyTypeDate    CreateCustomFieldJSONBodyType = "date"
+	CreateCustomFieldJSONBodyTypeNumber  CreateCustomFieldJSONBodyType = "number"
+	CreateCustomFieldJSONBodyTypeSelect  CreateCustomFieldJSONBodyType = "select"
+	CreateCustomFieldJSONBodyTypeText    CreateCustomFieldJSONBodyType = "text"
+)
+
+// Valid indicates whether the value is a known member of the CreateCustomFieldJSONBodyType enum.
+func (e CreateCustomFieldJSONBodyType) Valid() bool {
+	switch e {
+	case CreateCustomFieldJSONBodyTypeBoolean:
+		return true
+	case CreateCustomFieldJSONBodyTypeDate:
+		return true
+	case CreateCustomFieldJSONBodyTypeNumber:
+		return true
+	case CreateCustomFieldJSONBodyTypeSelect:
+		return true
+	case CreateCustomFieldJSONBodyTypeText:
 		return true
 	default:
 		return false
@@ -2014,16 +2239,16 @@ func (e ListInboxReviewsParamsPlatform) Valid() bool {
 
 // Defines values for ListInboxReviewsParamsSortBy.
 const (
-	Date   ListInboxReviewsParamsSortBy = "date"
-	Rating ListInboxReviewsParamsSortBy = "rating"
+	ListInboxReviewsParamsSortByDate   ListInboxReviewsParamsSortBy = "date"
+	ListInboxReviewsParamsSortByRating ListInboxReviewsParamsSortBy = "rating"
 )
 
 // Valid indicates whether the value is a known member of the ListInboxReviewsParamsSortBy enum.
 func (e ListInboxReviewsParamsSortBy) Valid() bool {
 	switch e {
-	case Date:
+	case ListInboxReviewsParamsSortByDate:
 		return true
-	case Rating:
+	case ListInboxReviewsParamsSortByRating:
 		return true
 	default:
 		return false
@@ -2416,28 +2641,28 @@ func (e GetRedditFeedParamsSort) Valid() bool {
 
 // Defines values for GetRedditFeedParamsT.
 const (
-	All   GetRedditFeedParamsT = "all"
-	Day   GetRedditFeedParamsT = "day"
-	Hour  GetRedditFeedParamsT = "hour"
-	Month GetRedditFeedParamsT = "month"
-	Week  GetRedditFeedParamsT = "week"
-	Year  GetRedditFeedParamsT = "year"
+	GetRedditFeedParamsTAll   GetRedditFeedParamsT = "all"
+	GetRedditFeedParamsTDay   GetRedditFeedParamsT = "day"
+	GetRedditFeedParamsTHour  GetRedditFeedParamsT = "hour"
+	GetRedditFeedParamsTMonth GetRedditFeedParamsT = "month"
+	GetRedditFeedParamsTWeek  GetRedditFeedParamsT = "week"
+	GetRedditFeedParamsTYear  GetRedditFeedParamsT = "year"
 )
 
 // Valid indicates whether the value is a known member of the GetRedditFeedParamsT enum.
 func (e GetRedditFeedParamsT) Valid() bool {
 	switch e {
-	case All:
+	case GetRedditFeedParamsTAll:
 		return true
-	case Day:
+	case GetRedditFeedParamsTDay:
 		return true
-	case Hour:
+	case GetRedditFeedParamsTHour:
 		return true
-	case Month:
+	case GetRedditFeedParamsTMonth:
 		return true
-	case Week:
+	case GetRedditFeedParamsTWeek:
 		return true
-	case Year:
+	case GetRedditFeedParamsTYear:
 		return true
 	default:
 		return false
@@ -2483,6 +2708,84 @@ func (e SearchRedditParamsSort) Valid() bool {
 	case SearchRedditParamsSortRelevance:
 		return true
 	case SearchRedditParamsSortTop:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListSequencesParamsStatus.
+const (
+	ListSequencesParamsStatusActive ListSequencesParamsStatus = "active"
+	ListSequencesParamsStatusDraft  ListSequencesParamsStatus = "draft"
+	ListSequencesParamsStatusPaused ListSequencesParamsStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the ListSequencesParamsStatus enum.
+func (e ListSequencesParamsStatus) Valid() bool {
+	switch e {
+	case ListSequencesParamsStatusActive:
+		return true
+	case ListSequencesParamsStatusDraft:
+		return true
+	case ListSequencesParamsStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateSequenceJSONBodyPlatform.
+const (
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+)
+
+// Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
+func (e CreateSequenceJSONBodyPlatform) Valid() bool {
+	switch e {
+	case CreateSequenceJSONBodyPlatformBluesky:
+		return true
+	case CreateSequenceJSONBodyPlatformFacebook:
+		return true
+	case CreateSequenceJSONBodyPlatformInstagram:
+		return true
+	case CreateSequenceJSONBodyPlatformReddit:
+		return true
+	case CreateSequenceJSONBodyPlatformTelegram:
+		return true
+	case CreateSequenceJSONBodyPlatformTwitter:
+		return true
+	case CreateSequenceJSONBodyPlatformWhatsapp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListSequenceEnrollmentsParamsStatus.
+const (
+	ListSequenceEnrollmentsParamsStatusActive    ListSequenceEnrollmentsParamsStatus = "active"
+	ListSequenceEnrollmentsParamsStatusCompleted ListSequenceEnrollmentsParamsStatus = "completed"
+	ListSequenceEnrollmentsParamsStatusExited    ListSequenceEnrollmentsParamsStatus = "exited"
+	ListSequenceEnrollmentsParamsStatusPaused    ListSequenceEnrollmentsParamsStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the ListSequenceEnrollmentsParamsStatus enum.
+func (e ListSequenceEnrollmentsParamsStatus) Valid() bool {
+	switch e {
+	case ListSequenceEnrollmentsParamsStatusActive:
+		return true
+	case ListSequenceEnrollmentsParamsStatusCompleted:
+		return true
+	case ListSequenceEnrollmentsParamsStatusExited:
+		return true
+	case ListSequenceEnrollmentsParamsStatusPaused:
 		return true
 	default:
 		return false
@@ -2563,49 +2866,49 @@ func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
 
 // Defines values for ValidatePostJSONBodyPlatformsPlatform.
 const (
-	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
-	ValidatePostJSONBodyPlatformsPlatformFacebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
-	ValidatePostJSONBodyPlatformsPlatformGooglebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
-	ValidatePostJSONBodyPlatformsPlatformInstagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
-	ValidatePostJSONBodyPlatformsPlatformLinkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
-	ValidatePostJSONBodyPlatformsPlatformPinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
-	ValidatePostJSONBodyPlatformsPlatformReddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
-	ValidatePostJSONBodyPlatformsPlatformSnapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
-	ValidatePostJSONBodyPlatformsPlatformTelegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
-	ValidatePostJSONBodyPlatformsPlatformThreads        ValidatePostJSONBodyPlatformsPlatform = "threads"
-	ValidatePostJSONBodyPlatformsPlatformTiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
-	ValidatePostJSONBodyPlatformsPlatformTwitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
-	ValidatePostJSONBodyPlatformsPlatformYoutube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
+	Bluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
+	Facebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
+	Googlebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
+	Instagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
+	Linkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
+	Pinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
+	Reddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
+	Snapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
+	Telegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
+	Threads        ValidatePostJSONBodyPlatformsPlatform = "threads"
+	Tiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
+	Twitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
+	Youtube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
 )
 
 // Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsPlatform enum.
 func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
 	switch e {
-	case ValidatePostJSONBodyPlatformsPlatformBluesky:
+	case Bluesky:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformFacebook:
+	case Facebook:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformGooglebusiness:
+	case Googlebusiness:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformInstagram:
+	case Instagram:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformLinkedin:
+	case Linkedin:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformPinterest:
+	case Pinterest:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformReddit:
+	case Reddit:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformSnapchat:
+	case Snapchat:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformTelegram:
+	case Telegram:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformThreads:
+	case Threads:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformTiktok:
+	case Tiktok:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformTwitter:
+	case Twitter:
 		return true
-	case ValidatePostJSONBodyPlatformsPlatformYoutube:
+	case Youtube:
 		return true
 	default:
 		return false
@@ -2863,16 +3166,16 @@ func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppContactsParamsOptedIn.
 const (
-	GetWhatsAppContactsParamsOptedInFalse GetWhatsAppContactsParamsOptedIn = "false"
-	GetWhatsAppContactsParamsOptedInTrue  GetWhatsAppContactsParamsOptedIn = "true"
+	False GetWhatsAppContactsParamsOptedIn = "false"
+	True  GetWhatsAppContactsParamsOptedIn = "true"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppContactsParamsOptedIn enum.
 func (e GetWhatsAppContactsParamsOptedIn) Valid() bool {
 	switch e {
-	case GetWhatsAppContactsParamsOptedInFalse:
+	case False:
 		return true
-	case GetWhatsAppContactsParamsOptedInTrue:
+	case True:
 		return true
 	default:
 		return false
@@ -5047,6 +5350,135 @@ type CreateApiKeyJSONBodyPermission string
 // CreateApiKeyJSONBodyScope defines parameters for CreateApiKey.
 type CreateApiKeyJSONBodyScope string
 
+// ListBroadcastsParams defines parameters for ListBroadcasts.
+type ListBroadcastsParams struct {
+	ProfileId string                      `form:"profileId" json:"profileId"`
+	Status    *ListBroadcastsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Platform  *string                     `form:"platform,omitempty" json:"platform,omitempty"`
+	Limit     *int                        `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip      *int                        `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListBroadcastsParamsStatus defines parameters for ListBroadcasts.
+type ListBroadcastsParamsStatus string
+
+// CreateBroadcastJSONBody defines parameters for CreateBroadcast.
+type CreateBroadcastJSONBody struct {
+	AccountId   string  `json:"accountId"`
+	Description *string `json:"description,omitempty"`
+	Message     *struct {
+		Attachments *[]struct {
+			Filename *string `json:"filename,omitempty"`
+			Type     *string `json:"type,omitempty"`
+			Url      *string `json:"url,omitempty"`
+		} `json:"attachments,omitempty"`
+		Text *string `json:"text,omitempty"`
+	} `json:"message,omitempty"`
+	Name           string                          `json:"name"`
+	Platform       CreateBroadcastJSONBodyPlatform `json:"platform"`
+	ProfileId      string                          `json:"profileId"`
+	SegmentFilters *struct {
+		IsSubscribed *bool     `json:"isSubscribed,omitempty"`
+		Tags         *[]string `json:"tags,omitempty"`
+	} `json:"segmentFilters,omitempty"`
+
+	// Template WhatsApp template (required when platform is whatsapp)
+	Template *struct {
+		Components *[]interface{} `json:"components,omitempty"`
+		Language   *string        `json:"language,omitempty"`
+		Name       *string        `json:"name,omitempty"`
+	} `json:"template,omitempty"`
+}
+
+// CreateBroadcastJSONBodyPlatform defines parameters for CreateBroadcast.
+type CreateBroadcastJSONBodyPlatform string
+
+// ListBroadcastRecipientsParams defines parameters for ListBroadcastRecipients.
+type ListBroadcastRecipientsParams struct {
+	Status *ListBroadcastRecipientsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit  *int                                 `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip   *int                                 `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListBroadcastRecipientsParamsStatus defines parameters for ListBroadcastRecipients.
+type ListBroadcastRecipientsParamsStatus string
+
+// AddBroadcastRecipientsJSONBody defines parameters for AddBroadcastRecipients.
+type AddBroadcastRecipientsJSONBody struct {
+	// ContactIds Specific contact IDs to add
+	ContactIds *[]string `json:"contactIds,omitempty"`
+
+	// UseSegment Auto-populate from broadcast segment filters
+	UseSegment *bool `json:"useSegment,omitempty"`
+}
+
+// ScheduleBroadcastJSONBody defines parameters for ScheduleBroadcast.
+type ScheduleBroadcastJSONBody struct {
+	ScheduledAt time.Time `json:"scheduledAt"`
+}
+
+// ListCommentAutomationsParams defines parameters for ListCommentAutomations.
+type ListCommentAutomationsParams struct {
+	// ProfileId Profile ID
+	ProfileId string `form:"profileId" json:"profileId"`
+}
+
+// CreateCommentAutomationJSONBody defines parameters for CreateCommentAutomation.
+type CreateCommentAutomationJSONBody struct {
+	// AccountId Instagram or Facebook account ID
+	AccountId string `json:"accountId"`
+
+	// CommentReply Optional public reply to the comment
+	CommentReply *string `json:"commentReply,omitempty"`
+
+	// DmMessage DM text to send to commenter
+	DmMessage string `json:"dmMessage"`
+
+	// Keywords Trigger keywords (empty = any comment triggers)
+	Keywords  *[]string                                 `json:"keywords,omitempty"`
+	MatchMode *CreateCommentAutomationJSONBodyMatchMode `json:"matchMode,omitempty"`
+
+	// Name Automation label
+	Name string `json:"name"`
+
+	// PlatformPostId Platform media/post ID
+	PlatformPostId string `json:"platformPostId"`
+
+	// PostId Zernio post ID (optional)
+	PostId *string `json:"postId,omitempty"`
+
+	// PostTitle Post content snippet for display
+	PostTitle *string `json:"postTitle,omitempty"`
+	ProfileId string  `json:"profileId"`
+}
+
+// CreateCommentAutomationJSONBodyMatchMode defines parameters for CreateCommentAutomation.
+type CreateCommentAutomationJSONBodyMatchMode string
+
+// UpdateCommentAutomationJSONBody defines parameters for UpdateCommentAutomation.
+type UpdateCommentAutomationJSONBody struct {
+	CommentReply *string                                   `json:"commentReply,omitempty"`
+	DmMessage    *string                                   `json:"dmMessage,omitempty"`
+	IsActive     *bool                                     `json:"isActive,omitempty"`
+	Keywords     *[]string                                 `json:"keywords,omitempty"`
+	MatchMode    *UpdateCommentAutomationJSONBodyMatchMode `json:"matchMode,omitempty"`
+	Name         *string                                   `json:"name,omitempty"`
+}
+
+// UpdateCommentAutomationJSONBodyMatchMode defines parameters for UpdateCommentAutomation.
+type UpdateCommentAutomationJSONBodyMatchMode string
+
+// ListCommentAutomationLogsParams defines parameters for ListCommentAutomationLogs.
+type ListCommentAutomationLogsParams struct {
+	// Status Filter by result status
+	Status *ListCommentAutomationLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit  *int                                   `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip   *int                                   `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListCommentAutomationLogsParamsStatus defines parameters for ListCommentAutomationLogs.
+type ListCommentAutomationLogsParamsStatus string
+
 // ConnectBlueskyCredentialsJSONBody defines parameters for ConnectBlueskyCredentials.
 type ConnectBlueskyCredentialsJSONBody struct {
 	// AppPassword App password generated from Bluesky Settings > App Passwords
@@ -5343,6 +5775,99 @@ type ListConnectionLogsParamsEventType string
 
 // ListConnectionLogsParamsStatus defines parameters for ListConnectionLogs.
 type ListConnectionLogsParamsStatus string
+
+// ListContactsParams defines parameters for ListContacts.
+type ListContactsParams struct {
+	ProfileId    string                          `form:"profileId" json:"profileId"`
+	Search       *string                         `form:"search,omitempty" json:"search,omitempty"`
+	Tag          *string                         `form:"tag,omitempty" json:"tag,omitempty"`
+	Platform     *ListContactsParamsPlatform     `form:"platform,omitempty" json:"platform,omitempty"`
+	IsSubscribed *ListContactsParamsIsSubscribed `form:"isSubscribed,omitempty" json:"isSubscribed,omitempty"`
+	Limit        *int                            `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip         *int                            `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListContactsParamsPlatform defines parameters for ListContacts.
+type ListContactsParamsPlatform string
+
+// ListContactsParamsIsSubscribed defines parameters for ListContacts.
+type ListContactsParamsIsSubscribed string
+
+// CreateContactJSONBody defines parameters for CreateContact.
+type CreateContactJSONBody struct {
+	// AccountId Optional. Creates a channel if provided with platform + platformIdentifier
+	AccountId          *string   `json:"accountId,omitempty"`
+	Company            *string   `json:"company,omitempty"`
+	DisplayIdentifier  *string   `json:"displayIdentifier,omitempty"`
+	Email              *string   `json:"email,omitempty"`
+	IsSubscribed       *bool     `json:"isSubscribed,omitempty"`
+	Name               string    `json:"name"`
+	Notes              *string   `json:"notes,omitempty"`
+	Platform           *string   `json:"platform,omitempty"`
+	PlatformIdentifier *string   `json:"platformIdentifier,omitempty"`
+	ProfileId          string    `json:"profileId"`
+	Tags               *[]string `json:"tags,omitempty"`
+}
+
+// BulkCreateContactsJSONBody defines parameters for BulkCreateContacts.
+type BulkCreateContactsJSONBody struct {
+	AccountId string `json:"accountId"`
+	Contacts  []struct {
+		Company            *string   `json:"company,omitempty"`
+		DisplayIdentifier  *string   `json:"displayIdentifier,omitempty"`
+		Email              *string   `json:"email,omitempty"`
+		Name               string    `json:"name"`
+		PlatformIdentifier string    `json:"platformIdentifier"`
+		Tags               *[]string `json:"tags,omitempty"`
+	} `json:"contacts"`
+	Platform  string `json:"platform"`
+	ProfileId string `json:"profileId"`
+}
+
+// UpdateContactJSONBody defines parameters for UpdateContact.
+type UpdateContactJSONBody struct {
+	AvatarUrl    *string   `json:"avatarUrl,omitempty"`
+	Company      *string   `json:"company,omitempty"`
+	Email        *string   `json:"email,omitempty"`
+	IsBlocked    *bool     `json:"isBlocked,omitempty"`
+	IsSubscribed *bool     `json:"isSubscribed,omitempty"`
+	Name         *string   `json:"name,omitempty"`
+	Notes        *string   `json:"notes,omitempty"`
+	Tags         *[]string `json:"tags,omitempty"`
+}
+
+// SetContactFieldValueJSONBody defines parameters for SetContactFieldValue.
+type SetContactFieldValueJSONBody struct {
+	// Value Field value (type depends on field definition)
+	Value interface{} `json:"value"`
+}
+
+// ListCustomFieldsParams defines parameters for ListCustomFields.
+type ListCustomFieldsParams struct {
+	ProfileId string `form:"profileId" json:"profileId"`
+}
+
+// CreateCustomFieldJSONBody defines parameters for CreateCustomField.
+type CreateCustomFieldJSONBody struct {
+	Name string `json:"name"`
+
+	// Options Required for select type
+	Options   *[]string `json:"options,omitempty"`
+	ProfileId string    `json:"profileId"`
+
+	// Slug Auto-generated from name if not provided
+	Slug *string                       `json:"slug,omitempty"`
+	Type CreateCustomFieldJSONBodyType `json:"type"`
+}
+
+// CreateCustomFieldJSONBodyType defines parameters for CreateCustomField.
+type CreateCustomFieldJSONBodyType string
+
+// UpdateCustomFieldJSONBody defines parameters for UpdateCustomField.
+type UpdateCustomFieldJSONBody struct {
+	Name    *string   `json:"name,omitempty"`
+	Options *[]string `json:"options,omitempty"`
+}
 
 // ListInboxCommentsParams defines parameters for ListInboxComments.
 type ListInboxCommentsParams struct {
@@ -6053,6 +6578,59 @@ type SearchRedditParamsRestrictSr string
 
 // SearchRedditParamsSort defines parameters for SearchReddit.
 type SearchRedditParamsSort string
+
+// ListSequencesParams defines parameters for ListSequences.
+type ListSequencesParams struct {
+	ProfileId string                     `form:"profileId" json:"profileId"`
+	Status    *ListSequencesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit     *int                       `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip      *int                       `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListSequencesParamsStatus defines parameters for ListSequences.
+type ListSequencesParamsStatus string
+
+// CreateSequenceJSONBody defines parameters for CreateSequence.
+type CreateSequenceJSONBody struct {
+	AccountId         string                         `json:"accountId"`
+	Description       *string                        `json:"description,omitempty"`
+	ExitOnReply       *bool                          `json:"exitOnReply,omitempty"`
+	ExitOnUnsubscribe *bool                          `json:"exitOnUnsubscribe,omitempty"`
+	Name              string                         `json:"name"`
+	Platform          CreateSequenceJSONBodyPlatform `json:"platform"`
+	ProfileId         string                         `json:"profileId"`
+	Steps             *[]struct {
+		DelayMinutes int `json:"delayMinutes"`
+		Message      *struct {
+			Text *string `json:"text,omitempty"`
+		} `json:"message,omitempty"`
+		Order    int `json:"order"`
+		Template *struct {
+			Language *string `json:"language,omitempty"`
+			Name     *string `json:"name,omitempty"`
+		} `json:"template,omitempty"`
+	} `json:"steps,omitempty"`
+}
+
+// CreateSequenceJSONBodyPlatform defines parameters for CreateSequence.
+type CreateSequenceJSONBodyPlatform string
+
+// EnrollContactsJSONBody defines parameters for EnrollContacts.
+type EnrollContactsJSONBody struct {
+	// ChannelIds Optional. Auto-detected if not provided.
+	ChannelIds *[]string `json:"channelIds,omitempty"`
+	ContactIds []string  `json:"contactIds"`
+}
+
+// ListSequenceEnrollmentsParams defines parameters for ListSequenceEnrollments.
+type ListSequenceEnrollmentsParams struct {
+	Status *ListSequenceEnrollmentsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit  *int                                 `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip   *int                                 `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListSequenceEnrollmentsParamsStatus defines parameters for ListSequenceEnrollments.
+type ListSequenceEnrollmentsParamsStatus string
 
 // DownloadBlueskyMediaParams defines parameters for DownloadBlueskyMedia.
 type DownloadBlueskyMediaParams struct {
@@ -6814,6 +7392,21 @@ type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
 
+// CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
+type CreateBroadcastJSONRequestBody CreateBroadcastJSONBody
+
+// AddBroadcastRecipientsJSONRequestBody defines body for AddBroadcastRecipients for application/json ContentType.
+type AddBroadcastRecipientsJSONRequestBody AddBroadcastRecipientsJSONBody
+
+// ScheduleBroadcastJSONRequestBody defines body for ScheduleBroadcast for application/json ContentType.
+type ScheduleBroadcastJSONRequestBody ScheduleBroadcastJSONBody
+
+// CreateCommentAutomationJSONRequestBody defines body for CreateCommentAutomation for application/json ContentType.
+type CreateCommentAutomationJSONRequestBody CreateCommentAutomationJSONBody
+
+// UpdateCommentAutomationJSONRequestBody defines body for UpdateCommentAutomation for application/json ContentType.
+type UpdateCommentAutomationJSONRequestBody UpdateCommentAutomationJSONBody
+
 // ConnectBlueskyCredentialsJSONRequestBody defines body for ConnectBlueskyCredentials for application/json ContentType.
 type ConnectBlueskyCredentialsJSONRequestBody ConnectBlueskyCredentialsJSONBody
 
@@ -6840,6 +7433,24 @@ type ConnectWhatsAppCredentialsJSONRequestBody ConnectWhatsAppCredentialsJSONBod
 
 // HandleOAuthCallbackJSONRequestBody defines body for HandleOAuthCallback for application/json ContentType.
 type HandleOAuthCallbackJSONRequestBody HandleOAuthCallbackJSONBody
+
+// CreateContactJSONRequestBody defines body for CreateContact for application/json ContentType.
+type CreateContactJSONRequestBody CreateContactJSONBody
+
+// BulkCreateContactsJSONRequestBody defines body for BulkCreateContacts for application/json ContentType.
+type BulkCreateContactsJSONRequestBody BulkCreateContactsJSONBody
+
+// UpdateContactJSONRequestBody defines body for UpdateContact for application/json ContentType.
+type UpdateContactJSONRequestBody UpdateContactJSONBody
+
+// SetContactFieldValueJSONRequestBody defines body for SetContactFieldValue for application/json ContentType.
+type SetContactFieldValueJSONRequestBody SetContactFieldValueJSONBody
+
+// CreateCustomFieldJSONRequestBody defines body for CreateCustomField for application/json ContentType.
+type CreateCustomFieldJSONRequestBody CreateCustomFieldJSONBody
+
+// UpdateCustomFieldJSONRequestBody defines body for UpdateCustomField for application/json ContentType.
+type UpdateCustomFieldJSONRequestBody UpdateCustomFieldJSONBody
 
 // ReplyToInboxPostJSONRequestBody defines body for ReplyToInboxPost for application/json ContentType.
 type ReplyToInboxPostJSONRequestBody ReplyToInboxPostJSONBody
@@ -6900,6 +7511,12 @@ type CreateQueueSlotJSONRequestBody CreateQueueSlotJSONBody
 
 // UpdateQueueSlotJSONRequestBody defines body for UpdateQueueSlot for application/json ContentType.
 type UpdateQueueSlotJSONRequestBody UpdateQueueSlotJSONBody
+
+// CreateSequenceJSONRequestBody defines body for CreateSequence for application/json ContentType.
+type CreateSequenceJSONRequestBody CreateSequenceJSONBody
+
+// EnrollContactsJSONRequestBody defines body for EnrollContacts for application/json ContentType.
+type EnrollContactsJSONRequestBody EnrollContactsJSONBody
 
 // CheckInstagramHashtagsJSONRequestBody defines body for CheckInstagramHashtags for application/json ContentType.
 type CheckInstagramHashtagsJSONRequestBody CheckInstagramHashtagsJSONBody
@@ -8100,6 +8717,64 @@ type ClientInterface interface {
 	// DeleteApiKey request
 	DeleteApiKey(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListBroadcasts request
+	ListBroadcasts(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateBroadcastWithBody request with any body
+	CreateBroadcastWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateBroadcast(ctx context.Context, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteBroadcast request
+	DeleteBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetBroadcast request
+	GetBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateBroadcast request
+	UpdateBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelBroadcast request
+	CancelBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListBroadcastRecipients request
+	ListBroadcastRecipients(ctx context.Context, broadcastId string, params *ListBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddBroadcastRecipientsWithBody request with any body
+	AddBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddBroadcastRecipients(ctx context.Context, broadcastId string, body AddBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ScheduleBroadcastWithBody request with any body
+	ScheduleBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ScheduleBroadcast(ctx context.Context, broadcastId string, body ScheduleBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendBroadcast request
+	SendBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCommentAutomations request
+	ListCommentAutomations(ctx context.Context, params *ListCommentAutomationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCommentAutomationWithBody request with any body
+	CreateCommentAutomationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCommentAutomation(ctx context.Context, body CreateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteCommentAutomation request
+	DeleteCommentAutomation(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCommentAutomation request
+	GetCommentAutomation(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCommentAutomationWithBody request with any body
+	UpdateCommentAutomationWithBody(ctx context.Context, automationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateCommentAutomation(ctx context.Context, automationId string, body UpdateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCommentAutomationLogs request
+	ListCommentAutomationLogs(ctx context.Context, automationId string, params *ListCommentAutomationLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ConnectBlueskyCredentialsWithBody request with any body
 	ConnectBlueskyCredentialsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -8174,6 +8849,57 @@ type ClientInterface interface {
 
 	// ListConnectionLogs request
 	ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListContacts request
+	ListContacts(ctx context.Context, params *ListContactsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateContactWithBody request with any body
+	CreateContactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateContact(ctx context.Context, body CreateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkCreateContactsWithBody request with any body
+	BulkCreateContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkCreateContacts(ctx context.Context, body BulkCreateContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteContact request
+	DeleteContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContact request
+	GetContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateContactWithBody request with any body
+	UpdateContactWithBody(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateContact(ctx context.Context, contactId string, body UpdateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContactChannels request
+	GetContactChannels(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ClearContactFieldValue request
+	ClearContactFieldValue(ctx context.Context, contactId string, slug string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetContactFieldValueWithBody request with any body
+	SetContactFieldValueWithBody(ctx context.Context, contactId string, slug string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetContactFieldValue(ctx context.Context, contactId string, slug string, body SetContactFieldValueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCustomFields request
+	ListCustomFields(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCustomFieldWithBody request with any body
+	CreateCustomFieldWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCustomField(ctx context.Context, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteCustomField request
+	DeleteCustomField(ctx context.Context, fieldId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCustomFieldWithBody request with any body
+	UpdateCustomFieldWithBody(ctx context.Context, fieldId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateCustomField(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListInboxComments request
 	ListInboxComments(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -8339,6 +9065,40 @@ type ClientInterface interface {
 
 	// SearchReddit request
 	SearchReddit(ctx context.Context, params *SearchRedditParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSequences request
+	ListSequences(ctx context.Context, params *ListSequencesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSequenceWithBody request with any body
+	CreateSequenceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSequence(ctx context.Context, body CreateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSequence request
+	DeleteSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSequence request
+	GetSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSequence request
+	UpdateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ActivateSequence request
+	ActivateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EnrollContactsWithBody request with any body
+	EnrollContactsWithBody(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EnrollContacts(ctx context.Context, sequenceId string, body EnrollContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnenrollContact request
+	UnenrollContact(ctx context.Context, sequenceId string, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSequenceEnrollments request
+	ListSequenceEnrollments(ctx context.Context, sequenceId string, params *ListSequenceEnrollmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PauseSequence request
+	PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadBlueskyMedia request
 	DownloadBlueskyMedia(ctx context.Context, params *DownloadBlueskyMediaParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -9511,6 +10271,258 @@ func (c *Client) DeleteApiKey(ctx context.Context, keyId string, reqEditors ...R
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListBroadcasts(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListBroadcastsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateBroadcastWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateBroadcastRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateBroadcast(ctx context.Context, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateBroadcastRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CancelBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListBroadcastRecipients(ctx context.Context, broadcastId string, params *ListBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListBroadcastRecipientsRequest(c.Server, broadcastId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddBroadcastRecipientsWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddBroadcastRecipientsRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddBroadcastRecipients(ctx context.Context, broadcastId string, body AddBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddBroadcastRecipientsRequest(c.Server, broadcastId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ScheduleBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewScheduleBroadcastRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ScheduleBroadcast(ctx context.Context, broadcastId string, body ScheduleBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewScheduleBroadcastRequest(c.Server, broadcastId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendBroadcastRequest(c.Server, broadcastId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCommentAutomations(ctx context.Context, params *ListCommentAutomationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCommentAutomationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCommentAutomationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCommentAutomationRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCommentAutomation(ctx context.Context, body CreateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCommentAutomationRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteCommentAutomation(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteCommentAutomationRequest(c.Server, automationId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetCommentAutomation(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCommentAutomationRequest(c.Server, automationId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCommentAutomationWithBody(ctx context.Context, automationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCommentAutomationRequestWithBody(c.Server, automationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCommentAutomation(ctx context.Context, automationId string, body UpdateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCommentAutomationRequest(c.Server, automationId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCommentAutomationLogs(ctx context.Context, automationId string, params *ListCommentAutomationLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCommentAutomationLogsRequest(c.Server, automationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ConnectBlueskyCredentialsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewConnectBlueskyCredentialsRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -9837,6 +10849,234 @@ func (c *Client) HandleOAuthCallback(ctx context.Context, platform string, body 
 
 func (c *Client) ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListConnectionLogsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListContacts(ctx context.Context, params *ListContactsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListContactsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateContactWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateContact(ctx context.Context, body CreateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateContactRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkCreateContactsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkCreateContactsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkCreateContacts(ctx context.Context, body BulkCreateContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkCreateContactsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteContactRequest(c.Server, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetContact(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContactRequest(c.Server, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateContactWithBody(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateContactRequestWithBody(c.Server, contactId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateContact(ctx context.Context, contactId string, body UpdateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateContactRequest(c.Server, contactId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetContactChannels(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContactChannelsRequest(c.Server, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ClearContactFieldValue(ctx context.Context, contactId string, slug string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewClearContactFieldValueRequest(c.Server, contactId, slug)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetContactFieldValueWithBody(ctx context.Context, contactId string, slug string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetContactFieldValueRequestWithBody(c.Server, contactId, slug, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetContactFieldValue(ctx context.Context, contactId string, slug string, body SetContactFieldValueJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetContactFieldValueRequest(c.Server, contactId, slug, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCustomFields(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCustomFieldsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCustomFieldWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomFieldRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCustomField(ctx context.Context, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomFieldRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteCustomField(ctx context.Context, fieldId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteCustomFieldRequest(c.Server, fieldId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCustomFieldWithBody(ctx context.Context, fieldId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomFieldRequestWithBody(c.Server, fieldId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCustomField(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomFieldRequest(c.Server, fieldId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -10569,6 +11809,150 @@ func (c *Client) GetRedditFeed(ctx context.Context, params *GetRedditFeedParams,
 
 func (c *Client) SearchReddit(ctx context.Context, params *SearchRedditParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchRedditRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListSequences(ctx context.Context, params *ListSequencesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSequencesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSequenceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSequenceRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSequence(ctx context.Context, body CreateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSequenceRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ActivateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewActivateSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EnrollContactsWithBody(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnrollContactsRequestWithBody(c.Server, sequenceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EnrollContacts(ctx context.Context, sequenceId string, body EnrollContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnrollContactsRequest(c.Server, sequenceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnenrollContact(ctx context.Context, sequenceId string, contactId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnenrollContactRequest(c.Server, sequenceId, contactId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListSequenceEnrollments(ctx context.Context, sequenceId string, params *ListSequenceEnrollmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSequenceEnrollmentsRequest(c.Server, sequenceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPauseSequenceRequest(c.Server, sequenceId)
 	if err != nil {
 		return nil, err
 	}
@@ -15338,6 +16722,795 @@ func NewDeleteApiKeyRequest(server string, keyId string) (*http.Request, error) 
 	return req, nil
 }
 
+// NewListBroadcastsRequest generates requests for ListBroadcasts
+func NewListBroadcastsRequest(server string, params *ListBroadcastsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateBroadcastRequest calls the generic CreateBroadcast builder with application/json body
+func NewCreateBroadcastRequest(server string, body CreateBroadcastJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateBroadcastRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateBroadcastRequestWithBody generates requests for CreateBroadcast with any type of body
+func NewCreateBroadcastRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteBroadcastRequest generates requests for DeleteBroadcast
+func NewDeleteBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetBroadcastRequest generates requests for GetBroadcast
+func NewGetBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateBroadcastRequest generates requests for UpdateBroadcast
+func NewUpdateBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCancelBroadcastRequest generates requests for CancelBroadcast
+func NewCancelBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/cancel", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListBroadcastRecipientsRequest generates requests for ListBroadcastRecipients
+func NewListBroadcastRecipientsRequest(server string, broadcastId string, params *ListBroadcastRecipientsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/recipients", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddBroadcastRecipientsRequest calls the generic AddBroadcastRecipients builder with application/json body
+func NewAddBroadcastRecipientsRequest(server string, broadcastId string, body AddBroadcastRecipientsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddBroadcastRecipientsRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewAddBroadcastRecipientsRequestWithBody generates requests for AddBroadcastRecipients with any type of body
+func NewAddBroadcastRecipientsRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/recipients", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewScheduleBroadcastRequest calls the generic ScheduleBroadcast builder with application/json body
+func NewScheduleBroadcastRequest(server string, broadcastId string, body ScheduleBroadcastJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewScheduleBroadcastRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewScheduleBroadcastRequestWithBody generates requests for ScheduleBroadcast with any type of body
+func NewScheduleBroadcastRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/schedule", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendBroadcastRequest generates requests for SendBroadcast
+func NewSendBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/send", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListCommentAutomationsRequest generates requests for ListCommentAutomations
+func NewListCommentAutomationsRequest(server string, params *ListCommentAutomationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateCommentAutomationRequest calls the generic CreateCommentAutomation builder with application/json body
+func NewCreateCommentAutomationRequest(server string, body CreateCommentAutomationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCommentAutomationRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateCommentAutomationRequestWithBody generates requests for CreateCommentAutomation with any type of body
+func NewCreateCommentAutomationRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteCommentAutomationRequest generates requests for DeleteCommentAutomation
+func NewDeleteCommentAutomationRequest(server string, automationId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationId", automationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetCommentAutomationRequest generates requests for GetCommentAutomation
+func NewGetCommentAutomationRequest(server string, automationId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationId", automationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateCommentAutomationRequest calls the generic UpdateCommentAutomation builder with application/json body
+func NewUpdateCommentAutomationRequest(server string, automationId string, body UpdateCommentAutomationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateCommentAutomationRequestWithBody(server, automationId, "application/json", bodyReader)
+}
+
+// NewUpdateCommentAutomationRequestWithBody generates requests for UpdateCommentAutomation with any type of body
+func NewUpdateCommentAutomationRequestWithBody(server string, automationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationId", automationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListCommentAutomationLogsRequest generates requests for ListCommentAutomationLogs
+func NewListCommentAutomationLogsRequest(server string, automationId string, params *ListCommentAutomationLogsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "automationId", automationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/comment-automations/%s/logs", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewConnectBlueskyCredentialsRequest calls the generic ConnectBlueskyCredentials builder with application/json body
 func NewConnectBlueskyCredentialsRequest(server string, body ConnectBlueskyCredentialsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -16375,6 +18548,637 @@ func NewListConnectionLogsRequest(server string, params *ListConnectionLogsParam
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewListContactsRequest generates requests for ListContacts
+func NewListContactsRequest(server string, params *ListContactsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Tag != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tag", *params.Tag, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IsSubscribed != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "isSubscribed", *params.IsSubscribed, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateContactRequest calls the generic CreateContact builder with application/json body
+func NewCreateContactRequest(server string, body CreateContactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateContactRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateContactRequestWithBody generates requests for CreateContact with any type of body
+func NewCreateContactRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBulkCreateContactsRequest calls the generic BulkCreateContacts builder with application/json body
+func NewBulkCreateContactsRequest(server string, body BulkCreateContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkCreateContactsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBulkCreateContactsRequestWithBody generates requests for BulkCreateContacts with any type of body
+func NewBulkCreateContactsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteContactRequest generates requests for DeleteContact
+func NewDeleteContactRequest(server string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetContactRequest generates requests for GetContact
+func NewGetContactRequest(server string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateContactRequest calls the generic UpdateContact builder with application/json body
+func NewUpdateContactRequest(server string, contactId string, body UpdateContactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateContactRequestWithBody(server, contactId, "application/json", bodyReader)
+}
+
+// NewUpdateContactRequestWithBody generates requests for UpdateContact with any type of body
+func NewUpdateContactRequestWithBody(server string, contactId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetContactChannelsRequest generates requests for GetContactChannels
+func NewGetContactChannelsRequest(server string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/channels", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewClearContactFieldValueRequest generates requests for ClearContactFieldValue
+func NewClearContactFieldValueRequest(server string, contactId string, slug string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "slug", slug, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/fields/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetContactFieldValueRequest calls the generic SetContactFieldValue builder with application/json body
+func NewSetContactFieldValueRequest(server string, contactId string, slug string, body SetContactFieldValueJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetContactFieldValueRequestWithBody(server, contactId, slug, "application/json", bodyReader)
+}
+
+// NewSetContactFieldValueRequestWithBody generates requests for SetContactFieldValue with any type of body
+func NewSetContactFieldValueRequestWithBody(server string, contactId string, slug string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "slug", slug, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/fields/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListCustomFieldsRequest generates requests for ListCustomFields
+func NewListCustomFieldsRequest(server string, params *ListCustomFieldsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateCustomFieldRequest calls the generic CreateCustomField builder with application/json body
+func NewCreateCustomFieldRequest(server string, body CreateCustomFieldJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCustomFieldRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateCustomFieldRequestWithBody generates requests for CreateCustomField with any type of body
+func NewCreateCustomFieldRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteCustomFieldRequest generates requests for DeleteCustomField
+func NewDeleteCustomFieldRequest(server string, fieldId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "fieldId", fieldId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateCustomFieldRequest calls the generic UpdateCustomField builder with application/json body
+func NewUpdateCustomFieldRequest(server string, fieldId string, body UpdateCustomFieldJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateCustomFieldRequestWithBody(server, fieldId, "application/json", bodyReader)
+}
+
+// NewUpdateCustomFieldRequestWithBody generates requests for UpdateCustomField with any type of body
+func NewUpdateCustomFieldRequestWithBody(server string, fieldId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "fieldId", fieldId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/custom-fields/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -19351,6 +22155,485 @@ func NewSearchRedditRequest(server string, params *SearchRedditParams) (*http.Re
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListSequencesRequest generates requests for ListSequences
+func NewListSequencesRequest(server string, params *ListSequencesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSequenceRequest calls the generic CreateSequence builder with application/json body
+func NewCreateSequenceRequest(server string, body CreateSequenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSequenceRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateSequenceRequestWithBody generates requests for CreateSequence with any type of body
+func NewCreateSequenceRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSequenceRequest generates requests for DeleteSequence
+func NewDeleteSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSequenceRequest generates requests for GetSequence
+func NewGetSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateSequenceRequest generates requests for UpdateSequence
+func NewUpdateSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewActivateSequenceRequest generates requests for ActivateSequence
+func NewActivateSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s/activate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewEnrollContactsRequest calls the generic EnrollContacts builder with application/json body
+func NewEnrollContactsRequest(server string, sequenceId string, body EnrollContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEnrollContactsRequestWithBody(server, sequenceId, "application/json", bodyReader)
+}
+
+// NewEnrollContactsRequestWithBody generates requests for EnrollContacts with any type of body
+func NewEnrollContactsRequestWithBody(server string, sequenceId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s/enroll", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnenrollContactRequest generates requests for UnenrollContact
+func NewUnenrollContactRequest(server string, sequenceId string, contactId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s/enroll/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListSequenceEnrollmentsRequest generates requests for ListSequenceEnrollments
+func NewListSequenceEnrollmentsRequest(server string, sequenceId string, params *ListSequenceEnrollmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s/enrollments", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPauseSequenceRequest generates requests for PauseSequence
+func NewPauseSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sequenceId", sequenceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sequences/%s/pause", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -22679,6 +25962,64 @@ type ClientWithResponsesInterface interface {
 	// DeleteApiKeyWithResponse request
 	DeleteApiKeyWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*DeleteApiKeyResponse, error)
 
+	// ListBroadcastsWithResponse request
+	ListBroadcastsWithResponse(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*ListBroadcastsResponse, error)
+
+	// CreateBroadcastWithBodyWithResponse request with any body
+	CreateBroadcastWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateBroadcastResponse, error)
+
+	CreateBroadcastWithResponse(ctx context.Context, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateBroadcastResponse, error)
+
+	// DeleteBroadcastWithResponse request
+	DeleteBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*DeleteBroadcastResponse, error)
+
+	// GetBroadcastWithResponse request
+	GetBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*GetBroadcastResponse, error)
+
+	// UpdateBroadcastWithResponse request
+	UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error)
+
+	// CancelBroadcastWithResponse request
+	CancelBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*CancelBroadcastResponse, error)
+
+	// ListBroadcastRecipientsWithResponse request
+	ListBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, params *ListBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*ListBroadcastRecipientsResponse, error)
+
+	// AddBroadcastRecipientsWithBodyWithResponse request with any body
+	AddBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddBroadcastRecipientsResponse, error)
+
+	AddBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body AddBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddBroadcastRecipientsResponse, error)
+
+	// ScheduleBroadcastWithBodyWithResponse request with any body
+	ScheduleBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ScheduleBroadcastResponse, error)
+
+	ScheduleBroadcastWithResponse(ctx context.Context, broadcastId string, body ScheduleBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*ScheduleBroadcastResponse, error)
+
+	// SendBroadcastWithResponse request
+	SendBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*SendBroadcastResponse, error)
+
+	// ListCommentAutomationsWithResponse request
+	ListCommentAutomationsWithResponse(ctx context.Context, params *ListCommentAutomationsParams, reqEditors ...RequestEditorFn) (*ListCommentAutomationsResponse, error)
+
+	// CreateCommentAutomationWithBodyWithResponse request with any body
+	CreateCommentAutomationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCommentAutomationResponse, error)
+
+	CreateCommentAutomationWithResponse(ctx context.Context, body CreateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCommentAutomationResponse, error)
+
+	// DeleteCommentAutomationWithResponse request
+	DeleteCommentAutomationWithResponse(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*DeleteCommentAutomationResponse, error)
+
+	// GetCommentAutomationWithResponse request
+	GetCommentAutomationWithResponse(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*GetCommentAutomationResponse, error)
+
+	// UpdateCommentAutomationWithBodyWithResponse request with any body
+	UpdateCommentAutomationWithBodyWithResponse(ctx context.Context, automationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCommentAutomationResponse, error)
+
+	UpdateCommentAutomationWithResponse(ctx context.Context, automationId string, body UpdateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCommentAutomationResponse, error)
+
+	// ListCommentAutomationLogsWithResponse request
+	ListCommentAutomationLogsWithResponse(ctx context.Context, automationId string, params *ListCommentAutomationLogsParams, reqEditors ...RequestEditorFn) (*ListCommentAutomationLogsResponse, error)
+
 	// ConnectBlueskyCredentialsWithBodyWithResponse request with any body
 	ConnectBlueskyCredentialsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConnectBlueskyCredentialsResponse, error)
 
@@ -22753,6 +26094,57 @@ type ClientWithResponsesInterface interface {
 
 	// ListConnectionLogsWithResponse request
 	ListConnectionLogsWithResponse(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*ListConnectionLogsResponse, error)
+
+	// ListContactsWithResponse request
+	ListContactsWithResponse(ctx context.Context, params *ListContactsParams, reqEditors ...RequestEditorFn) (*ListContactsResponse, error)
+
+	// CreateContactWithBodyWithResponse request with any body
+	CreateContactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactResponse, error)
+
+	CreateContactWithResponse(ctx context.Context, body CreateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactResponse, error)
+
+	// BulkCreateContactsWithBodyWithResponse request with any body
+	BulkCreateContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkCreateContactsResponse, error)
+
+	BulkCreateContactsWithResponse(ctx context.Context, body BulkCreateContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkCreateContactsResponse, error)
+
+	// DeleteContactWithResponse request
+	DeleteContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*DeleteContactResponse, error)
+
+	// GetContactWithResponse request
+	GetContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetContactResponse, error)
+
+	// UpdateContactWithBodyWithResponse request with any body
+	UpdateContactWithBodyWithResponse(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateContactResponse, error)
+
+	UpdateContactWithResponse(ctx context.Context, contactId string, body UpdateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateContactResponse, error)
+
+	// GetContactChannelsWithResponse request
+	GetContactChannelsWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetContactChannelsResponse, error)
+
+	// ClearContactFieldValueWithResponse request
+	ClearContactFieldValueWithResponse(ctx context.Context, contactId string, slug string, reqEditors ...RequestEditorFn) (*ClearContactFieldValueResponse, error)
+
+	// SetContactFieldValueWithBodyWithResponse request with any body
+	SetContactFieldValueWithBodyWithResponse(ctx context.Context, contactId string, slug string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetContactFieldValueResponse, error)
+
+	SetContactFieldValueWithResponse(ctx context.Context, contactId string, slug string, body SetContactFieldValueJSONRequestBody, reqEditors ...RequestEditorFn) (*SetContactFieldValueResponse, error)
+
+	// ListCustomFieldsWithResponse request
+	ListCustomFieldsWithResponse(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*ListCustomFieldsResponse, error)
+
+	// CreateCustomFieldWithBodyWithResponse request with any body
+	CreateCustomFieldWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error)
+
+	CreateCustomFieldWithResponse(ctx context.Context, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error)
+
+	// DeleteCustomFieldWithResponse request
+	DeleteCustomFieldWithResponse(ctx context.Context, fieldId string, reqEditors ...RequestEditorFn) (*DeleteCustomFieldResponse, error)
+
+	// UpdateCustomFieldWithBodyWithResponse request with any body
+	UpdateCustomFieldWithBodyWithResponse(ctx context.Context, fieldId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error)
+
+	UpdateCustomFieldWithResponse(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error)
 
 	// ListInboxCommentsWithResponse request
 	ListInboxCommentsWithResponse(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*ListInboxCommentsResponse, error)
@@ -22918,6 +26310,40 @@ type ClientWithResponsesInterface interface {
 
 	// SearchRedditWithResponse request
 	SearchRedditWithResponse(ctx context.Context, params *SearchRedditParams, reqEditors ...RequestEditorFn) (*SearchRedditResponse, error)
+
+	// ListSequencesWithResponse request
+	ListSequencesWithResponse(ctx context.Context, params *ListSequencesParams, reqEditors ...RequestEditorFn) (*ListSequencesResponse, error)
+
+	// CreateSequenceWithBodyWithResponse request with any body
+	CreateSequenceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSequenceResponse, error)
+
+	CreateSequenceWithResponse(ctx context.Context, body CreateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSequenceResponse, error)
+
+	// DeleteSequenceWithResponse request
+	DeleteSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*DeleteSequenceResponse, error)
+
+	// GetSequenceWithResponse request
+	GetSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*GetSequenceResponse, error)
+
+	// UpdateSequenceWithResponse request
+	UpdateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error)
+
+	// ActivateSequenceWithResponse request
+	ActivateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*ActivateSequenceResponse, error)
+
+	// EnrollContactsWithBodyWithResponse request with any body
+	EnrollContactsWithBodyWithResponse(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnrollContactsResponse, error)
+
+	EnrollContactsWithResponse(ctx context.Context, sequenceId string, body EnrollContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*EnrollContactsResponse, error)
+
+	// UnenrollContactWithResponse request
+	UnenrollContactWithResponse(ctx context.Context, sequenceId string, contactId string, reqEditors ...RequestEditorFn) (*UnenrollContactResponse, error)
+
+	// ListSequenceEnrollmentsWithResponse request
+	ListSequenceEnrollmentsWithResponse(ctx context.Context, sequenceId string, params *ListSequenceEnrollmentsParams, reqEditors ...RequestEditorFn) (*ListSequenceEnrollmentsResponse, error)
+
+	// PauseSequenceWithResponse request
+	PauseSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*PauseSequenceResponse, error)
 
 	// DownloadBlueskyMediaWithResponse request
 	DownloadBlueskyMediaWithResponse(ctx context.Context, params *DownloadBlueskyMediaParams, reqEditors ...RequestEditorFn) (*DownloadBlueskyMediaResponse, error)
@@ -25391,6 +28817,395 @@ func (r DeleteApiKeyResponse) StatusCode() int {
 	return 0
 }
 
+type ListBroadcastsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListBroadcastsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListBroadcastsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CancelBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListBroadcastRecipientsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListBroadcastRecipientsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListBroadcastRecipientsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddBroadcastRecipientsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r AddBroadcastRecipientsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddBroadcastRecipientsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ScheduleBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ScheduleBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ScheduleBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendBroadcastResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r SendBroadcastResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendBroadcastResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCommentAutomationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Automations *[]struct {
+			AccountId      *string                                        `json:"accountId,omitempty"`
+			CommentReply   *string                                        `json:"commentReply,omitempty"`
+			CreatedAt      *time.Time                                     `json:"createdAt,omitempty"`
+			DmMessage      *string                                        `json:"dmMessage,omitempty"`
+			Id             *string                                        `json:"id,omitempty"`
+			IsActive       *bool                                          `json:"isActive,omitempty"`
+			Keywords       *[]string                                      `json:"keywords,omitempty"`
+			MatchMode      *ListCommentAutomations200AutomationsMatchMode `json:"matchMode,omitempty"`
+			Name           *string                                        `json:"name,omitempty"`
+			Platform       *ListCommentAutomations200AutomationsPlatform  `json:"platform,omitempty"`
+			PlatformPostId *string                                        `json:"platformPostId,omitempty"`
+			PostTitle      *string                                        `json:"postTitle,omitempty"`
+			Stats          *struct {
+				DmsFailed      *int `json:"dmsFailed,omitempty"`
+				DmsSent        *int `json:"dmsSent,omitempty"`
+				Triggered      *int `json:"triggered,omitempty"`
+				UniqueContacts *int `json:"uniqueContacts,omitempty"`
+			} `json:"stats,omitempty"`
+		} `json:"automations,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type ListCommentAutomations200AutomationsMatchMode string
+type ListCommentAutomations200AutomationsPlatform string
+
+// Status returns HTTPResponse.Status
+func (r ListCommentAutomationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCommentAutomationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateCommentAutomationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCommentAutomationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCommentAutomationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteCommentAutomationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteCommentAutomationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteCommentAutomationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCommentAutomationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCommentAutomationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCommentAutomationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateCommentAutomationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateCommentAutomationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateCommentAutomationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCommentAutomationLogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCommentAutomationLogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCommentAutomationLogsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ConnectBlueskyCredentialsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -26132,6 +29947,300 @@ func (r ListConnectionLogsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListConnectionLogsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkCreateContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkCreateContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkCreateContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetContactChannelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContactChannelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContactChannelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ClearContactFieldValueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ClearContactFieldValueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ClearContactFieldValueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetContactFieldValueResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r SetContactFieldValueResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetContactFieldValueResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCustomFieldsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCustomFieldsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCustomFieldsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteCustomFieldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateCustomFieldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateCustomFieldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateCustomFieldResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -27650,6 +31759,234 @@ func (r SearchRedditResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SearchRedditResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListSequencesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSequencesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSequencesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSequenceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSequenceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSequenceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSequenceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ActivateSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ActivateSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ActivateSequenceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EnrollContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r EnrollContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnrollContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnenrollContactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UnenrollContactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnenrollContactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListSequenceEnrollmentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSequenceEnrollmentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSequenceEnrollmentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PauseSequenceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r PauseSequenceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PauseSequenceResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -30464,6 +34801,190 @@ func (c *ClientWithResponses) DeleteApiKeyWithResponse(ctx context.Context, keyI
 	return ParseDeleteApiKeyResponse(rsp)
 }
 
+// ListBroadcastsWithResponse request returning *ListBroadcastsResponse
+func (c *ClientWithResponses) ListBroadcastsWithResponse(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*ListBroadcastsResponse, error) {
+	rsp, err := c.ListBroadcasts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListBroadcastsResponse(rsp)
+}
+
+// CreateBroadcastWithBodyWithResponse request with arbitrary body returning *CreateBroadcastResponse
+func (c *ClientWithResponses) CreateBroadcastWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateBroadcastResponse, error) {
+	rsp, err := c.CreateBroadcastWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateBroadcastResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateBroadcastWithResponse(ctx context.Context, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateBroadcastResponse, error) {
+	rsp, err := c.CreateBroadcast(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateBroadcastResponse(rsp)
+}
+
+// DeleteBroadcastWithResponse request returning *DeleteBroadcastResponse
+func (c *ClientWithResponses) DeleteBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*DeleteBroadcastResponse, error) {
+	rsp, err := c.DeleteBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteBroadcastResponse(rsp)
+}
+
+// GetBroadcastWithResponse request returning *GetBroadcastResponse
+func (c *ClientWithResponses) GetBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*GetBroadcastResponse, error) {
+	rsp, err := c.GetBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetBroadcastResponse(rsp)
+}
+
+// UpdateBroadcastWithResponse request returning *UpdateBroadcastResponse
+func (c *ClientWithResponses) UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error) {
+	rsp, err := c.UpdateBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateBroadcastResponse(rsp)
+}
+
+// CancelBroadcastWithResponse request returning *CancelBroadcastResponse
+func (c *ClientWithResponses) CancelBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*CancelBroadcastResponse, error) {
+	rsp, err := c.CancelBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelBroadcastResponse(rsp)
+}
+
+// ListBroadcastRecipientsWithResponse request returning *ListBroadcastRecipientsResponse
+func (c *ClientWithResponses) ListBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, params *ListBroadcastRecipientsParams, reqEditors ...RequestEditorFn) (*ListBroadcastRecipientsResponse, error) {
+	rsp, err := c.ListBroadcastRecipients(ctx, broadcastId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListBroadcastRecipientsResponse(rsp)
+}
+
+// AddBroadcastRecipientsWithBodyWithResponse request with arbitrary body returning *AddBroadcastRecipientsResponse
+func (c *ClientWithResponses) AddBroadcastRecipientsWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddBroadcastRecipientsResponse, error) {
+	rsp, err := c.AddBroadcastRecipientsWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddBroadcastRecipientsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddBroadcastRecipientsWithResponse(ctx context.Context, broadcastId string, body AddBroadcastRecipientsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddBroadcastRecipientsResponse, error) {
+	rsp, err := c.AddBroadcastRecipients(ctx, broadcastId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddBroadcastRecipientsResponse(rsp)
+}
+
+// ScheduleBroadcastWithBodyWithResponse request with arbitrary body returning *ScheduleBroadcastResponse
+func (c *ClientWithResponses) ScheduleBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ScheduleBroadcastResponse, error) {
+	rsp, err := c.ScheduleBroadcastWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseScheduleBroadcastResponse(rsp)
+}
+
+func (c *ClientWithResponses) ScheduleBroadcastWithResponse(ctx context.Context, broadcastId string, body ScheduleBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*ScheduleBroadcastResponse, error) {
+	rsp, err := c.ScheduleBroadcast(ctx, broadcastId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseScheduleBroadcastResponse(rsp)
+}
+
+// SendBroadcastWithResponse request returning *SendBroadcastResponse
+func (c *ClientWithResponses) SendBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*SendBroadcastResponse, error) {
+	rsp, err := c.SendBroadcast(ctx, broadcastId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendBroadcastResponse(rsp)
+}
+
+// ListCommentAutomationsWithResponse request returning *ListCommentAutomationsResponse
+func (c *ClientWithResponses) ListCommentAutomationsWithResponse(ctx context.Context, params *ListCommentAutomationsParams, reqEditors ...RequestEditorFn) (*ListCommentAutomationsResponse, error) {
+	rsp, err := c.ListCommentAutomations(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCommentAutomationsResponse(rsp)
+}
+
+// CreateCommentAutomationWithBodyWithResponse request with arbitrary body returning *CreateCommentAutomationResponse
+func (c *ClientWithResponses) CreateCommentAutomationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCommentAutomationResponse, error) {
+	rsp, err := c.CreateCommentAutomationWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCommentAutomationResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateCommentAutomationWithResponse(ctx context.Context, body CreateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCommentAutomationResponse, error) {
+	rsp, err := c.CreateCommentAutomation(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCommentAutomationResponse(rsp)
+}
+
+// DeleteCommentAutomationWithResponse request returning *DeleteCommentAutomationResponse
+func (c *ClientWithResponses) DeleteCommentAutomationWithResponse(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*DeleteCommentAutomationResponse, error) {
+	rsp, err := c.DeleteCommentAutomation(ctx, automationId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteCommentAutomationResponse(rsp)
+}
+
+// GetCommentAutomationWithResponse request returning *GetCommentAutomationResponse
+func (c *ClientWithResponses) GetCommentAutomationWithResponse(ctx context.Context, automationId string, reqEditors ...RequestEditorFn) (*GetCommentAutomationResponse, error) {
+	rsp, err := c.GetCommentAutomation(ctx, automationId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCommentAutomationResponse(rsp)
+}
+
+// UpdateCommentAutomationWithBodyWithResponse request with arbitrary body returning *UpdateCommentAutomationResponse
+func (c *ClientWithResponses) UpdateCommentAutomationWithBodyWithResponse(ctx context.Context, automationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCommentAutomationResponse, error) {
+	rsp, err := c.UpdateCommentAutomationWithBody(ctx, automationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCommentAutomationResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateCommentAutomationWithResponse(ctx context.Context, automationId string, body UpdateCommentAutomationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCommentAutomationResponse, error) {
+	rsp, err := c.UpdateCommentAutomation(ctx, automationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCommentAutomationResponse(rsp)
+}
+
+// ListCommentAutomationLogsWithResponse request returning *ListCommentAutomationLogsResponse
+func (c *ClientWithResponses) ListCommentAutomationLogsWithResponse(ctx context.Context, automationId string, params *ListCommentAutomationLogsParams, reqEditors ...RequestEditorFn) (*ListCommentAutomationLogsResponse, error) {
+	rsp, err := c.ListCommentAutomationLogs(ctx, automationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCommentAutomationLogsResponse(rsp)
+}
+
 // ConnectBlueskyCredentialsWithBodyWithResponse request with arbitrary body returning *ConnectBlueskyCredentialsResponse
 func (c *ClientWithResponses) ConnectBlueskyCredentialsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConnectBlueskyCredentialsResponse, error) {
 	rsp, err := c.ConnectBlueskyCredentialsWithBody(ctx, contentType, body, reqEditors...)
@@ -30705,6 +35226,171 @@ func (c *ClientWithResponses) ListConnectionLogsWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseListConnectionLogsResponse(rsp)
+}
+
+// ListContactsWithResponse request returning *ListContactsResponse
+func (c *ClientWithResponses) ListContactsWithResponse(ctx context.Context, params *ListContactsParams, reqEditors ...RequestEditorFn) (*ListContactsResponse, error) {
+	rsp, err := c.ListContacts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListContactsResponse(rsp)
+}
+
+// CreateContactWithBodyWithResponse request with arbitrary body returning *CreateContactResponse
+func (c *ClientWithResponses) CreateContactWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateContactResponse, error) {
+	rsp, err := c.CreateContactWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateContactWithResponse(ctx context.Context, body CreateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateContactResponse, error) {
+	rsp, err := c.CreateContact(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateContactResponse(rsp)
+}
+
+// BulkCreateContactsWithBodyWithResponse request with arbitrary body returning *BulkCreateContactsResponse
+func (c *ClientWithResponses) BulkCreateContactsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkCreateContactsResponse, error) {
+	rsp, err := c.BulkCreateContactsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkCreateContactsResponse(rsp)
+}
+
+func (c *ClientWithResponses) BulkCreateContactsWithResponse(ctx context.Context, body BulkCreateContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkCreateContactsResponse, error) {
+	rsp, err := c.BulkCreateContacts(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkCreateContactsResponse(rsp)
+}
+
+// DeleteContactWithResponse request returning *DeleteContactResponse
+func (c *ClientWithResponses) DeleteContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*DeleteContactResponse, error) {
+	rsp, err := c.DeleteContact(ctx, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteContactResponse(rsp)
+}
+
+// GetContactWithResponse request returning *GetContactResponse
+func (c *ClientWithResponses) GetContactWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetContactResponse, error) {
+	rsp, err := c.GetContact(ctx, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContactResponse(rsp)
+}
+
+// UpdateContactWithBodyWithResponse request with arbitrary body returning *UpdateContactResponse
+func (c *ClientWithResponses) UpdateContactWithBodyWithResponse(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateContactResponse, error) {
+	rsp, err := c.UpdateContactWithBody(ctx, contactId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateContactResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateContactWithResponse(ctx context.Context, contactId string, body UpdateContactJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateContactResponse, error) {
+	rsp, err := c.UpdateContact(ctx, contactId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateContactResponse(rsp)
+}
+
+// GetContactChannelsWithResponse request returning *GetContactChannelsResponse
+func (c *ClientWithResponses) GetContactChannelsWithResponse(ctx context.Context, contactId string, reqEditors ...RequestEditorFn) (*GetContactChannelsResponse, error) {
+	rsp, err := c.GetContactChannels(ctx, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContactChannelsResponse(rsp)
+}
+
+// ClearContactFieldValueWithResponse request returning *ClearContactFieldValueResponse
+func (c *ClientWithResponses) ClearContactFieldValueWithResponse(ctx context.Context, contactId string, slug string, reqEditors ...RequestEditorFn) (*ClearContactFieldValueResponse, error) {
+	rsp, err := c.ClearContactFieldValue(ctx, contactId, slug, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseClearContactFieldValueResponse(rsp)
+}
+
+// SetContactFieldValueWithBodyWithResponse request with arbitrary body returning *SetContactFieldValueResponse
+func (c *ClientWithResponses) SetContactFieldValueWithBodyWithResponse(ctx context.Context, contactId string, slug string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetContactFieldValueResponse, error) {
+	rsp, err := c.SetContactFieldValueWithBody(ctx, contactId, slug, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetContactFieldValueResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetContactFieldValueWithResponse(ctx context.Context, contactId string, slug string, body SetContactFieldValueJSONRequestBody, reqEditors ...RequestEditorFn) (*SetContactFieldValueResponse, error) {
+	rsp, err := c.SetContactFieldValue(ctx, contactId, slug, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetContactFieldValueResponse(rsp)
+}
+
+// ListCustomFieldsWithResponse request returning *ListCustomFieldsResponse
+func (c *ClientWithResponses) ListCustomFieldsWithResponse(ctx context.Context, params *ListCustomFieldsParams, reqEditors ...RequestEditorFn) (*ListCustomFieldsResponse, error) {
+	rsp, err := c.ListCustomFields(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCustomFieldsResponse(rsp)
+}
+
+// CreateCustomFieldWithBodyWithResponse request with arbitrary body returning *CreateCustomFieldResponse
+func (c *ClientWithResponses) CreateCustomFieldWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error) {
+	rsp, err := c.CreateCustomFieldWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomFieldResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateCustomFieldWithResponse(ctx context.Context, body CreateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomFieldResponse, error) {
+	rsp, err := c.CreateCustomField(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomFieldResponse(rsp)
+}
+
+// DeleteCustomFieldWithResponse request returning *DeleteCustomFieldResponse
+func (c *ClientWithResponses) DeleteCustomFieldWithResponse(ctx context.Context, fieldId string, reqEditors ...RequestEditorFn) (*DeleteCustomFieldResponse, error) {
+	rsp, err := c.DeleteCustomField(ctx, fieldId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteCustomFieldResponse(rsp)
+}
+
+// UpdateCustomFieldWithBodyWithResponse request with arbitrary body returning *UpdateCustomFieldResponse
+func (c *ClientWithResponses) UpdateCustomFieldWithBodyWithResponse(ctx context.Context, fieldId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error) {
+	rsp, err := c.UpdateCustomFieldWithBody(ctx, fieldId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomFieldResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateCustomFieldWithResponse(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error) {
+	rsp, err := c.UpdateCustomField(ctx, fieldId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomFieldResponse(rsp)
 }
 
 // ListInboxCommentsWithResponse request returning *ListInboxCommentsResponse
@@ -31236,6 +35922,112 @@ func (c *ClientWithResponses) SearchRedditWithResponse(ctx context.Context, para
 		return nil, err
 	}
 	return ParseSearchRedditResponse(rsp)
+}
+
+// ListSequencesWithResponse request returning *ListSequencesResponse
+func (c *ClientWithResponses) ListSequencesWithResponse(ctx context.Context, params *ListSequencesParams, reqEditors ...RequestEditorFn) (*ListSequencesResponse, error) {
+	rsp, err := c.ListSequences(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSequencesResponse(rsp)
+}
+
+// CreateSequenceWithBodyWithResponse request with arbitrary body returning *CreateSequenceResponse
+func (c *ClientWithResponses) CreateSequenceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSequenceResponse, error) {
+	rsp, err := c.CreateSequenceWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSequenceResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateSequenceWithResponse(ctx context.Context, body CreateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSequenceResponse, error) {
+	rsp, err := c.CreateSequence(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSequenceResponse(rsp)
+}
+
+// DeleteSequenceWithResponse request returning *DeleteSequenceResponse
+func (c *ClientWithResponses) DeleteSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*DeleteSequenceResponse, error) {
+	rsp, err := c.DeleteSequence(ctx, sequenceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSequenceResponse(rsp)
+}
+
+// GetSequenceWithResponse request returning *GetSequenceResponse
+func (c *ClientWithResponses) GetSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*GetSequenceResponse, error) {
+	rsp, err := c.GetSequence(ctx, sequenceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSequenceResponse(rsp)
+}
+
+// UpdateSequenceWithResponse request returning *UpdateSequenceResponse
+func (c *ClientWithResponses) UpdateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error) {
+	rsp, err := c.UpdateSequence(ctx, sequenceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSequenceResponse(rsp)
+}
+
+// ActivateSequenceWithResponse request returning *ActivateSequenceResponse
+func (c *ClientWithResponses) ActivateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*ActivateSequenceResponse, error) {
+	rsp, err := c.ActivateSequence(ctx, sequenceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseActivateSequenceResponse(rsp)
+}
+
+// EnrollContactsWithBodyWithResponse request with arbitrary body returning *EnrollContactsResponse
+func (c *ClientWithResponses) EnrollContactsWithBodyWithResponse(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnrollContactsResponse, error) {
+	rsp, err := c.EnrollContactsWithBody(ctx, sequenceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnrollContactsResponse(rsp)
+}
+
+func (c *ClientWithResponses) EnrollContactsWithResponse(ctx context.Context, sequenceId string, body EnrollContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*EnrollContactsResponse, error) {
+	rsp, err := c.EnrollContacts(ctx, sequenceId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnrollContactsResponse(rsp)
+}
+
+// UnenrollContactWithResponse request returning *UnenrollContactResponse
+func (c *ClientWithResponses) UnenrollContactWithResponse(ctx context.Context, sequenceId string, contactId string, reqEditors ...RequestEditorFn) (*UnenrollContactResponse, error) {
+	rsp, err := c.UnenrollContact(ctx, sequenceId, contactId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnenrollContactResponse(rsp)
+}
+
+// ListSequenceEnrollmentsWithResponse request returning *ListSequenceEnrollmentsResponse
+func (c *ClientWithResponses) ListSequenceEnrollmentsWithResponse(ctx context.Context, sequenceId string, params *ListSequenceEnrollmentsParams, reqEditors ...RequestEditorFn) (*ListSequenceEnrollmentsResponse, error) {
+	rsp, err := c.ListSequenceEnrollments(ctx, sequenceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSequenceEnrollmentsResponse(rsp)
+}
+
+// PauseSequenceWithResponse request returning *PauseSequenceResponse
+func (c *ClientWithResponses) PauseSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*PauseSequenceResponse, error) {
+	rsp, err := c.PauseSequence(ctx, sequenceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePauseSequenceResponse(rsp)
 }
 
 // DownloadBlueskyMediaWithResponse request returning *DownloadBlueskyMediaResponse
@@ -35230,6 +40022,535 @@ func ParseDeleteApiKeyResponse(rsp *http.Response) (*DeleteApiKeyResponse, error
 	return response, nil
 }
 
+// ParseListBroadcastsResponse parses an HTTP response from a ListBroadcastsWithResponse call
+func ParseListBroadcastsResponse(rsp *http.Response) (*ListBroadcastsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListBroadcastsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateBroadcastResponse parses an HTTP response from a CreateBroadcastWithResponse call
+func ParseCreateBroadcastResponse(rsp *http.Response) (*CreateBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteBroadcastResponse parses an HTTP response from a DeleteBroadcastWithResponse call
+func ParseDeleteBroadcastResponse(rsp *http.Response) (*DeleteBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetBroadcastResponse parses an HTTP response from a GetBroadcastWithResponse call
+func ParseGetBroadcastResponse(rsp *http.Response) (*GetBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateBroadcastResponse parses an HTTP response from a UpdateBroadcastWithResponse call
+func ParseUpdateBroadcastResponse(rsp *http.Response) (*UpdateBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelBroadcastResponse parses an HTTP response from a CancelBroadcastWithResponse call
+func ParseCancelBroadcastResponse(rsp *http.Response) (*CancelBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListBroadcastRecipientsResponse parses an HTTP response from a ListBroadcastRecipientsWithResponse call
+func ParseListBroadcastRecipientsResponse(rsp *http.Response) (*ListBroadcastRecipientsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListBroadcastRecipientsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddBroadcastRecipientsResponse parses an HTTP response from a AddBroadcastRecipientsWithResponse call
+func ParseAddBroadcastRecipientsResponse(rsp *http.Response) (*AddBroadcastRecipientsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddBroadcastRecipientsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseScheduleBroadcastResponse parses an HTTP response from a ScheduleBroadcastWithResponse call
+func ParseScheduleBroadcastResponse(rsp *http.Response) (*ScheduleBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ScheduleBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendBroadcastResponse parses an HTTP response from a SendBroadcastWithResponse call
+func ParseSendBroadcastResponse(rsp *http.Response) (*SendBroadcastResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendBroadcastResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCommentAutomationsResponse parses an HTTP response from a ListCommentAutomationsWithResponse call
+func ParseListCommentAutomationsResponse(rsp *http.Response) (*ListCommentAutomationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCommentAutomationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Automations *[]struct {
+				AccountId      *string                                        `json:"accountId,omitempty"`
+				CommentReply   *string                                        `json:"commentReply,omitempty"`
+				CreatedAt      *time.Time                                     `json:"createdAt,omitempty"`
+				DmMessage      *string                                        `json:"dmMessage,omitempty"`
+				Id             *string                                        `json:"id,omitempty"`
+				IsActive       *bool                                          `json:"isActive,omitempty"`
+				Keywords       *[]string                                      `json:"keywords,omitempty"`
+				MatchMode      *ListCommentAutomations200AutomationsMatchMode `json:"matchMode,omitempty"`
+				Name           *string                                        `json:"name,omitempty"`
+				Platform       *ListCommentAutomations200AutomationsPlatform  `json:"platform,omitempty"`
+				PlatformPostId *string                                        `json:"platformPostId,omitempty"`
+				PostTitle      *string                                        `json:"postTitle,omitempty"`
+				Stats          *struct {
+					DmsFailed      *int `json:"dmsFailed,omitempty"`
+					DmsSent        *int `json:"dmsSent,omitempty"`
+					Triggered      *int `json:"triggered,omitempty"`
+					UniqueContacts *int `json:"uniqueContacts,omitempty"`
+				} `json:"stats,omitempty"`
+			} `json:"automations,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCommentAutomationResponse parses an HTTP response from a CreateCommentAutomationWithResponse call
+func ParseCreateCommentAutomationResponse(rsp *http.Response) (*CreateCommentAutomationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCommentAutomationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteCommentAutomationResponse parses an HTTP response from a DeleteCommentAutomationWithResponse call
+func ParseDeleteCommentAutomationResponse(rsp *http.Response) (*DeleteCommentAutomationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteCommentAutomationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCommentAutomationResponse parses an HTTP response from a GetCommentAutomationWithResponse call
+func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCommentAutomationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateCommentAutomationResponse parses an HTTP response from a UpdateCommentAutomationWithResponse call
+func ParseUpdateCommentAutomationResponse(rsp *http.Response) (*UpdateCommentAutomationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateCommentAutomationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCommentAutomationLogsResponse parses an HTTP response from a ListCommentAutomationLogsWithResponse call
+func ParseListCommentAutomationLogsResponse(rsp *http.Response) (*ListCommentAutomationLogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCommentAutomationLogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseConnectBlueskyCredentialsResponse parses an HTTP response from a ConnectBlueskyCredentialsWithResponse call
 func ParseConnectBlueskyCredentialsResponse(rsp *http.Response) (*ConnectBlueskyCredentialsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -36130,6 +41451,400 @@ func ParseListConnectionLogsResponse(rsp *http.Response) (*ListConnectionLogsRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListContactsResponse parses an HTTP response from a ListContactsWithResponse call
+func ParseListContactsResponse(rsp *http.Response) (*ListContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateContactResponse parses an HTTP response from a CreateContactWithResponse call
+func ParseCreateContactResponse(rsp *http.Response) (*CreateContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkCreateContactsResponse parses an HTTP response from a BulkCreateContactsWithResponse call
+func ParseBulkCreateContactsResponse(rsp *http.Response) (*BulkCreateContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkCreateContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteContactResponse parses an HTTP response from a DeleteContactWithResponse call
+func ParseDeleteContactResponse(rsp *http.Response) (*DeleteContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetContactResponse parses an HTTP response from a GetContactWithResponse call
+func ParseGetContactResponse(rsp *http.Response) (*GetContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateContactResponse parses an HTTP response from a UpdateContactWithResponse call
+func ParseUpdateContactResponse(rsp *http.Response) (*UpdateContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetContactChannelsResponse parses an HTTP response from a GetContactChannelsWithResponse call
+func ParseGetContactChannelsResponse(rsp *http.Response) (*GetContactChannelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContactChannelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseClearContactFieldValueResponse parses an HTTP response from a ClearContactFieldValueWithResponse call
+func ParseClearContactFieldValueResponse(rsp *http.Response) (*ClearContactFieldValueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ClearContactFieldValueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetContactFieldValueResponse parses an HTTP response from a SetContactFieldValueWithResponse call
+func ParseSetContactFieldValueResponse(rsp *http.Response) (*SetContactFieldValueResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetContactFieldValueResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCustomFieldsResponse parses an HTTP response from a ListCustomFieldsWithResponse call
+func ParseListCustomFieldsResponse(rsp *http.Response) (*ListCustomFieldsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCustomFieldsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCustomFieldResponse parses an HTTP response from a CreateCustomFieldWithResponse call
+func ParseCreateCustomFieldResponse(rsp *http.Response) (*CreateCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteCustomFieldResponse parses an HTTP response from a DeleteCustomFieldWithResponse call
+func ParseDeleteCustomFieldResponse(rsp *http.Response) (*DeleteCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateCustomFieldResponse parses an HTTP response from a UpdateCustomFieldWithResponse call
+func ParseUpdateCustomFieldResponse(rsp *http.Response) (*UpdateCustomFieldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateCustomFieldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
@@ -38174,6 +43889,322 @@ func ParseSearchRedditResponse(rsp *http.Response) (*SearchRedditResponse, error
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSequencesResponse parses an HTTP response from a ListSequencesWithResponse call
+func ParseListSequencesResponse(rsp *http.Response) (*ListSequencesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSequencesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSequenceResponse parses an HTTP response from a CreateSequenceWithResponse call
+func ParseCreateSequenceResponse(rsp *http.Response) (*CreateSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSequenceResponse parses an HTTP response from a DeleteSequenceWithResponse call
+func ParseDeleteSequenceResponse(rsp *http.Response) (*DeleteSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSequenceResponse parses an HTTP response from a GetSequenceWithResponse call
+func ParseGetSequenceResponse(rsp *http.Response) (*GetSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSequenceResponse parses an HTTP response from a UpdateSequenceWithResponse call
+func ParseUpdateSequenceResponse(rsp *http.Response) (*UpdateSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseActivateSequenceResponse parses an HTTP response from a ActivateSequenceWithResponse call
+func ParseActivateSequenceResponse(rsp *http.Response) (*ActivateSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ActivateSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEnrollContactsResponse parses an HTTP response from a EnrollContactsWithResponse call
+func ParseEnrollContactsResponse(rsp *http.Response) (*EnrollContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnrollContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnenrollContactResponse parses an HTTP response from a UnenrollContactWithResponse call
+func ParseUnenrollContactResponse(rsp *http.Response) (*UnenrollContactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnenrollContactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSequenceEnrollmentsResponse parses an HTTP response from a ListSequenceEnrollmentsWithResponse call
+func ParseListSequenceEnrollmentsResponse(rsp *http.Response) (*ListSequenceEnrollmentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSequenceEnrollmentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePauseSequenceResponse parses an HTTP response from a PauseSequenceWithResponse call
+func ParsePauseSequenceResponse(rsp *http.Response) (*PauseSequenceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PauseSequenceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
