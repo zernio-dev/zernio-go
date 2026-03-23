@@ -1838,6 +1838,30 @@ func (e UpdateInboxConversationJSONBodyStatus) Valid() bool {
 	}
 }
 
+// Defines values for SendInboxMessageJSONBodyAttachmentType.
+const (
+	SendInboxMessageJSONBodyAttachmentTypeAudio SendInboxMessageJSONBodyAttachmentType = "audio"
+	SendInboxMessageJSONBodyAttachmentTypeFile  SendInboxMessageJSONBodyAttachmentType = "file"
+	SendInboxMessageJSONBodyAttachmentTypeImage SendInboxMessageJSONBodyAttachmentType = "image"
+	SendInboxMessageJSONBodyAttachmentTypeVideo SendInboxMessageJSONBodyAttachmentType = "video"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyAttachmentType enum.
+func (e SendInboxMessageJSONBodyAttachmentType) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyAttachmentTypeAudio:
+		return true
+	case SendInboxMessageJSONBodyAttachmentTypeFile:
+		return true
+	case SendInboxMessageJSONBodyAttachmentTypeImage:
+		return true
+	case SendInboxMessageJSONBodyAttachmentTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendInboxMessageJSONBodyButtonsType.
 const (
 	SendInboxMessageJSONBodyButtonsTypePhone    SendInboxMessageJSONBodyButtonsType = "phone"
@@ -2608,16 +2632,16 @@ func (e DownloadYouTubeVideoParamsAction) Valid() bool {
 
 // Defines values for DownloadYouTubeVideoParamsFormat.
 const (
-	DownloadYouTubeVideoParamsFormatAudio DownloadYouTubeVideoParamsFormat = "audio"
-	DownloadYouTubeVideoParamsFormatVideo DownloadYouTubeVideoParamsFormat = "video"
+	Audio DownloadYouTubeVideoParamsFormat = "audio"
+	Video DownloadYouTubeVideoParamsFormat = "video"
 )
 
 // Valid indicates whether the value is a known member of the DownloadYouTubeVideoParamsFormat enum.
 func (e DownloadYouTubeVideoParamsFormat) Valid() bool {
 	switch e {
-	case DownloadYouTubeVideoParamsFormatAudio:
+	case Audio:
 		return true
-	case DownloadYouTubeVideoParamsFormatVideo:
+	case Video:
 		return true
 	default:
 		return false
@@ -5484,6 +5508,12 @@ type SendInboxMessageJSONBody struct {
 	// AccountId Social account ID
 	AccountId string `json:"accountId"`
 
+	// AttachmentType Type of attachment. Defaults to file if not specified.
+	AttachmentType *SendInboxMessageJSONBodyAttachmentType `json:"attachmentType,omitempty"`
+
+	// AttachmentUrl URL of the attachment to send (image, video, audio, or file). The URL must be publicly accessible. For binary file uploads, use multipart/form-data instead.
+	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
+
 	// Buttons Action buttons. Mutually exclusive with quickReplies. Max 3 items.
 	Buttons *[]struct {
 		// Payload Payload for postback-type buttons
@@ -5604,6 +5634,9 @@ type SendInboxMessageMultipartBody struct {
 	// Template JSON string of template object (same schema as application/json body)
 	Template *string `json:"template,omitempty"`
 }
+
+// SendInboxMessageJSONBodyAttachmentType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyAttachmentType string
 
 // SendInboxMessageJSONBodyButtonsType defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyButtonsType string
