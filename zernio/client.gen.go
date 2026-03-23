@@ -28979,7 +28979,19 @@ func (r ListBroadcastsResponse) StatusCode() int {
 type CreateBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Broadcast *struct {
+			AccountId   *string    `json:"accountId,omitempty"`
+			CreatedAt   *time.Time `json:"createdAt,omitempty"`
+			Description *string    `json:"description,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			Platform    *string    `json:"platform,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -32061,7 +32073,19 @@ func (r ListSequencesResponse) StatusCode() int {
 type CreateSequenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Sequence *struct {
+			CreatedAt   *time.Time `json:"createdAt,omitempty"`
+			Description *string    `json:"description,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			Platform    *string    `json:"platform,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+			StepsCount  *int       `json:"stepsCount,omitempty"`
+		} `json:"sequence,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -40464,6 +40488,24 @@ func ParseCreateBroadcastResponse(rsp *http.Response) (*CreateBroadcastResponse,
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				AccountId   *string    `json:"accountId,omitempty"`
+				CreatedAt   *time.Time `json:"createdAt,omitempty"`
+				Description *string    `json:"description,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				Platform    *string    `json:"platform,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44515,6 +44557,24 @@ func ParseCreateSequenceResponse(rsp *http.Response) (*CreateSequenceResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Sequence *struct {
+				CreatedAt   *time.Time `json:"createdAt,omitempty"`
+				Description *string    `json:"description,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				Platform    *string    `json:"platform,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+				StepsCount  *int       `json:"stepsCount,omitempty"`
+			} `json:"sequence,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
