@@ -32954,12 +32954,15 @@ type GetWhatsAppBroadcastsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Broadcasts *[]struct {
-			CompletedAt    *time.Time                                `json:"completedAt,omitempty"`
-			CreatedAt      *time.Time                                `json:"createdAt,omitempty"`
-			DeliveredCount *int                                      `json:"deliveredCount,omitempty"`
-			Description    *string                                   `json:"description,omitempty"`
-			FailedCount    *int                                      `json:"failedCount,omitempty"`
-			Id             *string                                   `json:"id,omitempty"`
+			CompletedAt    *time.Time `json:"completedAt,omitempty"`
+			CreatedAt      *time.Time `json:"createdAt,omitempty"`
+			DeliveredCount *int       `json:"deliveredCount,omitempty"`
+			Description    *string    `json:"description,omitempty"`
+			FailedCount    *int       `json:"failedCount,omitempty"`
+			Id             *string    `json:"id,omitempty"`
+
+			// MessagePreview Template name or message text snippet
+			MessagePreview *string                                   `json:"messagePreview,omitempty"`
 			Name           *string                                   `json:"name,omitempty"`
 			ReadCount      *int                                      `json:"readCount,omitempty"`
 			RecipientCount *int                                      `json:"recipientCount,omitempty"`
@@ -45371,12 +45374,15 @@ func ParseGetWhatsAppBroadcastsResponse(rsp *http.Response) (*GetWhatsAppBroadca
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Broadcasts *[]struct {
-				CompletedAt    *time.Time                                `json:"completedAt,omitempty"`
-				CreatedAt      *time.Time                                `json:"createdAt,omitempty"`
-				DeliveredCount *int                                      `json:"deliveredCount,omitempty"`
-				Description    *string                                   `json:"description,omitempty"`
-				FailedCount    *int                                      `json:"failedCount,omitempty"`
-				Id             *string                                   `json:"id,omitempty"`
+				CompletedAt    *time.Time `json:"completedAt,omitempty"`
+				CreatedAt      *time.Time `json:"createdAt,omitempty"`
+				DeliveredCount *int       `json:"deliveredCount,omitempty"`
+				Description    *string    `json:"description,omitempty"`
+				FailedCount    *int       `json:"failedCount,omitempty"`
+				Id             *string    `json:"id,omitempty"`
+
+				// MessagePreview Template name or message text snippet
+				MessagePreview *string                                   `json:"messagePreview,omitempty"`
 				Name           *string                                   `json:"name,omitempty"`
 				ReadCount      *int                                      `json:"readCount,omitempty"`
 				RecipientCount *int                                      `json:"recipientCount,omitempty"`
