@@ -29024,9 +29024,41 @@ func (r DeleteBroadcastResponse) StatusCode() int {
 type GetBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Broadcast *struct {
+			AccountId      *string    `json:"accountId,omitempty"`
+			CompletedAt    *time.Time `json:"completedAt,omitempty"`
+			CreatedAt      *time.Time `json:"createdAt,omitempty"`
+			DeliveredCount *int       `json:"deliveredCount,omitempty"`
+			Description    *string    `json:"description,omitempty"`
+			FailedCount    *int       `json:"failedCount,omitempty"`
+			Id             *string    `json:"id,omitempty"`
+			Message        *struct {
+				Text *string `json:"text,omitempty"`
+			} `json:"message,omitempty"`
+			Name           *string    `json:"name,omitempty"`
+			Platform       *string    `json:"platform,omitempty"`
+			ReadCount      *int       `json:"readCount,omitempty"`
+			RecipientCount *int       `json:"recipientCount,omitempty"`
+			ScheduledAt    *time.Time `json:"scheduledAt,omitempty"`
+			SegmentFilters *struct {
+				Tags *[]string `json:"tags,omitempty"`
+			} `json:"segmentFilters,omitempty"`
+			SentCount *int                            `json:"sentCount,omitempty"`
+			StartedAt *time.Time                      `json:"startedAt,omitempty"`
+			Status    *GetBroadcast200BroadcastStatus `json:"status,omitempty"`
+			Template  *struct {
+				Language *string `json:"language,omitempty"`
+				Name     *string `json:"name,omitempty"`
+			} `json:"template,omitempty"`
+			UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type GetBroadcast200BroadcastStatus string
 
 // Status returns HTTPResponse.Status
 func (r GetBroadcastResponse) Status() string {
@@ -29047,8 +29079,18 @@ func (r GetBroadcastResponse) StatusCode() int {
 type UpdateBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Broadcast *struct {
+			Description *string    `json:"description,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+			UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -29070,8 +29112,15 @@ func (r UpdateBroadcastResponse) StatusCode() int {
 type CancelBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Broadcast *struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -29093,9 +29142,32 @@ func (r CancelBroadcastResponse) StatusCode() int {
 type ListBroadcastRecipientsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Recipients *[]struct {
+			ChannelId          *string                                     `json:"channelId,omitempty"`
+			ContactId          *string                                     `json:"contactId,omitempty"`
+			ContactName        *string                                     `json:"contactName,omitempty"`
+			DeliveredAt        *time.Time                                  `json:"deliveredAt,omitempty"`
+			Error              *string                                     `json:"error,omitempty"`
+			Id                 *string                                     `json:"id,omitempty"`
+			MessageId          *string                                     `json:"messageId,omitempty"`
+			PlatformIdentifier *string                                     `json:"platformIdentifier,omitempty"`
+			ReadAt             *time.Time                                  `json:"readAt,omitempty"`
+			SentAt             *time.Time                                  `json:"sentAt,omitempty"`
+			Status             *ListBroadcastRecipients200RecipientsStatus `json:"status,omitempty"`
+		} `json:"recipients,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type ListBroadcastRecipients200RecipientsStatus string
 
 // Status returns HTTPResponse.Status
 func (r ListBroadcastRecipientsResponse) Status() string {
@@ -29116,8 +29188,16 @@ func (r ListBroadcastRecipientsResponse) StatusCode() int {
 type AddBroadcastRecipientsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		// Added Number of recipients successfully added
+		Added *int `json:"added,omitempty"`
+
+		// Skipped Number skipped (duplicates or missing channels)
+		Skipped *int  `json:"skipped,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -29139,8 +29219,16 @@ func (r AddBroadcastRecipientsResponse) StatusCode() int {
 type ScheduleBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Broadcast *struct {
+			Id          *string    `json:"id,omitempty"`
+			ScheduledAt *time.Time `json:"scheduledAt,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+		} `json:"broadcast,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -32018,9 +32106,40 @@ func (r DeleteSequenceResponse) StatusCode() int {
 type GetSequenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Sequence *struct {
+			AccountId         *string                       `json:"accountId,omitempty"`
+			CreatedAt         *time.Time                    `json:"createdAt,omitempty"`
+			Description       *string                       `json:"description,omitempty"`
+			ExitOnReply       *bool                         `json:"exitOnReply,omitempty"`
+			ExitOnUnsubscribe *bool                         `json:"exitOnUnsubscribe,omitempty"`
+			Id                *string                       `json:"id,omitempty"`
+			Name              *string                       `json:"name,omitempty"`
+			Platform          *string                       `json:"platform,omitempty"`
+			Status            *GetSequence200SequenceStatus `json:"status,omitempty"`
+			Steps             *[]struct {
+				DelayMinutes *int `json:"delayMinutes,omitempty"`
+				Message      *struct {
+					Text *string `json:"text,omitempty"`
+				} `json:"message,omitempty"`
+				Order    *int `json:"order,omitempty"`
+				Template *struct {
+					Language        *string                 `json:"language,omitempty"`
+					Name            *string                 `json:"name,omitempty"`
+					VariableMapping *map[string]interface{} `json:"variableMapping,omitempty"`
+				} `json:"template,omitempty"`
+			} `json:"steps,omitempty"`
+			TotalCompleted *int       `json:"totalCompleted,omitempty"`
+			TotalEnrolled  *int       `json:"totalEnrolled,omitempty"`
+			TotalExited    *int       `json:"totalExited,omitempty"`
+			UpdatedAt      *time.Time `json:"updatedAt,omitempty"`
+		} `json:"sequence,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type GetSequence200SequenceStatus string
 
 // Status returns HTTPResponse.Status
 func (r GetSequenceResponse) Status() string {
@@ -32041,8 +32160,21 @@ func (r GetSequenceResponse) StatusCode() int {
 type UpdateSequenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Sequence *struct {
+			Description       *string                   `json:"description,omitempty"`
+			ExitOnReply       *bool                     `json:"exitOnReply,omitempty"`
+			ExitOnUnsubscribe *bool                     `json:"exitOnUnsubscribe,omitempty"`
+			Id                *string                   `json:"id,omitempty"`
+			Name              *string                   `json:"name,omitempty"`
+			Status            *string                   `json:"status,omitempty"`
+			Steps             *[]map[string]interface{} `json:"steps,omitempty"`
+			UpdatedAt         *time.Time                `json:"updatedAt,omitempty"`
+		} `json:"sequence,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -32064,8 +32196,15 @@ func (r UpdateSequenceResponse) StatusCode() int {
 type ActivateSequenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Sequence *struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"sequence,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -32087,8 +32226,16 @@ func (r ActivateSequenceResponse) StatusCode() int {
 type EnrollContactsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		// Enrolled Number of contacts successfully enrolled
+		Enrolled *int `json:"enrolled,omitempty"`
+
+		// Skipped Number skipped (already enrolled or missing channel)
+		Skipped *int  `json:"skipped,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -32133,9 +32280,33 @@ func (r UnenrollContactResponse) StatusCode() int {
 type ListSequenceEnrollmentsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Enrollments *[]struct {
+			ChannelId          *string                                      `json:"channelId,omitempty"`
+			ContactId          *string                                      `json:"contactId,omitempty"`
+			ContactName        *string                                      `json:"contactName,omitempty"`
+			CreatedAt          *time.Time                                   `json:"createdAt,omitempty"`
+			CurrentStepIndex   *int                                         `json:"currentStepIndex,omitempty"`
+			ExitReason         *string                                      `json:"exitReason,omitempty"`
+			Id                 *string                                      `json:"id,omitempty"`
+			LastStepSentAt     *time.Time                                   `json:"lastStepSentAt,omitempty"`
+			NextStepAt         *time.Time                                   `json:"nextStepAt,omitempty"`
+			PlatformIdentifier *string                                      `json:"platformIdentifier,omitempty"`
+			Status             *ListSequenceEnrollments200EnrollmentsStatus `json:"status,omitempty"`
+			StepsSent          *int                                         `json:"stepsSent,omitempty"`
+		} `json:"enrollments,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type ListSequenceEnrollments200EnrollmentsStatus string
 
 // Status returns HTTPResponse.Status
 func (r ListSequenceEnrollmentsResponse) Status() string {
@@ -32156,8 +32327,15 @@ func (r ListSequenceEnrollmentsResponse) StatusCode() int {
 type PauseSequenceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		Sequence *struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"sequence,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
@@ -40345,6 +40523,43 @@ func ParseGetBroadcastResponse(rsp *http.Response) (*GetBroadcastResponse, error
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				AccountId      *string    `json:"accountId,omitempty"`
+				CompletedAt    *time.Time `json:"completedAt,omitempty"`
+				CreatedAt      *time.Time `json:"createdAt,omitempty"`
+				DeliveredCount *int       `json:"deliveredCount,omitempty"`
+				Description    *string    `json:"description,omitempty"`
+				FailedCount    *int       `json:"failedCount,omitempty"`
+				Id             *string    `json:"id,omitempty"`
+				Message        *struct {
+					Text *string `json:"text,omitempty"`
+				} `json:"message,omitempty"`
+				Name           *string    `json:"name,omitempty"`
+				Platform       *string    `json:"platform,omitempty"`
+				ReadCount      *int       `json:"readCount,omitempty"`
+				RecipientCount *int       `json:"recipientCount,omitempty"`
+				ScheduledAt    *time.Time `json:"scheduledAt,omitempty"`
+				SegmentFilters *struct {
+					Tags *[]string `json:"tags,omitempty"`
+				} `json:"segmentFilters,omitempty"`
+				SentCount *int                            `json:"sentCount,omitempty"`
+				StartedAt *time.Time                      `json:"startedAt,omitempty"`
+				Status    *GetBroadcast200BroadcastStatus `json:"status,omitempty"`
+				Template  *struct {
+					Language *string `json:"language,omitempty"`
+					Name     *string `json:"name,omitempty"`
+				} `json:"template,omitempty"`
+				UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40378,6 +40593,22 @@ func ParseUpdateBroadcastResponse(rsp *http.Response) (*UpdateBroadcastResponse,
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				Description *string    `json:"description,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+				UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40411,6 +40642,19 @@ func ParseCancelBroadcastResponse(rsp *http.Response) (*CancelBroadcastResponse,
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				Id     *string `json:"id,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40444,6 +40688,34 @@ func ParseListBroadcastRecipientsResponse(rsp *http.Response) (*ListBroadcastRec
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Recipients *[]struct {
+				ChannelId          *string                                     `json:"channelId,omitempty"`
+				ContactId          *string                                     `json:"contactId,omitempty"`
+				ContactName        *string                                     `json:"contactName,omitempty"`
+				DeliveredAt        *time.Time                                  `json:"deliveredAt,omitempty"`
+				Error              *string                                     `json:"error,omitempty"`
+				Id                 *string                                     `json:"id,omitempty"`
+				MessageId          *string                                     `json:"messageId,omitempty"`
+				PlatformIdentifier *string                                     `json:"platformIdentifier,omitempty"`
+				ReadAt             *time.Time                                  `json:"readAt,omitempty"`
+				SentAt             *time.Time                                  `json:"sentAt,omitempty"`
+				Status             *ListBroadcastRecipients200RecipientsStatus `json:"status,omitempty"`
+			} `json:"recipients,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40477,6 +40749,20 @@ func ParseAddBroadcastRecipientsResponse(rsp *http.Response) (*AddBroadcastRecip
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Added Number of recipients successfully added
+			Added *int `json:"added,omitempty"`
+
+			// Skipped Number skipped (duplicates or missing channels)
+			Skipped *int  `json:"skipped,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40510,6 +40796,20 @@ func ParseScheduleBroadcastResponse(rsp *http.Response) (*ScheduleBroadcastRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcast *struct {
+				Id          *string    `json:"id,omitempty"`
+				ScheduledAt *time.Time `json:"scheduledAt,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+			} `json:"broadcast,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44274,6 +44574,42 @@ func ParseGetSequenceResponse(rsp *http.Response) (*GetSequenceResponse, error) 
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Sequence *struct {
+				AccountId         *string                       `json:"accountId,omitempty"`
+				CreatedAt         *time.Time                    `json:"createdAt,omitempty"`
+				Description       *string                       `json:"description,omitempty"`
+				ExitOnReply       *bool                         `json:"exitOnReply,omitempty"`
+				ExitOnUnsubscribe *bool                         `json:"exitOnUnsubscribe,omitempty"`
+				Id                *string                       `json:"id,omitempty"`
+				Name              *string                       `json:"name,omitempty"`
+				Platform          *string                       `json:"platform,omitempty"`
+				Status            *GetSequence200SequenceStatus `json:"status,omitempty"`
+				Steps             *[]struct {
+					DelayMinutes *int `json:"delayMinutes,omitempty"`
+					Message      *struct {
+						Text *string `json:"text,omitempty"`
+					} `json:"message,omitempty"`
+					Order    *int `json:"order,omitempty"`
+					Template *struct {
+						Language        *string                 `json:"language,omitempty"`
+						Name            *string                 `json:"name,omitempty"`
+						VariableMapping *map[string]interface{} `json:"variableMapping,omitempty"`
+					} `json:"template,omitempty"`
+				} `json:"steps,omitempty"`
+				TotalCompleted *int       `json:"totalCompleted,omitempty"`
+				TotalEnrolled  *int       `json:"totalEnrolled,omitempty"`
+				TotalExited    *int       `json:"totalExited,omitempty"`
+				UpdatedAt      *time.Time `json:"updatedAt,omitempty"`
+			} `json:"sequence,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44307,6 +44643,25 @@ func ParseUpdateSequenceResponse(rsp *http.Response) (*UpdateSequenceResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Sequence *struct {
+				Description       *string                   `json:"description,omitempty"`
+				ExitOnReply       *bool                     `json:"exitOnReply,omitempty"`
+				ExitOnUnsubscribe *bool                     `json:"exitOnUnsubscribe,omitempty"`
+				Id                *string                   `json:"id,omitempty"`
+				Name              *string                   `json:"name,omitempty"`
+				Status            *string                   `json:"status,omitempty"`
+				Steps             *[]map[string]interface{} `json:"steps,omitempty"`
+				UpdatedAt         *time.Time                `json:"updatedAt,omitempty"`
+			} `json:"sequence,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44340,6 +44695,19 @@ func ParseActivateSequenceResponse(rsp *http.Response) (*ActivateSequenceRespons
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Sequence *struct {
+				Id     *string `json:"id,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"sequence,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44373,6 +44741,20 @@ func ParseEnrollContactsResponse(rsp *http.Response) (*EnrollContactsResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Enrolled Number of contacts successfully enrolled
+			Enrolled *int `json:"enrolled,omitempty"`
+
+			// Skipped Number skipped (already enrolled or missing channel)
+			Skipped *int  `json:"skipped,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44439,6 +44821,35 @@ func ParseListSequenceEnrollmentsResponse(rsp *http.Response) (*ListSequenceEnro
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Enrollments *[]struct {
+				ChannelId          *string                                      `json:"channelId,omitempty"`
+				ContactId          *string                                      `json:"contactId,omitempty"`
+				ContactName        *string                                      `json:"contactName,omitempty"`
+				CreatedAt          *time.Time                                   `json:"createdAt,omitempty"`
+				CurrentStepIndex   *int                                         `json:"currentStepIndex,omitempty"`
+				ExitReason         *string                                      `json:"exitReason,omitempty"`
+				Id                 *string                                      `json:"id,omitempty"`
+				LastStepSentAt     *time.Time                                   `json:"lastStepSentAt,omitempty"`
+				NextStepAt         *time.Time                                   `json:"nextStepAt,omitempty"`
+				PlatformIdentifier *string                                      `json:"platformIdentifier,omitempty"`
+				Status             *ListSequenceEnrollments200EnrollmentsStatus `json:"status,omitempty"`
+				StepsSent          *int                                         `json:"stepsSent,omitempty"`
+			} `json:"enrollments,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44472,6 +44883,19 @@ func ParsePauseSequenceResponse(rsp *http.Response) (*PauseSequenceResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Sequence *struct {
+				Id     *string `json:"id,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"sequence,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
