@@ -6327,8 +6327,10 @@ type CreatePostJSONBody struct {
 		Type *CreatePostJSONBodyMediaItemsType `json:"type,omitempty"`
 		Url  *string                           `json:"url,omitempty"`
 	} `json:"mediaItems,omitempty"`
-	Mentions  *[]string               `json:"mentions,omitempty"`
-	Metadata  *map[string]interface{} `json:"metadata,omitempty"`
+	Mentions *[]string               `json:"mentions,omitempty"`
+	Metadata *map[string]interface{} `json:"metadata,omitempty"`
+
+	// Platforms Target platforms and accounts for this post. Required for non-draft posts (returns 400 if empty). Drafts can omit platforms.
 	Platforms *[]struct {
 		AccountId *string `json:"accountId,omitempty"`
 
