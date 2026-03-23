@@ -28924,8 +28924,41 @@ func (r DeleteApiKeyResponse) StatusCode() int {
 type ListBroadcastsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Broadcasts *[]struct {
+			AccountId *string `json:"accountId,omitempty"`
+
+			// AccountName Display name of the sending account
+			AccountName    *string    `json:"accountName,omitempty"`
+			CompletedAt    *time.Time `json:"completedAt,omitempty"`
+			CreatedAt      *time.Time `json:"createdAt,omitempty"`
+			DeliveredCount *int       `json:"deliveredCount,omitempty"`
+			Description    *string    `json:"description,omitempty"`
+			FailedCount    *int       `json:"failedCount,omitempty"`
+			Id             *string    `json:"id,omitempty"`
+
+			// MessagePreview Template name or message text snippet
+			MessagePreview *string                            `json:"messagePreview,omitempty"`
+			Name           *string                            `json:"name,omitempty"`
+			Platform       *string                            `json:"platform,omitempty"`
+			ReadCount      *int                               `json:"readCount,omitempty"`
+			RecipientCount *int                               `json:"recipientCount,omitempty"`
+			ScheduledAt    *time.Time                         `json:"scheduledAt,omitempty"`
+			SentCount      *int                               `json:"sentCount,omitempty"`
+			StartedAt      *time.Time                         `json:"startedAt,omitempty"`
+			Status         *ListBroadcasts200BroadcastsStatus `json:"status,omitempty"`
+		} `json:"broadcasts,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
+type ListBroadcasts200BroadcastsStatus string
 
 // Status returns HTTPResponse.Status
 func (r ListBroadcastsResponse) Status() string {
@@ -29129,9 +29162,24 @@ func (r ScheduleBroadcastResponse) StatusCode() int {
 type SendBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
-	JSON404      *NotFound
+	JSON200      *struct {
+		// Failed Recipients failed in this batch
+		Failed *int `json:"failed,omitempty"`
+
+		// RecipientCount Total recipient count
+		RecipientCount *int `json:"recipientCount,omitempty"`
+
+		// Sent Recipients sent in this batch
+		Sent *int `json:"sent,omitempty"`
+
+		// Status Current broadcast status after processing first batch
+		Status  *SendBroadcast200Status `json:"status,omitempty"`
+		Success *bool                   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
+type SendBroadcast200Status string
 
 // Status returns HTTPResponse.Status
 func (r SendBroadcastResponse) Status() string {
@@ -31872,8 +31920,39 @@ func (r SearchRedditResponse) StatusCode() int {
 type ListSequencesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON401      *Unauthorized
+	JSON200      *struct {
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Sequences *[]struct {
+			AccountId *string `json:"accountId,omitempty"`
+
+			// AccountName Display name of the sending account
+			AccountName       *string    `json:"accountName,omitempty"`
+			CreatedAt         *time.Time `json:"createdAt,omitempty"`
+			Description       *string    `json:"description,omitempty"`
+			ExitOnReply       *bool      `json:"exitOnReply,omitempty"`
+			ExitOnUnsubscribe *bool      `json:"exitOnUnsubscribe,omitempty"`
+			Id                *string    `json:"id,omitempty"`
+
+			// MessagePreview First step template name or message text snippet
+			MessagePreview *string                          `json:"messagePreview,omitempty"`
+			Name           *string                          `json:"name,omitempty"`
+			Platform       *string                          `json:"platform,omitempty"`
+			Status         *ListSequences200SequencesStatus `json:"status,omitempty"`
+			StepsCount     *int                             `json:"stepsCount,omitempty"`
+			TotalCompleted *int                             `json:"totalCompleted,omitempty"`
+			TotalEnrolled  *int                             `json:"totalEnrolled,omitempty"`
+			TotalExited    *int                             `json:"totalExited,omitempty"`
+		} `json:"sequences,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
+type ListSequences200SequencesStatus string
 
 // Status returns HTTPResponse.Status
 func (r ListSequencesResponse) Status() string {
@@ -40143,6 +40222,44 @@ func ParseListBroadcastsResponse(rsp *http.Response) (*ListBroadcastsResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Broadcasts *[]struct {
+				AccountId *string `json:"accountId,omitempty"`
+
+				// AccountName Display name of the sending account
+				AccountName    *string    `json:"accountName,omitempty"`
+				CompletedAt    *time.Time `json:"completedAt,omitempty"`
+				CreatedAt      *time.Time `json:"createdAt,omitempty"`
+				DeliveredCount *int       `json:"deliveredCount,omitempty"`
+				Description    *string    `json:"description,omitempty"`
+				FailedCount    *int       `json:"failedCount,omitempty"`
+				Id             *string    `json:"id,omitempty"`
+
+				// MessagePreview Template name or message text snippet
+				MessagePreview *string                            `json:"messagePreview,omitempty"`
+				Name           *string                            `json:"name,omitempty"`
+				Platform       *string                            `json:"platform,omitempty"`
+				ReadCount      *int                               `json:"readCount,omitempty"`
+				RecipientCount *int                               `json:"recipientCount,omitempty"`
+				ScheduledAt    *time.Time                         `json:"scheduledAt,omitempty"`
+				SentCount      *int                               `json:"sentCount,omitempty"`
+				StartedAt      *time.Time                         `json:"startedAt,omitempty"`
+				Status         *ListBroadcasts200BroadcastsStatus `json:"status,omitempty"`
+			} `json:"broadcasts,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -40426,6 +40543,26 @@ func ParseSendBroadcastResponse(rsp *http.Response) (*SendBroadcastResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Failed Recipients failed in this batch
+			Failed *int `json:"failed,omitempty"`
+
+			// RecipientCount Total recipient count
+			RecipientCount *int `json:"recipientCount,omitempty"`
+
+			// Sent Recipients sent in this batch
+			Sent *int `json:"sent,omitempty"`
+
+			// Status Current broadcast status after processing first batch
+			Status  *SendBroadcast200Status `json:"status,omitempty"`
+			Success *bool                   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -44016,6 +44153,42 @@ func ParseListSequencesResponse(rsp *http.Response) (*ListSequencesResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Sequences *[]struct {
+				AccountId *string `json:"accountId,omitempty"`
+
+				// AccountName Display name of the sending account
+				AccountName       *string    `json:"accountName,omitempty"`
+				CreatedAt         *time.Time `json:"createdAt,omitempty"`
+				Description       *string    `json:"description,omitempty"`
+				ExitOnReply       *bool      `json:"exitOnReply,omitempty"`
+				ExitOnUnsubscribe *bool      `json:"exitOnUnsubscribe,omitempty"`
+				Id                *string    `json:"id,omitempty"`
+
+				// MessagePreview First step template name or message text snippet
+				MessagePreview *string                          `json:"messagePreview,omitempty"`
+				Name           *string                          `json:"name,omitempty"`
+				Platform       *string                          `json:"platform,omitempty"`
+				Status         *ListSequences200SequencesStatus `json:"status,omitempty"`
+				StepsCount     *int                             `json:"stepsCount,omitempty"`
+				TotalCompleted *int                             `json:"totalCompleted,omitempty"`
+				TotalEnrolled  *int                             `json:"totalEnrolled,omitempty"`
+				TotalExited    *int                             `json:"totalExited,omitempty"`
+			} `json:"sequences,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
