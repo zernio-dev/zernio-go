@@ -4464,6 +4464,9 @@ type ThreadsPlatformData struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
 	} `json:"threadItems,omitempty"`
+
+	// TopicTag Topic tag for post categorization and discoverability on Threads. Must be 1-50 characters, cannot contain periods (.) or ampersands (&). Overrides auto-extraction from content hashtags when provided.
+	TopicTag *string `json:"topic_tag,omitempty"`
 }
 
 // TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
