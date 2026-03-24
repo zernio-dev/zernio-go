@@ -4078,14 +4078,16 @@ type PlatformTarget_PlatformSpecificData struct {
 
 // Post defines model for Post.
 type Post struct {
-	UnderscoreId *string                 `json:"_id,omitempty"`
-	Content      *string                 `json:"content,omitempty"`
-	CreatedAt    *time.Time              `json:"createdAt,omitempty"`
-	Hashtags     *[]string               `json:"hashtags,omitempty"`
-	MediaItems   *[]MediaItem            `json:"mediaItems,omitempty"`
-	Mentions     *[]string               `json:"mentions,omitempty"`
-	Metadata     *map[string]interface{} `json:"metadata,omitempty"`
-	Platforms    *[]PlatformTarget       `json:"platforms,omitempty"`
+	UnderscoreId *string      `json:"_id,omitempty"`
+	Content      *string      `json:"content,omitempty"`
+	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
+	Hashtags     *[]string    `json:"hashtags,omitempty"`
+	MediaItems   *[]MediaItem `json:"mediaItems,omitempty"`
+
+	// Mentions Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
+	Mentions  *[]string               `json:"mentions,omitempty"`
+	Metadata  *map[string]interface{} `json:"metadata,omitempty"`
+	Platforms *[]PlatformTarget       `json:"platforms,omitempty"`
 
 	// QueueId Queue ID if the post was scheduled via a specific queue
 	QueueId *string `json:"queueId,omitempty"`
@@ -6360,6 +6362,8 @@ type CreatePostJSONBody struct {
 		Type *CreatePostJSONBodyMediaItemsType `json:"type,omitempty"`
 		Url  *string                           `json:"url,omitempty"`
 	} `json:"mediaItems,omitempty"`
+
+	// Mentions Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
 	Mentions *[]string               `json:"mentions,omitempty"`
 	Metadata *map[string]interface{} `json:"metadata,omitempty"`
 
@@ -30863,6 +30867,9 @@ type GetInboxPostCommentsResponse struct {
 				Name     *string `json:"name,omitempty"`
 				Picture  *string `json:"picture,omitempty"`
 				Username *string `json:"username,omitempty"`
+
+				// VerifiedType X/Twitter verified badge type. Only present for Twitter/X comments.
+				VerifiedType *GetInboxPostComments200CommentsFromVerifiedType `json:"verifiedType,omitempty"`
 			} `json:"from,omitempty"`
 			Id *string `json:"id,omitempty"`
 
@@ -30911,6 +30918,7 @@ type GetInboxPostCommentsResponse struct {
 	}
 	JSON401 *Unauthorized
 }
+type GetInboxPostComments200CommentsFromVerifiedType string
 
 // Status returns HTTPResponse.Status
 func (r GetInboxPostCommentsResponse) Status() string {
@@ -31137,12 +31145,15 @@ type ListInboxConversationsResponse struct {
 				// IsVerified Whether the participant is a verified Instagram user
 				IsVerified *bool `json:"isVerified,omitempty"`
 			} `json:"instagramProfile,omitempty"`
-			LastMessage        *string                              `json:"lastMessage,omitempty"`
-			ParticipantId      *string                              `json:"participantId,omitempty"`
-			ParticipantName    *string                              `json:"participantName,omitempty"`
-			ParticipantPicture *string                              `json:"participantPicture,omitempty"`
-			Platform           *string                              `json:"platform,omitempty"`
-			Status             *ListInboxConversations200DataStatus `json:"status,omitempty"`
+			LastMessage        *string `json:"lastMessage,omitempty"`
+			ParticipantId      *string `json:"participantId,omitempty"`
+			ParticipantName    *string `json:"participantName,omitempty"`
+			ParticipantPicture *string `json:"participantPicture,omitempty"`
+
+			// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
+			ParticipantVerifiedType *ListInboxConversations200DataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
+			Platform                *string                                               `json:"platform,omitempty"`
+			Status                  *ListInboxConversations200DataStatus                  `json:"status,omitempty"`
 
 			// UnreadCount Number of unread messages
 			UnreadCount *int       `json:"unreadCount,omitempty"`
@@ -31175,6 +31186,7 @@ type ListInboxConversationsResponse struct {
 	}
 	JSON401 *Unauthorized
 }
+type ListInboxConversations200DataParticipantVerifiedType string
 type ListInboxConversations200DataStatus string
 
 // Status returns HTTPResponse.Status
@@ -31223,7 +31235,10 @@ type GetInboxConversationResponse struct {
 			LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
 			ParticipantId   *string    `json:"participantId,omitempty"`
 			ParticipantName *string    `json:"participantName,omitempty"`
-			Participants    *[]struct {
+
+			// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
+			ParticipantVerifiedType *GetInboxConversation200DataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
+			Participants            *[]struct {
 				Id   *string `json:"id,omitempty"`
 				Name *string `json:"name,omitempty"`
 			} `json:"participants,omitempty"`
@@ -31234,6 +31249,7 @@ type GetInboxConversationResponse struct {
 	}
 	JSON401 *Unauthorized
 }
+type GetInboxConversation200DataParticipantVerifiedType string
 type GetInboxConversation200DataStatus string
 
 // Status returns HTTPResponse.Status
@@ -31311,6 +31327,9 @@ type GetInboxConversationMessagesResponse struct {
 			SenderId       *string `json:"senderId,omitempty"`
 			SenderName     *string `json:"senderName,omitempty"`
 
+			// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
+			SenderVerifiedType *GetInboxConversationMessages200MessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
+
 			// StoryReply Instagram story reply
 			StoryReply *bool `json:"storyReply,omitempty"`
 
@@ -31323,6 +31342,7 @@ type GetInboxConversationMessagesResponse struct {
 }
 type GetInboxConversationMessages200MessagesAttachmentsType string
 type GetInboxConversationMessages200MessagesDirection string
+type GetInboxConversationMessages200MessagesSenderVerifiedType string
 
 // Status returns HTTPResponse.Status
 func (r GetInboxConversationMessagesResponse) Status() string {
@@ -43154,6 +43174,9 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 					Name     *string `json:"name,omitempty"`
 					Picture  *string `json:"picture,omitempty"`
 					Username *string `json:"username,omitempty"`
+
+					// VerifiedType X/Twitter verified badge type. Only present for Twitter/X comments.
+					VerifiedType *GetInboxPostComments200CommentsFromVerifiedType `json:"verifiedType,omitempty"`
 				} `json:"from,omitempty"`
 				Id *string `json:"id,omitempty"`
 
@@ -43502,12 +43525,15 @@ func ParseListInboxConversationsResponse(rsp *http.Response) (*ListInboxConversa
 					// IsVerified Whether the participant is a verified Instagram user
 					IsVerified *bool `json:"isVerified,omitempty"`
 				} `json:"instagramProfile,omitempty"`
-				LastMessage        *string                              `json:"lastMessage,omitempty"`
-				ParticipantId      *string                              `json:"participantId,omitempty"`
-				ParticipantName    *string                              `json:"participantName,omitempty"`
-				ParticipantPicture *string                              `json:"participantPicture,omitempty"`
-				Platform           *string                              `json:"platform,omitempty"`
-				Status             *ListInboxConversations200DataStatus `json:"status,omitempty"`
+				LastMessage        *string `json:"lastMessage,omitempty"`
+				ParticipantId      *string `json:"participantId,omitempty"`
+				ParticipantName    *string `json:"participantName,omitempty"`
+				ParticipantPicture *string `json:"participantPicture,omitempty"`
+
+				// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
+				ParticipantVerifiedType *ListInboxConversations200DataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
+				Platform                *string                                               `json:"platform,omitempty"`
+				Status                  *ListInboxConversations200DataStatus                  `json:"status,omitempty"`
 
 				// UnreadCount Number of unread messages
 				UnreadCount *int       `json:"unreadCount,omitempty"`
@@ -43597,7 +43623,10 @@ func ParseGetInboxConversationResponse(rsp *http.Response) (*GetInboxConversatio
 				LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
 				ParticipantId   *string    `json:"participantId,omitempty"`
 				ParticipantName *string    `json:"participantName,omitempty"`
-				Participants    *[]struct {
+
+				// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
+				ParticipantVerifiedType *GetInboxConversation200DataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
+				Participants            *[]struct {
 					Id   *string `json:"id,omitempty"`
 					Name *string `json:"name,omitempty"`
 				} `json:"participants,omitempty"`
@@ -43702,6 +43731,9 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				Platform       *string `json:"platform,omitempty"`
 				SenderId       *string `json:"senderId,omitempty"`
 				SenderName     *string `json:"senderName,omitempty"`
+
+				// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
+				SenderVerifiedType *GetInboxConversationMessages200MessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
 
 				// StoryReply Instagram story reply
 				StoryReply *bool `json:"storyReply,omitempty"`
