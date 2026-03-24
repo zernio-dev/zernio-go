@@ -3407,7 +3407,7 @@ type AnalyticsListResponse struct {
 		Content      *string        `json:"content,omitempty"`
 		IsExternal   *bool          `json:"isExternal,omitempty"`
 
-		// LatePostId Original Late post ID if scheduled via Late
+		// LatePostId Original Zernio post ID if scheduled via Zernio
 		LatePostId *string `json:"latePostId,omitempty"`
 
 		// MediaItems All media items for this post. Carousel posts contain one entry per slide.
@@ -3458,7 +3458,7 @@ type AnalyticsSinglePostResponse struct {
 	Content    *string        `json:"content,omitempty"`
 	IsExternal *bool          `json:"isExternal,omitempty"`
 
-	// LatePostId Original Late post ID if scheduled via Late
+	// LatePostId Original Zernio post ID if scheduled via Zernio
 	LatePostId *string `json:"latePostId,omitempty"`
 
 	// MediaItems All media items for this post. Carousel posts contain one entry per slide.
@@ -5759,7 +5759,7 @@ type ConnectWhatsAppCredentialsJSONBody struct {
 	// PhoneNumberId Phone Number ID from Meta WhatsApp Manager
 	PhoneNumberId string `json:"phoneNumberId"`
 
-	// ProfileId Your Late profile ID
+	// ProfileId Your Zernio profile ID
 	ProfileId string `json:"profileId"`
 
 	// WabaId WhatsApp Business Account ID from Meta
