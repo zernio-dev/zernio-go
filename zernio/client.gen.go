@@ -3350,6 +3350,42 @@ func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() b
 	}
 }
 
+// Defines values for CreateWhatsAppGroupChatJSONBodyJoinApprovalMode.
+const (
+	CreateWhatsAppGroupChatJSONBodyJoinApprovalModeApprovalRequired CreateWhatsAppGroupChatJSONBodyJoinApprovalMode = "approval_required"
+	CreateWhatsAppGroupChatJSONBodyJoinApprovalModeAutoApprove      CreateWhatsAppGroupChatJSONBodyJoinApprovalMode = "auto_approve"
+)
+
+// Valid indicates whether the value is a known member of the CreateWhatsAppGroupChatJSONBodyJoinApprovalMode enum.
+func (e CreateWhatsAppGroupChatJSONBodyJoinApprovalMode) Valid() bool {
+	switch e {
+	case CreateWhatsAppGroupChatJSONBodyJoinApprovalModeApprovalRequired:
+		return true
+	case CreateWhatsAppGroupChatJSONBodyJoinApprovalModeAutoApprove:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode.
+const (
+	UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeApprovalRequired UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode = "approval_required"
+	UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeAutoApprove      UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode = "auto_approve"
+)
+
+// Valid indicates whether the value is a known member of the UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode enum.
+func (e UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode) Valid() bool {
+	switch e {
+	case UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeApprovalRequired:
+		return true
+	case UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeAutoApprove:
+		return true
+	default:
+		return false
+	}
+}
+
 // AccountWithFollowerStats defines model for AccountWithFollowerStats.
 type AccountWithFollowerStats struct {
 	UnderscoreId *string `json:"_id,omitempty"`
@@ -7463,6 +7499,124 @@ type UpdateWhatsAppTemplateJSONBody struct {
 	Components []map[string]interface{} `json:"components"`
 }
 
+// ListWhatsAppGroupChatsParams defines parameters for ListWhatsAppGroupChats.
+type ListWhatsAppGroupChatsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Limit Max groups to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Pagination cursor
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+}
+
+// CreateWhatsAppGroupChatJSONBody defines parameters for CreateWhatsAppGroupChat.
+type CreateWhatsAppGroupChatJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Description Group description (max 2048 characters)
+	Description *string `json:"description,omitempty"`
+
+	// JoinApprovalMode Whether users need approval to join via invite link
+	JoinApprovalMode *CreateWhatsAppGroupChatJSONBodyJoinApprovalMode `json:"joinApprovalMode,omitempty"`
+
+	// Subject Group name (max 128 characters)
+	Subject string `json:"subject"`
+}
+
+// CreateWhatsAppGroupChatJSONBodyJoinApprovalMode defines parameters for CreateWhatsAppGroupChat.
+type CreateWhatsAppGroupChatJSONBodyJoinApprovalMode string
+
+// DeleteWhatsAppGroupChatParams defines parameters for DeleteWhatsAppGroupChat.
+type DeleteWhatsAppGroupChatParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// GetWhatsAppGroupChatParams defines parameters for GetWhatsAppGroupChat.
+type GetWhatsAppGroupChatParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppGroupChatJSONBody defines parameters for UpdateWhatsAppGroupChat.
+type UpdateWhatsAppGroupChatJSONBody struct {
+	Description      *string                                          `json:"description,omitempty"`
+	JoinApprovalMode *UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode `json:"joinApprovalMode,omitempty"`
+	Subject          *string                                          `json:"subject,omitempty"`
+}
+
+// UpdateWhatsAppGroupChatParams defines parameters for UpdateWhatsAppGroupChat.
+type UpdateWhatsAppGroupChatParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode defines parameters for UpdateWhatsAppGroupChat.
+type UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode string
+
+// CreateWhatsAppGroupInviteLinkParams defines parameters for CreateWhatsAppGroupInviteLink.
+type CreateWhatsAppGroupInviteLinkParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// RejectWhatsAppGroupJoinRequestsJSONBody defines parameters for RejectWhatsAppGroupJoinRequests.
+type RejectWhatsAppGroupJoinRequestsJSONBody struct {
+	// PhoneNumbers Phone numbers to reject
+	PhoneNumbers []string `json:"phoneNumbers"`
+}
+
+// RejectWhatsAppGroupJoinRequestsParams defines parameters for RejectWhatsAppGroupJoinRequests.
+type RejectWhatsAppGroupJoinRequestsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ListWhatsAppGroupJoinRequestsParams defines parameters for ListWhatsAppGroupJoinRequests.
+type ListWhatsAppGroupJoinRequestsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ApproveWhatsAppGroupJoinRequestsJSONBody defines parameters for ApproveWhatsAppGroupJoinRequests.
+type ApproveWhatsAppGroupJoinRequestsJSONBody struct {
+	// PhoneNumbers Phone numbers to approve
+	PhoneNumbers []string `json:"phoneNumbers"`
+}
+
+// ApproveWhatsAppGroupJoinRequestsParams defines parameters for ApproveWhatsAppGroupJoinRequests.
+type ApproveWhatsAppGroupJoinRequestsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// RemoveWhatsAppGroupParticipantsJSONBody defines parameters for RemoveWhatsAppGroupParticipants.
+type RemoveWhatsAppGroupParticipantsJSONBody struct {
+	// PhoneNumbers Phone numbers to remove
+	PhoneNumbers []string `json:"phoneNumbers"`
+}
+
+// RemoveWhatsAppGroupParticipantsParams defines parameters for RemoveWhatsAppGroupParticipants.
+type RemoveWhatsAppGroupParticipantsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// AddWhatsAppGroupParticipantsJSONBody defines parameters for AddWhatsAppGroupParticipants.
+type AddWhatsAppGroupParticipantsJSONBody struct {
+	// PhoneNumbers Phone numbers in E.164 format (max 8)
+	PhoneNumbers []string `json:"phoneNumbers"`
+}
+
+// AddWhatsAppGroupParticipantsParams defines parameters for AddWhatsAppGroupParticipants.
+type AddWhatsAppGroupParticipantsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
 // CreateAccountGroupJSONRequestBody defines body for CreateAccountGroup for application/json ContentType.
 type CreateAccountGroupJSONRequestBody CreateAccountGroupJSONBody
 
@@ -7726,6 +7880,24 @@ type CreateWhatsAppTemplateJSONRequestBody CreateWhatsAppTemplateJSONBody
 
 // UpdateWhatsAppTemplateJSONRequestBody defines body for UpdateWhatsAppTemplate for application/json ContentType.
 type UpdateWhatsAppTemplateJSONRequestBody UpdateWhatsAppTemplateJSONBody
+
+// CreateWhatsAppGroupChatJSONRequestBody defines body for CreateWhatsAppGroupChat for application/json ContentType.
+type CreateWhatsAppGroupChatJSONRequestBody CreateWhatsAppGroupChatJSONBody
+
+// UpdateWhatsAppGroupChatJSONRequestBody defines body for UpdateWhatsAppGroupChat for application/json ContentType.
+type UpdateWhatsAppGroupChatJSONRequestBody UpdateWhatsAppGroupChatJSONBody
+
+// RejectWhatsAppGroupJoinRequestsJSONRequestBody defines body for RejectWhatsAppGroupJoinRequests for application/json ContentType.
+type RejectWhatsAppGroupJoinRequestsJSONRequestBody RejectWhatsAppGroupJoinRequestsJSONBody
+
+// ApproveWhatsAppGroupJoinRequestsJSONRequestBody defines body for ApproveWhatsAppGroupJoinRequests for application/json ContentType.
+type ApproveWhatsAppGroupJoinRequestsJSONRequestBody ApproveWhatsAppGroupJoinRequestsJSONBody
+
+// RemoveWhatsAppGroupParticipantsJSONRequestBody defines body for RemoveWhatsAppGroupParticipants for application/json ContentType.
+type RemoveWhatsAppGroupParticipantsJSONRequestBody RemoveWhatsAppGroupParticipantsJSONBody
+
+// AddWhatsAppGroupParticipantsJSONRequestBody defines body for AddWhatsAppGroupParticipants for application/json ContentType.
+type AddWhatsAppGroupParticipantsJSONRequestBody AddWhatsAppGroupParticipantsJSONBody
 
 // Getter for additional properties for UpdatePostJSONBody. Returns the specified
 // element and whether it was found
@@ -9475,6 +9647,51 @@ type ClientInterface interface {
 	UpdateWhatsAppTemplateWithBody(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateWhatsAppTemplate(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppGroupChats request
+	ListWhatsAppGroupChats(ctx context.Context, params *ListWhatsAppGroupChatsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppGroupChatWithBody request with any body
+	CreateWhatsAppGroupChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppGroupChat(ctx context.Context, body CreateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppGroupChat request
+	DeleteWhatsAppGroupChat(ctx context.Context, groupId string, params *DeleteWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppGroupChat request
+	GetWhatsAppGroupChat(ctx context.Context, groupId string, params *GetWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppGroupChatWithBody request with any body
+	UpdateWhatsAppGroupChatWithBody(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppGroupChat(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, body UpdateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppGroupInviteLink request
+	CreateWhatsAppGroupInviteLink(ctx context.Context, groupId string, params *CreateWhatsAppGroupInviteLinkParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RejectWhatsAppGroupJoinRequestsWithBody request with any body
+	RejectWhatsAppGroupJoinRequestsWithBody(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RejectWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, body RejectWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppGroupJoinRequests request
+	ListWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *ListWhatsAppGroupJoinRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ApproveWhatsAppGroupJoinRequestsWithBody request with any body
+	ApproveWhatsAppGroupJoinRequestsWithBody(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ApproveWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, body ApproveWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveWhatsAppGroupParticipantsWithBody request with any body
+	RemoveWhatsAppGroupParticipantsWithBody(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RemoveWhatsAppGroupParticipants(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, body RemoveWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddWhatsAppGroupParticipantsWithBody request with any body
+	AddWhatsAppGroupParticipantsWithBody(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddWhatsAppGroupParticipants(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ListAccountGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -13199,6 +13416,210 @@ func (c *Client) UpdateWhatsAppTemplateWithBody(ctx context.Context, templateNam
 
 func (c *Client) UpdateWhatsAppTemplate(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateWhatsAppTemplateRequest(c.Server, templateName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppGroupChats(ctx context.Context, params *ListWhatsAppGroupChatsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppGroupChatsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppGroupChatWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppGroupChatRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppGroupChat(ctx context.Context, body CreateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppGroupChatRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppGroupChat(ctx context.Context, groupId string, params *DeleteWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppGroupChatRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppGroupChat(ctx context.Context, groupId string, params *GetWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppGroupChatRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppGroupChatWithBody(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppGroupChatRequestWithBody(c.Server, groupId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppGroupChat(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, body UpdateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppGroupChatRequest(c.Server, groupId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppGroupInviteLink(ctx context.Context, groupId string, params *CreateWhatsAppGroupInviteLinkParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppGroupInviteLinkRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RejectWhatsAppGroupJoinRequestsWithBody(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRejectWhatsAppGroupJoinRequestsRequestWithBody(c.Server, groupId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RejectWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, body RejectWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRejectWhatsAppGroupJoinRequestsRequest(c.Server, groupId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *ListWhatsAppGroupJoinRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppGroupJoinRequestsRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ApproveWhatsAppGroupJoinRequestsWithBody(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewApproveWhatsAppGroupJoinRequestsRequestWithBody(c.Server, groupId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ApproveWhatsAppGroupJoinRequests(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, body ApproveWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewApproveWhatsAppGroupJoinRequestsRequest(c.Server, groupId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveWhatsAppGroupParticipantsWithBody(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveWhatsAppGroupParticipantsRequestWithBody(c.Server, groupId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveWhatsAppGroupParticipants(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, body RemoveWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveWhatsAppGroupParticipantsRequest(c.Server, groupId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddWhatsAppGroupParticipantsWithBody(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddWhatsAppGroupParticipantsRequestWithBody(c.Server, groupId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddWhatsAppGroupParticipants(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddWhatsAppGroupParticipantsRequest(c.Server, groupId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -25958,6 +26379,656 @@ func NewUpdateWhatsAppTemplateRequestWithBody(server string, templateName string
 	return req, nil
 }
 
+// NewListWhatsAppGroupChatsRequest generates requests for ListWhatsAppGroupChats
+func NewListWhatsAppGroupChatsRequest(server string, params *ListWhatsAppGroupChatsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "after", *params.After, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppGroupChatRequest calls the generic CreateWhatsAppGroupChat builder with application/json body
+func NewCreateWhatsAppGroupChatRequest(server string, body CreateWhatsAppGroupChatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppGroupChatRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppGroupChatRequestWithBody generates requests for CreateWhatsAppGroupChat with any type of body
+func NewCreateWhatsAppGroupChatRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppGroupChatRequest generates requests for DeleteWhatsAppGroupChat
+func NewDeleteWhatsAppGroupChatRequest(server string, groupId string, params *DeleteWhatsAppGroupChatParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppGroupChatRequest generates requests for GetWhatsAppGroupChat
+func NewGetWhatsAppGroupChatRequest(server string, groupId string, params *GetWhatsAppGroupChatParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppGroupChatRequest calls the generic UpdateWhatsAppGroupChat builder with application/json body
+func NewUpdateWhatsAppGroupChatRequest(server string, groupId string, params *UpdateWhatsAppGroupChatParams, body UpdateWhatsAppGroupChatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppGroupChatRequestWithBody(server, groupId, params, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppGroupChatRequestWithBody generates requests for UpdateWhatsAppGroupChat with any type of body
+func NewUpdateWhatsAppGroupChatRequestWithBody(server string, groupId string, params *UpdateWhatsAppGroupChatParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateWhatsAppGroupInviteLinkRequest generates requests for CreateWhatsAppGroupInviteLink
+func NewCreateWhatsAppGroupInviteLinkRequest(server string, groupId string, params *CreateWhatsAppGroupInviteLinkParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/invite-link", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRejectWhatsAppGroupJoinRequestsRequest calls the generic RejectWhatsAppGroupJoinRequests builder with application/json body
+func NewRejectWhatsAppGroupJoinRequestsRequest(server string, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, body RejectWhatsAppGroupJoinRequestsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRejectWhatsAppGroupJoinRequestsRequestWithBody(server, groupId, params, "application/json", bodyReader)
+}
+
+// NewRejectWhatsAppGroupJoinRequestsRequestWithBody generates requests for RejectWhatsAppGroupJoinRequests with any type of body
+func NewRejectWhatsAppGroupJoinRequestsRequestWithBody(server string, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/join-requests", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListWhatsAppGroupJoinRequestsRequest generates requests for ListWhatsAppGroupJoinRequests
+func NewListWhatsAppGroupJoinRequestsRequest(server string, groupId string, params *ListWhatsAppGroupJoinRequestsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/join-requests", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewApproveWhatsAppGroupJoinRequestsRequest calls the generic ApproveWhatsAppGroupJoinRequests builder with application/json body
+func NewApproveWhatsAppGroupJoinRequestsRequest(server string, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, body ApproveWhatsAppGroupJoinRequestsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewApproveWhatsAppGroupJoinRequestsRequestWithBody(server, groupId, params, "application/json", bodyReader)
+}
+
+// NewApproveWhatsAppGroupJoinRequestsRequestWithBody generates requests for ApproveWhatsAppGroupJoinRequests with any type of body
+func NewApproveWhatsAppGroupJoinRequestsRequestWithBody(server string, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/join-requests", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveWhatsAppGroupParticipantsRequest calls the generic RemoveWhatsAppGroupParticipants builder with application/json body
+func NewRemoveWhatsAppGroupParticipantsRequest(server string, groupId string, params *RemoveWhatsAppGroupParticipantsParams, body RemoveWhatsAppGroupParticipantsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRemoveWhatsAppGroupParticipantsRequestWithBody(server, groupId, params, "application/json", bodyReader)
+}
+
+// NewRemoveWhatsAppGroupParticipantsRequestWithBody generates requests for RemoveWhatsAppGroupParticipants with any type of body
+func NewRemoveWhatsAppGroupParticipantsRequestWithBody(server string, groupId string, params *RemoveWhatsAppGroupParticipantsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/participants", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAddWhatsAppGroupParticipantsRequest calls the generic AddWhatsAppGroupParticipants builder with application/json body
+func NewAddWhatsAppGroupParticipantsRequest(server string, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddWhatsAppGroupParticipantsRequestWithBody(server, groupId, params, "application/json", bodyReader)
+}
+
+// NewAddWhatsAppGroupParticipantsRequestWithBody generates requests for AddWhatsAppGroupParticipants with any type of body
+func NewAddWhatsAppGroupParticipantsRequestWithBody(server string, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "groupId", groupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/wa-groups/%s/participants", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -26848,6 +27919,51 @@ type ClientWithResponsesInterface interface {
 	UpdateWhatsAppTemplateWithBodyWithResponse(ctx context.Context, templateName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error)
 
 	UpdateWhatsAppTemplateWithResponse(ctx context.Context, templateName string, body UpdateWhatsAppTemplateJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppTemplateResponse, error)
+
+	// ListWhatsAppGroupChatsWithResponse request
+	ListWhatsAppGroupChatsWithResponse(ctx context.Context, params *ListWhatsAppGroupChatsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppGroupChatsResponse, error)
+
+	// CreateWhatsAppGroupChatWithBodyWithResponse request with any body
+	CreateWhatsAppGroupChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupChatResponse, error)
+
+	CreateWhatsAppGroupChatWithResponse(ctx context.Context, body CreateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupChatResponse, error)
+
+	// DeleteWhatsAppGroupChatWithResponse request
+	DeleteWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *DeleteWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupChatResponse, error)
+
+	// GetWhatsAppGroupChatWithResponse request
+	GetWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *GetWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*GetWhatsAppGroupChatResponse, error)
+
+	// UpdateWhatsAppGroupChatWithBodyWithResponse request with any body
+	UpdateWhatsAppGroupChatWithBodyWithResponse(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppGroupChatResponse, error)
+
+	UpdateWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, body UpdateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppGroupChatResponse, error)
+
+	// CreateWhatsAppGroupInviteLinkWithResponse request
+	CreateWhatsAppGroupInviteLinkWithResponse(ctx context.Context, groupId string, params *CreateWhatsAppGroupInviteLinkParams, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupInviteLinkResponse, error)
+
+	// RejectWhatsAppGroupJoinRequestsWithBodyWithResponse request with any body
+	RejectWhatsAppGroupJoinRequestsWithBodyWithResponse(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RejectWhatsAppGroupJoinRequestsResponse, error)
+
+	RejectWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, body RejectWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*RejectWhatsAppGroupJoinRequestsResponse, error)
+
+	// ListWhatsAppGroupJoinRequestsWithResponse request
+	ListWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *ListWhatsAppGroupJoinRequestsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppGroupJoinRequestsResponse, error)
+
+	// ApproveWhatsAppGroupJoinRequestsWithBodyWithResponse request with any body
+	ApproveWhatsAppGroupJoinRequestsWithBodyWithResponse(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ApproveWhatsAppGroupJoinRequestsResponse, error)
+
+	ApproveWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, body ApproveWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*ApproveWhatsAppGroupJoinRequestsResponse, error)
+
+	// RemoveWhatsAppGroupParticipantsWithBodyWithResponse request with any body
+	RemoveWhatsAppGroupParticipantsWithBodyWithResponse(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveWhatsAppGroupParticipantsResponse, error)
+
+	RemoveWhatsAppGroupParticipantsWithResponse(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, body RemoveWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveWhatsAppGroupParticipantsResponse, error)
+
+	// AddWhatsAppGroupParticipantsWithBodyWithResponse request with any body
+	AddWhatsAppGroupParticipantsWithBodyWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error)
+
+	AddWhatsAppGroupParticipantsWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error)
 }
 
 type ListAccountGroupsResponse struct {
@@ -34955,6 +36071,333 @@ func (r UpdateWhatsAppTemplateResponse) StatusCode() int {
 	return 0
 }
 
+type ListWhatsAppGroupChatsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Groups *[]struct {
+			// CreatedAt Group creation timestamp
+			CreatedAt *string `json:"createdAt,omitempty"`
+
+			// Id Group ID
+			Id *string `json:"id,omitempty"`
+
+			// Subject Group name
+			Subject *string `json:"subject,omitempty"`
+		} `json:"groups,omitempty"`
+		Paging *struct {
+			Cursors *struct {
+				After  *string `json:"after,omitempty"`
+				Before *string `json:"before,omitempty"`
+			} `json:"cursors,omitempty"`
+		} `json:"paging,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppGroupChatsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppGroupChatsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppGroupChatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Group *struct {
+			GroupId    *string `json:"groupId,omitempty"`
+			InviteLink *string `json:"inviteLink,omitempty"`
+		} `json:"group,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppGroupChatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppGroupChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppGroupChatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppGroupChatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppGroupChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppGroupChatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Group *struct {
+			// CreatedAt UNIX timestamp
+			CreatedAt        *int    `json:"createdAt,omitempty"`
+			Description      *string `json:"description,omitempty"`
+			Id               *string `json:"id,omitempty"`
+			IsSuspended      *bool   `json:"isSuspended,omitempty"`
+			JoinApprovalMode *string `json:"joinApprovalMode,omitempty"`
+			ParticipantCount *int    `json:"participantCount,omitempty"`
+			Participants     *[]struct {
+				Admin *string `json:"admin,omitempty"`
+
+				// User Phone number
+				User *string `json:"user,omitempty"`
+			} `json:"participants,omitempty"`
+			Subject *string `json:"subject,omitempty"`
+		} `json:"group,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppGroupChatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppGroupChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppGroupChatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppGroupChatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppGroupChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppGroupInviteLinkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		InviteLink *string `json:"inviteLink,omitempty"`
+		Success    *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppGroupInviteLinkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppGroupInviteLinkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RejectWhatsAppGroupJoinRequestsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RejectWhatsAppGroupJoinRequestsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RejectWhatsAppGroupJoinRequestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListWhatsAppGroupJoinRequestsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		JoinRequests *[]struct {
+			// Timestamp UNIX timestamp of request
+			Timestamp *int `json:"timestamp,omitempty"`
+
+			// User Phone number
+			User *string `json:"user,omitempty"`
+		} `json:"joinRequests,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppGroupJoinRequestsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppGroupJoinRequestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ApproveWhatsAppGroupJoinRequestsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ApproveWhatsAppGroupJoinRequestsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ApproveWhatsAppGroupJoinRequestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveWhatsAppGroupParticipantsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveWhatsAppGroupParticipantsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveWhatsAppGroupParticipantsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddWhatsAppGroupParticipantsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AddWhatsAppGroupParticipantsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddWhatsAppGroupParticipantsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // ListAccountGroupsWithResponse request returning *ListAccountGroupsResponse
 func (c *ClientWithResponses) ListAccountGroupsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListAccountGroupsResponse, error) {
 	rsp, err := c.ListAccountGroups(ctx, reqEditors...)
@@ -37667,6 +39110,153 @@ func (c *ClientWithResponses) UpdateWhatsAppTemplateWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseUpdateWhatsAppTemplateResponse(rsp)
+}
+
+// ListWhatsAppGroupChatsWithResponse request returning *ListWhatsAppGroupChatsResponse
+func (c *ClientWithResponses) ListWhatsAppGroupChatsWithResponse(ctx context.Context, params *ListWhatsAppGroupChatsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppGroupChatsResponse, error) {
+	rsp, err := c.ListWhatsAppGroupChats(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppGroupChatsResponse(rsp)
+}
+
+// CreateWhatsAppGroupChatWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppGroupChatResponse
+func (c *ClientWithResponses) CreateWhatsAppGroupChatWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupChatResponse, error) {
+	rsp, err := c.CreateWhatsAppGroupChatWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppGroupChatResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppGroupChatWithResponse(ctx context.Context, body CreateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupChatResponse, error) {
+	rsp, err := c.CreateWhatsAppGroupChat(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppGroupChatResponse(rsp)
+}
+
+// DeleteWhatsAppGroupChatWithResponse request returning *DeleteWhatsAppGroupChatResponse
+func (c *ClientWithResponses) DeleteWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *DeleteWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupChatResponse, error) {
+	rsp, err := c.DeleteWhatsAppGroupChat(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppGroupChatResponse(rsp)
+}
+
+// GetWhatsAppGroupChatWithResponse request returning *GetWhatsAppGroupChatResponse
+func (c *ClientWithResponses) GetWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *GetWhatsAppGroupChatParams, reqEditors ...RequestEditorFn) (*GetWhatsAppGroupChatResponse, error) {
+	rsp, err := c.GetWhatsAppGroupChat(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppGroupChatResponse(rsp)
+}
+
+// UpdateWhatsAppGroupChatWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppGroupChatResponse
+func (c *ClientWithResponses) UpdateWhatsAppGroupChatWithBodyWithResponse(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppGroupChatResponse, error) {
+	rsp, err := c.UpdateWhatsAppGroupChatWithBody(ctx, groupId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppGroupChatResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppGroupChatWithResponse(ctx context.Context, groupId string, params *UpdateWhatsAppGroupChatParams, body UpdateWhatsAppGroupChatJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppGroupChatResponse, error) {
+	rsp, err := c.UpdateWhatsAppGroupChat(ctx, groupId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppGroupChatResponse(rsp)
+}
+
+// CreateWhatsAppGroupInviteLinkWithResponse request returning *CreateWhatsAppGroupInviteLinkResponse
+func (c *ClientWithResponses) CreateWhatsAppGroupInviteLinkWithResponse(ctx context.Context, groupId string, params *CreateWhatsAppGroupInviteLinkParams, reqEditors ...RequestEditorFn) (*CreateWhatsAppGroupInviteLinkResponse, error) {
+	rsp, err := c.CreateWhatsAppGroupInviteLink(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppGroupInviteLinkResponse(rsp)
+}
+
+// RejectWhatsAppGroupJoinRequestsWithBodyWithResponse request with arbitrary body returning *RejectWhatsAppGroupJoinRequestsResponse
+func (c *ClientWithResponses) RejectWhatsAppGroupJoinRequestsWithBodyWithResponse(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RejectWhatsAppGroupJoinRequestsResponse, error) {
+	rsp, err := c.RejectWhatsAppGroupJoinRequestsWithBody(ctx, groupId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRejectWhatsAppGroupJoinRequestsResponse(rsp)
+}
+
+func (c *ClientWithResponses) RejectWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *RejectWhatsAppGroupJoinRequestsParams, body RejectWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*RejectWhatsAppGroupJoinRequestsResponse, error) {
+	rsp, err := c.RejectWhatsAppGroupJoinRequests(ctx, groupId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRejectWhatsAppGroupJoinRequestsResponse(rsp)
+}
+
+// ListWhatsAppGroupJoinRequestsWithResponse request returning *ListWhatsAppGroupJoinRequestsResponse
+func (c *ClientWithResponses) ListWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *ListWhatsAppGroupJoinRequestsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppGroupJoinRequestsResponse, error) {
+	rsp, err := c.ListWhatsAppGroupJoinRequests(ctx, groupId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppGroupJoinRequestsResponse(rsp)
+}
+
+// ApproveWhatsAppGroupJoinRequestsWithBodyWithResponse request with arbitrary body returning *ApproveWhatsAppGroupJoinRequestsResponse
+func (c *ClientWithResponses) ApproveWhatsAppGroupJoinRequestsWithBodyWithResponse(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ApproveWhatsAppGroupJoinRequestsResponse, error) {
+	rsp, err := c.ApproveWhatsAppGroupJoinRequestsWithBody(ctx, groupId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseApproveWhatsAppGroupJoinRequestsResponse(rsp)
+}
+
+func (c *ClientWithResponses) ApproveWhatsAppGroupJoinRequestsWithResponse(ctx context.Context, groupId string, params *ApproveWhatsAppGroupJoinRequestsParams, body ApproveWhatsAppGroupJoinRequestsJSONRequestBody, reqEditors ...RequestEditorFn) (*ApproveWhatsAppGroupJoinRequestsResponse, error) {
+	rsp, err := c.ApproveWhatsAppGroupJoinRequests(ctx, groupId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseApproveWhatsAppGroupJoinRequestsResponse(rsp)
+}
+
+// RemoveWhatsAppGroupParticipantsWithBodyWithResponse request with arbitrary body returning *RemoveWhatsAppGroupParticipantsResponse
+func (c *ClientWithResponses) RemoveWhatsAppGroupParticipantsWithBodyWithResponse(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveWhatsAppGroupParticipantsResponse, error) {
+	rsp, err := c.RemoveWhatsAppGroupParticipantsWithBody(ctx, groupId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveWhatsAppGroupParticipantsResponse(rsp)
+}
+
+func (c *ClientWithResponses) RemoveWhatsAppGroupParticipantsWithResponse(ctx context.Context, groupId string, params *RemoveWhatsAppGroupParticipantsParams, body RemoveWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveWhatsAppGroupParticipantsResponse, error) {
+	rsp, err := c.RemoveWhatsAppGroupParticipants(ctx, groupId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveWhatsAppGroupParticipantsResponse(rsp)
+}
+
+// AddWhatsAppGroupParticipantsWithBodyWithResponse request with arbitrary body returning *AddWhatsAppGroupParticipantsResponse
+func (c *ClientWithResponses) AddWhatsAppGroupParticipantsWithBodyWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error) {
+	rsp, err := c.AddWhatsAppGroupParticipantsWithBody(ctx, groupId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddWhatsAppGroupParticipantsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddWhatsAppGroupParticipantsWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error) {
+	rsp, err := c.AddWhatsAppGroupParticipants(ctx, groupId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddWhatsAppGroupParticipantsResponse(rsp)
 }
 
 // ParseListAccountGroupsResponse parses an HTTP response from a ListAccountGroupsWithResponse call
@@ -48551,6 +50141,461 @@ func ParseUpdateWhatsAppTemplateResponse(rsp *http.Response) (*UpdateWhatsAppTem
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppGroupChatsResponse parses an HTTP response from a ListWhatsAppGroupChatsWithResponse call
+func ParseListWhatsAppGroupChatsResponse(rsp *http.Response) (*ListWhatsAppGroupChatsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppGroupChatsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Groups *[]struct {
+				// CreatedAt Group creation timestamp
+				CreatedAt *string `json:"createdAt,omitempty"`
+
+				// Id Group ID
+				Id *string `json:"id,omitempty"`
+
+				// Subject Group name
+				Subject *string `json:"subject,omitempty"`
+			} `json:"groups,omitempty"`
+			Paging *struct {
+				Cursors *struct {
+					After  *string `json:"after,omitempty"`
+					Before *string `json:"before,omitempty"`
+				} `json:"cursors,omitempty"`
+			} `json:"paging,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppGroupChatResponse parses an HTTP response from a CreateWhatsAppGroupChatWithResponse call
+func ParseCreateWhatsAppGroupChatResponse(rsp *http.Response) (*CreateWhatsAppGroupChatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppGroupChatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Group *struct {
+				GroupId    *string `json:"groupId,omitempty"`
+				InviteLink *string `json:"inviteLink,omitempty"`
+			} `json:"group,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppGroupChatResponse parses an HTTP response from a DeleteWhatsAppGroupChatWithResponse call
+func ParseDeleteWhatsAppGroupChatResponse(rsp *http.Response) (*DeleteWhatsAppGroupChatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppGroupChatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppGroupChatResponse parses an HTTP response from a GetWhatsAppGroupChatWithResponse call
+func ParseGetWhatsAppGroupChatResponse(rsp *http.Response) (*GetWhatsAppGroupChatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppGroupChatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Group *struct {
+				// CreatedAt UNIX timestamp
+				CreatedAt        *int    `json:"createdAt,omitempty"`
+				Description      *string `json:"description,omitempty"`
+				Id               *string `json:"id,omitempty"`
+				IsSuspended      *bool   `json:"isSuspended,omitempty"`
+				JoinApprovalMode *string `json:"joinApprovalMode,omitempty"`
+				ParticipantCount *int    `json:"participantCount,omitempty"`
+				Participants     *[]struct {
+					Admin *string `json:"admin,omitempty"`
+
+					// User Phone number
+					User *string `json:"user,omitempty"`
+				} `json:"participants,omitempty"`
+				Subject *string `json:"subject,omitempty"`
+			} `json:"group,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppGroupChatResponse parses an HTTP response from a UpdateWhatsAppGroupChatWithResponse call
+func ParseUpdateWhatsAppGroupChatResponse(rsp *http.Response) (*UpdateWhatsAppGroupChatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppGroupChatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppGroupInviteLinkResponse parses an HTTP response from a CreateWhatsAppGroupInviteLinkWithResponse call
+func ParseCreateWhatsAppGroupInviteLinkResponse(rsp *http.Response) (*CreateWhatsAppGroupInviteLinkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppGroupInviteLinkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			InviteLink *string `json:"inviteLink,omitempty"`
+			Success    *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRejectWhatsAppGroupJoinRequestsResponse parses an HTTP response from a RejectWhatsAppGroupJoinRequestsWithResponse call
+func ParseRejectWhatsAppGroupJoinRequestsResponse(rsp *http.Response) (*RejectWhatsAppGroupJoinRequestsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RejectWhatsAppGroupJoinRequestsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppGroupJoinRequestsResponse parses an HTTP response from a ListWhatsAppGroupJoinRequestsWithResponse call
+func ParseListWhatsAppGroupJoinRequestsResponse(rsp *http.Response) (*ListWhatsAppGroupJoinRequestsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppGroupJoinRequestsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			JoinRequests *[]struct {
+				// Timestamp UNIX timestamp of request
+				Timestamp *int `json:"timestamp,omitempty"`
+
+				// User Phone number
+				User *string `json:"user,omitempty"`
+			} `json:"joinRequests,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseApproveWhatsAppGroupJoinRequestsResponse parses an HTTP response from a ApproveWhatsAppGroupJoinRequestsWithResponse call
+func ParseApproveWhatsAppGroupJoinRequestsResponse(rsp *http.Response) (*ApproveWhatsAppGroupJoinRequestsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ApproveWhatsAppGroupJoinRequestsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveWhatsAppGroupParticipantsResponse parses an HTTP response from a RemoveWhatsAppGroupParticipantsWithResponse call
+func ParseRemoveWhatsAppGroupParticipantsResponse(rsp *http.Response) (*RemoveWhatsAppGroupParticipantsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveWhatsAppGroupParticipantsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddWhatsAppGroupParticipantsResponse parses an HTTP response from a AddWhatsAppGroupParticipantsWithResponse call
+func ParseAddWhatsAppGroupParticipantsResponse(rsp *http.Response) (*AddWhatsAppGroupParticipantsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddWhatsAppGroupParticipantsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 

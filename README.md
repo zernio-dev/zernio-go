@@ -359,10 +359,14 @@ func main() {
 ### WhatsApp
 | Method | Description |
 |--------|-------------|
+| `client.ListWhatsAppGroupChatsWithResponse()` | List active groups |
+| `client.ListWhatsAppGroupJoinRequestsWithResponse()` | List join requests |
 | `client.BulkDeleteWhatsAppContactsWithResponse()` | Bulk delete contacts |
 | `client.BulkUpdateWhatsAppContactsWithResponse()` | Bulk update contacts |
 | `client.CreateWhatsAppBroadcastWithResponse()` | Create broadcast |
 | `client.CreateWhatsAppContactWithResponse()` | Create contact |
+| `client.CreateWhatsAppGroupChatWithResponse()` | Create group |
+| `client.CreateWhatsAppGroupInviteLinkWithResponse()` | Create invite link |
 | `client.CreateWhatsAppTemplateWithResponse()` | Create template |
 | `client.GetWhatsAppBroadcastWithResponse()` | Get broadcast |
 | `client.GetWhatsAppBroadcastRecipientsWithResponse()` | List recipients |
@@ -371,21 +375,28 @@ func main() {
 | `client.GetWhatsAppContactWithResponse()` | Get contact |
 | `client.GetWhatsAppContactsWithResponse()` | List contacts |
 | `client.GetWhatsAppDisplayNameWithResponse()` | Get display name and review status |
+| `client.GetWhatsAppGroupChatWithResponse()` | Get group info |
 | `client.GetWhatsAppGroupsWithResponse()` | List contact groups |
 | `client.GetWhatsAppTemplateWithResponse()` | Get template |
 | `client.GetWhatsAppTemplatesWithResponse()` | List templates |
 | `client.UpdateWhatsAppBusinessProfileWithResponse()` | Update business profile |
 | `client.UpdateWhatsAppContactWithResponse()` | Update contact |
 | `client.UpdateWhatsAppDisplayNameWithResponse()` | Request display name change |
+| `client.UpdateWhatsAppGroupChatWithResponse()` | Update group settings |
 | `client.UpdateWhatsAppTemplateWithResponse()` | Update template |
 | `client.DeleteWhatsAppBroadcastWithResponse()` | Delete broadcast |
 | `client.DeleteWhatsAppContactWithResponse()` | Delete contact |
 | `client.DeleteWhatsAppGroupWithResponse()` | Delete group |
+| `client.DeleteWhatsAppGroupChatWithResponse()` | Delete group |
 | `client.DeleteWhatsAppTemplateWithResponse()` | Delete template |
 | `client.AddWhatsAppBroadcastRecipientsWithResponse()` | Add recipients |
+| `client.AddWhatsAppGroupParticipantsWithResponse()` | Add participants |
+| `client.ApproveWhatsAppGroupJoinRequestsWithResponse()` | Approve join requests |
 | `client.CancelWhatsAppBroadcastScheduleWithResponse()` | Cancel scheduled broadcast |
 | `client.ImportWhatsAppContactsWithResponse()` | Bulk import contacts |
+| `client.RejectWhatsAppGroupJoinRequestsWithResponse()` | Reject join requests |
 | `client.RemoveWhatsAppBroadcastRecipientsWithResponse()` | Remove recipients |
+| `client.RemoveWhatsAppGroupParticipantsWithResponse()` | Remove participants |
 | `client.RenameWhatsAppGroupWithResponse()` | Rename group |
 | `client.ScheduleWhatsAppBroadcastWithResponse()` | Schedule broadcast |
 | `client.SendWhatsAppBroadcastWithResponse()` | Send broadcast |
