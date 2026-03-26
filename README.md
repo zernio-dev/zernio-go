@@ -51,6 +51,7 @@ func main() {
 | `client.CreatePostWithResponse()` | Create post |
 | `client.GetPostWithResponse()` | Get post |
 | `client.UpdatePostWithResponse()` | Update post |
+| `client.UpdatePostMetadataWithResponse()` | Update post metadata |
 | `client.DeletePostWithResponse()` | Delete post |
 | `client.RetryPostWithResponse()` | Retry failed post |
 | `client.UnpublishPostWithResponse()` | Unpublish post |

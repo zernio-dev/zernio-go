@@ -2600,6 +2600,42 @@ func (e UnpublishPostJSONBodyPlatform) Valid() bool {
 	}
 }
 
+// Defines values for UpdatePostMetadataJSONBodyPlatform.
+const (
+	UpdatePostMetadataJSONBodyPlatformYoutube UpdatePostMetadataJSONBodyPlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the UpdatePostMetadataJSONBodyPlatform enum.
+func (e UpdatePostMetadataJSONBodyPlatform) Valid() bool {
+	switch e {
+	case UpdatePostMetadataJSONBodyPlatformYoutube:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdatePostMetadataJSONBodyPrivacyStatus.
+const (
+	Private  UpdatePostMetadataJSONBodyPrivacyStatus = "private"
+	Public   UpdatePostMetadataJSONBodyPrivacyStatus = "public"
+	Unlisted UpdatePostMetadataJSONBodyPrivacyStatus = "unlisted"
+)
+
+// Valid indicates whether the value is a known member of the UpdatePostMetadataJSONBodyPrivacyStatus enum.
+func (e UpdatePostMetadataJSONBodyPrivacyStatus) Valid() bool {
+	switch e {
+	case Private:
+		return true
+	case Public:
+		return true
+	case Unlisted:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListQueueSlotsParamsAll.
 const (
 	ListQueueSlotsParamsAllTrue ListQueueSlotsParamsAll = "true"
@@ -2893,49 +2929,49 @@ func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
 
 // Defines values for ValidatePostJSONBodyPlatformsPlatform.
 const (
-	Bluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
-	Facebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
-	Googlebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
-	Instagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
-	Linkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
-	Pinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
-	Reddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
-	Snapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
-	Telegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
-	Threads        ValidatePostJSONBodyPlatformsPlatform = "threads"
-	Tiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
-	Twitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
-	Youtube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
+	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
+	ValidatePostJSONBodyPlatformsPlatformFacebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
+	ValidatePostJSONBodyPlatformsPlatformGooglebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
+	ValidatePostJSONBodyPlatformsPlatformInstagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
+	ValidatePostJSONBodyPlatformsPlatformLinkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
+	ValidatePostJSONBodyPlatformsPlatformPinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
+	ValidatePostJSONBodyPlatformsPlatformReddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
+	ValidatePostJSONBodyPlatformsPlatformSnapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
+	ValidatePostJSONBodyPlatformsPlatformTelegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
+	ValidatePostJSONBodyPlatformsPlatformThreads        ValidatePostJSONBodyPlatformsPlatform = "threads"
+	ValidatePostJSONBodyPlatformsPlatformTiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
+	ValidatePostJSONBodyPlatformsPlatformTwitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
+	ValidatePostJSONBodyPlatformsPlatformYoutube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
 )
 
 // Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsPlatform enum.
 func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case ValidatePostJSONBodyPlatformsPlatformBluesky:
 		return true
-	case Facebook:
+	case ValidatePostJSONBodyPlatformsPlatformFacebook:
 		return true
-	case Googlebusiness:
+	case ValidatePostJSONBodyPlatformsPlatformGooglebusiness:
 		return true
-	case Instagram:
+	case ValidatePostJSONBodyPlatformsPlatformInstagram:
 		return true
-	case Linkedin:
+	case ValidatePostJSONBodyPlatformsPlatformLinkedin:
 		return true
-	case Pinterest:
+	case ValidatePostJSONBodyPlatformsPlatformPinterest:
 		return true
-	case Reddit:
+	case ValidatePostJSONBodyPlatformsPlatformReddit:
 		return true
-	case Snapchat:
+	case ValidatePostJSONBodyPlatformsPlatformSnapchat:
 		return true
-	case Telegram:
+	case ValidatePostJSONBodyPlatformsPlatformTelegram:
 		return true
-	case Threads:
+	case ValidatePostJSONBodyPlatformsPlatformThreads:
 		return true
-	case Tiktok:
+	case ValidatePostJSONBodyPlatformsPlatformTiktok:
 		return true
-	case Twitter:
+	case ValidatePostJSONBodyPlatformsPlatformTwitter:
 		return true
-	case Youtube:
+	case ValidatePostJSONBodyPlatformsPlatformYoutube:
 		return true
 	default:
 		return false
@@ -6498,6 +6534,33 @@ type UnpublishPostJSONBody struct {
 // UnpublishPostJSONBodyPlatform defines parameters for UnpublishPost.
 type UnpublishPostJSONBodyPlatform string
 
+// UpdatePostMetadataJSONBody defines parameters for UpdatePostMetadata.
+type UpdatePostMetadataJSONBody struct {
+	// CategoryId YouTube video category ID
+	CategoryId *string `json:"categoryId,omitempty"`
+
+	// Description New video description
+	Description *string `json:"description,omitempty"`
+
+	// Platform The platform to update metadata on
+	Platform UpdatePostMetadataJSONBodyPlatform `json:"platform"`
+
+	// PrivacyStatus Video privacy setting
+	PrivacyStatus *UpdatePostMetadataJSONBodyPrivacyStatus `json:"privacyStatus,omitempty"`
+
+	// Tags Array of keyword tags (max 500 characters combined for YouTube)
+	Tags *[]string `json:"tags,omitempty"`
+
+	// Title New video title (max 100 characters for YouTube)
+	Title *string `json:"title,omitempty"`
+}
+
+// UpdatePostMetadataJSONBodyPlatform defines parameters for UpdatePostMetadata.
+type UpdatePostMetadataJSONBodyPlatform string
+
+// UpdatePostMetadataJSONBodyPrivacyStatus defines parameters for UpdatePostMetadata.
+type UpdatePostMetadataJSONBodyPrivacyStatus string
+
 // ListProfilesParams defines parameters for ListProfiles.
 type ListProfilesParams struct {
 	// IncludeOverLimit When true, includes over-limit profiles (marked with isOverLimit: true).
@@ -7558,6 +7621,9 @@ type UpdatePostJSONRequestBody UpdatePostJSONBody
 
 // UnpublishPostJSONRequestBody defines body for UnpublishPost for application/json ContentType.
 type UnpublishPostJSONRequestBody UnpublishPostJSONBody
+
+// UpdatePostMetadataJSONRequestBody defines body for UpdatePostMetadata for application/json ContentType.
+type UpdatePostMetadataJSONRequestBody UpdatePostMetadataJSONBody
 
 // CreateProfileJSONRequestBody defines body for CreateProfile for application/json ContentType.
 type CreateProfileJSONRequestBody CreateProfileJSONBody
@@ -9077,6 +9143,11 @@ type ClientInterface interface {
 	UnpublishPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UnpublishPost(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePostMetadataWithBody request with any body
+	UpdatePostMetadataWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdatePostMetadata(ctx context.Context, postId string, body UpdatePostMetadataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListProfiles request
 	ListProfiles(ctx context.Context, params *ListProfilesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11664,6 +11735,30 @@ func (c *Client) UnpublishPostWithBody(ctx context.Context, postId string, conte
 
 func (c *Client) UnpublishPost(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUnpublishPostRequest(c.Server, postId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePostMetadataWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePostMetadataRequestWithBody(c.Server, postId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePostMetadata(ctx context.Context, postId string, body UpdatePostMetadataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePostMetadataRequest(c.Server, postId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -21451,6 +21546,53 @@ func NewUnpublishPostRequestWithBody(server string, postId string, contentType s
 	return req, nil
 }
 
+// NewUpdatePostMetadataRequest calls the generic UpdatePostMetadata builder with application/json body
+func NewUpdatePostMetadataRequest(server string, postId string, body UpdatePostMetadataJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdatePostMetadataRequestWithBody(server, postId, "application/json", bodyReader)
+}
+
+// NewUpdatePostMetadataRequestWithBody generates requests for UpdatePostMetadata with any type of body
+func NewUpdatePostMetadataRequestWithBody(server string, postId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "postId", postId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/posts/%s/update-metadata", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListProfilesRequest generates requests for ListProfiles
 func NewListProfilesRequest(server string, params *ListProfilesParams) (*http.Request, error) {
 	var err error
@@ -26374,6 +26516,11 @@ type ClientWithResponsesInterface interface {
 	UnpublishPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error)
 
 	UnpublishPostWithResponse(ctx context.Context, postId string, body UnpublishPostJSONRequestBody, reqEditors ...RequestEditorFn) (*UnpublishPostResponse, error)
+
+	// UpdatePostMetadataWithBodyWithResponse request with any body
+	UpdatePostMetadataWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePostMetadataResponse, error)
+
+	UpdatePostMetadataWithResponse(ctx context.Context, postId string, body UpdatePostMetadataJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePostMetadataResponse, error)
 
 	// ListProfilesWithResponse request
 	ListProfilesWithResponse(ctx context.Context, params *ListProfilesParams, reqEditors ...RequestEditorFn) (*ListProfilesResponse, error)
@@ -31922,6 +32069,34 @@ func (r UnpublishPostResponse) StatusCode() int {
 	return 0
 }
 
+type UpdatePostMetadataResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message       *string   `json:"message,omitempty"`
+		Success       *bool     `json:"success,omitempty"`
+		UpdatedFields *[]string `json:"updatedFields,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdatePostMetadataResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdatePostMetadataResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListProfilesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -36428,6 +36603,23 @@ func (c *ClientWithResponses) UnpublishPostWithResponse(ctx context.Context, pos
 		return nil, err
 	}
 	return ParseUnpublishPostResponse(rsp)
+}
+
+// UpdatePostMetadataWithBodyWithResponse request with arbitrary body returning *UpdatePostMetadataResponse
+func (c *ClientWithResponses) UpdatePostMetadataWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePostMetadataResponse, error) {
+	rsp, err := c.UpdatePostMetadataWithBody(ctx, postId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePostMetadataResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdatePostMetadataWithResponse(ctx context.Context, postId string, body UpdatePostMetadataJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePostMetadataResponse, error) {
+	rsp, err := c.UpdatePostMetadata(ctx, postId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePostMetadataResponse(rsp)
 }
 
 // ListProfilesWithResponse request returning *ListProfilesResponse
@@ -44549,6 +44741,50 @@ func ParseUnpublishPostResponse(rsp *http.Response) (*UnpublishPostResponse, err
 		var dest struct {
 			Message *string `json:"message,omitempty"`
 			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdatePostMetadataResponse parses an HTTP response from a UpdatePostMetadataWithResponse call
+func ParseUpdatePostMetadataResponse(rsp *http.Response) (*UpdatePostMetadataResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdatePostMetadataResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message       *string   `json:"message,omitempty"`
+			Success       *bool     `json:"success,omitempty"`
+			UpdatedFields *[]string `json:"updatedFields,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
