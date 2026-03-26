@@ -6572,6 +6572,9 @@ type UnpublishPostJSONBodyPlatform string
 
 // UpdatePostMetadataJSONBody defines parameters for UpdatePostMetadata.
 type UpdatePostMetadataJSONBody struct {
+	// AccountId Zernio social account ID (required for direct mode, ignored for post-based mode)
+	AccountId *string `json:"accountId,omitempty"`
+
 	// CategoryId YouTube video category ID
 	CategoryId *string `json:"categoryId,omitempty"`
 
@@ -6589,6 +6592,9 @@ type UpdatePostMetadataJSONBody struct {
 
 	// Title New video title (max 100 characters for YouTube)
 	Title *string `json:"title,omitempty"`
+
+	// VideoId YouTube video ID (required for direct mode, ignored for post-based mode)
+	VideoId *string `json:"videoId,omitempty"`
 }
 
 // UpdatePostMetadataJSONBodyPlatform defines parameters for UpdatePostMetadata.
@@ -33192,6 +33198,9 @@ type UpdatePostMetadataResponse struct {
 		Message       *string   `json:"message,omitempty"`
 		Success       *bool     `json:"success,omitempty"`
 		UpdatedFields *[]string `json:"updatedFields,omitempty"`
+
+		// VideoId Only present in direct video ID mode
+		VideoId *string `json:"videoId,omitempty"`
 	}
 	JSON401 *Unauthorized
 	JSON404 *NotFound
@@ -46375,6 +46384,9 @@ func ParseUpdatePostMetadataResponse(rsp *http.Response) (*UpdatePostMetadataRes
 			Message       *string   `json:"message,omitempty"`
 			Success       *bool     `json:"success,omitempty"`
 			UpdatedFields *[]string `json:"updatedFields,omitempty"`
+
+			// VideoId Only present in direct video ID mode
+			VideoId *string `json:"videoId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
