@@ -899,6 +899,7 @@ const (
 	WebhookEventsAccountDisconnected WebhookEvents = "account.disconnected"
 	WebhookEventsCommentReceived     WebhookEvents = "comment.received"
 	WebhookEventsMessageReceived     WebhookEvents = "message.received"
+	WebhookEventsPostCancelled       WebhookEvents = "post.cancelled"
 	WebhookEventsPostFailed          WebhookEvents = "post.failed"
 	WebhookEventsPostPartial         WebhookEvents = "post.partial"
 	WebhookEventsPostPublished       WebhookEvents = "post.published"
@@ -916,6 +917,8 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsCommentReceived:
 		return true
 	case WebhookEventsMessageReceived:
+		return true
+	case WebhookEventsPostCancelled:
 		return true
 	case WebhookEventsPostFailed:
 		return true
@@ -938,6 +941,7 @@ const (
 	WebhookLogEventAccountDisconnected WebhookLogEvent = "account.disconnected"
 	WebhookLogEventCommentReceived     WebhookLogEvent = "comment.received"
 	WebhookLogEventMessageReceived     WebhookLogEvent = "message.received"
+	WebhookLogEventPostCancelled       WebhookLogEvent = "post.cancelled"
 	WebhookLogEventPostFailed          WebhookLogEvent = "post.failed"
 	WebhookLogEventPostPartial         WebhookLogEvent = "post.partial"
 	WebhookLogEventPostPublished       WebhookLogEvent = "post.published"
@@ -956,6 +960,8 @@ func (e WebhookLogEvent) Valid() bool {
 	case WebhookLogEventCommentReceived:
 		return true
 	case WebhookLogEventMessageReceived:
+		return true
+	case WebhookLogEventPostCancelled:
 		return true
 	case WebhookLogEventPostFailed:
 		return true
@@ -3056,6 +3062,7 @@ const (
 	GetWebhookLogsParamsEventAccountDisconnected GetWebhookLogsParamsEvent = "account.disconnected"
 	GetWebhookLogsParamsEventCommentReceived     GetWebhookLogsParamsEvent = "comment.received"
 	GetWebhookLogsParamsEventMessageReceived     GetWebhookLogsParamsEvent = "message.received"
+	GetWebhookLogsParamsEventPostCancelled       GetWebhookLogsParamsEvent = "post.cancelled"
 	GetWebhookLogsParamsEventPostFailed          GetWebhookLogsParamsEvent = "post.failed"
 	GetWebhookLogsParamsEventPostPartial         GetWebhookLogsParamsEvent = "post.partial"
 	GetWebhookLogsParamsEventPostPublished       GetWebhookLogsParamsEvent = "post.published"
@@ -3074,6 +3081,8 @@ func (e GetWebhookLogsParamsEvent) Valid() bool {
 	case GetWebhookLogsParamsEventCommentReceived:
 		return true
 	case GetWebhookLogsParamsEventMessageReceived:
+		return true
+	case GetWebhookLogsParamsEventPostCancelled:
 		return true
 	case GetWebhookLogsParamsEventPostFailed:
 		return true
@@ -3098,6 +3107,7 @@ const (
 	CreateWebhookSettingsJSONBodyEventsAccountDisconnected CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CreateWebhookSettingsJSONBodyEventsCommentReceived     CreateWebhookSettingsJSONBodyEvents = "comment.received"
 	CreateWebhookSettingsJSONBodyEventsMessageReceived     CreateWebhookSettingsJSONBodyEvents = "message.received"
+	CreateWebhookSettingsJSONBodyEventsPostCancelled       CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	CreateWebhookSettingsJSONBodyEventsPostFailed          CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial         CreateWebhookSettingsJSONBodyEvents = "post.partial"
 	CreateWebhookSettingsJSONBodyEventsPostPublished       CreateWebhookSettingsJSONBodyEvents = "post.published"
@@ -3115,6 +3125,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CreateWebhookSettingsJSONBodyEventsCommentReceived:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsMessageReceived:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsPostCancelled:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostFailed:
 		return true
@@ -3137,6 +3149,7 @@ const (
 	AccountDisconnected UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CommentReceived     UpdateWebhookSettingsJSONBodyEvents = "comment.received"
 	MessageReceived     UpdateWebhookSettingsJSONBodyEvents = "message.received"
+	PostCancelled       UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	PostFailed          UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	PostPartial         UpdateWebhookSettingsJSONBodyEvents = "post.partial"
 	PostPublished       UpdateWebhookSettingsJSONBodyEvents = "post.published"
@@ -3154,6 +3167,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CommentReceived:
 		return true
 	case MessageReceived:
+		return true
+	case PostCancelled:
 		return true
 	case PostFailed:
 		return true
