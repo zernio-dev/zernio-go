@@ -6321,6 +6321,12 @@ type SendInboxMessageJSONBodyTemplateElementsButtonsType string
 // SendInboxMessageJSONBodyTemplateType defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyTemplateType string
 
+// DeleteInboxMessageParams defines parameters for DeleteInboxMessage.
+type DeleteInboxMessageParams struct {
+	// AccountId Social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
 // EditInboxMessageJSONBody defines parameters for EditInboxMessage.
 type EditInboxMessageJSONBody struct {
 	// AccountId Social account ID
@@ -6342,6 +6348,27 @@ type EditInboxMessageJSONBody struct {
 
 // EditInboxMessageJSONBodyReplyMarkupType defines parameters for EditInboxMessage.
 type EditInboxMessageJSONBodyReplyMarkupType string
+
+// RemoveMessageReactionParams defines parameters for RemoveMessageReaction.
+type RemoveMessageReactionParams struct {
+	// AccountId Social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// AddMessageReactionJSONBody defines parameters for AddMessageReaction.
+type AddMessageReactionJSONBody struct {
+	// AccountId Social account ID
+	AccountId string `json:"accountId"`
+
+	// Emoji Emoji character (e.g. "👍", "❤️")
+	Emoji string `json:"emoji"`
+}
+
+// SendTypingIndicatorJSONBody defines parameters for SendTypingIndicator.
+type SendTypingIndicatorJSONBody struct {
+	// AccountId Social account ID
+	AccountId string `json:"accountId"`
+}
 
 // ListInboxReviewsParams defines parameters for ListInboxReviews.
 type ListInboxReviewsParams struct {
@@ -6407,6 +6434,15 @@ type GetMediaPresignedUrlJSONBody struct {
 
 // GetMediaPresignedUrlJSONBodyContentType defines parameters for GetMediaPresignedUrl.
 type GetMediaPresignedUrlJSONBodyContentType string
+
+// UploadMediaDirectMultipartBody defines parameters for UploadMediaDirect.
+type UploadMediaDirectMultipartBody struct {
+	// ContentType Override MIME type (e.g. "image/jpeg"). Auto-detected from file if not provided.
+	ContentType *string `json:"contentType,omitempty"`
+
+	// File The file to upload (max 25MB)
+	File openapi_types.File `json:"file"`
+}
 
 // ListPostsParams defines parameters for ListPosts.
 type ListPostsParams struct {
@@ -7773,6 +7809,12 @@ type SendInboxMessageMultipartRequestBody SendInboxMessageMultipartBody
 // EditInboxMessageJSONRequestBody defines body for EditInboxMessage for application/json ContentType.
 type EditInboxMessageJSONRequestBody EditInboxMessageJSONBody
 
+// AddMessageReactionJSONRequestBody defines body for AddMessageReaction for application/json ContentType.
+type AddMessageReactionJSONRequestBody AddMessageReactionJSONBody
+
+// SendTypingIndicatorJSONRequestBody defines body for SendTypingIndicator for application/json ContentType.
+type SendTypingIndicatorJSONRequestBody SendTypingIndicatorJSONBody
+
 // DeleteInboxReviewReplyJSONRequestBody defines body for DeleteInboxReviewReply for application/json ContentType.
 type DeleteInboxReviewReplyJSONRequestBody DeleteInboxReviewReplyJSONBody
 
@@ -7784,6 +7826,9 @@ type CreateInviteTokenJSONRequestBody CreateInviteTokenJSONBody
 
 // GetMediaPresignedUrlJSONRequestBody defines body for GetMediaPresignedUrl for application/json ContentType.
 type GetMediaPresignedUrlJSONRequestBody GetMediaPresignedUrlJSONBody
+
+// UploadMediaDirectMultipartRequestBody defines body for UploadMediaDirect for multipart/form-data ContentType.
+type UploadMediaDirectMultipartRequestBody UploadMediaDirectMultipartBody
 
 // CreatePostJSONRequestBody defines body for CreatePost for application/json ContentType.
 type CreatePostJSONRequestBody CreatePostJSONBody
@@ -9273,10 +9318,26 @@ type ClientInterface interface {
 
 	SendInboxMessage(ctx context.Context, conversationId string, body SendInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteInboxMessage request
+	DeleteInboxMessage(ctx context.Context, conversationId string, messageId string, params *DeleteInboxMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// EditInboxMessageWithBody request with any body
 	EditInboxMessageWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveMessageReaction request
+	RemoveMessageReaction(ctx context.Context, conversationId string, messageId string, params *RemoveMessageReactionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddMessageReactionWithBody request with any body
+	AddMessageReactionWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddMessageReaction(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendTypingIndicatorWithBody request with any body
+	SendTypingIndicatorWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendTypingIndicator(ctx context.Context, conversationId string, body SendTypingIndicatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListInboxReviews request
 	ListInboxReviews(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -9300,6 +9361,9 @@ type ClientInterface interface {
 	GetMediaPresignedUrlWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	GetMediaPresignedUrl(ctx context.Context, body GetMediaPresignedUrlJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadMediaDirectWithBody request with any body
+	UploadMediaDirectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPosts request
 	ListPosts(ctx context.Context, params *ListPostsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11695,6 +11759,18 @@ func (c *Client) SendInboxMessage(ctx context.Context, conversationId string, bo
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeleteInboxMessage(ctx context.Context, conversationId string, messageId string, params *DeleteInboxMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteInboxMessageRequest(c.Server, conversationId, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) EditInboxMessageWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEditInboxMessageRequestWithBody(c.Server, conversationId, messageId, contentType, body)
 	if err != nil {
@@ -11709,6 +11785,66 @@ func (c *Client) EditInboxMessageWithBody(ctx context.Context, conversationId st
 
 func (c *Client) EditInboxMessage(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEditInboxMessageRequest(c.Server, conversationId, messageId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveMessageReaction(ctx context.Context, conversationId string, messageId string, params *RemoveMessageReactionParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveMessageReactionRequest(c.Server, conversationId, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddMessageReactionWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMessageReactionRequestWithBody(c.Server, conversationId, messageId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddMessageReaction(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMessageReactionRequest(c.Server, conversationId, messageId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendTypingIndicatorWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendTypingIndicatorRequestWithBody(c.Server, conversationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendTypingIndicator(ctx context.Context, conversationId string, body SendTypingIndicatorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendTypingIndicatorRequest(c.Server, conversationId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -11817,6 +11953,18 @@ func (c *Client) GetMediaPresignedUrlWithBody(ctx context.Context, contentType s
 
 func (c *Client) GetMediaPresignedUrl(ctx context.Context, body GetMediaPresignedUrlJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetMediaPresignedUrlRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadMediaDirectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadMediaDirectRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -20870,6 +21018,65 @@ func NewSendInboxMessageRequestWithBody(server string, conversationId string, co
 	return req, nil
 }
 
+// NewDeleteInboxMessageRequest generates requests for DeleteInboxMessage
+func NewDeleteInboxMessageRequest(server string, conversationId string, messageId string, params *DeleteInboxMessageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/messages/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewEditInboxMessageRequest calls the generic EditInboxMessage builder with application/json body
 func NewEditInboxMessageRequest(server string, conversationId string, messageId string, body EditInboxMessageJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -20915,6 +21122,166 @@ func NewEditInboxMessageRequestWithBody(server string, conversationId string, me
 	}
 
 	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveMessageReactionRequest generates requests for RemoveMessageReaction
+func NewRemoveMessageReactionRequest(server string, conversationId string, messageId string, params *RemoveMessageReactionParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/messages/%s/reactions", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddMessageReactionRequest calls the generic AddMessageReaction builder with application/json body
+func NewAddMessageReactionRequest(server string, conversationId string, messageId string, body AddMessageReactionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddMessageReactionRequestWithBody(server, conversationId, messageId, "application/json", bodyReader)
+}
+
+// NewAddMessageReactionRequestWithBody generates requests for AddMessageReaction with any type of body
+func NewAddMessageReactionRequestWithBody(server string, conversationId string, messageId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/messages/%s/reactions", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendTypingIndicatorRequest calls the generic SendTypingIndicator builder with application/json body
+func NewSendTypingIndicatorRequest(server string, conversationId string, body SendTypingIndicatorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendTypingIndicatorRequestWithBody(server, conversationId, "application/json", bodyReader)
+}
+
+// NewSendTypingIndicatorRequestWithBody generates requests for SendTypingIndicator with any type of body
+func NewSendTypingIndicatorRequestWithBody(server string, conversationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/typing", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -21272,6 +21639,35 @@ func NewGetMediaPresignedUrlRequestWithBody(server string, contentType string, b
 	}
 
 	operationPath := fmt.Sprintf("/v1/media/presign")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUploadMediaDirectRequestWithBody generates requests for UploadMediaDirect with any type of body
+func NewUploadMediaDirectRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/media/upload-direct")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -27545,10 +27941,26 @@ type ClientWithResponsesInterface interface {
 
 	SendInboxMessageWithResponse(ctx context.Context, conversationId string, body SendInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendInboxMessageResponse, error)
 
+	// DeleteInboxMessageWithResponse request
+	DeleteInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, params *DeleteInboxMessageParams, reqEditors ...RequestEditorFn) (*DeleteInboxMessageResponse, error)
+
 	// EditInboxMessageWithBodyWithResponse request with any body
 	EditInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
 
 	EditInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, body EditInboxMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error)
+
+	// RemoveMessageReactionWithResponse request
+	RemoveMessageReactionWithResponse(ctx context.Context, conversationId string, messageId string, params *RemoveMessageReactionParams, reqEditors ...RequestEditorFn) (*RemoveMessageReactionResponse, error)
+
+	// AddMessageReactionWithBodyWithResponse request with any body
+	AddMessageReactionWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error)
+
+	AddMessageReactionWithResponse(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error)
+
+	// SendTypingIndicatorWithBodyWithResponse request with any body
+	SendTypingIndicatorWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendTypingIndicatorResponse, error)
+
+	SendTypingIndicatorWithResponse(ctx context.Context, conversationId string, body SendTypingIndicatorJSONRequestBody, reqEditors ...RequestEditorFn) (*SendTypingIndicatorResponse, error)
 
 	// ListInboxReviewsWithResponse request
 	ListInboxReviewsWithResponse(ctx context.Context, params *ListInboxReviewsParams, reqEditors ...RequestEditorFn) (*ListInboxReviewsResponse, error)
@@ -27572,6 +27984,9 @@ type ClientWithResponsesInterface interface {
 	GetMediaPresignedUrlWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetMediaPresignedUrlResponse, error)
 
 	GetMediaPresignedUrlWithResponse(ctx context.Context, body GetMediaPresignedUrlJSONRequestBody, reqEditors ...RequestEditorFn) (*GetMediaPresignedUrlResponse, error)
+
+	// UploadMediaDirectWithBodyWithResponse request with any body
+	UploadMediaDirectWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadMediaDirectResponse, error)
 
 	// ListPostsWithResponse request
 	ListPostsWithResponse(ctx context.Context, params *ListPostsParams, reqEditors ...RequestEditorFn) (*ListPostsResponse, error)
@@ -32687,6 +33102,31 @@ func (r SendInboxMessageResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteInboxMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteInboxMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteInboxMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type EditInboxMessageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -32709,6 +33149,81 @@ func (r EditInboxMessageResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r EditInboxMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveMessageReactionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveMessageReactionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveMessageReactionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddMessageReactionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AddMessageReactionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddMessageReactionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendTypingIndicatorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SendTypingIndicatorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendTypingIndicatorResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -32906,6 +33421,41 @@ func (r GetMediaPresignedUrlResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetMediaPresignedUrlResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UploadMediaDirectResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// ContentType MIME type of the file
+		ContentType *string `json:"contentType,omitempty"`
+
+		// Filename Generated unique filename
+		Filename *string `json:"filename,omitempty"`
+
+		// Size File size in bytes
+		Size *int `json:"size,omitempty"`
+
+		// Url Publicly accessible URL for the uploaded file
+		Url *string `json:"url,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadMediaDirectResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadMediaDirectResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -37864,6 +38414,15 @@ func (c *ClientWithResponses) SendInboxMessageWithResponse(ctx context.Context, 
 	return ParseSendInboxMessageResponse(rsp)
 }
 
+// DeleteInboxMessageWithResponse request returning *DeleteInboxMessageResponse
+func (c *ClientWithResponses) DeleteInboxMessageWithResponse(ctx context.Context, conversationId string, messageId string, params *DeleteInboxMessageParams, reqEditors ...RequestEditorFn) (*DeleteInboxMessageResponse, error) {
+	rsp, err := c.DeleteInboxMessage(ctx, conversationId, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteInboxMessageResponse(rsp)
+}
+
 // EditInboxMessageWithBodyWithResponse request with arbitrary body returning *EditInboxMessageResponse
 func (c *ClientWithResponses) EditInboxMessageWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditInboxMessageResponse, error) {
 	rsp, err := c.EditInboxMessageWithBody(ctx, conversationId, messageId, contentType, body, reqEditors...)
@@ -37879,6 +38438,49 @@ func (c *ClientWithResponses) EditInboxMessageWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseEditInboxMessageResponse(rsp)
+}
+
+// RemoveMessageReactionWithResponse request returning *RemoveMessageReactionResponse
+func (c *ClientWithResponses) RemoveMessageReactionWithResponse(ctx context.Context, conversationId string, messageId string, params *RemoveMessageReactionParams, reqEditors ...RequestEditorFn) (*RemoveMessageReactionResponse, error) {
+	rsp, err := c.RemoveMessageReaction(ctx, conversationId, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveMessageReactionResponse(rsp)
+}
+
+// AddMessageReactionWithBodyWithResponse request with arbitrary body returning *AddMessageReactionResponse
+func (c *ClientWithResponses) AddMessageReactionWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error) {
+	rsp, err := c.AddMessageReactionWithBody(ctx, conversationId, messageId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMessageReactionResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddMessageReactionWithResponse(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error) {
+	rsp, err := c.AddMessageReaction(ctx, conversationId, messageId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMessageReactionResponse(rsp)
+}
+
+// SendTypingIndicatorWithBodyWithResponse request with arbitrary body returning *SendTypingIndicatorResponse
+func (c *ClientWithResponses) SendTypingIndicatorWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendTypingIndicatorResponse, error) {
+	rsp, err := c.SendTypingIndicatorWithBody(ctx, conversationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendTypingIndicatorResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendTypingIndicatorWithResponse(ctx context.Context, conversationId string, body SendTypingIndicatorJSONRequestBody, reqEditors ...RequestEditorFn) (*SendTypingIndicatorResponse, error) {
+	rsp, err := c.SendTypingIndicator(ctx, conversationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendTypingIndicatorResponse(rsp)
 }
 
 // ListInboxReviewsWithResponse request returning *ListInboxReviewsResponse
@@ -37956,6 +38558,15 @@ func (c *ClientWithResponses) GetMediaPresignedUrlWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetMediaPresignedUrlResponse(rsp)
+}
+
+// UploadMediaDirectWithBodyWithResponse request with arbitrary body returning *UploadMediaDirectResponse
+func (c *ClientWithResponses) UploadMediaDirectWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadMediaDirectResponse, error) {
+	rsp, err := c.UploadMediaDirectWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadMediaDirectResponse(rsp)
 }
 
 // ListPostsWithResponse request returning *ListPostsResponse
@@ -45624,6 +46235,41 @@ func ParseSendInboxMessageResponse(rsp *http.Response) (*SendInboxMessageRespons
 	return response, nil
 }
 
+// ParseDeleteInboxMessageResponse parses an HTTP response from a DeleteInboxMessageWithResponse call
+func ParseDeleteInboxMessageResponse(rsp *http.Response) (*DeleteInboxMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteInboxMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseEditInboxMessageResponse parses an HTTP response from a EditInboxMessageWithResponse call
 func ParseEditInboxMessageResponse(rsp *http.Response) (*EditInboxMessageResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -45643,6 +46289,111 @@ func ParseEditInboxMessageResponse(rsp *http.Response) (*EditInboxMessageRespons
 			Data *struct {
 				MessageId *int `json:"messageId,omitempty"`
 			} `json:"data,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveMessageReactionResponse parses an HTTP response from a RemoveMessageReactionWithResponse call
+func ParseRemoveMessageReactionResponse(rsp *http.Response) (*RemoveMessageReactionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveMessageReactionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddMessageReactionResponse parses an HTTP response from a AddMessageReactionWithResponse call
+func ParseAddMessageReactionResponse(rsp *http.Response) (*AddMessageReactionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddMessageReactionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendTypingIndicatorResponse parses an HTTP response from a SendTypingIndicatorWithResponse call
+func ParseSendTypingIndicatorResponse(rsp *http.Response) (*SendTypingIndicatorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendTypingIndicatorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
 			Success *bool `json:"success,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -45901,6 +46652,51 @@ func ParseGetMediaPresignedUrlResponse(rsp *http.Response) (*GetMediaPresignedUr
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadMediaDirectResponse parses an HTTP response from a UploadMediaDirectWithResponse call
+func ParseUploadMediaDirectResponse(rsp *http.Response) (*UploadMediaDirectResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadMediaDirectResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// ContentType MIME type of the file
+			ContentType *string `json:"contentType,omitempty"`
+
+			// Filename Generated unique filename
+			Filename *string `json:"filename,omitempty"`
+
+			// Size File size in bytes
+			Size *int `json:"size,omitempty"`
+
+			// Url Publicly accessible URL for the uploaded file
+			Url *string `json:"url,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
