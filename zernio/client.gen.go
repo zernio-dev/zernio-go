@@ -3889,10 +3889,16 @@ type InstagramPlatformData struct {
 	// FirstComment Optional first comment to add after the post is created (not applied to Stories)
 	FirstComment *string `json:"firstComment,omitempty"`
 
+	// InstagramThumbnail Custom cover image URL for Instagram Reels (JPG or PNG, publicly accessible). Overrides thumbOffset when provided. Also accepted as reelCover (alias).
+	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
+
+	// ReelCover Alias for instagramThumbnail. If both are provided, instagramThumbnail takes priority.
+	ReelCover *string `json:"reelCover,omitempty"`
+
 	// ShareToFeed For Reels only. When true (default), the Reel appears on both the Reels tab and your main profile feed. Set to false to post to the Reels tab only.
 	ShareToFeed *bool `json:"shareToFeed,omitempty"`
 
-	// ThumbOffset Millisecond offset from video start for the Reel thumbnail. Ignored if a custom thumbnail URL is provided. Defaults to 0.
+	// ThumbOffset Millisecond offset from video start for the Reel cover frame. Ignored when instagramThumbnail or reelCover is provided. Defaults to 0.
 	ThumbOffset *int `json:"thumbOffset,omitempty"`
 
 	// TrialParams Trial Reels configuration. Trial reels are shared to non-followers first and can later be graduated to regular reels manually or automatically based on performance. Only applies to Reels.
@@ -4020,7 +4026,7 @@ type LinkedInPlatformData struct {
 type MediaItem struct {
 	Filename *string `json:"filename,omitempty"`
 
-	// InstagramThumbnail Optional custom cover image URL for Instagram Reels
+	// InstagramThumbnail Custom cover image URL for Instagram Reels. Can also be set via platformSpecificData.instagramThumbnail or platformSpecificData.reelCover. Resolution order: this field > platformSpecificData.instagramThumbnail > platformSpecificData.reelCover > platformSpecificData.thumbnailUrl (legacy).
 	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
 
 	// MimeType Optional MIME type (e.g. image/jpeg, video/mp4)
