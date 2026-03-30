@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -9013,7 +9012,6 @@ func (t WhatsAppTemplateComponent) AsWhatsAppHeaderComponent() (WhatsAppHeaderCo
 
 // FromWhatsAppHeaderComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppHeaderComponent
 func (t *WhatsAppTemplateComponent) FromWhatsAppHeaderComponent(v WhatsAppHeaderComponent) error {
-	v.Type = "HEADER"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -9021,7 +9019,6 @@ func (t *WhatsAppTemplateComponent) FromWhatsAppHeaderComponent(v WhatsAppHeader
 
 // MergeWhatsAppHeaderComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppHeaderComponent
 func (t *WhatsAppTemplateComponent) MergeWhatsAppHeaderComponent(v WhatsAppHeaderComponent) error {
-	v.Type = "HEADER"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -9041,7 +9038,6 @@ func (t WhatsAppTemplateComponent) AsWhatsAppBodyComponent() (WhatsAppBodyCompon
 
 // FromWhatsAppBodyComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppBodyComponent
 func (t *WhatsAppTemplateComponent) FromWhatsAppBodyComponent(v WhatsAppBodyComponent) error {
-	v.Type = "BODY"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -9049,7 +9045,6 @@ func (t *WhatsAppTemplateComponent) FromWhatsAppBodyComponent(v WhatsAppBodyComp
 
 // MergeWhatsAppBodyComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppBodyComponent
 func (t *WhatsAppTemplateComponent) MergeWhatsAppBodyComponent(v WhatsAppBodyComponent) error {
-	v.Type = "BODY"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -9069,7 +9064,6 @@ func (t WhatsAppTemplateComponent) AsWhatsAppFooterComponent() (WhatsAppFooterCo
 
 // FromWhatsAppFooterComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppFooterComponent
 func (t *WhatsAppTemplateComponent) FromWhatsAppFooterComponent(v WhatsAppFooterComponent) error {
-	v.Type = "FOOTER"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -9077,7 +9071,6 @@ func (t *WhatsAppTemplateComponent) FromWhatsAppFooterComponent(v WhatsAppFooter
 
 // MergeWhatsAppFooterComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppFooterComponent
 func (t *WhatsAppTemplateComponent) MergeWhatsAppFooterComponent(v WhatsAppFooterComponent) error {
-	v.Type = "FOOTER"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -9097,7 +9090,6 @@ func (t WhatsAppTemplateComponent) AsWhatsAppButtonsComponent() (WhatsAppButtons
 
 // FromWhatsAppButtonsComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppButtonsComponent
 func (t *WhatsAppTemplateComponent) FromWhatsAppButtonsComponent(v WhatsAppButtonsComponent) error {
-	v.Type = "BUTTONS"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -9105,7 +9097,6 @@ func (t *WhatsAppTemplateComponent) FromWhatsAppButtonsComponent(v WhatsAppButto
 
 // MergeWhatsAppButtonsComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppButtonsComponent
 func (t *WhatsAppTemplateComponent) MergeWhatsAppButtonsComponent(v WhatsAppButtonsComponent) error {
-	v.Type = "BUTTONS"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -9114,33 +9105,6 @@ func (t *WhatsAppTemplateComponent) MergeWhatsAppButtonsComponent(v WhatsAppButt
 	merged, err := runtime.JSONMerge(t.union, b)
 	t.union = merged
 	return err
-}
-
-func (t WhatsAppTemplateComponent) Discriminator() (string, error) {
-	var discriminator struct {
-		Discriminator string `json:"type"`
-	}
-	err := json.Unmarshal(t.union, &discriminator)
-	return discriminator.Discriminator, err
-}
-
-func (t WhatsAppTemplateComponent) ValueByDiscriminator() (interface{}, error) {
-	discriminator, err := t.Discriminator()
-	if err != nil {
-		return nil, err
-	}
-	switch discriminator {
-	case "BODY":
-		return t.AsWhatsAppBodyComponent()
-	case "BUTTONS":
-		return t.AsWhatsAppButtonsComponent()
-	case "FOOTER":
-		return t.AsWhatsAppFooterComponent()
-	case "HEADER":
-		return t.AsWhatsAppHeaderComponent()
-	default:
-		return nil, errors.New("unknown discriminator value: " + discriminator)
-	}
 }
 
 func (t WhatsAppTemplateComponent) MarshalJSON() ([]byte, error) {
