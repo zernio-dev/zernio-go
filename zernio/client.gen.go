@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -998,6 +999,150 @@ func (e WebhookLogStatus) Valid() bool {
 	}
 }
 
+// Defines values for WhatsAppBodyComponentType.
+const (
+	BODY WhatsAppBodyComponentType = "BODY"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppBodyComponentType enum.
+func (e WhatsAppBodyComponentType) Valid() bool {
+	switch e {
+	case BODY:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppButtonsComponentType.
+const (
+	BUTTONS WhatsAppButtonsComponentType = "BUTTONS"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppButtonsComponentType enum.
+func (e WhatsAppButtonsComponentType) Valid() bool {
+	switch e {
+	case BUTTONS:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppFooterComponentType.
+const (
+	FOOTER WhatsAppFooterComponentType = "FOOTER"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppFooterComponentType enum.
+func (e WhatsAppFooterComponentType) Valid() bool {
+	switch e {
+	case FOOTER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppHeaderComponentFormat.
+const (
+	WhatsAppHeaderComponentFormatDOCUMENT WhatsAppHeaderComponentFormat = "DOCUMENT"
+	WhatsAppHeaderComponentFormatGIF      WhatsAppHeaderComponentFormat = "GIF"
+	WhatsAppHeaderComponentFormatIMAGE    WhatsAppHeaderComponentFormat = "IMAGE"
+	WhatsAppHeaderComponentFormatLOCATION WhatsAppHeaderComponentFormat = "LOCATION"
+	WhatsAppHeaderComponentFormatTEXT     WhatsAppHeaderComponentFormat = "TEXT"
+	WhatsAppHeaderComponentFormatVIDEO    WhatsAppHeaderComponentFormat = "VIDEO"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppHeaderComponentFormat enum.
+func (e WhatsAppHeaderComponentFormat) Valid() bool {
+	switch e {
+	case WhatsAppHeaderComponentFormatDOCUMENT:
+		return true
+	case WhatsAppHeaderComponentFormatGIF:
+		return true
+	case WhatsAppHeaderComponentFormatIMAGE:
+		return true
+	case WhatsAppHeaderComponentFormatLOCATION:
+		return true
+	case WhatsAppHeaderComponentFormatTEXT:
+		return true
+	case WhatsAppHeaderComponentFormatVIDEO:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppHeaderComponentType.
+const (
+	HEADER WhatsAppHeaderComponentType = "HEADER"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppHeaderComponentType enum.
+func (e WhatsAppHeaderComponentType) Valid() bool {
+	switch e {
+	case HEADER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppTemplateButtonOtpType.
+const (
+	COPYCODE WhatsAppTemplateButtonOtpType = "COPY_CODE"
+	ONETAP   WhatsAppTemplateButtonOtpType = "ONE_TAP"
+	ZEROTAP  WhatsAppTemplateButtonOtpType = "ZERO_TAP"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppTemplateButtonOtpType enum.
+func (e WhatsAppTemplateButtonOtpType) Valid() bool {
+	switch e {
+	case COPYCODE:
+		return true
+	case ONETAP:
+		return true
+	case ZEROTAP:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WhatsAppTemplateButtonType.
+const (
+	WhatsAppTemplateButtonTypeCATALOG     WhatsAppTemplateButtonType = "CATALOG"
+	WhatsAppTemplateButtonTypeFLOW        WhatsAppTemplateButtonType = "FLOW"
+	WhatsAppTemplateButtonTypeMPM         WhatsAppTemplateButtonType = "MPM"
+	WhatsAppTemplateButtonTypeOTP         WhatsAppTemplateButtonType = "OTP"
+	WhatsAppTemplateButtonTypePHONENUMBER WhatsAppTemplateButtonType = "PHONE_NUMBER"
+	WhatsAppTemplateButtonTypeQUICKREPLY  WhatsAppTemplateButtonType = "QUICK_REPLY"
+	WhatsAppTemplateButtonTypeURL         WhatsAppTemplateButtonType = "URL"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppTemplateButtonType enum.
+func (e WhatsAppTemplateButtonType) Valid() bool {
+	switch e {
+	case WhatsAppTemplateButtonTypeCATALOG:
+		return true
+	case WhatsAppTemplateButtonTypeFLOW:
+		return true
+	case WhatsAppTemplateButtonTypeMPM:
+		return true
+	case WhatsAppTemplateButtonTypeOTP:
+		return true
+	case WhatsAppTemplateButtonTypePHONENUMBER:
+		return true
+	case WhatsAppTemplateButtonTypeQUICKREPLY:
+		return true
+	case WhatsAppTemplateButtonTypeURL:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for YouTubePlatformDataVisibility.
 const (
 	YouTubePlatformDataVisibilityPrivate  YouTubePlatformDataVisibility = "private"
@@ -1156,16 +1301,16 @@ func (e CreateGoogleBusinessMediaJSONBodyCategory) Valid() bool {
 
 // Defines values for CreateGoogleBusinessMediaJSONBodyMediaFormat.
 const (
-	PHOTO CreateGoogleBusinessMediaJSONBodyMediaFormat = "PHOTO"
-	VIDEO CreateGoogleBusinessMediaJSONBodyMediaFormat = "VIDEO"
+	CreateGoogleBusinessMediaJSONBodyMediaFormatPHOTO CreateGoogleBusinessMediaJSONBodyMediaFormat = "PHOTO"
+	CreateGoogleBusinessMediaJSONBodyMediaFormatVIDEO CreateGoogleBusinessMediaJSONBodyMediaFormat = "VIDEO"
 )
 
 // Valid indicates whether the value is a known member of the CreateGoogleBusinessMediaJSONBodyMediaFormat enum.
 func (e CreateGoogleBusinessMediaJSONBodyMediaFormat) Valid() bool {
 	switch e {
-	case PHOTO:
+	case CreateGoogleBusinessMediaJSONBodyMediaFormatPHOTO:
 		return true
-	case VIDEO:
+	case CreateGoogleBusinessMediaJSONBodyMediaFormatVIDEO:
 		return true
 	default:
 		return false
@@ -3346,19 +3491,19 @@ func (e CreateWhatsAppTemplateJSONBodyCategory) Valid() bool {
 
 // Defines values for CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType.
 const (
-	PHONENUMBER CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "PHONE_NUMBER"
-	QUICKREPLY  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "QUICK_REPLY"
-	URL         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "URL"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePHONENUMBER CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "PHONE_NUMBER"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQUICKREPLY  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "QUICK_REPLY"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeURL         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "URL"
 )
 
 // Valid indicates whether the value is a known member of the CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType enum.
 func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() bool {
 	switch e {
-	case PHONENUMBER:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePHONENUMBER:
 		return true
-	case QUICKREPLY:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQUICKREPLY:
 		return true
-	case URL:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeURL:
 		return true
 	default:
 		return false
@@ -4752,6 +4897,104 @@ type WebhookLogEvent string
 
 // WebhookLogStatus defines model for WebhookLog.Status.
 type WebhookLogStatus string
+
+// WhatsAppBodyComponent defines model for WhatsAppBodyComponent.
+type WhatsAppBodyComponent struct {
+	// AddSecurityRecommendation Add security recommendation text (authentication templates only)
+	AddSecurityRecommendation *bool `json:"add_security_recommendation,omitempty"`
+	Example                   *struct {
+		// BodyText Sample values for body variables (array of arrays)
+		BodyText *[][]string `json:"body_text,omitempty"`
+	} `json:"example,omitempty"`
+
+	// Text Body text with optional {{n}} variables
+	Text string                    `json:"text"`
+	Type WhatsAppBodyComponentType `json:"type"`
+}
+
+// WhatsAppBodyComponentType defines model for WhatsAppBodyComponent.Type.
+type WhatsAppBodyComponentType string
+
+// WhatsAppButtonsComponent defines model for WhatsAppButtonsComponent.
+type WhatsAppButtonsComponent struct {
+	Buttons []WhatsAppTemplateButton     `json:"buttons"`
+	Type    WhatsAppButtonsComponentType `json:"type"`
+}
+
+// WhatsAppButtonsComponentType defines model for WhatsAppButtonsComponent.Type.
+type WhatsAppButtonsComponentType string
+
+// WhatsAppFooterComponent defines model for WhatsAppFooterComponent.
+type WhatsAppFooterComponent struct {
+	// CodeExpirationMinutes OTP code expiry in minutes (authentication templates only)
+	CodeExpirationMinutes *int `json:"code_expiration_minutes,omitempty"`
+
+	// Text Static footer text
+	Text *string                     `json:"text,omitempty"`
+	Type WhatsAppFooterComponentType `json:"type"`
+}
+
+// WhatsAppFooterComponentType defines model for WhatsAppFooterComponent.Type.
+type WhatsAppFooterComponentType string
+
+// WhatsAppHeaderComponent defines model for WhatsAppHeaderComponent.
+type WhatsAppHeaderComponent struct {
+	Example *struct {
+		// HeaderHandle When the header format is a media type (IMAGE, VIDEO, GIF, DOCUMENT), provide a public URL here. Zernio will download and upload it to WhatsApp on your behalf, replacing it with the internal file handle before creating the template.
+		HeaderHandle *[]string `json:"header_handle,omitempty"`
+
+		// HeaderText Sample values for header text variables
+		HeaderText *[]string `json:"header_text,omitempty"`
+	} `json:"example,omitempty"`
+	Format WhatsAppHeaderComponentFormat `json:"format"`
+
+	// Text Header text (may include {{1}} variable). Used when format is TEXT.
+	Text *string                     `json:"text,omitempty"`
+	Type WhatsAppHeaderComponentType `json:"type"`
+}
+
+// WhatsAppHeaderComponentFormat defines model for WhatsAppHeaderComponent.Format.
+type WhatsAppHeaderComponentFormat string
+
+// WhatsAppHeaderComponentType defines model for WhatsAppHeaderComponent.Type.
+type WhatsAppHeaderComponentType string
+
+// WhatsAppTemplateButton defines model for WhatsAppTemplateButton.
+type WhatsAppTemplateButton struct {
+	AutofillText *string `json:"autofill_text,omitempty"`
+
+	// Example Example values for URL suffix variables
+	Example        *[]string `json:"example,omitempty"`
+	FlowAction     *string   `json:"flow_action,omitempty"`
+	FlowId         *string   `json:"flow_id,omitempty"`
+	FlowJson       *string   `json:"flow_json,omitempty"`
+	FlowName       *string   `json:"flow_name,omitempty"`
+	NavigateScreen *string   `json:"navigate_screen,omitempty"`
+
+	// OtpType Required when type is OTP
+	OtpType     *WhatsAppTemplateButtonOtpType `json:"otp_type,omitempty"`
+	PackageName *string                        `json:"package_name,omitempty"`
+
+	// PhoneNumber Required when type is PHONE_NUMBER
+	PhoneNumber   *string                    `json:"phone_number,omitempty"`
+	SignatureHash *string                    `json:"signature_hash,omitempty"`
+	Text          string                     `json:"text"`
+	Type          WhatsAppTemplateButtonType `json:"type"`
+
+	// Url Required when type is URL
+	Url *string `json:"url,omitempty"`
+}
+
+// WhatsAppTemplateButtonOtpType Required when type is OTP
+type WhatsAppTemplateButtonOtpType string
+
+// WhatsAppTemplateButtonType defines model for WhatsAppTemplateButton.Type.
+type WhatsAppTemplateButtonType string
+
+// WhatsAppTemplateComponent defines model for WhatsAppTemplateComponent.
+type WhatsAppTemplateComponent struct {
+	union json.RawMessage
+}
 
 // YouTubeDailyViewsResponse defines model for YouTubeDailyViewsResponse.
 type YouTubeDailyViewsResponse struct {
@@ -7514,8 +7757,8 @@ type CreateWhatsAppTemplateJSONBody struct {
 	// Category Template category
 	Category CreateWhatsAppTemplateJSONBodyCategory `json:"category"`
 
-	// Components Template components (header, body, footer, buttons). Required for custom templates, omit when using library_template_name.
-	Components *[]map[string]interface{} `json:"components,omitempty"`
+	// Components Template components (HEADER, BODY, FOOTER, BUTTONS). Required for custom templates, omit when using library_template_name.
+	Components *[]WhatsAppTemplateComponent `json:"components,omitempty"`
 
 	// Language Template language code (e.g., en_US)
 	Language string `json:"language"`
@@ -7568,7 +7811,7 @@ type UpdateWhatsAppTemplateJSONBody struct {
 	AccountId string `json:"accountId"`
 
 	// Components Updated template components
-	Components []map[string]interface{} `json:"components"`
+	Components []WhatsAppTemplateComponent `json:"components"`
 }
 
 // ListWhatsAppGroupChatsParams defines parameters for ListWhatsAppGroupChats.
@@ -8757,6 +9000,155 @@ func (t SocialAccount_ProfileId) MarshalJSON() ([]byte, error) {
 }
 
 func (t *SocialAccount_ProfileId) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsWhatsAppHeaderComponent returns the union data inside the WhatsAppTemplateComponent as a WhatsAppHeaderComponent
+func (t WhatsAppTemplateComponent) AsWhatsAppHeaderComponent() (WhatsAppHeaderComponent, error) {
+	var body WhatsAppHeaderComponent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppHeaderComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppHeaderComponent
+func (t *WhatsAppTemplateComponent) FromWhatsAppHeaderComponent(v WhatsAppHeaderComponent) error {
+	v.Type = "HEADER"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppHeaderComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppHeaderComponent
+func (t *WhatsAppTemplateComponent) MergeWhatsAppHeaderComponent(v WhatsAppHeaderComponent) error {
+	v.Type = "HEADER"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsWhatsAppBodyComponent returns the union data inside the WhatsAppTemplateComponent as a WhatsAppBodyComponent
+func (t WhatsAppTemplateComponent) AsWhatsAppBodyComponent() (WhatsAppBodyComponent, error) {
+	var body WhatsAppBodyComponent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppBodyComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppBodyComponent
+func (t *WhatsAppTemplateComponent) FromWhatsAppBodyComponent(v WhatsAppBodyComponent) error {
+	v.Type = "BODY"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppBodyComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppBodyComponent
+func (t *WhatsAppTemplateComponent) MergeWhatsAppBodyComponent(v WhatsAppBodyComponent) error {
+	v.Type = "BODY"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsWhatsAppFooterComponent returns the union data inside the WhatsAppTemplateComponent as a WhatsAppFooterComponent
+func (t WhatsAppTemplateComponent) AsWhatsAppFooterComponent() (WhatsAppFooterComponent, error) {
+	var body WhatsAppFooterComponent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppFooterComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppFooterComponent
+func (t *WhatsAppTemplateComponent) FromWhatsAppFooterComponent(v WhatsAppFooterComponent) error {
+	v.Type = "FOOTER"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppFooterComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppFooterComponent
+func (t *WhatsAppTemplateComponent) MergeWhatsAppFooterComponent(v WhatsAppFooterComponent) error {
+	v.Type = "FOOTER"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsWhatsAppButtonsComponent returns the union data inside the WhatsAppTemplateComponent as a WhatsAppButtonsComponent
+func (t WhatsAppTemplateComponent) AsWhatsAppButtonsComponent() (WhatsAppButtonsComponent, error) {
+	var body WhatsAppButtonsComponent
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppButtonsComponent overwrites any union data inside the WhatsAppTemplateComponent as the provided WhatsAppButtonsComponent
+func (t *WhatsAppTemplateComponent) FromWhatsAppButtonsComponent(v WhatsAppButtonsComponent) error {
+	v.Type = "BUTTONS"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppButtonsComponent performs a merge with any union data inside the WhatsAppTemplateComponent, using the provided WhatsAppButtonsComponent
+func (t *WhatsAppTemplateComponent) MergeWhatsAppButtonsComponent(v WhatsAppButtonsComponent) error {
+	v.Type = "BUTTONS"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t WhatsAppTemplateComponent) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t WhatsAppTemplateComponent) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "BODY":
+		return t.AsWhatsAppBodyComponent()
+	case "BUTTONS":
+		return t.AsWhatsAppButtonsComponent()
+	case "FOOTER":
+		return t.AsWhatsAppFooterComponent()
+	case "HEADER":
+		return t.AsWhatsAppHeaderComponent()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t WhatsAppTemplateComponent) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *WhatsAppTemplateComponent) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
