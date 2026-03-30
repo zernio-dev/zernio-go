@@ -4800,6 +4800,9 @@ type YouTubePlatformData struct {
 	// MadeForKids COPPA compliance flag. Set true for child-directed content (restricts comments, notifications, ad targeting). Defaults to false. YouTube may block views if not explicitly set.
 	MadeForKids *bool `json:"madeForKids,omitempty"`
 
+	// PlaylistId Optional YouTube playlist ID to add the video to after upload (e.g. 'PLxxxxxxxxxxxxx'). Use GET /v1/accounts/{id}/youtube-playlists to list available playlists. Works for both immediate and scheduled uploads. Quota cost: 50 YouTube API units per call.
+	PlaylistId *string `json:"playlistId,omitempty"`
+
 	// Title Video title. Defaults to first line of content or "Untitled Video". Must be ≤ 100 characters.
 	Title *string `json:"title,omitempty"`
 
@@ -5266,6 +5269,12 @@ type GetTikTokCreatorInfoParams struct {
 
 // GetTikTokCreatorInfoParamsMediaType defines parameters for GetTikTokCreatorInfo.
 type GetTikTokCreatorInfoParamsMediaType string
+
+// UpdateYoutubeDefaultPlaylistJSONBody defines parameters for UpdateYoutubeDefaultPlaylist.
+type UpdateYoutubeDefaultPlaylistJSONBody struct {
+	DefaultPlaylistId   string  `json:"defaultPlaylistId"`
+	DefaultPlaylistName *string `json:"defaultPlaylistName,omitempty"`
+}
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
@@ -7728,6 +7737,9 @@ type UpdateRedditSubredditsJSONRequestBody UpdateRedditSubredditsJSONBody
 // SetTelegramCommandsJSONRequestBody defines body for SetTelegramCommands for application/json ContentType.
 type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 
+// UpdateYoutubeDefaultPlaylistJSONRequestBody defines body for UpdateYoutubeDefaultPlaylist for application/json ContentType.
+type UpdateYoutubeDefaultPlaylistJSONRequestBody UpdateYoutubeDefaultPlaylistJSONBody
+
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
 
@@ -9047,6 +9059,14 @@ type ClientInterface interface {
 
 	// GetTikTokCreatorInfo request
 	GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetYoutubePlaylists request
+	GetYoutubePlaylists(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateYoutubeDefaultPlaylistWithBody request with any body
+	UpdateYoutubeDefaultPlaylistWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateYoutubeDefaultPlaylist(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10543,6 +10563,42 @@ func (c *Client) SetTelegramCommands(ctx context.Context, accountId string, body
 
 func (c *Client) GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTikTokCreatorInfoRequest(c.Server, accountId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetYoutubePlaylists(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetYoutubePlaylistsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateYoutubeDefaultPlaylistWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateYoutubeDefaultPlaylistRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateYoutubeDefaultPlaylist(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateYoutubeDefaultPlaylistRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -16434,6 +16490,87 @@ func NewGetTikTokCreatorInfoRequest(server string, accountId string, params *Get
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetYoutubePlaylistsRequest generates requests for GetYoutubePlaylists
+func NewGetYoutubePlaylistsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/youtube-playlists", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateYoutubeDefaultPlaylistRequest calls the generic UpdateYoutubeDefaultPlaylist builder with application/json body
+func NewUpdateYoutubeDefaultPlaylistRequest(server string, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateYoutubeDefaultPlaylistRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewUpdateYoutubeDefaultPlaylistRequestWithBody generates requests for UpdateYoutubeDefaultPlaylist with any type of body
+func NewUpdateYoutubeDefaultPlaylistRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/youtube-playlists", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -27671,6 +27808,14 @@ type ClientWithResponsesInterface interface {
 	// GetTikTokCreatorInfoWithResponse request
 	GetTikTokCreatorInfoWithResponse(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*GetTikTokCreatorInfoResponse, error)
 
+	// GetYoutubePlaylistsWithResponse request
+	GetYoutubePlaylistsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetYoutubePlaylistsResponse, error)
+
+	// UpdateYoutubeDefaultPlaylistWithBodyWithResponse request with any body
+	UpdateYoutubeDefaultPlaylistWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateYoutubeDefaultPlaylistResponse, error)
+
+	UpdateYoutubeDefaultPlaylistWithResponse(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateYoutubeDefaultPlaylistResponse, error)
+
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
 
@@ -30150,6 +30295,65 @@ func (r GetTikTokCreatorInfoResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTikTokCreatorInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetYoutubePlaylistsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DefaultPlaylistId *string `json:"defaultPlaylistId,omitempty"`
+		Playlists         *[]struct {
+			Description  *string                                 `json:"description,omitempty"`
+			Id           *string                                 `json:"id,omitempty"`
+			ItemCount    *int                                    `json:"itemCount,omitempty"`
+			Privacy      *GetYoutubePlaylists200PlaylistsPrivacy `json:"privacy,omitempty"`
+			ThumbnailUrl *string                                 `json:"thumbnailUrl,omitempty"`
+			Title        *string                                 `json:"title,omitempty"`
+		} `json:"playlists,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type GetYoutubePlaylists200PlaylistsPrivacy string
+
+// Status returns HTTPResponse.Status
+func (r GetYoutubePlaylistsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetYoutubePlaylistsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateYoutubeDefaultPlaylistResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateYoutubeDefaultPlaylistResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateYoutubeDefaultPlaylistResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -37538,6 +37742,32 @@ func (c *ClientWithResponses) GetTikTokCreatorInfoWithResponse(ctx context.Conte
 	return ParseGetTikTokCreatorInfoResponse(rsp)
 }
 
+// GetYoutubePlaylistsWithResponse request returning *GetYoutubePlaylistsResponse
+func (c *ClientWithResponses) GetYoutubePlaylistsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetYoutubePlaylistsResponse, error) {
+	rsp, err := c.GetYoutubePlaylists(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetYoutubePlaylistsResponse(rsp)
+}
+
+// UpdateYoutubeDefaultPlaylistWithBodyWithResponse request with arbitrary body returning *UpdateYoutubeDefaultPlaylistResponse
+func (c *ClientWithResponses) UpdateYoutubeDefaultPlaylistWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateYoutubeDefaultPlaylistResponse, error) {
+	rsp, err := c.UpdateYoutubeDefaultPlaylistWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateYoutubeDefaultPlaylistResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateYoutubeDefaultPlaylistWithResponse(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateYoutubeDefaultPlaylistResponse, error) {
+	rsp, err := c.UpdateYoutubeDefaultPlaylist(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateYoutubeDefaultPlaylistResponse(rsp)
+}
+
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
 func (c *ClientWithResponses) GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error) {
 	rsp, err := c.GetAnalytics(ctx, params, reqEditors...)
@@ -42329,6 +42559,84 @@ func ParseGetTikTokCreatorInfoResponse(rsp *http.Response) (*GetTikTokCreatorInf
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetYoutubePlaylistsResponse parses an HTTP response from a GetYoutubePlaylistsWithResponse call
+func ParseGetYoutubePlaylistsResponse(rsp *http.Response) (*GetYoutubePlaylistsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetYoutubePlaylistsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DefaultPlaylistId *string `json:"defaultPlaylistId,omitempty"`
+			Playlists         *[]struct {
+				Description  *string                                 `json:"description,omitempty"`
+				Id           *string                                 `json:"id,omitempty"`
+				ItemCount    *int                                    `json:"itemCount,omitempty"`
+				Privacy      *GetYoutubePlaylists200PlaylistsPrivacy `json:"privacy,omitempty"`
+				ThumbnailUrl *string                                 `json:"thumbnailUrl,omitempty"`
+				Title        *string                                 `json:"title,omitempty"`
+			} `json:"playlists,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateYoutubeDefaultPlaylistResponse parses an HTTP response from a UpdateYoutubeDefaultPlaylistWithResponse call
+func ParseUpdateYoutubeDefaultPlaylistResponse(rsp *http.Response) (*UpdateYoutubeDefaultPlaylistResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateYoutubeDefaultPlaylistResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 

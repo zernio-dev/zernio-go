@@ -182,11 +182,13 @@ func main() {
 | `client.GetRedditFlairsWithResponse()` | List subreddit flairs |
 | `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits |
 | `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram code |
+| `client.GetYoutubePlaylistsWithResponse()` | List YouTube playlists |
 | `client.UpdateFacebookPageWithResponse()` | Update Facebook page |
 | `client.UpdateGmbLocationWithResponse()` | Update GBP location |
 | `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type |
 | `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board |
 | `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
+| `client.UpdateYoutubeDefaultPlaylistWithResponse()` | Set default YouTube playlist |
 | `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
 | `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
 | `client.ConnectWhatsAppCredentialsWithResponse()` | Connect WhatsApp via credentials |
