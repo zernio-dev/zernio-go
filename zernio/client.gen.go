@@ -6899,6 +6899,9 @@ type UpdatePostMetadataJSONBody struct {
 	// Tags Array of keyword tags (max 500 characters combined for YouTube)
 	Tags *[]string `json:"tags,omitempty"`
 
+	// ThumbnailUrl Public URL of a custom thumbnail image (JPEG, PNG, or GIF, max 2 MB, recommended 1280x720). Works on any video you own, including existing videos not published through Zernio. The channel must be verified (phone verification) to set custom thumbnails.
+	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+
 	// Title New video title (max 100 characters for YouTube)
 	Title *string `json:"title,omitempty"`
 
