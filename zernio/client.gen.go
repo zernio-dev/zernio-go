@@ -3604,12 +3604,22 @@ type AccountWithFollowerStats struct {
 	Growth *float32 `json:"growth,omitempty"`
 
 	// GrowthPercentage Percentage growth
-	GrowthPercentage *float32                            `json:"growthPercentage,omitempty"`
-	IsActive         *bool                               `json:"isActive,omitempty"`
-	LastUpdated      *time.Time                          `json:"lastUpdated,omitempty"`
-	Platform         *string                             `json:"platform,omitempty"`
-	ProfileId        *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
-	ProfilePicture   *string                             `json:"profilePicture,omitempty"`
+	GrowthPercentage *float32   `json:"growthPercentage,omitempty"`
+	IsActive         *bool      `json:"isActive,omitempty"`
+	LastUpdated      *time.Time `json:"lastUpdated,omitempty"`
+
+	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
+	// - `qualityRating`: Phone number quality rating from Meta (`GREEN`, `YELLOW`, `RED`, or `UNKNOWN`)
+	// - `nameStatus`: Display name review status (`APPROVED`, `PENDING_REVIEW`, `DECLINED`, or `NONE`). Messages cannot be sent until the display name is approved by Meta.
+	// - `messagingLimitTier`: Maximum unique business-initiated conversations per 24h rolling window (`TIER_250`, `TIER_1K`, `TIER_10K`, `TIER_100K`, or `TIER_UNLIMITED`). Scales automatically as quality rating improves.
+	// - `verifiedName`: Meta-verified business display name
+	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
+	// - `wabaId`: WhatsApp Business Account ID
+	// - `phoneNumberId`: Meta phone number ID
+	Metadata       *map[string]interface{}             `json:"metadata,omitempty"`
+	Platform       *string                             `json:"platform,omitempty"`
+	ProfileId      *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
+	ProfilePicture *string                             `json:"profilePicture,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
@@ -4661,10 +4671,20 @@ type SocialAccount struct {
 	FollowersCount *float32 `json:"followersCount,omitempty"`
 
 	// FollowersLastUpdated Last time follower count was updated (only included if user has analytics add-on)
-	FollowersLastUpdated *time.Time               `json:"followersLastUpdated,omitempty"`
-	IsActive             *bool                    `json:"isActive,omitempty"`
-	Platform             *string                  `json:"platform,omitempty"`
-	ProfileId            *SocialAccount_ProfileId `json:"profileId,omitempty"`
+	FollowersLastUpdated *time.Time `json:"followersLastUpdated,omitempty"`
+	IsActive             *bool      `json:"isActive,omitempty"`
+
+	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
+	// - `qualityRating`: Phone number quality rating from Meta (`GREEN`, `YELLOW`, `RED`, or `UNKNOWN`)
+	// - `nameStatus`: Display name review status (`APPROVED`, `PENDING_REVIEW`, `DECLINED`, or `NONE`). Messages cannot be sent until the display name is approved by Meta.
+	// - `messagingLimitTier`: Maximum unique business-initiated conversations per 24h rolling window (`TIER_250`, `TIER_1K`, `TIER_10K`, `TIER_100K`, or `TIER_UNLIMITED`). Scales automatically as quality rating improves.
+	// - `verifiedName`: Meta-verified business display name
+	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
+	// - `wabaId`: WhatsApp Business Account ID
+	// - `phoneNumberId`: Meta phone number ID
+	Metadata  *map[string]interface{}  `json:"metadata,omitempty"`
+	Platform  *string                  `json:"platform,omitempty"`
+	ProfileId *SocialAccount_ProfileId `json:"profileId,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
@@ -32489,15 +32509,13 @@ type ConnectWhatsAppCredentialsResponse struct {
 			// DisplayName Meta-verified business name
 			DisplayName *string                                       `json:"displayName,omitempty"`
 			IsActive    *bool                                         `json:"isActive,omitempty"`
-			PhoneNumber *string                                       `json:"phoneNumber,omitempty"`
 			Platform    *ConnectWhatsAppCredentials200AccountPlatform `json:"platform,omitempty"`
 
-			// QualityRating GREEN, YELLOW, or RED
-			QualityRating *string `json:"qualityRating,omitempty"`
+			// SelectedPhoneNumber The connected phone number
+			SelectedPhoneNumber *string `json:"selectedPhoneNumber,omitempty"`
 
 			// Username Display phone number
-			Username     *string `json:"username,omitempty"`
-			VerifiedName *string `json:"verifiedName,omitempty"`
+			Username *string `json:"username,omitempty"`
 		} `json:"account,omitempty"`
 		Message *string `json:"message,omitempty"`
 	}
@@ -45413,15 +45431,13 @@ func ParseConnectWhatsAppCredentialsResponse(rsp *http.Response) (*ConnectWhatsA
 				// DisplayName Meta-verified business name
 				DisplayName *string                                       `json:"displayName,omitempty"`
 				IsActive    *bool                                         `json:"isActive,omitempty"`
-				PhoneNumber *string                                       `json:"phoneNumber,omitempty"`
 				Platform    *ConnectWhatsAppCredentials200AccountPlatform `json:"platform,omitempty"`
 
-				// QualityRating GREEN, YELLOW, or RED
-				QualityRating *string `json:"qualityRating,omitempty"`
+				// SelectedPhoneNumber The connected phone number
+				SelectedPhoneNumber *string `json:"selectedPhoneNumber,omitempty"`
 
 				// Username Display phone number
-				Username     *string `json:"username,omitempty"`
-				VerifiedName *string `json:"verifiedName,omitempty"`
+				Username *string `json:"username,omitempty"`
 			} `json:"account,omitempty"`
 			Message *string `json:"message,omitempty"`
 		}
