@@ -24,6 +24,216 @@ const (
 	ConnectTokenScopes = "connectToken.Scopes"
 )
 
+// Defines values for AdAdType.
+const (
+	Boost      AdAdType = "boost"
+	Standalone AdAdType = "standalone"
+)
+
+// Valid indicates whether the value is a known member of the AdAdType enum.
+func (e AdAdType) Valid() bool {
+	switch e {
+	case Boost:
+		return true
+	case Standalone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdBudgetType.
+const (
+	AdBudgetTypeDaily    AdBudgetType = "daily"
+	AdBudgetTypeLifetime AdBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdBudgetType enum.
+func (e AdBudgetType) Valid() bool {
+	switch e {
+	case AdBudgetTypeDaily:
+		return true
+	case AdBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdGoal.
+const (
+	AdGoalAwareness  AdGoal = "awareness"
+	AdGoalEngagement AdGoal = "engagement"
+	AdGoalTraffic    AdGoal = "traffic"
+	AdGoalVideoViews AdGoal = "video_views"
+)
+
+// Valid indicates whether the value is a known member of the AdGoal enum.
+func (e AdGoal) Valid() bool {
+	switch e {
+	case AdGoalAwareness:
+		return true
+	case AdGoalEngagement:
+		return true
+	case AdGoalTraffic:
+		return true
+	case AdGoalVideoViews:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdPlatform.
+const (
+	AdPlatformFacebook  AdPlatform = "facebook"
+	AdPlatformGoogle    AdPlatform = "google"
+	AdPlatformInstagram AdPlatform = "instagram"
+	AdPlatformLinkedin  AdPlatform = "linkedin"
+	AdPlatformPinterest AdPlatform = "pinterest"
+	AdPlatformTiktok    AdPlatform = "tiktok"
+	AdPlatformTwitter   AdPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the AdPlatform enum.
+func (e AdPlatform) Valid() bool {
+	switch e {
+	case AdPlatformFacebook:
+		return true
+	case AdPlatformGoogle:
+		return true
+	case AdPlatformInstagram:
+		return true
+	case AdPlatformLinkedin:
+		return true
+	case AdPlatformPinterest:
+		return true
+	case AdPlatformTiktok:
+		return true
+	case AdPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdStatus.
+const (
+	AdStatusActive        AdStatus = "active"
+	AdStatusCancelled     AdStatus = "cancelled"
+	AdStatusCompleted     AdStatus = "completed"
+	AdStatusError         AdStatus = "error"
+	AdStatusPaused        AdStatus = "paused"
+	AdStatusPendingReview AdStatus = "pending_review"
+	AdStatusRejected      AdStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the AdStatus enum.
+func (e AdStatus) Valid() bool {
+	switch e {
+	case AdStatusActive:
+		return true
+	case AdStatusCancelled:
+		return true
+	case AdStatusCompleted:
+		return true
+	case AdStatusError:
+		return true
+	case AdStatusPaused:
+		return true
+	case AdStatusPendingReview:
+		return true
+	case AdStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdCampaignBudgetType.
+const (
+	AdCampaignBudgetTypeDaily    AdCampaignBudgetType = "daily"
+	AdCampaignBudgetTypeLifetime AdCampaignBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignBudgetType enum.
+func (e AdCampaignBudgetType) Valid() bool {
+	switch e {
+	case AdCampaignBudgetTypeDaily:
+		return true
+	case AdCampaignBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdCampaignPlatform.
+const (
+	AdCampaignPlatformFacebook  AdCampaignPlatform = "facebook"
+	AdCampaignPlatformGoogle    AdCampaignPlatform = "google"
+	AdCampaignPlatformInstagram AdCampaignPlatform = "instagram"
+	AdCampaignPlatformLinkedin  AdCampaignPlatform = "linkedin"
+	AdCampaignPlatformPinterest AdCampaignPlatform = "pinterest"
+	AdCampaignPlatformTiktok    AdCampaignPlatform = "tiktok"
+	AdCampaignPlatformTwitter   AdCampaignPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignPlatform enum.
+func (e AdCampaignPlatform) Valid() bool {
+	switch e {
+	case AdCampaignPlatformFacebook:
+		return true
+	case AdCampaignPlatformGoogle:
+		return true
+	case AdCampaignPlatformInstagram:
+		return true
+	case AdCampaignPlatformLinkedin:
+		return true
+	case AdCampaignPlatformPinterest:
+		return true
+	case AdCampaignPlatformTiktok:
+		return true
+	case AdCampaignPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdCampaignStatus.
+const (
+	AdCampaignStatusActive        AdCampaignStatus = "active"
+	AdCampaignStatusCancelled     AdCampaignStatus = "cancelled"
+	AdCampaignStatusCompleted     AdCampaignStatus = "completed"
+	AdCampaignStatusError         AdCampaignStatus = "error"
+	AdCampaignStatusPaused        AdCampaignStatus = "paused"
+	AdCampaignStatusPendingReview AdCampaignStatus = "pending_review"
+	AdCampaignStatusRejected      AdCampaignStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignStatus enum.
+func (e AdCampaignStatus) Valid() bool {
+	switch e {
+	case AdCampaignStatusActive:
+		return true
+	case AdCampaignStatusCancelled:
+		return true
+	case AdCampaignStatusCompleted:
+		return true
+	case AdCampaignStatusError:
+		return true
+	case AdCampaignStatusPaused:
+		return true
+	case AdCampaignStatusPendingReview:
+		return true
+	case AdCampaignStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AnalyticsListResponsePostsMediaItemsType.
 const (
 	AnalyticsListResponsePostsMediaItemsTypeImage AnalyticsListResponsePostsMediaItemsType = "image"
@@ -314,28 +524,28 @@ func (e FacebookPlatformDataContentType) Valid() bool {
 
 // Defines values for GoogleBusinessPlatformDataCallToActionType.
 const (
-	BOOK      GoogleBusinessPlatformDataCallToActionType = "BOOK"
-	CALL      GoogleBusinessPlatformDataCallToActionType = "CALL"
-	LEARNMORE GoogleBusinessPlatformDataCallToActionType = "LEARN_MORE"
-	ORDER     GoogleBusinessPlatformDataCallToActionType = "ORDER"
-	SHOP      GoogleBusinessPlatformDataCallToActionType = "SHOP"
-	SIGNUP    GoogleBusinessPlatformDataCallToActionType = "SIGN_UP"
+	GoogleBusinessPlatformDataCallToActionTypeBOOK      GoogleBusinessPlatformDataCallToActionType = "BOOK"
+	GoogleBusinessPlatformDataCallToActionTypeCALL      GoogleBusinessPlatformDataCallToActionType = "CALL"
+	GoogleBusinessPlatformDataCallToActionTypeLEARNMORE GoogleBusinessPlatformDataCallToActionType = "LEARN_MORE"
+	GoogleBusinessPlatformDataCallToActionTypeORDER     GoogleBusinessPlatformDataCallToActionType = "ORDER"
+	GoogleBusinessPlatformDataCallToActionTypeSHOP      GoogleBusinessPlatformDataCallToActionType = "SHOP"
+	GoogleBusinessPlatformDataCallToActionTypeSIGNUP    GoogleBusinessPlatformDataCallToActionType = "SIGN_UP"
 )
 
 // Valid indicates whether the value is a known member of the GoogleBusinessPlatformDataCallToActionType enum.
 func (e GoogleBusinessPlatformDataCallToActionType) Valid() bool {
 	switch e {
-	case BOOK:
+	case GoogleBusinessPlatformDataCallToActionTypeBOOK:
 		return true
-	case CALL:
+	case GoogleBusinessPlatformDataCallToActionTypeCALL:
 		return true
-	case LEARNMORE:
+	case GoogleBusinessPlatformDataCallToActionTypeLEARNMORE:
 		return true
-	case ORDER:
+	case GoogleBusinessPlatformDataCallToActionTypeORDER:
 		return true
-	case SHOP:
+	case GoogleBusinessPlatformDataCallToActionTypeSHOP:
 		return true
-	case SIGNUP:
+	case GoogleBusinessPlatformDataCallToActionTypeSIGNUP:
 		return true
 	default:
 		return false
@@ -1238,19 +1448,19 @@ func (e GetAllAccountsHealthParamsPlatform) Valid() bool {
 
 // Defines values for GetAllAccountsHealthParamsStatus.
 const (
-	Error   GetAllAccountsHealthParamsStatus = "error"
-	Healthy GetAllAccountsHealthParamsStatus = "healthy"
-	Warning GetAllAccountsHealthParamsStatus = "warning"
+	GetAllAccountsHealthParamsStatusError   GetAllAccountsHealthParamsStatus = "error"
+	GetAllAccountsHealthParamsStatusHealthy GetAllAccountsHealthParamsStatus = "healthy"
+	GetAllAccountsHealthParamsStatusWarning GetAllAccountsHealthParamsStatus = "warning"
 )
 
 // Valid indicates whether the value is a known member of the GetAllAccountsHealthParamsStatus enum.
 func (e GetAllAccountsHealthParamsStatus) Valid() bool {
 	switch e {
-	case Error:
+	case GetAllAccountsHealthParamsStatusError:
 		return true
-	case Healthy:
+	case GetAllAccountsHealthParamsStatusHealthy:
 		return true
-	case Warning:
+	case GetAllAccountsHealthParamsStatusWarning:
 		return true
 	default:
 		return false
@@ -1398,6 +1608,453 @@ func (e GetTikTokCreatorInfoParamsMediaType) Valid() bool {
 	case GetTikTokCreatorInfoParamsMediaTypePhoto:
 		return true
 	case GetTikTokCreatorInfoParamsMediaTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdsParamsSource.
+const (
+	ListAdsParamsSourceAll    ListAdsParamsSource = "all"
+	ListAdsParamsSourceZernio ListAdsParamsSource = "zernio"
+)
+
+// Valid indicates whether the value is a known member of the ListAdsParamsSource enum.
+func (e ListAdsParamsSource) Valid() bool {
+	switch e {
+	case ListAdsParamsSourceAll:
+		return true
+	case ListAdsParamsSourceZernio:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdsParamsStatus.
+const (
+	ListAdsParamsStatusActive        ListAdsParamsStatus = "active"
+	ListAdsParamsStatusCancelled     ListAdsParamsStatus = "cancelled"
+	ListAdsParamsStatusCompleted     ListAdsParamsStatus = "completed"
+	ListAdsParamsStatusError         ListAdsParamsStatus = "error"
+	ListAdsParamsStatusPaused        ListAdsParamsStatus = "paused"
+	ListAdsParamsStatusPendingReview ListAdsParamsStatus = "pending_review"
+	ListAdsParamsStatusRejected      ListAdsParamsStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the ListAdsParamsStatus enum.
+func (e ListAdsParamsStatus) Valid() bool {
+	switch e {
+	case ListAdsParamsStatusActive:
+		return true
+	case ListAdsParamsStatusCancelled:
+		return true
+	case ListAdsParamsStatusCompleted:
+		return true
+	case ListAdsParamsStatusError:
+		return true
+	case ListAdsParamsStatusPaused:
+		return true
+	case ListAdsParamsStatusPendingReview:
+		return true
+	case ListAdsParamsStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdsParamsPlatform.
+const (
+	ListAdsParamsPlatformFacebook  ListAdsParamsPlatform = "facebook"
+	ListAdsParamsPlatformGoogle    ListAdsParamsPlatform = "google"
+	ListAdsParamsPlatformInstagram ListAdsParamsPlatform = "instagram"
+	ListAdsParamsPlatformLinkedin  ListAdsParamsPlatform = "linkedin"
+	ListAdsParamsPlatformPinterest ListAdsParamsPlatform = "pinterest"
+	ListAdsParamsPlatformTiktok    ListAdsParamsPlatform = "tiktok"
+	ListAdsParamsPlatformTwitter   ListAdsParamsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the ListAdsParamsPlatform enum.
+func (e ListAdsParamsPlatform) Valid() bool {
+	switch e {
+	case ListAdsParamsPlatformFacebook:
+		return true
+	case ListAdsParamsPlatformGoogle:
+		return true
+	case ListAdsParamsPlatformInstagram:
+		return true
+	case ListAdsParamsPlatformLinkedin:
+		return true
+	case ListAdsParamsPlatformPinterest:
+		return true
+	case ListAdsParamsPlatformTiktok:
+		return true
+	case ListAdsParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdAudiencesParamsPlatform.
+const (
+	ListAdAudiencesParamsPlatformFacebook  ListAdAudiencesParamsPlatform = "facebook"
+	ListAdAudiencesParamsPlatformGoogleads ListAdAudiencesParamsPlatform = "googleads"
+	ListAdAudiencesParamsPlatformInstagram ListAdAudiencesParamsPlatform = "instagram"
+	ListAdAudiencesParamsPlatformPinterest ListAdAudiencesParamsPlatform = "pinterest"
+	ListAdAudiencesParamsPlatformTiktok    ListAdAudiencesParamsPlatform = "tiktok"
+)
+
+// Valid indicates whether the value is a known member of the ListAdAudiencesParamsPlatform enum.
+func (e ListAdAudiencesParamsPlatform) Valid() bool {
+	switch e {
+	case ListAdAudiencesParamsPlatformFacebook:
+		return true
+	case ListAdAudiencesParamsPlatformGoogleads:
+		return true
+	case ListAdAudiencesParamsPlatformInstagram:
+		return true
+	case ListAdAudiencesParamsPlatformPinterest:
+		return true
+	case ListAdAudiencesParamsPlatformTiktok:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateAdAudienceJSONBodyType.
+const (
+	CustomerList CreateAdAudienceJSONBodyType = "customer_list"
+	Lookalike    CreateAdAudienceJSONBodyType = "lookalike"
+	Website      CreateAdAudienceJSONBodyType = "website"
+)
+
+// Valid indicates whether the value is a known member of the CreateAdAudienceJSONBodyType enum.
+func (e CreateAdAudienceJSONBodyType) Valid() bool {
+	switch e {
+	case CustomerList:
+		return true
+	case Lookalike:
+		return true
+	case Website:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BoostPostJSONBodyBudgetType.
+const (
+	BoostPostJSONBodyBudgetTypeDaily    BoostPostJSONBodyBudgetType = "daily"
+	BoostPostJSONBodyBudgetTypeLifetime BoostPostJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the BoostPostJSONBodyBudgetType enum.
+func (e BoostPostJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case BoostPostJSONBodyBudgetTypeDaily:
+		return true
+	case BoostPostJSONBodyBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BoostPostJSONBodyGoal.
+const (
+	BoostPostJSONBodyGoalAwareness  BoostPostJSONBodyGoal = "awareness"
+	BoostPostJSONBodyGoalEngagement BoostPostJSONBodyGoal = "engagement"
+	BoostPostJSONBodyGoalTraffic    BoostPostJSONBodyGoal = "traffic"
+	BoostPostJSONBodyGoalVideoViews BoostPostJSONBodyGoal = "video_views"
+)
+
+// Valid indicates whether the value is a known member of the BoostPostJSONBodyGoal enum.
+func (e BoostPostJSONBodyGoal) Valid() bool {
+	switch e {
+	case BoostPostJSONBodyGoalAwareness:
+		return true
+	case BoostPostJSONBodyGoalEngagement:
+		return true
+	case BoostPostJSONBodyGoalTraffic:
+		return true
+	case BoostPostJSONBodyGoalVideoViews:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdCampaignsParamsSource.
+const (
+	ListAdCampaignsParamsSourceAll    ListAdCampaignsParamsSource = "all"
+	ListAdCampaignsParamsSourceZernio ListAdCampaignsParamsSource = "zernio"
+)
+
+// Valid indicates whether the value is a known member of the ListAdCampaignsParamsSource enum.
+func (e ListAdCampaignsParamsSource) Valid() bool {
+	switch e {
+	case ListAdCampaignsParamsSourceAll:
+		return true
+	case ListAdCampaignsParamsSourceZernio:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdCampaignsParamsPlatform.
+const (
+	ListAdCampaignsParamsPlatformFacebook  ListAdCampaignsParamsPlatform = "facebook"
+	ListAdCampaignsParamsPlatformGoogle    ListAdCampaignsParamsPlatform = "google"
+	ListAdCampaignsParamsPlatformInstagram ListAdCampaignsParamsPlatform = "instagram"
+	ListAdCampaignsParamsPlatformLinkedin  ListAdCampaignsParamsPlatform = "linkedin"
+	ListAdCampaignsParamsPlatformPinterest ListAdCampaignsParamsPlatform = "pinterest"
+	ListAdCampaignsParamsPlatformTiktok    ListAdCampaignsParamsPlatform = "tiktok"
+	ListAdCampaignsParamsPlatformTwitter   ListAdCampaignsParamsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the ListAdCampaignsParamsPlatform enum.
+func (e ListAdCampaignsParamsPlatform) Valid() bool {
+	switch e {
+	case ListAdCampaignsParamsPlatformFacebook:
+		return true
+	case ListAdCampaignsParamsPlatformGoogle:
+		return true
+	case ListAdCampaignsParamsPlatformInstagram:
+		return true
+	case ListAdCampaignsParamsPlatformLinkedin:
+		return true
+	case ListAdCampaignsParamsPlatformPinterest:
+		return true
+	case ListAdCampaignsParamsPlatformTiktok:
+		return true
+	case ListAdCampaignsParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListAdCampaignsParamsStatus.
+const (
+	ListAdCampaignsParamsStatusActive        ListAdCampaignsParamsStatus = "active"
+	ListAdCampaignsParamsStatusCancelled     ListAdCampaignsParamsStatus = "cancelled"
+	ListAdCampaignsParamsStatusCompleted     ListAdCampaignsParamsStatus = "completed"
+	ListAdCampaignsParamsStatusError         ListAdCampaignsParamsStatus = "error"
+	ListAdCampaignsParamsStatusPaused        ListAdCampaignsParamsStatus = "paused"
+	ListAdCampaignsParamsStatusPendingReview ListAdCampaignsParamsStatus = "pending_review"
+	ListAdCampaignsParamsStatusRejected      ListAdCampaignsParamsStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the ListAdCampaignsParamsStatus enum.
+func (e ListAdCampaignsParamsStatus) Valid() bool {
+	switch e {
+	case ListAdCampaignsParamsStatusActive:
+		return true
+	case ListAdCampaignsParamsStatusCancelled:
+		return true
+	case ListAdCampaignsParamsStatusCompleted:
+		return true
+	case ListAdCampaignsParamsStatusError:
+		return true
+	case ListAdCampaignsParamsStatusPaused:
+		return true
+	case ListAdCampaignsParamsStatusPendingReview:
+		return true
+	case ListAdCampaignsParamsStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdCampaignStatusJSONBodyPlatform.
+const (
+	UpdateAdCampaignStatusJSONBodyPlatformFacebook  UpdateAdCampaignStatusJSONBodyPlatform = "facebook"
+	UpdateAdCampaignStatusJSONBodyPlatformGoogle    UpdateAdCampaignStatusJSONBodyPlatform = "google"
+	UpdateAdCampaignStatusJSONBodyPlatformInstagram UpdateAdCampaignStatusJSONBodyPlatform = "instagram"
+	UpdateAdCampaignStatusJSONBodyPlatformLinkedin  UpdateAdCampaignStatusJSONBodyPlatform = "linkedin"
+	UpdateAdCampaignStatusJSONBodyPlatformPinterest UpdateAdCampaignStatusJSONBodyPlatform = "pinterest"
+	UpdateAdCampaignStatusJSONBodyPlatformTiktok    UpdateAdCampaignStatusJSONBodyPlatform = "tiktok"
+	UpdateAdCampaignStatusJSONBodyPlatformTwitter   UpdateAdCampaignStatusJSONBodyPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdCampaignStatusJSONBodyPlatform enum.
+func (e UpdateAdCampaignStatusJSONBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateAdCampaignStatusJSONBodyPlatformFacebook:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformGoogle:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformInstagram:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformLinkedin:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformPinterest:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformTiktok:
+		return true
+	case UpdateAdCampaignStatusJSONBodyPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdCampaignStatusJSONBodyStatus.
+const (
+	UpdateAdCampaignStatusJSONBodyStatusActive UpdateAdCampaignStatusJSONBodyStatus = "active"
+	UpdateAdCampaignStatusJSONBodyStatusPaused UpdateAdCampaignStatusJSONBodyStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdCampaignStatusJSONBodyStatus enum.
+func (e UpdateAdCampaignStatusJSONBodyStatus) Valid() bool {
+	switch e {
+	case UpdateAdCampaignStatusJSONBodyStatusActive:
+		return true
+	case UpdateAdCampaignStatusJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyBudgetType.
+const (
+	CreateStandaloneAdJSONBodyBudgetTypeDaily    CreateStandaloneAdJSONBodyBudgetType = "daily"
+	CreateStandaloneAdJSONBodyBudgetTypeLifetime CreateStandaloneAdJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyBudgetType enum.
+func (e CreateStandaloneAdJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyBudgetTypeDaily:
+		return true
+	case CreateStandaloneAdJSONBodyBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyCallToAction.
+const (
+	CreateStandaloneAdJSONBodyCallToActionBOOKTRAVEL CreateStandaloneAdJSONBodyCallToAction = "BOOK_TRAVEL"
+	CreateStandaloneAdJSONBodyCallToActionCONTACTUS  CreateStandaloneAdJSONBodyCallToAction = "CONTACT_US"
+	CreateStandaloneAdJSONBodyCallToActionDOWNLOAD   CreateStandaloneAdJSONBodyCallToAction = "DOWNLOAD"
+	CreateStandaloneAdJSONBodyCallToActionGETOFFER   CreateStandaloneAdJSONBodyCallToAction = "GET_OFFER"
+	CreateStandaloneAdJSONBodyCallToActionGETQUOTE   CreateStandaloneAdJSONBodyCallToAction = "GET_QUOTE"
+	CreateStandaloneAdJSONBodyCallToActionLEARNMORE  CreateStandaloneAdJSONBodyCallToAction = "LEARN_MORE"
+	CreateStandaloneAdJSONBodyCallToActionSHOPNOW    CreateStandaloneAdJSONBodyCallToAction = "SHOP_NOW"
+	CreateStandaloneAdJSONBodyCallToActionSIGNUP     CreateStandaloneAdJSONBodyCallToAction = "SIGN_UP"
+	CreateStandaloneAdJSONBodyCallToActionSUBSCRIBE  CreateStandaloneAdJSONBodyCallToAction = "SUBSCRIBE"
+	CreateStandaloneAdJSONBodyCallToActionWATCHMORE  CreateStandaloneAdJSONBodyCallToAction = "WATCH_MORE"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCallToAction enum.
+func (e CreateStandaloneAdJSONBodyCallToAction) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyCallToActionBOOKTRAVEL:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionCONTACTUS:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionDOWNLOAD:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionGETOFFER:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionGETQUOTE:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionLEARNMORE:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionSHOPNOW:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionSIGNUP:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionSUBSCRIBE:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionWATCHMORE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyCampaignType.
+const (
+	Display CreateStandaloneAdJSONBodyCampaignType = "display"
+	Search  CreateStandaloneAdJSONBodyCampaignType = "search"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCampaignType enum.
+func (e CreateStandaloneAdJSONBodyCampaignType) Valid() bool {
+	switch e {
+	case Display:
+		return true
+	case Search:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyGoal.
+const (
+	CreateStandaloneAdJSONBodyGoalAwareness  CreateStandaloneAdJSONBodyGoal = "awareness"
+	CreateStandaloneAdJSONBodyGoalEngagement CreateStandaloneAdJSONBodyGoal = "engagement"
+	CreateStandaloneAdJSONBodyGoalTraffic    CreateStandaloneAdJSONBodyGoal = "traffic"
+	CreateStandaloneAdJSONBodyGoalVideoViews CreateStandaloneAdJSONBodyGoal = "video_views"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyGoal enum.
+func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyGoalAwareness:
+		return true
+	case CreateStandaloneAdJSONBodyGoalEngagement:
+		return true
+	case CreateStandaloneAdJSONBodyGoalTraffic:
+		return true
+	case CreateStandaloneAdJSONBodyGoalVideoViews:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdJSONBodyBudgetType.
+const (
+	Daily    UpdateAdJSONBodyBudgetType = "daily"
+	Lifetime UpdateAdJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdJSONBodyBudgetType enum.
+func (e UpdateAdJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case Daily:
+		return true
+	case Lifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdJSONBodyStatus.
+const (
+	UpdateAdJSONBodyStatusActive UpdateAdJSONBodyStatus = "active"
+	UpdateAdJSONBodyStatusPaused UpdateAdJSONBodyStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdJSONBodyStatus enum.
+func (e UpdateAdJSONBodyStatus) Valid() bool {
+	switch e {
+	case UpdateAdJSONBodyStatusActive:
+		return true
+	case UpdateAdJSONBodyStatusPaused:
 		return true
 	default:
 		return false
@@ -2390,16 +3047,16 @@ func (e ListInboxReviewsParamsPlatform) Valid() bool {
 
 // Defines values for ListInboxReviewsParamsSortBy.
 const (
-	ListInboxReviewsParamsSortByDate   ListInboxReviewsParamsSortBy = "date"
-	ListInboxReviewsParamsSortByRating ListInboxReviewsParamsSortBy = "rating"
+	Date   ListInboxReviewsParamsSortBy = "date"
+	Rating ListInboxReviewsParamsSortBy = "rating"
 )
 
 // Valid indicates whether the value is a known member of the ListInboxReviewsParamsSortBy enum.
 func (e ListInboxReviewsParamsSortBy) Valid() bool {
 	switch e {
-	case ListInboxReviewsParamsSortByDate:
+	case Date:
 		return true
-	case ListInboxReviewsParamsSortByRating:
+	case Rating:
 		return true
 	default:
 		return false
@@ -3362,25 +4019,25 @@ func (e GetWhatsAppBroadcastsParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppBroadcastRecipientsParamsStatus.
 const (
-	GetWhatsAppBroadcastRecipientsParamsStatusDelivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
-	GetWhatsAppBroadcastRecipientsParamsStatusFailed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
-	GetWhatsAppBroadcastRecipientsParamsStatusPending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
-	GetWhatsAppBroadcastRecipientsParamsStatusRead      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
-	GetWhatsAppBroadcastRecipientsParamsStatusSent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
+	Delivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
+	Failed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
+	Pending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
+	Read      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
+	Sent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppBroadcastRecipientsParamsStatus enum.
 func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
 	switch e {
-	case GetWhatsAppBroadcastRecipientsParamsStatusDelivered:
+	case Delivered:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusFailed:
+	case Failed:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusPending:
+	case Pending:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusRead:
+	case Read:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusSent:
+	case Sent:
 		return true
 	default:
 		return false
@@ -3632,6 +4289,105 @@ type AccountWithFollowerStatsProfileId0 = string
 // AccountWithFollowerStats_ProfileId defines model for AccountWithFollowerStats.ProfileId.
 type AccountWithFollowerStats_ProfileId struct {
 	union json.RawMessage
+}
+
+// Ad defines model for Ad.
+type Ad struct {
+	UnderscoreId *string   `json:"_id,omitempty"`
+	AdSetName    *string   `json:"adSetName,omitempty"`
+	AdType       *AdAdType `json:"adType,omitempty"`
+	Budget       *struct {
+		Amount *float32      `json:"amount,omitempty"`
+		Type   *AdBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	CampaignName *string    `json:"campaignName,omitempty"`
+	CreatedAt    *time.Time `json:"createdAt,omitempty"`
+
+	// Creative Platform-specific creative data
+	Creative *map[string]interface{} `json:"creative,omitempty"`
+	Goal     *AdGoal                 `json:"goal,omitempty"`
+
+	// IsExternal True for ads synced from platform ad managers
+	IsExternal          *bool       `json:"isExternal,omitempty"`
+	Metrics             *AdMetrics  `json:"metrics,omitempty"`
+	Name                *string     `json:"name,omitempty"`
+	Platform            *AdPlatform `json:"platform,omitempty"`
+	PlatformAdAccountId *string     `json:"platformAdAccountId,omitempty"`
+	PlatformAdId        *string     `json:"platformAdId,omitempty"`
+	PlatformAdSetId     *string     `json:"platformAdSetId,omitempty"`
+	PlatformCampaignId  *string     `json:"platformCampaignId,omitempty"`
+	RejectionReason     *string     `json:"rejectionReason,omitempty"`
+	Schedule            *struct {
+		EndDate   *time.Time `json:"endDate,omitempty"`
+		StartDate *time.Time `json:"startDate,omitempty"`
+	} `json:"schedule,omitempty"`
+	Status    *AdStatus               `json:"status,omitempty"`
+	Targeting *map[string]interface{} `json:"targeting,omitempty"`
+	UpdatedAt *time.Time              `json:"updatedAt,omitempty"`
+}
+
+// AdAdType defines model for Ad.AdType.
+type AdAdType string
+
+// AdBudgetType defines model for Ad.Budget.Type.
+type AdBudgetType string
+
+// AdGoal defines model for Ad.Goal.
+type AdGoal string
+
+// AdPlatform defines model for Ad.Platform.
+type AdPlatform string
+
+// AdStatus defines model for Ad.Status.
+type AdStatus string
+
+// AdCampaign defines model for AdCampaign.
+type AdCampaign struct {
+	AccountId *string `json:"accountId,omitempty"`
+	AdCount   *int    `json:"adCount,omitempty"`
+	Budget    *struct {
+		Amount *float32              `json:"amount,omitempty"`
+		Type   *AdCampaignBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	CampaignName        *string             `json:"campaignName,omitempty"`
+	EarliestAd          *time.Time          `json:"earliestAd,omitempty"`
+	LatestAd            *time.Time          `json:"latestAd,omitempty"`
+	Metrics             *AdMetrics          `json:"metrics,omitempty"`
+	Platform            *AdCampaignPlatform `json:"platform,omitempty"`
+	PlatformAdAccountId *string             `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string             `json:"platformCampaignId,omitempty"`
+	ProfileId           *string             `json:"profileId,omitempty"`
+
+	// Status Derived from child ad statuses
+	Status *AdCampaignStatus `json:"status,omitempty"`
+}
+
+// AdCampaignBudgetType defines model for AdCampaign.Budget.Type.
+type AdCampaignBudgetType string
+
+// AdCampaignPlatform defines model for AdCampaign.Platform.
+type AdCampaignPlatform string
+
+// AdCampaignStatus Derived from child ad statuses
+type AdCampaignStatus string
+
+// AdMetrics defines model for AdMetrics.
+type AdMetrics struct {
+	Clicks *int `json:"clicks,omitempty"`
+
+	// Cpc Cost per click
+	Cpc *float32 `json:"cpc,omitempty"`
+
+	// Cpm Cost per 1000 impressions
+	Cpm *float32 `json:"cpm,omitempty"`
+
+	// Ctr Click-through rate (%)
+	Ctr          *float32   `json:"ctr,omitempty"`
+	Engagement   *int       `json:"engagement,omitempty"`
+	Impressions  *int       `json:"impressions,omitempty"`
+	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
+	Reach        *int       `json:"reach,omitempty"`
+	Spend        *float32   `json:"spend,omitempty"`
 }
 
 // AnalyticsListResponse defines model for AnalyticsListResponse.
@@ -5537,6 +6293,266 @@ type GetTikTokCreatorInfoParamsMediaType string
 type UpdateYoutubeDefaultPlaylistJSONBody struct {
 	DefaultPlaylistId   string  `json:"defaultPlaylistId"`
 	DefaultPlaylistName *string `json:"defaultPlaylistName,omitempty"`
+}
+
+// ListAdsParams defines parameters for ListAds.
+type ListAdsParams struct {
+	// Page Page number (1-based)
+	Page  *PageParam `form:"page,omitempty" json:"page,omitempty"`
+	Limit *int       `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Source zernio = Zernio-created only, all = include external ads
+	Source   *ListAdsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
+	Status   *ListAdsParamsStatus   `form:"status,omitempty" json:"status,omitempty"`
+	Platform *ListAdsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// AccountId Social account ID
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// ProfileId Profile ID
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// CampaignId Platform campaign ID (filter ads within a campaign)
+	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
+}
+
+// ListAdsParamsSource defines parameters for ListAds.
+type ListAdsParamsSource string
+
+// ListAdsParamsStatus defines parameters for ListAds.
+type ListAdsParamsStatus string
+
+// ListAdsParamsPlatform defines parameters for ListAds.
+type ListAdsParamsPlatform string
+
+// ListAdAccountsParams defines parameters for ListAdAccounts.
+type ListAdAccountsParams struct {
+	// AccountId Social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ListAdAudiencesParams defines parameters for ListAdAudiences.
+type ListAdAudiencesParams struct {
+	// AccountId Social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// AdAccountId Platform ad account ID
+	AdAccountId string                         `form:"adAccountId" json:"adAccountId"`
+	Platform    *ListAdAudiencesParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+}
+
+// ListAdAudiencesParamsPlatform defines parameters for ListAdAudiences.
+type ListAdAudiencesParamsPlatform string
+
+// CreateAdAudienceJSONBody defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBody struct {
+	AccountId string `json:"accountId"`
+
+	// AdAccountId Must start with act_
+	AdAccountId string `json:"adAccountId"`
+
+	// Country 2-letter code, required for lookalike audiences
+	Country     *string `json:"country,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Name        string  `json:"name"`
+
+	// PixelId Required for website audiences
+	PixelId *string `json:"pixelId,omitempty"`
+
+	// Ratio Required for lookalike audiences
+	Ratio *float32 `json:"ratio,omitempty"`
+
+	// RetentionDays Required for website audiences
+	RetentionDays *int `json:"retentionDays,omitempty"`
+
+	// SourceAudienceId Required for lookalike audiences
+	SourceAudienceId *string                      `json:"sourceAudienceId,omitempty"`
+	Type             CreateAdAudienceJSONBodyType `json:"type"`
+}
+
+// CreateAdAudienceJSONBodyType defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBodyType string
+
+// AddUsersToAdAudienceJSONBody defines parameters for AddUsersToAdAudience.
+type AddUsersToAdAudienceJSONBody struct {
+	Users []struct {
+		Email *openapi_types.Email `json:"email,omitempty"`
+		Phone *string              `json:"phone,omitempty"`
+	} `json:"users"`
+}
+
+// BoostPostJSONBody defines parameters for BoostPost.
+type BoostPostJSONBody struct {
+	// AccountId Social account ID
+	AccountId string `json:"accountId"`
+
+	// AdAccountId Platform ad account ID
+	AdAccountId string `json:"adAccountId"`
+	Budget      struct {
+		// Amount Minimum varies: TikTok=$20, Pinterest=$5, others=$1
+		Amount float32                     `json:"amount"`
+		Type   BoostPostJSONBodyBudgetType `json:"type"`
+	} `json:"budget"`
+	Currency *string               `json:"currency,omitempty"`
+	Goal     BoostPostJSONBodyGoal `json:"goal"`
+	Name     string                `json:"name"`
+
+	// PlatformPostId Platform post ID (alternative to postId)
+	PlatformPostId *string `json:"platformPostId,omitempty"`
+
+	// PostId Zernio post ID (provide this or platformPostId)
+	PostId   *string `json:"postId,omitempty"`
+	Schedule *struct {
+		// EndDate Required for lifetime budgets
+		EndDate   *time.Time `json:"endDate,omitempty"`
+		StartDate *time.Time `json:"startDate,omitempty"`
+	} `json:"schedule,omitempty"`
+	Targeting *struct {
+		AgeMax    *int      `json:"ageMax,omitempty"`
+		AgeMin    *int      `json:"ageMin,omitempty"`
+		Countries *[]string `json:"countries,omitempty"`
+		Interests *[]string `json:"interests,omitempty"`
+	} `json:"targeting,omitempty"`
+}
+
+// BoostPostJSONBodyBudgetType defines parameters for BoostPost.
+type BoostPostJSONBodyBudgetType string
+
+// BoostPostJSONBodyGoal defines parameters for BoostPost.
+type BoostPostJSONBodyGoal string
+
+// ListAdCampaignsParams defines parameters for ListAdCampaigns.
+type ListAdCampaignsParams struct {
+	// Page Page number (1-based)
+	Page     *PageParam                     `form:"page,omitempty" json:"page,omitempty"`
+	Limit    *int                           `form:"limit,omitempty" json:"limit,omitempty"`
+	Source   *ListAdCampaignsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
+	Platform *ListAdCampaignsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// Status Filter by derived campaign status (post-aggregation)
+	Status *ListAdCampaignsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// AdAccountId Platform ad account ID (e.g. act_123 for Meta)
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
+	// AccountId Social account ID
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// ProfileId Profile ID
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
+// ListAdCampaignsParamsSource defines parameters for ListAdCampaigns.
+type ListAdCampaignsParamsSource string
+
+// ListAdCampaignsParamsPlatform defines parameters for ListAdCampaigns.
+type ListAdCampaignsParamsPlatform string
+
+// ListAdCampaignsParamsStatus defines parameters for ListAdCampaigns.
+type ListAdCampaignsParamsStatus string
+
+// UpdateAdCampaignStatusJSONBody defines parameters for UpdateAdCampaignStatus.
+type UpdateAdCampaignStatusJSONBody struct {
+	Platform UpdateAdCampaignStatusJSONBodyPlatform `json:"platform"`
+	Status   UpdateAdCampaignStatusJSONBodyStatus   `json:"status"`
+}
+
+// UpdateAdCampaignStatusJSONBodyPlatform defines parameters for UpdateAdCampaignStatus.
+type UpdateAdCampaignStatusJSONBodyPlatform string
+
+// UpdateAdCampaignStatusJSONBodyStatus defines parameters for UpdateAdCampaignStatus.
+type UpdateAdCampaignStatusJSONBodyStatus string
+
+// CreateStandaloneAdJSONBody defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBody struct {
+	AccountId   string `json:"accountId"`
+	AdAccountId string `json:"adAccountId"`
+	AgeMax      *int   `json:"ageMax,omitempty"`
+	AgeMin      *int   `json:"ageMin,omitempty"`
+
+	// AudienceId Custom audience ID for targeting
+	AudienceId *string `json:"audienceId,omitempty"`
+
+	// Body Max: Google=90, Pinterest=500
+	Body         string                               `json:"body"`
+	BudgetAmount float32                              `json:"budgetAmount"`
+	BudgetType   CreateStandaloneAdJSONBodyBudgetType `json:"budgetType"`
+
+	// CallToAction Meta only
+	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
+
+	// CampaignType Google only
+	CampaignType *CreateStandaloneAdJSONBodyCampaignType `json:"campaignType,omitempty"`
+	Countries    *[]string                               `json:"countries,omitempty"`
+	Currency     *string                                 `json:"currency,omitempty"`
+
+	// EndDate Required for lifetime budgets
+	EndDate *time.Time                     `json:"endDate,omitempty"`
+	Goal    CreateStandaloneAdJSONBodyGoal `json:"goal"`
+
+	// Headline Required for most platforms. Max: Meta=255, Google=30, Pinterest=100
+	Headline *string `json:"headline,omitempty"`
+
+	// ImageUrl Image URL (or video URL for TikTok)
+	ImageUrl  string    `json:"imageUrl"`
+	Interests *[]string `json:"interests,omitempty"`
+
+	// Keywords Google Search only
+	Keywords *[]string `json:"keywords,omitempty"`
+	LinkUrl  *string   `json:"linkUrl,omitempty"`
+	Name     string    `json:"name"`
+}
+
+// CreateStandaloneAdJSONBodyBudgetType defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyBudgetType string
+
+// CreateStandaloneAdJSONBodyCallToAction defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCallToAction string
+
+// CreateStandaloneAdJSONBodyCampaignType defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCampaignType string
+
+// CreateStandaloneAdJSONBodyGoal defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyGoal string
+
+// SearchAdInterestsParams defines parameters for SearchAdInterests.
+type SearchAdInterestsParams struct {
+	// Q Search query
+	Q string `form:"q" json:"q"`
+
+	// AccountId Social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateAdJSONBody defines parameters for UpdateAd.
+type UpdateAdJSONBody struct {
+	Budget *struct {
+		// Amount Minimum varies by platform: TikTok=$20, Pinterest=$5, others=$1
+		Amount *float32                    `json:"amount,omitempty"`
+		Type   *UpdateAdJSONBodyBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	Name   *string                 `json:"name,omitempty"`
+	Status *UpdateAdJSONBodyStatus `json:"status,omitempty"`
+
+	// Targeting Meta-only. Targeting updates for other platforms are not supported after creation.
+	Targeting *struct {
+		AgeMax    *int      `json:"ageMax,omitempty"`
+		AgeMin    *int      `json:"ageMin,omitempty"`
+		Countries *[]string `json:"countries,omitempty"`
+		Interests *[]string `json:"interests,omitempty"`
+	} `json:"targeting,omitempty"`
+}
+
+// UpdateAdJSONBodyBudgetType defines parameters for UpdateAd.
+type UpdateAdJSONBodyBudgetType string
+
+// UpdateAdJSONBodyStatus defines parameters for UpdateAd.
+type UpdateAdJSONBodyStatus string
+
+// GetAdAnalyticsParams defines parameters for GetAdAnalytics.
+type GetAdAnalyticsParams struct {
+	// Breakdowns Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
+	Breakdowns *string `form:"breakdowns,omitempty" json:"breakdowns,omitempty"`
 }
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
@@ -8015,6 +9031,24 @@ type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 // UpdateYoutubeDefaultPlaylistJSONRequestBody defines body for UpdateYoutubeDefaultPlaylist for application/json ContentType.
 type UpdateYoutubeDefaultPlaylistJSONRequestBody UpdateYoutubeDefaultPlaylistJSONBody
 
+// CreateAdAudienceJSONRequestBody defines body for CreateAdAudience for application/json ContentType.
+type CreateAdAudienceJSONRequestBody CreateAdAudienceJSONBody
+
+// AddUsersToAdAudienceJSONRequestBody defines body for AddUsersToAdAudience for application/json ContentType.
+type AddUsersToAdAudienceJSONRequestBody AddUsersToAdAudienceJSONBody
+
+// BoostPostJSONRequestBody defines body for BoostPost for application/json ContentType.
+type BoostPostJSONRequestBody BoostPostJSONBody
+
+// UpdateAdCampaignStatusJSONRequestBody defines body for UpdateAdCampaignStatus for application/json ContentType.
+type UpdateAdCampaignStatusJSONRequestBody UpdateAdCampaignStatusJSONBody
+
+// CreateStandaloneAdJSONRequestBody defines body for CreateStandaloneAd for application/json ContentType.
+type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
+
+// UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
+type UpdateAdJSONRequestBody UpdateAdJSONBody
+
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
 
@@ -9491,6 +10525,69 @@ type ClientInterface interface {
 	UpdateYoutubeDefaultPlaylistWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateYoutubeDefaultPlaylist(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAds request
+	ListAds(ctx context.Context, params *ListAdsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAdAccounts request
+	ListAdAccounts(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAdAudiences request
+	ListAdAudiences(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateAdAudienceWithBody request with any body
+	CreateAdAudienceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateAdAudience(ctx context.Context, body CreateAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAdAudience request
+	DeleteAdAudience(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAdAudience request
+	GetAdAudience(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddUsersToAdAudienceWithBody request with any body
+	AddUsersToAdAudienceWithBody(ctx context.Context, audienceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddUsersToAdAudience(ctx context.Context, audienceId string, body AddUsersToAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BoostPostWithBody request with any body
+	BoostPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BoostPost(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAdCampaigns request
+	ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAdCampaignStatusWithBody request with any body
+	UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateStandaloneAdWithBody request with any body
+	CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SearchAdInterests request
+	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SyncExternalAds request
+	SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAd request
+	DeleteAd(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAd request
+	GetAd(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAdWithBody request with any body
+	UpdateAdWithBody(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAd(ctx context.Context, adId string, body UpdateAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAdAnalytics request
+	GetAdAnalytics(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11023,6 +12120,282 @@ func (c *Client) UpdateYoutubeDefaultPlaylistWithBody(ctx context.Context, accou
 
 func (c *Client) UpdateYoutubeDefaultPlaylist(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateYoutubeDefaultPlaylistRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAds(ctx context.Context, params *ListAdsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAdAccounts(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdAccountsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAdAudiences(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdAudiencesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAdAudienceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAdAudienceRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAdAudience(ctx context.Context, body CreateAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAdAudienceRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAdAudience(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAdAudienceRequest(c.Server, audienceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdAudience(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdAudienceRequest(c.Server, audienceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddUsersToAdAudienceWithBody(ctx context.Context, audienceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddUsersToAdAudienceRequestWithBody(c.Server, audienceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddUsersToAdAudience(ctx context.Context, audienceId string, body AddUsersToAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddUsersToAdAudienceRequest(c.Server, audienceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BoostPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBoostPostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BoostPost(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBoostPostRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdCampaignsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdCampaignStatusRequestWithBody(c.Server, campaignId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdCampaignStatusRequest(c.Server, campaignId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateStandaloneAdRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateStandaloneAdRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchAdInterestsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSyncExternalAdsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAd(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAdRequest(c.Server, adId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAd(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdRequest(c.Server, adId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdWithBody(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdRequestWithBody(c.Server, adId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAd(ctx context.Context, adId string, body UpdateAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdRequest(c.Server, adId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdAnalytics(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdAnalyticsRequest(c.Server, adId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -16995,6 +18368,983 @@ func NewUpdateYoutubeDefaultPlaylistRequestWithBody(server string, accountId str
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAdsRequest generates requests for ListAds
+func NewListAdsRequest(server string, params *ListAdsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.CampaignId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "campaignId", *params.CampaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAdAccountsRequest generates requests for ListAdAccounts
+func NewListAdAccountsRequest(server string, params *ListAdAccountsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/accounts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAdAudiencesRequest generates requests for ListAdAudiences
+func NewListAdAudiencesRequest(server string, params *ListAdAudiencesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/audiences")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateAdAudienceRequest calls the generic CreateAdAudience builder with application/json body
+func NewCreateAdAudienceRequest(server string, body CreateAdAudienceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateAdAudienceRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateAdAudienceRequestWithBody generates requests for CreateAdAudience with any type of body
+func NewCreateAdAudienceRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/audiences")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteAdAudienceRequest generates requests for DeleteAdAudience
+func NewDeleteAdAudienceRequest(server string, audienceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "audienceId", audienceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/audiences/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAdAudienceRequest generates requests for GetAdAudience
+func NewGetAdAudienceRequest(server string, audienceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "audienceId", audienceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/audiences/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddUsersToAdAudienceRequest calls the generic AddUsersToAdAudience builder with application/json body
+func NewAddUsersToAdAudienceRequest(server string, audienceId string, body AddUsersToAdAudienceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddUsersToAdAudienceRequestWithBody(server, audienceId, "application/json", bodyReader)
+}
+
+// NewAddUsersToAdAudienceRequestWithBody generates requests for AddUsersToAdAudience with any type of body
+func NewAddUsersToAdAudienceRequestWithBody(server string, audienceId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "audienceId", audienceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/audiences/%s/users", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewBoostPostRequest calls the generic BoostPost builder with application/json body
+func NewBoostPostRequest(server string, body BoostPostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBoostPostRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBoostPostRequestWithBody generates requests for BoostPost with any type of body
+func NewBoostPostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/boost")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAdCampaignsRequest generates requests for ListAdCampaigns
+func NewListAdCampaignsRequest(server string, params *ListAdCampaignsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAdCampaignStatusRequest calls the generic UpdateAdCampaignStatus builder with application/json body
+func NewUpdateAdCampaignStatusRequest(server string, campaignId string, body UpdateAdCampaignStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdCampaignStatusRequestWithBody(server, campaignId, "application/json", bodyReader)
+}
+
+// NewUpdateAdCampaignStatusRequestWithBody generates requests for UpdateAdCampaignStatus with any type of body
+func NewUpdateAdCampaignStatusRequestWithBody(server string, campaignId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "campaignId", campaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns/%s/status", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateStandaloneAdRequest calls the generic CreateStandaloneAd builder with application/json body
+func NewCreateStandaloneAdRequest(server string, body CreateStandaloneAdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateStandaloneAdRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateStandaloneAdRequestWithBody generates requests for CreateStandaloneAd with any type of body
+func NewCreateStandaloneAdRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/create")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSearchAdInterestsRequest generates requests for SearchAdInterests
+func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/interests")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "q", params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSyncExternalAdsRequest generates requests for SyncExternalAds
+func NewSyncExternalAdsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/sync")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteAdRequest generates requests for DeleteAd
+func NewDeleteAdRequest(server string, adId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAdRequest generates requests for GetAd
+func NewGetAdRequest(server string, adId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAdRequest calls the generic UpdateAd builder with application/json body
+func NewUpdateAdRequest(server string, adId string, body UpdateAdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdRequestWithBody(server, adId, "application/json", bodyReader)
+}
+
+// NewUpdateAdRequestWithBody generates requests for UpdateAd with any type of body
+func NewUpdateAdRequestWithBody(server string, adId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetAdAnalyticsRequest generates requests for GetAdAnalytics
+func NewGetAdAnalyticsRequest(server string, adId string, params *GetAdAnalyticsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s/analytics", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Breakdowns != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "breakdowns", *params.Breakdowns, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -28240,6 +30590,69 @@ type ClientWithResponsesInterface interface {
 
 	UpdateYoutubeDefaultPlaylistWithResponse(ctx context.Context, accountId string, body UpdateYoutubeDefaultPlaylistJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateYoutubeDefaultPlaylistResponse, error)
 
+	// ListAdsWithResponse request
+	ListAdsWithResponse(ctx context.Context, params *ListAdsParams, reqEditors ...RequestEditorFn) (*ListAdsResponse, error)
+
+	// ListAdAccountsWithResponse request
+	ListAdAccountsWithResponse(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*ListAdAccountsResponse, error)
+
+	// ListAdAudiencesWithResponse request
+	ListAdAudiencesWithResponse(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*ListAdAudiencesResponse, error)
+
+	// CreateAdAudienceWithBodyWithResponse request with any body
+	CreateAdAudienceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAdAudienceResponse, error)
+
+	CreateAdAudienceWithResponse(ctx context.Context, body CreateAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAdAudienceResponse, error)
+
+	// DeleteAdAudienceWithResponse request
+	DeleteAdAudienceWithResponse(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*DeleteAdAudienceResponse, error)
+
+	// GetAdAudienceWithResponse request
+	GetAdAudienceWithResponse(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*GetAdAudienceResponse, error)
+
+	// AddUsersToAdAudienceWithBodyWithResponse request with any body
+	AddUsersToAdAudienceWithBodyWithResponse(ctx context.Context, audienceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddUsersToAdAudienceResponse, error)
+
+	AddUsersToAdAudienceWithResponse(ctx context.Context, audienceId string, body AddUsersToAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*AddUsersToAdAudienceResponse, error)
+
+	// BoostPostWithBodyWithResponse request with any body
+	BoostPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BoostPostResponse, error)
+
+	BoostPostWithResponse(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*BoostPostResponse, error)
+
+	// ListAdCampaignsWithResponse request
+	ListAdCampaignsWithResponse(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*ListAdCampaignsResponse, error)
+
+	// UpdateAdCampaignStatusWithBodyWithResponse request with any body
+	UpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
+
+	UpdateAdCampaignStatusWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
+
+	// CreateStandaloneAdWithBodyWithResponse request with any body
+	CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
+
+	CreateStandaloneAdWithResponse(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
+
+	// SearchAdInterestsWithResponse request
+	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
+
+	// SyncExternalAdsWithResponse request
+	SyncExternalAdsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncExternalAdsResponse, error)
+
+	// DeleteAdWithResponse request
+	DeleteAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*DeleteAdResponse, error)
+
+	// GetAdWithResponse request
+	GetAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*GetAdResponse, error)
+
+	// UpdateAdWithBodyWithResponse request with any body
+	UpdateAdWithBodyWithResponse(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdResponse, error)
+
+	UpdateAdWithResponse(ctx context.Context, adId string, body UpdateAdJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdResponse, error)
+
+	// GetAdAnalyticsWithResponse request
+	GetAdAnalyticsWithResponse(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAdAnalyticsResponse, error)
+
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
 
@@ -30778,6 +33191,510 @@ func (r UpdateYoutubeDefaultPlaylistResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateYoutubeDefaultPlaylistResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAdsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Ads        *[]Ad       `json:"ads,omitempty"`
+		Pagination *Pagination `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAdAccountsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Accounts *[]struct {
+			Currency *string `json:"currency,omitempty"`
+
+			// Id Platform ad account ID (e.g. act_123)
+			Id     *string `json:"id,omitempty"`
+			Name   *string `json:"name,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"accounts,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdAccountsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdAccountsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAdAudiencesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Audiences *[]struct {
+			Description        *string                          `json:"description,omitempty"`
+			Id                 *string                          `json:"id,omitempty"`
+			Name               *string                          `json:"name,omitempty"`
+			Platform           *string                          `json:"platform,omitempty"`
+			PlatformAudienceId *string                          `json:"platformAudienceId,omitempty"`
+			Size               *int                             `json:"size,omitempty"`
+			Status             *string                          `json:"status,omitempty"`
+			Type               *ListAdAudiences200AudiencesType `json:"type,omitempty"`
+		} `json:"audiences,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type ListAdAudiences200AudiencesType string
+
+// Status returns HTTPResponse.Status
+func (r ListAdAudiencesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdAudiencesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateAdAudienceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Audience *map[string]interface{} `json:"audience,omitempty"`
+		Message  *string                 `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateAdAudienceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateAdAudienceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteAdAudienceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAdAudienceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAdAudienceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAdAudienceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Audience *map[string]interface{} `json:"audience,omitempty"`
+
+		// MetaData Fresh data from Meta API
+		MetaData *map[string]interface{} `json:"metaData,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdAudienceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdAudienceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddUsersToAdAudienceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message     *string `json:"message,omitempty"`
+		NumInvalid  *int    `json:"numInvalid,omitempty"`
+		NumReceived *int    `json:"numReceived,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r AddUsersToAdAudienceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddUsersToAdAudienceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BoostPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Ad      *Ad     `json:"ad,omitempty"`
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BoostPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BoostPostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAdCampaignsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Campaigns  *[]AdCampaign `json:"campaigns,omitempty"`
+		Pagination *Pagination   `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdCampaignsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdCampaignsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAdCampaignStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Skipped Number of ads skipped
+		Skipped        *int      `json:"skipped,omitempty"`
+		SkippedReasons *[]string `json:"skippedReasons,omitempty"`
+
+		// Updated Number of ads updated
+		Updated *int `json:"updated,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdCampaignStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdCampaignStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateStandaloneAdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Ad      *Ad     `json:"ad,omitempty"`
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateStandaloneAdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateStandaloneAdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SearchAdInterestsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Interests *[]struct {
+			Category *string `json:"category,omitempty"`
+			Id       *string `json:"id,omitempty"`
+			Name     *string `json:"name,omitempty"`
+		} `json:"interests,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchAdInterestsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchAdInterestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SyncExternalAdsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Errors Failed ad imports
+		Errors *int `json:"errors,omitempty"`
+
+		// Skipped Already-synced ads updated
+		Skipped *int  `json:"skipped,omitempty"`
+		Success *bool `json:"success,omitempty"`
+
+		// Synced New ads imported
+		Synced *int `json:"synced,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SyncExternalAdsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SyncExternalAdsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteAdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Ad *Ad `json:"ad,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Ad      *Ad     `json:"ad,omitempty"`
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAdAnalyticsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Ad *struct {
+			Id       *string `json:"id,omitempty"`
+			Name     *string `json:"name,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+			Status   *string `json:"status,omitempty"`
+		} `json:"ad,omitempty"`
+		Analytics *struct {
+			Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
+			Daily      *[]struct {
+				Clicks *int `json:"clicks,omitempty"`
+
+				// Cpc Cost per click
+				Cpc *float32 `json:"cpc,omitempty"`
+
+				// Cpm Cost per 1000 impressions
+				Cpm *float32 `json:"cpm,omitempty"`
+
+				// Ctr Click-through rate (%)
+				Ctr          *float32            `json:"ctr,omitempty"`
+				Date         *openapi_types.Date `json:"date,omitempty"`
+				Engagement   *int                `json:"engagement,omitempty"`
+				Impressions  *int                `json:"impressions,omitempty"`
+				LastSyncedAt *time.Time          `json:"lastSyncedAt,omitempty"`
+				Reach        *int                `json:"reach,omitempty"`
+				Spend        *float32            `json:"spend,omitempty"`
+			} `json:"daily,omitempty"`
+			Summary *AdMetrics `json:"summary,omitempty"`
+		} `json:"analytics,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdAnalyticsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdAnalyticsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -38190,6 +41107,207 @@ func (c *ClientWithResponses) UpdateYoutubeDefaultPlaylistWithResponse(ctx conte
 	return ParseUpdateYoutubeDefaultPlaylistResponse(rsp)
 }
 
+// ListAdsWithResponse request returning *ListAdsResponse
+func (c *ClientWithResponses) ListAdsWithResponse(ctx context.Context, params *ListAdsParams, reqEditors ...RequestEditorFn) (*ListAdsResponse, error) {
+	rsp, err := c.ListAds(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdsResponse(rsp)
+}
+
+// ListAdAccountsWithResponse request returning *ListAdAccountsResponse
+func (c *ClientWithResponses) ListAdAccountsWithResponse(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*ListAdAccountsResponse, error) {
+	rsp, err := c.ListAdAccounts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdAccountsResponse(rsp)
+}
+
+// ListAdAudiencesWithResponse request returning *ListAdAudiencesResponse
+func (c *ClientWithResponses) ListAdAudiencesWithResponse(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*ListAdAudiencesResponse, error) {
+	rsp, err := c.ListAdAudiences(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdAudiencesResponse(rsp)
+}
+
+// CreateAdAudienceWithBodyWithResponse request with arbitrary body returning *CreateAdAudienceResponse
+func (c *ClientWithResponses) CreateAdAudienceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAdAudienceResponse, error) {
+	rsp, err := c.CreateAdAudienceWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAdAudienceResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateAdAudienceWithResponse(ctx context.Context, body CreateAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAdAudienceResponse, error) {
+	rsp, err := c.CreateAdAudience(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAdAudienceResponse(rsp)
+}
+
+// DeleteAdAudienceWithResponse request returning *DeleteAdAudienceResponse
+func (c *ClientWithResponses) DeleteAdAudienceWithResponse(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*DeleteAdAudienceResponse, error) {
+	rsp, err := c.DeleteAdAudience(ctx, audienceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAdAudienceResponse(rsp)
+}
+
+// GetAdAudienceWithResponse request returning *GetAdAudienceResponse
+func (c *ClientWithResponses) GetAdAudienceWithResponse(ctx context.Context, audienceId string, reqEditors ...RequestEditorFn) (*GetAdAudienceResponse, error) {
+	rsp, err := c.GetAdAudience(ctx, audienceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdAudienceResponse(rsp)
+}
+
+// AddUsersToAdAudienceWithBodyWithResponse request with arbitrary body returning *AddUsersToAdAudienceResponse
+func (c *ClientWithResponses) AddUsersToAdAudienceWithBodyWithResponse(ctx context.Context, audienceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddUsersToAdAudienceResponse, error) {
+	rsp, err := c.AddUsersToAdAudienceWithBody(ctx, audienceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddUsersToAdAudienceResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddUsersToAdAudienceWithResponse(ctx context.Context, audienceId string, body AddUsersToAdAudienceJSONRequestBody, reqEditors ...RequestEditorFn) (*AddUsersToAdAudienceResponse, error) {
+	rsp, err := c.AddUsersToAdAudience(ctx, audienceId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddUsersToAdAudienceResponse(rsp)
+}
+
+// BoostPostWithBodyWithResponse request with arbitrary body returning *BoostPostResponse
+func (c *ClientWithResponses) BoostPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BoostPostResponse, error) {
+	rsp, err := c.BoostPostWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBoostPostResponse(rsp)
+}
+
+func (c *ClientWithResponses) BoostPostWithResponse(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*BoostPostResponse, error) {
+	rsp, err := c.BoostPost(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBoostPostResponse(rsp)
+}
+
+// ListAdCampaignsWithResponse request returning *ListAdCampaignsResponse
+func (c *ClientWithResponses) ListAdCampaignsWithResponse(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*ListAdCampaignsResponse, error) {
+	rsp, err := c.ListAdCampaigns(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdCampaignsResponse(rsp)
+}
+
+// UpdateAdCampaignStatusWithBodyWithResponse request with arbitrary body returning *UpdateAdCampaignStatusResponse
+func (c *ClientWithResponses) UpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error) {
+	rsp, err := c.UpdateAdCampaignStatusWithBody(ctx, campaignId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdCampaignStatusResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdCampaignStatusWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error) {
+	rsp, err := c.UpdateAdCampaignStatus(ctx, campaignId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdCampaignStatusResponse(rsp)
+}
+
+// CreateStandaloneAdWithBodyWithResponse request with arbitrary body returning *CreateStandaloneAdResponse
+func (c *ClientWithResponses) CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
+	rsp, err := c.CreateStandaloneAdWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateStandaloneAdResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateStandaloneAdWithResponse(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
+	rsp, err := c.CreateStandaloneAd(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateStandaloneAdResponse(rsp)
+}
+
+// SearchAdInterestsWithResponse request returning *SearchAdInterestsResponse
+func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error) {
+	rsp, err := c.SearchAdInterests(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchAdInterestsResponse(rsp)
+}
+
+// SyncExternalAdsWithResponse request returning *SyncExternalAdsResponse
+func (c *ClientWithResponses) SyncExternalAdsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncExternalAdsResponse, error) {
+	rsp, err := c.SyncExternalAds(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSyncExternalAdsResponse(rsp)
+}
+
+// DeleteAdWithResponse request returning *DeleteAdResponse
+func (c *ClientWithResponses) DeleteAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*DeleteAdResponse, error) {
+	rsp, err := c.DeleteAd(ctx, adId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAdResponse(rsp)
+}
+
+// GetAdWithResponse request returning *GetAdResponse
+func (c *ClientWithResponses) GetAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*GetAdResponse, error) {
+	rsp, err := c.GetAd(ctx, adId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdResponse(rsp)
+}
+
+// UpdateAdWithBodyWithResponse request with arbitrary body returning *UpdateAdResponse
+func (c *ClientWithResponses) UpdateAdWithBodyWithResponse(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdResponse, error) {
+	rsp, err := c.UpdateAdWithBody(ctx, adId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdWithResponse(ctx context.Context, adId string, body UpdateAdJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdResponse, error) {
+	rsp, err := c.UpdateAd(ctx, adId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdResponse(rsp)
+}
+
+// GetAdAnalyticsWithResponse request returning *GetAdAnalyticsResponse
+func (c *ClientWithResponses) GetAdAnalyticsWithResponse(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAdAnalyticsResponse, error) {
+	rsp, err := c.GetAdAnalytics(ctx, adId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdAnalyticsResponse(rsp)
+}
+
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
 func (c *ClientWithResponses) GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error) {
 	rsp, err := c.GetAnalytics(ctx, params, reqEditors...)
@@ -43059,6 +46177,721 @@ func ParseUpdateYoutubeDefaultPlaylistResponse(rsp *http.Response) (*UpdateYoutu
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdsResponse parses an HTTP response from a ListAdsWithResponse call
+func ParseListAdsResponse(rsp *http.Response) (*ListAdsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Ads        *[]Ad       `json:"ads,omitempty"`
+			Pagination *Pagination `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdAccountsResponse parses an HTTP response from a ListAdAccountsWithResponse call
+func ParseListAdAccountsResponse(rsp *http.Response) (*ListAdAccountsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdAccountsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Accounts *[]struct {
+				Currency *string `json:"currency,omitempty"`
+
+				// Id Platform ad account ID (e.g. act_123)
+				Id     *string `json:"id,omitempty"`
+				Name   *string `json:"name,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"accounts,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdAudiencesResponse parses an HTTP response from a ListAdAudiencesWithResponse call
+func ParseListAdAudiencesResponse(rsp *http.Response) (*ListAdAudiencesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdAudiencesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Audiences *[]struct {
+				Description        *string                          `json:"description,omitempty"`
+				Id                 *string                          `json:"id,omitempty"`
+				Name               *string                          `json:"name,omitempty"`
+				Platform           *string                          `json:"platform,omitempty"`
+				PlatformAudienceId *string                          `json:"platformAudienceId,omitempty"`
+				Size               *int                             `json:"size,omitempty"`
+				Status             *string                          `json:"status,omitempty"`
+				Type               *ListAdAudiences200AudiencesType `json:"type,omitempty"`
+			} `json:"audiences,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateAdAudienceResponse parses an HTTP response from a CreateAdAudienceWithResponse call
+func ParseCreateAdAudienceResponse(rsp *http.Response) (*CreateAdAudienceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateAdAudienceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Audience *map[string]interface{} `json:"audience,omitempty"`
+			Message  *string                 `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAdAudienceResponse parses an HTTP response from a DeleteAdAudienceWithResponse call
+func ParseDeleteAdAudienceResponse(rsp *http.Response) (*DeleteAdAudienceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAdAudienceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdAudienceResponse parses an HTTP response from a GetAdAudienceWithResponse call
+func ParseGetAdAudienceResponse(rsp *http.Response) (*GetAdAudienceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdAudienceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Audience *map[string]interface{} `json:"audience,omitempty"`
+
+			// MetaData Fresh data from Meta API
+			MetaData *map[string]interface{} `json:"metaData,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddUsersToAdAudienceResponse parses an HTTP response from a AddUsersToAdAudienceWithResponse call
+func ParseAddUsersToAdAudienceResponse(rsp *http.Response) (*AddUsersToAdAudienceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddUsersToAdAudienceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message     *string `json:"message,omitempty"`
+			NumInvalid  *int    `json:"numInvalid,omitempty"`
+			NumReceived *int    `json:"numReceived,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBoostPostResponse parses an HTTP response from a BoostPostWithResponse call
+func ParseBoostPostResponse(rsp *http.Response) (*BoostPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BoostPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Ad      *Ad     `json:"ad,omitempty"`
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdCampaignsResponse parses an HTTP response from a ListAdCampaignsWithResponse call
+func ParseListAdCampaignsResponse(rsp *http.Response) (*ListAdCampaignsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdCampaignsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Campaigns  *[]AdCampaign `json:"campaigns,omitempty"`
+			Pagination *Pagination   `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAdCampaignStatusResponse parses an HTTP response from a UpdateAdCampaignStatusWithResponse call
+func ParseUpdateAdCampaignStatusResponse(rsp *http.Response) (*UpdateAdCampaignStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdCampaignStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Skipped Number of ads skipped
+			Skipped        *int      `json:"skipped,omitempty"`
+			SkippedReasons *[]string `json:"skippedReasons,omitempty"`
+
+			// Updated Number of ads updated
+			Updated *int `json:"updated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateStandaloneAdResponse parses an HTTP response from a CreateStandaloneAdWithResponse call
+func ParseCreateStandaloneAdResponse(rsp *http.Response) (*CreateStandaloneAdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateStandaloneAdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Ad      *Ad     `json:"ad,omitempty"`
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchAdInterestsResponse parses an HTTP response from a SearchAdInterestsWithResponse call
+func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchAdInterestsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Interests *[]struct {
+				Category *string `json:"category,omitempty"`
+				Id       *string `json:"id,omitempty"`
+				Name     *string `json:"name,omitempty"`
+			} `json:"interests,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSyncExternalAdsResponse parses an HTTP response from a SyncExternalAdsWithResponse call
+func ParseSyncExternalAdsResponse(rsp *http.Response) (*SyncExternalAdsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SyncExternalAdsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Errors Failed ad imports
+			Errors *int `json:"errors,omitempty"`
+
+			// Skipped Already-synced ads updated
+			Skipped *int  `json:"skipped,omitempty"`
+			Success *bool `json:"success,omitempty"`
+
+			// Synced New ads imported
+			Synced *int `json:"synced,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAdResponse parses an HTTP response from a DeleteAdWithResponse call
+func ParseDeleteAdResponse(rsp *http.Response) (*DeleteAdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdResponse parses an HTTP response from a GetAdWithResponse call
+func ParseGetAdResponse(rsp *http.Response) (*GetAdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Ad *Ad `json:"ad,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAdResponse parses an HTTP response from a UpdateAdWithResponse call
+func ParseUpdateAdResponse(rsp *http.Response) (*UpdateAdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Ad      *Ad     `json:"ad,omitempty"`
+			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdAnalyticsResponse parses an HTTP response from a GetAdAnalyticsWithResponse call
+func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdAnalyticsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Ad *struct {
+				Id       *string `json:"id,omitempty"`
+				Name     *string `json:"name,omitempty"`
+				Platform *string `json:"platform,omitempty"`
+				Status   *string `json:"status,omitempty"`
+			} `json:"ad,omitempty"`
+			Analytics *struct {
+				Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
+				Daily      *[]struct {
+					Clicks *int `json:"clicks,omitempty"`
+
+					// Cpc Cost per click
+					Cpc *float32 `json:"cpc,omitempty"`
+
+					// Cpm Cost per 1000 impressions
+					Cpm *float32 `json:"cpm,omitempty"`
+
+					// Ctr Click-through rate (%)
+					Ctr          *float32            `json:"ctr,omitempty"`
+					Date         *openapi_types.Date `json:"date,omitempty"`
+					Engagement   *int                `json:"engagement,omitempty"`
+					Impressions  *int                `json:"impressions,omitempty"`
+					LastSyncedAt *time.Time          `json:"lastSyncedAt,omitempty"`
+					Reach        *int                `json:"reach,omitempty"`
+					Spend        *float32            `json:"spend,omitempty"`
+				} `json:"daily,omitempty"`
+				Summary *AdMetrics `json:"summary,omitempty"`
+			} `json:"analytics,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 

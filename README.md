@@ -219,6 +219,35 @@ func main() {
 | `client.SetMessengerMenuWithResponse()` | Set FB persistent menu |
 | `client.SetTelegramCommandsWithResponse()` | Set TG bot commands |
 
+### Ad Audiences
+| Method | Description |
+|--------|-------------|
+| `client.ListAdAudiencesWithResponse()` | List custom audiences |
+| `client.CreateAdAudienceWithResponse()` | Create a custom audience (Meta only) |
+| `client.GetAdAudienceWithResponse()` | Get audience details |
+| `client.DeleteAdAudienceWithResponse()` | Delete a custom audience |
+| `client.AddUsersToAdAudienceWithResponse()` | Add users to a customer list audience |
+
+### Ad Campaigns
+| Method | Description |
+|--------|-------------|
+| `client.ListAdCampaignsWithResponse()` | List campaigns with aggregate metrics |
+| `client.UpdateAdCampaignStatusWithResponse()` | Pause or resume a campaign |
+
+### Ads
+| Method | Description |
+|--------|-------------|
+| `client.ListAdAccountsWithResponse()` | List ad accounts for a social account |
+| `client.ListAdsWithResponse()` | List ads |
+| `client.CreateStandaloneAdWithResponse()` | Create a standalone ad with custom creative |
+| `client.GetAdWithResponse()` | Get ad details |
+| `client.GetAdAnalyticsWithResponse()` | Get ad analytics with daily breakdown |
+| `client.UpdateAdWithResponse()` | Update ad (pause/resume, budget, targeting, name) |
+| `client.DeleteAdWithResponse()` | Cancel an ad |
+| `client.BoostPostWithResponse()` | Boost an existing post as a paid ad |
+| `client.SearchAdInterestsWithResponse()` | Search targeting interests |
+| `client.SyncExternalAdsWithResponse()` | Sync external ads from platform ad managers |
+
 ### Broadcasts
 | Method | Description |
 |--------|-------------|
