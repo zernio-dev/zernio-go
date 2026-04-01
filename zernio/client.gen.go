@@ -6907,11 +6907,20 @@ type UpdatePostMetadataJSONBody struct {
 	// CategoryId YouTube video category ID
 	CategoryId *string `json:"categoryId,omitempty"`
 
+	// ContainsSyntheticMedia AI-generated content disclosure. Set true if the video contains synthetic content that could be mistaken for real. YouTube may add a label.
+	ContainsSyntheticMedia *bool `json:"containsSyntheticMedia,omitempty"`
+
 	// Description New video description
 	Description *string `json:"description,omitempty"`
 
+	// MadeForKids COPPA compliance flag. Set true for child-directed content (restricts comments, notifications, ad targeting).
+	MadeForKids *bool `json:"madeForKids,omitempty"`
+
 	// Platform The platform to update metadata on
 	Platform UpdatePostMetadataJSONBodyPlatform `json:"platform"`
+
+	// PlaylistId YouTube playlist ID to add the video to (e.g. 'PLxxxxxxxxxxxxx'). Use GET /v1/accounts/{id}/youtube-playlists to list available playlists. Only playlists owned by the channel are supported.
+	PlaylistId *string `json:"playlistId,omitempty"`
 
 	// PrivacyStatus Video privacy setting
 	PrivacyStatus *UpdatePostMetadataJSONBodyPrivacyStatus `json:"privacyStatus,omitempty"`
