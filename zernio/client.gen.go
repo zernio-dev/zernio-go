@@ -1788,6 +1788,30 @@ func (e BoostPostJSONBodyGoal) Valid() bool {
 	}
 }
 
+// Defines values for BoostPostJSONBodySpecialAdCategories.
+const (
+	CREDIT                  BoostPostJSONBodySpecialAdCategories = "CREDIT"
+	EMPLOYMENT              BoostPostJSONBodySpecialAdCategories = "EMPLOYMENT"
+	HOUSING                 BoostPostJSONBodySpecialAdCategories = "HOUSING"
+	ISSUESELECTIONSPOLITICS BoostPostJSONBodySpecialAdCategories = "ISSUES_ELECTIONS_POLITICS"
+)
+
+// Valid indicates whether the value is a known member of the BoostPostJSONBodySpecialAdCategories enum.
+func (e BoostPostJSONBodySpecialAdCategories) Valid() bool {
+	switch e {
+	case CREDIT:
+		return true
+	case EMPLOYMENT:
+		return true
+	case HOUSING:
+		return true
+	case ISSUESELECTIONSPOLITICS:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListAdCampaignsParamsSource.
 const (
 	ListAdCampaignsParamsSourceAll    ListAdCampaignsParamsSource = "all"
@@ -4382,9 +4406,11 @@ type AdMetrics struct {
 	Cpm *float32 `json:"cpm,omitempty"`
 
 	// Ctr Click-through rate (%)
-	Ctr          *float32   `json:"ctr,omitempty"`
-	Engagement   *int       `json:"engagement,omitempty"`
-	Impressions  *int       `json:"impressions,omitempty"`
+	Ctr         *float32 `json:"ctr,omitempty"`
+	Engagement  *int     `json:"engagement,omitempty"`
+	Impressions *int     `json:"impressions,omitempty"`
+
+	// LastSyncedAt Present on individual ads only, not on campaign aggregations
 	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
 	Reach        *int       `json:"reach,omitempty"`
 	Spend        *float32   `json:"spend,omitempty"`
@@ -6352,9 +6378,12 @@ type CreateAdAudienceJSONBody struct {
 	AdAccountId string `json:"adAccountId"`
 
 	// Country 2-letter code, required for lookalike audiences
-	Country     *string `json:"country,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Name        string  `json:"name"`
+	Country *string `json:"country,omitempty"`
+
+	// CustomerFileSource Data source declaration for GDPR compliance (customer_list only)
+	CustomerFileSource *string `json:"customerFileSource,omitempty"`
+	Description        *string `json:"description,omitempty"`
+	Name               string  `json:"name"`
 
 	// PixelId Required for website audiences
 	PixelId *string `json:"pixelId,omitempty"`
@@ -6364,6 +6393,9 @@ type CreateAdAudienceJSONBody struct {
 
 	// RetentionDays Required for website audiences
 	RetentionDays *int `json:"retentionDays,omitempty"`
+
+	// Rule Pixel event rule for website audiences (optional)
+	Rule *map[string]interface{} `json:"rule,omitempty"`
 
 	// SourceAudienceId Required for lookalike audiences
 	SourceAudienceId *string                      `json:"sourceAudienceId,omitempty"`
@@ -6388,7 +6420,10 @@ type BoostPostJSONBody struct {
 
 	// AdAccountId Platform ad account ID
 	AdAccountId string `json:"adAccountId"`
-	Budget      struct {
+
+	// BidAmount Max bid cap (Meta only)
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+	Budget    struct {
 		// Amount Minimum varies: TikTok=$20, Pinterest=$5, others=$1
 		Amount float32                     `json:"amount"`
 		Type   BoostPostJSONBodyBudgetType `json:"type"`
@@ -6407,12 +6442,21 @@ type BoostPostJSONBody struct {
 		EndDate   *time.Time `json:"endDate,omitempty"`
 		StartDate *time.Time `json:"startDate,omitempty"`
 	} `json:"schedule,omitempty"`
-	Targeting *struct {
+
+	// SpecialAdCategories Meta only. Required for housing, employment, credit, or political ads.
+	SpecialAdCategories *[]BoostPostJSONBodySpecialAdCategories `json:"specialAdCategories,omitempty"`
+	Targeting           *struct {
 		AgeMax    *int      `json:"ageMax,omitempty"`
 		AgeMin    *int      `json:"ageMin,omitempty"`
 		Countries *[]string `json:"countries,omitempty"`
 		Interests *[]string `json:"interests,omitempty"`
 	} `json:"targeting,omitempty"`
+
+	// Tracking Meta only. Tracking specs (pixel, URL tags).
+	Tracking *struct {
+		PixelId *string `json:"pixelId,omitempty"`
+		UrlTags *string `json:"urlTags,omitempty"`
+	} `json:"tracking,omitempty"`
 }
 
 // BoostPostJSONBodyBudgetType defines parameters for BoostPost.
@@ -6420,6 +6464,9 @@ type BoostPostJSONBodyBudgetType string
 
 // BoostPostJSONBodyGoal defines parameters for BoostPost.
 type BoostPostJSONBodyGoal string
+
+// BoostPostJSONBodySpecialAdCategories defines parameters for BoostPost.
+type BoostPostJSONBodySpecialAdCategories string
 
 // ListAdCampaignsParams defines parameters for ListAdCampaigns.
 type ListAdCampaignsParams struct {
@@ -6467,16 +6514,28 @@ type UpdateAdCampaignStatusJSONBodyStatus string
 type CreateStandaloneAdJSONBody struct {
 	AccountId   string `json:"accountId"`
 	AdAccountId string `json:"adAccountId"`
-	AgeMax      *int   `json:"ageMax,omitempty"`
-	AgeMin      *int   `json:"ageMin,omitempty"`
+
+	// AdditionalDescriptions Google Search RSA only. Extra descriptions.
+	AdditionalDescriptions *[]string `json:"additionalDescriptions,omitempty"`
+
+	// AdditionalHeadlines Google Search RSA only. Extra headlines.
+	AdditionalHeadlines *[]string `json:"additionalHeadlines,omitempty"`
+	AgeMax              *int      `json:"ageMax,omitempty"`
+	AgeMin              *int      `json:"ageMin,omitempty"`
 
 	// AudienceId Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
+
+	// BoardId Pinterest only. Board ID (auto-creates if not provided).
+	BoardId *string `json:"boardId,omitempty"`
 
 	// Body Max: Google=90, Pinterest=500
 	Body         string                               `json:"body"`
 	BudgetAmount float32                              `json:"budgetAmount"`
 	BudgetType   CreateStandaloneAdJSONBodyBudgetType `json:"budgetType"`
+
+	// BusinessName Google Display only
+	BusinessName *string `json:"businessName,omitempty"`
 
 	// CallToAction Meta only
 	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
@@ -6493,14 +6552,17 @@ type CreateStandaloneAdJSONBody struct {
 	// Headline Required for most platforms. Max: Meta=255, Google=30, Pinterest=100
 	Headline *string `json:"headline,omitempty"`
 
-	// ImageUrl Image URL (or video URL for TikTok)
-	ImageUrl  string    `json:"imageUrl"`
+	// ImageUrl Image URL (or video URL for TikTok). Not required for Google Search campaigns.
+	ImageUrl  *string   `json:"imageUrl,omitempty"`
 	Interests *[]string `json:"interests,omitempty"`
 
 	// Keywords Google Search only
 	Keywords *[]string `json:"keywords,omitempty"`
 	LinkUrl  *string   `json:"linkUrl,omitempty"`
-	Name     string    `json:"name"`
+
+	// LongHeadline Google Display only
+	LongHeadline *string `json:"longHeadline,omitempty"`
+	Name         string  `json:"name"`
 }
 
 // CreateStandaloneAdJSONBodyBudgetType defines parameters for CreateStandaloneAd.
@@ -33455,6 +33517,9 @@ type UpdateAdCampaignStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// Message Human-readable summary (present when no ads were actionable)
+		Message *string `json:"message,omitempty"`
+
 		// Skipped Number of ads skipped
 		Skipped        *int      `json:"skipped,omitempty"`
 		SkippedReasons *[]string `json:"skippedReasons,omitempty"`
@@ -33543,7 +33608,7 @@ type SyncExternalAdsResponse struct {
 		// Errors Failed ad imports
 		Errors *int `json:"errors,omitempty"`
 
-		// Skipped Already-synced ads updated
+		// Skipped Already-known ads (skipped import
 		Skipped *int  `json:"skipped,omitempty"`
 		Success *bool `json:"success,omitempty"`
 
@@ -33670,13 +33735,15 @@ type GetAdAnalyticsResponse struct {
 				Cpm *float32 `json:"cpm,omitempty"`
 
 				// Ctr Click-through rate (%)
-				Ctr          *float32            `json:"ctr,omitempty"`
-				Date         *openapi_types.Date `json:"date,omitempty"`
-				Engagement   *int                `json:"engagement,omitempty"`
-				Impressions  *int                `json:"impressions,omitempty"`
-				LastSyncedAt *time.Time          `json:"lastSyncedAt,omitempty"`
-				Reach        *int                `json:"reach,omitempty"`
-				Spend        *float32            `json:"spend,omitempty"`
+				Ctr         *float32            `json:"ctr,omitempty"`
+				Date        *openapi_types.Date `json:"date,omitempty"`
+				Engagement  *int                `json:"engagement,omitempty"`
+				Impressions *int                `json:"impressions,omitempty"`
+
+				// LastSyncedAt Present on individual ads only, not on campaign aggregations
+				LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
+				Reach        *int       `json:"reach,omitempty"`
+				Spend        *float32   `json:"spend,omitempty"`
 			} `json:"daily,omitempty"`
 			Summary *AdMetrics `json:"summary,omitempty"`
 		} `json:"analytics,omitempty"`
@@ -46560,6 +46627,9 @@ func ParseUpdateAdCampaignStatusResponse(rsp *http.Response) (*UpdateAdCampaignS
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// Message Human-readable summary (present when no ads were actionable)
+			Message *string `json:"message,omitempty"`
+
 			// Skipped Number of ads skipped
 			Skipped        *int      `json:"skipped,omitempty"`
 			SkippedReasons *[]string `json:"skippedReasons,omitempty"`
@@ -46678,7 +46748,7 @@ func ParseSyncExternalAdsResponse(rsp *http.Response) (*SyncExternalAdsResponse,
 			// Errors Failed ad imports
 			Errors *int `json:"errors,omitempty"`
 
-			// Skipped Already-synced ads updated
+			// Skipped Already-known ads (skipped import
 			Skipped *int  `json:"skipped,omitempty"`
 			Success *bool `json:"success,omitempty"`
 
@@ -46863,13 +46933,15 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 					Cpm *float32 `json:"cpm,omitempty"`
 
 					// Ctr Click-through rate (%)
-					Ctr          *float32            `json:"ctr,omitempty"`
-					Date         *openapi_types.Date `json:"date,omitempty"`
-					Engagement   *int                `json:"engagement,omitempty"`
-					Impressions  *int                `json:"impressions,omitempty"`
-					LastSyncedAt *time.Time          `json:"lastSyncedAt,omitempty"`
-					Reach        *int                `json:"reach,omitempty"`
-					Spend        *float32            `json:"spend,omitempty"`
+					Ctr         *float32            `json:"ctr,omitempty"`
+					Date        *openapi_types.Date `json:"date,omitempty"`
+					Engagement  *int                `json:"engagement,omitempty"`
+					Impressions *int                `json:"impressions,omitempty"`
+
+					// LastSyncedAt Present on individual ads only, not on campaign aggregations
+					LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
+					Reach        *int       `json:"reach,omitempty"`
+					Spend        *float32   `json:"spend,omitempty"`
 				} `json:"daily,omitempty"`
 				Summary *AdMetrics `json:"summary,omitempty"`
 			} `json:"analytics,omitempty"`
