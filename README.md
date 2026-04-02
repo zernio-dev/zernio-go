@@ -134,19 +134,6 @@ func main() {
 |--------|-------------|
 | `client.GetMediaPresignedUrlWithResponse()` | Get presigned upload URL |
 
-### Tools
-| Method | Description |
-|--------|-------------|
-| `client.GetYouTubeTranscriptWithResponse()` | Get YouTube transcript |
-| `client.CheckInstagramHashtagsWithResponse()` | Check IG hashtag bans |
-| `client.DownloadBlueskyMediaWithResponse()` | Download Bluesky media |
-| `client.DownloadFacebookVideoWithResponse()` | Download Facebook video |
-| `client.DownloadInstagramMediaWithResponse()` | Download Instagram media |
-| `client.DownloadLinkedInVideoWithResponse()` | Download LinkedIn video |
-| `client.DownloadTikTokVideoWithResponse()` | Download TikTok video |
-| `client.DownloadTwitterMediaWithResponse()` | Download Twitter/X media |
-| `client.DownloadYouTubeVideoWithResponse()` | Download YouTube video |
-
 ### Users
 | Method | Description |
 |--------|-------------|
@@ -383,14 +370,6 @@ func main() {
 | `client.RetweetPostWithResponse()` | Retweet a post |
 | `client.UndoRetweetWithResponse()` | Undo retweet |
 | `client.UnfollowUserWithResponse()` | Unfollow a user |
-
-### Validate
-| Method | Description |
-|--------|-------------|
-| `client.ValidateMediaWithResponse()` | Validate media URL |
-| `client.ValidatePostWithResponse()` | Validate post content |
-| `client.ValidatePostLengthWithResponse()` | Validate post character count |
-| `client.ValidateSubredditWithResponse()` | Check subreddit existence |
 
 ### WhatsApp
 | Method | Description |
