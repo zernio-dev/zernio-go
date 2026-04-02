@@ -4456,9 +4456,33 @@ type Ad struct {
 	CampaignName *string    `json:"campaignName,omitempty"`
 	CreatedAt    *time.Time `json:"createdAt,omitempty"`
 
-	// Creative Platform-specific creative data
-	Creative *map[string]interface{} `json:"creative,omitempty"`
-	Goal     *AdGoal                 `json:"goal,omitempty"`
+	// Creative Platform-specific creative data. Fields vary by platform.
+	Creative *struct {
+		// Body Ad copy/text
+		Body *string `json:"body,omitempty"`
+
+		// GoogleDescription Google Ads description
+		GoogleDescription *string `json:"googleDescription,omitempty"`
+
+		// GoogleHeadline Google Ads headline
+		GoogleHeadline *string `json:"googleHeadline,omitempty"`
+
+		// ImageUrl Alternative image URL
+		ImageUrl *string `json:"imageUrl,omitempty"`
+
+		// LinkUrl Destination URL
+		LinkUrl *string `json:"linkUrl,omitempty"`
+
+		// MediaUrls All media URLs for this ad (carousel images, multiple assets). Populated for Meta (carousel child_attachments), Google Ads (responsive display marketing_images), and LinkedIn (multi-image posts).
+		MediaUrls            *[]string `json:"mediaUrls,omitempty"`
+		PinterestDescription *string   `json:"pinterestDescription,omitempty"`
+		PinterestImageUrl    *string   `json:"pinterestImageUrl,omitempty"`
+		PinterestTitle       *string   `json:"pinterestTitle,omitempty"`
+
+		// ThumbnailUrl Primary thumbnail/image URL
+		ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+	} `json:"creative,omitempty"`
+	Goal *AdGoal `json:"goal,omitempty"`
 
 	// IsExternal True for ads synced from platform ad managers
 	IsExternal          *bool       `json:"isExternal,omitempty"`

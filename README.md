@@ -440,6 +440,405 @@ func main() {
 |--------|-------------|
 | `client.CreateInviteTokenWithResponse()` | Create invite token |
 
+## SDK Reference
+
+### Posts
+| Method | Description |
+|--------|-------------|
+| `client.ListPostsWithResponse()` | List posts |
+| `client.BulkUploadPostsWithResponse()` | Bulk upload from CSV |
+| `client.CreatePostWithResponse()` | Create post |
+| `client.GetPostWithResponse()` | Get post |
+| `client.UpdatePostWithResponse()` | Update post |
+| `client.UpdatePostMetadataWithResponse()` | Update post metadata |
+| `client.DeletePostWithResponse()` | Delete post |
+| `client.RetryPostWithResponse()` | Retry failed post |
+| `client.UnpublishPostWithResponse()` | Unpublish post |
+
+### Accounts
+| Method | Description |
+|--------|-------------|
+| `client.GetAllAccountsHealthWithResponse()` | Check accounts health |
+| `client.ListAccountsWithResponse()` | List accounts |
+| `client.GetAccountHealthWithResponse()` | Check account health |
+| `client.GetFollowerStatsWithResponse()` | Get follower stats |
+| `client.GetGoogleBusinessReviewsWithResponse()` | Get reviews |
+| `client.GetLinkedInMentionsWithResponse()` | Resolve LinkedIn mention |
+| `client.GetTikTokCreatorInfoWithResponse()` | Get TikTok creator info |
+| `client.UpdateAccountWithResponse()` | Update account |
+| `client.DeleteAccountWithResponse()` | Disconnect account |
+
+### Profiles
+| Method | Description |
+|--------|-------------|
+| `client.ListProfilesWithResponse()` | List profiles |
+| `client.CreateProfileWithResponse()` | Create profile |
+| `client.GetProfileWithResponse()` | Get profile |
+| `client.UpdateProfileWithResponse()` | Update profile |
+| `client.DeleteProfileWithResponse()` | Delete profile |
+
+### Analytics
+| Method | Description |
+|--------|-------------|
+| `client.GetAnalyticsWithResponse()` | Get post analytics |
+| `client.GetBestTimeToPostWithResponse()` | Get best times to post |
+| `client.GetContentDecayWithResponse()` | Get content performance decay |
+| `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
+| `client.GetInstagramAccountInsightsWithResponse()` | Get Instagram account-level insights |
+| `client.GetInstagramDemographicsWithResponse()` | Get Instagram audience demographics |
+| `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
+| `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
+| `client.GetLinkedInPostReactionsWithResponse()` | Get LinkedIn post reactions |
+| `client.GetPostTimelineWithResponse()` | Get post analytics timeline |
+| `client.GetPostingFrequencyWithResponse()` | Get posting frequency vs engagement |
+| `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
+
+### Account Groups
+| Method | Description |
+|--------|-------------|
+| `client.ListAccountGroupsWithResponse()` | List groups |
+| `client.CreateAccountGroupWithResponse()` | Create group |
+| `client.UpdateAccountGroupWithResponse()` | Update group |
+| `client.DeleteAccountGroupWithResponse()` | Delete group |
+
+### Queue
+| Method | Description |
+|--------|-------------|
+| `client.ListQueueSlotsWithResponse()` | List schedules |
+| `client.CreateQueueSlotWithResponse()` | Create schedule |
+| `client.GetNextQueueSlotWithResponse()` | Get next available slot |
+| `client.UpdateQueueSlotWithResponse()` | Update schedule |
+| `client.DeleteQueueSlotWithResponse()` | Delete schedule |
+| `client.PreviewQueueWithResponse()` | Preview upcoming slots |
+
+### Webhooks
+| Method | Description |
+|--------|-------------|
+| `client.CreateWebhookSettingsWithResponse()` | Create webhook |
+| `client.GetWebhookLogsWithResponse()` | Get delivery logs |
+| `client.GetWebhookSettingsWithResponse()` | List webhooks |
+| `client.UpdateWebhookSettingsWithResponse()` | Update webhook |
+| `client.DeleteWebhookSettingsWithResponse()` | Delete webhook |
+| `client.TestWebhookWithResponse()` | Send test webhook |
+
+### API Keys
+| Method | Description |
+|--------|-------------|
+| `client.ListApiKeysWithResponse()` | List keys |
+| `client.CreateApiKeyWithResponse()` | Create key |
+| `client.DeleteApiKeyWithResponse()` | Delete key |
+
+### Media
+| Method | Description |
+|--------|-------------|
+| `client.GetMediaPresignedUrlWithResponse()` | Get presigned upload URL |
+
+### Users
+| Method | Description |
+|--------|-------------|
+| `client.ListUsersWithResponse()` | List users |
+| `client.GetUserWithResponse()` | Get user |
+
+### Usage
+| Method | Description |
+|--------|-------------|
+| `client.GetUsageStatsWithResponse()` | Get plan and usage stats |
+
+### Logs
+| Method | Description |
+|--------|-------------|
+| `client.ListConnectionLogsWithResponse()` | List connection logs |
+| `client.ListPostsLogsWithResponse()` | List publishing logs |
+| `client.GetPostLogsWithResponse()` | Get post logs |
+
+### Connect (OAuth)
+| Method | Description |
+|--------|-------------|
+| `client.ListFacebookPagesWithResponse()` | List Facebook pages |
+| `client.ListGoogleBusinessLocationsWithResponse()` | List GBP locations |
+| `client.ListLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
+| `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest boards |
+| `client.ListSnapchatProfilesWithResponse()` | List Snapchat profiles |
+| `client.GetConnectUrlWithResponse()` | Get OAuth connect URL |
+| `client.GetFacebookPagesWithResponse()` | List Facebook pages |
+| `client.GetGmbLocationsWithResponse()` | List GBP locations |
+| `client.GetLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
+| `client.GetPendingOAuthDataWithResponse()` | Get pending OAuth data |
+| `client.GetPinterestBoardsWithResponse()` | List Pinterest boards |
+| `client.GetRedditFlairsWithResponse()` | List subreddit flairs |
+| `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits |
+| `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram code |
+| `client.GetYoutubePlaylistsWithResponse()` | List YouTube playlists |
+| `client.UpdateFacebookPageWithResponse()` | Update Facebook page |
+| `client.UpdateGmbLocationWithResponse()` | Update GBP location |
+| `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type |
+| `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board |
+| `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
+| `client.UpdateYoutubeDefaultPlaylistWithResponse()` | Set default YouTube playlist |
+| `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
+| `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
+| `client.ConnectWhatsAppCredentialsWithResponse()` | Connect WhatsApp via credentials |
+| `client.HandleOAuthCallbackWithResponse()` | Complete OAuth callback |
+| `client.InitiateTelegramConnectWithResponse()` | Connect Telegram directly |
+| `client.SelectFacebookPageWithResponse()` | Select Facebook page |
+| `client.SelectGoogleBusinessLocationWithResponse()` | Select GBP location |
+| `client.SelectLinkedInOrganizationWithResponse()` | Select LinkedIn org |
+| `client.SelectPinterestBoardWithResponse()` | Select Pinterest board |
+| `client.SelectSnapchatProfileWithResponse()` | Select Snapchat profile |
+
+### Reddit
+| Method | Description |
+|--------|-------------|
+| `client.GetRedditFeedWithResponse()` | Get subreddit feed |
+| `client.SearchRedditWithResponse()` | Search posts |
+
+### Account Settings
+| Method | Description |
+|--------|-------------|
+| `client.GetInstagramIceBreakersWithResponse()` | Get IG ice breakers |
+| `client.GetMessengerMenuWithResponse()` | Get FB persistent menu |
+| `client.GetTelegramCommandsWithResponse()` | Get TG bot commands |
+| `client.DeleteInstagramIceBreakersWithResponse()` | Delete IG ice breakers |
+| `client.DeleteMessengerMenuWithResponse()` | Delete FB persistent menu |
+| `client.DeleteTelegramCommandsWithResponse()` | Delete TG bot commands |
+| `client.SetInstagramIceBreakersWithResponse()` | Set IG ice breakers |
+| `client.SetMessengerMenuWithResponse()` | Set FB persistent menu |
+| `client.SetTelegramCommandsWithResponse()` | Set TG bot commands |
+
+### Ad Audiences
+| Method | Description |
+|--------|-------------|
+| `client.ListAdAudiencesWithResponse()` | List custom audiences |
+| `client.CreateAdAudienceWithResponse()` | Create a custom audience (Meta only) |
+| `client.GetAdAudienceWithResponse()` | Get audience details |
+| `client.DeleteAdAudienceWithResponse()` | Delete a custom audience |
+| `client.AddUsersToAdAudienceWithResponse()` | Add users to a customer list audience |
+
+### Ad Campaigns
+| Method | Description |
+|--------|-------------|
+| `client.ListAdCampaignsWithResponse()` | List campaigns with aggregate metrics |
+| `client.GetAdTreeWithResponse()` | Get nested campaign/ad-set/ad tree |
+| `client.UpdateAdCampaignStatusWithResponse()` | Pause or resume a campaign |
+
+### Ads
+| Method | Description |
+|--------|-------------|
+| `client.ListAdAccountsWithResponse()` | List ad accounts for a social account |
+| `client.ListAdsWithResponse()` | List ads |
+| `client.CreateStandaloneAdWithResponse()` | Create a standalone ad with custom creative |
+| `client.GetAdWithResponse()` | Get ad details |
+| `client.GetAdAnalyticsWithResponse()` | Get ad analytics with daily breakdown |
+| `client.UpdateAdWithResponse()` | Update ad (pause/resume, budget, targeting, name) |
+| `client.DeleteAdWithResponse()` | Cancel an ad |
+| `client.BoostPostWithResponse()` | Boost an existing post as a paid ad |
+| `client.SearchAdInterestsWithResponse()` | Search targeting interests |
+| `client.SyncExternalAdsWithResponse()` | Sync external ads from platform ad managers |
+
+### Broadcasts
+| Method | Description |
+|--------|-------------|
+| `client.ListBroadcastRecipientsWithResponse()` | List broadcast recipients |
+| `client.ListBroadcastsWithResponse()` | List broadcasts |
+| `client.CreateBroadcastWithResponse()` | Create a broadcast draft |
+| `client.GetBroadcastWithResponse()` | Get broadcast details |
+| `client.UpdateBroadcastWithResponse()` | Update a broadcast |
+| `client.DeleteBroadcastWithResponse()` | Delete a broadcast (draft only) |
+| `client.AddBroadcastRecipientsWithResponse()` | Add recipients to a broadcast |
+| `client.CancelBroadcastWithResponse()` | Cancel a broadcast |
+| `client.ScheduleBroadcastWithResponse()` | Schedule broadcast for later |
+| `client.SendBroadcastWithResponse()` | Trigger immediate send |
+
+### Comment Automations
+| Method | Description |
+|--------|-------------|
+| `client.ListCommentAutomationLogsWithResponse()` | List trigger logs for an automation |
+| `client.ListCommentAutomationsWithResponse()` | List comment-to-DM automations |
+| `client.CreateCommentAutomationWithResponse()` | Create a comment-to-DM automation |
+| `client.GetCommentAutomationWithResponse()` | Get automation details with recent logs |
+| `client.UpdateCommentAutomationWithResponse()` | Update automation settings |
+| `client.DeleteCommentAutomationWithResponse()` | Delete automation and all logs |
+
+### Comments (Inbox)
+| Method | Description |
+|--------|-------------|
+| `client.ListInboxCommentsWithResponse()` | List commented posts |
+| `client.GetInboxPostCommentsWithResponse()` | Get post comments |
+| `client.DeleteInboxCommentWithResponse()` | Delete comment |
+| `client.HideInboxCommentWithResponse()` | Hide comment |
+| `client.LikeInboxCommentWithResponse()` | Like comment |
+| `client.ReplyToInboxPostWithResponse()` | Reply to comment |
+| `client.SendPrivateReplyToCommentWithResponse()` | Send private reply |
+| `client.UnhideInboxCommentWithResponse()` | Unhide comment |
+| `client.UnlikeInboxCommentWithResponse()` | Unlike comment |
+
+### Contacts
+| Method | Description |
+|--------|-------------|
+| `client.ListContactsWithResponse()` | List contacts |
+| `client.BulkCreateContactsWithResponse()` | Bulk create contacts |
+| `client.CreateContactWithResponse()` | Create a contact |
+| `client.GetContactWithResponse()` | Get contact with channels |
+| `client.GetContactChannelsWithResponse()` | List channels for a contact |
+| `client.UpdateContactWithResponse()` | Update a contact |
+| `client.DeleteContactWithResponse()` | Delete a contact |
+
+### Custom Fields
+| Method | Description |
+|--------|-------------|
+| `client.ListCustomFieldsWithResponse()` | List custom field definitions |
+| `client.CreateCustomFieldWithResponse()` | Create a custom field definition |
+| `client.UpdateCustomFieldWithResponse()` | Update a custom field definition |
+| `client.DeleteCustomFieldWithResponse()` | Delete a custom field definition |
+| `client.ClearContactFieldValueWithResponse()` | Clear a custom field value |
+| `client.SetContactFieldValueWithResponse()` | Set a custom field value |
+
+### GMB Attributes
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessAttributesWithResponse()` | Get attributes |
+| `client.UpdateGoogleBusinessAttributesWithResponse()` | Update attributes |
+
+### GMB Food Menus
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessFoodMenusWithResponse()` | Get food menus |
+| `client.UpdateGoogleBusinessFoodMenusWithResponse()` | Update food menus |
+
+### GMB Location Details
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessLocationDetailsWithResponse()` | Get location details |
+| `client.UpdateGoogleBusinessLocationDetailsWithResponse()` | Update location details |
+
+### GMB Media
+| Method | Description |
+|--------|-------------|
+| `client.ListGoogleBusinessMediaWithResponse()` | List media |
+| `client.CreateGoogleBusinessMediaWithResponse()` | Upload photo |
+| `client.DeleteGoogleBusinessMediaWithResponse()` | Delete photo |
+
+### GMB Place Actions
+| Method | Description |
+|--------|-------------|
+| `client.ListGoogleBusinessPlaceActionsWithResponse()` | List action links |
+| `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create action link |
+| `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete action link |
+
+### Messages (Inbox)
+| Method | Description |
+|--------|-------------|
+| `client.ListInboxConversationsWithResponse()` | List conversations |
+| `client.GetInboxConversationWithResponse()` | Get conversation |
+| `client.GetInboxConversationMessagesWithResponse()` | List messages |
+| `client.UpdateInboxConversationWithResponse()` | Update conversation status |
+| `client.DeleteInboxMessageWithResponse()` | Delete message |
+| `client.AddMessageReactionWithResponse()` | Add reaction |
+| `client.EditInboxMessageWithResponse()` | Edit message |
+| `client.RemoveMessageReactionWithResponse()` | Remove reaction |
+| `client.SendInboxMessageWithResponse()` | Send message |
+| `client.SendTypingIndicatorWithResponse()` | Send typing indicator |
+| `client.UploadMediaDirectWithResponse()` | Upload media file |
+
+### Reviews (Inbox)
+| Method | Description |
+|--------|-------------|
+| `client.ListInboxReviewsWithResponse()` | List reviews |
+| `client.DeleteInboxReviewReplyWithResponse()` | Delete review reply |
+| `client.ReplyToInboxReviewWithResponse()` | Reply to review |
+
+### Sequences
+| Method | Description |
+|--------|-------------|
+| `client.ListSequenceEnrollmentsWithResponse()` | List enrollments for a sequence |
+| `client.ListSequencesWithResponse()` | List sequences |
+| `client.CreateSequenceWithResponse()` | Create a sequence |
+| `client.GetSequenceWithResponse()` | Get sequence with steps |
+| `client.UpdateSequenceWithResponse()` | Update a sequence |
+| `client.DeleteSequenceWithResponse()` | Delete a sequence |
+| `client.ActivateSequenceWithResponse()` | Activate a sequence |
+| `client.EnrollContactsWithResponse()` | Enroll contacts in a sequence |
+| `client.PauseSequenceWithResponse()` | Pause a sequence |
+| `client.UnenrollContactWithResponse()` | Unenroll a contact from a sequence |
+
+### Twitter Engagement
+| Method | Description |
+|--------|-------------|
+| `client.BookmarkPostWithResponse()` | Bookmark a tweet |
+| `client.FollowUserWithResponse()` | Follow a user |
+| `client.RemoveBookmarkWithResponse()` | Remove bookmark |
+| `client.RetweetPostWithResponse()` | Retweet a post |
+| `client.UndoRetweetWithResponse()` | Undo retweet |
+| `client.UnfollowUserWithResponse()` | Unfollow a user |
+
+### Validate
+| Method | Description |
+|--------|-------------|
+| `client.ValidateMediaWithResponse()` | Validate media URL |
+| `client.ValidatePostWithResponse()` | Validate post content |
+| `client.ValidatePostLengthWithResponse()` | Validate post character count |
+| `client.ValidateSubredditWithResponse()` | Check subreddit existence |
+
+### WhatsApp
+| Method | Description |
+|--------|-------------|
+| `client.ListWhatsAppGroupChatsWithResponse()` | List active groups |
+| `client.ListWhatsAppGroupJoinRequestsWithResponse()` | List join requests |
+| `client.BulkDeleteWhatsAppContactsWithResponse()` | Bulk delete contacts |
+| `client.BulkUpdateWhatsAppContactsWithResponse()` | Bulk update contacts |
+| `client.CreateWhatsAppBroadcastWithResponse()` | Create broadcast |
+| `client.CreateWhatsAppContactWithResponse()` | Create contact |
+| `client.CreateWhatsAppGroupChatWithResponse()` | Create group |
+| `client.CreateWhatsAppGroupInviteLinkWithResponse()` | Create invite link |
+| `client.CreateWhatsAppTemplateWithResponse()` | Create template |
+| `client.GetWhatsAppBroadcastWithResponse()` | Get broadcast |
+| `client.GetWhatsAppBroadcastRecipientsWithResponse()` | List recipients |
+| `client.GetWhatsAppBroadcastsWithResponse()` | List broadcasts |
+| `client.GetWhatsAppBusinessProfileWithResponse()` | Get business profile |
+| `client.GetWhatsAppContactWithResponse()` | Get contact |
+| `client.GetWhatsAppContactsWithResponse()` | List contacts |
+| `client.GetWhatsAppDisplayNameWithResponse()` | Get display name and review status |
+| `client.GetWhatsAppGroupChatWithResponse()` | Get group info |
+| `client.GetWhatsAppGroupsWithResponse()` | List contact groups |
+| `client.GetWhatsAppTemplateWithResponse()` | Get template |
+| `client.GetWhatsAppTemplatesWithResponse()` | List templates |
+| `client.UpdateWhatsAppBusinessProfileWithResponse()` | Update business profile |
+| `client.UpdateWhatsAppContactWithResponse()` | Update contact |
+| `client.UpdateWhatsAppDisplayNameWithResponse()` | Request display name change |
+| `client.UpdateWhatsAppGroupChatWithResponse()` | Update group settings |
+| `client.UpdateWhatsAppTemplateWithResponse()` | Update template |
+| `client.DeleteWhatsAppBroadcastWithResponse()` | Delete broadcast |
+| `client.DeleteWhatsAppContactWithResponse()` | Delete contact |
+| `client.DeleteWhatsAppGroupWithResponse()` | Delete group |
+| `client.DeleteWhatsAppGroupChatWithResponse()` | Delete group |
+| `client.DeleteWhatsAppTemplateWithResponse()` | Delete template |
+| `client.AddWhatsAppBroadcastRecipientsWithResponse()` | Add recipients |
+| `client.AddWhatsAppGroupParticipantsWithResponse()` | Add participants |
+| `client.ApproveWhatsAppGroupJoinRequestsWithResponse()` | Approve join requests |
+| `client.CancelWhatsAppBroadcastScheduleWithResponse()` | Cancel scheduled broadcast |
+| `client.ImportWhatsAppContactsWithResponse()` | Bulk import contacts |
+| `client.RejectWhatsAppGroupJoinRequestsWithResponse()` | Reject join requests |
+| `client.RemoveWhatsAppBroadcastRecipientsWithResponse()` | Remove recipients |
+| `client.RemoveWhatsAppGroupParticipantsWithResponse()` | Remove participants |
+| `client.RenameWhatsAppGroupWithResponse()` | Rename group |
+| `client.ScheduleWhatsAppBroadcastWithResponse()` | Schedule broadcast |
+| `client.SendWhatsAppBroadcastWithResponse()` | Send broadcast |
+| `client.SendWhatsAppBulkWithResponse()` | Bulk send template messages |
+| `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
+
+### WhatsApp Phone Numbers
+| Method | Description |
+|--------|-------------|
+| `client.GetWhatsAppPhoneNumberWithResponse()` | Get phone number |
+| `client.GetWhatsAppPhoneNumbersWithResponse()` | List phone numbers |
+| `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |
+| `client.ReleaseWhatsAppPhoneNumberWithResponse()` | Release phone number |
+
+### Invites
+| Method | Description |
+|--------|-------------|
+| `client.CreateInviteTokenWithResponse()` | Create invite token |
+
 ## Documentation
 
 - [API Reference](https://docs.zernio.com/api-reference)
