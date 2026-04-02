@@ -6095,6 +6095,12 @@ type ListAccountsParams struct {
 
 	// IncludeOverLimit When true, includes accounts from over-limit profiles.
 	IncludeOverLimit *bool `form:"includeOverLimit,omitempty" json:"includeOverLimit,omitempty"`
+
+	// Page Page number (1-based). When provided with limit, enables server-side pagination. Omit for all accounts.
+	Page *int `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Page size. Required alongside page for pagination.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // GetFollowerStatsParams defines parameters for GetFollowerStats.
@@ -15914,6 +15920,38 @@ func NewListAccountsRequest(server string, params *ListAccountsParams) (*http.Re
 		if params.IncludeOverLimit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "includeOverLimit", *params.IncludeOverLimit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -31151,7 +31189,8 @@ type ListAccountsResponse struct {
 		Accounts *[]SocialAccount `json:"accounts,omitempty"`
 
 		// HasAnalyticsAccess Whether user has analytics add-on access
-		HasAnalyticsAccess *bool `json:"hasAnalyticsAccess,omitempty"`
+		HasAnalyticsAccess *bool       `json:"hasAnalyticsAccess,omitempty"`
+		Pagination         *Pagination `json:"pagination,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -43179,7 +43218,8 @@ func ParseListAccountsResponse(rsp *http.Response) (*ListAccountsResponse, error
 			Accounts *[]SocialAccount `json:"accounts,omitempty"`
 
 			// HasAnalyticsAccess Whether user has analytics add-on access
-			HasAnalyticsAccess *bool `json:"hasAnalyticsAccess,omitempty"`
+			HasAnalyticsAccess *bool       `json:"hasAnalyticsAccess,omitempty"`
+			Pagination         *Pagination `json:"pagination,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
