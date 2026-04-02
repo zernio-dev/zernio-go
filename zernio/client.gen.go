@@ -234,6 +234,141 @@ func (e AdCampaignStatus) Valid() bool {
 	}
 }
 
+// Defines values for AdTreeAdSetBudgetType.
+const (
+	AdTreeAdSetBudgetTypeDaily    AdTreeAdSetBudgetType = "daily"
+	AdTreeAdSetBudgetTypeLifetime AdTreeAdSetBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeAdSetBudgetType enum.
+func (e AdTreeAdSetBudgetType) Valid() bool {
+	switch e {
+	case AdTreeAdSetBudgetTypeDaily:
+		return true
+	case AdTreeAdSetBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeAdSetStatus.
+const (
+	AdTreeAdSetStatusActive        AdTreeAdSetStatus = "active"
+	AdTreeAdSetStatusCancelled     AdTreeAdSetStatus = "cancelled"
+	AdTreeAdSetStatusCompleted     AdTreeAdSetStatus = "completed"
+	AdTreeAdSetStatusError         AdTreeAdSetStatus = "error"
+	AdTreeAdSetStatusPaused        AdTreeAdSetStatus = "paused"
+	AdTreeAdSetStatusPendingReview AdTreeAdSetStatus = "pending_review"
+	AdTreeAdSetStatusRejected      AdTreeAdSetStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeAdSetStatus enum.
+func (e AdTreeAdSetStatus) Valid() bool {
+	switch e {
+	case AdTreeAdSetStatusActive:
+		return true
+	case AdTreeAdSetStatusCancelled:
+		return true
+	case AdTreeAdSetStatusCompleted:
+		return true
+	case AdTreeAdSetStatusError:
+		return true
+	case AdTreeAdSetStatusPaused:
+		return true
+	case AdTreeAdSetStatusPendingReview:
+		return true
+	case AdTreeAdSetStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeCampaignBudgetType.
+const (
+	AdTreeCampaignBudgetTypeDaily    AdTreeCampaignBudgetType = "daily"
+	AdTreeCampaignBudgetTypeLifetime AdTreeCampaignBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignBudgetType enum.
+func (e AdTreeCampaignBudgetType) Valid() bool {
+	switch e {
+	case AdTreeCampaignBudgetTypeDaily:
+		return true
+	case AdTreeCampaignBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeCampaignPlatform.
+const (
+	AdTreeCampaignPlatformFacebook  AdTreeCampaignPlatform = "facebook"
+	AdTreeCampaignPlatformGoogle    AdTreeCampaignPlatform = "google"
+	AdTreeCampaignPlatformInstagram AdTreeCampaignPlatform = "instagram"
+	AdTreeCampaignPlatformLinkedin  AdTreeCampaignPlatform = "linkedin"
+	AdTreeCampaignPlatformPinterest AdTreeCampaignPlatform = "pinterest"
+	AdTreeCampaignPlatformTiktok    AdTreeCampaignPlatform = "tiktok"
+	AdTreeCampaignPlatformTwitter   AdTreeCampaignPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignPlatform enum.
+func (e AdTreeCampaignPlatform) Valid() bool {
+	switch e {
+	case AdTreeCampaignPlatformFacebook:
+		return true
+	case AdTreeCampaignPlatformGoogle:
+		return true
+	case AdTreeCampaignPlatformInstagram:
+		return true
+	case AdTreeCampaignPlatformLinkedin:
+		return true
+	case AdTreeCampaignPlatformPinterest:
+		return true
+	case AdTreeCampaignPlatformTiktok:
+		return true
+	case AdTreeCampaignPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeCampaignStatus.
+const (
+	AdTreeCampaignStatusActive        AdTreeCampaignStatus = "active"
+	AdTreeCampaignStatusCancelled     AdTreeCampaignStatus = "cancelled"
+	AdTreeCampaignStatusCompleted     AdTreeCampaignStatus = "completed"
+	AdTreeCampaignStatusError         AdTreeCampaignStatus = "error"
+	AdTreeCampaignStatusPaused        AdTreeCampaignStatus = "paused"
+	AdTreeCampaignStatusPendingReview AdTreeCampaignStatus = "pending_review"
+	AdTreeCampaignStatusRejected      AdTreeCampaignStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignStatus enum.
+func (e AdTreeCampaignStatus) Valid() bool {
+	switch e {
+	case AdTreeCampaignStatusActive:
+		return true
+	case AdTreeCampaignStatusCancelled:
+		return true
+	case AdTreeCampaignStatusCompleted:
+		return true
+	case AdTreeCampaignStatusError:
+		return true
+	case AdTreeCampaignStatusPaused:
+		return true
+	case AdTreeCampaignStatusPendingReview:
+		return true
+	case AdTreeCampaignStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AnalyticsListResponsePostsMediaItemsType.
 const (
 	AnalyticsListResponsePostsMediaItemsTypeImage AnalyticsListResponsePostsMediaItemsType = "image"
@@ -2049,6 +2184,90 @@ func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	}
 }
 
+// Defines values for GetAdTreeParamsSource.
+const (
+	GetAdTreeParamsSourceAll    GetAdTreeParamsSource = "all"
+	GetAdTreeParamsSourceZernio GetAdTreeParamsSource = "zernio"
+)
+
+// Valid indicates whether the value is a known member of the GetAdTreeParamsSource enum.
+func (e GetAdTreeParamsSource) Valid() bool {
+	switch e {
+	case GetAdTreeParamsSourceAll:
+		return true
+	case GetAdTreeParamsSourceZernio:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAdTreeParamsPlatform.
+const (
+	GetAdTreeParamsPlatformFacebook  GetAdTreeParamsPlatform = "facebook"
+	GetAdTreeParamsPlatformGoogle    GetAdTreeParamsPlatform = "google"
+	GetAdTreeParamsPlatformInstagram GetAdTreeParamsPlatform = "instagram"
+	GetAdTreeParamsPlatformLinkedin  GetAdTreeParamsPlatform = "linkedin"
+	GetAdTreeParamsPlatformPinterest GetAdTreeParamsPlatform = "pinterest"
+	GetAdTreeParamsPlatformTiktok    GetAdTreeParamsPlatform = "tiktok"
+	GetAdTreeParamsPlatformTwitter   GetAdTreeParamsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the GetAdTreeParamsPlatform enum.
+func (e GetAdTreeParamsPlatform) Valid() bool {
+	switch e {
+	case GetAdTreeParamsPlatformFacebook:
+		return true
+	case GetAdTreeParamsPlatformGoogle:
+		return true
+	case GetAdTreeParamsPlatformInstagram:
+		return true
+	case GetAdTreeParamsPlatformLinkedin:
+		return true
+	case GetAdTreeParamsPlatformPinterest:
+		return true
+	case GetAdTreeParamsPlatformTiktok:
+		return true
+	case GetAdTreeParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAdTreeParamsStatus.
+const (
+	GetAdTreeParamsStatusActive        GetAdTreeParamsStatus = "active"
+	GetAdTreeParamsStatusCancelled     GetAdTreeParamsStatus = "cancelled"
+	GetAdTreeParamsStatusCompleted     GetAdTreeParamsStatus = "completed"
+	GetAdTreeParamsStatusError         GetAdTreeParamsStatus = "error"
+	GetAdTreeParamsStatusPaused        GetAdTreeParamsStatus = "paused"
+	GetAdTreeParamsStatusPendingReview GetAdTreeParamsStatus = "pending_review"
+	GetAdTreeParamsStatusRejected      GetAdTreeParamsStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the GetAdTreeParamsStatus enum.
+func (e GetAdTreeParamsStatus) Valid() bool {
+	switch e {
+	case GetAdTreeParamsStatusActive:
+		return true
+	case GetAdTreeParamsStatusCancelled:
+		return true
+	case GetAdTreeParamsStatusCompleted:
+		return true
+	case GetAdTreeParamsStatusError:
+		return true
+	case GetAdTreeParamsStatusPaused:
+		return true
+	case GetAdTreeParamsStatusPendingReview:
+		return true
+	case GetAdTreeParamsStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UpdateAdJSONBodyBudgetType.
 const (
 	Daily    UpdateAdJSONBodyBudgetType = "daily"
@@ -3254,22 +3473,22 @@ func (e CreatePostJSONBodyMediaItemsType) Valid() bool {
 
 // Defines values for CreatePostJSONBodyPlatformsCustomMediaType.
 const (
-	Document CreatePostJSONBodyPlatformsCustomMediaType = "document"
-	Gif      CreatePostJSONBodyPlatformsCustomMediaType = "gif"
-	Image    CreatePostJSONBodyPlatformsCustomMediaType = "image"
-	Video    CreatePostJSONBodyPlatformsCustomMediaType = "video"
+	CreatePostJSONBodyPlatformsCustomMediaTypeDocument CreatePostJSONBodyPlatformsCustomMediaType = "document"
+	CreatePostJSONBodyPlatformsCustomMediaTypeGif      CreatePostJSONBodyPlatformsCustomMediaType = "gif"
+	CreatePostJSONBodyPlatformsCustomMediaTypeImage    CreatePostJSONBodyPlatformsCustomMediaType = "image"
+	CreatePostJSONBodyPlatformsCustomMediaTypeVideo    CreatePostJSONBodyPlatformsCustomMediaType = "video"
 )
 
 // Valid indicates whether the value is a known member of the CreatePostJSONBodyPlatformsCustomMediaType enum.
 func (e CreatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
 	switch e {
-	case Document:
+	case CreatePostJSONBodyPlatformsCustomMediaTypeDocument:
 		return true
-	case Gif:
+	case CreatePostJSONBodyPlatformsCustomMediaTypeGif:
 		return true
-	case Image:
+	case CreatePostJSONBodyPlatformsCustomMediaTypeImage:
 		return true
-	case Video:
+	case CreatePostJSONBodyPlatformsCustomMediaTypeVideo:
 		return true
 	default:
 		return false
@@ -3509,28 +3728,28 @@ func (e GetRedditFeedParamsSort) Valid() bool {
 
 // Defines values for GetRedditFeedParamsT.
 const (
-	GetRedditFeedParamsTAll   GetRedditFeedParamsT = "all"
-	GetRedditFeedParamsTDay   GetRedditFeedParamsT = "day"
-	GetRedditFeedParamsTHour  GetRedditFeedParamsT = "hour"
-	GetRedditFeedParamsTMonth GetRedditFeedParamsT = "month"
-	GetRedditFeedParamsTWeek  GetRedditFeedParamsT = "week"
-	GetRedditFeedParamsTYear  GetRedditFeedParamsT = "year"
+	All   GetRedditFeedParamsT = "all"
+	Day   GetRedditFeedParamsT = "day"
+	Hour  GetRedditFeedParamsT = "hour"
+	Month GetRedditFeedParamsT = "month"
+	Week  GetRedditFeedParamsT = "week"
+	Year  GetRedditFeedParamsT = "year"
 )
 
 // Valid indicates whether the value is a known member of the GetRedditFeedParamsT enum.
 func (e GetRedditFeedParamsT) Valid() bool {
 	switch e {
-	case GetRedditFeedParamsTAll:
+	case All:
 		return true
-	case GetRedditFeedParamsTDay:
+	case Day:
 		return true
-	case GetRedditFeedParamsTHour:
+	case Hour:
 		return true
-	case GetRedditFeedParamsTMonth:
+	case Month:
 		return true
-	case GetRedditFeedParamsTWeek:
+	case Week:
 		return true
-	case GetRedditFeedParamsTYear:
+	case Year:
 		return true
 	default:
 		return false
@@ -3605,31 +3824,31 @@ func (e ListSequencesParamsStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
-	Instagram CreateSequenceJSONBodyPlatform = "instagram"
-	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
-	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
-	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
-	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateSequenceJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateSequenceJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateSequenceJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateSequenceJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateSequenceJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateSequenceJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateSequenceJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -3681,6 +3900,93 @@ func (e ListSequenceEnrollmentsParamsStatus) Valid() bool {
 	case ListSequenceEnrollmentsParamsStatusExited:
 		return true
 	case ListSequenceEnrollmentsParamsStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ValidatePostJSONBodyMediaItemsType.
+const (
+	ValidatePostJSONBodyMediaItemsTypeImage ValidatePostJSONBodyMediaItemsType = "image"
+	ValidatePostJSONBodyMediaItemsTypeVideo ValidatePostJSONBodyMediaItemsType = "video"
+)
+
+// Valid indicates whether the value is a known member of the ValidatePostJSONBodyMediaItemsType enum.
+func (e ValidatePostJSONBodyMediaItemsType) Valid() bool {
+	switch e {
+	case ValidatePostJSONBodyMediaItemsTypeImage:
+		return true
+	case ValidatePostJSONBodyMediaItemsTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ValidatePostJSONBodyPlatformsCustomMediaType.
+const (
+	Image ValidatePostJSONBodyPlatformsCustomMediaType = "image"
+	Video ValidatePostJSONBodyPlatformsCustomMediaType = "video"
+)
+
+// Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsCustomMediaType enum.
+func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
+	switch e {
+	case Image:
+		return true
+	case Video:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ValidatePostJSONBodyPlatformsPlatform.
+const (
+	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
+	ValidatePostJSONBodyPlatformsPlatformFacebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
+	ValidatePostJSONBodyPlatformsPlatformGooglebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
+	ValidatePostJSONBodyPlatformsPlatformInstagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
+	ValidatePostJSONBodyPlatformsPlatformLinkedin       ValidatePostJSONBodyPlatformsPlatform = "linkedin"
+	ValidatePostJSONBodyPlatformsPlatformPinterest      ValidatePostJSONBodyPlatformsPlatform = "pinterest"
+	ValidatePostJSONBodyPlatformsPlatformReddit         ValidatePostJSONBodyPlatformsPlatform = "reddit"
+	ValidatePostJSONBodyPlatformsPlatformSnapchat       ValidatePostJSONBodyPlatformsPlatform = "snapchat"
+	ValidatePostJSONBodyPlatformsPlatformTelegram       ValidatePostJSONBodyPlatformsPlatform = "telegram"
+	ValidatePostJSONBodyPlatformsPlatformThreads        ValidatePostJSONBodyPlatformsPlatform = "threads"
+	ValidatePostJSONBodyPlatformsPlatformTiktok         ValidatePostJSONBodyPlatformsPlatform = "tiktok"
+	ValidatePostJSONBodyPlatformsPlatformTwitter        ValidatePostJSONBodyPlatformsPlatform = "twitter"
+	ValidatePostJSONBodyPlatformsPlatformYoutube        ValidatePostJSONBodyPlatformsPlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsPlatform enum.
+func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
+	switch e {
+	case ValidatePostJSONBodyPlatformsPlatformBluesky:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformFacebook:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformGooglebusiness:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformInstagram:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformLinkedin:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformPinterest:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformReddit:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformSnapchat:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformTelegram:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformThreads:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformTiktok:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformTwitter:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformYoutube:
 		return true
 	default:
 		return false
@@ -3866,25 +4172,25 @@ func (e GetWhatsAppBroadcastsParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppBroadcastRecipientsParamsStatus.
 const (
-	Delivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
-	Failed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
-	Pending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
-	Read      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
-	Sent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
+	GetWhatsAppBroadcastRecipientsParamsStatusDelivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
+	GetWhatsAppBroadcastRecipientsParamsStatusFailed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
+	GetWhatsAppBroadcastRecipientsParamsStatusPending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
+	GetWhatsAppBroadcastRecipientsParamsStatusRead      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
+	GetWhatsAppBroadcastRecipientsParamsStatusSent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppBroadcastRecipientsParamsStatus enum.
 func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
 	switch e {
-	case Delivered:
+	case GetWhatsAppBroadcastRecipientsParamsStatusDelivered:
 		return true
-	case Failed:
+	case GetWhatsAppBroadcastRecipientsParamsStatusFailed:
 		return true
-	case Pending:
+	case GetWhatsAppBroadcastRecipientsParamsStatusPending:
 		return true
-	case Read:
+	case GetWhatsAppBroadcastRecipientsParamsStatusRead:
 		return true
-	case Sent:
+	case GetWhatsAppBroadcastRecipientsParamsStatusSent:
 		return true
 	default:
 		return false
@@ -4238,6 +4544,62 @@ type AdMetrics struct {
 	Reach        *int       `json:"reach,omitempty"`
 	Spend        *float32   `json:"spend,omitempty"`
 }
+
+// AdTreeAdSet Ad set (or ad group/line item depending on platform) with rolled-up metrics and child ads
+type AdTreeAdSet struct {
+	AdCount   *int    `json:"adCount,omitempty"`
+	AdSetName *string `json:"adSetName,omitempty"`
+
+	// Ads Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent).
+	Ads    *[]Ad `json:"ads,omitempty"`
+	Budget *struct {
+		Amount *float32               `json:"amount,omitempty"`
+		Type   *AdTreeAdSetBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	Metrics         *AdMetrics `json:"metrics,omitempty"`
+	PlatformAdSetId *string    `json:"platformAdSetId,omitempty"`
+
+	// Status Derived from child ad statuses
+	Status *AdTreeAdSetStatus `json:"status,omitempty"`
+}
+
+// AdTreeAdSetBudgetType defines model for AdTreeAdSet.Budget.Type.
+type AdTreeAdSetBudgetType string
+
+// AdTreeAdSetStatus Derived from child ad statuses
+type AdTreeAdSetStatus string
+
+// AdTreeCampaign Campaign with nested ad sets and rolled-up metrics
+type AdTreeCampaign struct {
+	AccountId *string `json:"accountId,omitempty"`
+
+	// AdCount Total ads across all ad sets
+	AdCount    *int           `json:"adCount,omitempty"`
+	AdSetCount *int           `json:"adSetCount,omitempty"`
+	AdSets     *[]AdTreeAdSet `json:"adSets,omitempty"`
+	Budget     *struct {
+		Amount *float32                  `json:"amount,omitempty"`
+		Type   *AdTreeCampaignBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	CampaignName        *string                 `json:"campaignName,omitempty"`
+	Metrics             *AdMetrics              `json:"metrics,omitempty"`
+	Platform            *AdTreeCampaignPlatform `json:"platform,omitempty"`
+	PlatformAdAccountId *string                 `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string                 `json:"platformCampaignId,omitempty"`
+	ProfileId           *string                 `json:"profileId,omitempty"`
+
+	// Status Derived from child ad statuses
+	Status *AdTreeCampaignStatus `json:"status,omitempty"`
+}
+
+// AdTreeCampaignBudgetType defines model for AdTreeCampaign.Budget.Type.
+type AdTreeCampaignBudgetType string
+
+// AdTreeCampaignPlatform defines model for AdTreeCampaign.Platform.
+type AdTreeCampaignPlatform string
+
+// AdTreeCampaignStatus Derived from child ad statuses
+type AdTreeCampaignStatus string
 
 // AnalyticsListResponse defines model for AnalyticsListResponse.
 type AnalyticsListResponse struct {
@@ -6409,6 +6771,38 @@ type SearchAdInterestsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
+// GetAdTreeParams defines parameters for GetAdTree.
+type GetAdTreeParams struct {
+	// Page Page number (1-based)
+	Page *PageParam `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Campaigns per page
+	Limit    *int                     `form:"limit,omitempty" json:"limit,omitempty"`
+	Source   *GetAdTreeParamsSource   `form:"source,omitempty" json:"source,omitempty"`
+	Platform *GetAdTreeParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// Status Filter by derived campaign status (post-aggregation)
+	Status *GetAdTreeParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// AdAccountId Platform ad account ID
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
+	// AccountId Social account ID
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// ProfileId Profile ID
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+}
+
+// GetAdTreeParamsSource defines parameters for GetAdTree.
+type GetAdTreeParamsSource string
+
+// GetAdTreeParamsPlatform defines parameters for GetAdTree.
+type GetAdTreeParamsPlatform string
+
+// GetAdTreeParamsStatus defines parameters for GetAdTree.
+type GetAdTreeParamsStatus string
+
 // UpdateAdJSONBody defines parameters for UpdateAd.
 type UpdateAdJSONBody struct {
 	Budget *struct {
@@ -8038,6 +8432,56 @@ type ListSequenceEnrollmentsParams struct {
 // ListSequenceEnrollmentsParamsStatus defines parameters for ListSequenceEnrollments.
 type ListSequenceEnrollmentsParamsStatus string
 
+// ValidateMediaJSONBody defines parameters for ValidateMedia.
+type ValidateMediaJSONBody struct {
+	// Url Public media URL to validate
+	Url string `json:"url"`
+}
+
+// ValidatePostJSONBody defines parameters for ValidatePost.
+type ValidatePostJSONBody struct {
+	// Content Post text content
+	Content *string `json:"content,omitempty"`
+
+	// MediaItems Root media items shared across platforms
+	MediaItems *[]struct {
+		Type *ValidatePostJSONBodyMediaItemsType `json:"type,omitempty"`
+		Url  *string                             `json:"url,omitempty"`
+	} `json:"mediaItems,omitempty"`
+
+	// Platforms Target platforms (same format as POST /v1/posts)
+	Platforms []struct {
+		CustomContent *string `json:"customContent,omitempty"`
+		CustomMedia   *[]struct {
+			Type *ValidatePostJSONBodyPlatformsCustomMediaType `json:"type,omitempty"`
+			Url  *string                                       `json:"url,omitempty"`
+		} `json:"customMedia,omitempty"`
+		Platform             ValidatePostJSONBodyPlatformsPlatform `json:"platform"`
+		PlatformSpecificData *map[string]interface{}               `json:"platformSpecificData,omitempty"`
+	} `json:"platforms"`
+}
+
+// ValidatePostJSONBodyMediaItemsType defines parameters for ValidatePost.
+type ValidatePostJSONBodyMediaItemsType string
+
+// ValidatePostJSONBodyPlatformsCustomMediaType defines parameters for ValidatePost.
+type ValidatePostJSONBodyPlatformsCustomMediaType string
+
+// ValidatePostJSONBodyPlatformsPlatform defines parameters for ValidatePost.
+type ValidatePostJSONBodyPlatformsPlatform string
+
+// ValidatePostLengthJSONBody defines parameters for ValidatePostLength.
+type ValidatePostLengthJSONBody struct {
+	// Text The post text to check
+	Text string `json:"text"`
+}
+
+// ValidateSubredditParams defines parameters for ValidateSubreddit.
+type ValidateSubredditParams struct {
+	// Name Subreddit name (with or without "r/" prefix)
+	Name string `form:"name" json:"name"`
+}
+
 // RemoveBookmarkParams defines parameters for RemoveBookmark.
 type RemoveBookmarkParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
@@ -8933,6 +9377,15 @@ type CreateSequenceJSONRequestBody CreateSequenceJSONBody
 
 // EnrollContactsJSONRequestBody defines body for EnrollContacts for application/json ContentType.
 type EnrollContactsJSONRequestBody EnrollContactsJSONBody
+
+// ValidateMediaJSONRequestBody defines body for ValidateMedia for application/json ContentType.
+type ValidateMediaJSONRequestBody ValidateMediaJSONBody
+
+// ValidatePostJSONRequestBody defines body for ValidatePost for application/json ContentType.
+type ValidatePostJSONRequestBody ValidatePostJSONBody
+
+// ValidatePostLengthJSONRequestBody defines body for ValidatePostLength for application/json ContentType.
+type ValidatePostLengthJSONRequestBody ValidatePostLengthJSONBody
 
 // BookmarkPostJSONRequestBody defines body for BookmarkPost for application/json ContentType.
 type BookmarkPostJSONRequestBody BookmarkPostJSONBody
@@ -10307,6 +10760,9 @@ type ClientInterface interface {
 	// SyncExternalAds request
 	SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAdTree request
+	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteAd request
 	DeleteAd(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -10765,6 +11221,24 @@ type ClientInterface interface {
 
 	// PauseSequence request
 	PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateMediaWithBody request with any body
+	ValidateMediaWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidateMedia(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidatePostWithBody request with any body
+	ValidatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidatePost(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidatePostLengthWithBody request with any body
+	ValidatePostLengthWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidatePostLength(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateSubreddit request
+	ValidateSubreddit(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RemoveBookmark request
 	RemoveBookmark(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12021,6 +12495,18 @@ func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterest
 
 func (c *Client) SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSyncExternalAdsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdTreeRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -14037,6 +14523,90 @@ func (c *Client) ListSequenceEnrollments(ctx context.Context, sequenceId string,
 
 func (c *Client) PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPauseSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateMediaWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateMediaRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateMedia(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateMediaRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePost(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostLengthWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostLengthRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidatePostLength(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidatePostLengthRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateSubreddit(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateSubredditRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -18652,6 +19222,167 @@ func NewSyncExternalAdsRequest(server string) (*http.Request, error) {
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAdTreeRequest generates requests for GetAdTree
+func NewGetAdTreeRequest(server string, params *GetAdTreeParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/tree")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -26130,6 +26861,171 @@ func NewPauseSequenceRequest(server string, sequenceId string) (*http.Request, e
 	return req, nil
 }
 
+// NewValidateMediaRequest calls the generic ValidateMedia builder with application/json body
+func NewValidateMediaRequest(server string, body ValidateMediaJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidateMediaRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidateMediaRequestWithBody generates requests for ValidateMedia with any type of body
+func NewValidateMediaRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/media")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidatePostRequest calls the generic ValidatePost builder with application/json body
+func NewValidatePostRequest(server string, body ValidatePostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidatePostRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidatePostRequestWithBody generates requests for ValidatePost with any type of body
+func NewValidatePostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/post")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidatePostLengthRequest calls the generic ValidatePostLength builder with application/json body
+func NewValidatePostLengthRequest(server string, body ValidatePostLengthJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidatePostLengthRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidatePostLengthRequestWithBody generates requests for ValidatePostLength with any type of body
+func NewValidatePostLengthRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/post-length")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewValidateSubredditRequest generates requests for ValidateSubreddit
+func NewValidateSubredditRequest(server string, params *ValidateSubredditParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/tools/validate/subreddit")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "name", params.Name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewRemoveBookmarkRequest generates requests for RemoveBookmark
 func NewRemoveBookmarkRequest(server string, params *RemoveBookmarkParams) (*http.Request, error) {
 	var err error
@@ -29411,6 +30307,9 @@ type ClientWithResponsesInterface interface {
 	// SyncExternalAdsWithResponse request
 	SyncExternalAdsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncExternalAdsResponse, error)
 
+	// GetAdTreeWithResponse request
+	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
+
 	// DeleteAdWithResponse request
 	DeleteAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*DeleteAdResponse, error)
 
@@ -29869,6 +30768,24 @@ type ClientWithResponsesInterface interface {
 
 	// PauseSequenceWithResponse request
 	PauseSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*PauseSequenceResponse, error)
+
+	// ValidateMediaWithBodyWithResponse request with any body
+	ValidateMediaWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error)
+
+	ValidateMediaWithResponse(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error)
+
+	// ValidatePostWithBodyWithResponse request with any body
+	ValidatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error)
+
+	ValidatePostWithResponse(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error)
+
+	// ValidatePostLengthWithBodyWithResponse request with any body
+	ValidatePostLengthWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error)
+
+	ValidatePostLengthWithResponse(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error)
+
+	// ValidateSubredditWithResponse request
+	ValidateSubredditWithResponse(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*ValidateSubredditResponse, error)
 
 	// RemoveBookmarkWithResponse request
 	RemoveBookmarkWithResponse(ctx context.Context, params *RemoveBookmarkParams, reqEditors ...RequestEditorFn) (*RemoveBookmarkResponse, error)
@@ -32291,6 +33208,32 @@ func (r SyncExternalAdsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SyncExternalAdsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAdTreeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Campaigns  *[]AdTreeCampaign `json:"campaigns,omitempty"`
+		Pagination *Pagination       `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdTreeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdTreeResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -36789,6 +37732,168 @@ func (r PauseSequenceResponse) StatusCode() int {
 	return 0
 }
 
+type ValidateMediaResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ContentType *string `json:"contentType,omitempty"`
+
+		// Error Error message if valid is false
+		Error *string `json:"error,omitempty"`
+
+		// PlatformLimits Per-platform size limit comparison (only present when size and type are known)
+		PlatformLimits *map[string]struct {
+			// Limit Platform size limit in bytes
+			Limit          *int    `json:"limit,omitempty"`
+			LimitFormatted *string `json:"limitFormatted,omitempty"`
+			WithinLimit    *bool   `json:"withinLimit,omitempty"`
+		} `json:"platformLimits,omitempty"`
+
+		// Size File size in bytes
+		Size          *int                  `json:"size,omitempty"`
+		SizeFormatted *string               `json:"sizeFormatted,omitempty"`
+		Type          *ValidateMedia200Type `json:"type,omitempty"`
+		Url           *string               `json:"url,omitempty"`
+		Valid         *bool                 `json:"valid,omitempty"`
+	}
+}
+type ValidateMedia200Type string
+
+// Status returns HTTPResponse.Status
+func (r ValidateMediaResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateMediaResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidatePostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+}
+type ValidatePost2000 struct {
+	Message  *string `json:"message,omitempty"`
+	Valid    *bool   `json:"valid,omitempty"`
+	Warnings *[]struct {
+		Platform *string `json:"platform,omitempty"`
+		Warning  *string `json:"warning,omitempty"`
+	} `json:"warnings,omitempty"`
+}
+type ValidatePost2001 struct {
+	Errors *[]struct {
+		Error    *string `json:"error,omitempty"`
+		Platform *string `json:"platform,omitempty"`
+	} `json:"errors,omitempty"`
+	Valid    *bool `json:"valid,omitempty"`
+	Warnings *[]struct {
+		Platform *string `json:"platform,omitempty"`
+		Warning  *string `json:"warning,omitempty"`
+	} `json:"warnings,omitempty"`
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidatePostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidatePostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidatePostLengthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platforms *map[string]struct {
+			// Count Character count for this platform
+			Count *int `json:"count,omitempty"`
+
+			// Limit Maximum allowed characters
+			Limit *int `json:"limit,omitempty"`
+
+			// Valid Whether the text is within the limit
+			Valid *bool `json:"valid,omitempty"`
+		} `json:"platforms,omitempty"`
+		Text *string `json:"text,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidatePostLengthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidatePostLengthResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidateSubredditResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+}
+type ValidateSubreddit2000 struct {
+	Exists    *bool `json:"exists,omitempty"`
+	Subreddit *struct {
+		AllowImages *bool                               `json:"allowImages,omitempty"`
+		AllowVideos *bool                               `json:"allowVideos,omitempty"`
+		Description *string                             `json:"description,omitempty"`
+		IsNSFW      *bool                               `json:"isNSFW,omitempty"`
+		Name        *string                             `json:"name,omitempty"`
+		Subscribers *int                                `json:"subscribers,omitempty"`
+		Title       *string                             `json:"title,omitempty"`
+		Type        *ValidateSubreddit2000SubredditType `json:"type,omitempty"`
+	} `json:"subreddit,omitempty"`
+}
+type ValidateSubreddit2000SubredditType string
+type ValidateSubreddit2001 struct {
+	Error  *string `json:"error,omitempty"`
+	Exists *bool   `json:"exists,omitempty"`
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidateSubredditResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateSubredditResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type RemoveBookmarkResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -39565,6 +40670,15 @@ func (c *ClientWithResponses) SyncExternalAdsWithResponse(ctx context.Context, r
 	return ParseSyncExternalAdsResponse(rsp)
 }
 
+// GetAdTreeWithResponse request returning *GetAdTreeResponse
+func (c *ClientWithResponses) GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error) {
+	rsp, err := c.GetAdTree(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdTreeResponse(rsp)
+}
+
 // DeleteAdWithResponse request returning *DeleteAdResponse
 func (c *ClientWithResponses) DeleteAdWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*DeleteAdResponse, error) {
 	rsp, err := c.DeleteAd(ctx, adId, reqEditors...)
@@ -41030,6 +42144,66 @@ func (c *ClientWithResponses) PauseSequenceWithResponse(ctx context.Context, seq
 		return nil, err
 	}
 	return ParsePauseSequenceResponse(rsp)
+}
+
+// ValidateMediaWithBodyWithResponse request with arbitrary body returning *ValidateMediaResponse
+func (c *ClientWithResponses) ValidateMediaWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error) {
+	rsp, err := c.ValidateMediaWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateMediaResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidateMediaWithResponse(ctx context.Context, body ValidateMediaJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error) {
+	rsp, err := c.ValidateMedia(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateMediaResponse(rsp)
+}
+
+// ValidatePostWithBodyWithResponse request with arbitrary body returning *ValidatePostResponse
+func (c *ClientWithResponses) ValidatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error) {
+	rsp, err := c.ValidatePostWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidatePostWithResponse(ctx context.Context, body ValidatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostResponse, error) {
+	rsp, err := c.ValidatePost(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostResponse(rsp)
+}
+
+// ValidatePostLengthWithBodyWithResponse request with arbitrary body returning *ValidatePostLengthResponse
+func (c *ClientWithResponses) ValidatePostLengthWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error) {
+	rsp, err := c.ValidatePostLengthWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostLengthResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidatePostLengthWithResponse(ctx context.Context, body ValidatePostLengthJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidatePostLengthResponse, error) {
+	rsp, err := c.ValidatePostLength(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidatePostLengthResponse(rsp)
+}
+
+// ValidateSubredditWithResponse request returning *ValidateSubredditResponse
+func (c *ClientWithResponses) ValidateSubredditWithResponse(ctx context.Context, params *ValidateSubredditParams, reqEditors ...RequestEditorFn) (*ValidateSubredditResponse, error) {
+	rsp, err := c.ValidateSubreddit(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateSubredditResponse(rsp)
 }
 
 // RemoveBookmarkWithResponse request returning *RemoveBookmarkResponse
@@ -44839,6 +46013,42 @@ func ParseSyncExternalAdsResponse(rsp *http.Response) (*SyncExternalAdsResponse,
 
 			// Synced New ads imported
 			Synced *int `json:"synced,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdTreeResponse parses an HTTP response from a GetAdTreeWithResponse call
+func ParseGetAdTreeResponse(rsp *http.Response) (*GetAdTreeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdTreeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Campaigns  *[]AdTreeCampaign `json:"campaigns,omitempty"`
+			Pagination *Pagination       `json:"pagination,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -50936,6 +52146,146 @@ func ParsePauseSequenceResponse(rsp *http.Response) (*PauseSequenceResponse, err
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateMediaResponse parses an HTTP response from a ValidateMediaWithResponse call
+func ParseValidateMediaResponse(rsp *http.Response) (*ValidateMediaResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateMediaResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ContentType *string `json:"contentType,omitempty"`
+
+			// Error Error message if valid is false
+			Error *string `json:"error,omitempty"`
+
+			// PlatformLimits Per-platform size limit comparison (only present when size and type are known)
+			PlatformLimits *map[string]struct {
+				// Limit Platform size limit in bytes
+				Limit          *int    `json:"limit,omitempty"`
+				LimitFormatted *string `json:"limitFormatted,omitempty"`
+				WithinLimit    *bool   `json:"withinLimit,omitempty"`
+			} `json:"platformLimits,omitempty"`
+
+			// Size File size in bytes
+			Size          *int                  `json:"size,omitempty"`
+			SizeFormatted *string               `json:"sizeFormatted,omitempty"`
+			Type          *ValidateMedia200Type `json:"type,omitempty"`
+			Url           *string               `json:"url,omitempty"`
+			Valid         *bool                 `json:"valid,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidatePostResponse parses an HTTP response from a ValidatePostWithResponse call
+func ParseValidatePostResponse(rsp *http.Response) (*ValidatePostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidatePostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidatePostLengthResponse parses an HTTP response from a ValidatePostLengthWithResponse call
+func ParseValidatePostLengthResponse(rsp *http.Response) (*ValidatePostLengthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidatePostLengthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platforms *map[string]struct {
+				// Count Character count for this platform
+				Count *int `json:"count,omitempty"`
+
+				// Limit Maximum allowed characters
+				Limit *int `json:"limit,omitempty"`
+
+				// Valid Whether the text is within the limit
+				Valid *bool `json:"valid,omitempty"`
+			} `json:"platforms,omitempty"`
+			Text *string `json:"text,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateSubredditResponse parses an HTTP response from a ValidateSubredditWithResponse call
+func ParseValidateSubredditResponse(rsp *http.Response) (*ValidateSubredditResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateSubredditResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 

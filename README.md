@@ -219,6 +219,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.ListAdCampaignsWithResponse()` | List campaigns with aggregate metrics |
+| `client.GetAdTreeWithResponse()` | Get nested campaign/ad-set/ad tree |
 | `client.UpdateAdCampaignStatusWithResponse()` | Pause or resume a campaign |
 
 ### Ads
@@ -370,6 +371,14 @@ func main() {
 | `client.RetweetPostWithResponse()` | Retweet a post |
 | `client.UndoRetweetWithResponse()` | Undo retweet |
 | `client.UnfollowUserWithResponse()` | Unfollow a user |
+
+### Validate
+| Method | Description |
+|--------|-------------|
+| `client.ValidateMediaWithResponse()` | Validate media URL |
+| `client.ValidatePostWithResponse()` | Validate post content |
+| `client.ValidatePostLengthWithResponse()` | Validate post character count |
+| `client.ValidateSubredditWithResponse()` | Check subreddit existence |
 
 ### WhatsApp
 | Method | Description |
