@@ -93,6 +93,7 @@ func main() {
 | `client.GetPostTimelineWithResponse()` | Get post analytics timeline |
 | `client.GetPostingFrequencyWithResponse()` | Get posting frequency vs engagement |
 | `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
+| `client.GetYouTubeDemographicsWithResponse()` | Get YouTube audience demographics |
 
 ### Account Groups
 | Method | Description |
@@ -426,6 +427,20 @@ func main() {
 | `client.SendWhatsAppBroadcastWithResponse()` | Send broadcast |
 | `client.SendWhatsAppBulkWithResponse()` | Bulk send template messages |
 | `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
+
+### WhatsApp Flows
+| Method | Description |
+|--------|-------------|
+| `client.ListWhatsAppFlowsWithResponse()` | List flows |
+| `client.CreateWhatsAppFlowWithResponse()` | Create flow |
+| `client.GetWhatsAppFlowWithResponse()` | Get flow |
+| `client.GetWhatsAppFlowJsonWithResponse()` | Get flow JSON asset |
+| `client.UpdateWhatsAppFlowWithResponse()` | Update flow |
+| `client.DeleteWhatsAppFlowWithResponse()` | Delete flow |
+| `client.DeprecateWhatsAppFlowWithResponse()` | Deprecate flow |
+| `client.PublishWhatsAppFlowWithResponse()` | Publish flow |
+| `client.SendWhatsAppFlowMessageWithResponse()` | Send flow message |
+| `client.UploadWhatsAppFlowJsonWithResponse()` | Upload flow JSON |
 
 ### WhatsApp Phone Numbers
 | Method | Description |

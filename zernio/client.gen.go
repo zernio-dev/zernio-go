@@ -4251,6 +4251,111 @@ func (e BulkUpdateWhatsAppContactsJSONBodyAction) Valid() bool {
 	}
 }
 
+// Defines values for CreateWhatsAppFlowJSONBodyCategories.
+const (
+	CreateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING CreateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
+	CreateWhatsAppFlowJSONBodyCategoriesCONTACTUS          CreateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
+	CreateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT    CreateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
+	CreateWhatsAppFlowJSONBodyCategoriesLEADGENERATION     CreateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
+	CreateWhatsAppFlowJSONBodyCategoriesOTHER              CreateWhatsAppFlowJSONBodyCategories = "OTHER"
+	CreateWhatsAppFlowJSONBodyCategoriesSIGNIN             CreateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
+	CreateWhatsAppFlowJSONBodyCategoriesSIGNUP             CreateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
+	CreateWhatsAppFlowJSONBodyCategoriesSURVEY             CreateWhatsAppFlowJSONBodyCategories = "SURVEY"
+)
+
+// Valid indicates whether the value is a known member of the CreateWhatsAppFlowJSONBodyCategories enum.
+func (e CreateWhatsAppFlowJSONBodyCategories) Valid() bool {
+	switch e {
+	case CreateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesCONTACTUS:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesLEADGENERATION:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesOTHER:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesSIGNIN:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesSIGNUP:
+		return true
+	case CreateWhatsAppFlowJSONBodyCategoriesSURVEY:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendWhatsAppFlowMessageJSONBodyFlowAction.
+const (
+	DataExchange SendWhatsAppFlowMessageJSONBodyFlowAction = "data_exchange"
+	Navigate     SendWhatsAppFlowMessageJSONBodyFlowAction = "navigate"
+)
+
+// Valid indicates whether the value is a known member of the SendWhatsAppFlowMessageJSONBodyFlowAction enum.
+func (e SendWhatsAppFlowMessageJSONBodyFlowAction) Valid() bool {
+	switch e {
+	case DataExchange:
+		return true
+	case Navigate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendWhatsAppFlowMessageJSONBodyHeaderType.
+const (
+	Text SendWhatsAppFlowMessageJSONBodyHeaderType = "text"
+)
+
+// Valid indicates whether the value is a known member of the SendWhatsAppFlowMessageJSONBodyHeaderType enum.
+func (e SendWhatsAppFlowMessageJSONBodyHeaderType) Valid() bool {
+	switch e {
+	case Text:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateWhatsAppFlowJSONBodyCategories.
+const (
+	UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING UpdateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
+	UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS          UpdateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
+	UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT    UpdateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
+	UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION     UpdateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
+	UpdateWhatsAppFlowJSONBodyCategoriesOTHER              UpdateWhatsAppFlowJSONBodyCategories = "OTHER"
+	UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
+	UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
+	UpdateWhatsAppFlowJSONBodyCategoriesSURVEY             UpdateWhatsAppFlowJSONBodyCategories = "SURVEY"
+)
+
+// Valid indicates whether the value is a known member of the UpdateWhatsAppFlowJSONBodyCategories enum.
+func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
+	switch e {
+	case UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesOTHER:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP:
+		return true
+	case UpdateWhatsAppFlowJSONBodyCategoriesSURVEY:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetWhatsAppPhoneNumbersParamsStatus.
 const (
 	Active       GetWhatsAppPhoneNumbersParamsStatus = "active"
@@ -6040,6 +6145,28 @@ type YouTubeDailyViewsResponse struct {
 	VideoId *string `json:"videoId,omitempty"`
 }
 
+// YouTubeDemographicsResponse defines model for YouTubeDemographicsResponse.
+type YouTubeDemographicsResponse struct {
+	// AccountId The Zernio SocialAccount ID
+	AccountId *string `json:"accountId,omitempty"`
+	DateRange *struct {
+		EndDate   *string `json:"endDate,omitempty"`
+		StartDate *string `json:"startDate,omitempty"`
+	} `json:"dateRange,omitempty"`
+
+	// Demographics Object keyed by breakdown dimension (age, gender, country)
+	Demographics *map[string][]struct {
+		// Dimension The dimension value (e.g., "25-34", "US", "male")
+		Dimension *string `json:"dimension,omitempty"`
+
+		// Value Viewer percentage (age/gender) or view count (country)
+		Value *float32 `json:"value,omitempty"`
+	} `json:"demographics,omitempty"`
+	Note     *string `json:"note,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	Success  *bool   `json:"success,omitempty"`
+}
+
 // YouTubePlatformData Videos under 3 min auto-detected as Shorts. Custom thumbnails for regular videos only. Scheduled videos are uploaded immediately with the specified visibility.
 type YouTubePlatformData struct {
 	// CategoryId YouTube video category ID. Defaults to 22 (People & Blogs). Common: 1 (Film), 2 (Autos), 10 (Music), 15 (Pets), 17 (Sports), 20 (Gaming), 23 (Comedy), 24 (Entertainment), 25 (News), 26 (Howto), 27 (Education), 28 (Science & Tech).
@@ -7053,6 +7180,22 @@ type GetYouTubeDailyViewsParams struct {
 	StartDate *openapi_types.Date `form:"startDate,omitempty" json:"startDate,omitempty"`
 
 	// EndDate End date (YYYY-MM-DD). Defaults to 3 days ago (YouTube data latency).
+	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
+}
+
+// GetYouTubeDemographicsParams defines parameters for GetYouTubeDemographics.
+type GetYouTubeDemographicsParams struct {
+	// AccountId The Zernio SocialAccount ID for the YouTube account
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Breakdown Comma-separated list of demographic dimensions: age, gender, country.
+	// Defaults to all three if omitted.
+	Breakdown *string `form:"breakdown,omitempty" json:"breakdown,omitempty"`
+
+	// StartDate Start date in YYYY-MM-DD format. Defaults to 90 days ago.
+	StartDate *openapi_types.Date `form:"startDate,omitempty" json:"startDate,omitempty"`
+
+	// EndDate End date in YYYY-MM-DD format. Defaults to 3 days ago (YouTube data latency).
 	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
 }
 
@@ -8964,6 +9107,143 @@ type UpdateWhatsAppContactJSONBody struct {
 	Tags *[]string `json:"tags,omitempty"`
 }
 
+// ListWhatsAppFlowsParams defines parameters for ListWhatsAppFlows.
+type ListWhatsAppFlowsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// CreateWhatsAppFlowJSONBody defines parameters for CreateWhatsAppFlow.
+type CreateWhatsAppFlowJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Categories Flow categories
+	Categories []CreateWhatsAppFlowJSONBodyCategories `json:"categories"`
+
+	// CloneFlowId Optional: ID of an existing flow to clone
+	CloneFlowId *string `json:"cloneFlowId,omitempty"`
+
+	// Name Flow display name
+	Name string `json:"name"`
+}
+
+// CreateWhatsAppFlowJSONBodyCategories defines parameters for CreateWhatsAppFlow.
+type CreateWhatsAppFlowJSONBodyCategories string
+
+// SendWhatsAppFlowMessageJSONBody defines parameters for SendWhatsAppFlowMessage.
+type SendWhatsAppFlowMessageJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Body Message body text
+	Body string `json:"body"`
+
+	// Draft Set true to test an unpublished (DRAFT) flow
+	Draft *bool `json:"draft,omitempty"`
+
+	// FlowAction Action type: navigate opens a screen directly, data_exchange hits your endpoint first
+	FlowAction        *SendWhatsAppFlowMessageJSONBodyFlowAction `json:"flow_action,omitempty"`
+	FlowActionPayload *struct {
+		// Data Optional data to pass to the screen
+		Data *map[string]interface{} `json:"data,omitempty"`
+
+		// Screen First screen ID to navigate to
+		Screen *string `json:"screen,omitempty"`
+	} `json:"flow_action_payload,omitempty"`
+
+	// FlowCta CTA button text (e.g. 'Book Now', 'Sign Up')
+	FlowCta string `json:"flow_cta"`
+
+	// FlowId Published flow ID
+	FlowId string `json:"flow_id"`
+
+	// FlowToken Unique token to correlate responses. Auto-generated UUID if omitted.
+	FlowToken *string `json:"flow_token,omitempty"`
+
+	// Footer Optional footer text
+	Footer *string `json:"footer,omitempty"`
+	Header *struct {
+		Text *string                                    `json:"text,omitempty"`
+		Type *SendWhatsAppFlowMessageJSONBodyHeaderType `json:"type,omitempty"`
+	} `json:"header,omitempty"`
+
+	// To Recipient phone number (E.164 format, e.g. +1234567890)
+	To string `json:"to"`
+}
+
+// SendWhatsAppFlowMessageJSONBodyFlowAction defines parameters for SendWhatsAppFlowMessage.
+type SendWhatsAppFlowMessageJSONBodyFlowAction string
+
+// SendWhatsAppFlowMessageJSONBodyHeaderType defines parameters for SendWhatsAppFlowMessage.
+type SendWhatsAppFlowMessageJSONBodyHeaderType string
+
+// DeleteWhatsAppFlowParams defines parameters for DeleteWhatsAppFlow.
+type DeleteWhatsAppFlowParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// GetWhatsAppFlowParams defines parameters for GetWhatsAppFlow.
+type GetWhatsAppFlowParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Fields Comma-separated fields to return (default: id,name,status,categories,validation_errors,json_version,preview,data_api_version,endpoint_uri)
+	Fields *string `form:"fields,omitempty" json:"fields,omitempty"`
+}
+
+// UpdateWhatsAppFlowJSONBody defines parameters for UpdateWhatsAppFlow.
+type UpdateWhatsAppFlowJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId  string                                  `json:"accountId"`
+	Categories *[]UpdateWhatsAppFlowJSONBodyCategories `json:"categories,omitempty"`
+
+	// Name New flow name
+	Name *string `json:"name,omitempty"`
+}
+
+// UpdateWhatsAppFlowJSONBodyCategories defines parameters for UpdateWhatsAppFlow.
+type UpdateWhatsAppFlowJSONBodyCategories string
+
+// DeprecateWhatsAppFlowJSONBody defines parameters for DeprecateWhatsAppFlow.
+type DeprecateWhatsAppFlowJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+}
+
+// GetWhatsAppFlowJsonParams defines parameters for GetWhatsAppFlowJson.
+type GetWhatsAppFlowJsonParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UploadWhatsAppFlowJsonJSONBody defines parameters for UploadWhatsAppFlowJson.
+type UploadWhatsAppFlowJsonJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// FlowJson The Flow JSON content. Pass as a JSON object or a JSON string.
+	FlowJson UploadWhatsAppFlowJsonJSONBody_FlowJson `json:"flow_json"`
+}
+
+// UploadWhatsAppFlowJsonJSONBodyFlowJson0 defines parameters for UploadWhatsAppFlowJson.
+type UploadWhatsAppFlowJsonJSONBodyFlowJson0 = map[string]interface{}
+
+// UploadWhatsAppFlowJsonJSONBodyFlowJson1 defines parameters for UploadWhatsAppFlowJson.
+type UploadWhatsAppFlowJsonJSONBodyFlowJson1 = string
+
+// UploadWhatsAppFlowJsonJSONBody_FlowJson defines parameters for UploadWhatsAppFlowJson.
+type UploadWhatsAppFlowJsonJSONBody_FlowJson struct {
+	union json.RawMessage
+}
+
+// PublishWhatsAppFlowJSONBody defines parameters for PublishWhatsAppFlow.
+type PublishWhatsAppFlowJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+}
+
 // DeleteWhatsAppGroupJSONBody defines parameters for DeleteWhatsAppGroup.
 type DeleteWhatsAppGroupJSONBody struct {
 	// AccountId WhatsApp social account ID
@@ -9473,6 +9753,24 @@ type ImportWhatsAppContactsJSONRequestBody ImportWhatsAppContactsJSONBody
 
 // UpdateWhatsAppContactJSONRequestBody defines body for UpdateWhatsAppContact for application/json ContentType.
 type UpdateWhatsAppContactJSONRequestBody UpdateWhatsAppContactJSONBody
+
+// CreateWhatsAppFlowJSONRequestBody defines body for CreateWhatsAppFlow for application/json ContentType.
+type CreateWhatsAppFlowJSONRequestBody CreateWhatsAppFlowJSONBody
+
+// SendWhatsAppFlowMessageJSONRequestBody defines body for SendWhatsAppFlowMessage for application/json ContentType.
+type SendWhatsAppFlowMessageJSONRequestBody SendWhatsAppFlowMessageJSONBody
+
+// UpdateWhatsAppFlowJSONRequestBody defines body for UpdateWhatsAppFlow for application/json ContentType.
+type UpdateWhatsAppFlowJSONRequestBody UpdateWhatsAppFlowJSONBody
+
+// DeprecateWhatsAppFlowJSONRequestBody defines body for DeprecateWhatsAppFlow for application/json ContentType.
+type DeprecateWhatsAppFlowJSONRequestBody DeprecateWhatsAppFlowJSONBody
+
+// UploadWhatsAppFlowJsonJSONRequestBody defines body for UploadWhatsAppFlowJson for application/json ContentType.
+type UploadWhatsAppFlowJsonJSONRequestBody UploadWhatsAppFlowJsonJSONBody
+
+// PublishWhatsAppFlowJSONRequestBody defines body for PublishWhatsAppFlow for application/json ContentType.
+type PublishWhatsAppFlowJSONRequestBody PublishWhatsAppFlowJSONBody
 
 // DeleteWhatsAppGroupJSONRequestBody defines body for DeleteWhatsAppGroup for application/json ContentType.
 type DeleteWhatsAppGroupJSONRequestBody DeleteWhatsAppGroupJSONBody
@@ -10834,6 +11132,9 @@ type ClientInterface interface {
 	// GetYouTubeDailyViews request
 	GetYouTubeDailyViews(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetYouTubeDemographics request
+	GetYouTubeDemographics(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListApiKeys request
 	ListApiKeys(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -11422,6 +11723,48 @@ type ClientInterface interface {
 	UpdateWhatsAppContactWithBody(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateWhatsAppContact(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppFlows request
+	ListWhatsAppFlows(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppFlowWithBody request with any body
+	CreateWhatsAppFlowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppFlow(ctx context.Context, body CreateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendWhatsAppFlowMessageWithBody request with any body
+	SendWhatsAppFlowMessageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendWhatsAppFlowMessage(ctx context.Context, body SendWhatsAppFlowMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppFlow request
+	DeleteWhatsAppFlow(ctx context.Context, flowId string, params *DeleteWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppFlow request
+	GetWhatsAppFlow(ctx context.Context, flowId string, params *GetWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppFlowWithBody request with any body
+	UpdateWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppFlow(ctx context.Context, flowId string, body UpdateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeprecateWhatsAppFlowWithBody request with any body
+	DeprecateWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeprecateWhatsAppFlow(ctx context.Context, flowId string, body DeprecateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppFlowJson request
+	GetWhatsAppFlowJson(ctx context.Context, flowId string, params *GetWhatsAppFlowJsonParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadWhatsAppFlowJsonWithBody request with any body
+	UploadWhatsAppFlowJsonWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UploadWhatsAppFlowJson(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PublishWhatsAppFlowWithBody request with any body
+	PublishWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PublishWhatsAppFlow(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteWhatsAppGroupWithBody request with any body
 	DeleteWhatsAppGroupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12705,6 +13048,18 @@ func (c *Client) GetPostingFrequency(ctx context.Context, params *GetPostingFreq
 
 func (c *Client) GetYouTubeDailyViews(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetYouTubeDailyViewsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetYouTubeDemographics(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetYouTubeDemographicsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -15321,6 +15676,198 @@ func (c *Client) UpdateWhatsAppContactWithBody(ctx context.Context, contactId st
 
 func (c *Client) UpdateWhatsAppContact(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateWhatsAppContactRequest(c.Server, contactId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppFlows(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppFlowsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppFlowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppFlowRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppFlow(ctx context.Context, body CreateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppFlowRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppFlowMessageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppFlowMessageRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppFlowMessage(ctx context.Context, body SendWhatsAppFlowMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppFlowMessageRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppFlow(ctx context.Context, flowId string, params *DeleteWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppFlowRequest(c.Server, flowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppFlow(ctx context.Context, flowId string, params *GetWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppFlowRequest(c.Server, flowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppFlowRequestWithBody(c.Server, flowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppFlow(ctx context.Context, flowId string, body UpdateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppFlowRequest(c.Server, flowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeprecateWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeprecateWhatsAppFlowRequestWithBody(c.Server, flowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeprecateWhatsAppFlow(ctx context.Context, flowId string, body DeprecateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeprecateWhatsAppFlowRequest(c.Server, flowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppFlowJson(ctx context.Context, flowId string, params *GetWhatsAppFlowJsonParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppFlowJsonRequest(c.Server, flowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadWhatsAppFlowJsonWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadWhatsAppFlowJsonRequestWithBody(c.Server, flowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadWhatsAppFlowJson(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadWhatsAppFlowJsonRequest(c.Server, flowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PublishWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPublishWhatsAppFlowRequestWithBody(c.Server, flowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PublishWhatsAppFlow(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPublishWhatsAppFlowRequest(c.Server, flowId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -20543,6 +21090,99 @@ func NewGetYouTubeDailyViewsRequest(server string, params *GetYouTubeDailyViewsP
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		if params.StartDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startDate", *params.StartDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.EndDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endDate", *params.EndDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetYouTubeDemographicsRequest generates requests for GetYouTubeDemographics
+func NewGetYouTubeDemographicsRequest(server string, params *GetYouTubeDemographicsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/youtube/demographics")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Breakdown != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "breakdown", *params.Breakdown, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		if params.StartDate != nil {
@@ -28909,6 +29549,491 @@ func NewUpdateWhatsAppContactRequestWithBody(server string, contactId string, co
 	return req, nil
 }
 
+// NewListWhatsAppFlowsRequest generates requests for ListWhatsAppFlows
+func NewListWhatsAppFlowsRequest(server string, params *ListWhatsAppFlowsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppFlowRequest calls the generic CreateWhatsAppFlow builder with application/json body
+func NewCreateWhatsAppFlowRequest(server string, body CreateWhatsAppFlowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppFlowRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppFlowRequestWithBody generates requests for CreateWhatsAppFlow with any type of body
+func NewCreateWhatsAppFlowRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendWhatsAppFlowMessageRequest calls the generic SendWhatsAppFlowMessage builder with application/json body
+func NewSendWhatsAppFlowMessageRequest(server string, body SendWhatsAppFlowMessageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendWhatsAppFlowMessageRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendWhatsAppFlowMessageRequestWithBody generates requests for SendWhatsAppFlowMessage with any type of body
+func NewSendWhatsAppFlowMessageRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/send")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppFlowRequest generates requests for DeleteWhatsAppFlow
+func NewDeleteWhatsAppFlowRequest(server string, flowId string, params *DeleteWhatsAppFlowParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppFlowRequest generates requests for GetWhatsAppFlow
+func NewGetWhatsAppFlowRequest(server string, flowId string, params *GetWhatsAppFlowParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Fields != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fields", *params.Fields, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppFlowRequest calls the generic UpdateWhatsAppFlow builder with application/json body
+func NewUpdateWhatsAppFlowRequest(server string, flowId string, body UpdateWhatsAppFlowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppFlowRequestWithBody(server, flowId, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppFlowRequestWithBody generates requests for UpdateWhatsAppFlow with any type of body
+func NewUpdateWhatsAppFlowRequestWithBody(server string, flowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeprecateWhatsAppFlowRequest calls the generic DeprecateWhatsAppFlow builder with application/json body
+func NewDeprecateWhatsAppFlowRequest(server string, flowId string, body DeprecateWhatsAppFlowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeprecateWhatsAppFlowRequestWithBody(server, flowId, "application/json", bodyReader)
+}
+
+// NewDeprecateWhatsAppFlowRequestWithBody generates requests for DeprecateWhatsAppFlow with any type of body
+func NewDeprecateWhatsAppFlowRequestWithBody(server string, flowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/deprecate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppFlowJsonRequest generates requests for GetWhatsAppFlowJson
+func NewGetWhatsAppFlowJsonRequest(server string, flowId string, params *GetWhatsAppFlowJsonParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUploadWhatsAppFlowJsonRequest calls the generic UploadWhatsAppFlowJson builder with application/json body
+func NewUploadWhatsAppFlowJsonRequest(server string, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUploadWhatsAppFlowJsonRequestWithBody(server, flowId, "application/json", bodyReader)
+}
+
+// NewUploadWhatsAppFlowJsonRequestWithBody generates requests for UploadWhatsAppFlowJson with any type of body
+func NewUploadWhatsAppFlowJsonRequestWithBody(server string, flowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPublishWhatsAppFlowRequest calls the generic PublishWhatsAppFlow builder with application/json body
+func NewPublishWhatsAppFlowRequest(server string, flowId string, body PublishWhatsAppFlowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPublishWhatsAppFlowRequestWithBody(server, flowId, "application/json", bodyReader)
+}
+
+// NewPublishWhatsAppFlowRequestWithBody generates requests for PublishWhatsAppFlow with any type of body
+func NewPublishWhatsAppFlowRequestWithBody(server string, flowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/publish", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteWhatsAppGroupRequest calls the generic DeleteWhatsAppGroup builder with application/json body
 func NewDeleteWhatsAppGroupRequest(server string, body DeleteWhatsAppGroupJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -30413,6 +31538,9 @@ type ClientWithResponsesInterface interface {
 	// GetYouTubeDailyViewsWithResponse request
 	GetYouTubeDailyViewsWithResponse(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDailyViewsResponse, error)
 
+	// GetYouTubeDemographicsWithResponse request
+	GetYouTubeDemographicsWithResponse(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDemographicsResponse, error)
+
 	// ListApiKeysWithResponse request
 	ListApiKeysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListApiKeysResponse, error)
 
@@ -31001,6 +32129,48 @@ type ClientWithResponsesInterface interface {
 	UpdateWhatsAppContactWithBodyWithResponse(ctx context.Context, contactId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error)
 
 	UpdateWhatsAppContactWithResponse(ctx context.Context, contactId string, body UpdateWhatsAppContactJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppContactResponse, error)
+
+	// ListWhatsAppFlowsWithResponse request
+	ListWhatsAppFlowsWithResponse(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowsResponse, error)
+
+	// CreateWhatsAppFlowWithBodyWithResponse request with any body
+	CreateWhatsAppFlowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppFlowResponse, error)
+
+	CreateWhatsAppFlowWithResponse(ctx context.Context, body CreateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppFlowResponse, error)
+
+	// SendWhatsAppFlowMessageWithBodyWithResponse request with any body
+	SendWhatsAppFlowMessageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppFlowMessageResponse, error)
+
+	SendWhatsAppFlowMessageWithResponse(ctx context.Context, body SendWhatsAppFlowMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppFlowMessageResponse, error)
+
+	// DeleteWhatsAppFlowWithResponse request
+	DeleteWhatsAppFlowWithResponse(ctx context.Context, flowId string, params *DeleteWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppFlowResponse, error)
+
+	// GetWhatsAppFlowWithResponse request
+	GetWhatsAppFlowWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowResponse, error)
+
+	// UpdateWhatsAppFlowWithBodyWithResponse request with any body
+	UpdateWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppFlowResponse, error)
+
+	UpdateWhatsAppFlowWithResponse(ctx context.Context, flowId string, body UpdateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppFlowResponse, error)
+
+	// DeprecateWhatsAppFlowWithBodyWithResponse request with any body
+	DeprecateWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeprecateWhatsAppFlowResponse, error)
+
+	DeprecateWhatsAppFlowWithResponse(ctx context.Context, flowId string, body DeprecateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*DeprecateWhatsAppFlowResponse, error)
+
+	// GetWhatsAppFlowJsonWithResponse request
+	GetWhatsAppFlowJsonWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowJsonParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowJsonResponse, error)
+
+	// UploadWhatsAppFlowJsonWithBodyWithResponse request with any body
+	UploadWhatsAppFlowJsonWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppFlowJsonResponse, error)
+
+	UploadWhatsAppFlowJsonWithResponse(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadWhatsAppFlowJsonResponse, error)
+
+	// PublishWhatsAppFlowWithBodyWithResponse request with any body
+	PublishWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error)
+
+	PublishWhatsAppFlowWithResponse(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error)
 
 	// DeleteWhatsAppGroupWithBodyWithResponse request with any body
 	DeleteWhatsAppGroupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteWhatsAppGroupResponse, error)
@@ -33831,6 +35001,52 @@ func (r GetYouTubeDailyViewsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetYouTubeDailyViewsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetYouTubeDemographicsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *YouTubeDemographicsResponse
+	JSON400      *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON404 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON412 *struct {
+		Code        *string `json:"code,omitempty"`
+		Error       *string `json:"error,omitempty"`
+		ScopeStatus *struct {
+			HasAnalyticsScope       *bool   `json:"hasAnalyticsScope,omitempty"`
+			ReauthorizeUrl          *string `json:"reauthorizeUrl,omitempty"`
+			RequiresReauthorization *bool   `json:"requiresReauthorization,omitempty"`
+		} `json:"scopeStatus,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetYouTubeDemographicsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetYouTubeDemographicsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -39257,6 +40473,302 @@ func (r UpdateWhatsAppContactResponse) StatusCode() int {
 	return 0
 }
 
+type ListWhatsAppFlowsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Flows *[]struct {
+			Categories       *[]string                        `json:"categories,omitempty"`
+			Id               *string                          `json:"id,omitempty"`
+			Name             *string                          `json:"name,omitempty"`
+			Status           *ListWhatsAppFlows200FlowsStatus `json:"status,omitempty"`
+			ValidationErrors *[]map[string]interface{}        `json:"validation_errors,omitempty"`
+		} `json:"flows,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type ListWhatsAppFlows200FlowsStatus string
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppFlowsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppFlowsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Flow *struct {
+			Categories *[]string `json:"categories,omitempty"`
+			Id         *string   `json:"id,omitempty"`
+			Name       *string   `json:"name,omitempty"`
+			Status     *string   `json:"status,omitempty"`
+		} `json:"flow,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendWhatsAppFlowMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// MessageId WhatsApp message ID (WAMID)
+		MessageId *string `json:"messageId,omitempty"`
+		Success   *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SendWhatsAppFlowMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendWhatsAppFlowMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Flow *struct {
+			Categories  *[]string `json:"categories,omitempty"`
+			Id          *string   `json:"id,omitempty"`
+			JsonVersion *string   `json:"json_version,omitempty"`
+			Name        *string   `json:"name,omitempty"`
+			Preview     *struct {
+				ExpiresAt  *string `json:"expires_at,omitempty"`
+				PreviewUrl *string `json:"preview_url,omitempty"`
+			} `json:"preview,omitempty"`
+			Status           *string                   `json:"status,omitempty"`
+			ValidationErrors *[]map[string]interface{} `json:"validation_errors,omitempty"`
+		} `json:"flow,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeprecateWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeprecateWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeprecateWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWhatsAppFlowJsonResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Assets *[]struct {
+			AssetType *string `json:"asset_type,omitempty"`
+
+			// DownloadUrl Temporary URL to download the flow JSON
+			DownloadUrl *string `json:"download_url,omitempty"`
+			Name        *string `json:"name,omitempty"`
+		} `json:"assets,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppFlowJsonResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppFlowJsonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UploadWhatsAppFlowJsonResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+
+		// ValidationErrors Empty array if valid; otherwise, contains validation error details from Meta
+		ValidationErrors *[]struct {
+			ColumnEnd   *int    `json:"column_end,omitempty"`
+			ColumnStart *int    `json:"column_start,omitempty"`
+			Error       *string `json:"error,omitempty"`
+			ErrorType   *string `json:"error_type,omitempty"`
+			LineEnd     *int    `json:"line_end,omitempty"`
+			LineStart   *int    `json:"line_start,omitempty"`
+			Message     *string `json:"message,omitempty"`
+		} `json:"validation_errors,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadWhatsAppFlowJsonResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadWhatsAppFlowJsonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PublishWhatsAppFlowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r PublishWhatsAppFlowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PublishWhatsAppFlowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteWhatsAppGroupResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -40865,6 +42377,15 @@ func (c *ClientWithResponses) GetYouTubeDailyViewsWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetYouTubeDailyViewsResponse(rsp)
+}
+
+// GetYouTubeDemographicsWithResponse request returning *GetYouTubeDemographicsResponse
+func (c *ClientWithResponses) GetYouTubeDemographicsWithResponse(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDemographicsResponse, error) {
+	rsp, err := c.GetYouTubeDemographics(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetYouTubeDemographicsResponse(rsp)
 }
 
 // ListApiKeysWithResponse request returning *ListApiKeysResponse
@@ -42762,6 +44283,144 @@ func (c *ClientWithResponses) UpdateWhatsAppContactWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseUpdateWhatsAppContactResponse(rsp)
+}
+
+// ListWhatsAppFlowsWithResponse request returning *ListWhatsAppFlowsResponse
+func (c *ClientWithResponses) ListWhatsAppFlowsWithResponse(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowsResponse, error) {
+	rsp, err := c.ListWhatsAppFlows(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppFlowsResponse(rsp)
+}
+
+// CreateWhatsAppFlowWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppFlowResponse
+func (c *ClientWithResponses) CreateWhatsAppFlowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppFlowResponse, error) {
+	rsp, err := c.CreateWhatsAppFlowWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppFlowResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppFlowWithResponse(ctx context.Context, body CreateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppFlowResponse, error) {
+	rsp, err := c.CreateWhatsAppFlow(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppFlowResponse(rsp)
+}
+
+// SendWhatsAppFlowMessageWithBodyWithResponse request with arbitrary body returning *SendWhatsAppFlowMessageResponse
+func (c *ClientWithResponses) SendWhatsAppFlowMessageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppFlowMessageResponse, error) {
+	rsp, err := c.SendWhatsAppFlowMessageWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppFlowMessageResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendWhatsAppFlowMessageWithResponse(ctx context.Context, body SendWhatsAppFlowMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppFlowMessageResponse, error) {
+	rsp, err := c.SendWhatsAppFlowMessage(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppFlowMessageResponse(rsp)
+}
+
+// DeleteWhatsAppFlowWithResponse request returning *DeleteWhatsAppFlowResponse
+func (c *ClientWithResponses) DeleteWhatsAppFlowWithResponse(ctx context.Context, flowId string, params *DeleteWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*DeleteWhatsAppFlowResponse, error) {
+	rsp, err := c.DeleteWhatsAppFlow(ctx, flowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppFlowResponse(rsp)
+}
+
+// GetWhatsAppFlowWithResponse request returning *GetWhatsAppFlowResponse
+func (c *ClientWithResponses) GetWhatsAppFlowWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowResponse, error) {
+	rsp, err := c.GetWhatsAppFlow(ctx, flowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppFlowResponse(rsp)
+}
+
+// UpdateWhatsAppFlowWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppFlowResponse
+func (c *ClientWithResponses) UpdateWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppFlowResponse, error) {
+	rsp, err := c.UpdateWhatsAppFlowWithBody(ctx, flowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppFlowResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppFlowWithResponse(ctx context.Context, flowId string, body UpdateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppFlowResponse, error) {
+	rsp, err := c.UpdateWhatsAppFlow(ctx, flowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppFlowResponse(rsp)
+}
+
+// DeprecateWhatsAppFlowWithBodyWithResponse request with arbitrary body returning *DeprecateWhatsAppFlowResponse
+func (c *ClientWithResponses) DeprecateWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeprecateWhatsAppFlowResponse, error) {
+	rsp, err := c.DeprecateWhatsAppFlowWithBody(ctx, flowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeprecateWhatsAppFlowResponse(rsp)
+}
+
+func (c *ClientWithResponses) DeprecateWhatsAppFlowWithResponse(ctx context.Context, flowId string, body DeprecateWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*DeprecateWhatsAppFlowResponse, error) {
+	rsp, err := c.DeprecateWhatsAppFlow(ctx, flowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeprecateWhatsAppFlowResponse(rsp)
+}
+
+// GetWhatsAppFlowJsonWithResponse request returning *GetWhatsAppFlowJsonResponse
+func (c *ClientWithResponses) GetWhatsAppFlowJsonWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowJsonParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowJsonResponse, error) {
+	rsp, err := c.GetWhatsAppFlowJson(ctx, flowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppFlowJsonResponse(rsp)
+}
+
+// UploadWhatsAppFlowJsonWithBodyWithResponse request with arbitrary body returning *UploadWhatsAppFlowJsonResponse
+func (c *ClientWithResponses) UploadWhatsAppFlowJsonWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppFlowJsonResponse, error) {
+	rsp, err := c.UploadWhatsAppFlowJsonWithBody(ctx, flowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadWhatsAppFlowJsonResponse(rsp)
+}
+
+func (c *ClientWithResponses) UploadWhatsAppFlowJsonWithResponse(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadWhatsAppFlowJsonResponse, error) {
+	rsp, err := c.UploadWhatsAppFlowJson(ctx, flowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadWhatsAppFlowJsonResponse(rsp)
+}
+
+// PublishWhatsAppFlowWithBodyWithResponse request with arbitrary body returning *PublishWhatsAppFlowResponse
+func (c *ClientWithResponses) PublishWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error) {
+	rsp, err := c.PublishWhatsAppFlowWithBody(ctx, flowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePublishWhatsAppFlowResponse(rsp)
+}
+
+func (c *ClientWithResponses) PublishWhatsAppFlowWithResponse(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error) {
+	rsp, err := c.PublishWhatsAppFlow(ctx, flowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePublishWhatsAppFlowResponse(rsp)
 }
 
 // DeleteWhatsAppGroupWithBodyWithResponse request with arbitrary body returning *DeleteWhatsAppGroupResponse
@@ -46975,6 +48634,92 @@ func ParseGetYouTubeDailyViewsResponse(rsp *http.Response) (*GetYouTubeDailyView
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetYouTubeDemographicsResponse parses an HTTP response from a GetYouTubeDemographicsWithResponse call
+func ParseGetYouTubeDemographicsResponse(rsp *http.Response) (*GetYouTubeDemographicsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetYouTubeDemographicsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest YouTubeDemographicsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 412:
+		var dest struct {
+			Code        *string `json:"code,omitempty"`
+			Error       *string `json:"error,omitempty"`
+			ScopeStatus *struct {
+				HasAnalyticsScope       *bool   `json:"hasAnalyticsScope,omitempty"`
+				ReauthorizeUrl          *string `json:"reauthorizeUrl,omitempty"`
+				RequiresReauthorization *bool   `json:"requiresReauthorization,omitempty"`
+			} `json:"scopeStatus,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON412 = &dest
 
 	}
 
@@ -54118,6 +55863,401 @@ func ParseUpdateWhatsAppContactResponse(rsp *http.Response) (*UpdateWhatsAppCont
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppFlowsResponse parses an HTTP response from a ListWhatsAppFlowsWithResponse call
+func ParseListWhatsAppFlowsResponse(rsp *http.Response) (*ListWhatsAppFlowsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppFlowsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Flows *[]struct {
+				Categories       *[]string                        `json:"categories,omitempty"`
+				Id               *string                          `json:"id,omitempty"`
+				Name             *string                          `json:"name,omitempty"`
+				Status           *ListWhatsAppFlows200FlowsStatus `json:"status,omitempty"`
+				ValidationErrors *[]map[string]interface{}        `json:"validation_errors,omitempty"`
+			} `json:"flows,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppFlowResponse parses an HTTP response from a CreateWhatsAppFlowWithResponse call
+func ParseCreateWhatsAppFlowResponse(rsp *http.Response) (*CreateWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Flow *struct {
+				Categories *[]string `json:"categories,omitempty"`
+				Id         *string   `json:"id,omitempty"`
+				Name       *string   `json:"name,omitempty"`
+				Status     *string   `json:"status,omitempty"`
+			} `json:"flow,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendWhatsAppFlowMessageResponse parses an HTTP response from a SendWhatsAppFlowMessageWithResponse call
+func ParseSendWhatsAppFlowMessageResponse(rsp *http.Response) (*SendWhatsAppFlowMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendWhatsAppFlowMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// MessageId WhatsApp message ID (WAMID)
+			MessageId *string `json:"messageId,omitempty"`
+			Success   *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppFlowResponse parses an HTTP response from a DeleteWhatsAppFlowWithResponse call
+func ParseDeleteWhatsAppFlowResponse(rsp *http.Response) (*DeleteWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppFlowResponse parses an HTTP response from a GetWhatsAppFlowWithResponse call
+func ParseGetWhatsAppFlowResponse(rsp *http.Response) (*GetWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Flow *struct {
+				Categories  *[]string `json:"categories,omitempty"`
+				Id          *string   `json:"id,omitempty"`
+				JsonVersion *string   `json:"json_version,omitempty"`
+				Name        *string   `json:"name,omitempty"`
+				Preview     *struct {
+					ExpiresAt  *string `json:"expires_at,omitempty"`
+					PreviewUrl *string `json:"preview_url,omitempty"`
+				} `json:"preview,omitempty"`
+				Status           *string                   `json:"status,omitempty"`
+				ValidationErrors *[]map[string]interface{} `json:"validation_errors,omitempty"`
+			} `json:"flow,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppFlowResponse parses an HTTP response from a UpdateWhatsAppFlowWithResponse call
+func ParseUpdateWhatsAppFlowResponse(rsp *http.Response) (*UpdateWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeprecateWhatsAppFlowResponse parses an HTTP response from a DeprecateWhatsAppFlowWithResponse call
+func ParseDeprecateWhatsAppFlowResponse(rsp *http.Response) (*DeprecateWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeprecateWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppFlowJsonResponse parses an HTTP response from a GetWhatsAppFlowJsonWithResponse call
+func ParseGetWhatsAppFlowJsonResponse(rsp *http.Response) (*GetWhatsAppFlowJsonResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppFlowJsonResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Assets *[]struct {
+				AssetType *string `json:"asset_type,omitempty"`
+
+				// DownloadUrl Temporary URL to download the flow JSON
+				DownloadUrl *string `json:"download_url,omitempty"`
+				Name        *string `json:"name,omitempty"`
+			} `json:"assets,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadWhatsAppFlowJsonResponse parses an HTTP response from a UploadWhatsAppFlowJsonWithResponse call
+func ParseUploadWhatsAppFlowJsonResponse(rsp *http.Response) (*UploadWhatsAppFlowJsonResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadWhatsAppFlowJsonResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+
+			// ValidationErrors Empty array if valid; otherwise, contains validation error details from Meta
+			ValidationErrors *[]struct {
+				ColumnEnd   *int    `json:"column_end,omitempty"`
+				ColumnStart *int    `json:"column_start,omitempty"`
+				Error       *string `json:"error,omitempty"`
+				ErrorType   *string `json:"error_type,omitempty"`
+				LineEnd     *int    `json:"line_end,omitempty"`
+				LineStart   *int    `json:"line_start,omitempty"`
+				Message     *string `json:"message,omitempty"`
+			} `json:"validation_errors,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePublishWhatsAppFlowResponse parses an HTTP response from a PublishWhatsAppFlowWithResponse call
+func ParsePublishWhatsAppFlowResponse(rsp *http.Response) (*PublishWhatsAppFlowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PublishWhatsAppFlowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
