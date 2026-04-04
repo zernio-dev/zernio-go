@@ -3096,6 +3096,24 @@ func (e ListInboxConversationsParamsSortOrder) Valid() bool {
 	}
 }
 
+// Defines values for CreateInboxConversationMultipartBodySkipDmCheck.
+const (
+	CreateInboxConversationMultipartBodySkipDmCheckFalse CreateInboxConversationMultipartBodySkipDmCheck = "false"
+	CreateInboxConversationMultipartBodySkipDmCheckTrue  CreateInboxConversationMultipartBodySkipDmCheck = "true"
+)
+
+// Valid indicates whether the value is a known member of the CreateInboxConversationMultipartBodySkipDmCheck enum.
+func (e CreateInboxConversationMultipartBodySkipDmCheck) Valid() bool {
+	switch e {
+	case CreateInboxConversationMultipartBodySkipDmCheckFalse:
+		return true
+	case CreateInboxConversationMultipartBodySkipDmCheckTrue:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UpdateInboxConversationJSONBodyStatus.
 const (
 	UpdateInboxConversationJSONBodyStatusActive   UpdateInboxConversationJSONBodyStatus = "active"
@@ -3609,6 +3627,21 @@ func (e ListPostsLogsParamsAction) Valid() bool {
 	}
 }
 
+// Defines values for EditPostJSONBodyPlatform.
+const (
+	EditPostJSONBodyPlatformTwitter EditPostJSONBodyPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the EditPostJSONBodyPlatform enum.
+func (e EditPostJSONBodyPlatform) Valid() bool {
+	switch e {
+	case EditPostJSONBodyPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UnpublishPostJSONBodyPlatform.
 const (
 	UnpublishPostJSONBodyPlatformBluesky        UnpublishPostJSONBodyPlatform = "bluesky"
@@ -3824,31 +3857,31 @@ func (e ListSequencesParamsStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
-	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
-	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
-	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
-	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
-	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
+	Instagram CreateSequenceJSONBodyPlatform = "instagram"
+	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
+	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
+	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
+	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case CreateSequenceJSONBodyPlatformBluesky:
+	case Bluesky:
 		return true
-	case CreateSequenceJSONBodyPlatformFacebook:
+	case Facebook:
 		return true
-	case CreateSequenceJSONBodyPlatformInstagram:
+	case Instagram:
 		return true
-	case CreateSequenceJSONBodyPlatformReddit:
+	case Reddit:
 		return true
-	case CreateSequenceJSONBodyPlatformTelegram:
+	case Telegram:
 		return true
-	case CreateSequenceJSONBodyPlatformTwitter:
+	case Twitter:
 		return true
-	case CreateSequenceJSONBodyPlatformWhatsapp:
+	case Whatsapp:
 		return true
 	default:
 		return false
@@ -4199,16 +4232,16 @@ func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppContactsParamsOptedIn.
 const (
-	False GetWhatsAppContactsParamsOptedIn = "false"
-	True  GetWhatsAppContactsParamsOptedIn = "true"
+	GetWhatsAppContactsParamsOptedInFalse GetWhatsAppContactsParamsOptedIn = "false"
+	GetWhatsAppContactsParamsOptedInTrue  GetWhatsAppContactsParamsOptedIn = "true"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppContactsParamsOptedIn enum.
 func (e GetWhatsAppContactsParamsOptedIn) Valid() bool {
 	switch e {
-	case False:
+	case GetWhatsAppContactsParamsOptedInFalse:
 		return true
-	case True:
+	case GetWhatsAppContactsParamsOptedInTrue:
 		return true
 	default:
 		return false
@@ -4962,7 +4995,10 @@ type FacebookPlatformData struct {
 	// ContentType Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *FacebookPlatformDataContentType `json:"contentType,omitempty"`
 
-	// FirstComment Optional first comment to post immediately after publishing (feed posts only, not stories or reels)
+	// Draft When true, creates the post as an unpublished draft visible in Facebook Publishing Tools instead of publishing immediately. Supported for feed posts (text, link, image, video) and reels. Not supported for stories. Drafts expire after ~30 days.
+	Draft *bool `json:"draft,omitempty"`
+
+	// FirstComment Optional first comment to post immediately after publishing (feed posts only, not stories or reels). Skipped when draft is true.
 	FirstComment *string `json:"firstComment,omitempty"`
 
 	// PageId Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
@@ -5887,6 +5923,9 @@ type TikTokPlatformDataMediaType string
 
 // TwitterPlatformData defines model for TwitterPlatformData.
 type TwitterPlatformData struct {
+	// LongVideo Enable long video uploads (over 140 seconds) using amplify_video media category. Requires the connected X account to have an active X Premium subscription. When true, videos are uploaded with the amplify_video category which supports longer durations (up to 10 minutes via API). When false or omitted, the standard tweet_video category is used (140 second limit). Note that not all Premium accounts have API long-video access, as X may require separate allowlisting.
+	LongVideo *bool `json:"longVideo,omitempty"`
+
 	// Poll Create a poll with this tweet. Mutually exclusive with media attachments and threads.
 	Poll *struct {
 		// DurationMinutes Poll duration in minutes (5 min to 7 days)
@@ -7923,6 +7962,48 @@ type ListInboxConversationsParamsStatus string
 // ListInboxConversationsParamsSortOrder defines parameters for ListInboxConversations.
 type ListInboxConversationsParamsSortOrder string
 
+// CreateInboxConversationJSONBody defines parameters for CreateInboxConversation.
+type CreateInboxConversationJSONBody struct {
+	// AccountId The social account ID to send from
+	AccountId string `json:"accountId"`
+
+	// Message Text content of the message. At least one of `message` or attachment is required.
+	Message *string `json:"message,omitempty"`
+
+	// ParticipantId Twitter numeric user ID of the recipient. Provide either this or `participantUsername`.
+	ParticipantId *string `json:"participantId,omitempty"`
+
+	// ParticipantUsername Twitter username (with or without @) of the recipient. Resolved to a user ID via lookup. Provide either this or `participantId`.
+	ParticipantUsername *string `json:"participantUsername,omitempty"`
+
+	// SkipDmCheck Skip the `receives_your_dm` eligibility check before sending. Use if you have already verified the recipient accepts DMs.
+	SkipDmCheck *bool `json:"skipDmCheck,omitempty"`
+}
+
+// CreateInboxConversationMultipartBody defines parameters for CreateInboxConversation.
+type CreateInboxConversationMultipartBody struct {
+	// AccountId The social account ID to send from
+	AccountId string `json:"accountId"`
+
+	// Attachment Media attachment (image or video). One attachment per message.
+	Attachment *openapi_types.File `json:"attachment,omitempty"`
+
+	// Message Text content of the message
+	Message *string `json:"message,omitempty"`
+
+	// ParticipantId Twitter numeric user ID of the recipient
+	ParticipantId *string `json:"participantId,omitempty"`
+
+	// ParticipantUsername Twitter username (with or without @) of the recipient
+	ParticipantUsername *string `json:"participantUsername,omitempty"`
+
+	// SkipDmCheck Skip the DM eligibility check
+	SkipDmCheck *CreateInboxConversationMultipartBodySkipDmCheck `json:"skipDmCheck,omitempty"`
+}
+
+// CreateInboxConversationMultipartBodySkipDmCheck defines parameters for CreateInboxConversation.
+type CreateInboxConversationMultipartBodySkipDmCheck string
+
 // GetInboxConversationParams defines parameters for GetInboxConversation.
 type GetInboxConversationParams struct {
 	// AccountId The social account ID
@@ -8252,9 +8333,12 @@ type ListPostsParamsSortBy string
 // CreatePostJSONBody defines parameters for CreatePost.
 type CreatePostJSONBody struct {
 	// Content Post caption/text. Optional when media is attached or all platforms have customContent. Required for text-only posts.
-	Content             *string   `json:"content,omitempty"`
-	CrosspostingEnabled *bool     `json:"crosspostingEnabled,omitempty"`
-	Hashtags            *[]string `json:"hashtags,omitempty"`
+	Content             *string `json:"content,omitempty"`
+	CrosspostingEnabled *bool   `json:"crosspostingEnabled,omitempty"`
+
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
+	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
+	Hashtags         *[]string             `json:"hashtags,omitempty"`
 
 	// IsDraft When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
 	IsDraft    *bool `json:"isDraft,omitempty"`
@@ -8369,6 +8453,9 @@ type ListPostsLogsParamsAction string
 type UpdatePostJSONBody struct {
 	Content *string `json:"content,omitempty"`
 
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
+	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
+
 	// Recycling Configure automatic post recycling (reposting at regular intervals).
 	// After the post is published, the system creates new scheduled copies at the
 	// specified interval until expiration conditions are met. Supports weekly or
@@ -8382,6 +8469,18 @@ type UpdatePostJSONBody struct {
 	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
+
+// EditPostJSONBody defines parameters for EditPost.
+type EditPostJSONBody struct {
+	// Content The new tweet text content
+	Content string `json:"content"`
+
+	// Platform The platform to edit the post on. Currently only twitter is supported.
+	Platform EditPostJSONBodyPlatform `json:"platform"`
+}
+
+// EditPostJSONBodyPlatform defines parameters for EditPost.
+type EditPostJSONBodyPlatform string
 
 // GetPostLogsParams defines parameters for GetPostLogs.
 type GetPostLogsParams struct {
@@ -9653,6 +9752,12 @@ type LikeInboxCommentJSONRequestBody LikeInboxCommentJSONBody
 // SendPrivateReplyToCommentJSONRequestBody defines body for SendPrivateReplyToComment for application/json ContentType.
 type SendPrivateReplyToCommentJSONRequestBody SendPrivateReplyToCommentJSONBody
 
+// CreateInboxConversationJSONRequestBody defines body for CreateInboxConversation for application/json ContentType.
+type CreateInboxConversationJSONRequestBody CreateInboxConversationJSONBody
+
+// CreateInboxConversationMultipartRequestBody defines body for CreateInboxConversation for multipart/form-data ContentType.
+type CreateInboxConversationMultipartRequestBody CreateInboxConversationMultipartBody
+
 // UpdateInboxConversationJSONRequestBody defines body for UpdateInboxConversation for application/json ContentType.
 type UpdateInboxConversationJSONRequestBody UpdateInboxConversationJSONBody
 
@@ -9694,6 +9799,9 @@ type BulkUploadPostsMultipartRequestBody BulkUploadPostsMultipartBody
 
 // UpdatePostJSONRequestBody defines body for UpdatePost for application/json ContentType.
 type UpdatePostJSONRequestBody UpdatePostJSONBody
+
+// EditPostJSONRequestBody defines body for EditPost for application/json ContentType.
+type EditPostJSONRequestBody EditPostJSONBody
 
 // UnpublishPostJSONRequestBody defines body for UnpublishPost for application/json ContentType.
 type UnpublishPostJSONRequestBody UnpublishPostJSONBody
@@ -9869,6 +9977,14 @@ func (a *UpdatePostJSONBody) UnmarshalJSON(b []byte) error {
 		delete(object, "content")
 	}
 
+	if raw, found := object["facebookSettings"]; found {
+		err = json.Unmarshal(raw, &a.FacebookSettings)
+		if err != nil {
+			return fmt.Errorf("error reading 'facebookSettings': %w", err)
+		}
+		delete(object, "facebookSettings")
+	}
+
 	if raw, found := object["recycling"]; found {
 		err = json.Unmarshal(raw, &a.Recycling)
 		if err != nil {
@@ -9916,6 +10032,13 @@ func (a UpdatePostJSONBody) MarshalJSON() ([]byte, error) {
 		object["content"], err = json.Marshal(a.Content)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'content': %w", err)
+		}
+	}
+
+	if a.FacebookSettings != nil {
+		object["facebookSettings"], err = json.Marshal(a.FacebookSettings)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'facebookSettings': %w", err)
 		}
 	}
 
@@ -11405,6 +11528,11 @@ type ClientInterface interface {
 	// ListInboxConversations request
 	ListInboxConversations(ctx context.Context, params *ListInboxConversationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateInboxConversationWithBody request with any body
+	CreateInboxConversationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateInboxConversation(ctx context.Context, body CreateInboxConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetInboxConversation request
 	GetInboxConversation(ctx context.Context, conversationId string, params *GetInboxConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -11492,6 +11620,11 @@ type ClientInterface interface {
 	UpdatePostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdatePost(ctx context.Context, postId string, body UpdatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EditPostWithBody request with any body
+	EditPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EditPost(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPostLogs request
 	GetPostLogs(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14163,6 +14296,30 @@ func (c *Client) ListInboxConversations(ctx context.Context, params *ListInboxCo
 	return c.Client.Do(req)
 }
 
+func (c *Client) CreateInboxConversationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateInboxConversationRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateInboxConversation(ctx context.Context, body CreateInboxConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateInboxConversationRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetInboxConversation(ctx context.Context, conversationId string, params *GetInboxConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetInboxConversationRequest(c.Server, conversationId, params)
 	if err != nil {
@@ -14549,6 +14706,30 @@ func (c *Client) UpdatePostWithBody(ctx context.Context, postId string, contentT
 
 func (c *Client) UpdatePost(ctx context.Context, postId string, body UpdatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdatePostRequest(c.Server, postId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EditPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEditPostRequestWithBody(c.Server, postId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EditPost(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEditPostRequest(c.Server, postId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -24882,6 +25063,46 @@ func NewListInboxConversationsRequest(server string, params *ListInboxConversati
 	return req, nil
 }
 
+// NewCreateInboxConversationRequest calls the generic CreateInboxConversation builder with application/json body
+func NewCreateInboxConversationRequest(server string, body CreateInboxConversationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateInboxConversationRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateInboxConversationRequestWithBody generates requests for CreateInboxConversation with any type of body
+func NewCreateInboxConversationRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetInboxConversationRequest generates requests for GetInboxConversation
 func NewGetInboxConversationRequest(server string, conversationId string, params *GetInboxConversationParams) (*http.Request, error) {
 	var err error
@@ -26300,6 +26521,53 @@ func NewUpdatePostRequestWithBody(server string, postId string, contentType stri
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEditPostRequest calls the generic EditPost builder with application/json body
+func NewEditPostRequest(server string, postId string, body EditPostJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEditPostRequestWithBody(server, postId, "application/json", bodyReader)
+}
+
+// NewEditPostRequestWithBody generates requests for EditPost with any type of body
+func NewEditPostRequestWithBody(server string, postId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "postId", postId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/posts/%s/edit", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -32011,6 +32279,11 @@ type ClientWithResponsesInterface interface {
 	// ListInboxConversationsWithResponse request
 	ListInboxConversationsWithResponse(ctx context.Context, params *ListInboxConversationsParams, reqEditors ...RequestEditorFn) (*ListInboxConversationsResponse, error)
 
+	// CreateInboxConversationWithBodyWithResponse request with any body
+	CreateInboxConversationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInboxConversationResponse, error)
+
+	CreateInboxConversationWithResponse(ctx context.Context, body CreateInboxConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInboxConversationResponse, error)
+
 	// GetInboxConversationWithResponse request
 	GetInboxConversationWithResponse(ctx context.Context, conversationId string, params *GetInboxConversationParams, reqEditors ...RequestEditorFn) (*GetInboxConversationResponse, error)
 
@@ -32098,6 +32371,11 @@ type ClientWithResponsesInterface interface {
 	UpdatePostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePostResponse, error)
 
 	UpdatePostWithResponse(ctx context.Context, postId string, body UpdatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePostResponse, error)
+
+	// EditPostWithBodyWithResponse request with any body
+	EditPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditPostResponse, error)
+
+	EditPostWithResponse(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*EditPostResponse, error)
 
 	// GetPostLogsWithResponse request
 	GetPostLogsWithResponse(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*GetPostLogsResponse, error)
@@ -37741,6 +38019,57 @@ func (r ListInboxConversationsResponse) StatusCode() int {
 	return 0
 }
 
+type CreateInboxConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Data *struct {
+			// ConversationId Platform conversation ID (dm_conversation_id)
+			ConversationId *string `json:"conversationId,omitempty"`
+
+			// MessageId Platform message ID (dm_event_id)
+			MessageId *string `json:"messageId,omitempty"`
+
+			// ParticipantId Twitter numeric user ID of the recipient
+			ParticipantId *string `json:"participantId,omitempty"`
+
+			// ParticipantName Display name of the recipient
+			ParticipantName *string `json:"participantName,omitempty"`
+
+			// ParticipantUsername Twitter username of the recipient
+			ParticipantUsername *string `json:"participantUsername,omitempty"`
+		} `json:"data,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON400 *struct {
+		Code  *CreateInboxConversation400Code `json:"code,omitempty"`
+		Error *string                         `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON422 *struct {
+		Code  *CreateInboxConversation422Code `json:"code,omitempty"`
+		Error *string                         `json:"error,omitempty"`
+	}
+}
+type CreateInboxConversation400Code string
+type CreateInboxConversation422Code string
+
+// Status returns HTTPResponse.Status
+func (r CreateInboxConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateInboxConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetInboxConversationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -38503,6 +38832,38 @@ func (r UpdatePostResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdatePostResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EditPostResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Id New tweet ID assigned by X after edit
+		Id      *string `json:"id,omitempty"`
+		Message *string `json:"message,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+
+		// Url URL of the edited tweet
+		Url *string `json:"url,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r EditPostResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EditPostResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43491,6 +43852,23 @@ func (c *ClientWithResponses) ListInboxConversationsWithResponse(ctx context.Con
 	return ParseListInboxConversationsResponse(rsp)
 }
 
+// CreateInboxConversationWithBodyWithResponse request with arbitrary body returning *CreateInboxConversationResponse
+func (c *ClientWithResponses) CreateInboxConversationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInboxConversationResponse, error) {
+	rsp, err := c.CreateInboxConversationWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateInboxConversationResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateInboxConversationWithResponse(ctx context.Context, body CreateInboxConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInboxConversationResponse, error) {
+	rsp, err := c.CreateInboxConversation(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateInboxConversationResponse(rsp)
+}
+
 // GetInboxConversationWithResponse request returning *GetInboxConversationResponse
 func (c *ClientWithResponses) GetInboxConversationWithResponse(ctx context.Context, conversationId string, params *GetInboxConversationParams, reqEditors ...RequestEditorFn) (*GetInboxConversationResponse, error) {
 	rsp, err := c.GetInboxConversation(ctx, conversationId, params, reqEditors...)
@@ -43775,6 +44153,23 @@ func (c *ClientWithResponses) UpdatePostWithResponse(ctx context.Context, postId
 		return nil, err
 	}
 	return ParseUpdatePostResponse(rsp)
+}
+
+// EditPostWithBodyWithResponse request with arbitrary body returning *EditPostResponse
+func (c *ClientWithResponses) EditPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditPostResponse, error) {
+	rsp, err := c.EditPostWithBody(ctx, postId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEditPostResponse(rsp)
+}
+
+func (c *ClientWithResponses) EditPostWithResponse(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*EditPostResponse, error) {
+	rsp, err := c.EditPost(ctx, postId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEditPostResponse(rsp)
 }
 
 // GetPostLogsWithResponse request returning *GetPostLogsResponse
@@ -52250,6 +52645,77 @@ func ParseListInboxConversationsResponse(rsp *http.Response) (*ListInboxConversa
 	return response, nil
 }
 
+// ParseCreateInboxConversationResponse parses an HTTP response from a CreateInboxConversationWithResponse call
+func ParseCreateInboxConversationResponse(rsp *http.Response) (*CreateInboxConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateInboxConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Data *struct {
+				// ConversationId Platform conversation ID (dm_conversation_id)
+				ConversationId *string `json:"conversationId,omitempty"`
+
+				// MessageId Platform message ID (dm_event_id)
+				MessageId *string `json:"messageId,omitempty"`
+
+				// ParticipantId Twitter numeric user ID of the recipient
+				ParticipantId *string `json:"participantId,omitempty"`
+
+				// ParticipantName Display name of the recipient
+				ParticipantName *string `json:"participantName,omitempty"`
+
+				// ParticipantUsername Twitter username of the recipient
+				ParticipantUsername *string `json:"participantUsername,omitempty"`
+			} `json:"data,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Code  *CreateInboxConversation400Code `json:"code,omitempty"`
+			Error *string                         `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest struct {
+			Code  *CreateInboxConversation422Code `json:"code,omitempty"`
+			Error *string                         `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetInboxConversationResponse parses an HTTP response from a GetInboxConversationWithResponse call
 func ParseGetInboxConversationResponse(rsp *http.Response) (*GetInboxConversationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -53266,6 +53732,54 @@ func ParseUpdatePostResponse(rsp *http.Response) (*UpdatePostResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest PostUpdateResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEditPostResponse parses an HTTP response from a EditPostWithResponse call
+func ParseEditPostResponse(rsp *http.Response) (*EditPostResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EditPostResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Id New tweet ID assigned by X after edit
+			Id      *string `json:"id,omitempty"`
+			Message *string `json:"message,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+
+			// Url URL of the edited tweet
+			Url *string `json:"url,omitempty"`
+		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

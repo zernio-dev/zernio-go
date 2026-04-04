@@ -53,6 +53,7 @@ func main() {
 | `client.UpdatePostWithResponse()` | Update post |
 | `client.UpdatePostMetadataWithResponse()` | Update post metadata |
 | `client.DeletePostWithResponse()` | Delete post |
+| `client.EditPostWithResponse()` | Edit published post |
 | `client.RetryPostWithResponse()` | Retry failed post |
 | `client.UnpublishPostWithResponse()` | Unpublish post |
 
@@ -333,6 +334,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.ListInboxConversationsWithResponse()` | List conversations |
+| `client.CreateInboxConversationWithResponse()` | Create conversation |
 | `client.GetInboxConversationWithResponse()` | Get conversation |
 | `client.GetInboxConversationMessagesWithResponse()` | List messages |
 | `client.UpdateInboxConversationWithResponse()` | Update conversation status |
