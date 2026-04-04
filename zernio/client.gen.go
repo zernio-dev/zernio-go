@@ -7090,6 +7090,37 @@ type GetDailyMetricsParams struct {
 // GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
 type GetDailyMetricsParamsSource string
 
+// GetGoogleBusinessPerformanceParams defines parameters for GetGoogleBusinessPerformance.
+type GetGoogleBusinessPerformanceParams struct {
+	// AccountId The Zernio SocialAccount ID for the Google Business Profile account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated metric names. Defaults to all available metrics.
+	// Valid values: BUSINESS_IMPRESSIONS_DESKTOP_MAPS, BUSINESS_IMPRESSIONS_DESKTOP_SEARCH,
+	// BUSINESS_IMPRESSIONS_MOBILE_MAPS, BUSINESS_IMPRESSIONS_MOBILE_SEARCH,
+	// BUSINESS_CONVERSATIONS, BUSINESS_DIRECTION_REQUESTS, CALL_CLICKS, WEBSITE_CLICKS,
+	// BUSINESS_BOOKINGS, BUSINESS_FOOD_ORDERS, BUSINESS_FOOD_MENU_CLICKS
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// StartDate Start date (YYYY-MM-DD). Defaults to 30 days ago. Max 18 months back.
+	StartDate *openapi_types.Date `form:"startDate,omitempty" json:"startDate,omitempty"`
+
+	// EndDate End date (YYYY-MM-DD). Defaults to today.
+	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
+}
+
+// GetGoogleBusinessSearchKeywordsParams defines parameters for GetGoogleBusinessSearchKeywords.
+type GetGoogleBusinessSearchKeywordsParams struct {
+	// AccountId The Zernio SocialAccount ID for the Google Business Profile account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// StartMonth Start month (YYYY-MM). Defaults to 3 months ago.
+	StartMonth *string `form:"startMonth,omitempty" json:"startMonth,omitempty"`
+
+	// EndMonth End month (YYYY-MM). Defaults to current month.
+	EndMonth *string `form:"endMonth,omitempty" json:"endMonth,omitempty"`
+}
+
 // GetInstagramAccountInsightsParams defines parameters for GetInstagramAccountInsights.
 type GetInstagramAccountInsightsParams struct {
 	// AccountId The Zernio SocialAccount ID for the Instagram account
@@ -11117,6 +11148,12 @@ type ClientInterface interface {
 	// GetDailyMetrics request
 	GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetGoogleBusinessPerformance request
+	GetGoogleBusinessPerformance(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGoogleBusinessSearchKeywords request
+	GetGoogleBusinessSearchKeywords(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetInstagramAccountInsights request
 	GetInstagramAccountInsights(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -12988,6 +13025,30 @@ func (c *Client) GetContentDecay(ctx context.Context, params *GetContentDecayPar
 
 func (c *Client) GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetDailyMetricsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGoogleBusinessPerformance(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessPerformanceRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGoogleBusinessSearchKeywords(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessSearchKeywordsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -20646,6 +20707,176 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGoogleBusinessPerformanceRequest generates requests for GetGoogleBusinessPerformance
+func NewGetGoogleBusinessPerformanceRequest(server string, params *GetGoogleBusinessPerformanceParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/googlebusiness/performance")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StartDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startDate", *params.StartDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.EndDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endDate", *params.EndDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGoogleBusinessSearchKeywordsRequest generates requests for GetGoogleBusinessSearchKeywords
+func NewGetGoogleBusinessSearchKeywordsRequest(server string, params *GetGoogleBusinessSearchKeywordsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/googlebusiness/search-keywords")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.StartMonth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startMonth", *params.StartMonth, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.EndMonth != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endMonth", *params.EndMonth, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -31523,6 +31754,12 @@ type ClientWithResponsesInterface interface {
 	// GetDailyMetricsWithResponse request
 	GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error)
 
+	// GetGoogleBusinessPerformanceWithResponse request
+	GetGoogleBusinessPerformanceWithResponse(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessPerformanceResponse, error)
+
+	// GetGoogleBusinessSearchKeywordsWithResponse request
+	GetGoogleBusinessSearchKeywordsWithResponse(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessSearchKeywordsResponse, error)
+
 	// GetInstagramAccountInsightsWithResponse request
 	GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error)
 
@@ -34776,6 +35013,105 @@ func (r GetDailyMetricsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetDailyMetricsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetGoogleBusinessPerformanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId *string `json:"accountId,omitempty"`
+		DataDelay *string `json:"dataDelay,omitempty"`
+		DateRange *struct {
+			EndDate   *openapi_types.Date `json:"endDate,omitempty"`
+			StartDate *openapi_types.Date `json:"startDate,omitempty"`
+		} `json:"dateRange,omitempty"`
+
+		// Metrics Each key is a metric name containing total and daily values.
+		Metrics *map[string]struct {
+			// Total Sum of all daily values in the range
+			Total  *int `json:"total,omitempty"`
+			Values *[]struct {
+				Date  *openapi_types.Date `json:"date,omitempty"`
+				Value *int                `json:"value,omitempty"`
+			} `json:"values,omitempty"`
+		} `json:"metrics,omitempty"`
+		Platform *string `json:"platform,omitempty"`
+		Success  *bool   `json:"success,omitempty"`
+	}
+	JSON400 *struct {
+		Error        *string   `json:"error,omitempty"`
+		ValidMetrics *[]string `json:"validMetrics,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGoogleBusinessPerformanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGoogleBusinessPerformanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetGoogleBusinessSearchKeywordsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId *string `json:"accountId,omitempty"`
+		Keywords  *[]struct {
+			Impressions *int    `json:"impressions,omitempty"`
+			Keyword     *string `json:"keyword,omitempty"`
+		} `json:"keywords,omitempty"`
+		MonthRange *struct {
+			EndMonth   *string `json:"endMonth,omitempty"`
+			StartMonth *string `json:"startMonth,omitempty"`
+		} `json:"monthRange,omitempty"`
+		Note     *string `json:"note,omitempty"`
+		Platform *string `json:"platform,omitempty"`
+		Success  *bool   `json:"success,omitempty"`
+	}
+	JSON400 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGoogleBusinessSearchKeywordsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGoogleBusinessSearchKeywordsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -42334,6 +42670,24 @@ func (c *ClientWithResponses) GetDailyMetricsWithResponse(ctx context.Context, p
 	return ParseGetDailyMetricsResponse(rsp)
 }
 
+// GetGoogleBusinessPerformanceWithResponse request returning *GetGoogleBusinessPerformanceResponse
+func (c *ClientWithResponses) GetGoogleBusinessPerformanceWithResponse(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessPerformanceResponse, error) {
+	rsp, err := c.GetGoogleBusinessPerformance(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGoogleBusinessPerformanceResponse(rsp)
+}
+
+// GetGoogleBusinessSearchKeywordsWithResponse request returning *GetGoogleBusinessSearchKeywordsResponse
+func (c *ClientWithResponses) GetGoogleBusinessSearchKeywordsWithResponse(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessSearchKeywordsResponse, error) {
+	rsp, err := c.GetGoogleBusinessSearchKeywords(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGoogleBusinessSearchKeywordsResponse(rsp)
+}
+
 // GetInstagramAccountInsightsWithResponse request returning *GetInstagramAccountInsightsResponse
 func (c *ClientWithResponses) GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error) {
 	rsp, err := c.GetInstagramAccountInsights(ctx, params, reqEditors...)
@@ -48251,6 +48605,161 @@ func ParseGetDailyMetricsResponse(rsp *http.Response) (*GetDailyMetricsResponse,
 			return nil, err
 		}
 		response.JSON402 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGoogleBusinessPerformanceResponse parses an HTTP response from a GetGoogleBusinessPerformanceWithResponse call
+func ParseGetGoogleBusinessPerformanceResponse(rsp *http.Response) (*GetGoogleBusinessPerformanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGoogleBusinessPerformanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId *string `json:"accountId,omitempty"`
+			DataDelay *string `json:"dataDelay,omitempty"`
+			DateRange *struct {
+				EndDate   *openapi_types.Date `json:"endDate,omitempty"`
+				StartDate *openapi_types.Date `json:"startDate,omitempty"`
+			} `json:"dateRange,omitempty"`
+
+			// Metrics Each key is a metric name containing total and daily values.
+			Metrics *map[string]struct {
+				// Total Sum of all daily values in the range
+				Total  *int `json:"total,omitempty"`
+				Values *[]struct {
+					Date  *openapi_types.Date `json:"date,omitempty"`
+					Value *int                `json:"value,omitempty"`
+				} `json:"values,omitempty"`
+			} `json:"metrics,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+			Success  *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error        *string   `json:"error,omitempty"`
+			ValidMetrics *[]string `json:"validMetrics,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGoogleBusinessSearchKeywordsResponse parses an HTTP response from a GetGoogleBusinessSearchKeywordsWithResponse call
+func ParseGetGoogleBusinessSearchKeywordsResponse(rsp *http.Response) (*GetGoogleBusinessSearchKeywordsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGoogleBusinessSearchKeywordsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId *string `json:"accountId,omitempty"`
+			Keywords  *[]struct {
+				Impressions *int    `json:"impressions,omitempty"`
+				Keyword     *string `json:"keyword,omitempty"`
+			} `json:"keywords,omitempty"`
+			MonthRange *struct {
+				EndMonth   *string `json:"endMonth,omitempty"`
+				StartMonth *string `json:"startMonth,omitempty"`
+			} `json:"monthRange,omitempty"`
+			Note     *string `json:"note,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+			Success  *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	}
 

@@ -85,6 +85,8 @@ func main() {
 | `client.GetBestTimeToPostWithResponse()` | Get best times to post |
 | `client.GetContentDecayWithResponse()` | Get content performance decay |
 | `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
+| `client.GetGoogleBusinessPerformanceWithResponse()` | Get Google Business Profile performance metrics |
+| `client.GetGoogleBusinessSearchKeywordsWithResponse()` | Get Google Business Profile search keywords |
 | `client.GetInstagramAccountInsightsWithResponse()` | Get Instagram account-level insights |
 | `client.GetInstagramDemographicsWithResponse()` | Get Instagram audience demographics |
 | `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
