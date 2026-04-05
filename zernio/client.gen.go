@@ -4998,7 +4998,7 @@ type FacebookPlatformData struct {
 	// Draft When true, creates the post as an unpublished draft visible in Facebook Publishing Tools instead of publishing immediately. Supported for feed posts (text, link, image, video) and reels. Not supported for stories. Drafts expire after ~30 days.
 	Draft *bool `json:"draft,omitempty"`
 
-	// FirstComment Optional first comment to post immediately after publishing (feed posts only, not stories or reels). Skipped when draft is true.
+	// FirstComment Optional first comment to post immediately after publishing (feed posts and reels, not stories). Skipped when draft is true.
 	FirstComment *string `json:"firstComment,omitempty"`
 
 	// PageId Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
