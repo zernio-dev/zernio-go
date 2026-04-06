@@ -5785,6 +5785,46 @@ type RedditPlatformData struct {
 	Url *string `json:"url,omitempty"`
 }
 
+// RedditPost A normalized Reddit post returned by the feed and search endpoints
+type RedditPost struct {
+	Author *string `json:"author,omitempty"`
+
+	// CreatedUtc Unix timestamp of post creation
+	CreatedUtc *float32 `json:"createdUtc,omitempty"`
+
+	// FlairText Link flair text if set
+	FlairText *string `json:"flairText,omitempty"`
+
+	// Fullname Reddit fullname (e.g. t3_abc123)
+	Fullname *string `json:"fullname,omitempty"`
+
+	// GalleryImages Individual image URLs for gallery posts (only present when isGallery is true)
+	GalleryImages *[]string `json:"galleryImages,omitempty"`
+
+	// Id Reddit post ID (without type prefix)
+	Id *string `json:"id,omitempty"`
+
+	// IsGallery Whether the post is a gallery with multiple images
+	IsGallery   *bool `json:"isGallery,omitempty"`
+	NumComments *int  `json:"numComments,omitempty"`
+
+	// Over18 Whether the post is marked NSFW
+	Over18 *bool `json:"over18,omitempty"`
+
+	// Permalink Full permalink to the Reddit post
+	Permalink *string `json:"permalink,omitempty"`
+	Score     *int    `json:"score,omitempty"`
+
+	// Selftext Self-post body text (empty string for link posts)
+	Selftext  *string `json:"selftext,omitempty"`
+	Stickied  *bool   `json:"stickied,omitempty"`
+	Subreddit *string `json:"subreddit,omitempty"`
+	Title     *string `json:"title,omitempty"`
+
+	// Url Post URL (may be a gallery URL
+	Url *string `json:"url,omitempty"`
+}
+
 // SnapchatPlatformData Requires a Public Profile. Single media item only. Content types: story (ephemeral 24h), saved_story (permanent, title max 45 chars), spotlight (video, max 160 chars).
 type SnapchatPlatformData struct {
 	// ContentType Content type: story (ephemeral 24h, default), saved_story (permanent on Public Profile), spotlight (video feed)
@@ -8783,6 +8823,9 @@ type ValidatePostLengthJSONBody struct {
 type ValidateSubredditParams struct {
 	// Name Subreddit name (with or without "r/" prefix)
 	Name string `form:"name" json:"name"`
+
+	// AccountId Reddit social account ID for authenticated lookup (recommended for reliable results)
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 }
 
 // RemoveBookmarkParams defines parameters for RemoveBookmark.
@@ -28216,6 +28259,22 @@ func NewValidateSubredditRequest(server string, params *ValidateSubredditParams)
 			}
 		}
 
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -39289,8 +39348,9 @@ type GetRedditFeedResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		After *string                   `json:"after,omitempty"`
-		Posts *[]map[string]interface{} `json:"posts,omitempty"`
+		After  *string       `json:"after,omitempty"`
+		Before *string       `json:"before,omitempty"`
+		Items  *[]RedditPost `json:"items,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -39315,18 +39375,9 @@ type SearchRedditResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		After *string `json:"after,omitempty"`
-		Posts *[]struct {
-			Author      *string  `json:"author,omitempty"`
-			CreatedUtc  *float32 `json:"created_utc,omitempty"`
-			Id          *string  `json:"id,omitempty"`
-			NumComments *int     `json:"num_comments,omitempty"`
-			Permalink   *string  `json:"permalink,omitempty"`
-			Score       *int     `json:"score,omitempty"`
-			Selftext    *string  `json:"selftext,omitempty"`
-			Subreddit   *string  `json:"subreddit,omitempty"`
-			Title       *string  `json:"title,omitempty"`
-		} `json:"posts,omitempty"`
+		After  *string       `json:"after,omitempty"`
+		Before *string       `json:"before,omitempty"`
+		Items  *[]RedditPost `json:"items,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -54424,8 +54475,9 @@ func ParseGetRedditFeedResponse(rsp *http.Response) (*GetRedditFeedResponse, err
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			After *string                   `json:"after,omitempty"`
-			Posts *[]map[string]interface{} `json:"posts,omitempty"`
+			After  *string       `json:"after,omitempty"`
+			Before *string       `json:"before,omitempty"`
+			Items  *[]RedditPost `json:"items,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -54460,18 +54512,9 @@ func ParseSearchRedditResponse(rsp *http.Response) (*SearchRedditResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			After *string `json:"after,omitempty"`
-			Posts *[]struct {
-				Author      *string  `json:"author,omitempty"`
-				CreatedUtc  *float32 `json:"created_utc,omitempty"`
-				Id          *string  `json:"id,omitempty"`
-				NumComments *int     `json:"num_comments,omitempty"`
-				Permalink   *string  `json:"permalink,omitempty"`
-				Score       *int     `json:"score,omitempty"`
-				Selftext    *string  `json:"selftext,omitempty"`
-				Subreddit   *string  `json:"subreddit,omitempty"`
-				Title       *string  `json:"title,omitempty"`
-			} `json:"posts,omitempty"`
+			After  *string       `json:"after,omitempty"`
+			Before *string       `json:"before,omitempty"`
+			Items  *[]RedditPost `json:"items,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
