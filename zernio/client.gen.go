@@ -7512,11 +7512,14 @@ type SelectFacebookPageJSONBody struct {
 
 // ListGoogleBusinessLocationsParams defines parameters for ListGoogleBusinessLocations.
 type ListGoogleBusinessLocationsParams struct {
-	// ProfileId Profile ID from your connection flow
-	ProfileId string `form:"profileId" json:"profileId"`
+	// ProfileId Profile ID from your connection flow. Required for auth validation when provided.
+	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// TempToken Temporary Google access token from the OAuth callback redirect
-	TempToken string `form:"tempToken" json:"tempToken"`
+	// PendingDataToken Token from the OAuth callback redirect. Preferred over tempToken because it preserves server-side token storage. One of pendingDataToken or tempToken is required.
+	PendingDataToken *string `form:"pendingDataToken,omitempty" json:"pendingDataToken,omitempty"`
+
+	// TempToken Legacy. Direct Google access token. Use pendingDataToken instead when available.
+	TempToken *string `form:"tempToken,omitempty" json:"tempToken,omitempty"`
 }
 
 // SelectGoogleBusinessLocationJSONBody defines parameters for SelectGoogleBusinessLocation.
@@ -7524,29 +7527,14 @@ type SelectGoogleBusinessLocationJSONBody struct {
 	// LocationId The Google Business location ID selected by the user
 	LocationId string `json:"locationId"`
 
+	// PendingDataToken Token from the OAuth callback redirect (pendingDataToken query param). Tokens and profile data are retrieved server-side from this token.
+	PendingDataToken string `json:"pendingDataToken"`
+
 	// ProfileId Profile ID from your connection flow
 	ProfileId string `json:"profileId"`
 
 	// RedirectUrl Optional custom redirect URL to return to after selection
 	RedirectUrl *string `json:"redirect_url,omitempty"`
-
-	// TempToken Temporary Google access token from OAuth
-	TempToken string `json:"tempToken"`
-
-	// UserProfile Decoded user profile from the OAuth callback. Contains the refresh token. Always include this field.
-	UserProfile *struct {
-		Id   *string `json:"id,omitempty"`
-		Name *string `json:"name,omitempty"`
-
-		// RefreshToken Google refresh token for long-lived access
-		RefreshToken *string `json:"refreshToken,omitempty"`
-
-		// Scope Granted OAuth scopes
-		Scope *string `json:"scope,omitempty"`
-
-		// TokenExpiresIn Token expiration time in seconds
-		TokenExpiresIn *int `json:"tokenExpiresIn,omitempty"`
-	} `json:"userProfile,omitempty"`
 }
 
 // ListLinkedInOrganizationsParams defines parameters for ListLinkedInOrganizations.
@@ -22740,28 +22728,52 @@ func NewListGoogleBusinessLocationsRequest(server string, params *ListGoogleBusi
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
 		}
 
-		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tempToken", params.TempToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
+		if params.PendingDataToken != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pendingDataToken", *params.PendingDataToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
 				}
 			}
+
+		}
+
+		if params.TempToken != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tempToken", *params.TempToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
