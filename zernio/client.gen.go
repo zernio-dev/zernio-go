@@ -24,6 +24,27 @@ const (
 	ConnectTokenScopes = "connectToken.Scopes"
 )
 
+// Defines values for AccountWithFollowerStatsAdsStatus.
+const (
+	AccountWithFollowerStatsAdsStatusConnected    AccountWithFollowerStatsAdsStatus = "connected"
+	AccountWithFollowerStatsAdsStatusNotAvailable AccountWithFollowerStatsAdsStatus = "not_available"
+	AccountWithFollowerStatsAdsStatusNotConnected AccountWithFollowerStatsAdsStatus = "not_connected"
+)
+
+// Valid indicates whether the value is a known member of the AccountWithFollowerStatsAdsStatus enum.
+func (e AccountWithFollowerStatsAdsStatus) Valid() bool {
+	switch e {
+	case AccountWithFollowerStatsAdsStatusConnected:
+		return true
+	case AccountWithFollowerStatsAdsStatusNotAvailable:
+		return true
+	case AccountWithFollowerStatsAdsStatusNotConnected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AdAdType.
 const (
 	Boost      AdAdType = "boost"
@@ -1131,6 +1152,27 @@ func (e SnapchatPlatformDataContentType) Valid() bool {
 	case Spotlight:
 		return true
 	case Story:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SocialAccountAdsStatus.
+const (
+	SocialAccountAdsStatusConnected    SocialAccountAdsStatus = "connected"
+	SocialAccountAdsStatusNotAvailable SocialAccountAdsStatus = "not_available"
+	SocialAccountAdsStatusNotConnected SocialAccountAdsStatus = "not_connected"
+)
+
+// Valid indicates whether the value is a known member of the SocialAccountAdsStatus enum.
+func (e SocialAccountAdsStatus) Valid() bool {
+	switch e {
+	case SocialAccountAdsStatusConnected:
+		return true
+	case SocialAccountAdsStatusNotAvailable:
+		return true
+	case SocialAccountAdsStatusNotConnected:
 		return true
 	default:
 		return false
@@ -2775,6 +2817,39 @@ func (e GetConnectUrlParamsPlatform) Valid() bool {
 	}
 }
 
+// Defines values for ConnectAdsParamsPlatform.
+const (
+	ConnectAdsParamsPlatformFacebook  ConnectAdsParamsPlatform = "facebook"
+	ConnectAdsParamsPlatformGoogleads ConnectAdsParamsPlatform = "googleads"
+	ConnectAdsParamsPlatformInstagram ConnectAdsParamsPlatform = "instagram"
+	ConnectAdsParamsPlatformLinkedin  ConnectAdsParamsPlatform = "linkedin"
+	ConnectAdsParamsPlatformPinterest ConnectAdsParamsPlatform = "pinterest"
+	ConnectAdsParamsPlatformTiktok    ConnectAdsParamsPlatform = "tiktok"
+	ConnectAdsParamsPlatformTwitter   ConnectAdsParamsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the ConnectAdsParamsPlatform enum.
+func (e ConnectAdsParamsPlatform) Valid() bool {
+	switch e {
+	case ConnectAdsParamsPlatformFacebook:
+		return true
+	case ConnectAdsParamsPlatformGoogleads:
+		return true
+	case ConnectAdsParamsPlatformInstagram:
+		return true
+	case ConnectAdsParamsPlatformLinkedin:
+		return true
+	case ConnectAdsParamsPlatformPinterest:
+		return true
+	case ConnectAdsParamsPlatformTiktok:
+		return true
+	case ConnectAdsParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListConnectionLogsParamsPlatform.
 const (
 	ListConnectionLogsParamsPlatformAll            ListConnectionLogsParamsPlatform = "all"
@@ -3354,6 +3429,114 @@ func (e CreateInviteTokenJSONBodyScope) Valid() bool {
 	case CreateInviteTokenJSONBodyScopeAll:
 		return true
 	case CreateInviteTokenJSONBodyScopeProfiles:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListLogsParamsType.
+const (
+	Connections ListLogsParamsType = "connections"
+	Messaging   ListLogsParamsType = "messaging"
+	Publishing  ListLogsParamsType = "publishing"
+	Webhooks    ListLogsParamsType = "webhooks"
+)
+
+// Valid indicates whether the value is a known member of the ListLogsParamsType enum.
+func (e ListLogsParamsType) Valid() bool {
+	switch e {
+	case Connections:
+		return true
+	case Messaging:
+		return true
+	case Publishing:
+		return true
+	case Webhooks:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListLogsParamsStatus.
+const (
+	ListLogsParamsStatusAll     ListLogsParamsStatus = "all"
+	ListLogsParamsStatusFailed  ListLogsParamsStatus = "failed"
+	ListLogsParamsStatusPending ListLogsParamsStatus = "pending"
+	ListLogsParamsStatusSkipped ListLogsParamsStatus = "skipped"
+	ListLogsParamsStatusSuccess ListLogsParamsStatus = "success"
+)
+
+// Valid indicates whether the value is a known member of the ListLogsParamsStatus enum.
+func (e ListLogsParamsStatus) Valid() bool {
+	switch e {
+	case ListLogsParamsStatusAll:
+		return true
+	case ListLogsParamsStatusFailed:
+		return true
+	case ListLogsParamsStatusPending:
+		return true
+	case ListLogsParamsStatusSkipped:
+		return true
+	case ListLogsParamsStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListLogsParamsPlatform.
+const (
+	ListLogsParamsPlatformAll            ListLogsParamsPlatform = "all"
+	ListLogsParamsPlatformBluesky        ListLogsParamsPlatform = "bluesky"
+	ListLogsParamsPlatformFacebook       ListLogsParamsPlatform = "facebook"
+	ListLogsParamsPlatformGooglebusiness ListLogsParamsPlatform = "googlebusiness"
+	ListLogsParamsPlatformInstagram      ListLogsParamsPlatform = "instagram"
+	ListLogsParamsPlatformLinkedin       ListLogsParamsPlatform = "linkedin"
+	ListLogsParamsPlatformPinterest      ListLogsParamsPlatform = "pinterest"
+	ListLogsParamsPlatformReddit         ListLogsParamsPlatform = "reddit"
+	ListLogsParamsPlatformSnapchat       ListLogsParamsPlatform = "snapchat"
+	ListLogsParamsPlatformTelegram       ListLogsParamsPlatform = "telegram"
+	ListLogsParamsPlatformThreads        ListLogsParamsPlatform = "threads"
+	ListLogsParamsPlatformTiktok         ListLogsParamsPlatform = "tiktok"
+	ListLogsParamsPlatformTwitter        ListLogsParamsPlatform = "twitter"
+	ListLogsParamsPlatformWhatsapp       ListLogsParamsPlatform = "whatsapp"
+	ListLogsParamsPlatformYoutube        ListLogsParamsPlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the ListLogsParamsPlatform enum.
+func (e ListLogsParamsPlatform) Valid() bool {
+	switch e {
+	case ListLogsParamsPlatformAll:
+		return true
+	case ListLogsParamsPlatformBluesky:
+		return true
+	case ListLogsParamsPlatformFacebook:
+		return true
+	case ListLogsParamsPlatformGooglebusiness:
+		return true
+	case ListLogsParamsPlatformInstagram:
+		return true
+	case ListLogsParamsPlatformLinkedin:
+		return true
+	case ListLogsParamsPlatformPinterest:
+		return true
+	case ListLogsParamsPlatformReddit:
+		return true
+	case ListLogsParamsPlatformSnapchat:
+		return true
+	case ListLogsParamsPlatformTelegram:
+		return true
+	case ListLogsParamsPlatformThreads:
+		return true
+	case ListLogsParamsPlatformTiktok:
+		return true
+	case ListLogsParamsPlatformTwitter:
+		return true
+	case ListLogsParamsPlatformWhatsapp:
+		return true
+	case ListLogsParamsPlatformYoutube:
 		return true
 	default:
 		return false
@@ -4205,25 +4388,25 @@ func (e GetWhatsAppBroadcastsParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppBroadcastRecipientsParamsStatus.
 const (
-	GetWhatsAppBroadcastRecipientsParamsStatusDelivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
-	GetWhatsAppBroadcastRecipientsParamsStatusFailed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
-	GetWhatsAppBroadcastRecipientsParamsStatusPending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
-	GetWhatsAppBroadcastRecipientsParamsStatusRead      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
-	GetWhatsAppBroadcastRecipientsParamsStatusSent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
+	Delivered GetWhatsAppBroadcastRecipientsParamsStatus = "delivered"
+	Failed    GetWhatsAppBroadcastRecipientsParamsStatus = "failed"
+	Pending   GetWhatsAppBroadcastRecipientsParamsStatus = "pending"
+	Read      GetWhatsAppBroadcastRecipientsParamsStatus = "read"
+	Sent      GetWhatsAppBroadcastRecipientsParamsStatus = "sent"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppBroadcastRecipientsParamsStatus enum.
 func (e GetWhatsAppBroadcastRecipientsParamsStatus) Valid() bool {
 	switch e {
-	case GetWhatsAppBroadcastRecipientsParamsStatusDelivered:
+	case Delivered:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusFailed:
+	case Failed:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusPending:
+	case Pending:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusRead:
+	case Read:
 		return true
-	case GetWhatsAppBroadcastRecipientsParamsStatusSent:
+	case Sent:
 		return true
 	default:
 		return false
@@ -4535,6 +4718,12 @@ type AccountWithFollowerStats struct {
 		VideoCount *float32 `json:"videoCount,omitempty"`
 	} `json:"accountStats,omitempty"`
 
+	// AdsStatus Ads connection status for this account.
+	// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
+	// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
+	// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+	AdsStatus *AccountWithFollowerStatsAdsStatus `json:"adsStatus,omitempty"`
+
 	// CurrentFollowers Current follower count
 	CurrentFollowers *float32 `json:"currentFollowers,omitempty"`
 
@@ -4573,6 +4762,12 @@ type AccountWithFollowerStats struct {
 	ProfileUrl *string `json:"profileUrl,omitempty"`
 	Username   *string `json:"username,omitempty"`
 }
+
+// AccountWithFollowerStatsAdsStatus Ads connection status for this account.
+// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
+// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
+// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+type AccountWithFollowerStatsAdsStatus string
 
 // AccountWithFollowerStatsProfileId0 defines model for .
 type AccountWithFollowerStatsProfileId0 = string
@@ -5837,7 +6032,13 @@ type SnapchatPlatformDataContentType string
 // SocialAccount defines model for SocialAccount.
 type SocialAccount struct {
 	UnderscoreId *string `json:"_id,omitempty"`
-	DisplayName  *string `json:"displayName,omitempty"`
+
+	// AdsStatus Ads connection status for this account.
+	// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
+	// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
+	// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+	AdsStatus   *SocialAccountAdsStatus `json:"adsStatus,omitempty"`
+	DisplayName *string                 `json:"displayName,omitempty"`
 
 	// FollowersCount Follower count (only included if user has analytics add-on)
 	FollowersCount *float32 `json:"followersCount,omitempty"`
@@ -5862,6 +6063,12 @@ type SocialAccount struct {
 	ProfileUrl *string `json:"profileUrl,omitempty"`
 	Username   *string `json:"username,omitempty"`
 }
+
+// SocialAccountAdsStatus Ads connection status for this account.
+// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
+// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
+// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+type SocialAccountAdsStatus string
 
 // SocialAccountProfileId0 defines model for .
 type SocialAccountProfileId0 = string
@@ -7719,6 +7926,24 @@ type HandleOAuthCallbackJSONBody struct {
 	State     string `json:"state"`
 }
 
+// ConnectAdsParams defines parameters for ConnectAds.
+type ConnectAdsParams struct {
+	// ProfileId Your Zernio profile ID
+	ProfileId string `form:"profileId" json:"profileId"`
+
+	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter, pinterest). Ignored for same-token and ads-only platforms.
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// RedirectUrl Custom redirect URL after OAuth completes (same-token platforms only)
+	RedirectUrl *string `form:"redirect_url,omitempty" json:"redirect_url,omitempty"`
+
+	// Headless Enable headless mode (same-token platforms only)
+	Headless *bool `form:"headless,omitempty" json:"headless,omitempty"`
+}
+
+// ConnectAdsParamsPlatform defines parameters for ConnectAds.
+type ConnectAdsParamsPlatform string
+
 // ListConnectionLogsParams defines parameters for ListConnectionLogs.
 type ListConnectionLogsParams struct {
 	// Platform Filter by platform
@@ -8305,6 +8530,42 @@ type CreateInviteTokenJSONBody struct {
 
 // CreateInviteTokenJSONBodyScope defines parameters for CreateInviteToken.
 type CreateInviteTokenJSONBodyScope string
+
+// ListLogsParams defines parameters for ListLogs.
+type ListLogsParams struct {
+	// Type Log category to query
+	Type *ListLogsParamsType `form:"type,omitempty" json:"type,omitempty"`
+
+	// Status Filter by status
+	Status *ListLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Platform Filter by platform
+	Platform *ListLogsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// Action Filter by action (e.g., post.published, message.sent, account.connected, webhook.delivered)
+	Action *string `form:"action,omitempty" json:"action,omitempty"`
+
+	// Search Free-text search across log fields
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Days Number of days to look back (max 90)
+	Days *int `form:"days,omitempty" json:"days,omitempty"`
+
+	// Limit Maximum number of logs to return (max 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Number of logs to skip (for pagination)
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListLogsParamsType defines parameters for ListLogs.
+type ListLogsParamsType string
+
+// ListLogsParamsStatus defines parameters for ListLogs.
+type ListLogsParamsStatus string
+
+// ListLogsParamsPlatform defines parameters for ListLogs.
+type ListLogsParamsPlatform string
 
 // GetMediaPresignedUrlJSONBody defines parameters for GetMediaPresignedUrl.
 type GetMediaPresignedUrlJSONBody struct {
@@ -11467,6 +11728,9 @@ type ClientInterface interface {
 
 	HandleOAuthCallback(ctx context.Context, platform string, body HandleOAuthCallbackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ConnectAds request
+	ConnectAds(ctx context.Context, platform ConnectAdsParamsPlatform, params *ConnectAdsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListConnectionLogs request
 	ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -11618,6 +11882,9 @@ type ClientInterface interface {
 	CreateInviteTokenWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CreateInviteToken(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListLogs request
+	ListLogs(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetMediaPresignedUrlWithBody request with any body
 	GetMediaPresignedUrlWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -13919,6 +14186,18 @@ func (c *Client) HandleOAuthCallback(ctx context.Context, platform string, body 
 	return c.Client.Do(req)
 }
 
+func (c *Client) ConnectAds(ctx context.Context, platform ConnectAdsParamsPlatform, params *ConnectAdsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConnectAdsRequest(c.Server, platform, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListConnectionLogs(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListConnectionLogsRequest(c.Server, params)
 	if err != nil {
@@ -14593,6 +14872,18 @@ func (c *Client) CreateInviteTokenWithBody(ctx context.Context, contentType stri
 
 func (c *Client) CreateInviteToken(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateInviteTokenRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListLogs(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListLogsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -23505,6 +23796,106 @@ func NewHandleOAuthCallbackRequestWithBody(server string, platform string, conte
 	return req, nil
 }
 
+// NewConnectAdsRequest generates requests for ConnectAds
+func NewConnectAdsRequest(server string, platform ConnectAdsParamsPlatform, params *ConnectAdsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "platform", platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connect/%s/ads", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.RedirectUrl != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "redirect_url", *params.RedirectUrl, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uri"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Headless != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "headless", *params.Headless, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListConnectionLogsRequest generates requests for ListConnectionLogs
 func NewListConnectionLogsRequest(server string, params *ListConnectionLogsParams) (*http.Request, error) {
 	var err error
@@ -25952,6 +26343,167 @@ func NewCreateInviteTokenRequestWithBody(server string, contentType string, body
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListLogsRequest generates requests for ListLogs
+func NewListLogsRequest(server string, params *ListLogsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/logs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "days", *params.Days, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -32258,6 +32810,9 @@ type ClientWithResponsesInterface interface {
 
 	HandleOAuthCallbackWithResponse(ctx context.Context, platform string, body HandleOAuthCallbackJSONRequestBody, reqEditors ...RequestEditorFn) (*HandleOAuthCallbackResponse, error)
 
+	// ConnectAdsWithResponse request
+	ConnectAdsWithResponse(ctx context.Context, platform ConnectAdsParamsPlatform, params *ConnectAdsParams, reqEditors ...RequestEditorFn) (*ConnectAdsResponse, error)
+
 	// ListConnectionLogsWithResponse request
 	ListConnectionLogsWithResponse(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*ListConnectionLogsResponse, error)
 
@@ -32409,6 +32964,9 @@ type ClientWithResponsesInterface interface {
 	CreateInviteTokenWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInviteTokenResponse, error)
 
 	CreateInviteTokenWithResponse(ctx context.Context, body CreateInviteTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInviteTokenResponse, error)
+
+	// ListLogsWithResponse request
+	ListLogsWithResponse(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*ListLogsResponse, error)
 
 	// GetMediaPresignedUrlWithBodyWithResponse request with any body
 	GetMediaPresignedUrlWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetMediaPresignedUrlResponse, error)
@@ -37152,6 +37710,42 @@ func (r HandleOAuthCallbackResponse) StatusCode() int {
 	return 0
 }
 
+type ConnectAdsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		union json.RawMessage
+	}
+	JSON401 *Unauthorized
+}
+type ConnectAds2000 struct {
+	AccountId        *string `json:"accountId,omitempty"`
+	AlreadyConnected *bool   `json:"alreadyConnected,omitempty"`
+	DisplayName      *string `json:"displayName,omitempty"`
+	Platform         *string `json:"platform,omitempty"`
+	Username         *string `json:"username,omitempty"`
+}
+type ConnectAds2001 struct {
+	AuthUrl *string `json:"authUrl,omitempty"`
+	State   *string `json:"state,omitempty"`
+}
+
+// Status returns HTTPResponse.Status
+func (r ConnectAdsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConnectAdsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListConnectionLogsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -38619,6 +39213,67 @@ func (r CreateInviteTokenResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateInviteTokenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListLogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Logs *[]struct {
+			AccountId *string `json:"account_id,omitempty"`
+
+			// Action Specific action (post.published, message.sent, account.connected, etc.)
+			Action     *string    `json:"action,omitempty"`
+			CreatedAt  *time.Time `json:"created_at,omitempty"`
+			DurationMs *int       `json:"duration_ms,omitempty"`
+
+			// Endpoint The API endpoint that triggered this log
+			Endpoint     *string `json:"endpoint,omitempty"`
+			ErrorCode    *string `json:"error_code,omitempty"`
+			ErrorMessage *string `json:"error_message,omitempty"`
+
+			// Metadata Additional context as JSON string
+			Metadata *string `json:"metadata,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+
+			// RequestBody Request JSON (truncated to 5KB)
+			RequestBody *string `json:"request_body,omitempty"`
+
+			// ResponseBody Response JSON (truncated to 10KB)
+			ResponseBody *string                `json:"response_body,omitempty"`
+			Status       *ListLogs200LogsStatus `json:"status,omitempty"`
+			StatusCode   *int                   `json:"status_code,omitempty"`
+
+			// Type Log category (publishing, connections, webhooks, messaging)
+			Type   *string `json:"type,omitempty"`
+			UserId *string `json:"user_id,omitempty"`
+		} `json:"logs,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Pages   *int  `json:"pages,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type ListLogs200LogsStatus string
+
+// Status returns HTTPResponse.Status
+func (r ListLogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListLogsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43619,6 +44274,15 @@ func (c *ClientWithResponses) HandleOAuthCallbackWithResponse(ctx context.Contex
 	return ParseHandleOAuthCallbackResponse(rsp)
 }
 
+// ConnectAdsWithResponse request returning *ConnectAdsResponse
+func (c *ClientWithResponses) ConnectAdsWithResponse(ctx context.Context, platform ConnectAdsParamsPlatform, params *ConnectAdsParams, reqEditors ...RequestEditorFn) (*ConnectAdsResponse, error) {
+	rsp, err := c.ConnectAds(ctx, platform, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConnectAdsResponse(rsp)
+}
+
 // ListConnectionLogsWithResponse request returning *ListConnectionLogsResponse
 func (c *ClientWithResponses) ListConnectionLogsWithResponse(ctx context.Context, params *ListConnectionLogsParams, reqEditors ...RequestEditorFn) (*ListConnectionLogsResponse, error) {
 	rsp, err := c.ListConnectionLogs(ctx, params, reqEditors...)
@@ -44111,6 +44775,15 @@ func (c *ClientWithResponses) CreateInviteTokenWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseCreateInviteTokenResponse(rsp)
+}
+
+// ListLogsWithResponse request returning *ListLogsResponse
+func (c *ClientWithResponses) ListLogsWithResponse(ctx context.Context, params *ListLogsParams, reqEditors ...RequestEditorFn) (*ListLogsResponse, error) {
+	rsp, err := c.ListLogs(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListLogsResponse(rsp)
 }
 
 // GetMediaPresignedUrlWithBodyWithResponse request with arbitrary body returning *GetMediaPresignedUrlResponse
@@ -51501,6 +52174,41 @@ func ParseHandleOAuthCallbackResponse(rsp *http.Response) (*HandleOAuthCallbackR
 	return response, nil
 }
 
+// ParseConnectAdsResponse parses an HTTP response from a ConnectAdsWithResponse call
+func ParseConnectAdsResponse(rsp *http.Response) (*ConnectAdsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConnectAdsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListConnectionLogsResponse parses an HTTP response from a ListConnectionLogsWithResponse call
 func ParseListConnectionLogsResponse(rsp *http.Response) (*ListConnectionLogsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -53379,6 +54087,76 @@ func ParseCreateInviteTokenResponse(rsp *http.Response) (*CreateInviteTokenRespo
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListLogsResponse parses an HTTP response from a ListLogsWithResponse call
+func ParseListLogsResponse(rsp *http.Response) (*ListLogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListLogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Logs *[]struct {
+				AccountId *string `json:"account_id,omitempty"`
+
+				// Action Specific action (post.published, message.sent, account.connected, etc.)
+				Action     *string    `json:"action,omitempty"`
+				CreatedAt  *time.Time `json:"created_at,omitempty"`
+				DurationMs *int       `json:"duration_ms,omitempty"`
+
+				// Endpoint The API endpoint that triggered this log
+				Endpoint     *string `json:"endpoint,omitempty"`
+				ErrorCode    *string `json:"error_code,omitempty"`
+				ErrorMessage *string `json:"error_message,omitempty"`
+
+				// Metadata Additional context as JSON string
+				Metadata *string `json:"metadata,omitempty"`
+				Platform *string `json:"platform,omitempty"`
+
+				// RequestBody Request JSON (truncated to 5KB)
+				RequestBody *string `json:"request_body,omitempty"`
+
+				// ResponseBody Response JSON (truncated to 10KB)
+				ResponseBody *string                `json:"response_body,omitempty"`
+				Status       *ListLogs200LogsStatus `json:"status,omitempty"`
+				StatusCode   *int                   `json:"status_code,omitempty"`
+
+				// Type Log category (publishing, connections, webhooks, messaging)
+				Type   *string `json:"type,omitempty"`
+				UserId *string `json:"user_id,omitempty"`
+			} `json:"logs,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Pages   *int  `json:"pages,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
