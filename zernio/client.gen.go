@@ -4905,7 +4905,7 @@ type ApiKeyScope string
 
 // BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties.
 type BlueskyPlatformData struct {
-	// ThreadItems Sequence of posts in a Bluesky thread (root then replies in order).
+	// ThreadItems Complete sequence of posts in a Bluesky thread. The first item becomes the root post, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first post as threadItems[0].
 	ThreadItems *[]struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
@@ -5891,7 +5891,7 @@ type TelegramPlatformDataParseMode string
 
 // ThreadsPlatformData Up to 10 images per carousel (no videos). Videos must be H.264/AAC MP4, max 5 min. Images JPEG/PNG, max 8 MB. Use threadItems for reply chains.
 type ThreadsPlatformData struct {
-	// ThreadItems Sequence of posts in a Threads thread (root then replies in order).
+	// ThreadItems Complete sequence of posts in a Threads thread. The first item becomes the root post, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first post as threadItems[0].
 	ThreadItems *[]struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
@@ -5981,7 +5981,7 @@ type TwitterPlatformData struct {
 	// ReplyToTweetId ID of an existing tweet to reply to. The published tweet will appear as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally.
 	ReplyToTweetId *string `json:"replyToTweetId,omitempty"`
 
-	// ThreadItems Sequence of tweets in a thread. First item is the root tweet.
+	// ThreadItems Complete sequence of tweets in a thread. The first item becomes the root tweet, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first tweet as threadItems[0].
 	ThreadItems *[]struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
