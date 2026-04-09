@@ -69,6 +69,7 @@ func main() {
 | `client.GetTikTokCreatorInfoWithResponse()` | Get TikTok creator info |
 | `client.UpdateAccountWithResponse()` | Update account |
 | `client.DeleteAccountWithResponse()` | Disconnect account |
+| `client.DisconnectAdsWithResponse()` | Disconnect ads from an account |
 
 ### Profiles
 | Method | Description |

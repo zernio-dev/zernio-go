@@ -1644,6 +1644,33 @@ func (e GetAllAccountsHealthParamsStatus) Valid() bool {
 	}
 }
 
+// Defines values for DisconnectAdsJSONBodyAdsPlatform.
+const (
+	Linkedinads  DisconnectAdsJSONBodyAdsPlatform = "linkedinads"
+	Metaads      DisconnectAdsJSONBodyAdsPlatform = "metaads"
+	Pinterestads DisconnectAdsJSONBodyAdsPlatform = "pinterestads"
+	Tiktokads    DisconnectAdsJSONBodyAdsPlatform = "tiktokads"
+	Xads         DisconnectAdsJSONBodyAdsPlatform = "xads"
+)
+
+// Valid indicates whether the value is a known member of the DisconnectAdsJSONBodyAdsPlatform enum.
+func (e DisconnectAdsJSONBodyAdsPlatform) Valid() bool {
+	switch e {
+	case Linkedinads:
+		return true
+	case Metaads:
+		return true
+	case Pinterestads:
+		return true
+	case Tiktokads:
+		return true
+	case Xads:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateGoogleBusinessMediaJSONBodyCategory.
 const (
 	ADDITIONAL   CreateGoogleBusinessMediaJSONBodyCategory = "ADDITIONAL"
@@ -6585,6 +6612,15 @@ type UpdateAccountJSONBody struct {
 	Username    *string `json:"username,omitempty"`
 }
 
+// DisconnectAdsJSONBody defines parameters for DisconnectAds.
+type DisconnectAdsJSONBody struct {
+	// AdsPlatform The ads platform to disconnect
+	AdsPlatform DisconnectAdsJSONBodyAdsPlatform `json:"adsPlatform"`
+}
+
+// DisconnectAdsJSONBodyAdsPlatform defines parameters for DisconnectAds.
+type DisconnectAdsJSONBodyAdsPlatform string
+
 // UpdateFacebookPageJSONBody defines parameters for UpdateFacebookPage.
 type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
@@ -7949,7 +7985,7 @@ type ConnectAdsParams struct {
 	// ProfileId Your Zernio profile ID
 	ProfileId string `form:"profileId" json:"profileId"`
 
-	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter, pinterest). Ignored for same-token and ads-only platforms.
+	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter). Ignored for same-token and ads-only platforms.
 	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 
 	// RedirectUrl Custom redirect URL after OAuth completes (same-token platforms only)
@@ -9927,6 +9963,9 @@ type UpdateAccountGroupJSONRequestBody UpdateAccountGroupJSONBody
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
 type UpdateAccountJSONRequestBody UpdateAccountJSONBody
 
+// DisconnectAdsJSONRequestBody defines body for DisconnectAds for application/json ContentType.
+type DisconnectAdsJSONRequestBody DisconnectAdsJSONBody
+
 // UpdateFacebookPageJSONRequestBody defines body for UpdateFacebookPage for application/json ContentType.
 type UpdateFacebookPageJSONRequestBody UpdateFacebookPageJSONBody
 
@@ -11352,6 +11391,11 @@ type ClientInterface interface {
 
 	UpdateAccount(ctx context.Context, accountId string, body UpdateAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DisconnectAdsWithBody request with any body
+	DisconnectAdsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DisconnectAds(ctx context.Context, accountId string, body DisconnectAdsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetFacebookPages request
 	GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -12475,6 +12519,30 @@ func (c *Client) UpdateAccountWithBody(ctx context.Context, accountId string, co
 
 func (c *Client) UpdateAccount(ctx context.Context, accountId string, body UpdateAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateAccountRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DisconnectAdsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisconnectAdsRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DisconnectAds(ctx context.Context, accountId string, body DisconnectAdsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisconnectAdsRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -17380,6 +17448,53 @@ func NewUpdateAccountRequestWithBody(server string, accountId string, contentTyp
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDisconnectAdsRequest calls the generic DisconnectAds builder with application/json body
+func NewDisconnectAdsRequest(server string, accountId string, body DisconnectAdsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDisconnectAdsRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewDisconnectAdsRequestWithBody generates requests for DisconnectAds with any type of body
+func NewDisconnectAdsRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/disconnect-ads", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -32488,6 +32603,11 @@ type ClientWithResponsesInterface interface {
 
 	UpdateAccountWithResponse(ctx context.Context, accountId string, body UpdateAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAccountResponse, error)
 
+	// DisconnectAdsWithBodyWithResponse request with any body
+	DisconnectAdsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DisconnectAdsResponse, error)
+
+	DisconnectAdsWithResponse(ctx context.Context, accountId string, body DisconnectAdsJSONRequestBody, reqEditors ...RequestEditorFn) (*DisconnectAdsResponse, error)
+
 	// GetFacebookPagesWithResponse request
 	GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error)
 
@@ -33760,6 +33880,32 @@ func (r UpdateAccountResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DisconnectAdsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DisconnectAdsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisconnectAdsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43058,6 +43204,23 @@ func (c *ClientWithResponses) UpdateAccountWithResponse(ctx context.Context, acc
 	return ParseUpdateAccountResponse(rsp)
 }
 
+// DisconnectAdsWithBodyWithResponse request with arbitrary body returning *DisconnectAdsResponse
+func (c *ClientWithResponses) DisconnectAdsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DisconnectAdsResponse, error) {
+	rsp, err := c.DisconnectAdsWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisconnectAdsResponse(rsp)
+}
+
+func (c *ClientWithResponses) DisconnectAdsWithResponse(ctx context.Context, accountId string, body DisconnectAdsJSONRequestBody, reqEditors ...RequestEditorFn) (*DisconnectAdsResponse, error) {
+	rsp, err := c.DisconnectAds(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisconnectAdsResponse(rsp)
+}
+
 // GetFacebookPagesWithResponse request returning *GetFacebookPagesResponse
 func (c *ClientWithResponses) GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error) {
 	rsp, err := c.GetFacebookPages(ctx, accountId, reqEditors...)
@@ -46613,6 +46776,48 @@ func ParseUpdateAccountResponse(rsp *http.Response) (*UpdateAccountResponse, err
 			DisplayName *string `json:"displayName,omitempty"`
 			Message     *string `json:"message,omitempty"`
 			Username    *string `json:"username,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisconnectAdsResponse parses an HTTP response from a DisconnectAdsWithResponse call
+func ParseDisconnectAdsResponse(rsp *http.Response) (*DisconnectAdsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisconnectAdsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message *string `json:"message,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
