@@ -240,7 +240,6 @@ func main() {
 | `client.DeleteAdWithResponse()` | Cancel an ad |
 | `client.BoostPostWithResponse()` | Boost an existing post as a paid ad |
 | `client.SearchAdInterestsWithResponse()` | Search targeting interests |
-| `client.SyncExternalAdsWithResponse()` | Sync external ads from platform ad managers |
 
 ### Broadcasts
 | Method | Description |

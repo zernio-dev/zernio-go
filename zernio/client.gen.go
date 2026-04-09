@@ -6968,6 +6968,12 @@ type ListAdsParams struct {
 
 	// CampaignId Platform campaign ID (filter ads within a campaign)
 	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
+
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
+	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 }
 
 // ListAdsParamsSource defines parameters for ListAds.
@@ -7235,6 +7241,12 @@ type GetAdTreeParams struct {
 
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
+	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 }
 
 // GetAdTreeParamsSource defines parameters for GetAdTree.
@@ -7273,6 +7285,12 @@ type UpdateAdJSONBodyStatus string
 
 // GetAdAnalyticsParams defines parameters for GetAdAnalytics.
 type GetAdAnalyticsParams struct {
+	// FromDate Start of date range (YYYY-MM-DD). Defaults to 90 days ago.
+	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate End of date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+
 	// Breakdowns Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
 	Breakdowns *string `form:"breakdowns,omitempty" json:"breakdowns,omitempty"`
 }
@@ -11531,9 +11549,6 @@ type ClientInterface interface {
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// SyncExternalAds request
-	SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetAdTree request
 	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -13324,18 +13339,6 @@ func (c *Client) CreateStandaloneAd(ctx context.Context, body CreateStandaloneAd
 
 func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdInterestsRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) SyncExternalAds(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSyncExternalAdsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -19746,6 +19749,38 @@ func NewListAdsRequest(server string, params *ListAdsParams) (*http.Request, err
 
 		}
 
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -20375,33 +20410,6 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 	return req, nil
 }
 
-// NewSyncExternalAdsRequest generates requests for SyncExternalAds
-func NewSyncExternalAdsRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/ads/sync")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewGetAdTreeRequest generates requests for GetAdTree
 func NewGetAdTreeRequest(server string, params *GetAdTreeParams) (*http.Request, error) {
 	var err error
@@ -20539,6 +20547,38 @@ func NewGetAdTreeRequest(server string, params *GetAdTreeParams) (*http.Request,
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -20706,6 +20746,38 @@ func NewGetAdAnalyticsRequest(server string, adId string, params *GetAdAnalytics
 
 	if params != nil {
 		queryValues := queryURL.Query()
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
 
 		if params.Breakdowns != nil {
 
@@ -32613,9 +32685,6 @@ type ClientWithResponsesInterface interface {
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
-	// SyncExternalAdsWithResponse request
-	SyncExternalAdsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncExternalAdsResponse, error)
-
 	// GetAdTreeWithResponse request
 	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
 
@@ -35552,39 +35621,6 @@ func (r SearchAdInterestsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SearchAdInterestsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type SyncExternalAdsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		// Errors Failed ad imports
-		Errors *int `json:"errors,omitempty"`
-
-		// Skipped Already-known ads (skipped import
-		Skipped *int  `json:"skipped,omitempty"`
-		Success *bool `json:"success,omitempty"`
-
-		// Synced New ads imported
-		Synced *int `json:"synced,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-
-// Status returns HTTPResponse.Status
-func (r SyncExternalAdsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r SyncExternalAdsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43651,15 +43687,6 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 	return ParseSearchAdInterestsResponse(rsp)
 }
 
-// SyncExternalAdsWithResponse request returning *SyncExternalAdsResponse
-func (c *ClientWithResponses) SyncExternalAdsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncExternalAdsResponse, error) {
-	rsp, err := c.SyncExternalAds(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseSyncExternalAdsResponse(rsp)
-}
-
 // GetAdTreeWithResponse request returning *GetAdTreeResponse
 func (c *ClientWithResponses) GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error) {
 	rsp, err := c.GetAdTree(ctx, params, reqEditors...)
@@ -49178,49 +49205,6 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 				Id       *string `json:"id,omitempty"`
 				Name     *string `json:"name,omitempty"`
 			} `json:"interests,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseSyncExternalAdsResponse parses an HTTP response from a SyncExternalAdsWithResponse call
-func ParseSyncExternalAdsResponse(rsp *http.Response) (*SyncExternalAdsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &SyncExternalAdsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			// Errors Failed ad imports
-			Errors *int `json:"errors,omitempty"`
-
-			// Skipped Already-known ads (skipped import
-			Skipped *int  `json:"skipped,omitempty"`
-			Success *bool `json:"success,omitempty"`
-
-			// Synced New ads imported
-			Synced *int `json:"synced,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
