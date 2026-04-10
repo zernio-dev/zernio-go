@@ -45,6 +45,78 @@ func (e AccountWithFollowerStatsAdsStatus) Valid() bool {
 	}
 }
 
+// Defines values for AccountWithFollowerStatsPlatform.
+const (
+	AccountWithFollowerStatsPlatformBluesky        AccountWithFollowerStatsPlatform = "bluesky"
+	AccountWithFollowerStatsPlatformFacebook       AccountWithFollowerStatsPlatform = "facebook"
+	AccountWithFollowerStatsPlatformGoogleads      AccountWithFollowerStatsPlatform = "googleads"
+	AccountWithFollowerStatsPlatformGooglebusiness AccountWithFollowerStatsPlatform = "googlebusiness"
+	AccountWithFollowerStatsPlatformInstagram      AccountWithFollowerStatsPlatform = "instagram"
+	AccountWithFollowerStatsPlatformLinkedin       AccountWithFollowerStatsPlatform = "linkedin"
+	AccountWithFollowerStatsPlatformLinkedinads    AccountWithFollowerStatsPlatform = "linkedinads"
+	AccountWithFollowerStatsPlatformMetaads        AccountWithFollowerStatsPlatform = "metaads"
+	AccountWithFollowerStatsPlatformPinterest      AccountWithFollowerStatsPlatform = "pinterest"
+	AccountWithFollowerStatsPlatformPinterestads   AccountWithFollowerStatsPlatform = "pinterestads"
+	AccountWithFollowerStatsPlatformReddit         AccountWithFollowerStatsPlatform = "reddit"
+	AccountWithFollowerStatsPlatformSnapchat       AccountWithFollowerStatsPlatform = "snapchat"
+	AccountWithFollowerStatsPlatformTelegram       AccountWithFollowerStatsPlatform = "telegram"
+	AccountWithFollowerStatsPlatformThreads        AccountWithFollowerStatsPlatform = "threads"
+	AccountWithFollowerStatsPlatformTiktok         AccountWithFollowerStatsPlatform = "tiktok"
+	AccountWithFollowerStatsPlatformTiktokads      AccountWithFollowerStatsPlatform = "tiktokads"
+	AccountWithFollowerStatsPlatformTwitter        AccountWithFollowerStatsPlatform = "twitter"
+	AccountWithFollowerStatsPlatformWhatsapp       AccountWithFollowerStatsPlatform = "whatsapp"
+	AccountWithFollowerStatsPlatformXads           AccountWithFollowerStatsPlatform = "xads"
+	AccountWithFollowerStatsPlatformYoutube        AccountWithFollowerStatsPlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the AccountWithFollowerStatsPlatform enum.
+func (e AccountWithFollowerStatsPlatform) Valid() bool {
+	switch e {
+	case AccountWithFollowerStatsPlatformBluesky:
+		return true
+	case AccountWithFollowerStatsPlatformFacebook:
+		return true
+	case AccountWithFollowerStatsPlatformGoogleads:
+		return true
+	case AccountWithFollowerStatsPlatformGooglebusiness:
+		return true
+	case AccountWithFollowerStatsPlatformInstagram:
+		return true
+	case AccountWithFollowerStatsPlatformLinkedin:
+		return true
+	case AccountWithFollowerStatsPlatformLinkedinads:
+		return true
+	case AccountWithFollowerStatsPlatformMetaads:
+		return true
+	case AccountWithFollowerStatsPlatformPinterest:
+		return true
+	case AccountWithFollowerStatsPlatformPinterestads:
+		return true
+	case AccountWithFollowerStatsPlatformReddit:
+		return true
+	case AccountWithFollowerStatsPlatformSnapchat:
+		return true
+	case AccountWithFollowerStatsPlatformTelegram:
+		return true
+	case AccountWithFollowerStatsPlatformThreads:
+		return true
+	case AccountWithFollowerStatsPlatformTiktok:
+		return true
+	case AccountWithFollowerStatsPlatformTiktokads:
+		return true
+	case AccountWithFollowerStatsPlatformTwitter:
+		return true
+	case AccountWithFollowerStatsPlatformWhatsapp:
+		return true
+	case AccountWithFollowerStatsPlatformXads:
+		return true
+	case AccountWithFollowerStatsPlatformYoutube:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AdAdType.
 const (
 	Boost      AdAdType = "boost"
@@ -1173,6 +1245,78 @@ func (e SocialAccountAdsStatus) Valid() bool {
 	case SocialAccountAdsStatusNotAvailable:
 		return true
 	case SocialAccountAdsStatusNotConnected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SocialAccountPlatform.
+const (
+	SocialAccountPlatformBluesky        SocialAccountPlatform = "bluesky"
+	SocialAccountPlatformFacebook       SocialAccountPlatform = "facebook"
+	SocialAccountPlatformGoogleads      SocialAccountPlatform = "googleads"
+	SocialAccountPlatformGooglebusiness SocialAccountPlatform = "googlebusiness"
+	SocialAccountPlatformInstagram      SocialAccountPlatform = "instagram"
+	SocialAccountPlatformLinkedin       SocialAccountPlatform = "linkedin"
+	SocialAccountPlatformLinkedinads    SocialAccountPlatform = "linkedinads"
+	SocialAccountPlatformMetaads        SocialAccountPlatform = "metaads"
+	SocialAccountPlatformPinterest      SocialAccountPlatform = "pinterest"
+	SocialAccountPlatformPinterestads   SocialAccountPlatform = "pinterestads"
+	SocialAccountPlatformReddit         SocialAccountPlatform = "reddit"
+	SocialAccountPlatformSnapchat       SocialAccountPlatform = "snapchat"
+	SocialAccountPlatformTelegram       SocialAccountPlatform = "telegram"
+	SocialAccountPlatformThreads        SocialAccountPlatform = "threads"
+	SocialAccountPlatformTiktok         SocialAccountPlatform = "tiktok"
+	SocialAccountPlatformTiktokads      SocialAccountPlatform = "tiktokads"
+	SocialAccountPlatformTwitter        SocialAccountPlatform = "twitter"
+	SocialAccountPlatformWhatsapp       SocialAccountPlatform = "whatsapp"
+	SocialAccountPlatformXads           SocialAccountPlatform = "xads"
+	SocialAccountPlatformYoutube        SocialAccountPlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the SocialAccountPlatform enum.
+func (e SocialAccountPlatform) Valid() bool {
+	switch e {
+	case SocialAccountPlatformBluesky:
+		return true
+	case SocialAccountPlatformFacebook:
+		return true
+	case SocialAccountPlatformGoogleads:
+		return true
+	case SocialAccountPlatformGooglebusiness:
+		return true
+	case SocialAccountPlatformInstagram:
+		return true
+	case SocialAccountPlatformLinkedin:
+		return true
+	case SocialAccountPlatformLinkedinads:
+		return true
+	case SocialAccountPlatformMetaads:
+		return true
+	case SocialAccountPlatformPinterest:
+		return true
+	case SocialAccountPlatformPinterestads:
+		return true
+	case SocialAccountPlatformReddit:
+		return true
+	case SocialAccountPlatformSnapchat:
+		return true
+	case SocialAccountPlatformTelegram:
+		return true
+	case SocialAccountPlatformThreads:
+		return true
+	case SocialAccountPlatformTiktok:
+		return true
+	case SocialAccountPlatformTiktokads:
+		return true
+	case SocialAccountPlatformTwitter:
+		return true
+	case SocialAccountPlatformWhatsapp:
+		return true
+	case SocialAccountPlatformXads:
+		return true
+	case SocialAccountPlatformYoutube:
 		return true
 	default:
 		return false
@@ -4754,10 +4898,15 @@ type AccountWithFollowerStats struct {
 		VideoCount *float32 `json:"videoCount,omitempty"`
 	} `json:"accountStats,omitempty"`
 
-	// AdsStatus Ads connection status for this account.
+	// AdsStatus **Deprecated.** With the new ads account model, ads accounts are separate SocialAccount
+	// documents. Check for accounts with ads platform values (metaads, linkedinads, pinterestads,
+	// tiktokads, xads, googleads) instead.
+	//
+	// Legacy behavior:
 	// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
 	// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
 	// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
 	AdsStatus *AccountWithFollowerStatsAdsStatus `json:"adsStatus,omitempty"`
 
 	// CurrentFollowers Current follower count
@@ -4766,6 +4915,11 @@ type AccountWithFollowerStats struct {
 	// DataPoints Number of historical snapshots
 	DataPoints  *float32 `json:"dataPoints,omitempty"`
 	DisplayName *string  `json:"displayName,omitempty"`
+
+	// Enabled Whether the user explicitly activated this account. false means the account was
+	// created as a side effect (e.g., posting account auto-created when user connected
+	// ads first). Posting UI and scheduler ignore accounts with enabled: false.
+	Enabled *bool `json:"enabled,omitempty"`
 
 	// FollowersCount Follower count (only included if user has analytics add-on)
 	FollowersCount *float32 `json:"followersCount,omitempty"`
@@ -4789,21 +4943,33 @@ type AccountWithFollowerStats struct {
 	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
 	// - `wabaId`: WhatsApp Business Account ID
 	// - `phoneNumberId`: Meta phone number ID
-	Metadata       *map[string]interface{}             `json:"metadata,omitempty"`
-	Platform       *string                             `json:"platform,omitempty"`
-	ProfileId      *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
-	ProfilePicture *string                             `json:"profilePicture,omitempty"`
+	Metadata *map[string]interface{} `json:"metadata,omitempty"`
+
+	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
+	// or derive from a posting account's OAuth token. null for standalone ads (Google Ads)
+	// and all posting accounts.
+	ParentAccountId *string                             `json:"parentAccountId,omitempty"`
+	Platform        *AccountWithFollowerStatsPlatform   `json:"platform,omitempty"`
+	ProfileId       *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
+	ProfilePicture  *string                             `json:"profilePicture,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
 	Username   *string `json:"username,omitempty"`
 }
 
-// AccountWithFollowerStatsAdsStatus Ads connection status for this account.
+// AccountWithFollowerStatsAdsStatus **Deprecated.** With the new ads account model, ads accounts are separate SocialAccount
+// documents. Check for accounts with ads platform values (metaads, linkedinads, pinterestads,
+// tiktokads, xads, googleads) instead.
+//
+// Legacy behavior:
 // - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
 // - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
 // - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
 type AccountWithFollowerStatsAdsStatus string
+
+// AccountWithFollowerStatsPlatform defines model for AccountWithFollowerStats.Platform.
+type AccountWithFollowerStatsPlatform string
 
 // AccountWithFollowerStatsProfileId0 defines model for .
 type AccountWithFollowerStatsProfileId0 = string
@@ -6069,12 +6235,22 @@ type SnapchatPlatformDataContentType string
 type SocialAccount struct {
 	UnderscoreId *string `json:"_id,omitempty"`
 
-	// AdsStatus Ads connection status for this account.
+	// AdsStatus **Deprecated.** With the new ads account model, ads accounts are separate SocialAccount
+	// documents. Check for accounts with ads platform values (metaads, linkedinads, pinterestads,
+	// tiktokads, xads, googleads) instead.
+	//
+	// Legacy behavior:
 	// - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
 	// - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
 	// - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
 	AdsStatus   *SocialAccountAdsStatus `json:"adsStatus,omitempty"`
 	DisplayName *string                 `json:"displayName,omitempty"`
+
+	// Enabled Whether the user explicitly activated this account. false means the account was
+	// created as a side effect (e.g., posting account auto-created when user connected
+	// ads first). Posting UI and scheduler ignore accounts with enabled: false.
+	Enabled *bool `json:"enabled,omitempty"`
 
 	// FollowersCount Follower count (only included if user has analytics add-on)
 	FollowersCount *float32 `json:"followersCount,omitempty"`
@@ -6091,20 +6267,32 @@ type SocialAccount struct {
 	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
 	// - `wabaId`: WhatsApp Business Account ID
 	// - `phoneNumberId`: Meta phone number ID
-	Metadata  *map[string]interface{}  `json:"metadata,omitempty"`
-	Platform  *string                  `json:"platform,omitempty"`
-	ProfileId *SocialAccount_ProfileId `json:"profileId,omitempty"`
+	Metadata *map[string]interface{} `json:"metadata,omitempty"`
+
+	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
+	// or derive from a posting account's OAuth token. null for standalone ads (Google Ads)
+	// and all posting accounts.
+	ParentAccountId *string                  `json:"parentAccountId,omitempty"`
+	Platform        *SocialAccountPlatform   `json:"platform,omitempty"`
+	ProfileId       *SocialAccount_ProfileId `json:"profileId,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
 	Username   *string `json:"username,omitempty"`
 }
 
-// SocialAccountAdsStatus Ads connection status for this account.
+// SocialAccountAdsStatus **Deprecated.** With the new ads account model, ads accounts are separate SocialAccount
+// documents. Check for accounts with ads platform values (metaads, linkedinads, pinterestads,
+// tiktokads, xads, googleads) instead.
+//
+// Legacy behavior:
 // - `connected`: Ads are ready to use (same-token platforms like Meta/LinkedIn, or separate ads token is present).
 // - `not_connected`: Platform supports ads but requires a separate ads OAuth. Use `GET /v1/connect/{platform}/ads` to connect.
 // - `not_available`: Platform does not support ads (e.g., YouTube, Reddit, Bluesky).
 type SocialAccountAdsStatus string
+
+// SocialAccountPlatform defines model for SocialAccount.Platform.
+type SocialAccountPlatform string
 
 // SocialAccountProfileId0 defines model for .
 type SocialAccountProfileId0 = string
@@ -6144,7 +6332,21 @@ type ThreadsPlatformData struct {
 	TopicTag *string `json:"topic_tag,omitempty"`
 }
 
-// TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+// TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
+// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+//
+// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+// instead of publishing immediately. The creator receives an inbox notification and completes
+// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+//
+// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+//
+// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
+// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+//
+// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
+// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+// must be 31.8 or higher.
 type TikTokPlatformData struct {
 	// AllowComment Allow comments on the post
 	AllowComment *bool `json:"allowComment,omitempty"`
@@ -6170,7 +6372,11 @@ type TikTokPlatformData struct {
 	// Description Optional long-form description for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated.
 	Description *string `json:"description,omitempty"`
 
-	// Draft When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing immediately.
+	// Draft When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing
+	// immediately. The creator receives an inbox notification to complete posting via TikTok's
+	// editing flow. Maps to TikTok API `post_mode: "MEDIA_UPLOAD"` (photos) or the dedicated
+	// inbox endpoint (videos). When false or omitted, publishes directly via `post_mode: "DIRECT_POST"`.
+	// Note: `publish_type` is not a supported field. Use this field instead.
 	Draft *bool `json:"draft,omitempty"`
 
 	// ExpressConsentGiven User has given express consent for posting
@@ -6623,8 +6829,8 @@ type UpdateAccountJSONBody struct {
 
 // DisconnectAdsJSONBody defines parameters for DisconnectAds.
 type DisconnectAdsJSONBody struct {
-	// AdsPlatform The ads platform to disconnect
-	AdsPlatform DisconnectAdsJSONBodyAdsPlatform `json:"adsPlatform"`
+	// AdsPlatform The ads platform (optional, used for logging only)
+	AdsPlatform *DisconnectAdsJSONBodyAdsPlatform `json:"adsPlatform,omitempty"`
 }
 
 // DisconnectAdsJSONBodyAdsPlatform defines parameters for DisconnectAds.
@@ -7994,7 +8200,7 @@ type ConnectAdsParams struct {
 	// ProfileId Your Zernio profile ID
 	ProfileId string `form:"profileId" json:"profileId"`
 
-	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter). Ignored for same-token and ads-only platforms.
+	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter). Ignored for same-token and standalone platforms.
 	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 
 	// RedirectUrl Custom redirect URL after OAuth completes (same-token platforms only)
@@ -8741,7 +8947,21 @@ type CreatePostJSONBody struct {
 	// Tags Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
 	Tags *[]string `json:"tags,omitempty"`
 
-	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
+	// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+	//
+	// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+	// instead of publishing immediately. The creator receives an inbox notification and completes
+	// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+	//
+	// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+	//
+	// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
+	// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+	//
+	// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
+	// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+	// must be 31.8 or higher.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
 	Timezone       *string             `json:"timezone,omitempty"`
 	Title          *string             `json:"title,omitempty"`
@@ -8817,7 +9037,21 @@ type UpdatePostJSONBody struct {
 	Recycling    *RecyclingConfig `json:"recycling,omitempty"`
 	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
 
-	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars. privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
+	// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
+	//
+	// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+	// instead of publishing immediately. The creator receives an inbox notification and completes
+	// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+	//
+	// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+	//
+	// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
+	// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+	//
+	// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
+	// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+	// must be 31.8 or higher.
 	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
