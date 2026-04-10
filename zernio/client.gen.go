@@ -6507,7 +6507,7 @@ type WebhookEvents string
 type WebhookLog struct {
 	UnderscoreId *string `json:"_id,omitempty"`
 
-	// AttemptNumber Delivery attempt number (max 3 retries)
+	// AttemptNumber Delivery attempt number (max 7 attempts)
 	AttemptNumber *int       `json:"attemptNumber,omitempty"`
 	CreatedAt     *time.Time `json:"createdAt,omitempty"`
 
