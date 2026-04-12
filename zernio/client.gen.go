@@ -7979,11 +7979,11 @@ type SelectFacebookPageJSONBody struct {
 	TempToken string `json:"tempToken"`
 
 	// UserProfile Decoded user profile object from the OAuth callback
-	UserProfile *struct {
+	UserProfile struct {
 		Id             *string `json:"id,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		ProfilePicture *string `json:"profilePicture,omitempty"`
-	} `json:"userProfile,omitempty"`
+	} `json:"userProfile"`
 }
 
 // ListGoogleBusinessLocationsParams defines parameters for ListGoogleBusinessLocations.
