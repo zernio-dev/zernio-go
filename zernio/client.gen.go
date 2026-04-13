@@ -7259,6 +7259,9 @@ type ListAdsParams struct {
 	// AccountId Social account ID
 	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 
+	// AdAccountId Platform ad account ID (e.g. act_123 for Meta). Mirrors the same filter on /v1/ads/campaigns and /v1/ads/tree.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
@@ -20107,6 +20110,22 @@ func NewListAdsRequest(server string, params *ListAdsParams) (*http.Request, err
 		if params.AccountId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
