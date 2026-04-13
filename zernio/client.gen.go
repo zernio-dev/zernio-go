@@ -1430,6 +1430,11 @@ const (
 	WebhookEventsAccountConnected    WebhookEvents = "account.connected"
 	WebhookEventsAccountDisconnected WebhookEvents = "account.disconnected"
 	WebhookEventsCommentReceived     WebhookEvents = "comment.received"
+	WebhookEventsMessageDeleted      WebhookEvents = "message.deleted"
+	WebhookEventsMessageDelivered    WebhookEvents = "message.delivered"
+	WebhookEventsMessageEdited       WebhookEvents = "message.edited"
+	WebhookEventsMessageFailed       WebhookEvents = "message.failed"
+	WebhookEventsMessageRead         WebhookEvents = "message.read"
 	WebhookEventsMessageReceived     WebhookEvents = "message.received"
 	WebhookEventsMessageSent         WebhookEvents = "message.sent"
 	WebhookEventsPostCancelled       WebhookEvents = "post.cancelled"
@@ -1448,6 +1453,16 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsAccountDisconnected:
 		return true
 	case WebhookEventsCommentReceived:
+		return true
+	case WebhookEventsMessageDeleted:
+		return true
+	case WebhookEventsMessageDelivered:
+		return true
+	case WebhookEventsMessageEdited:
+		return true
+	case WebhookEventsMessageFailed:
+		return true
+	case WebhookEventsMessageRead:
 		return true
 	case WebhookEventsMessageReceived:
 		return true
@@ -1475,6 +1490,11 @@ const (
 	WebhookLogEventAccountConnected    WebhookLogEvent = "account.connected"
 	WebhookLogEventAccountDisconnected WebhookLogEvent = "account.disconnected"
 	WebhookLogEventCommentReceived     WebhookLogEvent = "comment.received"
+	WebhookLogEventMessageDeleted      WebhookLogEvent = "message.deleted"
+	WebhookLogEventMessageDelivered    WebhookLogEvent = "message.delivered"
+	WebhookLogEventMessageEdited       WebhookLogEvent = "message.edited"
+	WebhookLogEventMessageFailed       WebhookLogEvent = "message.failed"
+	WebhookLogEventMessageRead         WebhookLogEvent = "message.read"
 	WebhookLogEventMessageReceived     WebhookLogEvent = "message.received"
 	WebhookLogEventMessageSent         WebhookLogEvent = "message.sent"
 	WebhookLogEventPostCancelled       WebhookLogEvent = "post.cancelled"
@@ -1494,6 +1514,16 @@ func (e WebhookLogEvent) Valid() bool {
 	case WebhookLogEventAccountDisconnected:
 		return true
 	case WebhookLogEventCommentReceived:
+		return true
+	case WebhookLogEventMessageDeleted:
+		return true
+	case WebhookLogEventMessageDelivered:
+		return true
+	case WebhookLogEventMessageEdited:
+		return true
+	case WebhookLogEventMessageFailed:
+		return true
+	case WebhookLogEventMessageRead:
 		return true
 	case WebhookLogEventMessageReceived:
 		return true
@@ -4409,6 +4439,11 @@ const (
 	GetWebhookLogsParamsEventAccountConnected    GetWebhookLogsParamsEvent = "account.connected"
 	GetWebhookLogsParamsEventAccountDisconnected GetWebhookLogsParamsEvent = "account.disconnected"
 	GetWebhookLogsParamsEventCommentReceived     GetWebhookLogsParamsEvent = "comment.received"
+	GetWebhookLogsParamsEventMessageDeleted      GetWebhookLogsParamsEvent = "message.deleted"
+	GetWebhookLogsParamsEventMessageDelivered    GetWebhookLogsParamsEvent = "message.delivered"
+	GetWebhookLogsParamsEventMessageEdited       GetWebhookLogsParamsEvent = "message.edited"
+	GetWebhookLogsParamsEventMessageFailed       GetWebhookLogsParamsEvent = "message.failed"
+	GetWebhookLogsParamsEventMessageRead         GetWebhookLogsParamsEvent = "message.read"
 	GetWebhookLogsParamsEventMessageReceived     GetWebhookLogsParamsEvent = "message.received"
 	GetWebhookLogsParamsEventMessageSent         GetWebhookLogsParamsEvent = "message.sent"
 	GetWebhookLogsParamsEventPostCancelled       GetWebhookLogsParamsEvent = "post.cancelled"
@@ -4428,6 +4463,16 @@ func (e GetWebhookLogsParamsEvent) Valid() bool {
 	case GetWebhookLogsParamsEventAccountDisconnected:
 		return true
 	case GetWebhookLogsParamsEventCommentReceived:
+		return true
+	case GetWebhookLogsParamsEventMessageDeleted:
+		return true
+	case GetWebhookLogsParamsEventMessageDelivered:
+		return true
+	case GetWebhookLogsParamsEventMessageEdited:
+		return true
+	case GetWebhookLogsParamsEventMessageFailed:
+		return true
+	case GetWebhookLogsParamsEventMessageRead:
 		return true
 	case GetWebhookLogsParamsEventMessageReceived:
 		return true
@@ -39270,20 +39315,59 @@ type GetInboxConversationMessagesResponse struct {
 				Type       *GetInboxConversationMessages200MessagesAttachmentsType `json:"type,omitempty"`
 				Url        *string                                                 `json:"url,omitempty"`
 			} `json:"attachments,omitempty"`
-			ConversationId *string                                           `json:"conversationId,omitempty"`
-			CreatedAt      *time.Time                                        `json:"createdAt,omitempty"`
-			Direction      *GetInboxConversationMessages200MessagesDirection `json:"direction,omitempty"`
-			Id             *string                                           `json:"id,omitempty"`
+			ConversationId *string    `json:"conversationId,omitempty"`
+			CreatedAt      *time.Time `json:"createdAt,omitempty"`
+			DeletedAt      *time.Time `json:"deletedAt,omitempty"`
+			DeliveredAt    *time.Time `json:"deliveredAt,omitempty"`
+
+			// DeliveryError Populated when `deliveryStatus === "failed"`.
+			DeliveryError *struct {
+				Code    *int    `json:"code,omitempty"`
+				Message *string `json:"message,omitempty"`
+				Title   *string `json:"title,omitempty"`
+			} `json:"deliveryError,omitempty"`
+
+			// DeliveryStatus Lifecycle status for outgoing messages. Not all platforms emit every state (see webhook support matrix).
+			DeliveryStatus *GetInboxConversationMessages200MessagesDeliveryStatus `json:"deliveryStatus,omitempty"`
+			Direction      *GetInboxConversationMessages200MessagesDirection      `json:"direction,omitempty"`
+
+			// EditCount Total number of edits applied.
+			EditCount *int `json:"editCount,omitempty"`
+
+			// EditHistory Every prior version of the message, oldest first.
+			EditHistory *[]struct {
+				Attachments *[]struct {
+					Payload *map[string]interface{} `json:"payload,omitempty"`
+					Type    *string                 `json:"type,omitempty"`
+					Url     *string                 `json:"url,omitempty"`
+				} `json:"attachments,omitempty"`
+				EditedAt *time.Time `json:"editedAt,omitempty"`
+				Text     *string    `json:"text,omitempty"`
+			} `json:"editHistory,omitempty"`
+
+			// EditedAt When the most recent edit happened.
+			EditedAt *time.Time `json:"editedAt,omitempty"`
+			Id       *string    `json:"id,omitempty"`
+
+			// IsDeleted True if the sender has deleted (unsent) this message. The original `message` and `attachments` fields remain populated.
+			IsDeleted *bool `json:"isDeleted,omitempty"`
+
+			// IsEdited True if the sender has edited this message at least once.
+			IsEdited *bool `json:"isEdited,omitempty"`
 
 			// IsStoryMention Instagram story mention
-			IsStoryMention *bool   `json:"isStoryMention,omitempty"`
-			Message        *string `json:"message,omitempty"`
-			Platform       *string `json:"platform,omitempty"`
-			SenderId       *string `json:"senderId,omitempty"`
-			SenderName     *string `json:"senderName,omitempty"`
+			IsStoryMention *bool      `json:"isStoryMention,omitempty"`
+			Message        *string    `json:"message,omitempty"`
+			Platform       *string    `json:"platform,omitempty"`
+			ReadAt         *time.Time `json:"readAt,omitempty"`
+			SenderId       *string    `json:"senderId,omitempty"`
+			SenderName     *string    `json:"senderName,omitempty"`
 
 			// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
 			SenderVerifiedType *GetInboxConversationMessages200MessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
+
+			// SentAt Original send time for outgoing messages (used for Messenger watermark queries).
+			SentAt *time.Time `json:"sentAt,omitempty"`
 
 			// StoryReply Instagram story reply
 			StoryReply *bool `json:"storyReply,omitempty"`
@@ -39296,6 +39380,7 @@ type GetInboxConversationMessagesResponse struct {
 	JSON401 *Unauthorized
 }
 type GetInboxConversationMessages200MessagesAttachmentsType string
+type GetInboxConversationMessages200MessagesDeliveryStatus string
 type GetInboxConversationMessages200MessagesDirection string
 type GetInboxConversationMessages200MessagesSenderVerifiedType string
 
@@ -54058,20 +54143,59 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 					Type       *GetInboxConversationMessages200MessagesAttachmentsType `json:"type,omitempty"`
 					Url        *string                                                 `json:"url,omitempty"`
 				} `json:"attachments,omitempty"`
-				ConversationId *string                                           `json:"conversationId,omitempty"`
-				CreatedAt      *time.Time                                        `json:"createdAt,omitempty"`
-				Direction      *GetInboxConversationMessages200MessagesDirection `json:"direction,omitempty"`
-				Id             *string                                           `json:"id,omitempty"`
+				ConversationId *string    `json:"conversationId,omitempty"`
+				CreatedAt      *time.Time `json:"createdAt,omitempty"`
+				DeletedAt      *time.Time `json:"deletedAt,omitempty"`
+				DeliveredAt    *time.Time `json:"deliveredAt,omitempty"`
+
+				// DeliveryError Populated when `deliveryStatus === "failed"`.
+				DeliveryError *struct {
+					Code    *int    `json:"code,omitempty"`
+					Message *string `json:"message,omitempty"`
+					Title   *string `json:"title,omitempty"`
+				} `json:"deliveryError,omitempty"`
+
+				// DeliveryStatus Lifecycle status for outgoing messages. Not all platforms emit every state (see webhook support matrix).
+				DeliveryStatus *GetInboxConversationMessages200MessagesDeliveryStatus `json:"deliveryStatus,omitempty"`
+				Direction      *GetInboxConversationMessages200MessagesDirection      `json:"direction,omitempty"`
+
+				// EditCount Total number of edits applied.
+				EditCount *int `json:"editCount,omitempty"`
+
+				// EditHistory Every prior version of the message, oldest first.
+				EditHistory *[]struct {
+					Attachments *[]struct {
+						Payload *map[string]interface{} `json:"payload,omitempty"`
+						Type    *string                 `json:"type,omitempty"`
+						Url     *string                 `json:"url,omitempty"`
+					} `json:"attachments,omitempty"`
+					EditedAt *time.Time `json:"editedAt,omitempty"`
+					Text     *string    `json:"text,omitempty"`
+				} `json:"editHistory,omitempty"`
+
+				// EditedAt When the most recent edit happened.
+				EditedAt *time.Time `json:"editedAt,omitempty"`
+				Id       *string    `json:"id,omitempty"`
+
+				// IsDeleted True if the sender has deleted (unsent) this message. The original `message` and `attachments` fields remain populated.
+				IsDeleted *bool `json:"isDeleted,omitempty"`
+
+				// IsEdited True if the sender has edited this message at least once.
+				IsEdited *bool `json:"isEdited,omitempty"`
 
 				// IsStoryMention Instagram story mention
-				IsStoryMention *bool   `json:"isStoryMention,omitempty"`
-				Message        *string `json:"message,omitempty"`
-				Platform       *string `json:"platform,omitempty"`
-				SenderId       *string `json:"senderId,omitempty"`
-				SenderName     *string `json:"senderName,omitempty"`
+				IsStoryMention *bool      `json:"isStoryMention,omitempty"`
+				Message        *string    `json:"message,omitempty"`
+				Platform       *string    `json:"platform,omitempty"`
+				ReadAt         *time.Time `json:"readAt,omitempty"`
+				SenderId       *string    `json:"senderId,omitempty"`
+				SenderName     *string    `json:"senderName,omitempty"`
 
 				// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
 				SenderVerifiedType *GetInboxConversationMessages200MessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
+
+				// SentAt Original send time for outgoing messages (used for Messenger watermark queries).
+				SentAt *time.Time `json:"sentAt,omitempty"`
 
 				// StoryReply Instagram story reply
 				StoryReply *bool `json:"storyReply,omitempty"`
