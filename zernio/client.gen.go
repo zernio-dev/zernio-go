@@ -192,39 +192,6 @@ func (e AdPlatform) Valid() bool {
 	}
 }
 
-// Defines values for AdStatus.
-const (
-	AdStatusActive        AdStatus = "active"
-	AdStatusCancelled     AdStatus = "cancelled"
-	AdStatusCompleted     AdStatus = "completed"
-	AdStatusError         AdStatus = "error"
-	AdStatusPaused        AdStatus = "paused"
-	AdStatusPendingReview AdStatus = "pending_review"
-	AdStatusRejected      AdStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the AdStatus enum.
-func (e AdStatus) Valid() bool {
-	switch e {
-	case AdStatusActive:
-		return true
-	case AdStatusCancelled:
-		return true
-	case AdStatusCompleted:
-		return true
-	case AdStatusError:
-		return true
-	case AdStatusPaused:
-		return true
-	case AdStatusPendingReview:
-		return true
-	case AdStatusRejected:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for AdCampaignBudgetType.
 const (
 	AdCampaignBudgetTypeDaily    AdCampaignBudgetType = "daily"
@@ -276,33 +243,33 @@ func (e AdCampaignPlatform) Valid() bool {
 	}
 }
 
-// Defines values for AdCampaignStatus.
+// Defines values for AdStatus.
 const (
-	AdCampaignStatusActive        AdCampaignStatus = "active"
-	AdCampaignStatusCancelled     AdCampaignStatus = "cancelled"
-	AdCampaignStatusCompleted     AdCampaignStatus = "completed"
-	AdCampaignStatusError         AdCampaignStatus = "error"
-	AdCampaignStatusPaused        AdCampaignStatus = "paused"
-	AdCampaignStatusPendingReview AdCampaignStatus = "pending_review"
-	AdCampaignStatusRejected      AdCampaignStatus = "rejected"
+	AdStatusActive        AdStatus = "active"
+	AdStatusCancelled     AdStatus = "cancelled"
+	AdStatusCompleted     AdStatus = "completed"
+	AdStatusError         AdStatus = "error"
+	AdStatusPaused        AdStatus = "paused"
+	AdStatusPendingReview AdStatus = "pending_review"
+	AdStatusRejected      AdStatus = "rejected"
 )
 
-// Valid indicates whether the value is a known member of the AdCampaignStatus enum.
-func (e AdCampaignStatus) Valid() bool {
+// Valid indicates whether the value is a known member of the AdStatus enum.
+func (e AdStatus) Valid() bool {
 	switch e {
-	case AdCampaignStatusActive:
+	case AdStatusActive:
 		return true
-	case AdCampaignStatusCancelled:
+	case AdStatusCancelled:
 		return true
-	case AdCampaignStatusCompleted:
+	case AdStatusCompleted:
 		return true
-	case AdCampaignStatusError:
+	case AdStatusError:
 		return true
-	case AdCampaignStatusPaused:
+	case AdStatusPaused:
 		return true
-	case AdCampaignStatusPendingReview:
+	case AdStatusPendingReview:
 		return true
-	case AdCampaignStatusRejected:
+	case AdStatusRejected:
 		return true
 	default:
 		return false
@@ -321,39 +288,6 @@ func (e AdTreeAdSetBudgetType) Valid() bool {
 	case AdTreeAdSetBudgetTypeDaily:
 		return true
 	case AdTreeAdSetBudgetTypeLifetime:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdTreeAdSetStatus.
-const (
-	AdTreeAdSetStatusActive        AdTreeAdSetStatus = "active"
-	AdTreeAdSetStatusCancelled     AdTreeAdSetStatus = "cancelled"
-	AdTreeAdSetStatusCompleted     AdTreeAdSetStatus = "completed"
-	AdTreeAdSetStatusError         AdTreeAdSetStatus = "error"
-	AdTreeAdSetStatusPaused        AdTreeAdSetStatus = "paused"
-	AdTreeAdSetStatusPendingReview AdTreeAdSetStatus = "pending_review"
-	AdTreeAdSetStatusRejected      AdTreeAdSetStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the AdTreeAdSetStatus enum.
-func (e AdTreeAdSetStatus) Valid() bool {
-	switch e {
-	case AdTreeAdSetStatusActive:
-		return true
-	case AdTreeAdSetStatusCancelled:
-		return true
-	case AdTreeAdSetStatusCompleted:
-		return true
-	case AdTreeAdSetStatusError:
-		return true
-	case AdTreeAdSetStatusPaused:
-		return true
-	case AdTreeAdSetStatusPendingReview:
-		return true
-	case AdTreeAdSetStatusRejected:
 		return true
 	default:
 		return false
@@ -405,39 +339,6 @@ func (e AdTreeCampaignPlatform) Valid() bool {
 	case AdTreeCampaignPlatformTiktok:
 		return true
 	case AdTreeCampaignPlatformTwitter:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdTreeCampaignStatus.
-const (
-	AdTreeCampaignStatusActive        AdTreeCampaignStatus = "active"
-	AdTreeCampaignStatusCancelled     AdTreeCampaignStatus = "cancelled"
-	AdTreeCampaignStatusCompleted     AdTreeCampaignStatus = "completed"
-	AdTreeCampaignStatusError         AdTreeCampaignStatus = "error"
-	AdTreeCampaignStatusPaused        AdTreeCampaignStatus = "paused"
-	AdTreeCampaignStatusPendingReview AdTreeCampaignStatus = "pending_review"
-	AdTreeCampaignStatusRejected      AdTreeCampaignStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the AdTreeCampaignStatus enum.
-func (e AdTreeCampaignStatus) Valid() bool {
-	switch e {
-	case AdTreeCampaignStatusActive:
-		return true
-	case AdTreeCampaignStatusCancelled:
-		return true
-	case AdTreeCampaignStatusCompleted:
-		return true
-	case AdTreeCampaignStatusError:
-		return true
-	case AdTreeCampaignStatusPaused:
-		return true
-	case AdTreeCampaignStatusPendingReview:
-		return true
-	case AdTreeCampaignStatusRejected:
 		return true
 	default:
 		return false
@@ -1671,39 +1572,6 @@ func (e ListAdsParamsSource) Valid() bool {
 	}
 }
 
-// Defines values for ListAdsParamsStatus.
-const (
-	ListAdsParamsStatusActive        ListAdsParamsStatus = "active"
-	ListAdsParamsStatusCancelled     ListAdsParamsStatus = "cancelled"
-	ListAdsParamsStatusCompleted     ListAdsParamsStatus = "completed"
-	ListAdsParamsStatusError         ListAdsParamsStatus = "error"
-	ListAdsParamsStatusPaused        ListAdsParamsStatus = "paused"
-	ListAdsParamsStatusPendingReview ListAdsParamsStatus = "pending_review"
-	ListAdsParamsStatusRejected      ListAdsParamsStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the ListAdsParamsStatus enum.
-func (e ListAdsParamsStatus) Valid() bool {
-	switch e {
-	case ListAdsParamsStatusActive:
-		return true
-	case ListAdsParamsStatusCancelled:
-		return true
-	case ListAdsParamsStatusCompleted:
-		return true
-	case ListAdsParamsStatusError:
-		return true
-	case ListAdsParamsStatusPaused:
-		return true
-	case ListAdsParamsStatusPendingReview:
-		return true
-	case ListAdsParamsStatusRejected:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for ListAdsParamsPlatform.
 const (
 	ListAdsParamsPlatformFacebook  ListAdsParamsPlatform = "facebook"
@@ -1896,39 +1764,6 @@ func (e ListAdCampaignsParamsPlatform) Valid() bool {
 	case ListAdCampaignsParamsPlatformTiktok:
 		return true
 	case ListAdCampaignsParamsPlatformTwitter:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListAdCampaignsParamsStatus.
-const (
-	ListAdCampaignsParamsStatusActive        ListAdCampaignsParamsStatus = "active"
-	ListAdCampaignsParamsStatusCancelled     ListAdCampaignsParamsStatus = "cancelled"
-	ListAdCampaignsParamsStatusCompleted     ListAdCampaignsParamsStatus = "completed"
-	ListAdCampaignsParamsStatusError         ListAdCampaignsParamsStatus = "error"
-	ListAdCampaignsParamsStatusPaused        ListAdCampaignsParamsStatus = "paused"
-	ListAdCampaignsParamsStatusPendingReview ListAdCampaignsParamsStatus = "pending_review"
-	ListAdCampaignsParamsStatusRejected      ListAdCampaignsParamsStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the ListAdCampaignsParamsStatus enum.
-func (e ListAdCampaignsParamsStatus) Valid() bool {
-	switch e {
-	case ListAdCampaignsParamsStatusActive:
-		return true
-	case ListAdCampaignsParamsStatusCancelled:
-		return true
-	case ListAdCampaignsParamsStatusCompleted:
-		return true
-	case ListAdCampaignsParamsStatusError:
-		return true
-	case ListAdCampaignsParamsStatusPaused:
-		return true
-	case ListAdCampaignsParamsStatusPendingReview:
-		return true
-	case ListAdCampaignsParamsStatusRejected:
 		return true
 	default:
 		return false
@@ -2133,39 +1968,6 @@ func (e GetAdTreeParamsPlatform) Valid() bool {
 	case GetAdTreeParamsPlatformTiktok:
 		return true
 	case GetAdTreeParamsPlatformTwitter:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetAdTreeParamsStatus.
-const (
-	GetAdTreeParamsStatusActive        GetAdTreeParamsStatus = "active"
-	GetAdTreeParamsStatusCancelled     GetAdTreeParamsStatus = "cancelled"
-	GetAdTreeParamsStatusCompleted     GetAdTreeParamsStatus = "completed"
-	GetAdTreeParamsStatusError         GetAdTreeParamsStatus = "error"
-	GetAdTreeParamsStatusPaused        GetAdTreeParamsStatus = "paused"
-	GetAdTreeParamsStatusPendingReview GetAdTreeParamsStatus = "pending_review"
-	GetAdTreeParamsStatusRejected      GetAdTreeParamsStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the GetAdTreeParamsStatus enum.
-func (e GetAdTreeParamsStatus) Valid() bool {
-	switch e {
-	case GetAdTreeParamsStatusActive:
-		return true
-	case GetAdTreeParamsStatusCancelled:
-		return true
-	case GetAdTreeParamsStatusCompleted:
-		return true
-	case GetAdTreeParamsStatusError:
-		return true
-	case GetAdTreeParamsStatusPaused:
-		return true
-	case GetAdTreeParamsStatusPendingReview:
-		return true
-	case GetAdTreeParamsStatusRejected:
 		return true
 	default:
 		return false
@@ -4362,9 +4164,6 @@ type AdGoal string
 // AdPlatform defines model for Ad.Platform.
 type AdPlatform string
 
-// AdStatus defines model for Ad.Status.
-type AdStatus string
-
 // AdCampaign defines model for AdCampaign.
 type AdCampaign struct {
 	AccountId *string `json:"accountId,omitempty"`
@@ -4381,11 +4180,11 @@ type AdCampaign struct {
 	LatestAd     *time.Time `json:"latestAd,omitempty"`
 	Metrics      *AdMetrics `json:"metrics,omitempty"`
 
-	// OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
-	OptimizationGoal    *AdCampaign_OptimizationGoal `json:"optimizationGoal,omitempty"`
-	Platform            *AdCampaignPlatform          `json:"platform,omitempty"`
-	PlatformAdAccountId *string                      `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string                      `json:"platformCampaignId,omitempty"`
+	// OptimizationGoal Meta optimization goal shared across ad sets, or comma-separated values when ad sets differ (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
+	OptimizationGoal    *string             `json:"optimizationGoal,omitempty"`
+	Platform            *AdCampaignPlatform `json:"platform,omitempty"`
+	PlatformAdAccountId *string             `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string             `json:"platformCampaignId,omitempty"`
 
 	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
 	PlatformObjective *string `json:"platformObjective,omitempty"`
@@ -4399,28 +4198,14 @@ type AdCampaign struct {
 	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
-	Status *AdCampaignStatus `json:"status,omitempty"`
+	Status *AdStatus `json:"status,omitempty"`
 }
 
 // AdCampaignBudgetType defines model for AdCampaign.Budget.Type.
 type AdCampaignBudgetType string
 
-// AdCampaignOptimizationGoal0 defines model for .
-type AdCampaignOptimizationGoal0 = string
-
-// AdCampaignOptimizationGoal1 defines model for .
-type AdCampaignOptimizationGoal1 = []string
-
-// AdCampaign_OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
-type AdCampaign_OptimizationGoal struct {
-	union json.RawMessage
-}
-
 // AdCampaignPlatform defines model for AdCampaign.Platform.
 type AdCampaignPlatform string
-
-// AdCampaignStatus Derived from child ad statuses
-type AdCampaignStatus string
 
 // AdMetrics defines model for AdMetrics.
 type AdMetrics struct {
@@ -4442,6 +4227,9 @@ type AdMetrics struct {
 	Reach        *int       `json:"reach,omitempty"`
 	Spend        *float32   `json:"spend,omitempty"`
 }
+
+// AdStatus defines model for AdStatus.
+type AdStatus string
 
 // AdTreeAdSet Ad set (or ad group/line item depending on platform) with rolled-up metrics and child ads
 type AdTreeAdSet struct {
@@ -4471,14 +4259,11 @@ type AdTreeAdSet struct {
 	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
-	Status *AdTreeAdSetStatus `json:"status,omitempty"`
+	Status *AdStatus `json:"status,omitempty"`
 }
 
 // AdTreeAdSetBudgetType defines model for AdTreeAdSet.Budget.Type.
 type AdTreeAdSetBudgetType string
-
-// AdTreeAdSetStatus Derived from child ad statuses
-type AdTreeAdSetStatus string
 
 // AdTreeCampaign Campaign with nested ad sets and rolled-up metrics
 type AdTreeCampaign struct {
@@ -4498,11 +4283,11 @@ type AdTreeCampaign struct {
 	CampaignName *string    `json:"campaignName,omitempty"`
 	Metrics      *AdMetrics `json:"metrics,omitempty"`
 
-	// OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
-	OptimizationGoal    *AdTreeCampaign_OptimizationGoal `json:"optimizationGoal,omitempty"`
-	Platform            *AdTreeCampaignPlatform          `json:"platform,omitempty"`
-	PlatformAdAccountId *string                          `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string                          `json:"platformCampaignId,omitempty"`
+	// OptimizationGoal Meta optimization goal shared across ad sets, or comma-separated values when ad sets differ (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
+	OptimizationGoal    *string                 `json:"optimizationGoal,omitempty"`
+	Platform            *AdTreeCampaignPlatform `json:"platform,omitempty"`
+	PlatformAdAccountId *string                 `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string                 `json:"platformCampaignId,omitempty"`
 
 	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
 	PlatformObjective *string `json:"platformObjective,omitempty"`
@@ -4516,28 +4301,14 @@ type AdTreeCampaign struct {
 	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
-	Status *AdTreeCampaignStatus `json:"status,omitempty"`
+	Status *AdStatus `json:"status,omitempty"`
 }
 
 // AdTreeCampaignBudgetType defines model for AdTreeCampaign.Budget.Type.
 type AdTreeCampaignBudgetType string
 
-// AdTreeCampaignOptimizationGoal0 defines model for .
-type AdTreeCampaignOptimizationGoal0 = string
-
-// AdTreeCampaignOptimizationGoal1 defines model for .
-type AdTreeCampaignOptimizationGoal1 = []string
-
-// AdTreeCampaign_OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
-type AdTreeCampaign_OptimizationGoal struct {
-	union json.RawMessage
-}
-
 // AdTreeCampaignPlatform defines model for AdTreeCampaign.Platform.
 type AdTreeCampaignPlatform string
-
-// AdTreeCampaignStatus Derived from child ad statuses
-type AdTreeCampaignStatus string
 
 // AnalyticsListResponse defines model for AnalyticsListResponse.
 type AnalyticsListResponse struct {
@@ -6368,7 +6139,7 @@ type ListAdsParams struct {
 
 	// Source zernio = Zernio-created only, all = include external ads
 	Source   *ListAdsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
-	Status   *ListAdsParamsStatus   `form:"status,omitempty" json:"status,omitempty"`
+	Status   *AdStatus              `form:"status,omitempty" json:"status,omitempty"`
 	Platform *ListAdsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
 	// AccountId Social account ID
@@ -6392,9 +6163,6 @@ type ListAdsParams struct {
 
 // ListAdsParamsSource defines parameters for ListAds.
 type ListAdsParamsSource string
-
-// ListAdsParamsStatus defines parameters for ListAds.
-type ListAdsParamsStatus string
 
 // ListAdsParamsPlatform defines parameters for ListAds.
 type ListAdsParamsPlatform string
@@ -6530,7 +6298,7 @@ type ListAdCampaignsParams struct {
 	Platform *ListAdCampaignsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
 	// Status Filter by derived campaign status (post-aggregation)
-	Status *ListAdCampaignsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Status *AdStatus `form:"status,omitempty" json:"status,omitempty"`
 
 	// AdAccountId Platform ad account ID (e.g. act_123 for Meta)
 	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
@@ -6547,9 +6315,6 @@ type ListAdCampaignsParamsSource string
 
 // ListAdCampaignsParamsPlatform defines parameters for ListAdCampaigns.
 type ListAdCampaignsParamsPlatform string
-
-// ListAdCampaignsParamsStatus defines parameters for ListAdCampaigns.
-type ListAdCampaignsParamsStatus string
 
 // UpdateAdCampaignStatusJSONBody defines parameters for UpdateAdCampaignStatus.
 type UpdateAdCampaignStatusJSONBody struct {
@@ -6655,7 +6420,7 @@ type GetAdTreeParams struct {
 	Platform *GetAdTreeParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
 	// Status Filter by derived campaign status (post-aggregation)
-	Status *GetAdTreeParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Status *AdStatus `form:"status,omitempty" json:"status,omitempty"`
 
 	// AdAccountId Platform ad account ID
 	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
@@ -6678,9 +6443,6 @@ type GetAdTreeParamsSource string
 
 // GetAdTreeParamsPlatform defines parameters for GetAdTree.
 type GetAdTreeParamsPlatform string
-
-// GetAdTreeParamsStatus defines parameters for GetAdTree.
-type GetAdTreeParamsStatus string
 
 // UpdateAdJSONBody defines parameters for UpdateAd.
 type UpdateAdJSONBody struct {
@@ -9501,130 +9263,6 @@ func (t AccountWithFollowerStats_ProfileId) MarshalJSON() ([]byte, error) {
 }
 
 func (t *AccountWithFollowerStats_ProfileId) UnmarshalJSON(b []byte) error {
-	err := t.union.UnmarshalJSON(b)
-	return err
-}
-
-// AsAdCampaignOptimizationGoal0 returns the union data inside the AdCampaign_OptimizationGoal as a AdCampaignOptimizationGoal0
-func (t AdCampaign_OptimizationGoal) AsAdCampaignOptimizationGoal0() (AdCampaignOptimizationGoal0, error) {
-	var body AdCampaignOptimizationGoal0
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromAdCampaignOptimizationGoal0 overwrites any union data inside the AdCampaign_OptimizationGoal as the provided AdCampaignOptimizationGoal0
-func (t *AdCampaign_OptimizationGoal) FromAdCampaignOptimizationGoal0(v AdCampaignOptimizationGoal0) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeAdCampaignOptimizationGoal0 performs a merge with any union data inside the AdCampaign_OptimizationGoal, using the provided AdCampaignOptimizationGoal0
-func (t *AdCampaign_OptimizationGoal) MergeAdCampaignOptimizationGoal0(v AdCampaignOptimizationGoal0) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsAdCampaignOptimizationGoal1 returns the union data inside the AdCampaign_OptimizationGoal as a AdCampaignOptimizationGoal1
-func (t AdCampaign_OptimizationGoal) AsAdCampaignOptimizationGoal1() (AdCampaignOptimizationGoal1, error) {
-	var body AdCampaignOptimizationGoal1
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromAdCampaignOptimizationGoal1 overwrites any union data inside the AdCampaign_OptimizationGoal as the provided AdCampaignOptimizationGoal1
-func (t *AdCampaign_OptimizationGoal) FromAdCampaignOptimizationGoal1(v AdCampaignOptimizationGoal1) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeAdCampaignOptimizationGoal1 performs a merge with any union data inside the AdCampaign_OptimizationGoal, using the provided AdCampaignOptimizationGoal1
-func (t *AdCampaign_OptimizationGoal) MergeAdCampaignOptimizationGoal1(v AdCampaignOptimizationGoal1) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-func (t AdCampaign_OptimizationGoal) MarshalJSON() ([]byte, error) {
-	b, err := t.union.MarshalJSON()
-	return b, err
-}
-
-func (t *AdCampaign_OptimizationGoal) UnmarshalJSON(b []byte) error {
-	err := t.union.UnmarshalJSON(b)
-	return err
-}
-
-// AsAdTreeCampaignOptimizationGoal0 returns the union data inside the AdTreeCampaign_OptimizationGoal as a AdTreeCampaignOptimizationGoal0
-func (t AdTreeCampaign_OptimizationGoal) AsAdTreeCampaignOptimizationGoal0() (AdTreeCampaignOptimizationGoal0, error) {
-	var body AdTreeCampaignOptimizationGoal0
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromAdTreeCampaignOptimizationGoal0 overwrites any union data inside the AdTreeCampaign_OptimizationGoal as the provided AdTreeCampaignOptimizationGoal0
-func (t *AdTreeCampaign_OptimizationGoal) FromAdTreeCampaignOptimizationGoal0(v AdTreeCampaignOptimizationGoal0) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeAdTreeCampaignOptimizationGoal0 performs a merge with any union data inside the AdTreeCampaign_OptimizationGoal, using the provided AdTreeCampaignOptimizationGoal0
-func (t *AdTreeCampaign_OptimizationGoal) MergeAdTreeCampaignOptimizationGoal0(v AdTreeCampaignOptimizationGoal0) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsAdTreeCampaignOptimizationGoal1 returns the union data inside the AdTreeCampaign_OptimizationGoal as a AdTreeCampaignOptimizationGoal1
-func (t AdTreeCampaign_OptimizationGoal) AsAdTreeCampaignOptimizationGoal1() (AdTreeCampaignOptimizationGoal1, error) {
-	var body AdTreeCampaignOptimizationGoal1
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromAdTreeCampaignOptimizationGoal1 overwrites any union data inside the AdTreeCampaign_OptimizationGoal as the provided AdTreeCampaignOptimizationGoal1
-func (t *AdTreeCampaign_OptimizationGoal) FromAdTreeCampaignOptimizationGoal1(v AdTreeCampaignOptimizationGoal1) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeAdTreeCampaignOptimizationGoal1 performs a merge with any union data inside the AdTreeCampaign_OptimizationGoal, using the provided AdTreeCampaignOptimizationGoal1
-func (t *AdTreeCampaign_OptimizationGoal) MergeAdTreeCampaignOptimizationGoal1(v AdTreeCampaignOptimizationGoal1) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-func (t AdTreeCampaign_OptimizationGoal) MarshalJSON() ([]byte, error) {
-	b, err := t.union.MarshalJSON()
-	return b, err
-}
-
-func (t *AdTreeCampaign_OptimizationGoal) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
