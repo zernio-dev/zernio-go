@@ -951,114 +951,6 @@ func (e PostVisibility) Valid() bool {
 	}
 }
 
-// Defines values for PostLogAction.
-const (
-	PostLogActionCancelled      PostLogAction = "cancelled"
-	PostLogActionMediaUpload    PostLogAction = "media_upload"
-	PostLogActionPublish        PostLogAction = "publish"
-	PostLogActionRateLimitPause PostLogAction = "rate_limit_pause"
-	PostLogActionRetry          PostLogAction = "retry"
-	PostLogActionTokenRefresh   PostLogAction = "token_refresh"
-)
-
-// Valid indicates whether the value is a known member of the PostLogAction enum.
-func (e PostLogAction) Valid() bool {
-	switch e {
-	case PostLogActionCancelled:
-		return true
-	case PostLogActionMediaUpload:
-		return true
-	case PostLogActionPublish:
-		return true
-	case PostLogActionRateLimitPause:
-		return true
-	case PostLogActionRetry:
-		return true
-	case PostLogActionTokenRefresh:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PostLogPlatform.
-const (
-	PostLogPlatformBluesky        PostLogPlatform = "bluesky"
-	PostLogPlatformDiscord        PostLogPlatform = "discord"
-	PostLogPlatformFacebook       PostLogPlatform = "facebook"
-	PostLogPlatformGooglebusiness PostLogPlatform = "googlebusiness"
-	PostLogPlatformInstagram      PostLogPlatform = "instagram"
-	PostLogPlatformLinkedin       PostLogPlatform = "linkedin"
-	PostLogPlatformPinterest      PostLogPlatform = "pinterest"
-	PostLogPlatformReddit         PostLogPlatform = "reddit"
-	PostLogPlatformSnapchat       PostLogPlatform = "snapchat"
-	PostLogPlatformTelegram       PostLogPlatform = "telegram"
-	PostLogPlatformThreads        PostLogPlatform = "threads"
-	PostLogPlatformTiktok         PostLogPlatform = "tiktok"
-	PostLogPlatformTwitter        PostLogPlatform = "twitter"
-	PostLogPlatformYoutube        PostLogPlatform = "youtube"
-)
-
-// Valid indicates whether the value is a known member of the PostLogPlatform enum.
-func (e PostLogPlatform) Valid() bool {
-	switch e {
-	case PostLogPlatformBluesky:
-		return true
-	case PostLogPlatformDiscord:
-		return true
-	case PostLogPlatformFacebook:
-		return true
-	case PostLogPlatformGooglebusiness:
-		return true
-	case PostLogPlatformInstagram:
-		return true
-	case PostLogPlatformLinkedin:
-		return true
-	case PostLogPlatformPinterest:
-		return true
-	case PostLogPlatformReddit:
-		return true
-	case PostLogPlatformSnapchat:
-		return true
-	case PostLogPlatformTelegram:
-		return true
-	case PostLogPlatformThreads:
-		return true
-	case PostLogPlatformTiktok:
-		return true
-	case PostLogPlatformTwitter:
-		return true
-	case PostLogPlatformYoutube:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PostLogStatus.
-const (
-	PostLogStatusFailed  PostLogStatus = "failed"
-	PostLogStatusPending PostLogStatus = "pending"
-	PostLogStatusSkipped PostLogStatus = "skipped"
-	PostLogStatusSuccess PostLogStatus = "success"
-)
-
-// Valid indicates whether the value is a known member of the PostLogStatus enum.
-func (e PostLogStatus) Valid() bool {
-	switch e {
-	case PostLogStatusFailed:
-		return true
-	case PostLogStatusPending:
-		return true
-	case PostLogStatusSkipped:
-		return true
-	case PostLogStatusSuccess:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for RecyclingConfigGapFreq.
 const (
 	RecyclingConfigGapFreqMonth RecyclingConfigGapFreq = "month"
@@ -3464,22 +3356,22 @@ func (e GetMediaPresignedUrlJSONBodyContentType) Valid() bool {
 
 // Defines values for ListPostsParamsStatus.
 const (
-	Draft     ListPostsParamsStatus = "draft"
-	Failed    ListPostsParamsStatus = "failed"
-	Published ListPostsParamsStatus = "published"
-	Scheduled ListPostsParamsStatus = "scheduled"
+	ListPostsParamsStatusDraft     ListPostsParamsStatus = "draft"
+	ListPostsParamsStatusFailed    ListPostsParamsStatus = "failed"
+	ListPostsParamsStatusPublished ListPostsParamsStatus = "published"
+	ListPostsParamsStatusScheduled ListPostsParamsStatus = "scheduled"
 )
 
 // Valid indicates whether the value is a known member of the ListPostsParamsStatus enum.
 func (e ListPostsParamsStatus) Valid() bool {
 	switch e {
-	case Draft:
+	case ListPostsParamsStatusDraft:
 		return true
-	case Failed:
+	case ListPostsParamsStatusFailed:
 		return true
-	case Published:
+	case ListPostsParamsStatusPublished:
 		return true
-	case Scheduled:
+	case ListPostsParamsStatusScheduled:
 		return true
 	default:
 		return false
@@ -3698,28 +3590,28 @@ func (e GetRedditFeedParamsSort) Valid() bool {
 
 // Defines values for GetRedditFeedParamsT.
 const (
-	GetRedditFeedParamsTAll   GetRedditFeedParamsT = "all"
-	GetRedditFeedParamsTDay   GetRedditFeedParamsT = "day"
-	GetRedditFeedParamsTHour  GetRedditFeedParamsT = "hour"
-	GetRedditFeedParamsTMonth GetRedditFeedParamsT = "month"
-	GetRedditFeedParamsTWeek  GetRedditFeedParamsT = "week"
-	GetRedditFeedParamsTYear  GetRedditFeedParamsT = "year"
+	All   GetRedditFeedParamsT = "all"
+	Day   GetRedditFeedParamsT = "day"
+	Hour  GetRedditFeedParamsT = "hour"
+	Month GetRedditFeedParamsT = "month"
+	Week  GetRedditFeedParamsT = "week"
+	Year  GetRedditFeedParamsT = "year"
 )
 
 // Valid indicates whether the value is a known member of the GetRedditFeedParamsT enum.
 func (e GetRedditFeedParamsT) Valid() bool {
 	switch e {
-	case GetRedditFeedParamsTAll:
+	case All:
 		return true
-	case GetRedditFeedParamsTDay:
+	case Day:
 		return true
-	case GetRedditFeedParamsTHour:
+	case Hour:
 		return true
-	case GetRedditFeedParamsTMonth:
+	case Month:
 		return true
-	case GetRedditFeedParamsTWeek:
+	case Week:
 		return true
-	case GetRedditFeedParamsTYear:
+	case Year:
 		return true
 	default:
 		return false
@@ -3794,31 +3686,31 @@ func (e ListSequencesParamsStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
-	Instagram CreateSequenceJSONBodyPlatform = "instagram"
-	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
-	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
-	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
-	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateSequenceJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateSequenceJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateSequenceJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateSequenceJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateSequenceJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateSequenceJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateSequenceJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -5349,87 +5241,6 @@ type PostDeleteResponse struct {
 type PostGetResponse struct {
 	Post *Post `json:"post,omitempty"`
 }
-
-// PostLog Publishing log entry showing details of a post publishing attempt
-type PostLog struct {
-	UnderscoreId    *string `json:"_id,omitempty"`
-	AccountId       *string `json:"accountId,omitempty"`
-	AccountUsername *string `json:"accountUsername,omitempty"`
-
-	// Action Type of action logged: publish (initial attempt), retry (after failure), media_upload, rate_limit_pause, token_refresh, cancelled
-	Action *PostLogAction `json:"action,omitempty"`
-
-	// AttemptNumber Attempt number (1 for first try, 2+ for retries)
-	AttemptNumber *int       `json:"attemptNumber,omitempty"`
-	CreatedAt     *time.Time `json:"createdAt,omitempty"`
-
-	// DurationMs How long the operation took in milliseconds
-	DurationMs *int `json:"durationMs,omitempty"`
-
-	// Endpoint Platform API endpoint called
-	Endpoint  *string          `json:"endpoint,omitempty"`
-	Platform  *PostLogPlatform `json:"platform,omitempty"`
-	PostId    *PostLog_PostId  `json:"postId,omitempty"`
-	ProfileId *string          `json:"profileId,omitempty"`
-	Request   *struct {
-		// ContentPreview First 200 chars of caption
-		ContentPreview *string   `json:"contentPreview,omitempty"`
-		MediaCount     *int      `json:"mediaCount,omitempty"`
-		MediaTypes     *[]string `json:"mediaTypes,omitempty"`
-
-		// MediaUrls URLs of media items sent to platform
-		MediaUrls *[]string `json:"mediaUrls,omitempty"`
-
-		// RawBody Full request body JSON (max 5000 chars)
-		RawBody      *string    `json:"rawBody,omitempty"`
-		ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
-	} `json:"request,omitempty"`
-	Response *struct {
-		// ErrorCode Platform-specific error code
-		ErrorCode *string `json:"errorCode,omitempty"`
-
-		// ErrorMessage Error message on failure
-		ErrorMessage *string `json:"errorMessage,omitempty"`
-
-		// PlatformPostId ID returned by platform on success
-		PlatformPostId *string `json:"platformPostId,omitempty"`
-
-		// PlatformPostUrl URL of published post
-		PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
-
-		// RawBody Full response body JSON (max 5000 chars)
-		RawBody *string `json:"rawBody,omitempty"`
-	} `json:"response,omitempty"`
-	Status *PostLogStatus `json:"status,omitempty"`
-
-	// StatusCode HTTP status code from platform API
-	StatusCode *int    `json:"statusCode,omitempty"`
-	UserId     *string `json:"userId,omitempty"`
-}
-
-// PostLogAction Type of action logged: publish (initial attempt), retry (after failure), media_upload, rate_limit_pause, token_refresh, cancelled
-type PostLogAction string
-
-// PostLogPlatform defines model for PostLog.Platform.
-type PostLogPlatform string
-
-// PostLogPostId0 defines model for .
-type PostLogPostId0 = string
-
-// PostLogPostId1 Populated post reference
-type PostLogPostId1 struct {
-	UnderscoreId *string `json:"_id,omitempty"`
-	Content      *string `json:"content,omitempty"`
-	Status       *string `json:"status,omitempty"`
-}
-
-// PostLog_PostId defines model for PostLog.PostId.
-type PostLog_PostId struct {
-	union json.RawMessage
-}
-
-// PostLogStatus defines model for PostLog.Status.
-type PostLogStatus string
 
 // PostRetryResponse defines model for PostRetryResponse.
 type PostRetryResponse struct {
@@ -8367,12 +8178,6 @@ type EditPostJSONBody struct {
 // EditPostJSONBodyPlatform defines parameters for EditPost.
 type EditPostJSONBodyPlatform string
 
-// GetPostLogsParams defines parameters for GetPostLogs.
-type GetPostLogsParams struct {
-	// Limit Maximum number of logs to return (max 100)
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
-}
-
 // UnpublishPostJSONBody defines parameters for UnpublishPost.
 type UnpublishPostJSONBody struct {
 	// Platform The platform to delete the post from
@@ -10281,68 +10086,6 @@ func (t *Post_UserId) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-// AsPostLogPostId0 returns the union data inside the PostLog_PostId as a PostLogPostId0
-func (t PostLog_PostId) AsPostLogPostId0() (PostLogPostId0, error) {
-	var body PostLogPostId0
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromPostLogPostId0 overwrites any union data inside the PostLog_PostId as the provided PostLogPostId0
-func (t *PostLog_PostId) FromPostLogPostId0(v PostLogPostId0) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergePostLogPostId0 performs a merge with any union data inside the PostLog_PostId, using the provided PostLogPostId0
-func (t *PostLog_PostId) MergePostLogPostId0(v PostLogPostId0) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsPostLogPostId1 returns the union data inside the PostLog_PostId as a PostLogPostId1
-func (t PostLog_PostId) AsPostLogPostId1() (PostLogPostId1, error) {
-	var body PostLogPostId1
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromPostLogPostId1 overwrites any union data inside the PostLog_PostId as the provided PostLogPostId1
-func (t *PostLog_PostId) FromPostLogPostId1(v PostLogPostId1) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergePostLogPostId1 performs a merge with any union data inside the PostLog_PostId, using the provided PostLogPostId1
-func (t *PostLog_PostId) MergePostLogPostId1(v PostLogPostId1) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-func (t PostLog_PostId) MarshalJSON() ([]byte, error) {
-	b, err := t.union.MarshalJSON()
-	return b, err
-}
-
-func (t *PostLog_PostId) UnmarshalJSON(b []byte) error {
-	err := t.union.UnmarshalJSON(b)
-	return err
-}
-
 // AsSocialAccountProfileId0 returns the union data inside the SocialAccount_ProfileId as a SocialAccountProfileId0
 func (t SocialAccount_ProfileId) AsSocialAccountProfileId0() (SocialAccountProfileId0, error) {
 	var body SocialAccountProfileId0
@@ -11290,9 +11033,6 @@ type ClientInterface interface {
 	EditPostWithBody(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	EditPost(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetPostLogs request
-	GetPostLogs(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RetryPost request
 	RetryPost(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14290,18 +14030,6 @@ func (c *Client) EditPostWithBody(ctx context.Context, postId string, contentTyp
 
 func (c *Client) EditPost(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEditPostRequest(c.Server, postId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetPostLogs(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPostLogsRequest(c.Server, postId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -25813,62 +25541,6 @@ func NewEditPostRequestWithBody(server string, postId string, contentType string
 	return req, nil
 }
 
-// NewGetPostLogsRequest generates requests for GetPostLogs
-func NewGetPostLogsRequest(server string, postId string, params *GetPostLogsParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "postId", postId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/posts/%s/logs", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Limit != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 // NewRetryPostRequest generates requests for RetryPost
 func NewRetryPostRequest(server string, postId string) (*http.Request, error) {
 	var err error
@@ -30449,9 +30121,6 @@ type ClientWithResponsesInterface interface {
 	EditPostWithBodyWithResponse(ctx context.Context, postId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EditPostResponse, error)
 
 	EditPostWithResponse(ctx context.Context, postId string, body EditPostJSONRequestBody, reqEditors ...RequestEditorFn) (*EditPostResponse, error)
-
-	// GetPostLogsWithResponse request
-	GetPostLogsWithResponse(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*GetPostLogsResponse, error)
 
 	// RetryPostWithResponse request
 	RetryPostWithResponse(ctx context.Context, postId string, reqEditors ...RequestEditorFn) (*RetryPostResponse, error)
@@ -36882,35 +36551,6 @@ func (r EditPostResponse) StatusCode() int {
 	return 0
 }
 
-type GetPostLogsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *struct {
-		// Count Number of logs returned
-		Count  *int       `json:"count,omitempty"`
-		Logs   *[]PostLog `json:"logs,omitempty"`
-		PostId *string    `json:"postId,omitempty"`
-	}
-	JSON401 *Unauthorized
-	JSON404 *NotFound
-}
-
-// Status returns HTTPResponse.Status
-func (r GetPostLogsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetPostLogsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type RetryPostResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -41324,15 +40964,6 @@ func (c *ClientWithResponses) EditPostWithResponse(ctx context.Context, postId s
 		return nil, err
 	}
 	return ParseEditPostResponse(rsp)
-}
-
-// GetPostLogsWithResponse request returning *GetPostLogsResponse
-func (c *ClientWithResponses) GetPostLogsWithResponse(ctx context.Context, postId string, params *GetPostLogsParams, reqEditors ...RequestEditorFn) (*GetPostLogsResponse, error) {
-	rsp, err := c.GetPostLogs(ctx, postId, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetPostLogsResponse(rsp)
 }
 
 // RetryPostWithResponse request returning *RetryPostResponse
@@ -50639,51 +50270,6 @@ func ParseEditPostResponse(rsp *http.Response) (*EditPostResponse, error) {
 
 			// Url URL of the edited tweet
 			Url *string `json:"url,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetPostLogsResponse parses an HTTP response from a GetPostLogsWithResponse call
-func ParseGetPostLogsResponse(rsp *http.Response) (*GetPostLogsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetPostLogsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			// Count Number of logs returned
-			Count  *int       `json:"count,omitempty"`
-			Logs   *[]PostLog `json:"logs,omitempty"`
-			PostId *string    `json:"postId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

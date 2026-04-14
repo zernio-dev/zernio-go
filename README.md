@@ -152,7 +152,6 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.ListLogsWithResponse()` | List activity logs |
-| `client.GetPostLogsWithResponse()` | Get post logs |
 
 ### Connect (OAuth)
 | Method | Description |
