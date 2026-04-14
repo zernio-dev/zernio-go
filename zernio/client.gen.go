@@ -48,6 +48,7 @@ func (e AccountWithFollowerStatsAdsStatus) Valid() bool {
 // Defines values for AccountWithFollowerStatsPlatform.
 const (
 	AccountWithFollowerStatsPlatformBluesky        AccountWithFollowerStatsPlatform = "bluesky"
+	AccountWithFollowerStatsPlatformDiscord        AccountWithFollowerStatsPlatform = "discord"
 	AccountWithFollowerStatsPlatformFacebook       AccountWithFollowerStatsPlatform = "facebook"
 	AccountWithFollowerStatsPlatformGoogleads      AccountWithFollowerStatsPlatform = "googleads"
 	AccountWithFollowerStatsPlatformGooglebusiness AccountWithFollowerStatsPlatform = "googlebusiness"
@@ -73,6 +74,8 @@ const (
 func (e AccountWithFollowerStatsPlatform) Valid() bool {
 	switch e {
 	case AccountWithFollowerStatsPlatformBluesky:
+		return true
+	case AccountWithFollowerStatsPlatformDiscord:
 		return true
 	case AccountWithFollowerStatsPlatformFacebook:
 		return true
@@ -684,6 +687,7 @@ func (e ConnectionLogEventType) Valid() bool {
 // Defines values for ConnectionLogPlatform.
 const (
 	ConnectionLogPlatformBluesky        ConnectionLogPlatform = "bluesky"
+	ConnectionLogPlatformDiscord        ConnectionLogPlatform = "discord"
 	ConnectionLogPlatformFacebook       ConnectionLogPlatform = "facebook"
 	ConnectionLogPlatformGooglebusiness ConnectionLogPlatform = "googlebusiness"
 	ConnectionLogPlatformInstagram      ConnectionLogPlatform = "instagram"
@@ -702,6 +706,8 @@ const (
 func (e ConnectionLogPlatform) Valid() bool {
 	switch e {
 	case ConnectionLogPlatformBluesky:
+		return true
+	case ConnectionLogPlatformDiscord:
 		return true
 	case ConnectionLogPlatformFacebook:
 		return true
@@ -1101,6 +1107,7 @@ func (e PostLogAction) Valid() bool {
 // Defines values for PostLogPlatform.
 const (
 	PostLogPlatformBluesky        PostLogPlatform = "bluesky"
+	PostLogPlatformDiscord        PostLogPlatform = "discord"
 	PostLogPlatformFacebook       PostLogPlatform = "facebook"
 	PostLogPlatformGooglebusiness PostLogPlatform = "googlebusiness"
 	PostLogPlatformInstagram      PostLogPlatform = "instagram"
@@ -1119,6 +1126,8 @@ const (
 func (e PostLogPlatform) Valid() bool {
 	switch e {
 	case PostLogPlatformBluesky:
+		return true
+	case PostLogPlatformDiscord:
 		return true
 	case PostLogPlatformFacebook:
 		return true
@@ -1254,6 +1263,7 @@ func (e SocialAccountAdsStatus) Valid() bool {
 // Defines values for SocialAccountPlatform.
 const (
 	SocialAccountPlatformBluesky        SocialAccountPlatform = "bluesky"
+	SocialAccountPlatformDiscord        SocialAccountPlatform = "discord"
 	SocialAccountPlatformFacebook       SocialAccountPlatform = "facebook"
 	SocialAccountPlatformGoogleads      SocialAccountPlatform = "googleads"
 	SocialAccountPlatformGooglebusiness SocialAccountPlatform = "googlebusiness"
@@ -1279,6 +1289,8 @@ const (
 func (e SocialAccountPlatform) Valid() bool {
 	switch e {
 	case SocialAccountPlatformBluesky:
+		return true
+	case SocialAccountPlatformDiscord:
 		return true
 	case SocialAccountPlatformFacebook:
 		return true
@@ -1755,6 +1767,7 @@ func (e GetFollowerStatsParamsGranularity) Valid() bool {
 // Defines values for GetAllAccountsHealthParamsPlatform.
 const (
 	GetAllAccountsHealthParamsPlatformBluesky        GetAllAccountsHealthParamsPlatform = "bluesky"
+	GetAllAccountsHealthParamsPlatformDiscord        GetAllAccountsHealthParamsPlatform = "discord"
 	GetAllAccountsHealthParamsPlatformFacebook       GetAllAccountsHealthParamsPlatform = "facebook"
 	GetAllAccountsHealthParamsPlatformGooglebusiness GetAllAccountsHealthParamsPlatform = "googlebusiness"
 	GetAllAccountsHealthParamsPlatformInstagram      GetAllAccountsHealthParamsPlatform = "instagram"
@@ -1773,6 +1786,8 @@ const (
 func (e GetAllAccountsHealthParamsPlatform) Valid() bool {
 	switch e {
 	case GetAllAccountsHealthParamsPlatformBluesky:
+		return true
+	case GetAllAccountsHealthParamsPlatformDiscord:
 		return true
 	case GetAllAccountsHealthParamsPlatformFacebook:
 		return true
@@ -2976,6 +2991,7 @@ func (e SelectLinkedInOrganizationJSONBodyAccountType) Valid() bool {
 // Defines values for GetConnectUrlParamsPlatform.
 const (
 	GetConnectUrlParamsPlatformBluesky        GetConnectUrlParamsPlatform = "bluesky"
+	GetConnectUrlParamsPlatformDiscord        GetConnectUrlParamsPlatform = "discord"
 	GetConnectUrlParamsPlatformFacebook       GetConnectUrlParamsPlatform = "facebook"
 	GetConnectUrlParamsPlatformGooglebusiness GetConnectUrlParamsPlatform = "googlebusiness"
 	GetConnectUrlParamsPlatformInstagram      GetConnectUrlParamsPlatform = "instagram"
@@ -2994,6 +3010,8 @@ const (
 func (e GetConnectUrlParamsPlatform) Valid() bool {
 	switch e {
 	case GetConnectUrlParamsPlatformBluesky:
+		return true
+	case GetConnectUrlParamsPlatformDiscord:
 		return true
 	case GetConnectUrlParamsPlatformFacebook:
 		return true
@@ -4368,6 +4386,7 @@ func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
 // Defines values for ValidatePostJSONBodyPlatformsPlatform.
 const (
 	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
+	ValidatePostJSONBodyPlatformsPlatformDiscord        ValidatePostJSONBodyPlatformsPlatform = "discord"
 	ValidatePostJSONBodyPlatformsPlatformFacebook       ValidatePostJSONBodyPlatformsPlatform = "facebook"
 	ValidatePostJSONBodyPlatformsPlatformGooglebusiness ValidatePostJSONBodyPlatformsPlatform = "googlebusiness"
 	ValidatePostJSONBodyPlatformsPlatformInstagram      ValidatePostJSONBodyPlatformsPlatform = "instagram"
@@ -4386,6 +4405,8 @@ const (
 func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
 	switch e {
 	case ValidatePostJSONBodyPlatformsPlatformBluesky:
+		return true
+	case ValidatePostJSONBodyPlatformsPlatformDiscord:
 		return true
 	case ValidatePostJSONBodyPlatformsPlatformFacebook:
 		return true
