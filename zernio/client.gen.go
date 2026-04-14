@@ -4220,13 +4220,13 @@ type AccountWithFollowerStats struct {
 	LastUpdated      *time.Time `json:"lastUpdated,omitempty"`
 
 	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
-	// - `qualityRating`: Phone number quality rating from Meta (`GREEN`, `YELLOW`, `RED`, or `UNKNOWN`)
-	// - `nameStatus`: Display name review status (`APPROVED`, `PENDING_REVIEW`, `DECLINED`, or `NONE`). Messages cannot be sent until the display name is approved by Meta.
-	// - `messagingLimitTier`: Maximum unique business-initiated conversations per 24h rolling window (`TIER_250`, `TIER_1K`, `TIER_10K`, `TIER_100K`, or `TIER_UNLIMITED`). Scales automatically as quality rating improves.
-	// - `verifiedName`: Meta-verified business display name
-	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
-	// - `wabaId`: WhatsApp Business Account ID
-	// - `phoneNumberId`: Meta phone number ID
+	// - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN)
+	// - nameStatus: Display name review status (APPROVED, PENDING_REVIEW, DECLINED, or NONE). Messages cannot be sent until the display name is approved by Meta.
+	// - messagingLimitTier: Maximum unique business-initiated conversations per 24h rolling window (TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED). Scales automatically as quality rating improves.
+	// - verifiedName: Meta-verified business display name
+	// - displayPhoneNumber: Formatted phone number (e.g., "+1 555-123-4567")
+	// - wabaId: WhatsApp Business Account ID
+	// - phoneNumberId: Meta phone number ID
 	Metadata *map[string]interface{} `json:"metadata,omitempty"`
 
 	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
@@ -5475,13 +5475,13 @@ type SocialAccount struct {
 	IsActive             *bool      `json:"isActive,omitempty"`
 
 	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
-	// - `qualityRating`: Phone number quality rating from Meta (`GREEN`, `YELLOW`, `RED`, or `UNKNOWN`)
-	// - `nameStatus`: Display name review status (`APPROVED`, `PENDING_REVIEW`, `DECLINED`, or `NONE`). Messages cannot be sent until the display name is approved by Meta.
-	// - `messagingLimitTier`: Maximum unique business-initiated conversations per 24h rolling window (`TIER_250`, `TIER_1K`, `TIER_10K`, `TIER_100K`, or `TIER_UNLIMITED`). Scales automatically as quality rating improves.
-	// - `verifiedName`: Meta-verified business display name
-	// - `displayPhoneNumber`: Formatted phone number (e.g., "+1 555-123-4567")
-	// - `wabaId`: WhatsApp Business Account ID
-	// - `phoneNumberId`: Meta phone number ID
+	// - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN)
+	// - nameStatus: Display name review status (APPROVED, PENDING_REVIEW, DECLINED, or NONE). Messages cannot be sent until the display name is approved by Meta.
+	// - messagingLimitTier: Maximum unique business-initiated conversations per 24h rolling window (TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED). Scales automatically as quality rating improves.
+	// - verifiedName: Meta-verified business display name
+	// - displayPhoneNumber: Formatted phone number (e.g., "+1 555-123-4567")
+	// - wabaId: WhatsApp Business Account ID
+	// - phoneNumberId: Meta phone number ID
 	Metadata *map[string]interface{} `json:"metadata,omitempty"`
 
 	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
@@ -5543,17 +5543,17 @@ type ThreadsPlatformData struct {
 // TikTokPlatformData Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
 // privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
 //
-// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+// Creator Inbox (draft mode): Set draft: true to send content to the TikTok Creator Inbox
 // instead of publishing immediately. The creator receives an inbox notification and completes
-// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+// the post using TikTok's editing flow. This maps to TikTok's post_mode: "MEDIA_UPLOAD" internally.
 //
-// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+// Important: The field publish_type is NOT supported. Use draft: true for Creator Inbox flow.
 //
-// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
-// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+// Photo drafts use the /v2/post/publish/content/init/ endpoint with post_mode: "MEDIA_UPLOAD".
+// Video drafts use the dedicated /v2/post/publish/inbox/video/init/ endpoint.
 //
-// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
-// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+// When draft: true, the video.upload scope is required. When draft is false or omitted
+// (direct post), the video.publish scope is required. For Creator Inbox, TikTok app version
 // must be 31.8 or higher.
 type TikTokPlatformData struct {
 	// AllowComment Allow comments on the post
@@ -5582,9 +5582,9 @@ type TikTokPlatformData struct {
 
 	// Draft When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing
 	// immediately. The creator receives an inbox notification to complete posting via TikTok's
-	// editing flow. Maps to TikTok API `post_mode: "MEDIA_UPLOAD"` (photos) or the dedicated
-	// inbox endpoint (videos). When false or omitted, publishes directly via `post_mode: "DIRECT_POST"`.
-	// Note: `publish_type` is not a supported field. Use this field instead.
+	// editing flow. Maps to TikTok API post_mode: "MEDIA_UPLOAD" (photos) or the dedicated
+	// inbox endpoint (videos). When false or omitted, publishes directly via post_mode: "DIRECT_POST".
+	// Note: publish_type is not a supported field. Use this field instead.
 	Draft *bool `json:"draft,omitempty"`
 
 	// ExpressConsentGiven User has given express consent for posting
@@ -7637,16 +7637,16 @@ type CreateInboxConversationJSONBody struct {
 	// AccountId The social account ID to send from
 	AccountId string `json:"accountId"`
 
-	// Message Text content of the message. At least one of `message` or attachment is required.
+	// Message Text content of the message. At least one of message or attachment is required.
 	Message *string `json:"message,omitempty"`
 
-	// ParticipantId Twitter numeric user ID of the recipient. Provide either this or `participantUsername`.
+	// ParticipantId Twitter numeric user ID of the recipient. Provide either this or participantUsername.
 	ParticipantId *string `json:"participantId,omitempty"`
 
-	// ParticipantUsername Twitter username (with or without @) of the recipient. Resolved to a user ID via lookup. Provide either this or `participantId`.
+	// ParticipantUsername Twitter username (with or without @) of the recipient. Resolved to a user ID via lookup. Provide either this or participantId.
 	ParticipantUsername *string `json:"participantUsername,omitempty"`
 
-	// SkipDmCheck Skip the `receives_your_dm` eligibility check before sending. Use if you have already verified the recipient accepts DMs.
+	// SkipDmCheck Skip the receives_your_dm eligibility check before sending. Use if you have already verified the recipient accepts DMs.
 	SkipDmCheck *bool `json:"skipDmCheck,omitempty"`
 }
 
@@ -8098,17 +8098,17 @@ type CreatePostJSONBody struct {
 	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
 	// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
 	//
-	// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+	// Creator Inbox (draft mode): Set draft: true to send content to the TikTok Creator Inbox
 	// instead of publishing immediately. The creator receives an inbox notification and completes
-	// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+	// the post using TikTok's editing flow. This maps to TikTok's post_mode: "MEDIA_UPLOAD" internally.
 	//
-	// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+	// Important: The field publish_type is NOT supported. Use draft: true for Creator Inbox flow.
 	//
-	// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
-	// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+	// Photo drafts use the /v2/post/publish/content/init/ endpoint with post_mode: "MEDIA_UPLOAD".
+	// Video drafts use the dedicated /v2/post/publish/inbox/video/init/ endpoint.
 	//
-	// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
-	// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+	// When draft: true, the video.upload scope is required. When draft is false or omitted
+	// (direct post), the video.publish scope is required. For Creator Inbox, TikTok app version
 	// must be 31.8 or higher.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
 	Timezone       *string             `json:"timezone,omitempty"`
@@ -8155,17 +8155,17 @@ type UpdatePostJSONBody struct {
 	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
 	// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
 	//
-	// **Creator Inbox (draft mode):** Set `draft: true` to send content to the TikTok Creator Inbox
+	// Creator Inbox (draft mode): Set draft: true to send content to the TikTok Creator Inbox
 	// instead of publishing immediately. The creator receives an inbox notification and completes
-	// the post using TikTok's editing flow. This maps to TikTok's `post_mode: "MEDIA_UPLOAD"` internally.
+	// the post using TikTok's editing flow. This maps to TikTok's post_mode: "MEDIA_UPLOAD" internally.
 	//
-	// **Important:** The field `publish_type` is NOT supported. Use `draft: true` for Creator Inbox flow.
+	// Important: The field publish_type is NOT supported. Use draft: true for Creator Inbox flow.
 	//
-	// **Photo drafts** use the `/v2/post/publish/content/init/` endpoint with `post_mode: "MEDIA_UPLOAD"`.
-	// **Video drafts** use the dedicated `/v2/post/publish/inbox/video/init/` endpoint.
+	// Photo drafts use the /v2/post/publish/content/init/ endpoint with post_mode: "MEDIA_UPLOAD".
+	// Video drafts use the dedicated /v2/post/publish/inbox/video/init/ endpoint.
 	//
-	// When `draft: true`, the `video.upload` scope is required. When `draft` is false or omitted
-	// (direct post), the `video.publish` scope is required. For Creator Inbox, TikTok app version
+	// When draft: true, the video.upload scope is required. When draft is false or omitted
+	// (direct post), the video.publish scope is required. For Creator Inbox, TikTok app version
 	// must be 31.8 or higher.
 	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -8846,7 +8846,7 @@ type CreateWhatsAppTemplateJSONBody struct {
 
 	// LibraryTemplateName Name of a pre-built template from Meta's template library (e.g., "appointment_reminder",
 	// "auto_pay_reminder_1", "address_update"). When provided, the template is pre-approved
-	// by Meta with no review wait. Omit `components` when using this field.
+	// by Meta with no review wait. Omit components when using this field.
 	LibraryTemplateName *string `json:"library_template_name,omitempty"`
 
 	// Name Template name (lowercase, letters/numbers/underscores, must start with a letter)
@@ -35806,7 +35806,7 @@ type GetInboxConversationMessagesResponse struct {
 			DeletedAt      *time.Time `json:"deletedAt,omitempty"`
 			DeliveredAt    *time.Time `json:"deliveredAt,omitempty"`
 
-			// DeliveryError Populated when `deliveryStatus === "failed"`.
+			// DeliveryError Populated when deliveryStatus === "failed".
 			DeliveryError *struct {
 				Code    *int    `json:"code,omitempty"`
 				Message *string `json:"message,omitempty"`
@@ -35835,7 +35835,7 @@ type GetInboxConversationMessagesResponse struct {
 			EditedAt *time.Time `json:"editedAt,omitempty"`
 			Id       *string    `json:"id,omitempty"`
 
-			// IsDeleted True if the sender has deleted (unsent) this message. The original `message` and `attachments` fields remain populated.
+			// IsDeleted True if the sender has deleted (unsent) this message. The original message and attachments fields remain populated.
 			IsDeleted *bool `json:"isDeleted,omitempty"`
 
 			// IsEdited True if the sender has edited this message at least once.
@@ -49293,7 +49293,7 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				DeletedAt      *time.Time `json:"deletedAt,omitempty"`
 				DeliveredAt    *time.Time `json:"deliveredAt,omitempty"`
 
-				// DeliveryError Populated when `deliveryStatus === "failed"`.
+				// DeliveryError Populated when deliveryStatus === "failed".
 				DeliveryError *struct {
 					Code    *int    `json:"code,omitempty"`
 					Message *string `json:"message,omitempty"`
@@ -49322,7 +49322,7 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				EditedAt *time.Time `json:"editedAt,omitempty"`
 				Id       *string    `json:"id,omitempty"`
 
-				// IsDeleted True if the sender has deleted (unsent) this message. The original `message` and `attachments` fields remain populated.
+				// IsDeleted True if the sender has deleted (unsent) this message. The original message and attachments fields remain populated.
 				IsDeleted *bool `json:"isDeleted,omitempty"`
 
 				// IsEdited True if the sender has edited this message at least once.
