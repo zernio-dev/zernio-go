@@ -4235,7 +4235,9 @@ type AccountWithFollowerStats struct {
 	ParentAccountId *string                             `json:"parentAccountId,omitempty"`
 	Platform        *AccountWithFollowerStatsPlatform   `json:"platform,omitempty"`
 	ProfileId       *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
-	ProfilePicture  *string                             `json:"profilePicture,omitempty"`
+
+	// ProfilePicture URL to the account's profile picture on the platform. May be null if the platform does not provide one.
+	ProfilePicture *string `json:"profilePicture,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
@@ -5488,6 +5490,9 @@ type SocialAccount struct {
 	ParentAccountId *string                  `json:"parentAccountId,omitempty"`
 	Platform        *SocialAccountPlatform   `json:"platform,omitempty"`
 	ProfileId       *SocialAccount_ProfileId `json:"profileId,omitempty"`
+
+	// ProfilePicture URL to the account's profile picture on the platform. May be null if the platform does not provide one.
+	ProfilePicture *string `json:"profilePicture,omitempty"`
 
 	// ProfileUrl Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
