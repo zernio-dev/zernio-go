@@ -6681,7 +6681,12 @@ type BoostPostJSONBody struct {
 		AgeMax    *int      `json:"ageMax,omitempty"`
 		AgeMin    *int      `json:"ageMin,omitempty"`
 		Countries *[]string `json:"countries,omitempty"`
-		Interests *[]string `json:"interests,omitempty"`
+
+		// Interests Interest objects from /v1/ads/interests. Each must include id and name.
+		Interests *[]struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+		} `json:"interests,omitempty"`
 	} `json:"targeting,omitempty"`
 
 	// Tracking Meta only. Tracking specs (pixel, URL tags).
@@ -6785,8 +6790,13 @@ type CreateStandaloneAdJSONBody struct {
 	Headline *string `json:"headline,omitempty"`
 
 	// ImageUrl Image URL (or video URL for TikTok). Not required for Google Search campaigns.
-	ImageUrl  *string   `json:"imageUrl,omitempty"`
-	Interests *[]string `json:"interests,omitempty"`
+	ImageUrl *string `json:"imageUrl,omitempty"`
+
+	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
+	Interests *[]struct {
+		Id   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"interests,omitempty"`
 
 	// Keywords Google Search only
 	Keywords *[]string `json:"keywords,omitempty"`
@@ -6871,7 +6881,12 @@ type UpdateAdJSONBody struct {
 		AgeMax    *int      `json:"ageMax,omitempty"`
 		AgeMin    *int      `json:"ageMin,omitempty"`
 		Countries *[]string `json:"countries,omitempty"`
-		Interests *[]string `json:"interests,omitempty"`
+
+		// Interests Interest objects from /v1/ads/interests. Each must include id and name.
+		Interests *[]struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+		} `json:"interests,omitempty"`
 	} `json:"targeting,omitempty"`
 }
 
