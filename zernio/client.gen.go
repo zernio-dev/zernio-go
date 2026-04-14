@@ -4366,7 +4366,10 @@ type Ad struct {
 	UnderscoreId *string   `json:"_id,omitempty"`
 	AdSetName    *string   `json:"adSetName,omitempty"`
 	AdType       *AdAdType `json:"adType,omitempty"`
-	Budget       *struct {
+
+	// BidStrategy Bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS). Ad set level overrides campaign level. Only present for Meta ads.
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	Budget      *struct {
 		Amount *float32      `json:"amount,omitempty"`
 		Type   *AdBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
@@ -4411,16 +4414,40 @@ type Ad struct {
 	Goal *AdGoal `json:"goal,omitempty"`
 
 	// IsExternal True for ads synced from platform ad managers
-	IsExternal          *bool       `json:"isExternal,omitempty"`
-	Metrics             *AdMetrics  `json:"metrics,omitempty"`
-	Name                *string     `json:"name,omitempty"`
+	IsExternal *bool      `json:"isExternal,omitempty"`
+	Metrics    *AdMetrics `json:"metrics,omitempty"`
+	Name       *string    `json:"name,omitempty"`
+
+	// OptimizationGoal Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION, LINK_CLICKS). Only present for Meta ads.
+	OptimizationGoal    *string     `json:"optimizationGoal,omitempty"`
 	Platform            *AdPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string     `json:"platformAdAccountId,omitempty"`
 	PlatformAdId        *string     `json:"platformAdId,omitempty"`
 	PlatformAdSetId     *string     `json:"platformAdSetId,omitempty"`
 	PlatformCampaignId  *string     `json:"platformCampaignId,omitempty"`
-	RejectionReason     *string     `json:"rejectionReason,omitempty"`
-	Schedule            *struct {
+
+	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC). Only present for Meta ads.
+	PlatformObjective *string `json:"platformObjective,omitempty"`
+
+	// PromotedObject Meta promoted object containing conversion event details. Structure varies by objective. Only present for Meta ads.
+	PromotedObject *struct {
+		// ApplicationId Facebook app ID
+		ApplicationId *string `json:"application_id,omitempty"`
+
+		// CustomEventType Conversion event type (e.g. PURCHASE, LEAD, COMPLETE_REGISTRATION, ADD_TO_CART)
+		CustomEventType *string `json:"custom_event_type,omitempty"`
+
+		// PageId Facebook page ID
+		PageId *string `json:"page_id,omitempty"`
+
+		// PixelId Meta pixel ID
+		PixelId *string `json:"pixel_id,omitempty"`
+
+		// ProductSetId Product catalog set ID
+		ProductSetId *string `json:"product_set_id,omitempty"`
+	} `json:"promotedObject,omitempty"`
+	RejectionReason *string `json:"rejectionReason,omitempty"`
+	Schedule        *struct {
 		EndDate   *time.Time `json:"endDate,omitempty"`
 		StartDate *time.Time `json:"startDate,omitempty"`
 	} `json:"schedule,omitempty"`
@@ -4448,18 +4475,34 @@ type AdStatus string
 type AdCampaign struct {
 	AccountId *string `json:"accountId,omitempty"`
 	AdCount   *int    `json:"adCount,omitempty"`
-	Budget    *struct {
+
+	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	Budget      *struct {
 		Amount *float32              `json:"amount,omitempty"`
 		Type   *AdCampaignBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
-	CampaignName        *string             `json:"campaignName,omitempty"`
-	EarliestAd          *time.Time          `json:"earliestAd,omitempty"`
-	LatestAd            *time.Time          `json:"latestAd,omitempty"`
-	Metrics             *AdMetrics          `json:"metrics,omitempty"`
-	Platform            *AdCampaignPlatform `json:"platform,omitempty"`
-	PlatformAdAccountId *string             `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string             `json:"platformCampaignId,omitempty"`
-	ProfileId           *string             `json:"profileId,omitempty"`
+	CampaignName *string    `json:"campaignName,omitempty"`
+	EarliestAd   *time.Time `json:"earliestAd,omitempty"`
+	LatestAd     *time.Time `json:"latestAd,omitempty"`
+	Metrics      *AdMetrics `json:"metrics,omitempty"`
+
+	// OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
+	OptimizationGoal    *AdCampaign_OptimizationGoal `json:"optimizationGoal,omitempty"`
+	Platform            *AdCampaignPlatform          `json:"platform,omitempty"`
+	PlatformAdAccountId *string                      `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string                      `json:"platformCampaignId,omitempty"`
+
+	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
+	PlatformObjective *string `json:"platformObjective,omitempty"`
+	ProfileId         *string `json:"profileId,omitempty"`
+
+	// PromotedObject Meta promoted object at campaign level (conversion event details)
+	PromotedObject *struct {
+		CustomEventType *string `json:"custom_event_type,omitempty"`
+		PageId          *string `json:"page_id,omitempty"`
+		PixelId         *string `json:"pixel_id,omitempty"`
+	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
 	Status *AdCampaignStatus `json:"status,omitempty"`
@@ -4467,6 +4510,17 @@ type AdCampaign struct {
 
 // AdCampaignBudgetType defines model for AdCampaign.Budget.Type.
 type AdCampaignBudgetType string
+
+// AdCampaignOptimizationGoal0 defines model for .
+type AdCampaignOptimizationGoal0 = string
+
+// AdCampaignOptimizationGoal1 defines model for .
+type AdCampaignOptimizationGoal1 = []string
+
+// AdCampaign_OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
+type AdCampaign_OptimizationGoal struct {
+	union json.RawMessage
+}
 
 // AdCampaignPlatform defines model for AdCampaign.Platform.
 type AdCampaignPlatform string
@@ -4501,13 +4555,26 @@ type AdTreeAdSet struct {
 	AdSetName *string `json:"adSetName,omitempty"`
 
 	// Ads Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent).
-	Ads    *[]Ad `json:"ads,omitempty"`
-	Budget *struct {
+	Ads *[]Ad `json:"ads,omitempty"`
+
+	// BidStrategy Bid strategy for this ad set (overrides campaign level when set)
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	Budget      *struct {
 		Amount *float32               `json:"amount,omitempty"`
 		Type   *AdTreeAdSetBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
-	Metrics         *AdMetrics `json:"metrics,omitempty"`
-	PlatformAdSetId *string    `json:"platformAdSetId,omitempty"`
+	Metrics *AdMetrics `json:"metrics,omitempty"`
+
+	// OptimizationGoal Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
+	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
+	PlatformAdSetId  *string `json:"platformAdSetId,omitempty"`
+
+	// PromotedObject Meta promoted object for this ad set (conversion event details)
+	PromotedObject *struct {
+		CustomEventType *string `json:"custom_event_type,omitempty"`
+		PageId          *string `json:"page_id,omitempty"`
+		PixelId         *string `json:"pixel_id,omitempty"`
+	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
 	Status *AdTreeAdSetStatus `json:"status,omitempty"`
@@ -4527,16 +4594,32 @@ type AdTreeCampaign struct {
 	AdCount    *int           `json:"adCount,omitempty"`
 	AdSetCount *int           `json:"adSetCount,omitempty"`
 	AdSets     *[]AdTreeAdSet `json:"adSets,omitempty"`
-	Budget     *struct {
+
+	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
+	BidStrategy *string `json:"bidStrategy,omitempty"`
+	Budget      *struct {
 		Amount *float32                  `json:"amount,omitempty"`
 		Type   *AdTreeCampaignBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
-	CampaignName        *string                 `json:"campaignName,omitempty"`
-	Metrics             *AdMetrics              `json:"metrics,omitempty"`
-	Platform            *AdTreeCampaignPlatform `json:"platform,omitempty"`
-	PlatformAdAccountId *string                 `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string                 `json:"platformCampaignId,omitempty"`
-	ProfileId           *string                 `json:"profileId,omitempty"`
+	CampaignName *string    `json:"campaignName,omitempty"`
+	Metrics      *AdMetrics `json:"metrics,omitempty"`
+
+	// OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
+	OptimizationGoal    *AdTreeCampaign_OptimizationGoal `json:"optimizationGoal,omitempty"`
+	Platform            *AdTreeCampaignPlatform          `json:"platform,omitempty"`
+	PlatformAdAccountId *string                          `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string                          `json:"platformCampaignId,omitempty"`
+
+	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
+	PlatformObjective *string `json:"platformObjective,omitempty"`
+	ProfileId         *string `json:"profileId,omitempty"`
+
+	// PromotedObject Meta promoted object at campaign level (conversion event details)
+	PromotedObject *struct {
+		CustomEventType *string `json:"custom_event_type,omitempty"`
+		PageId          *string `json:"page_id,omitempty"`
+		PixelId         *string `json:"pixel_id,omitempty"`
+	} `json:"promotedObject,omitempty"`
 
 	// Status Derived from child ad statuses
 	Status *AdTreeCampaignStatus `json:"status,omitempty"`
@@ -4544,6 +4627,17 @@ type AdTreeCampaign struct {
 
 // AdTreeCampaignBudgetType defines model for AdTreeCampaign.Budget.Type.
 type AdTreeCampaignBudgetType string
+
+// AdTreeCampaignOptimizationGoal0 defines model for .
+type AdTreeCampaignOptimizationGoal0 = string
+
+// AdTreeCampaignOptimizationGoal1 defines model for .
+type AdTreeCampaignOptimizationGoal1 = []string
+
+// AdTreeCampaign_OptimizationGoal Meta optimization goal. String if all ad sets share the same goal, array of distinct values if they differ.
+type AdTreeCampaign_OptimizationGoal struct {
+	union json.RawMessage
+}
 
 // AdTreeCampaignPlatform defines model for AdTreeCampaign.Platform.
 type AdTreeCampaignPlatform string
@@ -9582,6 +9676,130 @@ func (t AccountWithFollowerStats_ProfileId) MarshalJSON() ([]byte, error) {
 }
 
 func (t *AccountWithFollowerStats_ProfileId) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAdCampaignOptimizationGoal0 returns the union data inside the AdCampaign_OptimizationGoal as a AdCampaignOptimizationGoal0
+func (t AdCampaign_OptimizationGoal) AsAdCampaignOptimizationGoal0() (AdCampaignOptimizationGoal0, error) {
+	var body AdCampaignOptimizationGoal0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdCampaignOptimizationGoal0 overwrites any union data inside the AdCampaign_OptimizationGoal as the provided AdCampaignOptimizationGoal0
+func (t *AdCampaign_OptimizationGoal) FromAdCampaignOptimizationGoal0(v AdCampaignOptimizationGoal0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdCampaignOptimizationGoal0 performs a merge with any union data inside the AdCampaign_OptimizationGoal, using the provided AdCampaignOptimizationGoal0
+func (t *AdCampaign_OptimizationGoal) MergeAdCampaignOptimizationGoal0(v AdCampaignOptimizationGoal0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAdCampaignOptimizationGoal1 returns the union data inside the AdCampaign_OptimizationGoal as a AdCampaignOptimizationGoal1
+func (t AdCampaign_OptimizationGoal) AsAdCampaignOptimizationGoal1() (AdCampaignOptimizationGoal1, error) {
+	var body AdCampaignOptimizationGoal1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdCampaignOptimizationGoal1 overwrites any union data inside the AdCampaign_OptimizationGoal as the provided AdCampaignOptimizationGoal1
+func (t *AdCampaign_OptimizationGoal) FromAdCampaignOptimizationGoal1(v AdCampaignOptimizationGoal1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdCampaignOptimizationGoal1 performs a merge with any union data inside the AdCampaign_OptimizationGoal, using the provided AdCampaignOptimizationGoal1
+func (t *AdCampaign_OptimizationGoal) MergeAdCampaignOptimizationGoal1(v AdCampaignOptimizationGoal1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AdCampaign_OptimizationGoal) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AdCampaign_OptimizationGoal) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAdTreeCampaignOptimizationGoal0 returns the union data inside the AdTreeCampaign_OptimizationGoal as a AdTreeCampaignOptimizationGoal0
+func (t AdTreeCampaign_OptimizationGoal) AsAdTreeCampaignOptimizationGoal0() (AdTreeCampaignOptimizationGoal0, error) {
+	var body AdTreeCampaignOptimizationGoal0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdTreeCampaignOptimizationGoal0 overwrites any union data inside the AdTreeCampaign_OptimizationGoal as the provided AdTreeCampaignOptimizationGoal0
+func (t *AdTreeCampaign_OptimizationGoal) FromAdTreeCampaignOptimizationGoal0(v AdTreeCampaignOptimizationGoal0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdTreeCampaignOptimizationGoal0 performs a merge with any union data inside the AdTreeCampaign_OptimizationGoal, using the provided AdTreeCampaignOptimizationGoal0
+func (t *AdTreeCampaign_OptimizationGoal) MergeAdTreeCampaignOptimizationGoal0(v AdTreeCampaignOptimizationGoal0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAdTreeCampaignOptimizationGoal1 returns the union data inside the AdTreeCampaign_OptimizationGoal as a AdTreeCampaignOptimizationGoal1
+func (t AdTreeCampaign_OptimizationGoal) AsAdTreeCampaignOptimizationGoal1() (AdTreeCampaignOptimizationGoal1, error) {
+	var body AdTreeCampaignOptimizationGoal1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdTreeCampaignOptimizationGoal1 overwrites any union data inside the AdTreeCampaign_OptimizationGoal as the provided AdTreeCampaignOptimizationGoal1
+func (t *AdTreeCampaign_OptimizationGoal) FromAdTreeCampaignOptimizationGoal1(v AdTreeCampaignOptimizationGoal1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdTreeCampaignOptimizationGoal1 performs a merge with any union data inside the AdTreeCampaign_OptimizationGoal, using the provided AdTreeCampaignOptimizationGoal1
+func (t *AdTreeCampaign_OptimizationGoal) MergeAdTreeCampaignOptimizationGoal1(v AdTreeCampaignOptimizationGoal1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AdTreeCampaign_OptimizationGoal) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AdTreeCampaign_OptimizationGoal) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
