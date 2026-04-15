@@ -516,6 +516,36 @@ func (e ApiKeyScope) Valid() bool {
 	}
 }
 
+// Defines values for ConversionEventActionSource.
+const (
+	App             ConversionEventActionSource = "app"
+	Crm             ConversionEventActionSource = "crm"
+	Offline         ConversionEventActionSource = "offline"
+	PhoneCall       ConversionEventActionSource = "phone_call"
+	SystemGenerated ConversionEventActionSource = "system_generated"
+	Web             ConversionEventActionSource = "web"
+)
+
+// Valid indicates whether the value is a known member of the ConversionEventActionSource enum.
+func (e ConversionEventActionSource) Valid() bool {
+	switch e {
+	case App:
+		return true
+	case Crm:
+		return true
+	case Offline:
+		return true
+	case PhoneCall:
+		return true
+	case SystemGenerated:
+		return true
+	case Web:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for FacebookPlatformDataContentType.
 const (
 	FacebookPlatformDataContentTypeReel  FacebookPlatformDataContentType = "reel"
@@ -1815,6 +1845,42 @@ func (e UpdateAdCampaignStatusJSONBodyStatus) Valid() bool {
 	case UpdateAdCampaignStatusJSONBodyStatusActive:
 		return true
 	case UpdateAdCampaignStatusJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendConversionsJSONBodyConsentAdPersonalization.
+const (
+	SendConversionsJSONBodyConsentAdPersonalizationDENIED  SendConversionsJSONBodyConsentAdPersonalization = "DENIED"
+	SendConversionsJSONBodyConsentAdPersonalizationGRANTED SendConversionsJSONBodyConsentAdPersonalization = "GRANTED"
+)
+
+// Valid indicates whether the value is a known member of the SendConversionsJSONBodyConsentAdPersonalization enum.
+func (e SendConversionsJSONBodyConsentAdPersonalization) Valid() bool {
+	switch e {
+	case SendConversionsJSONBodyConsentAdPersonalizationDENIED:
+		return true
+	case SendConversionsJSONBodyConsentAdPersonalizationGRANTED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendConversionsJSONBodyConsentAdUserData.
+const (
+	SendConversionsJSONBodyConsentAdUserDataDENIED  SendConversionsJSONBodyConsentAdUserData = "DENIED"
+	SendConversionsJSONBodyConsentAdUserDataGRANTED SendConversionsJSONBodyConsentAdUserData = "GRANTED"
+)
+
+// Valid indicates whether the value is a known member of the SendConversionsJSONBodyConsentAdUserData enum.
+func (e SendConversionsJSONBodyConsentAdUserData) Valid() bool {
+	switch e {
+	case SendConversionsJSONBodyConsentAdUserDataDENIED:
+		return true
+	case SendConversionsJSONBodyConsentAdUserDataGRANTED:
 		return true
 	default:
 		return false
@@ -4459,6 +4525,98 @@ type BlueskyPlatformData struct {
 	} `json:"threadItems,omitempty"`
 }
 
+// ConversionEvent A single conversion event to relay to the ad platform. All PII fields
+// (email, phone, names) are hashed with SHA-256 server-side using each
+// platform's normalization rules before they leave Zernio. Callers send
+// plaintext.
+type ConversionEvent struct {
+	// ActionSource Where the conversion happened. Used by Meta; Google ignores.
+	ActionSource *ConversionEventActionSource `json:"actionSource,omitempty"`
+
+	// Currency ISO 4217 currency code.
+	Currency *string `json:"currency,omitempty"`
+
+	// EventId Unique dedup key. The same eventId must be used on pixel + CAPI
+	// to prevent double-counting. Mapped to event_id on Meta and
+	// transactionId on Google.
+	EventId string `json:"eventId"`
+
+	// EventName Standard event name (Purchase, Lead, CompleteRegistration, AddToCart,
+	// InitiateCheckout, AddPaymentInfo, Subscribe, StartTrial, ViewContent,
+	// Search, Contact, SubmitApplication, Schedule) or a custom string
+	// (only supported on platforms that accept custom events).
+	EventName string `json:"eventName"`
+
+	// EventTime When the conversion happened, in unix seconds.
+	EventTime int `json:"eventTime"`
+
+	// Items Item-level detail for ecommerce events.
+	Items *[]struct {
+		Category *string  `json:"category,omitempty"`
+		Id       *string  `json:"id,omitempty"`
+		Name     *string  `json:"name,omitempty"`
+		Price    *float32 `json:"price,omitempty"`
+		Quantity *int     `json:"quantity,omitempty"`
+	} `json:"items,omitempty"`
+
+	// PlatformData Escape hatch for platform-specific fields we haven't normalized. Forwarded as-is.
+	PlatformData *map[string]interface{} `json:"platformData,omitempty"`
+
+	// SourceUrl URL where the conversion originated (used by Meta).
+	SourceUrl *string `json:"sourceUrl,omitempty"`
+
+	// User User identity fields. More signals mean higher match rates.
+	User struct {
+		// ClickIds Platform click identifiers captured from the originating ad click.
+		ClickIds *struct {
+			// Fbc Meta click ID (from fbclid URL param).
+			Fbc *string `json:"fbc,omitempty"`
+
+			// Fbp Meta browser ID (_fbp cookie).
+			Fbp *string `json:"fbp,omitempty"`
+
+			// Gbraid Google iOS 14.5+ app attribution ID.
+			Gbraid *string `json:"gbraid,omitempty"`
+
+			// Gclid Google click ID (from gclid URL param).
+			Gclid *string `json:"gclid,omitempty"`
+
+			// Wbraid Google iOS 14.5+ web-to-app attribution ID.
+			Wbraid *string `json:"wbraid,omitempty"`
+		} `json:"clickIds,omitempty"`
+
+		// Country ISO 3166-1 alpha-2 country code, e.g. 'us'.
+		Country *string `json:"country,omitempty"`
+
+		// Email Plaintext email. Hashed server-side.
+		Email *openapi_types.Email `json:"email,omitempty"`
+
+		// ExternalId Stable customer identifier (e.g. CRM user ID). Hashed server-side.
+		ExternalId *string `json:"externalId,omitempty"`
+
+		// FirstName Plaintext first name. Hashed server-side.
+		FirstName *string `json:"firstName,omitempty"`
+
+		// IpAddress Client IP address. Sent plaintext.
+		IpAddress *string `json:"ipAddress,omitempty"`
+
+		// LastName Plaintext last name. Hashed server-side.
+		LastName *string `json:"lastName,omitempty"`
+
+		// Phone Phone number, ideally E.164. Hashed server-side.
+		Phone *string `json:"phone,omitempty"`
+
+		// UserAgent Client user-agent string. Sent plaintext.
+		UserAgent *string `json:"userAgent,omitempty"`
+	} `json:"user"`
+
+	// Value Conversion value in the specified currency.
+	Value *float32 `json:"value,omitempty"`
+}
+
+// ConversionEventActionSource Where the conversion happened. Used by Meta; Google ignores.
+type ConversionEventActionSource string
+
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	Details *map[string]interface{} `json:"details,omitempty"`
@@ -6327,6 +6485,33 @@ type UpdateAdCampaignStatusJSONBodyPlatform string
 
 // UpdateAdCampaignStatusJSONBodyStatus defines parameters for UpdateAdCampaignStatus.
 type UpdateAdCampaignStatusJSONBodyStatus string
+
+// SendConversionsJSONBody defines parameters for SendConversions.
+type SendConversionsJSONBody struct {
+	// AccountId SocialAccount ID (metaads or googleads).
+	AccountId string `json:"accountId"`
+
+	// Consent Batch-level user consent. Required by Google for EEA/UK
+	// events under the Feb 2026 restrictions. Ignored by Meta.
+	Consent *struct {
+		AdPersonalization *SendConversionsJSONBodyConsentAdPersonalization `json:"adPersonalization,omitempty"`
+		AdUserData        *SendConversionsJSONBodyConsentAdUserData        `json:"adUserData,omitempty"`
+	} `json:"consent,omitempty"`
+
+	// DestinationId Platform destination identifier. For Meta, the pixel/dataset
+	// ID. For Google, the conversion action resource name.
+	DestinationId string            `json:"destinationId"`
+	Events        []ConversionEvent `json:"events"`
+
+	// TestCode Meta `test_event_code` passthrough. Ignored by Google.
+	TestCode *string `json:"testCode,omitempty"`
+}
+
+// SendConversionsJSONBodyConsentAdPersonalization defines parameters for SendConversions.
+type SendConversionsJSONBodyConsentAdPersonalization string
+
+// SendConversionsJSONBodyConsentAdUserData defines parameters for SendConversions.
+type SendConversionsJSONBodyConsentAdUserData string
 
 // CreateStandaloneAdJSONBody defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBody struct {
@@ -8823,6 +9008,9 @@ type BoostPostJSONRequestBody BoostPostJSONBody
 // UpdateAdCampaignStatusJSONRequestBody defines body for UpdateAdCampaignStatus for application/json ContentType.
 type UpdateAdCampaignStatusJSONRequestBody UpdateAdCampaignStatusJSONBody
 
+// SendConversionsJSONRequestBody defines body for SendConversions for application/json ContentType.
+type SendConversionsJSONRequestBody SendConversionsJSONBody
+
 // CreateStandaloneAdJSONRequestBody defines body for CreateStandaloneAd for application/json ContentType.
 type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 
@@ -10096,6 +10284,9 @@ type ClientInterface interface {
 
 	UpdateAccount(ctx context.Context, accountId string, body UpdateAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListConversionDestinations request
+	ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetFacebookPages request
 	GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -10284,6 +10475,11 @@ type ClientInterface interface {
 	UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendConversionsWithBody request with any body
+	SendConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendConversions(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateStandaloneAdWithBody request with any body
 	CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11127,6 +11323,18 @@ func (c *Client) UpdateAccount(ctx context.Context, accountId string, body Updat
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConversionDestinationsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetFacebookPagesRequest(c.Server, accountId)
 	if err != nil {
@@ -11945,6 +12153,30 @@ func (c *Client) UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId 
 
 func (c *Client) UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateAdCampaignStatusRequest(c.Server, campaignId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendConversionsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendConversions(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendConversionsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -15575,6 +15807,40 @@ func NewUpdateAccountRequestWithBody(server string, accountId string, contentTyp
 	return req, nil
 }
 
+// NewListConversionDestinationsRequest generates requests for ListConversionDestinations
+func NewListConversionDestinationsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetFacebookPagesRequest generates requests for GetFacebookPages
 func NewGetFacebookPagesRequest(server string, accountId string) (*http.Request, error) {
 	var err error
@@ -18506,6 +18772,46 @@ func NewUpdateAdCampaignStatusRequestWithBody(server string, campaignId string, 
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendConversionsRequest calls the generic SendConversions builder with application/json body
+func NewSendConversionsRequest(server string, body SendConversionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendConversionsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendConversionsRequestWithBody generates requests for SendConversions with any type of body
+func NewSendConversionsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/conversions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -29184,6 +29490,9 @@ type ClientWithResponsesInterface interface {
 
 	UpdateAccountWithResponse(ctx context.Context, accountId string, body UpdateAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAccountResponse, error)
 
+	// ListConversionDestinationsWithResponse request
+	ListConversionDestinationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListConversionDestinationsResponse, error)
+
 	// GetFacebookPagesWithResponse request
 	GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error)
 
@@ -29372,6 +29681,11 @@ type ClientWithResponsesInterface interface {
 	UpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
 
 	UpdateAdCampaignStatusWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
+
+	// SendConversionsWithBodyWithResponse request with any body
+	SendConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error)
+
+	SendConversionsWithResponse(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error)
 
 	// CreateStandaloneAdWithBodyWithResponse request with any body
 	CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
@@ -30354,6 +30668,44 @@ func (r UpdateAccountResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListConversionDestinationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Destinations *[]struct {
+			// Id Destination identifier. Meta: pixel ID. Google:
+			// conversion action resource name.
+			Id     *string                                          `json:"id,omitempty"`
+			Name   *string                                          `json:"name,omitempty"`
+			Status *ListConversionDestinations200DestinationsStatus `json:"status,omitempty"`
+
+			// Type Present when the platform locks event type to the
+			// destination (Google conversion actions).
+			Type *string `json:"type,omitempty"`
+		} `json:"destinations,omitempty"`
+		Platform *ListConversionDestinations200Platform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type ListConversionDestinations200DestinationsStatus string
+type ListConversionDestinations200Platform string
+
+// Status returns HTTPResponse.Status
+func (r ListConversionDestinationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConversionDestinationsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -32160,6 +32512,55 @@ func (r UpdateAdCampaignStatusResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateAdCampaignStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendConversionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// EventsFailed Events rejected (see failures).
+		EventsFailed *int `json:"eventsFailed,omitempty"`
+
+		// EventsReceived Events accepted by the platform.
+		EventsReceived *int `json:"eventsReceived,omitempty"`
+		Failures       *[]struct {
+			Code *SendConversions_200_Failures_Code `json:"code,omitempty"`
+
+			// EventId Echoes back the eventId of the failed event.
+			EventId *string `json:"eventId,omitempty"`
+
+			// EventIndex Index into the submitted events array.
+			EventIndex *int    `json:"eventIndex,omitempty"`
+			Message    *string `json:"message,omitempty"`
+		} `json:"failures,omitempty"`
+		Platform *SendConversions200Platform `json:"platform,omitempty"`
+
+		// TraceId Platform trace ID (fbtrace_id for Meta, requestId for Google) for debugging.
+		TraceId *string `json:"traceId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type SendConversions200FailuresCode0 = string
+type SendConversions200FailuresCode1 = int
+type SendConversions_200_Failures_Code struct {
+	union json.RawMessage
+}
+type SendConversions200Platform string
+
+// Status returns HTTPResponse.Status
+func (r SendConversionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendConversionsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -38750,6 +39151,15 @@ func (c *ClientWithResponses) UpdateAccountWithResponse(ctx context.Context, acc
 	return ParseUpdateAccountResponse(rsp)
 }
 
+// ListConversionDestinationsWithResponse request returning *ListConversionDestinationsResponse
+func (c *ClientWithResponses) ListConversionDestinationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListConversionDestinationsResponse, error) {
+	rsp, err := c.ListConversionDestinations(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConversionDestinationsResponse(rsp)
+}
+
 // GetFacebookPagesWithResponse request returning *GetFacebookPagesResponse
 func (c *ClientWithResponses) GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error) {
 	rsp, err := c.GetFacebookPages(ctx, accountId, reqEditors...)
@@ -39351,6 +39761,23 @@ func (c *ClientWithResponses) UpdateAdCampaignStatusWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseUpdateAdCampaignStatusResponse(rsp)
+}
+
+// SendConversionsWithBodyWithResponse request with arbitrary body returning *SendConversionsResponse
+func (c *ClientWithResponses) SendConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error) {
+	rsp, err := c.SendConversionsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendConversionsResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendConversionsWithResponse(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error) {
+	rsp, err := c.SendConversions(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendConversionsResponse(rsp)
 }
 
 // CreateStandaloneAdWithBodyWithResponse request with arbitrary body returning *CreateStandaloneAdResponse
@@ -42000,6 +42427,52 @@ func ParseUpdateAccountResponse(rsp *http.Response) (*UpdateAccountResponse, err
 	return response, nil
 }
 
+// ParseListConversionDestinationsResponse parses an HTTP response from a ListConversionDestinationsWithResponse call
+func ParseListConversionDestinationsResponse(rsp *http.Response) (*ListConversionDestinationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConversionDestinationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Destinations *[]struct {
+				// Id Destination identifier. Meta: pixel ID. Google:
+				// conversion action resource name.
+				Id     *string                                          `json:"id,omitempty"`
+				Name   *string                                          `json:"name,omitempty"`
+				Status *ListConversionDestinations200DestinationsStatus `json:"status,omitempty"`
+
+				// Type Present when the platform locks event type to the
+				// destination (Google conversion actions).
+				Type *string `json:"type,omitempty"`
+			} `json:"destinations,omitempty"`
+			Platform *ListConversionDestinations200Platform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetFacebookPagesResponse parses an HTTP response from a GetFacebookPagesWithResponse call
 func ParseGetFacebookPagesResponse(rsp *http.Response) (*GetFacebookPagesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -44492,6 +44965,59 @@ func ParseUpdateAdCampaignStatusResponse(rsp *http.Response) (*UpdateAdCampaignS
 
 			// Updated Number of ads updated
 			Updated *int `json:"updated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendConversionsResponse parses an HTTP response from a SendConversionsWithResponse call
+func ParseSendConversionsResponse(rsp *http.Response) (*SendConversionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendConversionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// EventsFailed Events rejected (see failures).
+			EventsFailed *int `json:"eventsFailed,omitempty"`
+
+			// EventsReceived Events accepted by the platform.
+			EventsReceived *int `json:"eventsReceived,omitempty"`
+			Failures       *[]struct {
+				Code *SendConversions_200_Failures_Code `json:"code,omitempty"`
+
+				// EventId Echoes back the eventId of the failed event.
+				EventId *string `json:"eventId,omitempty"`
+
+				// EventIndex Index into the submitted events array.
+				EventIndex *int    `json:"eventIndex,omitempty"`
+				Message    *string `json:"message,omitempty"`
+			} `json:"failures,omitempty"`
+			Platform *SendConversions200Platform `json:"platform,omitempty"`
+
+			// TraceId Platform trace ID (fbtrace_id for Meta, requestId for Google) for debugging.
+			TraceId *string `json:"traceId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

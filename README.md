@@ -229,6 +229,7 @@ func main() {
 |--------|-------------|
 | `client.ListAdAccountsWithResponse()` | List ad accounts |
 | `client.ListAdsWithResponse()` | List ads |
+| `client.ListConversionDestinationsWithResponse()` | List destinations for the Conversions API |
 | `client.CreateStandaloneAdWithResponse()` | Create standalone ad |
 | `client.GetAdWithResponse()` | Get ad details |
 | `client.GetAdAnalyticsWithResponse()` | Get ad analytics |
@@ -236,6 +237,7 @@ func main() {
 | `client.DeleteAdWithResponse()` | Cancel an ad |
 | `client.BoostPostWithResponse()` | Boost post as ad |
 | `client.SearchAdInterestsWithResponse()` | Search targeting interests |
+| `client.SendConversionsWithResponse()` | Send conversion events to an ad platform |
 
 ### Broadcasts
 | Method | Description |
