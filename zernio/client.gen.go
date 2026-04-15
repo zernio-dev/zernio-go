@@ -4589,7 +4589,7 @@ type ConversionEvent struct {
 		Country *string `json:"country,omitempty"`
 
 		// Email Plaintext email. Hashed server-side.
-		Email *openapi_types.Email `json:"email,omitempty"`
+		Email *string `json:"email,omitempty"`
 
 		// ExternalId Stable customer identifier (e.g. CRM user ID). Hashed server-side.
 		ExternalId *string `json:"externalId,omitempty"`
