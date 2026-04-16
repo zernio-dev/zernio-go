@@ -627,6 +627,45 @@ func (e GoogleBusinessPlatformDataCallToActionType) Valid() bool {
 	}
 }
 
+// Defines values for GoogleBusinessPlatformDataOfferOfferType.
+const (
+	GoogleBusinessPlatformDataOfferOfferTypeBUYONEGETONE GoogleBusinessPlatformDataOfferOfferType = "BUY_ONE_GET_ONE"
+	GoogleBusinessPlatformDataOfferOfferTypeOFFER        GoogleBusinessPlatformDataOfferOfferType = "OFFER"
+)
+
+// Valid indicates whether the value is a known member of the GoogleBusinessPlatformDataOfferOfferType enum.
+func (e GoogleBusinessPlatformDataOfferOfferType) Valid() bool {
+	switch e {
+	case GoogleBusinessPlatformDataOfferOfferTypeBUYONEGETONE:
+		return true
+	case GoogleBusinessPlatformDataOfferOfferTypeOFFER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GoogleBusinessPlatformDataTopicType.
+const (
+	GoogleBusinessPlatformDataTopicTypeEVENT    GoogleBusinessPlatformDataTopicType = "EVENT"
+	GoogleBusinessPlatformDataTopicTypeOFFER    GoogleBusinessPlatformDataTopicType = "OFFER"
+	GoogleBusinessPlatformDataTopicTypeSTANDARD GoogleBusinessPlatformDataTopicType = "STANDARD"
+)
+
+// Valid indicates whether the value is a known member of the GoogleBusinessPlatformDataTopicType enum.
+func (e GoogleBusinessPlatformDataTopicType) Valid() bool {
+	switch e {
+	case GoogleBusinessPlatformDataTopicTypeEVENT:
+		return true
+	case GoogleBusinessPlatformDataTopicTypeOFFER:
+		return true
+	case GoogleBusinessPlatformDataTopicTypeSTANDARD:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for InstagramAccountInsightsResponseMetricType.
 const (
 	InstagramAccountInsightsResponseMetricTypeTimeSeries InstagramAccountInsightsResponseMetricType = "time_series"
@@ -4876,7 +4915,7 @@ type GeoRestriction struct {
 	Countries []string `json:"countries"`
 }
 
-// GoogleBusinessPlatformData Text and single image only (no videos). Optional call-to-action button. Posts appear on GBP, Google Search, and Maps. Use locationId for multi-location posting.
+// GoogleBusinessPlatformData Text and single image only (no videos). Supports STANDARD, EVENT, and OFFER post types. Posts appear on GBP, Google Search, and Maps. Use locationId for multi-location posting.
 type GoogleBusinessPlatformData struct {
 	// CallToAction Optional call-to-action button displayed on the post
 	CallToAction *struct {
@@ -4887,15 +4926,74 @@ type GoogleBusinessPlatformData struct {
 		Url string `json:"url"`
 	} `json:"callToAction,omitempty"`
 
+	// Event Event details. Required when topicType is EVENT. Google returns 400 if omitted for EVENT posts.
+	Event *struct {
+		// Schedule Event date/time range. Uses Google's date format (NOT ISO 8601).
+		Schedule struct {
+			// EndDate Event end date as { year, month, day }
+			EndDate struct {
+				Day   int `json:"day"`
+				Month int `json:"month"`
+				Year  int `json:"year"`
+			} `json:"endDate"`
+
+			// EndTime Optional end time as { hours, minutes } in 24h format
+			EndTime *struct {
+				Hours   *int `json:"hours,omitempty"`
+				Minutes *int `json:"minutes,omitempty"`
+			} `json:"endTime,omitempty"`
+
+			// StartDate Event start date as { year, month, day }
+			StartDate struct {
+				Day   int `json:"day"`
+				Month int `json:"month"`
+				Year  int `json:"year"`
+			} `json:"startDate"`
+
+			// StartTime Optional start time as { hours, minutes } in 24h format
+			StartTime *struct {
+				Hours   *int `json:"hours,omitempty"`
+				Minutes *int `json:"minutes,omitempty"`
+			} `json:"startTime,omitempty"`
+		} `json:"schedule"`
+
+		// Title Event name (displayed as the event heading on Google Search and Maps)
+		Title string `json:"title"`
+	} `json:"event,omitempty"`
+
 	// LanguageCode BCP 47 language code (e.g. "en", "de", "es"). Auto-detected if omitted. Set explicitly for short or mixed-language posts.
 	LanguageCode *string `json:"languageCode,omitempty"`
 
 	// LocationId Target GBP location ID (e.g. "locations/123456789"). If omitted, uses the default location. Use GET /v1/accounts/{id}/gmb-locations to list locations.
 	LocationId *string `json:"locationId,omitempty"`
+
+	// Offer Offer details. Required when topicType is OFFER. All fields are optional per Google's API, but at least one is recommended.
+	Offer *struct {
+		// CouponCode Coupon code for the offer
+		CouponCode *string `json:"couponCode,omitempty"`
+
+		// OfferType Type of offer
+		OfferType *GoogleBusinessPlatformDataOfferOfferType `json:"offerType,omitempty"`
+
+		// RedeemOnlineUrl URL where the offer can be redeemed online
+		RedeemOnlineUrl *string `json:"redeemOnlineUrl,omitempty"`
+
+		// TermsConditions Terms and conditions for the offer
+		TermsConditions *string `json:"termsConditions,omitempty"`
+	} `json:"offer,omitempty"`
+
+	// TopicType Post type. STANDARD is a regular update. EVENT requires the event object. OFFER requires the offer object. Defaults to STANDARD if omitted.
+	TopicType *GoogleBusinessPlatformDataTopicType `json:"topicType,omitempty"`
 }
 
 // GoogleBusinessPlatformDataCallToActionType Button action type: LEARN_MORE, BOOK, ORDER, SHOP, SIGN_UP, CALL
 type GoogleBusinessPlatformDataCallToActionType string
+
+// GoogleBusinessPlatformDataOfferOfferType Type of offer
+type GoogleBusinessPlatformDataOfferOfferType string
+
+// GoogleBusinessPlatformDataTopicType Post type. STANDARD is a regular update. EVENT requires the event object. OFFER requires the offer object. Defaults to STANDARD if omitted.
+type GoogleBusinessPlatformDataTopicType string
 
 // InstagramAccountInsightsResponse defines model for InstagramAccountInsightsResponse.
 type InstagramAccountInsightsResponse struct {
