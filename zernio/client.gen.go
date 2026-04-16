@@ -4783,7 +4783,7 @@ type ErrorResponse struct {
 	Error   *string                 `json:"error,omitempty"`
 }
 
-// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
+// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 type FacebookPlatformData struct {
 	// ContentType Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *FacebookPlatformDataContentType `json:"contentType,omitempty"`
@@ -4793,6 +4793,9 @@ type FacebookPlatformData struct {
 
 	// FirstComment Optional first comment to post immediately after publishing (feed posts and reels, not stories). Skipped when draft is true.
 	FirstComment *string `json:"firstComment,omitempty"`
+
+	// GeoRestriction Country-level geo-restriction (allowlist). When set, the post is only visible to users in the specified countries. Supported on Facebook (feed posts, videos, reels), X/Twitter (media-level restriction), and LinkedIn (organization pages only, min 300 targeted followers). Ignored on unsupported platforms. Stories (Facebook, Instagram) do not support geo-restriction.
+	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
 
 	// PageId Target Facebook Page ID for multi-page posting. If omitted, uses the default page. Use GET /v1/accounts/{id}/facebook-page to list pages.
 	PageId *string `json:"pageId,omitempty"`
@@ -4865,6 +4868,12 @@ type FoodMenuLabel struct {
 type FoodMenuSection struct {
 	Items  *[]FoodMenuItem `json:"items,omitempty"`
 	Labels []FoodMenuLabel `json:"labels"`
+}
+
+// GeoRestriction Country-level geo-restriction (allowlist). When set, the post is only visible to users in the specified countries. Supported on Facebook (feed posts, videos, reels), X/Twitter (media-level restriction), and LinkedIn (organization pages only, min 300 targeted followers). Ignored on unsupported platforms. Stories (Facebook, Instagram) do not support geo-restriction.
+type GeoRestriction struct {
+	// Countries ISO 3166-1 alpha-2 country codes (uppercase). Only users in these countries can see the post. Maximum 25 countries per post. Example: ["US", "CA", "GB", "ES"].
+	Countries []string `json:"countries"`
 }
 
 // GoogleBusinessPlatformData Text and single image only (no videos). Optional call-to-action button. Posts appear on GBP, Google Search, and Maps. Use locationId for multi-location posting.
@@ -5087,7 +5096,7 @@ type LinkedInAggregateAnalyticsTotalResponse struct {
 // LinkedInAggregateAnalyticsTotalResponseAggregation defines model for LinkedInAggregateAnalyticsTotalResponse.Aggregation.
 type LinkedInAggregateAnalyticsTotalResponseAggregation string
 
-// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB). Link previews auto-generated when no media attached. Use organizationUrn for multi-org posting.
+// LinkedInPlatformData Up to 20 images, no multi-video. Single PDF supported (max 100MB). Link previews auto-generated when no media attached. Use organizationUrn for multi-org posting. Geo-restriction only works for organization pages (not personal profiles) and requires the targeted audience to exceed 300 followers.
 type LinkedInPlatformData struct {
 	// DisableLinkPreview Set to true to disable automatic link previews for URLs in the post content (default is false)
 	DisableLinkPreview *bool `json:"disableLinkPreview,omitempty"`
@@ -5097,6 +5106,9 @@ type LinkedInPlatformData struct {
 
 	// FirstComment Optional first comment to add after the post is created
 	FirstComment *string `json:"firstComment,omitempty"`
+
+	// GeoRestriction Country-level geo-restriction (allowlist). When set, the post is only visible to users in the specified countries. Supported on Facebook (feed posts, videos, reels), X/Twitter (media-level restriction), and LinkedIn (organization pages only, min 300 targeted followers). Ignored on unsupported platforms. Stories (Facebook, Instagram) do not support geo-restriction.
+	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
 
 	// OrganizationUrn Target LinkedIn Organization URN (e.g. "urn:li:organization:123456789"). If omitted, uses the default org. Use GET /v1/accounts/{id}/linkedin-organizations to list orgs.
 	OrganizationUrn *string `json:"organizationUrn,omitempty"`
@@ -5710,8 +5722,11 @@ type TikTokPlatformDataCommercialContentType string
 // TikTokPlatformDataMediaType Optional override. Defaults based on provided media items.
 type TikTokPlatformDataMediaType string
 
-// TwitterPlatformData defines model for TwitterPlatformData.
+// TwitterPlatformData X (Twitter) geo-restriction applies at the media level. Media in geo-restricted tweets will be hidden for users outside the specified countries; the tweet text itself remains visible globally. Requires media to be attached (ignored for text-only tweets).
 type TwitterPlatformData struct {
+	// GeoRestriction Country-level geo-restriction (allowlist). When set, the post is only visible to users in the specified countries. Supported on Facebook (feed posts, videos, reels), X/Twitter (media-level restriction), and LinkedIn (organization pages only, min 300 targeted followers). Ignored on unsupported platforms. Stories (Facebook, Instagram) do not support geo-restriction.
+	GeoRestriction *GeoRestriction `json:"geoRestriction,omitempty"`
+
 	// LongVideo Enable long video uploads (over 140 seconds) using amplify_video media category. Requires the connected X account to have an active X Premium subscription. When true, videos are uploaded with the amplify_video category which supports longer durations (up to 10 minutes via API). When false or omitted, the standard tweet_video category is used (140 second limit). Note that not all Premium accounts have API long-video access, as X may require separate allowlisting.
 	LongVideo *bool `json:"longVideo,omitempty"`
 
@@ -8171,7 +8186,7 @@ type CreatePostJSONBody struct {
 	Content             *string `json:"content,omitempty"`
 	CrosspostingEnabled *bool   `json:"crosspostingEnabled,omitempty"`
 
-	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
 	Hashtags         *[]string             `json:"hashtags,omitempty"`
 
@@ -8269,7 +8284,7 @@ type BulkUploadPostsParams struct {
 type UpdatePostJSONBody struct {
 	Content *string `json:"content,omitempty"`
 
-	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s).
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
 
 	// Recycling Configure automatic post recycling (reposting at regular intervals).
