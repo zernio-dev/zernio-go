@@ -69,6 +69,7 @@ func main() {
 | `client.GetTikTokCreatorInfoWithResponse()` | Get TikTok creator info |
 | `client.UpdateAccountWithResponse()` | Update account |
 | `client.DeleteAccountWithResponse()` | Disconnect account |
+| `client.BatchGetGoogleBusinessReviewsWithResponse()` | Batch get reviews |
 
 ### Profiles
 | Method | Description |
@@ -334,7 +335,14 @@ func main() {
 |--------|-------------|
 | `client.ListGoogleBusinessPlaceActionsWithResponse()` | List action links |
 | `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create action link |
+| `client.UpdateGoogleBusinessPlaceActionWithResponse()` | Update action link |
 | `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete action link |
+
+### GMB Services
+| Method | Description |
+|--------|-------------|
+| `client.GetGoogleBusinessServicesWithResponse()` | Get services |
+| `client.UpdateGoogleBusinessServicesWithResponse()` | Replace services |
 
 ### Messages (Inbox)
 | Method | Description |
