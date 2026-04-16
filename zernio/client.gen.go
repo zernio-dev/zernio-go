@@ -1193,9 +1193,6 @@ const (
 	WebhookEventsAccountConnected    WebhookEvents = "account.connected"
 	WebhookEventsAccountDisconnected WebhookEvents = "account.disconnected"
 	WebhookEventsCommentReceived     WebhookEvents = "comment.received"
-	WebhookEventsGbpMediaNew         WebhookEvents = "gbp.media.new"
-	WebhookEventsGbpReviewNew        WebhookEvents = "gbp.review.new"
-	WebhookEventsGbpReviewUpdated    WebhookEvents = "gbp.review.updated"
 	WebhookEventsMessageDeleted      WebhookEvents = "message.deleted"
 	WebhookEventsMessageDelivered    WebhookEvents = "message.delivered"
 	WebhookEventsMessageEdited       WebhookEvents = "message.edited"
@@ -1219,12 +1216,6 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsAccountDisconnected:
 		return true
 	case WebhookEventsCommentReceived:
-		return true
-	case WebhookEventsGbpMediaNew:
-		return true
-	case WebhookEventsGbpReviewNew:
-		return true
-	case WebhookEventsGbpReviewUpdated:
 		return true
 	case WebhookEventsMessageDeleted:
 		return true
@@ -3863,9 +3854,6 @@ const (
 	CreateWebhookSettingsJSONBodyEventsAccountConnected    CreateWebhookSettingsJSONBodyEvents = "account.connected"
 	CreateWebhookSettingsJSONBodyEventsAccountDisconnected CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CreateWebhookSettingsJSONBodyEventsCommentReceived     CreateWebhookSettingsJSONBodyEvents = "comment.received"
-	CreateWebhookSettingsJSONBodyEventsGbpMediaNew         CreateWebhookSettingsJSONBodyEvents = "gbp.media.new"
-	CreateWebhookSettingsJSONBodyEventsGbpReviewNew        CreateWebhookSettingsJSONBodyEvents = "gbp.review.new"
-	CreateWebhookSettingsJSONBodyEventsGbpReviewUpdated    CreateWebhookSettingsJSONBodyEvents = "gbp.review.updated"
 	CreateWebhookSettingsJSONBodyEventsMessageReceived     CreateWebhookSettingsJSONBodyEvents = "message.received"
 	CreateWebhookSettingsJSONBodyEventsPostCancelled       CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	CreateWebhookSettingsJSONBodyEventsPostFailed          CreateWebhookSettingsJSONBodyEvents = "post.failed"
@@ -3883,12 +3871,6 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CreateWebhookSettingsJSONBodyEventsAccountDisconnected:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsCommentReceived:
-		return true
-	case CreateWebhookSettingsJSONBodyEventsGbpMediaNew:
-		return true
-	case CreateWebhookSettingsJSONBodyEventsGbpReviewNew:
-		return true
-	case CreateWebhookSettingsJSONBodyEventsGbpReviewUpdated:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsMessageReceived:
 		return true
@@ -3914,9 +3896,6 @@ const (
 	AccountConnected    UpdateWebhookSettingsJSONBodyEvents = "account.connected"
 	AccountDisconnected UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CommentReceived     UpdateWebhookSettingsJSONBodyEvents = "comment.received"
-	GbpMediaNew         UpdateWebhookSettingsJSONBodyEvents = "gbp.media.new"
-	GbpReviewNew        UpdateWebhookSettingsJSONBodyEvents = "gbp.review.new"
-	GbpReviewUpdated    UpdateWebhookSettingsJSONBodyEvents = "gbp.review.updated"
 	MessageReceived     UpdateWebhookSettingsJSONBodyEvents = "message.received"
 	PostCancelled       UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	PostFailed          UpdateWebhookSettingsJSONBodyEvents = "post.failed"
@@ -3934,12 +3913,6 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case AccountDisconnected:
 		return true
 	case CommentReceived:
-		return true
-	case GbpMediaNew:
-		return true
-	case GbpReviewNew:
-		return true
-	case GbpReviewUpdated:
 		return true
 	case MessageReceived:
 		return true
