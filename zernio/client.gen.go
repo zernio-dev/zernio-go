@@ -7911,7 +7911,7 @@ type SendInboxMessageJSONBody struct {
 		Type *SendInboxMessageJSONBodyReplyMarkupType `json:"type,omitempty"`
 	} `json:"replyMarkup,omitempty"`
 
-	// ReplyTo Platform message ID to reply to (Telegram only).
+	// ReplyTo Platform message ID to quote-reply to. For WhatsApp, pass the wamid (available in message.platformMessageId from webhooks). For Telegram, pass the Telegram message ID.
 	ReplyTo *string `json:"replyTo,omitempty"`
 
 	// Template Generic template for carousels (Instagram/Facebook only, ignored on Telegram).
@@ -7965,7 +7965,7 @@ type SendInboxMessageMultipartBody struct {
 	// ReplyMarkup JSON string of replyMarkup object (same schema as application/json body)
 	ReplyMarkup *string `json:"replyMarkup,omitempty"`
 
-	// ReplyTo Platform message ID to reply to (Telegram only)
+	// ReplyTo Platform message ID to quote-reply to. For WhatsApp, pass the wamid (available in message.platformMessageId from webhooks). For Telegram, pass the Telegram message ID.
 	ReplyTo *string `json:"replyTo,omitempty"`
 
 	// Template JSON string of template object (same schema as application/json body)
