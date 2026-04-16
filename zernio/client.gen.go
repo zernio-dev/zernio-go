@@ -137,18 +137,27 @@ func (e AdBudgetType) Valid() bool {
 
 // Defines values for AdGoal.
 const (
-	AdGoalAwareness  AdGoal = "awareness"
-	AdGoalEngagement AdGoal = "engagement"
-	AdGoalTraffic    AdGoal = "traffic"
-	AdGoalVideoViews AdGoal = "video_views"
+	AdGoalAppPromotion   AdGoal = "app_promotion"
+	AdGoalAwareness      AdGoal = "awareness"
+	AdGoalConversions    AdGoal = "conversions"
+	AdGoalEngagement     AdGoal = "engagement"
+	AdGoalLeadGeneration AdGoal = "lead_generation"
+	AdGoalTraffic        AdGoal = "traffic"
+	AdGoalVideoViews     AdGoal = "video_views"
 )
 
 // Valid indicates whether the value is a known member of the AdGoal enum.
 func (e AdGoal) Valid() bool {
 	switch e {
+	case AdGoalAppPromotion:
+		return true
 	case AdGoalAwareness:
 		return true
+	case AdGoalConversions:
+		return true
 	case AdGoalEngagement:
+		return true
+	case AdGoalLeadGeneration:
 		return true
 	case AdGoalTraffic:
 		return true
@@ -540,6 +549,30 @@ func (e ConversionEventActionSource) Valid() bool {
 	case SystemGenerated:
 		return true
 	case Web:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DiscordPlatformDataThreadFromMessageAutoArchiveDuration.
+const (
+	N10080 DiscordPlatformDataThreadFromMessageAutoArchiveDuration = 10080
+	N1440  DiscordPlatformDataThreadFromMessageAutoArchiveDuration = 1440
+	N4320  DiscordPlatformDataThreadFromMessageAutoArchiveDuration = 4320
+	N60    DiscordPlatformDataThreadFromMessageAutoArchiveDuration = 60
+)
+
+// Valid indicates whether the value is a known member of the DiscordPlatformDataThreadFromMessageAutoArchiveDuration enum.
+func (e DiscordPlatformDataThreadFromMessageAutoArchiveDuration) Valid() bool {
+	switch e {
+	case N10080:
+		return true
+	case N1440:
+		return true
+	case N4320:
+		return true
+	case N60:
 		return true
 	default:
 		return false
@@ -1703,18 +1736,27 @@ func (e BoostPostJSONBodyBudgetType) Valid() bool {
 
 // Defines values for BoostPostJSONBodyGoal.
 const (
-	BoostPostJSONBodyGoalAwareness  BoostPostJSONBodyGoal = "awareness"
-	BoostPostJSONBodyGoalEngagement BoostPostJSONBodyGoal = "engagement"
-	BoostPostJSONBodyGoalTraffic    BoostPostJSONBodyGoal = "traffic"
-	BoostPostJSONBodyGoalVideoViews BoostPostJSONBodyGoal = "video_views"
+	BoostPostJSONBodyGoalAppPromotion   BoostPostJSONBodyGoal = "app_promotion"
+	BoostPostJSONBodyGoalAwareness      BoostPostJSONBodyGoal = "awareness"
+	BoostPostJSONBodyGoalConversions    BoostPostJSONBodyGoal = "conversions"
+	BoostPostJSONBodyGoalEngagement     BoostPostJSONBodyGoal = "engagement"
+	BoostPostJSONBodyGoalLeadGeneration BoostPostJSONBodyGoal = "lead_generation"
+	BoostPostJSONBodyGoalTraffic        BoostPostJSONBodyGoal = "traffic"
+	BoostPostJSONBodyGoalVideoViews     BoostPostJSONBodyGoal = "video_views"
 )
 
 // Valid indicates whether the value is a known member of the BoostPostJSONBodyGoal enum.
 func (e BoostPostJSONBodyGoal) Valid() bool {
 	switch e {
+	case BoostPostJSONBodyGoalAppPromotion:
+		return true
 	case BoostPostJSONBodyGoalAwareness:
 		return true
+	case BoostPostJSONBodyGoalConversions:
+		return true
 	case BoostPostJSONBodyGoalEngagement:
+		return true
+	case BoostPostJSONBodyGoalLeadGeneration:
 		return true
 	case BoostPostJSONBodyGoalTraffic:
 		return true
@@ -1967,18 +2009,27 @@ func (e CreateStandaloneAdJSONBodyCampaignType) Valid() bool {
 
 // Defines values for CreateStandaloneAdJSONBodyGoal.
 const (
-	CreateStandaloneAdJSONBodyGoalAwareness  CreateStandaloneAdJSONBodyGoal = "awareness"
-	CreateStandaloneAdJSONBodyGoalEngagement CreateStandaloneAdJSONBodyGoal = "engagement"
-	CreateStandaloneAdJSONBodyGoalTraffic    CreateStandaloneAdJSONBodyGoal = "traffic"
-	CreateStandaloneAdJSONBodyGoalVideoViews CreateStandaloneAdJSONBodyGoal = "video_views"
+	CreateStandaloneAdJSONBodyGoalAppPromotion   CreateStandaloneAdJSONBodyGoal = "app_promotion"
+	CreateStandaloneAdJSONBodyGoalAwareness      CreateStandaloneAdJSONBodyGoal = "awareness"
+	CreateStandaloneAdJSONBodyGoalConversions    CreateStandaloneAdJSONBodyGoal = "conversions"
+	CreateStandaloneAdJSONBodyGoalEngagement     CreateStandaloneAdJSONBodyGoal = "engagement"
+	CreateStandaloneAdJSONBodyGoalLeadGeneration CreateStandaloneAdJSONBodyGoal = "lead_generation"
+	CreateStandaloneAdJSONBodyGoalTraffic        CreateStandaloneAdJSONBodyGoal = "traffic"
+	CreateStandaloneAdJSONBodyGoalVideoViews     CreateStandaloneAdJSONBodyGoal = "video_views"
 )
 
 // Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyGoal enum.
 func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	switch e {
+	case CreateStandaloneAdJSONBodyGoalAppPromotion:
+		return true
 	case CreateStandaloneAdJSONBodyGoalAwareness:
 		return true
+	case CreateStandaloneAdJSONBodyGoalConversions:
+		return true
 	case CreateStandaloneAdJSONBodyGoalEngagement:
+		return true
+	case CreateStandaloneAdJSONBodyGoalLeadGeneration:
 		return true
 	case CreateStandaloneAdJSONBodyGoalTraffic:
 		return true
@@ -4173,6 +4224,8 @@ type Ad struct {
 		// VideoUrl Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
 		VideoUrl *string `json:"videoUrl,omitempty"`
 	} `json:"creative,omitempty"`
+
+	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *AdGoal `json:"goal,omitempty"`
 
 	// IsExternal True for ads synced from platform ad managers
@@ -4224,7 +4277,7 @@ type AdAdType string
 // AdBudgetType defines model for Ad.Budget.Type.
 type AdBudgetType string
 
-// AdGoal defines model for Ad.Goal.
+// AdGoal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 type AdGoal string
 
 // AdPlatform defines model for Ad.Platform.
@@ -4616,6 +4669,113 @@ type ConversionEvent struct {
 
 // ConversionEventActionSource Where the conversion happened. Used by Meta; Google ignores.
 type ConversionEventActionSource string
+
+// DiscordPlatformData Discord message settings. Supports plain text (2,000 chars), rich embeds (up to 10), native polls, forum posts, threads, and announcement crossposts. Media attachments support images (JPEG, PNG, GIF, WebP), videos (MP4), and documents (up to 10 files, 25 MB each). Webhook identity (username + avatar) can be customized per-account via PATCH /v1/connect/discord or per-post via webhookUsername/webhookAvatarUrl.
+type DiscordPlatformData struct {
+	// ChannelId Target channel snowflake ID. Determines which channel in the connected server receives the message.
+	ChannelId string `json:"channelId"`
+
+	// Crosspost Auto-crosspost to every server following this announcement channel (type 5). No-op for regular text channels.
+	Crosspost *bool `json:"crosspost,omitempty"`
+
+	// Embeds Up to 10 Discord embed objects (combined max 6,000 characters across all embeds). Sent alongside or instead of plain-text content.
+	Embeds *[]struct {
+		Author *struct {
+			IconUrl *string `json:"icon_url,omitempty"`
+
+			// Name Author name (max 256 chars)
+			Name *string `json:"name,omitempty"`
+			Url  *string `json:"url,omitempty"`
+		} `json:"author,omitempty"`
+
+		// Color Embed accent color as decimal integer (e.g. 5814783 for blue). Convert hex to decimal.
+		Color *int `json:"color,omitempty"`
+
+		// Description Embed body text (max 4,096 chars)
+		Description *string `json:"description,omitempty"`
+
+		// Fields Up to 25 fields per embed
+		Fields *[]struct {
+			// Inline Display fields side-by-side
+			Inline *bool `json:"inline,omitempty"`
+
+			// Name Field name (max 256 chars)
+			Name string `json:"name"`
+
+			// Value Field value (max 1
+			Value string `json:"value"`
+		} `json:"fields,omitempty"`
+		Footer *struct {
+			IconUrl *string `json:"icon_url,omitempty"`
+
+			// Text Footer text (max 2
+			Text *string `json:"text,omitempty"`
+		} `json:"footer,omitempty"`
+		Image *struct {
+			Url *string `json:"url,omitempty"`
+		} `json:"image,omitempty"`
+		Thumbnail *struct {
+			Url *string `json:"url,omitempty"`
+		} `json:"thumbnail,omitempty"`
+
+		// Title Embed title (max 256 chars)
+		Title *string `json:"title,omitempty"`
+
+		// Url URL the title links to
+		Url *string `json:"url,omitempty"`
+	} `json:"embeds,omitempty"`
+
+	// ForumAppliedTags Tag snowflake IDs to apply to forum posts. Max 5 tags.
+	ForumAppliedTags *[]string `json:"forumAppliedTags,omitempty"`
+
+	// ForumThreadName Thread title for forum channel posts (type 15). Required when posting to a forum channel.
+	ForumThreadName *string `json:"forumThreadName,omitempty"`
+
+	// Poll Native Discord poll. Cannot be combined with media attachments in the same message.
+	Poll *struct {
+		// AllowMultiselect Allow users to select multiple answers. Default false.
+		AllowMultiselect *bool `json:"allow_multiselect,omitempty"`
+
+		// Answers 1-10 answer options
+		Answers *[]struct {
+			PollMedia *struct {
+				// Text Answer text
+				Text *string `json:"text,omitempty"`
+			} `json:"poll_media,omitempty"`
+		} `json:"answers,omitempty"`
+
+		// Duration Poll duration in hours (1-768). Default 24.
+		Duration *int `json:"duration,omitempty"`
+		Question *struct {
+			// Text Poll question (max 300 chars)
+			Text string `json:"text"`
+		} `json:"question,omitempty"`
+	} `json:"poll,omitempty"`
+
+	// ThreadFromMessage Create a follow-up thread under the published message.
+	ThreadFromMessage *struct {
+		// AutoArchiveDuration Auto-archive after inactivity (minutes)
+		AutoArchiveDuration *DiscordPlatformDataThreadFromMessageAutoArchiveDuration `json:"autoArchiveDuration,omitempty"`
+
+		// Name Thread name (1-100 chars)
+		Name *string `json:"name,omitempty"`
+
+		// RateLimitPerUser Slow-mode duration in seconds (0-21600)
+		RateLimitPerUser *int `json:"rateLimitPerUser,omitempty"`
+	} `json:"threadFromMessage,omitempty"`
+
+	// Tts Send as text-to-speech message. Discord reads the message aloud in the channel.
+	Tts *bool `json:"tts,omitempty"`
+
+	// WebhookAvatarUrl Override the webhook avatar URL for this post only. Falls back to the account-level default.
+	WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+
+	// WebhookUsername Override the webhook display name for this post only (1-80 chars). Falls back to the account-level default set via PATCH /v1/connect/discord.
+	WebhookUsername *string `json:"webhookUsername,omitempty"`
+}
+
+// DiscordPlatformDataThreadFromMessageAutoArchiveDuration Auto-archive after inactivity (minutes)
+type DiscordPlatformDataThreadFromMessageAutoArchiveDuration int
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
@@ -5015,8 +5175,11 @@ type PlatformAnalytics struct {
 	Analytics       *PostAnalytics `json:"analytics,omitempty"`
 
 	// ErrorMessage Error details when status is failed
-	ErrorMessage    *string                  `json:"errorMessage,omitempty"`
-	Platform        *string                  `json:"platform,omitempty"`
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+	Platform     *string `json:"platform,omitempty"`
+
+	// PlatformPostId The native post ID on the platform (e.g. Instagram media ID, tweet ID)
+	PlatformPostId  *string                  `json:"platformPostId,omitempty"`
 	PlatformPostUrl *string                  `json:"platformPostUrl,omitempty"`
 	Status          *PlatformAnalyticsStatus `json:"status,omitempty"`
 
@@ -5925,6 +6088,21 @@ type UpdateAccountJSONBody struct {
 	Username    *string `json:"username,omitempty"`
 }
 
+// UpdateDiscordSettingsJSONBody defines parameters for UpdateDiscordSettings.
+type UpdateDiscordSettingsJSONBody struct {
+	// AccountId Discord account ID
+	AccountId string `json:"accountId"`
+
+	// ChannelId Switch to a different channel in the same guild. Must be a text (0), announcement (5), or forum (15) channel.
+	ChannelId *string `json:"channelId,omitempty"`
+
+	// WebhookAvatarUrl Custom avatar URL. Empty string resets to default bot avatar.
+	WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+
+	// WebhookUsername Custom display name for the webhook (1-80 chars). Empty string resets to default ("Zernio"). Cannot contain "clyde" or "discord".
+	WebhookUsername *string `json:"webhookUsername,omitempty"`
+}
+
 // UpdateFacebookPageJSONBody defines parameters for UpdateFacebookPage.
 type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
@@ -6402,9 +6580,11 @@ type BoostPostJSONBody struct {
 		Amount float32                     `json:"amount"`
 		Type   BoostPostJSONBodyBudgetType `json:"type"`
 	} `json:"budget"`
-	Currency *string               `json:"currency,omitempty"`
-	Goal     BoostPostJSONBodyGoal `json:"goal"`
-	Name     string                `json:"name"`
+	Currency *string `json:"currency,omitempty"`
+
+	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+	Goal BoostPostJSONBodyGoal `json:"goal"`
+	Name string                `json:"name"`
 
 	// PlatformPostId Platform post ID (alternative to postId)
 	PlatformPostId *string `json:"platformPostId,omitempty"`
@@ -6549,8 +6729,10 @@ type CreateStandaloneAdJSONBody struct {
 	Currency     *string                                 `json:"currency,omitempty"`
 
 	// EndDate Required for lifetime budgets
-	EndDate *time.Time                     `json:"endDate,omitempty"`
-	Goal    CreateStandaloneAdJSONBodyGoal `json:"goal"`
+	EndDate *time.Time `json:"endDate,omitempty"`
+
+	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+	Goal CreateStandaloneAdJSONBodyGoal `json:"goal"`
 
 	// Headline Required for most platforms. Max: Meta=255, Google=30, Pinterest=100
 	Headline *string `json:"headline,omitempty"`
@@ -8954,6 +9136,9 @@ type UpdateAccountGroupJSONRequestBody UpdateAccountGroupJSONBody
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
 type UpdateAccountJSONRequestBody UpdateAccountJSONBody
 
+// UpdateDiscordSettingsJSONRequestBody defines body for UpdateDiscordSettings for application/json ContentType.
+type UpdateDiscordSettingsJSONRequestBody UpdateDiscordSettingsJSONBody
+
 // UpdateFacebookPageJSONRequestBody defines body for UpdateFacebookPage for application/json ContentType.
 type UpdateFacebookPageJSONRequestBody UpdateFacebookPageJSONBody
 
@@ -9855,6 +10040,32 @@ func (t *PlatformTarget_PlatformSpecificData) MergeBlueskyPlatformData(v Bluesky
 	return err
 }
 
+// AsDiscordPlatformData returns the union data inside the PlatformTarget_PlatformSpecificData as a DiscordPlatformData
+func (t PlatformTarget_PlatformSpecificData) AsDiscordPlatformData() (DiscordPlatformData, error) {
+	var body DiscordPlatformData
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromDiscordPlatformData overwrites any union data inside the PlatformTarget_PlatformSpecificData as the provided DiscordPlatformData
+func (t *PlatformTarget_PlatformSpecificData) FromDiscordPlatformData(v DiscordPlatformData) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeDiscordPlatformData performs a merge with any union data inside the PlatformTarget_PlatformSpecificData, using the provided DiscordPlatformData
+func (t *PlatformTarget_PlatformSpecificData) MergeDiscordPlatformData(v DiscordPlatformData) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 // AsPostUserId0 returns the union data inside the Post_UserId as a PostUserId0
 func (t Post_UserId) AsPostUserId0() (PostUserId0, error) {
 	var body PostUserId0
@@ -10286,6 +10497,17 @@ type ClientInterface interface {
 
 	// ListConversionDestinations request
 	ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDiscordChannels request
+	GetDiscordChannels(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDiscordSettings request
+	GetDiscordSettings(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateDiscordSettingsWithBody request with any body
+	UpdateDiscordSettingsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateDiscordSettings(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetFacebookPages request
 	GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11325,6 +11547,54 @@ func (c *Client) UpdateAccount(ctx context.Context, accountId string, body Updat
 
 func (c *Client) ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListConversionDestinationsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDiscordChannels(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDiscordChannelsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDiscordSettings(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDiscordSettingsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDiscordSettingsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDiscordSettingsRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDiscordSettings(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDiscordSettingsRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -15837,6 +16107,121 @@ func NewListConversionDestinationsRequest(server string, accountId string) (*htt
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetDiscordChannelsRequest generates requests for GetDiscordChannels
+func NewGetDiscordChannelsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/discord-channels", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDiscordSettingsRequest generates requests for GetDiscordSettings
+func NewGetDiscordSettingsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/discord-settings", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateDiscordSettingsRequest calls the generic UpdateDiscordSettings builder with application/json body
+func NewUpdateDiscordSettingsRequest(server string, accountId string, body UpdateDiscordSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateDiscordSettingsRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewUpdateDiscordSettingsRequestWithBody generates requests for UpdateDiscordSettings with any type of body
+func NewUpdateDiscordSettingsRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/discord-settings", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -29493,6 +29878,17 @@ type ClientWithResponsesInterface interface {
 	// ListConversionDestinationsWithResponse request
 	ListConversionDestinationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListConversionDestinationsResponse, error)
 
+	// GetDiscordChannelsWithResponse request
+	GetDiscordChannelsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordChannelsResponse, error)
+
+	// GetDiscordSettingsWithResponse request
+	GetDiscordSettingsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordSettingsResponse, error)
+
+	// UpdateDiscordSettingsWithBodyWithResponse request with any body
+	UpdateDiscordSettingsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDiscordSettingsResponse, error)
+
+	UpdateDiscordSettingsWithResponse(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDiscordSettingsResponse, error)
+
 	// GetFacebookPagesWithResponse request
 	GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error)
 
@@ -30706,6 +31102,133 @@ func (r ListConversionDestinationsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListConversionDestinationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDiscordChannelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Channels *[]struct {
+			// Id Channel snowflake ID
+			Id *string `json:"id,omitempty"`
+
+			// Name Channel name
+			Name *string `json:"name,omitempty"`
+
+			// Type Channel type: 0 (text), 5 (announcement), 15 (forum)
+			Type *int `json:"type,omitempty"`
+		} `json:"channels,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDiscordChannelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDiscordChannelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetDiscordSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Account *struct {
+			UnderscoreId *string `json:"_id,omitempty"`
+
+			// ChannelId Connected channel snowflake ID
+			ChannelId *string `json:"channelId,omitempty"`
+
+			// ChannelName Channel name
+			ChannelName *string `json:"channelName,omitempty"`
+
+			// ChannelType Channel type (0 = text, 5 = announcement, 15 = forum)
+			ChannelType *string `json:"channelType,omitempty"`
+
+			// DisplayName Guild - #channel display name
+			DisplayName *string `json:"displayName,omitempty"`
+
+			// GuildId Guild (server) snowflake ID
+			GuildId  *string `json:"guildId,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+
+			// ProfilePicture Guild icon URL
+			ProfilePicture *string `json:"profilePicture,omitempty"`
+
+			// Username Channel name
+			Username *string `json:"username,omitempty"`
+
+			// WebhookAvatarUrl Custom webhook avatar URL (null = default bot avatar)
+			WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+
+			// WebhookUsername Custom webhook display name (null = default "Zernio")
+			WebhookUsername *string `json:"webhookUsername,omitempty"`
+		} `json:"account,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDiscordSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDiscordSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateDiscordSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Account *struct {
+			UnderscoreId     *string `json:"_id,omitempty"`
+			ChannelId        *string `json:"channelId,omitempty"`
+			ChannelName      *string `json:"channelName,omitempty"`
+			ChannelType      *string `json:"channelType,omitempty"`
+			DisplayName      *string `json:"displayName,omitempty"`
+			GuildId          *string `json:"guildId,omitempty"`
+			Platform         *string `json:"platform,omitempty"`
+			ProfilePicture   *string `json:"profilePicture,omitempty"`
+			Username         *string `json:"username,omitempty"`
+			WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+			WebhookUsername  *string `json:"webhookUsername,omitempty"`
+		} `json:"account,omitempty"`
+		Message *string `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateDiscordSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateDiscordSettingsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -39160,6 +39683,41 @@ func (c *ClientWithResponses) ListConversionDestinationsWithResponse(ctx context
 	return ParseListConversionDestinationsResponse(rsp)
 }
 
+// GetDiscordChannelsWithResponse request returning *GetDiscordChannelsResponse
+func (c *ClientWithResponses) GetDiscordChannelsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordChannelsResponse, error) {
+	rsp, err := c.GetDiscordChannels(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDiscordChannelsResponse(rsp)
+}
+
+// GetDiscordSettingsWithResponse request returning *GetDiscordSettingsResponse
+func (c *ClientWithResponses) GetDiscordSettingsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordSettingsResponse, error) {
+	rsp, err := c.GetDiscordSettings(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDiscordSettingsResponse(rsp)
+}
+
+// UpdateDiscordSettingsWithBodyWithResponse request with arbitrary body returning *UpdateDiscordSettingsResponse
+func (c *ClientWithResponses) UpdateDiscordSettingsWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDiscordSettingsResponse, error) {
+	rsp, err := c.UpdateDiscordSettingsWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDiscordSettingsResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateDiscordSettingsWithResponse(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDiscordSettingsResponse, error) {
+	rsp, err := c.UpdateDiscordSettings(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDiscordSettingsResponse(rsp)
+}
+
 // GetFacebookPagesWithResponse request returning *GetFacebookPagesResponse
 func (c *ClientWithResponses) GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error) {
 	rsp, err := c.GetFacebookPages(ctx, accountId, reqEditors...)
@@ -42455,6 +43013,163 @@ func ParseListConversionDestinationsResponse(rsp *http.Response) (*ListConversio
 				Type *string `json:"type,omitempty"`
 			} `json:"destinations,omitempty"`
 			Platform *ListConversionDestinations200Platform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDiscordChannelsResponse parses an HTTP response from a GetDiscordChannelsWithResponse call
+func ParseGetDiscordChannelsResponse(rsp *http.Response) (*GetDiscordChannelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDiscordChannelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Channels *[]struct {
+				// Id Channel snowflake ID
+				Id *string `json:"id,omitempty"`
+
+				// Name Channel name
+				Name *string `json:"name,omitempty"`
+
+				// Type Channel type: 0 (text), 5 (announcement), 15 (forum)
+				Type *int `json:"type,omitempty"`
+			} `json:"channels,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDiscordSettingsResponse parses an HTTP response from a GetDiscordSettingsWithResponse call
+func ParseGetDiscordSettingsResponse(rsp *http.Response) (*GetDiscordSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDiscordSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Account *struct {
+				UnderscoreId *string `json:"_id,omitempty"`
+
+				// ChannelId Connected channel snowflake ID
+				ChannelId *string `json:"channelId,omitempty"`
+
+				// ChannelName Channel name
+				ChannelName *string `json:"channelName,omitempty"`
+
+				// ChannelType Channel type (0 = text, 5 = announcement, 15 = forum)
+				ChannelType *string `json:"channelType,omitempty"`
+
+				// DisplayName Guild - #channel display name
+				DisplayName *string `json:"displayName,omitempty"`
+
+				// GuildId Guild (server) snowflake ID
+				GuildId  *string `json:"guildId,omitempty"`
+				Platform *string `json:"platform,omitempty"`
+
+				// ProfilePicture Guild icon URL
+				ProfilePicture *string `json:"profilePicture,omitempty"`
+
+				// Username Channel name
+				Username *string `json:"username,omitempty"`
+
+				// WebhookAvatarUrl Custom webhook avatar URL (null = default bot avatar)
+				WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+
+				// WebhookUsername Custom webhook display name (null = default "Zernio")
+				WebhookUsername *string `json:"webhookUsername,omitempty"`
+			} `json:"account,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateDiscordSettingsResponse parses an HTTP response from a UpdateDiscordSettingsWithResponse call
+func ParseUpdateDiscordSettingsResponse(rsp *http.Response) (*UpdateDiscordSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateDiscordSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Account *struct {
+				UnderscoreId     *string `json:"_id,omitempty"`
+				ChannelId        *string `json:"channelId,omitempty"`
+				ChannelName      *string `json:"channelName,omitempty"`
+				ChannelType      *string `json:"channelType,omitempty"`
+				DisplayName      *string `json:"displayName,omitempty"`
+				GuildId          *string `json:"guildId,omitempty"`
+				Platform         *string `json:"platform,omitempty"`
+				ProfilePicture   *string `json:"profilePicture,omitempty"`
+				Username         *string `json:"username,omitempty"`
+				WebhookAvatarUrl *string `json:"webhookAvatarUrl,omitempty"`
+				WebhookUsername  *string `json:"webhookUsername,omitempty"`
+			} `json:"account,omitempty"`
+			Message *string `json:"message,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
