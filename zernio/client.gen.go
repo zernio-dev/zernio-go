@@ -1206,6 +1206,8 @@ const (
 	WebhookEventsPostPublished       WebhookEvents = "post.published"
 	WebhookEventsPostRecycled        WebhookEvents = "post.recycled"
 	WebhookEventsPostScheduled       WebhookEvents = "post.scheduled"
+	WebhookEventsReviewNew           WebhookEvents = "review.new"
+	WebhookEventsReviewUpdated       WebhookEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the WebhookEvents enum.
@@ -1242,6 +1244,10 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsPostRecycled:
 		return true
 	case WebhookEventsPostScheduled:
+		return true
+	case WebhookEventsReviewNew:
+		return true
+	case WebhookEventsReviewUpdated:
 		return true
 	default:
 		return false
@@ -3003,6 +3009,129 @@ func (e SendInboxMessageJSONBodyButtonsType) Valid() bool {
 	}
 }
 
+// Defines values for SendInboxMessageJSONBodyInteractiveAction1Name.
+const (
+	SendInboxMessageJSONBodyInteractiveAction1NameCtaUrl SendInboxMessageJSONBodyInteractiveAction1Name = "cta_url"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction1Name enum.
+func (e SendInboxMessageJSONBodyInteractiveAction1Name) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction1NameCtaUrl:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction2Name.
+const (
+	Flow SendInboxMessageJSONBodyInteractiveAction2Name = "flow"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2Name enum.
+func (e SendInboxMessageJSONBodyInteractiveAction2Name) Valid() bool {
+	switch e {
+	case Flow:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction.
+const (
+	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionDataExchange SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction = "data_exchange"
+	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionNavigate     SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction = "navigate"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction enum.
+func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionDataExchange:
+		return true
+	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionNavigate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion.
+const (
+	N3 SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion = "3"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion enum.
+func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion) Valid() bool {
+	switch e {
+	case N3:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersMode.
+const (
+	SendInboxMessageJSONBodyInteractiveAction2ParametersModeDraft SendInboxMessageJSONBodyInteractiveAction2ParametersMode = "draft"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersMode enum.
+func (e SendInboxMessageJSONBodyInteractiveAction2ParametersMode) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction2ParametersModeDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveHeaderType.
+const (
+	SendInboxMessageJSONBodyInteractiveHeaderTypeDocument SendInboxMessageJSONBodyInteractiveHeaderType = "document"
+	SendInboxMessageJSONBodyInteractiveHeaderTypeImage    SendInboxMessageJSONBodyInteractiveHeaderType = "image"
+	SendInboxMessageJSONBodyInteractiveHeaderTypeText     SendInboxMessageJSONBodyInteractiveHeaderType = "text"
+	SendInboxMessageJSONBodyInteractiveHeaderTypeVideo    SendInboxMessageJSONBodyInteractiveHeaderType = "video"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveHeaderType enum.
+func (e SendInboxMessageJSONBodyInteractiveHeaderType) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveHeaderTypeDocument:
+		return true
+	case SendInboxMessageJSONBodyInteractiveHeaderTypeImage:
+		return true
+	case SendInboxMessageJSONBodyInteractiveHeaderTypeText:
+		return true
+	case SendInboxMessageJSONBodyInteractiveHeaderTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveType.
+const (
+	SendInboxMessageJSONBodyInteractiveTypeCtaUrl SendInboxMessageJSONBodyInteractiveType = "cta_url"
+	SendInboxMessageJSONBodyInteractiveTypeFlow   SendInboxMessageJSONBodyInteractiveType = "flow"
+	SendInboxMessageJSONBodyInteractiveTypeList   SendInboxMessageJSONBodyInteractiveType = "list"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveType enum.
+func (e SendInboxMessageJSONBodyInteractiveType) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveTypeCtaUrl:
+		return true
+	case SendInboxMessageJSONBodyInteractiveTypeFlow:
+		return true
+	case SendInboxMessageJSONBodyInteractiveTypeList:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendInboxMessageJSONBodyMessageTag.
 const (
 	ACCOUNTUPDATE        SendInboxMessageJSONBodyMessageTag = "ACCOUNT_UPDATE"
@@ -3779,16 +3908,16 @@ func (e ValidatePostJSONBodyMediaItemsType) Valid() bool {
 
 // Defines values for ValidatePostJSONBodyPlatformsCustomMediaType.
 const (
-	Image ValidatePostJSONBodyPlatformsCustomMediaType = "image"
-	Video ValidatePostJSONBodyPlatformsCustomMediaType = "video"
+	ValidatePostJSONBodyPlatformsCustomMediaTypeImage ValidatePostJSONBodyPlatformsCustomMediaType = "image"
+	ValidatePostJSONBodyPlatformsCustomMediaTypeVideo ValidatePostJSONBodyPlatformsCustomMediaType = "video"
 )
 
 // Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsCustomMediaType enum.
 func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
 	switch e {
-	case Image:
+	case ValidatePostJSONBodyPlatformsCustomMediaTypeImage:
 		return true
-	case Video:
+	case ValidatePostJSONBodyPlatformsCustomMediaTypeVideo:
 		return true
 	default:
 		return false
@@ -3861,6 +3990,8 @@ const (
 	CreateWebhookSettingsJSONBodyEventsPostPublished       CreateWebhookSettingsJSONBodyEvents = "post.published"
 	CreateWebhookSettingsJSONBodyEventsPostRecycled        CreateWebhookSettingsJSONBodyEvents = "post.recycled"
 	CreateWebhookSettingsJSONBodyEventsPostScheduled       CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	CreateWebhookSettingsJSONBodyEventsReviewNew           CreateWebhookSettingsJSONBodyEvents = "review.new"
+	CreateWebhookSettingsJSONBodyEventsReviewUpdated       CreateWebhookSettingsJSONBodyEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the CreateWebhookSettingsJSONBodyEvents enum.
@@ -3886,6 +4017,10 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostScheduled:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsReviewNew:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsReviewUpdated:
+		return true
 	default:
 		return false
 	}
@@ -3903,6 +4038,8 @@ const (
 	PostPublished       UpdateWebhookSettingsJSONBodyEvents = "post.published"
 	PostRecycled        UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
 	PostScheduled       UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	ReviewNew           UpdateWebhookSettingsJSONBodyEvents = "review.new"
+	ReviewUpdated       UpdateWebhookSettingsJSONBodyEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWebhookSettingsJSONBodyEvents enum.
@@ -3927,6 +4064,10 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case PostRecycled:
 		return true
 	case PostScheduled:
+		return true
+	case ReviewNew:
+		return true
+	case ReviewUpdated:
 		return true
 	default:
 		return false
@@ -3971,16 +4112,16 @@ func (e CreateWhatsAppFlowJSONBodyCategories) Valid() bool {
 
 // Defines values for SendWhatsAppFlowMessageJSONBodyFlowAction.
 const (
-	DataExchange SendWhatsAppFlowMessageJSONBodyFlowAction = "data_exchange"
-	Navigate     SendWhatsAppFlowMessageJSONBodyFlowAction = "navigate"
+	SendWhatsAppFlowMessageJSONBodyFlowActionDataExchange SendWhatsAppFlowMessageJSONBodyFlowAction = "data_exchange"
+	SendWhatsAppFlowMessageJSONBodyFlowActionNavigate     SendWhatsAppFlowMessageJSONBodyFlowAction = "navigate"
 )
 
 // Valid indicates whether the value is a known member of the SendWhatsAppFlowMessageJSONBodyFlowAction enum.
 func (e SendWhatsAppFlowMessageJSONBodyFlowAction) Valid() bool {
 	switch e {
-	case DataExchange:
+	case SendWhatsAppFlowMessageJSONBodyFlowActionDataExchange:
 		return true
-	case Navigate:
+	case SendWhatsAppFlowMessageJSONBodyFlowActionNavigate:
 		return true
 	default:
 		return false
@@ -4040,25 +4181,25 @@ func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumbersParamsStatus.
 const (
-	GetWhatsAppPhoneNumbersParamsStatusActive       GetWhatsAppPhoneNumbersParamsStatus = "active"
-	GetWhatsAppPhoneNumbersParamsStatusProvisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
-	GetWhatsAppPhoneNumbersParamsStatusReleased     GetWhatsAppPhoneNumbersParamsStatus = "released"
-	GetWhatsAppPhoneNumbersParamsStatusReleasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
-	GetWhatsAppPhoneNumbersParamsStatusSuspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
+	Active       GetWhatsAppPhoneNumbersParamsStatus = "active"
+	Provisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
+	Released     GetWhatsAppPhoneNumbersParamsStatus = "released"
+	Releasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
+	Suspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumbersParamsStatus enum.
 func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
 	switch e {
-	case GetWhatsAppPhoneNumbersParamsStatusActive:
+	case Active:
 		return true
-	case GetWhatsAppPhoneNumbersParamsStatusProvisioning:
+	case Provisioning:
 		return true
-	case GetWhatsAppPhoneNumbersParamsStatusReleased:
+	case Released:
 		return true
-	case GetWhatsAppPhoneNumbersParamsStatusReleasing:
+	case Releasing:
 		return true
-	case GetWhatsAppPhoneNumbersParamsStatusSuspended:
+	case Suspended:
 		return true
 	default:
 		return false
@@ -8067,6 +8208,52 @@ type SendInboxMessageJSONBody struct {
 		Url *string `json:"url,omitempty"`
 	} `json:"buttons,omitempty"`
 
+	// Interactive WhatsApp-only. Rich interactive payload for list messages, CTA URL
+	// buttons, and Flow prompts. When set, takes priority over `buttons`
+	// and `quickReplies`. The shape mirrors Meta's Cloud API `interactive`
+	// object verbatim, so any payload that works against Meta directly
+	// will also work here.
+	//
+	// Use `buttons` / `quickReplies` for simple button replies
+	// (WhatsApp's `interactive.type: "button"`) — the abstraction caps at
+	// 3 buttons and handles the auto-conversion for you. Use this field
+	// only for `list`, `cta_url`, or `flow` messages.
+	//
+	// Tap events come back via the `message.received` webhook with
+	// `metadata.interactiveType` set to `list_reply` or `nfm_reply`.
+	Interactive *struct {
+		Action SendInboxMessageJSONBody_Interactive_Action `json:"action"`
+		Body   struct {
+			// Text Main body text.
+			Text string `json:"text"`
+		} `json:"body"`
+
+		// Footer Optional footer shown below the action.
+		Footer *struct {
+			Text *string `json:"text,omitempty"`
+		} `json:"footer,omitempty"`
+
+		// Header Optional header shown above the body.
+		Header *struct {
+			Document *struct {
+				Link *string `json:"link,omitempty"`
+			} `json:"document,omitempty"`
+			Image *struct {
+				Link *string `json:"link,omitempty"`
+			} `json:"image,omitempty"`
+
+			// Text Required when header type is text.
+			Text  *string                                        `json:"text,omitempty"`
+			Type  *SendInboxMessageJSONBodyInteractiveHeaderType `json:"type,omitempty"`
+			Video *struct {
+				Link *string `json:"link,omitempty"`
+			} `json:"video,omitempty"`
+		} `json:"header,omitempty"`
+
+		// Type Which interactive layout to render.
+		Type SendInboxMessageJSONBodyInteractiveType `json:"type"`
+	} `json:"interactive,omitempty"`
+
 	// Message Message text
 	Message *string `json:"message,omitempty"`
 
@@ -8175,6 +8362,100 @@ type SendInboxMessageJSONBodyAttachmentType string
 
 // SendInboxMessageJSONBodyButtonsType defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyButtonsType string
+
+// SendInboxMessageJSONBodyInteractiveAction0 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction0 struct {
+	// Button CTA label that opens the list (max ~20 chars).
+	Button string `json:"button"`
+
+	// Sections 1-10 sections. Total rows across all sections cannot exceed 10.
+	Sections []struct {
+		Rows []struct {
+			// Description Optional description below the title (max 72 chars).
+			Description *string `json:"description,omitempty"`
+
+			// Id Identifier returned in the webhook as metadata.interactiveId (max 200 chars).
+			Id string `json:"id"`
+
+			// Title Row label (max 24 chars).
+			Title string `json:"title"`
+		} `json:"rows"`
+
+		// Title Optional section header (max 24 chars).
+		Title *string `json:"title,omitempty"`
+	} `json:"sections"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction1 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction1 struct {
+	Name       SendInboxMessageJSONBodyInteractiveAction1Name `json:"name"`
+	Parameters struct {
+		// DisplayText Button label (max 20 chars).
+		DisplayText string `json:"display_text"`
+
+		// Url Target URL opened when the user taps the button.
+		Url string `json:"url"`
+	} `json:"parameters"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction1Name defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction1Name string
+
+// SendInboxMessageJSONBodyInteractiveAction2 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2 struct {
+	Name       SendInboxMessageJSONBodyInteractiveAction2Name `json:"name"`
+	Parameters struct {
+		// FlowAction `navigate` sends the user to `flow_action_payload.screen`; `data_exchange` posts data to your Flow endpoint.
+		FlowAction SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction `json:"flow_action"`
+
+		// FlowActionPayload Required when flow_action is `navigate`.
+		FlowActionPayload *struct {
+			// Data Optional pre-filled data passed to the screen.
+			Data *map[string]interface{} `json:"data,omitempty"`
+
+			// Screen First screen to show.
+			Screen *string `json:"screen,omitempty"`
+		} `json:"flow_action_payload,omitempty"`
+
+		// FlowCta Button label that opens the Flow (max 20 chars).
+		FlowCta string `json:"flow_cta"`
+
+		// FlowId Published Flow ID from Meta Business Manager.
+		FlowId string `json:"flow_id"`
+
+		// FlowMessageVersion Defaults to "3" when omitted.
+		FlowMessageVersion *SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion `json:"flow_message_version,omitempty"`
+
+		// FlowToken Opaque token you choose to correlate Flow responses with your own state (max 200 chars).
+		FlowToken string `json:"flow_token"`
+
+		// Mode Set to `draft` to test an unpublished Flow.
+		Mode *SendInboxMessageJSONBodyInteractiveAction2ParametersMode `json:"mode,omitempty"`
+	} `json:"parameters"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction2Name defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2Name string
+
+// SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction string
+
+// SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion string
+
+// SendInboxMessageJSONBodyInteractiveAction2ParametersMode defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2ParametersMode string
+
+// SendInboxMessageJSONBody_Interactive_Action defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBody_Interactive_Action struct {
+	union json.RawMessage
+}
+
+// SendInboxMessageJSONBodyInteractiveHeaderType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveHeaderType string
+
+// SendInboxMessageJSONBodyInteractiveType defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveType string
 
 // SendInboxMessageJSONBodyMessageTag defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyMessageTag string
