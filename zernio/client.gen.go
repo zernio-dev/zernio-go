@@ -9168,20 +9168,20 @@ type CreateWebhookSettingsJSONBody struct {
 	// CustomHeaders Custom headers to include in webhook requests
 	CustomHeaders *map[string]string `json:"customHeaders,omitempty"`
 
-	// Events Events to subscribe to
-	Events *[]CreateWebhookSettingsJSONBodyEvents `json:"events,omitempty"`
+	// Events Events to subscribe to (at least one required)
+	Events []CreateWebhookSettingsJSONBodyEvents `json:"events"`
 
-	// IsActive Enable or disable webhook delivery
+	// IsActive Enable or disable webhook delivery. Defaults to `true` when omitted.
 	IsActive *bool `json:"isActive,omitempty"`
 
-	// Name Webhook name (max 50 characters)
-	Name *string `json:"name,omitempty"`
+	// Name Webhook name (1-50 characters)
+	Name string `json:"name"`
 
 	// Secret Secret key for HMAC-SHA256 signature verification
 	Secret *string `json:"secret,omitempty"`
 
-	// Url Webhook endpoint URL (must be HTTPS in production)
-	Url *string `json:"url,omitempty"`
+	// Url Webhook endpoint URL (must be a valid URL, whitespace trimmed)
+	Url string `json:"url"`
 }
 
 // CreateWebhookSettingsJSONBodyEvents defines parameters for CreateWebhookSettings.
@@ -9195,19 +9195,19 @@ type UpdateWebhookSettingsJSONBody struct {
 	// CustomHeaders Custom headers to include in webhook requests
 	CustomHeaders *map[string]string `json:"customHeaders,omitempty"`
 
-	// Events Events to subscribe to
+	// Events Events to subscribe to. Must contain at least one event if provided.
 	Events *[]UpdateWebhookSettingsJSONBodyEvents `json:"events,omitempty"`
 
 	// IsActive Enable or disable webhook delivery
 	IsActive *bool `json:"isActive,omitempty"`
 
-	// Name Webhook name (max 50 characters)
+	// Name Webhook name (1-50 characters). Must be non-empty if provided.
 	Name *string `json:"name,omitempty"`
 
 	// Secret Secret key for HMAC-SHA256 signature verification
 	Secret *string `json:"secret,omitempty"`
 
-	// Url Webhook endpoint URL (must be HTTPS in production)
+	// Url Webhook endpoint URL (must be a valid URL, whitespace trimmed). Must be a valid URL if provided.
 	Url *string `json:"url,omitempty"`
 }
 
