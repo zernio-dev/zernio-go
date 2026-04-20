@@ -1869,6 +1869,24 @@ func (e BoostPostJSONBodySpecialAdCategories) Valid() bool {
 	}
 }
 
+// Defines values for BoostPostJSONBodyTargetingAdvantageAudience.
+const (
+	BoostPostJSONBodyTargetingAdvantageAudienceN0 BoostPostJSONBodyTargetingAdvantageAudience = 0
+	BoostPostJSONBodyTargetingAdvantageAudienceN1 BoostPostJSONBodyTargetingAdvantageAudience = 1
+)
+
+// Valid indicates whether the value is a known member of the BoostPostJSONBodyTargetingAdvantageAudience enum.
+func (e BoostPostJSONBodyTargetingAdvantageAudience) Valid() bool {
+	switch e {
+	case BoostPostJSONBodyTargetingAdvantageAudienceN0:
+		return true
+	case BoostPostJSONBodyTargetingAdvantageAudienceN1:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListAdCampaignsParamsSource.
 const (
 	ListAdCampaignsParamsSourceAll    ListAdCampaignsParamsSource = "all"
@@ -2001,6 +2019,24 @@ func (e SendConversionsJSONBodyConsentAdUserData) Valid() bool {
 	case SendConversionsJSONBodyConsentAdUserDataDENIED:
 		return true
 	case SendConversionsJSONBodyConsentAdUserDataGRANTED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyAdvantageAudience.
+const (
+	CreateStandaloneAdJSONBodyAdvantageAudienceN0 CreateStandaloneAdJSONBodyAdvantageAudience = 0
+	CreateStandaloneAdJSONBodyAdvantageAudienceN1 CreateStandaloneAdJSONBodyAdvantageAudience = 1
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyAdvantageAudience enum.
+func (e CreateStandaloneAdJSONBodyAdvantageAudience) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyAdvantageAudienceN0:
+		return true
+	case CreateStandaloneAdJSONBodyAdvantageAudienceN1:
 		return true
 	default:
 		return false
@@ -2199,6 +2235,24 @@ func (e UpdateAdJSONBodyStatus) Valid() bool {
 	case UpdateAdJSONBodyStatusActive:
 		return true
 	case UpdateAdJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdJSONBodyTargetingAdvantageAudience.
+const (
+	UpdateAdJSONBodyTargetingAdvantageAudienceN0 UpdateAdJSONBodyTargetingAdvantageAudience = 0
+	UpdateAdJSONBodyTargetingAdvantageAudienceN1 UpdateAdJSONBodyTargetingAdvantageAudience = 1
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdJSONBodyTargetingAdvantageAudience enum.
+func (e UpdateAdJSONBodyTargetingAdvantageAudience) Valid() bool {
+	switch e {
+	case UpdateAdJSONBodyTargetingAdvantageAudienceN0:
+		return true
+	case UpdateAdJSONBodyTargetingAdvantageAudienceN1:
 		return true
 	default:
 		return false
@@ -3740,16 +3794,16 @@ func (e GetRedditFeedParamsT) Valid() bool {
 
 // Defines values for SearchRedditParamsRestrictSr.
 const (
-	N0 SearchRedditParamsRestrictSr = "0"
-	N1 SearchRedditParamsRestrictSr = "1"
+	SearchRedditParamsRestrictSrN0 SearchRedditParamsRestrictSr = "0"
+	SearchRedditParamsRestrictSrN1 SearchRedditParamsRestrictSr = "1"
 )
 
 // Valid indicates whether the value is a known member of the SearchRedditParamsRestrictSr enum.
 func (e SearchRedditParamsRestrictSr) Valid() bool {
 	switch e {
-	case N0:
+	case SearchRedditParamsRestrictSrN0:
 		return true
-	case N1:
+	case SearchRedditParamsRestrictSrN1:
 		return true
 	default:
 		return false
@@ -6963,9 +7017,11 @@ type BoostPostJSONBody struct {
 	// SpecialAdCategories Meta only. Required for housing, employment, credit, or political ads.
 	SpecialAdCategories *[]BoostPostJSONBodySpecialAdCategories `json:"specialAdCategories,omitempty"`
 	Targeting           *struct {
-		AgeMax    *int      `json:"ageMax,omitempty"`
-		AgeMin    *int      `json:"ageMin,omitempty"`
-		Countries *[]string `json:"countries,omitempty"`
+		// AdvantageAudience Meta only. 0 = disabled (default), 1 = enabled.
+		AdvantageAudience *BoostPostJSONBodyTargetingAdvantageAudience `json:"advantage_audience,omitempty"`
+		AgeMax            *int                                         `json:"ageMax,omitempty"`
+		AgeMin            *int                                         `json:"ageMin,omitempty"`
+		Countries         *[]string                                    `json:"countries,omitempty"`
 
 		// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 		Interests *[]struct {
@@ -6989,6 +7045,9 @@ type BoostPostJSONBodyGoal string
 
 // BoostPostJSONBodySpecialAdCategories defines parameters for BoostPost.
 type BoostPostJSONBodySpecialAdCategories string
+
+// BoostPostJSONBodyTargetingAdvantageAudience defines parameters for BoostPost.
+type BoostPostJSONBodyTargetingAdvantageAudience int
 
 // ListAdCampaignsParams defines parameters for ListAdCampaigns.
 type ListAdCampaignsParams struct {
@@ -7066,8 +7125,11 @@ type CreateStandaloneAdJSONBody struct {
 
 	// AdditionalHeadlines Google Search RSA only. Extra headlines.
 	AdditionalHeadlines *[]string `json:"additionalHeadlines,omitempty"`
-	AgeMax              *int      `json:"ageMax,omitempty"`
-	AgeMin              *int      `json:"ageMin,omitempty"`
+
+	// AdvantageAudience Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
+	AdvantageAudience *CreateStandaloneAdJSONBodyAdvantageAudience `json:"advantageAudience,omitempty"`
+	AgeMax            *int                                         `json:"ageMax,omitempty"`
+	AgeMin            *int                                         `json:"ageMin,omitempty"`
 
 	// AudienceId Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
@@ -7117,6 +7179,9 @@ type CreateStandaloneAdJSONBody struct {
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	Name         string  `json:"name"`
 }
+
+// CreateStandaloneAdJSONBodyAdvantageAudience defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyAdvantageAudience int
 
 // CreateStandaloneAdJSONBodyBudgetType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyBudgetType string
@@ -7186,9 +7251,11 @@ type UpdateAdJSONBody struct {
 
 	// Targeting Meta-only. Targeting updates for other platforms are not supported after creation.
 	Targeting *struct {
-		AgeMax    *int      `json:"ageMax,omitempty"`
-		AgeMin    *int      `json:"ageMin,omitempty"`
-		Countries *[]string `json:"countries,omitempty"`
+		// AdvantageAudience Meta only. Omit to preserve the existing setting on update. 0 = disabled, 1 = enabled.
+		AdvantageAudience *UpdateAdJSONBodyTargetingAdvantageAudience `json:"advantage_audience,omitempty"`
+		AgeMax            *int                                        `json:"ageMax,omitempty"`
+		AgeMin            *int                                        `json:"ageMin,omitempty"`
+		Countries         *[]string                                   `json:"countries,omitempty"`
 
 		// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 		Interests *[]struct {
@@ -7203,6 +7270,9 @@ type UpdateAdJSONBodyBudgetType string
 
 // UpdateAdJSONBodyStatus defines parameters for UpdateAd.
 type UpdateAdJSONBodyStatus string
+
+// UpdateAdJSONBodyTargetingAdvantageAudience defines parameters for UpdateAd.
+type UpdateAdJSONBodyTargetingAdvantageAudience int
 
 // GetAdAnalyticsParams defines parameters for GetAdAnalytics.
 type GetAdAnalyticsParams struct {
