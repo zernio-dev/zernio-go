@@ -5766,13 +5766,16 @@ type RecyclingState struct {
 // RecyclingStateGapFreq Interval unit (week or month)
 type RecyclingStateGapFreq string
 
-// RedditPlatformData Posts are either link (with URL/media) or self (text-only). Use forceSelf to override. Subreddit defaults to the account's configured one. Some subreddits require a flair.
+// RedditPlatformData Posts are either link (with URL/media), native video (via nativeVideo), or self (text-only). Use forceSelf to override. Subreddit defaults to the account's configured one. Some subreddits require a flair.
 type RedditPlatformData struct {
 	// FlairId Flair ID for the post. Required by some subreddits. Use GET /v1/accounts/{id}/reddit-flairs?subreddit=name to list flairs.
 	FlairId *string `json:"flairId,omitempty"`
 
 	// ForceSelf When true, creates a text/self post even when a URL or media is provided.
 	ForceSelf *bool `json:"forceSelf,omitempty"`
+
+	// NativeVideo Controls Reddit's native video upload flow. When true (default for video mediaItems), the video is uploaded to Reddit's CDN and submitted with kind=video so it renders as an embedded Reddit video player. Reddit transcodes server-side (1080p/30fps cap). Set to false to fall back to a legacy link post. If the subreddit blocks video posts, the upload falls back to a link post automatically.
+	NativeVideo *bool `json:"nativeVideo,omitempty"`
 
 	// Subreddit Target subreddit name (without "r/" prefix). Overrides the default. Use GET /v1/accounts/{id}/reddit-subreddits to list options.
 	Subreddit *string `json:"subreddit,omitempty"`
@@ -5782,6 +5785,12 @@ type RedditPlatformData struct {
 
 	// Url URL for link posts. If provided (and forceSelf is not true), creates a link post instead of a text post.
 	Url *string `json:"url,omitempty"`
+
+	// VideoPosterUrl Optional poster/thumbnail image URL for native video posts. If omitted, the first frame of the video is extracted and used automatically.
+	VideoPosterUrl *string `json:"videoPosterUrl,omitempty"`
+
+	// Videogif When true (and nativeVideo is active), submits the video as a silent videogif (kind=videogif). Use for short looping clips without audio.
+	Videogif *bool `json:"videogif,omitempty"`
 }
 
 // RedditPost A normalized Reddit post returned by the feed and search endpoints
