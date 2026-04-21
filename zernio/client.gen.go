@@ -6968,9 +6968,6 @@ type UpdateAccountJSONBody struct {
 
 // UpdateDiscordSettingsJSONBody defines parameters for UpdateDiscordSettings.
 type UpdateDiscordSettingsJSONBody struct {
-	// AccountId Discord account ID
-	AccountId string `json:"accountId"`
-
 	// ChannelId Switch to a different channel in the same guild. Must be a text (0), announcement (5), or forum (15) channel.
 	ChannelId *string `json:"channelId,omitempty"`
 
@@ -7418,7 +7415,7 @@ type ListAdsParams struct {
 	Page  *PageParam `form:"page,omitempty" json:"page,omitempty"`
 	Limit *int       `form:"limit,omitempty" json:"limit,omitempty"`
 
-	// Source zernio = Zernio-created only, all = include external ads
+	// Source all (default) = Zernio-created + platform-discovered ads. zernio = restrict to Zernio-created only.
 	Source   *ListAdsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
 	Status   *AdStatus              `form:"status,omitempty" json:"status,omitempty"`
 	Platform *ListAdsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
@@ -7617,7 +7614,7 @@ type ListAdCampaignsParams struct {
 	Page  *PageParam `form:"page,omitempty" json:"page,omitempty"`
 	Limit *int       `form:"limit,omitempty" json:"limit,omitempty"`
 
-	// Source `zernio` (default) returns only ads created via Zernio (isExternal=false). `all` additionally returns ads discovered from the platform's ad manager (isExternal=true). Status is NOT filtered by default — use the `status` param for that.
+	// Source `all` (default) returns both Zernio-created ads and those discovered from the platform's ad manager — matches the web UI's default view. Pass `zernio` to restrict to isExternal=false only. Status is NOT filtered by default — use the `status` param for that.
 	Source   *ListAdCampaignsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
 	Platform *ListAdCampaignsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
@@ -7842,7 +7839,7 @@ type GetAdTreeParams struct {
 	// Limit Campaigns per page
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 
-	// Source `zernio` (default) returns only ads created via Zernio (isExternal=false). `all` additionally returns ads discovered from the platform's ad manager (isExternal=true). Status is NOT filtered by default — use the `status` param for that.
+	// Source `all` (default) returns both Zernio-created ads and those discovered from the platform's ad manager — matches the web UI's default view. Pass `zernio` to restrict to isExternal=false only. Status is NOT filtered by default — use the `status` param for that.
 	Source   *GetAdTreeParamsSource   `form:"source,omitempty" json:"source,omitempty"`
 	Platform *GetAdTreeParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
