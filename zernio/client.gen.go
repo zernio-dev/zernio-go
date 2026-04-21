@@ -4595,7 +4595,15 @@ type AdCampaignPlatform string
 
 // AdMetrics defines model for AdMetrics.
 type AdMetrics struct {
-	Clicks *int `json:"clicks,omitempty"`
+	// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
+	Actions *map[string]int `json:"actions,omitempty"`
+	Clicks  *int            `json:"clicks,omitempty"`
+
+	// Conversions Count of conversion events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.) over the requested date range. 0 for non-conversion campaigns or when no events have fired. Meta-only at time of writing; other platforms return 0.
+	Conversions *int `json:"conversions,omitempty"`
+
+	// CostPerConversion Derived spend / conversions in the same currency as spend. 0 when conversions is 0.
+	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 
 	// Cpc Cost per click
 	Cpc *float32 `json:"cpc,omitempty"`
@@ -34341,7 +34349,15 @@ type GetAdAnalyticsResponse struct {
 		Analytics *struct {
 			Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
 			Daily      *[]struct {
-				Clicks *int `json:"clicks,omitempty"`
+				// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
+				Actions *map[string]int `json:"actions,omitempty"`
+				Clicks  *int            `json:"clicks,omitempty"`
+
+				// Conversions Count of conversion events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.) over the requested date range. 0 for non-conversion campaigns or when no events have fired. Meta-only at time of writing; other platforms return 0.
+				Conversions *int `json:"conversions,omitempty"`
+
+				// CostPerConversion Derived spend / conversions in the same currency as spend. 0 when conversions is 0.
+				CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 
 				// Cpc Cost per click
 				Cpc *float32 `json:"cpc,omitempty"`
@@ -47345,7 +47361,15 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 			Analytics *struct {
 				Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
 				Daily      *[]struct {
-					Clicks *int `json:"clicks,omitempty"`
+					// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
+					Actions *map[string]int `json:"actions,omitempty"`
+					Clicks  *int            `json:"clicks,omitempty"`
+
+					// Conversions Count of conversion events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.) over the requested date range. 0 for non-conversion campaigns or when no events have fired. Meta-only at time of writing; other platforms return 0.
+					Conversions *int `json:"conversions,omitempty"`
+
+					// CostPerConversion Derived spend / conversions in the same currency as spend. 0 when conversions is 0.
+					CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 
 					// Cpc Cost per click
 					Cpc *float32 `json:"cpc,omitempty"`
