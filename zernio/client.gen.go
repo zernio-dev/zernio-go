@@ -219,6 +219,42 @@ func (e AdCampaignBudgetType) Valid() bool {
 	}
 }
 
+// Defines values for AdCampaignBudgetLevel.
+const (
+	AdCampaignBudgetLevelAdset    AdCampaignBudgetLevel = "adset"
+	AdCampaignBudgetLevelCampaign AdCampaignBudgetLevel = "campaign"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignBudgetLevel enum.
+func (e AdCampaignBudgetLevel) Valid() bool {
+	switch e {
+	case AdCampaignBudgetLevelAdset:
+		return true
+	case AdCampaignBudgetLevelCampaign:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdCampaignCampaignBudgetType.
+const (
+	AdCampaignCampaignBudgetTypeDaily    AdCampaignCampaignBudgetType = "daily"
+	AdCampaignCampaignBudgetTypeLifetime AdCampaignCampaignBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignCampaignBudgetType enum.
+func (e AdCampaignCampaignBudgetType) Valid() bool {
+	switch e {
+	case AdCampaignCampaignBudgetTypeDaily:
+		return true
+	case AdCampaignCampaignBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AdCampaignPlatform.
 const (
 	AdCampaignPlatformFacebook  AdCampaignPlatform = "facebook"
@@ -252,6 +288,30 @@ func (e AdCampaignPlatform) Valid() bool {
 	}
 }
 
+// Defines values for AdCampaignReviewStatus.
+const (
+	AdCampaignReviewStatusApproved   AdCampaignReviewStatus = "approved"
+	AdCampaignReviewStatusInReview   AdCampaignReviewStatus = "in_review"
+	AdCampaignReviewStatusRejected   AdCampaignReviewStatus = "rejected"
+	AdCampaignReviewStatusWithIssues AdCampaignReviewStatus = "with_issues"
+)
+
+// Valid indicates whether the value is a known member of the AdCampaignReviewStatus enum.
+func (e AdCampaignReviewStatus) Valid() bool {
+	switch e {
+	case AdCampaignReviewStatusApproved:
+		return true
+	case AdCampaignReviewStatusInReview:
+		return true
+	case AdCampaignReviewStatusRejected:
+		return true
+	case AdCampaignReviewStatusWithIssues:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AdStatus.
 const (
 	AdStatusActive        AdStatus = "active"
@@ -279,6 +339,24 @@ func (e AdStatus) Valid() bool {
 	case AdStatusPendingReview:
 		return true
 	case AdStatusRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeAdSetAdSetBudgetType.
+const (
+	AdTreeAdSetAdSetBudgetTypeDaily    AdTreeAdSetAdSetBudgetType = "daily"
+	AdTreeAdSetAdSetBudgetTypeLifetime AdTreeAdSetAdSetBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeAdSetAdSetBudgetType enum.
+func (e AdTreeAdSetAdSetBudgetType) Valid() bool {
+	switch e {
+	case AdTreeAdSetAdSetBudgetTypeDaily:
+		return true
+	case AdTreeAdSetAdSetBudgetTypeLifetime:
 		return true
 	default:
 		return false
@@ -321,6 +399,42 @@ func (e AdTreeCampaignBudgetType) Valid() bool {
 	}
 }
 
+// Defines values for AdTreeCampaignBudgetLevel.
+const (
+	AdTreeCampaignBudgetLevelAdset    AdTreeCampaignBudgetLevel = "adset"
+	AdTreeCampaignBudgetLevelCampaign AdTreeCampaignBudgetLevel = "campaign"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignBudgetLevel enum.
+func (e AdTreeCampaignBudgetLevel) Valid() bool {
+	switch e {
+	case AdTreeCampaignBudgetLevelAdset:
+		return true
+	case AdTreeCampaignBudgetLevelCampaign:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeCampaignCampaignBudgetType.
+const (
+	AdTreeCampaignCampaignBudgetTypeDaily    AdTreeCampaignCampaignBudgetType = "daily"
+	AdTreeCampaignCampaignBudgetTypeLifetime AdTreeCampaignCampaignBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignCampaignBudgetType enum.
+func (e AdTreeCampaignCampaignBudgetType) Valid() bool {
+	switch e {
+	case AdTreeCampaignCampaignBudgetTypeDaily:
+		return true
+	case AdTreeCampaignCampaignBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AdTreeCampaignPlatform.
 const (
 	AdTreeCampaignPlatformFacebook  AdTreeCampaignPlatform = "facebook"
@@ -348,6 +462,30 @@ func (e AdTreeCampaignPlatform) Valid() bool {
 	case AdTreeCampaignPlatformTiktok:
 		return true
 	case AdTreeCampaignPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdTreeCampaignReviewStatus.
+const (
+	Approved   AdTreeCampaignReviewStatus = "approved"
+	InReview   AdTreeCampaignReviewStatus = "in_review"
+	Rejected   AdTreeCampaignReviewStatus = "rejected"
+	WithIssues AdTreeCampaignReviewStatus = "with_issues"
+)
+
+// Valid indicates whether the value is a known member of the AdTreeCampaignReviewStatus enum.
+func (e AdTreeCampaignReviewStatus) Valid() bool {
+	switch e {
+	case Approved:
+		return true
+	case InReview:
+		return true
+	case Rejected:
+		return true
+	case WithIssues:
 		return true
 	default:
 		return false
@@ -1172,16 +1310,16 @@ func (e TwitterPlatformDataReplySettings) Valid() bool {
 
 // Defines values for UsageStatsBillingPeriod.
 const (
-	UsageStatsBillingPeriodMonthly UsageStatsBillingPeriod = "monthly"
-	UsageStatsBillingPeriodYearly  UsageStatsBillingPeriod = "yearly"
+	Monthly UsageStatsBillingPeriod = "monthly"
+	Yearly  UsageStatsBillingPeriod = "yearly"
 )
 
 // Valid indicates whether the value is a known member of the UsageStatsBillingPeriod enum.
 func (e UsageStatsBillingPeriod) Valid() bool {
 	switch e {
-	case UsageStatsBillingPeriodMonthly:
+	case Monthly:
 		return true
-	case UsageStatsBillingPeriodYearly:
+	case Yearly:
 		return true
 	default:
 		return false
@@ -1496,19 +1634,19 @@ func (e GetAllAccountsHealthParamsPlatform) Valid() bool {
 
 // Defines values for GetAllAccountsHealthParamsStatus.
 const (
-	GetAllAccountsHealthParamsStatusError   GetAllAccountsHealthParamsStatus = "error"
-	GetAllAccountsHealthParamsStatusHealthy GetAllAccountsHealthParamsStatus = "healthy"
-	GetAllAccountsHealthParamsStatusWarning GetAllAccountsHealthParamsStatus = "warning"
+	Error   GetAllAccountsHealthParamsStatus = "error"
+	Healthy GetAllAccountsHealthParamsStatus = "healthy"
+	Warning GetAllAccountsHealthParamsStatus = "warning"
 )
 
 // Valid indicates whether the value is a known member of the GetAllAccountsHealthParamsStatus enum.
 func (e GetAllAccountsHealthParamsStatus) Valid() bool {
 	switch e {
-	case GetAllAccountsHealthParamsStatusError:
+	case Error:
 		return true
-	case GetAllAccountsHealthParamsStatusHealthy:
+	case Healthy:
 		return true
-	case GetAllAccountsHealthParamsStatusWarning:
+	case Warning:
 		return true
 	default:
 		return false
@@ -1746,6 +1884,126 @@ func (e ListAdsParamsPlatform) Valid() bool {
 	}
 }
 
+// Defines values for UpdateAdSetJSONBodyBudgetType.
+const (
+	UpdateAdSetJSONBodyBudgetTypeDaily    UpdateAdSetJSONBodyBudgetType = "daily"
+	UpdateAdSetJSONBodyBudgetTypeLifetime UpdateAdSetJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdSetJSONBodyBudgetType enum.
+func (e UpdateAdSetJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case UpdateAdSetJSONBodyBudgetTypeDaily:
+		return true
+	case UpdateAdSetJSONBodyBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdSetJSONBodyPlatform.
+const (
+	UpdateAdSetJSONBodyPlatformFacebook  UpdateAdSetJSONBodyPlatform = "facebook"
+	UpdateAdSetJSONBodyPlatformGoogle    UpdateAdSetJSONBodyPlatform = "google"
+	UpdateAdSetJSONBodyPlatformInstagram UpdateAdSetJSONBodyPlatform = "instagram"
+	UpdateAdSetJSONBodyPlatformLinkedin  UpdateAdSetJSONBodyPlatform = "linkedin"
+	UpdateAdSetJSONBodyPlatformPinterest UpdateAdSetJSONBodyPlatform = "pinterest"
+	UpdateAdSetJSONBodyPlatformTiktok    UpdateAdSetJSONBodyPlatform = "tiktok"
+	UpdateAdSetJSONBodyPlatformTwitter   UpdateAdSetJSONBodyPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdSetJSONBodyPlatform enum.
+func (e UpdateAdSetJSONBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateAdSetJSONBodyPlatformFacebook:
+		return true
+	case UpdateAdSetJSONBodyPlatformGoogle:
+		return true
+	case UpdateAdSetJSONBodyPlatformInstagram:
+		return true
+	case UpdateAdSetJSONBodyPlatformLinkedin:
+		return true
+	case UpdateAdSetJSONBodyPlatformPinterest:
+		return true
+	case UpdateAdSetJSONBodyPlatformTiktok:
+		return true
+	case UpdateAdSetJSONBodyPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdSetJSONBodyStatus.
+const (
+	UpdateAdSetJSONBodyStatusActive UpdateAdSetJSONBodyStatus = "active"
+	UpdateAdSetJSONBodyStatusPaused UpdateAdSetJSONBodyStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdSetJSONBodyStatus enum.
+func (e UpdateAdSetJSONBodyStatus) Valid() bool {
+	switch e {
+	case UpdateAdSetJSONBodyStatusActive:
+		return true
+	case UpdateAdSetJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdSetStatusJSONBodyPlatform.
+const (
+	UpdateAdSetStatusJSONBodyPlatformFacebook  UpdateAdSetStatusJSONBodyPlatform = "facebook"
+	UpdateAdSetStatusJSONBodyPlatformGoogle    UpdateAdSetStatusJSONBodyPlatform = "google"
+	UpdateAdSetStatusJSONBodyPlatformInstagram UpdateAdSetStatusJSONBodyPlatform = "instagram"
+	UpdateAdSetStatusJSONBodyPlatformLinkedin  UpdateAdSetStatusJSONBodyPlatform = "linkedin"
+	UpdateAdSetStatusJSONBodyPlatformPinterest UpdateAdSetStatusJSONBodyPlatform = "pinterest"
+	UpdateAdSetStatusJSONBodyPlatformTiktok    UpdateAdSetStatusJSONBodyPlatform = "tiktok"
+	UpdateAdSetStatusJSONBodyPlatformTwitter   UpdateAdSetStatusJSONBodyPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdSetStatusJSONBodyPlatform enum.
+func (e UpdateAdSetStatusJSONBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateAdSetStatusJSONBodyPlatformFacebook:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformGoogle:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformInstagram:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformLinkedin:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformPinterest:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformTiktok:
+		return true
+	case UpdateAdSetStatusJSONBodyPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdSetStatusJSONBodyStatus.
+const (
+	UpdateAdSetStatusJSONBodyStatusActive UpdateAdSetStatusJSONBodyStatus = "active"
+	UpdateAdSetStatusJSONBodyStatusPaused UpdateAdSetStatusJSONBodyStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdSetStatusJSONBodyStatus enum.
+func (e UpdateAdSetStatusJSONBodyStatus) Valid() bool {
+	switch e {
+	case UpdateAdSetStatusJSONBodyStatusActive:
+		return true
+	case UpdateAdSetStatusJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListAdAudiencesParamsPlatform.
 const (
 	ListAdAudiencesParamsPlatformFacebook  ListAdAudiencesParamsPlatform = "facebook"
@@ -1932,6 +2190,171 @@ func (e ListAdCampaignsParamsPlatform) Valid() bool {
 	case ListAdCampaignsParamsPlatformTiktok:
 		return true
 	case ListAdCampaignsParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform.
+const (
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformFacebook  BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "facebook"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformGoogle    BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "google"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformInstagram BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "instagram"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformLinkedin  BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "linkedin"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformPinterest BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "pinterest"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformTiktok    BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "tiktok"
+	BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformTwitter   BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform enum.
+func (e BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform) Valid() bool {
+	switch e {
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformFacebook:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformGoogle:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformInstagram:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformLinkedin:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformPinterest:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformTiktok:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BulkUpdateAdCampaignStatusJSONBodyStatus.
+const (
+	BulkUpdateAdCampaignStatusJSONBodyStatusActive BulkUpdateAdCampaignStatusJSONBodyStatus = "active"
+	BulkUpdateAdCampaignStatusJSONBodyStatusPaused BulkUpdateAdCampaignStatusJSONBodyStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the BulkUpdateAdCampaignStatusJSONBodyStatus enum.
+func (e BulkUpdateAdCampaignStatusJSONBodyStatus) Valid() bool {
+	switch e {
+	case BulkUpdateAdCampaignStatusJSONBodyStatusActive:
+		return true
+	case BulkUpdateAdCampaignStatusJSONBodyStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeleteAdCampaignJSONBodyPlatform.
+const (
+	DeleteAdCampaignJSONBodyPlatformFacebook  DeleteAdCampaignJSONBodyPlatform = "facebook"
+	DeleteAdCampaignJSONBodyPlatformInstagram DeleteAdCampaignJSONBodyPlatform = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the DeleteAdCampaignJSONBodyPlatform enum.
+func (e DeleteAdCampaignJSONBodyPlatform) Valid() bool {
+	switch e {
+	case DeleteAdCampaignJSONBodyPlatformFacebook:
+		return true
+	case DeleteAdCampaignJSONBodyPlatformInstagram:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdCampaignJSONBodyBudgetType.
+const (
+	UpdateAdCampaignJSONBodyBudgetTypeDaily    UpdateAdCampaignJSONBodyBudgetType = "daily"
+	UpdateAdCampaignJSONBodyBudgetTypeLifetime UpdateAdCampaignJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdCampaignJSONBodyBudgetType enum.
+func (e UpdateAdCampaignJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case UpdateAdCampaignJSONBodyBudgetTypeDaily:
+		return true
+	case UpdateAdCampaignJSONBodyBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateAdCampaignJSONBodyPlatform.
+const (
+	UpdateAdCampaignJSONBodyPlatformFacebook  UpdateAdCampaignJSONBodyPlatform = "facebook"
+	UpdateAdCampaignJSONBodyPlatformInstagram UpdateAdCampaignJSONBodyPlatform = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the UpdateAdCampaignJSONBodyPlatform enum.
+func (e UpdateAdCampaignJSONBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateAdCampaignJSONBodyPlatformFacebook:
+		return true
+	case UpdateAdCampaignJSONBodyPlatformInstagram:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DuplicateAdCampaignJSONBodyPlatform.
+const (
+	DuplicateAdCampaignJSONBodyPlatformFacebook  DuplicateAdCampaignJSONBodyPlatform = "facebook"
+	DuplicateAdCampaignJSONBodyPlatformInstagram DuplicateAdCampaignJSONBodyPlatform = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the DuplicateAdCampaignJSONBodyPlatform enum.
+func (e DuplicateAdCampaignJSONBodyPlatform) Valid() bool {
+	switch e {
+	case DuplicateAdCampaignJSONBodyPlatformFacebook:
+		return true
+	case DuplicateAdCampaignJSONBodyPlatformInstagram:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DuplicateAdCampaignJSONBodyRenameStrategy.
+const (
+	DEEPRENAME         DuplicateAdCampaignJSONBodyRenameStrategy = "DEEP_RENAME"
+	NORENAME           DuplicateAdCampaignJSONBodyRenameStrategy = "NO_RENAME"
+	ONLYTOPLEVELRENAME DuplicateAdCampaignJSONBodyRenameStrategy = "ONLY_TOP_LEVEL_RENAME"
+)
+
+// Valid indicates whether the value is a known member of the DuplicateAdCampaignJSONBodyRenameStrategy enum.
+func (e DuplicateAdCampaignJSONBodyRenameStrategy) Valid() bool {
+	switch e {
+	case DEEPRENAME:
+		return true
+	case NORENAME:
+		return true
+	case ONLYTOPLEVELRENAME:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DuplicateAdCampaignJSONBodyStatusOption.
+const (
+	ACTIVE              DuplicateAdCampaignJSONBodyStatusOption = "ACTIVE"
+	INHERITEDFROMSOURCE DuplicateAdCampaignJSONBodyStatusOption = "INHERITED_FROM_SOURCE"
+	PAUSED              DuplicateAdCampaignJSONBodyStatusOption = "PAUSED"
+)
+
+// Valid indicates whether the value is a known member of the DuplicateAdCampaignJSONBodyStatusOption enum.
+func (e DuplicateAdCampaignJSONBodyStatusOption) Valid() bool {
+	switch e {
+	case ACTIVE:
+		return true
+	case INHERITEDFROMSOURCE:
+		return true
+	case PAUSED:
 		return true
 	default:
 		return false
@@ -4235,25 +4658,25 @@ func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumbersParamsStatus.
 const (
-	Active       GetWhatsAppPhoneNumbersParamsStatus = "active"
-	Provisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
-	Released     GetWhatsAppPhoneNumbersParamsStatus = "released"
-	Releasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
-	Suspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
+	GetWhatsAppPhoneNumbersParamsStatusActive       GetWhatsAppPhoneNumbersParamsStatus = "active"
+	GetWhatsAppPhoneNumbersParamsStatusProvisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
+	GetWhatsAppPhoneNumbersParamsStatusReleased     GetWhatsAppPhoneNumbersParamsStatus = "released"
+	GetWhatsAppPhoneNumbersParamsStatusReleasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
+	GetWhatsAppPhoneNumbersParamsStatusSuspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumbersParamsStatus enum.
 func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
 	switch e {
-	case Active:
+	case GetWhatsAppPhoneNumbersParamsStatusActive:
 		return true
-	case Provisioning:
+	case GetWhatsAppPhoneNumbersParamsStatusProvisioning:
 		return true
-	case Released:
+	case GetWhatsAppPhoneNumbersParamsStatusReleased:
 		return true
-	case Releasing:
+	case GetWhatsAppPhoneNumbersParamsStatusReleasing:
 		return true
-	case Suspended:
+	case GetWhatsAppPhoneNumbersParamsStatusSuspended:
 		return true
 	default:
 		return false
@@ -4550,6 +4973,12 @@ type AdGoal string
 // AdPlatform defines model for Ad.Platform.
 type AdPlatform string
 
+// AdBudget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
+type AdBudget struct {
+	Amount float32      `json:"amount"`
+	Type   AdBudgetType `json:"type"`
+}
+
 // AdCampaign defines model for AdCampaign.
 type AdCampaign struct {
 	AccountId *string `json:"accountId,omitempty"`
@@ -4557,20 +4986,43 @@ type AdCampaign struct {
 
 	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
 	BidStrategy *string `json:"bidStrategy,omitempty"`
-	Budget      *struct {
+
+	// Budget Effective budget (back-compat). Use `budgetLevel` to disambiguate CBO vs ABO.
+	Budget *struct {
 		Amount *float32              `json:"amount,omitempty"`
 		Type   *AdCampaignBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
-	CampaignName *string    `json:"campaignName,omitempty"`
-	EarliestAd   *time.Time `json:"earliestAd,omitempty"`
-	LatestAd     *time.Time `json:"latestAd,omitempty"`
-	Metrics      *AdMetrics `json:"metrics,omitempty"`
+
+	// BudgetLevel Canonical CBO/ABO indicator. See AdTreeCampaign.budgetLevel.
+	BudgetLevel *AdCampaignBudgetLevel `json:"budgetLevel,omitempty"`
+
+	// CampaignBudget Campaign-level budget (CBO). Null for ABO campaigns.
+	CampaignBudget *struct {
+		Amount *float32                      `json:"amount,omitempty"`
+		Type   *AdCampaignCampaignBudgetType `json:"type,omitempty"`
+	} `json:"campaignBudget,omitempty"`
+
+	// CampaignIssuesInfo Platform-reported campaign issues (Meta `issues_info[]`).
+	CampaignIssuesInfo *[]map[string]interface{} `json:"campaignIssuesInfo,omitempty"`
+	CampaignName       *string                   `json:"campaignName,omitempty"`
+
+	// Currency ISO 4217 currency code for all budget amounts. Budgets are NOT normalized to USD.
+	Currency   *string    `json:"currency,omitempty"`
+	EarliestAd *time.Time `json:"earliestAd,omitempty"`
+
+	// IsBudgetScheduleEnabled Meta-only. Mirrors Campaign.is_budget_schedule_enabled.
+	IsBudgetScheduleEnabled *bool      `json:"isBudgetScheduleEnabled,omitempty"`
+	LatestAd                *time.Time `json:"latestAd,omitempty"`
+	Metrics                 *AdMetrics `json:"metrics,omitempty"`
 
 	// OptimizationGoal Meta optimization goal shared across ad sets, or comma-separated values when ad sets differ (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
 	OptimizationGoal    *string             `json:"optimizationGoal,omitempty"`
 	Platform            *AdCampaignPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string             `json:"platformAdAccountId,omitempty"`
 	PlatformCampaignId  *string             `json:"platformCampaignId,omitempty"`
+
+	// PlatformCampaignStatus Raw platform-level campaign status (Meta `effective_status`).
+	PlatformCampaignStatus *string `json:"platformCampaignStatus,omitempty"`
 
 	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
 	PlatformObjective *string `json:"platformObjective,omitempty"`
@@ -4583,15 +5035,27 @@ type AdCampaign struct {
 		PixelId         *string `json:"pixel_id,omitempty"`
 	} `json:"promotedObject,omitempty"`
 
-	// Status Derived from child ad statuses
+	// ReviewStatus Platform-side review state of the campaign. See AdTreeCampaign.reviewStatus for the full description.
+	ReviewStatus *AdCampaignReviewStatus `json:"reviewStatus,omitempty"`
+
+	// Status Delivery status derived from child ad statuses. Distinct from `reviewStatus`.
 	Status *AdStatus `json:"status,omitempty"`
 }
 
 // AdCampaignBudgetType defines model for AdCampaign.Budget.Type.
 type AdCampaignBudgetType string
 
+// AdCampaignBudgetLevel Canonical CBO/ABO indicator. See AdTreeCampaign.budgetLevel.
+type AdCampaignBudgetLevel string
+
+// AdCampaignCampaignBudgetType defines model for AdCampaign.CampaignBudget.Type.
+type AdCampaignCampaignBudgetType string
+
 // AdCampaignPlatform defines model for AdCampaign.Platform.
 type AdCampaignPlatform string
+
+// AdCampaignReviewStatus Platform-side review state of the campaign. See AdTreeCampaign.reviewStatus for the full description.
+type AdCampaignReviewStatus string
 
 // AdMetrics defines model for AdMetrics.
 type AdMetrics struct {
@@ -4627,7 +5091,13 @@ type AdStatus string
 
 // AdTreeAdSet Ad set (or ad group/line item depending on platform) with rolled-up metrics and child ads
 type AdTreeAdSet struct {
-	AdCount   *int    `json:"adCount,omitempty"`
+	AdCount *int `json:"adCount,omitempty"`
+
+	// AdSetBudget Ad-set-level budget (ABO). Null for CBO campaigns where the budget is set on the campaign.
+	AdSetBudget *struct {
+		Amount *float32                    `json:"amount,omitempty"`
+		Type   *AdTreeAdSetAdSetBudgetType `json:"type,omitempty"`
+	} `json:"adSetBudget,omitempty"`
 	AdSetName *string `json:"adSetName,omitempty"`
 
 	// Ads Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent).
@@ -4635,7 +5105,9 @@ type AdTreeAdSet struct {
 
 	// BidStrategy Bid strategy for this ad set (overrides campaign level when set)
 	BidStrategy *string `json:"bidStrategy,omitempty"`
-	Budget      *struct {
+
+	// Budget Effective budget at this level (back-compat). For CBO campaigns this mirrors the parent campaign's budget; for ABO this is the ad-set-specific budget. Use `adSetBudget` / parent `campaignBudget` + `budgetLevel` to disambiguate.
+	Budget *struct {
 		Amount *float32               `json:"amount,omitempty"`
 		Type   *AdTreeAdSetBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
@@ -4656,6 +5128,9 @@ type AdTreeAdSet struct {
 	Status *AdStatus `json:"status,omitempty"`
 }
 
+// AdTreeAdSetAdSetBudgetType defines model for AdTreeAdSet.AdSetBudget.Type.
+type AdTreeAdSetAdSetBudgetType string
+
 // AdTreeAdSetBudgetType defines model for AdTreeAdSet.Budget.Type.
 type AdTreeAdSetBudgetType string
 
@@ -4670,18 +5145,41 @@ type AdTreeCampaign struct {
 
 	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
 	BidStrategy *string `json:"bidStrategy,omitempty"`
-	Budget      *struct {
+
+	// Budget Effective budget (back-compat). For CBO this mirrors `campaignBudget`, for ABO this mirrors the child ad-set budget. Use `budgetLevel` to disambiguate.
+	Budget *struct {
 		Amount *float32                  `json:"amount,omitempty"`
 		Type   *AdTreeCampaignBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
-	CampaignName *string    `json:"campaignName,omitempty"`
-	Metrics      *AdMetrics `json:"metrics,omitempty"`
+
+	// BudgetLevel Canonical CBO/ABO indicator. `campaign` = CBO (Advantage Campaign Budget, budget lives on the campaign). `adset` = ABO (budget lives on each ad set). Route budget updates to the matching Meta entity.
+	BudgetLevel *AdTreeCampaignBudgetLevel `json:"budgetLevel,omitempty"`
+
+	// CampaignBudget Campaign-level budget (Campaign Budget Optimization / CBO). Populated only when the platform set the budget at the campaign level. For ABO campaigns this is null and the budget lives on the child ad set.
+	CampaignBudget *struct {
+		Amount *float32                          `json:"amount,omitempty"`
+		Type   *AdTreeCampaignCampaignBudgetType `json:"type,omitempty"`
+	} `json:"campaignBudget,omitempty"`
+
+	// CampaignIssuesInfo Platform-reported campaign issues (Meta `issues_info[]`). Populated only when the platform has delivery issues to report; contains the specific error codes and messages.
+	CampaignIssuesInfo *[]map[string]interface{} `json:"campaignIssuesInfo,omitempty"`
+	CampaignName       *string                   `json:"campaignName,omitempty"`
+
+	// Currency ISO 4217 currency code (e.g. USD, EUR, CLP, JPY) for all budget amounts in this campaign node. Budgets are NOT normalized to USD.
+	Currency *string `json:"currency,omitempty"`
+
+	// IsBudgetScheduleEnabled Meta-only. Mirrors Campaign.is_budget_schedule_enabled — true when the campaign uses budget scheduling (time-based budget changes). Independent of CBO/ABO.
+	IsBudgetScheduleEnabled *bool      `json:"isBudgetScheduleEnabled,omitempty"`
+	Metrics                 *AdMetrics `json:"metrics,omitempty"`
 
 	// OptimizationGoal Meta optimization goal shared across ad sets, or comma-separated values when ad sets differ (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION)
 	OptimizationGoal    *string                 `json:"optimizationGoal,omitempty"`
 	Platform            *AdTreeCampaignPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string                 `json:"platformAdAccountId,omitempty"`
 	PlatformCampaignId  *string                 `json:"platformCampaignId,omitempty"`
+
+	// PlatformCampaignStatus Raw platform-level campaign status (Meta `effective_status`: ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES). Distinct from per-ad `platformStatus`.
+	PlatformCampaignStatus *string `json:"platformCampaignStatus,omitempty"`
 
 	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC)
 	PlatformObjective *string `json:"platformObjective,omitempty"`
@@ -4694,15 +5192,37 @@ type AdTreeCampaign struct {
 		PixelId         *string `json:"pixel_id,omitempty"`
 	} `json:"promotedObject,omitempty"`
 
-	// Status Derived from child ad statuses
+	// ReviewStatus Platform-side review state of the campaign. Independent of the
+	// children-derived delivery `status`: a campaign can have ads
+	// already active (status=active) while the campaign itself is
+	// still being reviewed by the platform (reviewStatus=in_review).
+	// For Meta, derived from `effective_status` + `issues_info` on
+	// the Campaign, plus ad-level PENDING_REVIEW rollup.
+	ReviewStatus *AdTreeCampaignReviewStatus `json:"reviewStatus,omitempty"`
+
+	// Status Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
 }
 
 // AdTreeCampaignBudgetType defines model for AdTreeCampaign.Budget.Type.
 type AdTreeCampaignBudgetType string
 
+// AdTreeCampaignBudgetLevel Canonical CBO/ABO indicator. `campaign` = CBO (Advantage Campaign Budget, budget lives on the campaign). `adset` = ABO (budget lives on each ad set). Route budget updates to the matching Meta entity.
+type AdTreeCampaignBudgetLevel string
+
+// AdTreeCampaignCampaignBudgetType defines model for AdTreeCampaign.CampaignBudget.Type.
+type AdTreeCampaignCampaignBudgetType string
+
 // AdTreeCampaignPlatform defines model for AdTreeCampaign.Platform.
 type AdTreeCampaignPlatform string
+
+// AdTreeCampaignReviewStatus Platform-side review state of the campaign. Independent of the
+// children-derived delivery `status`: a campaign can have ads
+// already active (status=active) while the campaign itself is
+// still being reviewed by the platform (reviewStatus=in_review).
+// For Meta, derived from `effective_status` + `issues_info` on
+// the Campaign, plus ad-level PENDING_REVIEW rollup.
+type AdTreeCampaignReviewStatus string
 
 // AnalyticsListResponse defines model for AnalyticsListResponse.
 type AnalyticsListResponse struct {
@@ -6934,6 +7454,40 @@ type ListAdAccountsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
+// UpdateAdSetJSONBody defines parameters for UpdateAdSet.
+type UpdateAdSetJSONBody struct {
+	// Budget Omit if only toggling status
+	Budget *struct {
+		Amount *float32                       `json:"amount,omitempty"`
+		Type   *UpdateAdSetJSONBodyBudgetType `json:"type,omitempty"`
+	} `json:"budget,omitempty"`
+	Platform UpdateAdSetJSONBodyPlatform `json:"platform"`
+
+	// Status Omit if only updating budget
+	Status *UpdateAdSetJSONBodyStatus `json:"status,omitempty"`
+}
+
+// UpdateAdSetJSONBodyBudgetType defines parameters for UpdateAdSet.
+type UpdateAdSetJSONBodyBudgetType string
+
+// UpdateAdSetJSONBodyPlatform defines parameters for UpdateAdSet.
+type UpdateAdSetJSONBodyPlatform string
+
+// UpdateAdSetJSONBodyStatus defines parameters for UpdateAdSet.
+type UpdateAdSetJSONBodyStatus string
+
+// UpdateAdSetStatusJSONBody defines parameters for UpdateAdSetStatus.
+type UpdateAdSetStatusJSONBody struct {
+	Platform UpdateAdSetStatusJSONBodyPlatform `json:"platform"`
+	Status   UpdateAdSetStatusJSONBodyStatus   `json:"status"`
+}
+
+// UpdateAdSetStatusJSONBodyPlatform defines parameters for UpdateAdSetStatus.
+type UpdateAdSetStatusJSONBodyPlatform string
+
+// UpdateAdSetStatusJSONBodyStatus defines parameters for UpdateAdSetStatus.
+type UpdateAdSetStatusJSONBodyStatus string
+
 // ListAdAudiencesParams defines parameters for ListAdAudiences.
 type ListAdAudiencesParams struct {
 	// AccountId Social account ID
@@ -7060,8 +7614,10 @@ type BoostPostJSONBodyTargetingAdvantageAudience int
 // ListAdCampaignsParams defines parameters for ListAdCampaigns.
 type ListAdCampaignsParams struct {
 	// Page Page number (1-based)
-	Page     *PageParam                     `form:"page,omitempty" json:"page,omitempty"`
-	Limit    *int                           `form:"limit,omitempty" json:"limit,omitempty"`
+	Page  *PageParam `form:"page,omitempty" json:"page,omitempty"`
+	Limit *int       `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Source `zernio` (default) returns only ads created via Zernio (isExternal=false). `all` additionally returns ads discovered from the platform's ad manager (isExternal=true). Status is NOT filtered by default — use the `status` param for that.
 	Source   *ListAdCampaignsParamsSource   `form:"source,omitempty" json:"source,omitempty"`
 	Platform *ListAdCampaignsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
@@ -7083,6 +7639,72 @@ type ListAdCampaignsParamsSource string
 
 // ListAdCampaignsParamsPlatform defines parameters for ListAdCampaigns.
 type ListAdCampaignsParamsPlatform string
+
+// BulkUpdateAdCampaignStatusJSONBody defines parameters for BulkUpdateAdCampaignStatus.
+type BulkUpdateAdCampaignStatusJSONBody struct {
+	Campaigns []struct {
+		Platform           BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform `json:"platform"`
+		PlatformCampaignId string                                              `json:"platformCampaignId"`
+	} `json:"campaigns"`
+	Status BulkUpdateAdCampaignStatusJSONBodyStatus `json:"status"`
+}
+
+// BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform defines parameters for BulkUpdateAdCampaignStatus.
+type BulkUpdateAdCampaignStatusJSONBodyCampaignsPlatform string
+
+// BulkUpdateAdCampaignStatusJSONBodyStatus defines parameters for BulkUpdateAdCampaignStatus.
+type BulkUpdateAdCampaignStatusJSONBodyStatus string
+
+// DeleteAdCampaignJSONBody defines parameters for DeleteAdCampaign.
+type DeleteAdCampaignJSONBody struct {
+	Platform DeleteAdCampaignJSONBodyPlatform `json:"platform"`
+}
+
+// DeleteAdCampaignJSONBodyPlatform defines parameters for DeleteAdCampaign.
+type DeleteAdCampaignJSONBodyPlatform string
+
+// UpdateAdCampaignJSONBody defines parameters for UpdateAdCampaign.
+type UpdateAdCampaignJSONBody struct {
+	Budget struct {
+		// Amount Budget amount in the ad account's currency
+		Amount float32                            `json:"amount"`
+		Type   UpdateAdCampaignJSONBodyBudgetType `json:"type"`
+	} `json:"budget"`
+	Platform UpdateAdCampaignJSONBodyPlatform `json:"platform"`
+}
+
+// UpdateAdCampaignJSONBodyBudgetType defines parameters for UpdateAdCampaign.
+type UpdateAdCampaignJSONBodyBudgetType string
+
+// UpdateAdCampaignJSONBodyPlatform defines parameters for UpdateAdCampaign.
+type UpdateAdCampaignJSONBodyPlatform string
+
+// DuplicateAdCampaignJSONBody defines parameters for DuplicateAdCampaign.
+type DuplicateAdCampaignJSONBody struct {
+	// DeepCopy Copy child ad sets + ads + creatives + targeting
+	DeepCopy       *bool                                      `json:"deepCopy,omitempty"`
+	EndTime        *time.Time                                 `json:"endTime,omitempty"`
+	Platform       DuplicateAdCampaignJSONBodyPlatform        `json:"platform"`
+	RenamePrefix   *string                                    `json:"renamePrefix,omitempty"`
+	RenameStrategy *DuplicateAdCampaignJSONBodyRenameStrategy `json:"renameStrategy,omitempty"`
+	RenameSuffix   *string                                    `json:"renameSuffix,omitempty"`
+
+	// StartTime Reschedule the copied hierarchy's start time
+	StartTime    *time.Time                               `json:"startTime,omitempty"`
+	StatusOption *DuplicateAdCampaignJSONBodyStatusOption `json:"statusOption,omitempty"`
+
+	// SyncAfter Trigger ads discovery on the owning account after the copy succeeds
+	SyncAfter *bool `json:"syncAfter,omitempty"`
+}
+
+// DuplicateAdCampaignJSONBodyPlatform defines parameters for DuplicateAdCampaign.
+type DuplicateAdCampaignJSONBodyPlatform string
+
+// DuplicateAdCampaignJSONBodyRenameStrategy defines parameters for DuplicateAdCampaign.
+type DuplicateAdCampaignJSONBodyRenameStrategy string
+
+// DuplicateAdCampaignJSONBodyStatusOption defines parameters for DuplicateAdCampaign.
+type DuplicateAdCampaignJSONBodyStatusOption string
 
 // UpdateAdCampaignStatusJSONBody defines parameters for UpdateAdCampaignStatus.
 type UpdateAdCampaignStatusJSONBody struct {
@@ -7218,7 +7840,9 @@ type GetAdTreeParams struct {
 	Page *PageParam `form:"page,omitempty" json:"page,omitempty"`
 
 	// Limit Campaigns per page
-	Limit    *int                     `form:"limit,omitempty" json:"limit,omitempty"`
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Source `zernio` (default) returns only ads created via Zernio (isExternal=false). `all` additionally returns ads discovered from the platform's ad manager (isExternal=true). Status is NOT filtered by default — use the `status` param for that.
 	Source   *GetAdTreeParamsSource   `form:"source,omitempty" json:"source,omitempty"`
 	Platform *GetAdTreeParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
@@ -9771,6 +10395,12 @@ type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 // UpdateYoutubeDefaultPlaylistJSONRequestBody defines body for UpdateYoutubeDefaultPlaylist for application/json ContentType.
 type UpdateYoutubeDefaultPlaylistJSONRequestBody UpdateYoutubeDefaultPlaylistJSONBody
 
+// UpdateAdSetJSONRequestBody defines body for UpdateAdSet for application/json ContentType.
+type UpdateAdSetJSONRequestBody UpdateAdSetJSONBody
+
+// UpdateAdSetStatusJSONRequestBody defines body for UpdateAdSetStatus for application/json ContentType.
+type UpdateAdSetStatusJSONRequestBody UpdateAdSetStatusJSONBody
+
 // CreateAdAudienceJSONRequestBody defines body for CreateAdAudience for application/json ContentType.
 type CreateAdAudienceJSONRequestBody CreateAdAudienceJSONBody
 
@@ -9779,6 +10409,18 @@ type AddUsersToAdAudienceJSONRequestBody AddUsersToAdAudienceJSONBody
 
 // BoostPostJSONRequestBody defines body for BoostPost for application/json ContentType.
 type BoostPostJSONRequestBody BoostPostJSONBody
+
+// BulkUpdateAdCampaignStatusJSONRequestBody defines body for BulkUpdateAdCampaignStatus for application/json ContentType.
+type BulkUpdateAdCampaignStatusJSONRequestBody BulkUpdateAdCampaignStatusJSONBody
+
+// DeleteAdCampaignJSONRequestBody defines body for DeleteAdCampaign for application/json ContentType.
+type DeleteAdCampaignJSONRequestBody DeleteAdCampaignJSONBody
+
+// UpdateAdCampaignJSONRequestBody defines body for UpdateAdCampaign for application/json ContentType.
+type UpdateAdCampaignJSONRequestBody UpdateAdCampaignJSONBody
+
+// DuplicateAdCampaignJSONRequestBody defines body for DuplicateAdCampaign for application/json ContentType.
+type DuplicateAdCampaignJSONRequestBody DuplicateAdCampaignJSONBody
 
 // UpdateAdCampaignStatusJSONRequestBody defines body for UpdateAdCampaignStatus for application/json ContentType.
 type UpdateAdCampaignStatusJSONRequestBody UpdateAdCampaignStatusJSONBody
@@ -11274,6 +11916,16 @@ type ClientInterface interface {
 	// ListAdAccounts request
 	ListAdAccounts(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpdateAdSetWithBody request with any body
+	UpdateAdSetWithBody(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAdSet(ctx context.Context, adSetId string, body UpdateAdSetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAdSetStatusWithBody request with any body
+	UpdateAdSetStatusWithBody(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAdSetStatus(ctx context.Context, adSetId string, body UpdateAdSetStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListAdAudiences request
 	ListAdAudiences(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -11300,6 +11952,26 @@ type ClientInterface interface {
 
 	// ListAdCampaigns request
 	ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkUpdateAdCampaignStatusWithBody request with any body
+	BulkUpdateAdCampaignStatusWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BulkUpdateAdCampaignStatus(ctx context.Context, body BulkUpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAdCampaignWithBody request with any body
+	DeleteAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeleteAdCampaign(ctx context.Context, campaignId string, body DeleteAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAdCampaignWithBody request with any body
+	UpdateAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAdCampaign(ctx context.Context, campaignId string, body UpdateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DuplicateAdCampaignWithBody request with any body
+	DuplicateAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DuplicateAdCampaign(ctx context.Context, campaignId string, body DuplicateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateAdCampaignStatusWithBody request with any body
 	UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12981,6 +13653,54 @@ func (c *Client) ListAdAccounts(ctx context.Context, params *ListAdAccountsParam
 	return c.Client.Do(req)
 }
 
+func (c *Client) UpdateAdSetWithBody(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdSetRequestWithBody(c.Server, adSetId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdSet(ctx context.Context, adSetId string, body UpdateAdSetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdSetRequest(c.Server, adSetId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdSetStatusWithBody(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdSetStatusRequestWithBody(c.Server, adSetId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdSetStatus(ctx context.Context, adSetId string, body UpdateAdSetStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdSetStatusRequest(c.Server, adSetId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListAdAudiences(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAdAudiencesRequest(c.Server, params)
 	if err != nil {
@@ -13091,6 +13811,102 @@ func (c *Client) BoostPost(ctx context.Context, body BoostPostJSONRequestBody, r
 
 func (c *Client) ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAdCampaignsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateAdCampaignStatusWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateAdCampaignStatusRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BulkUpdateAdCampaignStatus(ctx context.Context, body BulkUpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkUpdateAdCampaignStatusRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAdCampaignRequestWithBody(c.Server, campaignId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteAdCampaign(ctx context.Context, campaignId string, body DeleteAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAdCampaignRequest(c.Server, campaignId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdCampaignRequestWithBody(c.Server, campaignId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdCampaign(ctx context.Context, campaignId string, body UpdateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdCampaignRequest(c.Server, campaignId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DuplicateAdCampaignWithBody(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDuplicateAdCampaignRequestWithBody(c.Server, campaignId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DuplicateAdCampaign(ctx context.Context, campaignId string, body DuplicateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDuplicateAdCampaignRequest(c.Server, campaignId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19623,6 +20439,100 @@ func NewListAdAccountsRequest(server string, params *ListAdAccountsParams) (*htt
 	return req, nil
 }
 
+// NewUpdateAdSetRequest calls the generic UpdateAdSet builder with application/json body
+func NewUpdateAdSetRequest(server string, adSetId string, body UpdateAdSetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdSetRequestWithBody(server, adSetId, "application/json", bodyReader)
+}
+
+// NewUpdateAdSetRequestWithBody generates requests for UpdateAdSet with any type of body
+func NewUpdateAdSetRequestWithBody(server string, adSetId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adSetId", adSetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/ad-sets/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUpdateAdSetStatusRequest calls the generic UpdateAdSetStatus builder with application/json body
+func NewUpdateAdSetStatusRequest(server string, adSetId string, body UpdateAdSetStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdSetStatusRequestWithBody(server, adSetId, "application/json", bodyReader)
+}
+
+// NewUpdateAdSetStatusRequestWithBody generates requests for UpdateAdSetStatus with any type of body
+func NewUpdateAdSetStatusRequestWithBody(server string, adSetId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adSetId", adSetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/ad-sets/%s/status", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListAdAudiencesRequest generates requests for ListAdAudiences
 func NewListAdAudiencesRequest(server string, params *ListAdAudiencesParams) (*http.Request, error) {
 	var err error
@@ -20048,6 +20958,187 @@ func NewListAdCampaignsRequest(server string, params *ListAdCampaignsParams) (*h
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewBulkUpdateAdCampaignStatusRequest calls the generic BulkUpdateAdCampaignStatus builder with application/json body
+func NewBulkUpdateAdCampaignStatusRequest(server string, body BulkUpdateAdCampaignStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkUpdateAdCampaignStatusRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBulkUpdateAdCampaignStatusRequestWithBody generates requests for BulkUpdateAdCampaignStatus with any type of body
+func NewBulkUpdateAdCampaignStatusRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns/bulk-status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteAdCampaignRequest calls the generic DeleteAdCampaign builder with application/json body
+func NewDeleteAdCampaignRequest(server string, campaignId string, body DeleteAdCampaignJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteAdCampaignRequestWithBody(server, campaignId, "application/json", bodyReader)
+}
+
+// NewDeleteAdCampaignRequestWithBody generates requests for DeleteAdCampaign with any type of body
+func NewDeleteAdCampaignRequestWithBody(server string, campaignId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "campaignId", campaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUpdateAdCampaignRequest calls the generic UpdateAdCampaign builder with application/json body
+func NewUpdateAdCampaignRequest(server string, campaignId string, body UpdateAdCampaignJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdCampaignRequestWithBody(server, campaignId, "application/json", bodyReader)
+}
+
+// NewUpdateAdCampaignRequestWithBody generates requests for UpdateAdCampaign with any type of body
+func NewUpdateAdCampaignRequestWithBody(server string, campaignId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "campaignId", campaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDuplicateAdCampaignRequest calls the generic DuplicateAdCampaign builder with application/json body
+func NewDuplicateAdCampaignRequest(server string, campaignId string, body DuplicateAdCampaignJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDuplicateAdCampaignRequestWithBody(server, campaignId, "application/json", bodyReader)
+}
+
+// NewDuplicateAdCampaignRequestWithBody generates requests for DuplicateAdCampaign with any type of body
+func NewDuplicateAdCampaignRequestWithBody(server string, campaignId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "campaignId", campaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/campaigns/%s/duplicate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -30997,6 +32088,16 @@ type ClientWithResponsesInterface interface {
 	// ListAdAccountsWithResponse request
 	ListAdAccountsWithResponse(ctx context.Context, params *ListAdAccountsParams, reqEditors ...RequestEditorFn) (*ListAdAccountsResponse, error)
 
+	// UpdateAdSetWithBodyWithResponse request with any body
+	UpdateAdSetWithBodyWithResponse(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdSetResponse, error)
+
+	UpdateAdSetWithResponse(ctx context.Context, adSetId string, body UpdateAdSetJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdSetResponse, error)
+
+	// UpdateAdSetStatusWithBodyWithResponse request with any body
+	UpdateAdSetStatusWithBodyWithResponse(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdSetStatusResponse, error)
+
+	UpdateAdSetStatusWithResponse(ctx context.Context, adSetId string, body UpdateAdSetStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdSetStatusResponse, error)
+
 	// ListAdAudiencesWithResponse request
 	ListAdAudiencesWithResponse(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*ListAdAudiencesResponse, error)
 
@@ -31023,6 +32124,26 @@ type ClientWithResponsesInterface interface {
 
 	// ListAdCampaignsWithResponse request
 	ListAdCampaignsWithResponse(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*ListAdCampaignsResponse, error)
+
+	// BulkUpdateAdCampaignStatusWithBodyWithResponse request with any body
+	BulkUpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateAdCampaignStatusResponse, error)
+
+	BulkUpdateAdCampaignStatusWithResponse(ctx context.Context, body BulkUpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateAdCampaignStatusResponse, error)
+
+	// DeleteAdCampaignWithBodyWithResponse request with any body
+	DeleteAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteAdCampaignResponse, error)
+
+	DeleteAdCampaignWithResponse(ctx context.Context, campaignId string, body DeleteAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteAdCampaignResponse, error)
+
+	// UpdateAdCampaignWithBodyWithResponse request with any body
+	UpdateAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignResponse, error)
+
+	UpdateAdCampaignWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignResponse, error)
+
+	// DuplicateAdCampaignWithBodyWithResponse request with any body
+	DuplicateAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DuplicateAdCampaignResponse, error)
+
+	DuplicateAdCampaignWithResponse(ctx context.Context, campaignId string, body DuplicateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*DuplicateAdCampaignResponse, error)
 
 	// UpdateAdCampaignStatusWithBodyWithResponse request with any body
 	UpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
@@ -33898,6 +35019,64 @@ func (r ListAdAccountsResponse) StatusCode() int {
 	return 0
 }
 
+type UpdateAdSetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
+		Budget        *AdBudget                  `json:"budget,omitempty"`
+		BudgetLevel   *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
+		Status        *UpdateAdSet200Status      `json:"status,omitempty"`
+		StatusSkipped *int                       `json:"statusSkipped,omitempty"`
+		StatusUpdated *int                       `json:"statusUpdated,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type UpdateAdSet200BudgetLevel string
+type UpdateAdSet200Status string
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdSetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdSetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAdSetStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Skipped *int `json:"skipped,omitempty"`
+		Updated *int `json:"updated,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdSetStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdSetStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListAdAudiencesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -34088,6 +35267,131 @@ func (r ListAdCampaignsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListAdCampaignsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type BulkUpdateAdCampaignStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Results *[]struct {
+			Error              *string `json:"error,omitempty"`
+			Platform           *string `json:"platform,omitempty"`
+			PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
+			Skipped            *int    `json:"skipped,omitempty"`
+			Updated            *int    `json:"updated,omitempty"`
+		} `json:"results,omitempty"`
+		Status *BulkUpdateAdCampaignStatus200Status `json:"status,omitempty"`
+		Totals *struct {
+			Failed  *int `json:"failed,omitempty"`
+			Skipped *int `json:"skipped,omitempty"`
+			Updated *int `json:"updated,omitempty"`
+		} `json:"totals,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type BulkUpdateAdCampaignStatus200Status string
+
+// Status returns HTTPResponse.Status
+func (r BulkUpdateAdCampaignStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkUpdateAdCampaignStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteAdCampaignResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// AdCount Number of local Ad docs marked cancelled
+		AdCount *int  `json:"adCount,omitempty"`
+		Deleted *bool `json:"deleted,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAdCampaignResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAdCampaignResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAdCampaignResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
+		Budget      *AdBudget                       `json:"budget,omitempty"`
+		BudgetLevel *UpdateAdCampaign200BudgetLevel `json:"budgetLevel,omitempty"`
+		Updated     *int                            `json:"updated,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type UpdateAdCampaign200BudgetLevel string
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdCampaignResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdCampaignResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DuplicateAdCampaignResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// CopiedCampaignId Platform ID of the new campaign
+		CopiedCampaignId *string                          `json:"copiedCampaignId,omitempty"`
+		Discovery        *DuplicateAdCampaign200Discovery `json:"discovery,omitempty"`
+
+		// Raw Platform-native response from the copy endpoint (Meta includes ad_object_ids for child copies)
+		Raw *map[string]interface{} `json:"raw,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type DuplicateAdCampaign200Discovery string
+
+// Status returns HTTPResponse.Status
+func (r DuplicateAdCampaignResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DuplicateAdCampaignResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -41371,6 +42675,40 @@ func (c *ClientWithResponses) ListAdAccountsWithResponse(ctx context.Context, pa
 	return ParseListAdAccountsResponse(rsp)
 }
 
+// UpdateAdSetWithBodyWithResponse request with arbitrary body returning *UpdateAdSetResponse
+func (c *ClientWithResponses) UpdateAdSetWithBodyWithResponse(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdSetResponse, error) {
+	rsp, err := c.UpdateAdSetWithBody(ctx, adSetId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdSetResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdSetWithResponse(ctx context.Context, adSetId string, body UpdateAdSetJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdSetResponse, error) {
+	rsp, err := c.UpdateAdSet(ctx, adSetId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdSetResponse(rsp)
+}
+
+// UpdateAdSetStatusWithBodyWithResponse request with arbitrary body returning *UpdateAdSetStatusResponse
+func (c *ClientWithResponses) UpdateAdSetStatusWithBodyWithResponse(ctx context.Context, adSetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdSetStatusResponse, error) {
+	rsp, err := c.UpdateAdSetStatusWithBody(ctx, adSetId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdSetStatusResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdSetStatusWithResponse(ctx context.Context, adSetId string, body UpdateAdSetStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdSetStatusResponse, error) {
+	rsp, err := c.UpdateAdSetStatus(ctx, adSetId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdSetStatusResponse(rsp)
+}
+
 // ListAdAudiencesWithResponse request returning *ListAdAudiencesResponse
 func (c *ClientWithResponses) ListAdAudiencesWithResponse(ctx context.Context, params *ListAdAudiencesParams, reqEditors ...RequestEditorFn) (*ListAdAudiencesResponse, error) {
 	rsp, err := c.ListAdAudiences(ctx, params, reqEditors...)
@@ -41456,6 +42794,74 @@ func (c *ClientWithResponses) ListAdCampaignsWithResponse(ctx context.Context, p
 		return nil, err
 	}
 	return ParseListAdCampaignsResponse(rsp)
+}
+
+// BulkUpdateAdCampaignStatusWithBodyWithResponse request with arbitrary body returning *BulkUpdateAdCampaignStatusResponse
+func (c *ClientWithResponses) BulkUpdateAdCampaignStatusWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUpdateAdCampaignStatusResponse, error) {
+	rsp, err := c.BulkUpdateAdCampaignStatusWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateAdCampaignStatusResponse(rsp)
+}
+
+func (c *ClientWithResponses) BulkUpdateAdCampaignStatusWithResponse(ctx context.Context, body BulkUpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkUpdateAdCampaignStatusResponse, error) {
+	rsp, err := c.BulkUpdateAdCampaignStatus(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkUpdateAdCampaignStatusResponse(rsp)
+}
+
+// DeleteAdCampaignWithBodyWithResponse request with arbitrary body returning *DeleteAdCampaignResponse
+func (c *ClientWithResponses) DeleteAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteAdCampaignResponse, error) {
+	rsp, err := c.DeleteAdCampaignWithBody(ctx, campaignId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAdCampaignResponse(rsp)
+}
+
+func (c *ClientWithResponses) DeleteAdCampaignWithResponse(ctx context.Context, campaignId string, body DeleteAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteAdCampaignResponse, error) {
+	rsp, err := c.DeleteAdCampaign(ctx, campaignId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAdCampaignResponse(rsp)
+}
+
+// UpdateAdCampaignWithBodyWithResponse request with arbitrary body returning *UpdateAdCampaignResponse
+func (c *ClientWithResponses) UpdateAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdCampaignResponse, error) {
+	rsp, err := c.UpdateAdCampaignWithBody(ctx, campaignId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdCampaignResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdCampaignWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignResponse, error) {
+	rsp, err := c.UpdateAdCampaign(ctx, campaignId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdCampaignResponse(rsp)
+}
+
+// DuplicateAdCampaignWithBodyWithResponse request with arbitrary body returning *DuplicateAdCampaignResponse
+func (c *ClientWithResponses) DuplicateAdCampaignWithBodyWithResponse(ctx context.Context, campaignId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DuplicateAdCampaignResponse, error) {
+	rsp, err := c.DuplicateAdCampaignWithBody(ctx, campaignId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDuplicateAdCampaignResponse(rsp)
+}
+
+func (c *ClientWithResponses) DuplicateAdCampaignWithResponse(ctx context.Context, campaignId string, body DuplicateAdCampaignJSONRequestBody, reqEditors ...RequestEditorFn) (*DuplicateAdCampaignResponse, error) {
+	rsp, err := c.DuplicateAdCampaign(ctx, campaignId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDuplicateAdCampaignResponse(rsp)
 }
 
 // UpdateAdCampaignStatusWithBodyWithResponse request with arbitrary body returning *UpdateAdCampaignStatusResponse
@@ -46719,6 +48125,82 @@ func ParseListAdAccountsResponse(rsp *http.Response) (*ListAdAccountsResponse, e
 	return response, nil
 }
 
+// ParseUpdateAdSetResponse parses an HTTP response from a UpdateAdSetWithResponse call
+func ParseUpdateAdSetResponse(rsp *http.Response) (*UpdateAdSetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdSetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
+			Budget        *AdBudget                  `json:"budget,omitempty"`
+			BudgetLevel   *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
+			Status        *UpdateAdSet200Status      `json:"status,omitempty"`
+			StatusSkipped *int                       `json:"statusSkipped,omitempty"`
+			StatusUpdated *int                       `json:"statusUpdated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAdSetStatusResponse parses an HTTP response from a UpdateAdSetStatusWithResponse call
+func ParseUpdateAdSetStatusResponse(rsp *http.Response) (*UpdateAdSetStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdSetStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Skipped *int `json:"skipped,omitempty"`
+			Updated *int `json:"updated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListAdAudiencesResponse parses an HTTP response from a ListAdAudiencesWithResponse call
 func ParseListAdAudiencesResponse(rsp *http.Response) (*ListAdAudiencesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -46984,6 +48466,168 @@ func ParseListAdCampaignsResponse(rsp *http.Response) (*ListAdCampaignsResponse,
 		var dest struct {
 			Campaigns  *[]AdCampaign `json:"campaigns,omitempty"`
 			Pagination *Pagination   `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkUpdateAdCampaignStatusResponse parses an HTTP response from a BulkUpdateAdCampaignStatusWithResponse call
+func ParseBulkUpdateAdCampaignStatusResponse(rsp *http.Response) (*BulkUpdateAdCampaignStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkUpdateAdCampaignStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Results *[]struct {
+				Error              *string `json:"error,omitempty"`
+				Platform           *string `json:"platform,omitempty"`
+				PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
+				Skipped            *int    `json:"skipped,omitempty"`
+				Updated            *int    `json:"updated,omitempty"`
+			} `json:"results,omitempty"`
+			Status *BulkUpdateAdCampaignStatus200Status `json:"status,omitempty"`
+			Totals *struct {
+				Failed  *int `json:"failed,omitempty"`
+				Skipped *int `json:"skipped,omitempty"`
+				Updated *int `json:"updated,omitempty"`
+			} `json:"totals,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAdCampaignResponse parses an HTTP response from a DeleteAdCampaignWithResponse call
+func ParseDeleteAdCampaignResponse(rsp *http.Response) (*DeleteAdCampaignResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAdCampaignResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// AdCount Number of local Ad docs marked cancelled
+			AdCount *int  `json:"adCount,omitempty"`
+			Deleted *bool `json:"deleted,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAdCampaignResponse parses an HTTP response from a UpdateAdCampaignWithResponse call
+func ParseUpdateAdCampaignResponse(rsp *http.Response) (*UpdateAdCampaignResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdCampaignResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
+			Budget      *AdBudget                       `json:"budget,omitempty"`
+			BudgetLevel *UpdateAdCampaign200BudgetLevel `json:"budgetLevel,omitempty"`
+			Updated     *int                            `json:"updated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDuplicateAdCampaignResponse parses an HTTP response from a DuplicateAdCampaignWithResponse call
+func ParseDuplicateAdCampaignResponse(rsp *http.Response) (*DuplicateAdCampaignResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DuplicateAdCampaignResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// CopiedCampaignId Platform ID of the new campaign
+			CopiedCampaignId *string                          `json:"copiedCampaignId,omitempty"`
+			Discovery        *DuplicateAdCampaign200Discovery `json:"discovery,omitempty"`
+
+			// Raw Platform-native response from the copy endpoint (Meta includes ad_object_ids for child copies)
+			Raw *map[string]interface{} `json:"raw,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
