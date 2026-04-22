@@ -2544,6 +2544,48 @@ func (e CreateStandaloneAdJSONBodyCampaignType) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyCreativesCallToAction.
+const (
+	CreateStandaloneAdJSONBodyCreativesCallToActionBOOKTRAVEL CreateStandaloneAdJSONBodyCreativesCallToAction = "BOOK_TRAVEL"
+	CreateStandaloneAdJSONBodyCreativesCallToActionCONTACTUS  CreateStandaloneAdJSONBodyCreativesCallToAction = "CONTACT_US"
+	CreateStandaloneAdJSONBodyCreativesCallToActionDOWNLOAD   CreateStandaloneAdJSONBodyCreativesCallToAction = "DOWNLOAD"
+	CreateStandaloneAdJSONBodyCreativesCallToActionGETOFFER   CreateStandaloneAdJSONBodyCreativesCallToAction = "GET_OFFER"
+	CreateStandaloneAdJSONBodyCreativesCallToActionGETQUOTE   CreateStandaloneAdJSONBodyCreativesCallToAction = "GET_QUOTE"
+	CreateStandaloneAdJSONBodyCreativesCallToActionLEARNMORE  CreateStandaloneAdJSONBodyCreativesCallToAction = "LEARN_MORE"
+	CreateStandaloneAdJSONBodyCreativesCallToActionSHOPNOW    CreateStandaloneAdJSONBodyCreativesCallToAction = "SHOP_NOW"
+	CreateStandaloneAdJSONBodyCreativesCallToActionSIGNUP     CreateStandaloneAdJSONBodyCreativesCallToAction = "SIGN_UP"
+	CreateStandaloneAdJSONBodyCreativesCallToActionSUBSCRIBE  CreateStandaloneAdJSONBodyCreativesCallToAction = "SUBSCRIBE"
+	CreateStandaloneAdJSONBodyCreativesCallToActionWATCHMORE  CreateStandaloneAdJSONBodyCreativesCallToAction = "WATCH_MORE"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCreativesCallToAction enum.
+func (e CreateStandaloneAdJSONBodyCreativesCallToAction) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyCreativesCallToActionBOOKTRAVEL:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionCONTACTUS:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionDOWNLOAD:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionGETOFFER:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionGETQUOTE:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionLEARNMORE:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionSHOPNOW:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionSIGNUP:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionSUBSCRIBE:
+		return true
+	case CreateStandaloneAdJSONBodyCreativesCallToActionWATCHMORE:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyGoal.
 const (
 	CreateStandaloneAdJSONBodyGoalAppPromotion   CreateStandaloneAdJSONBodyGoal = "app_promotion"
@@ -4622,34 +4664,34 @@ func (e SendWhatsAppFlowMessageJSONBodyHeaderType) Valid() bool {
 
 // Defines values for UpdateWhatsAppFlowJSONBodyCategories.
 const (
-	UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING UpdateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
-	UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS          UpdateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
-	UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT    UpdateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
-	UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION     UpdateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
-	UpdateWhatsAppFlowJSONBodyCategoriesOTHER              UpdateWhatsAppFlowJSONBodyCategories = "OTHER"
-	UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
-	UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
-	UpdateWhatsAppFlowJSONBodyCategoriesSURVEY             UpdateWhatsAppFlowJSONBodyCategories = "SURVEY"
+	APPOINTMENTBOOKING UpdateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
+	CONTACTUS          UpdateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
+	CUSTOMERSUPPORT    UpdateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
+	LEADGENERATION     UpdateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
+	OTHER              UpdateWhatsAppFlowJSONBodyCategories = "OTHER"
+	SIGNIN             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
+	SIGNUP             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
+	SURVEY             UpdateWhatsAppFlowJSONBodyCategories = "SURVEY"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWhatsAppFlowJSONBodyCategories enum.
 func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
 	switch e {
-	case UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING:
+	case APPOINTMENTBOOKING:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS:
+	case CONTACTUS:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT:
+	case CUSTOMERSUPPORT:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION:
+	case LEADGENERATION:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesOTHER:
+	case OTHER:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN:
+	case SIGNIN:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP:
+	case SIGNUP:
 		return true
-	case UpdateWhatsAppFlowJSONBodyCategoriesSURVEY:
+	case SURVEY:
 		return true
 	default:
 		return false
@@ -7756,6 +7798,12 @@ type CreateStandaloneAdJSONBody struct {
 	AccountId   string `json:"accountId"`
 	AdAccountId string `json:"adAccountId"`
 
+	// AdSetId Meta-only. When present, switches to the attach shape: adds
+	// one new ad to this existing ad set without creating a new
+	// campaign. Budget, targeting, goal, and schedule are inherited
+	// from the ad set on Meta. Mutually exclusive with `creatives[]`.
+	AdSetId *string `json:"adSetId,omitempty"`
+
 	// AdditionalDescriptions Google Search RSA only. Extra descriptions.
 	AdditionalDescriptions *[]string `json:"additionalDescriptions,omitempty"`
 
@@ -7773,32 +7821,48 @@ type CreateStandaloneAdJSONBody struct {
 	// BoardId Pinterest only. Board ID (auto-creates if not provided).
 	BoardId *string `json:"boardId,omitempty"`
 
-	// Body Max: Google=90, Pinterest=500
-	Body         string                               `json:"body"`
-	BudgetAmount float32                              `json:"budgetAmount"`
-	BudgetType   CreateStandaloneAdJSONBodyBudgetType `json:"budgetType"`
+	// Body Required on legacy + attach shapes. Max: Google=90, Pinterest=500
+	Body *string `json:"body,omitempty"`
+
+	// BudgetAmount Required on legacy + multi-creative shapes. Inherited on attach.
+	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
+
+	// BudgetType Required on legacy + multi-creative shapes. Inherited on attach.
+	BudgetType *CreateStandaloneAdJSONBodyBudgetType `json:"budgetType,omitempty"`
 
 	// BusinessName Google Display only
 	BusinessName *string `json:"businessName,omitempty"`
 
-	// CallToAction Meta only
+	// CallToAction Required on legacy + attach shapes. Meta only.
 	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
 
 	// CampaignType Google only
 	CampaignType *CreateStandaloneAdJSONBodyCampaignType `json:"campaignType,omitempty"`
 	Countries    *[]string                               `json:"countries,omitempty"`
-	Currency     *string                                 `json:"currency,omitempty"`
+
+	// Creatives Meta-only. When present, switches to the multi-creative shape:
+	// creates 1 campaign + 1 ad set + N ads (one per entry here).
+	// Top-level `headline` / `body` / `imageUrl` / `linkUrl` /
+	// `callToAction` are ignored in this mode. Mutually exclusive with `adSetId`.
+	Creatives *[]struct {
+		Body         string                                          `json:"body"`
+		CallToAction CreateStandaloneAdJSONBodyCreativesCallToAction `json:"callToAction"`
+		Headline     string                                          `json:"headline"`
+		ImageUrl     string                                          `json:"imageUrl"`
+		LinkUrl      string                                          `json:"linkUrl"`
+	} `json:"creatives,omitempty"`
+	Currency *string `json:"currency,omitempty"`
 
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
-	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
-	Goal CreateStandaloneAdJSONBodyGoal `json:"goal"`
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform.
+	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
-	// Headline Required for most platforms. Max: Meta=255, Google=30, Pinterest=100
+	// Headline Required on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Max: Meta=255, Google=30, Pinterest=100
 	Headline *string `json:"headline,omitempty"`
 
-	// ImageUrl Image URL (or video URL for TikTok). Not required for Google Search campaigns.
+	// ImageUrl Required on legacy + attach shapes. Not required for Google Search campaigns.
 	ImageUrl *string `json:"imageUrl,omitempty"`
 
 	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
@@ -7809,7 +7873,9 @@ type CreateStandaloneAdJSONBody struct {
 
 	// Keywords Google Search only
 	Keywords *[]string `json:"keywords,omitempty"`
-	LinkUrl  *string   `json:"linkUrl,omitempty"`
+
+	// LinkUrl Required on legacy + attach shapes. Skip for multi-creative.
+	LinkUrl *string `json:"linkUrl,omitempty"`
 
 	// LongHeadline Google Display only
 	LongHeadline *string `json:"longHeadline,omitempty"`
@@ -7827,6 +7893,9 @@ type CreateStandaloneAdJSONBodyCallToAction string
 
 // CreateStandaloneAdJSONBodyCampaignType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCampaignType string
+
+// CreateStandaloneAdJSONBodyCreativesCallToAction defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCreativesCallToAction string
 
 // CreateStandaloneAdJSONBodyGoal defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGoal string
@@ -35490,10 +35559,19 @@ type CreateStandaloneAdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *struct {
-		Ad      *Ad     `json:"ad,omitempty"`
-		Message *string `json:"message,omitempty"`
+		union json.RawMessage
 	}
 	JSON401 *Unauthorized
+}
+type CreateStandaloneAd2010 struct {
+	Ad      *Ad     `json:"ad,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+type CreateStandaloneAd2011 struct {
+	Ads                *[]Ad   `json:"ads,omitempty"`
+	Message            *string `json:"message,omitempty"`
+	PlatformAdSetId    *string `json:"platformAdSetId,omitempty"`
+	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
 }
 
 // Status returns HTTPResponse.Status
@@ -48773,8 +48851,7 @@ func ParseCreateStandaloneAdResponse(rsp *http.Response) (*CreateStandaloneAdRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest struct {
-			Ad      *Ad     `json:"ad,omitempty"`
-			Message *string `json:"message,omitempty"`
+			union json.RawMessage
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
