@@ -5059,6 +5059,9 @@ type AdCampaignReviewStatus string
 
 // AdMetrics defines model for AdMetrics.
 type AdMetrics struct {
+	// ActionValues Monetary mirror of `actions`, from Meta's Insights `action_values[]` array. Same keying — values are the revenue attributed to each action_type, in ad-account native currency (same unit as `spend`; see the campaign node's `currency` field). Use this to compute revenue-per-event (e.g. avg purchase value). Meta-only; other platforms return {}.
+	ActionValues *map[string]float32 `json:"actionValues,omitempty"`
+
 	// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
 	Actions *map[string]int `json:"actions,omitempty"`
 	Clicks  *int            `json:"clicks,omitempty"`
@@ -5082,8 +5085,14 @@ type AdMetrics struct {
 
 	// LastSyncedAt Present on individual ads only, not on campaign aggregations
 	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
-	Reach        *int       `json:"reach,omitempty"`
-	Spend        *float32   `json:"spend,omitempty"`
+
+	// PurchaseValue Convenience sum of purchase-type action values — picked from `actionValues` via the same priority list as `conversions` so both fields describe the same events. In ad-account native currency. 0 when the campaign has no purchase event configured. Meta-only.
+	PurchaseValue *float32 `json:"purchaseValue,omitempty"`
+	Reach         *int     `json:"reach,omitempty"`
+
+	// Roas Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
+	Roas  *float32 `json:"roas,omitempty"`
+	Spend *float32 `json:"spend,omitempty"`
 }
 
 // AdStatus defines model for AdStatus.
@@ -35650,6 +35659,9 @@ type GetAdAnalyticsResponse struct {
 		Analytics *struct {
 			Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
 			Daily      *[]struct {
+				// ActionValues Monetary mirror of `actions`, from Meta's Insights `action_values[]` array. Same keying — values are the revenue attributed to each action_type, in ad-account native currency (same unit as `spend`; see the campaign node's `currency` field). Use this to compute revenue-per-event (e.g. avg purchase value). Meta-only; other platforms return {}.
+				ActionValues *map[string]float32 `json:"actionValues,omitempty"`
+
 				// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
 				Actions *map[string]int `json:"actions,omitempty"`
 				Clicks  *int            `json:"clicks,omitempty"`
@@ -35674,8 +35686,14 @@ type GetAdAnalyticsResponse struct {
 
 				// LastSyncedAt Present on individual ads only, not on campaign aggregations
 				LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
-				Reach        *int       `json:"reach,omitempty"`
-				Spend        *float32   `json:"spend,omitempty"`
+
+				// PurchaseValue Convenience sum of purchase-type action values — picked from `actionValues` via the same priority list as `conversions` so both fields describe the same events. In ad-account native currency. 0 when the campaign has no purchase event configured. Meta-only.
+				PurchaseValue *float32 `json:"purchaseValue,omitempty"`
+				Reach         *int     `json:"reach,omitempty"`
+
+				// Roas Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
+				Roas  *float32 `json:"roas,omitempty"`
+				Spend *float32 `json:"spend,omitempty"`
 			} `json:"daily,omitempty"`
 			Summary *AdMetrics `json:"summary,omitempty"`
 		} `json:"analytics,omitempty"`
@@ -49002,6 +49020,9 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 			Analytics *struct {
 				Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
 				Daily      *[]struct {
+					// ActionValues Monetary mirror of `actions`, from Meta's Insights `action_values[]` array. Same keying — values are the revenue attributed to each action_type, in ad-account native currency (same unit as `spend`; see the campaign node's `currency` field). Use this to compute revenue-per-event (e.g. avg purchase value). Meta-only; other platforms return {}.
+					ActionValues *map[string]float32 `json:"actionValues,omitempty"`
+
 					// Actions Raw per-action-type counts from Meta's Insights actions[] array, summed over the date range. Keys are Meta action_type strings (e.g. link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped). Use this to extract any conversion event (purchases, leads, add_to_cart, etc.) without relying on the derived conversions field. Empty object when no actions are reported.
 					Actions *map[string]int `json:"actions,omitempty"`
 					Clicks  *int            `json:"clicks,omitempty"`
@@ -49026,8 +49047,14 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 
 					// LastSyncedAt Present on individual ads only, not on campaign aggregations
 					LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
-					Reach        *int       `json:"reach,omitempty"`
-					Spend        *float32   `json:"spend,omitempty"`
+
+					// PurchaseValue Convenience sum of purchase-type action values — picked from `actionValues` via the same priority list as `conversions` so both fields describe the same events. In ad-account native currency. 0 when the campaign has no purchase event configured. Meta-only.
+					PurchaseValue *float32 `json:"purchaseValue,omitempty"`
+					Reach         *int     `json:"reach,omitempty"`
+
+					// Roas Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
+					Roas  *float32 `json:"roas,omitempty"`
+					Spend *float32 `json:"spend,omitempty"`
 				} `json:"daily,omitempty"`
 				Summary *AdMetrics `json:"summary,omitempty"`
 			} `json:"analytics,omitempty"`
