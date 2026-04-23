@@ -8019,6 +8019,14 @@ type GetAdAnalyticsParams struct {
 	Breakdowns *string `form:"breakdowns,omitempty" json:"breakdowns,omitempty"`
 }
 
+// GetAdCommentsParams defines parameters for GetAdComments.
+type GetAdCommentsParams struct {
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Cursor Pagination cursor from a previous response.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+}
+
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
 	// PostId Returns analytics for a single post. Accepts both Zernio Post IDs and External Post IDs. Zernio IDs are auto-resolved to External Post analytics.
@@ -12109,6 +12117,9 @@ type ClientInterface interface {
 	// GetAdAnalytics request
 	GetAdAnalytics(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAdComments request
+	GetAdComments(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -14164,6 +14175,18 @@ func (c *Client) UpdateAd(ctx context.Context, adId string, body UpdateAdJSONReq
 
 func (c *Client) GetAdAnalytics(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAdAnalyticsRequest(c.Server, adId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdComments(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdCommentsRequest(c.Server, adId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -21800,6 +21823,78 @@ func NewGetAdAnalyticsRequest(server string, adId string, params *GetAdAnalytics
 		if params.Breakdowns != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "breakdowns", *params.Breakdowns, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAdCommentsRequest generates requests for GetAdComments
+func NewGetAdCommentsRequest(server string, adId string, params *GetAdCommentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s/comments", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -32281,6 +32376,9 @@ type ClientWithResponsesInterface interface {
 	// GetAdAnalyticsWithResponse request
 	GetAdAnalyticsWithResponse(ctx context.Context, adId string, params *GetAdAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAdAnalyticsResponse, error)
 
+	// GetAdCommentsWithResponse request
+	GetAdCommentsWithResponse(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*GetAdCommentsResponse, error)
+
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
 
@@ -35816,6 +35914,54 @@ func (r GetAdAnalyticsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetAdAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAdCommentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Comments []map[string]interface{} `json:"comments"`
+		Meta     struct {
+			// AccountId Social account ID (ads SocialAccount).
+			AccountId string `json:"accountId"`
+
+			// AdId Internal Zernio ad ID.
+			AdId string `json:"adId"`
+
+			// EffectiveStoryId Underlying post ID the comments belong to (effective_object_story_id for FB, effective_instagram_media_id for IG).
+			EffectiveStoryId string                       `json:"effectiveStoryId"`
+			LastUpdated      time.Time                    `json:"lastUpdated"`
+			Platform         GetAdComments200MetaPlatform `json:"platform"`
+
+			// PlatformAdId Meta ad ID.
+			PlatformAdId string `json:"platformAdId"`
+		} `json:"meta"`
+		Pagination struct {
+			Cursor  *string `json:"cursor,omitempty"`
+			HasMore *bool   `json:"hasMore,omitempty"`
+		} `json:"pagination"`
+		Status GetAdComments200Status `json:"status"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+type GetAdComments200MetaPlatform string
+type GetAdComments200Status string
+
+// Status returns HTTPResponse.Status
+func (r GetAdCommentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdCommentsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43096,6 +43242,15 @@ func (c *ClientWithResponses) GetAdAnalyticsWithResponse(ctx context.Context, ad
 	return ParseGetAdAnalyticsResponse(rsp)
 }
 
+// GetAdCommentsWithResponse request returning *GetAdCommentsResponse
+func (c *ClientWithResponses) GetAdCommentsWithResponse(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*GetAdCommentsResponse, error) {
+	rsp, err := c.GetAdComments(ctx, adId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdCommentsResponse(rsp)
+}
+
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
 func (c *ClientWithResponses) GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error) {
 	rsp, err := c.GetAnalytics(ctx, params, reqEditors...)
@@ -49161,6 +49316,68 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 				} `json:"daily,omitempty"`
 				Summary *AdMetrics `json:"summary,omitempty"`
 			} `json:"analytics,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdCommentsResponse parses an HTTP response from a GetAdCommentsWithResponse call
+func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdCommentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Comments []map[string]interface{} `json:"comments"`
+			Meta     struct {
+				// AccountId Social account ID (ads SocialAccount).
+				AccountId string `json:"accountId"`
+
+				// AdId Internal Zernio ad ID.
+				AdId string `json:"adId"`
+
+				// EffectiveStoryId Underlying post ID the comments belong to (effective_object_story_id for FB, effective_instagram_media_id for IG).
+				EffectiveStoryId string                       `json:"effectiveStoryId"`
+				LastUpdated      time.Time                    `json:"lastUpdated"`
+				Platform         GetAdComments200MetaPlatform `json:"platform"`
+
+				// PlatformAdId Meta ad ID.
+				PlatformAdId string `json:"platformAdId"`
+			} `json:"meta"`
+			Pagination struct {
+				Cursor  *string `json:"cursor,omitempty"`
+				HasMore *bool   `json:"hasMore,omitempty"`
+			} `json:"pagination"`
+			Status GetAdComments200Status `json:"status"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
