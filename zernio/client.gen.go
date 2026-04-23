@@ -7870,8 +7870,17 @@ type CreateStandaloneAdJSONBody struct {
 	// Headline Required for Meta, Google, and Pinterest on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100.
 	Headline *string `json:"headline,omitempty"`
 
-	// ImageUrl Image creative for Meta/Google/Pinterest on legacy + attach shapes (mutually exclusive with `video`). Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter.
+	// ImageUrl Image creative for Meta/Google/Pinterest on legacy + attach shapes (mutually exclusive with `video`). Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter. For Google Display, treated as the landscape image (alias of `images.landscape`); supply `images.square` alongside or the request is rejected.
 	ImageUrl *string `json:"imageUrl,omitempty"`
+
+	// Images Google Display (Responsive Display Ads) only. Google RDA requires both a landscape (1.91:1) and a square (1:1) marketing image; sending only one is rejected upstream as 'Too few.' (NOT_ENOUGH_*_MARKETING_IMAGE_ASSET). Supply both URLs here. Either this field or the legacy `imageUrl` can provide the landscape, but `square` has no legacy counterpart so it must be set here for Display.
+	Images *struct {
+		// Landscape Landscape 1.91:1 marketing image URL (e.g. 1200x628). Also accepted via the top-level `imageUrl` for backward compatibility.
+		Landscape *string `json:"landscape,omitempty"`
+
+		// Square Square 1:1 marketing image URL (e.g. 1080x1080). Required for Google Display.
+		Square *string `json:"square,omitempty"`
+	} `json:"images,omitempty"`
 
 	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests *[]struct {
