@@ -7821,7 +7821,7 @@ type CreateStandaloneAdJSONBody struct {
 	// BoardId Pinterest only. Board ID (auto-creates if not provided).
 	BoardId *string `json:"boardId,omitempty"`
 
-	// Body Required on legacy + attach shapes. Max: Google=90, Pinterest=500
+	// Body Required on legacy + attach shapes. For X/Twitter this is the tweet text (max 280 chars including a ~24-char URL when `linkUrl` is set). Max: Google=90, Pinterest=500.
 	Body *string `json:"body,omitempty"`
 
 	// BudgetAmount Required on legacy + multi-creative shapes. Inherited on attach.
@@ -7848,8 +7848,16 @@ type CreateStandaloneAdJSONBody struct {
 		Body         string                                          `json:"body"`
 		CallToAction CreateStandaloneAdJSONBodyCreativesCallToAction `json:"callToAction"`
 		Headline     string                                          `json:"headline"`
-		ImageUrl     string                                          `json:"imageUrl"`
-		LinkUrl      string                                          `json:"linkUrl"`
+
+		// ImageUrl Image creative. Mutually exclusive with `video`.
+		ImageUrl *string `json:"imageUrl,omitempty"`
+		LinkUrl  string  `json:"linkUrl"`
+
+		// Video Video creative for this entry. Mutually exclusive with `imageUrl`.
+		Video *struct {
+			ThumbnailUrl string `json:"thumbnailUrl"`
+			Url          string `json:"url"`
+		} `json:"video,omitempty"`
 	} `json:"creatives,omitempty"`
 	Currency *string `json:"currency,omitempty"`
 
@@ -7859,10 +7867,10 @@ type CreateStandaloneAdJSONBody struct {
 	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
-	// Headline Required on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Max: Meta=255, Google=30, Pinterest=100
+	// Headline Required for Meta, Google, and Pinterest on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100.
 	Headline *string `json:"headline,omitempty"`
 
-	// ImageUrl Required on legacy + attach shapes. Not required for Google Search campaigns.
+	// ImageUrl Image creative for Meta/Google/Pinterest on legacy + attach shapes (mutually exclusive with `video`). Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter.
 	ImageUrl *string `json:"imageUrl,omitempty"`
 
 	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
@@ -7877,9 +7885,18 @@ type CreateStandaloneAdJSONBody struct {
 	// LinkUrl Required on legacy + attach shapes. Skip for multi-creative.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 
-	// LongHeadline Google Display only
+	// LongHeadline Google Display only. Defaults to `headline` if omitted.
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	Name         string  `json:"name"`
+
+	// Video Meta only (facebook, instagram). When set, creates a VIDEO ad on the legacy or attach shape. Mutually exclusive with `imageUrl`. For multi-creative, set `video` per entry inside `creatives[]` instead.
+	Video *struct {
+		// ThumbnailUrl Public URL of a still-image thumbnail for the video. Required by Meta on every video creative. Uploaded to Meta as an ad image and referenced as the thumbnail in object_story_spec.video_data.
+		ThumbnailUrl string `json:"thumbnailUrl"`
+
+		// Url Public URL of the video. Uploaded to Meta via chunked transfer on /act_X/advideos; then the request blocks on Meta's transcoding until status.video_status === 'ready'.
+		Url string `json:"url"`
+	} `json:"video,omitempty"`
 }
 
 // CreateStandaloneAdJSONBodyAdvantageAudience defines parameters for CreateStandaloneAd.
