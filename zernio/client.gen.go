@@ -35932,7 +35932,7 @@ type GetAdCommentsResponse struct {
 			// AdId Internal Zernio ad ID.
 			AdId string `json:"adId"`
 
-			// EffectiveStoryId Underlying post ID the comments belong to (effective_object_story_id for FB, effective_instagram_media_id for IG).
+			// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
 			EffectiveStoryId string                       `json:"effectiveStoryId"`
 			LastUpdated      time.Time                    `json:"lastUpdated"`
 			Platform         GetAdComments200MetaPlatform `json:"platform"`
@@ -49365,7 +49365,7 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 				// AdId Internal Zernio ad ID.
 				AdId string `json:"adId"`
 
-				// EffectiveStoryId Underlying post ID the comments belong to (effective_object_story_id for FB, effective_instagram_media_id for IG).
+				// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
 				EffectiveStoryId string                       `json:"effectiveStoryId"`
 				LastUpdated      time.Time                    `json:"lastUpdated"`
 				Platform         GetAdComments200MetaPlatform `json:"platform"`
