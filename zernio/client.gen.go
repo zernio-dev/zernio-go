@@ -822,6 +822,33 @@ func (e InstagramAccountInsightsResponseMetricType) Valid() bool {
 	}
 }
 
+// Defines values for InstagramAccountInsightsResponsePlatform.
+const (
+	InstagramAccountInsightsResponsePlatformFacebook  InstagramAccountInsightsResponsePlatform = "facebook"
+	InstagramAccountInsightsResponsePlatformInstagram InstagramAccountInsightsResponsePlatform = "instagram"
+	InstagramAccountInsightsResponsePlatformLinkedin  InstagramAccountInsightsResponsePlatform = "linkedin"
+	InstagramAccountInsightsResponsePlatformTiktok    InstagramAccountInsightsResponsePlatform = "tiktok"
+	InstagramAccountInsightsResponsePlatformYoutube   InstagramAccountInsightsResponsePlatform = "youtube"
+)
+
+// Valid indicates whether the value is a known member of the InstagramAccountInsightsResponsePlatform enum.
+func (e InstagramAccountInsightsResponsePlatform) Valid() bool {
+	switch e {
+	case InstagramAccountInsightsResponsePlatformFacebook:
+		return true
+	case InstagramAccountInsightsResponsePlatformInstagram:
+		return true
+	case InstagramAccountInsightsResponsePlatformLinkedin:
+		return true
+	case InstagramAccountInsightsResponsePlatformTiktok:
+		return true
+	case InstagramAccountInsightsResponsePlatformYoutube:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for InstagramDemographicsResponseMetric.
 const (
 	InstagramDemographicsResponseMetricEngagedAudienceDemographics InstagramDemographicsResponseMetric = "engaged_audience_demographics"
@@ -2868,6 +2895,24 @@ func (e GetDailyMetricsParamsSource) Valid() bool {
 	}
 }
 
+// Defines values for GetFacebookPageInsightsParamsMetricType.
+const (
+	GetFacebookPageInsightsParamsMetricTypeTimeSeries GetFacebookPageInsightsParamsMetricType = "time_series"
+	GetFacebookPageInsightsParamsMetricTypeTotalValue GetFacebookPageInsightsParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetFacebookPageInsightsParamsMetricType enum.
+func (e GetFacebookPageInsightsParamsMetricType) Valid() bool {
+	switch e {
+	case GetFacebookPageInsightsParamsMetricTypeTimeSeries:
+		return true
+	case GetFacebookPageInsightsParamsMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetInstagramAccountInsightsParamsMetricType.
 const (
 	GetInstagramAccountInsightsParamsMetricTypeTimeSeries GetInstagramAccountInsightsParamsMetricType = "time_series"
@@ -2922,6 +2967,42 @@ func (e GetInstagramDemographicsParamsTimeframe) Valid() bool {
 	}
 }
 
+// Defines values for GetInstagramFollowerHistoryParamsMetricType.
+const (
+	GetInstagramFollowerHistoryParamsMetricTypeTimeSeries GetInstagramFollowerHistoryParamsMetricType = "time_series"
+	GetInstagramFollowerHistoryParamsMetricTypeTotalValue GetInstagramFollowerHistoryParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetInstagramFollowerHistoryParamsMetricType enum.
+func (e GetInstagramFollowerHistoryParamsMetricType) Valid() bool {
+	switch e {
+	case GetInstagramFollowerHistoryParamsMetricTypeTimeSeries:
+		return true
+	case GetInstagramFollowerHistoryParamsMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetLinkedInOrgAggregateAnalyticsParamsMetricType.
+const (
+	GetLinkedInOrgAggregateAnalyticsParamsMetricTypeTimeSeries GetLinkedInOrgAggregateAnalyticsParamsMetricType = "time_series"
+	GetLinkedInOrgAggregateAnalyticsParamsMetricTypeTotalValue GetLinkedInOrgAggregateAnalyticsParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetLinkedInOrgAggregateAnalyticsParamsMetricType enum.
+func (e GetLinkedInOrgAggregateAnalyticsParamsMetricType) Valid() bool {
+	switch e {
+	case GetLinkedInOrgAggregateAnalyticsParamsMetricTypeTimeSeries:
+		return true
+	case GetLinkedInOrgAggregateAnalyticsParamsMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetPostingFrequencyParamsSource.
 const (
 	GetPostingFrequencyParamsSourceAll      GetPostingFrequencyParamsSource = "all"
@@ -2937,6 +3018,42 @@ func (e GetPostingFrequencyParamsSource) Valid() bool {
 	case GetPostingFrequencyParamsSourceExternal:
 		return true
 	case GetPostingFrequencyParamsSourceLate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetTikTokAccountInsightsParamsMetricType.
+const (
+	GetTikTokAccountInsightsParamsMetricTypeTimeSeries GetTikTokAccountInsightsParamsMetricType = "time_series"
+	GetTikTokAccountInsightsParamsMetricTypeTotalValue GetTikTokAccountInsightsParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetTikTokAccountInsightsParamsMetricType enum.
+func (e GetTikTokAccountInsightsParamsMetricType) Valid() bool {
+	switch e {
+	case GetTikTokAccountInsightsParamsMetricTypeTimeSeries:
+		return true
+	case GetTikTokAccountInsightsParamsMetricTypeTotalValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetYouTubeChannelInsightsParamsMetricType.
+const (
+	TimeSeries GetYouTubeChannelInsightsParamsMetricType = "time_series"
+	TotalValue GetYouTubeChannelInsightsParamsMetricType = "total_value"
+)
+
+// Valid indicates whether the value is a known member of the GetYouTubeChannelInsightsParamsMetricType enum.
+func (e GetYouTubeChannelInsightsParamsMetricType) Valid() bool {
+	switch e {
+	case TimeSeries:
+		return true
+	case TotalValue:
 		return true
 	default:
 		return false
@@ -4325,31 +4442,31 @@ func (e ListSequencesParamsStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
-	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
-	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
-	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
-	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
-	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
+	Instagram CreateSequenceJSONBodyPlatform = "instagram"
+	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
+	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
+	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
+	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case CreateSequenceJSONBodyPlatformBluesky:
+	case Bluesky:
 		return true
-	case CreateSequenceJSONBodyPlatformFacebook:
+	case Facebook:
 		return true
-	case CreateSequenceJSONBodyPlatformInstagram:
+	case Instagram:
 		return true
-	case CreateSequenceJSONBodyPlatformReddit:
+	case Reddit:
 		return true
-	case CreateSequenceJSONBodyPlatformTelegram:
+	case Telegram:
 		return true
-	case CreateSequenceJSONBodyPlatformTwitter:
+	case Twitter:
 		return true
-	case CreateSequenceJSONBodyPlatformWhatsapp:
+	case Whatsapp:
 		return true
 	default:
 		return false
@@ -5802,7 +5919,11 @@ type GoogleBusinessPlatformDataOfferOfferType string
 // GoogleBusinessPlatformDataTopicType Post type. STANDARD is a regular update. EVENT requires the event object. OFFER requires the offer object. Defaults to STANDARD if omitted.
 type GoogleBusinessPlatformDataTopicType string
 
-// InstagramAccountInsightsResponse defines model for InstagramAccountInsightsResponse.
+// InstagramAccountInsightsResponse Shared account-insights response envelope used by every platform-level
+// analytics endpoint (/v1/analytics/{facebook|instagram|youtube|linkedin|tiktok}/*).
+// The name is historical - the shape was first shipped for Instagram and every
+// new platform endpoint reuses it for response-shape consistency. The platform
+// field echoes back which platform served the response.
 type InstagramAccountInsightsResponse struct {
 	// AccountId The Zernio SocialAccount ID
 	AccountId *string `json:"accountId,omitempty"`
@@ -5834,12 +5955,17 @@ type InstagramAccountInsightsResponse struct {
 			Value *float32            `json:"value,omitempty"`
 		} `json:"values,omitempty"`
 	} `json:"metrics,omitempty"`
-	Platform *string `json:"platform,omitempty"`
-	Success  *bool   `json:"success,omitempty"`
+
+	// Platform Platform that served this response.
+	Platform *InstagramAccountInsightsResponsePlatform `json:"platform,omitempty"`
+	Success  *bool                                     `json:"success,omitempty"`
 }
 
 // InstagramAccountInsightsResponseMetricType defines model for InstagramAccountInsightsResponse.MetricType.
 type InstagramAccountInsightsResponseMetricType string
+
+// InstagramAccountInsightsResponsePlatform Platform that served this response.
+type InstagramAccountInsightsResponsePlatform string
 
 // InstagramDemographicsResponse defines model for InstagramDemographicsResponse.
 type InstagramDemographicsResponse struct {
@@ -5943,6 +6069,18 @@ type LinkedInAggregateAnalyticsDailyResponse struct {
 			Count *int                `json:"count,omitempty"`
 			Date  *openapi_types.Date `json:"date,omitempty"`
 		} `json:"reactions,omitempty"`
+
+		// Saves Daily saves (personal accounts only)
+		Saves *[]struct {
+			Count *int                `json:"count,omitempty"`
+			Date  *openapi_types.Date `json:"date,omitempty"`
+		} `json:"saves,omitempty"`
+
+		// Sends Daily sends via LinkedIn messaging (personal accounts only)
+		Sends *[]struct {
+			Count *int                `json:"count,omitempty"`
+			Date  *openapi_types.Date `json:"date,omitempty"`
+		} `json:"sends,omitempty"`
 		Shares *[]struct {
 			Count *int                `json:"count,omitempty"`
 			Date  *openapi_types.Date `json:"date,omitempty"`
@@ -5984,6 +6122,12 @@ type LinkedInAggregateAnalyticsTotalResponse struct {
 
 		// Reactions Total reactions across all posts
 		Reactions *int `json:"reactions,omitempty"`
+
+		// Saves Total times posts were saved (personal accounts only)
+		Saves *int `json:"saves,omitempty"`
+
+		// Sends Total times posts were sent via LinkedIn messaging (personal accounts only)
+		Sends *int `json:"sends,omitempty"`
 
 		// Shares Total reshares across all posts
 		Shares *int `json:"shares,omitempty"`
@@ -7368,7 +7512,7 @@ type GetLinkedInAggregateAnalyticsParams struct {
 	// EndDate End date (YYYY-MM-DD, exclusive). Defaults to today if omitted.
 	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
 
-	// Metrics Comma-separated metrics: IMPRESSION, MEMBERS_REACHED, REACTION, COMMENT, RESHARE. Omit for all.
+	// Metrics Comma-separated metrics: IMPRESSION, MEMBERS_REACHED, REACTION, COMMENT, RESHARE, POST_SAVE, POST_SEND. Omit for all.
 	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
 }
 
@@ -8126,6 +8270,42 @@ type GetDailyMetricsParams struct {
 // GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
 type GetDailyMetricsParamsSource string
 
+// GetFacebookPageInsightsParams defines parameters for GetFacebookPageInsights.
+type GetFacebookPageInsightsParams struct {
+	// AccountId The Zernio SocialAccount ID for the connected Facebook Page.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list of metrics. Defaults to
+	// "page_media_view,page_post_engagements,page_follows,followers_gained,followers_lost".
+	//
+	// Live Meta metrics (current names, post-Nov-2025):
+	//   - page_media_view       (replaces deprecated page_impressions)
+	//   - page_views_total
+	//   - page_post_engagements
+	//   - page_video_views
+	//   - page_video_view_time
+	//   - page_follows          (replaces deprecated page_fans)
+	//
+	// Zernio-synthesized from daily follower snapshots (filling the Nov-2025 gap
+	// left by the page_fan_adds / page_fan_removes deprecation):
+	//   - followers_gained
+	//   - followers_lost
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today.
+	Until *openapi_types.Date `form:"until,omitempty" json:"until,omitempty"`
+
+	// MetricType "total_value" (default) returns aggregated totals only.
+	// "time_series" returns daily values in the "values" array.
+	MetricType *GetFacebookPageInsightsParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+}
+
+// GetFacebookPageInsightsParamsMetricType defines parameters for GetFacebookPageInsights.
+type GetFacebookPageInsightsParamsMetricType string
+
 // GetGoogleBusinessPerformanceParams defines parameters for GetGoogleBusinessPerformance.
 type GetGoogleBusinessPerformanceParams struct {
 	// AccountId The Zernio SocialAccount ID for the Google Business Profile account.
@@ -8165,7 +8345,10 @@ type GetInstagramAccountInsightsParams struct {
 	// Metrics Comma-separated list of metrics. Defaults to "reach,views,accounts_engaged,total_interactions".
 	// Valid metrics: reach, views, accounts_engaged, total_interactions, comments, likes, saves, shares,
 	// replies, reposts, follows_and_unfollows, profile_links_taps.
-	// Note: only "reach" supports metricType=time_series. All other metrics are total_value only.
+	// Note: only "reach" supports metricType=time_series. All other metrics (including
+	// follows_and_unfollows) are total_value only. This is an Instagram Graph API limitation,
+	// not a Zernio limitation - the IG API does not return time-series data for these metrics.
+	// For a daily running follower count, use /v1/analytics/instagram/follower-history instead.
 	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
 
 	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
@@ -8208,6 +8391,75 @@ type GetInstagramDemographicsParamsMetric string
 // GetInstagramDemographicsParamsTimeframe defines parameters for GetInstagramDemographics.
 type GetInstagramDemographicsParamsTimeframe string
 
+// GetInstagramFollowerHistoryParams defines parameters for GetInstagramFollowerHistory.
+type GetInstagramFollowerHistoryParams struct {
+	// AccountId The Zernio SocialAccount ID for the Instagram account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list. Defaults to "follower_count,followers_gained,followers_lost".
+	//   - follower_count   : per-day raw follower count
+	//   - followers_gained : sum of positive daily deltas
+	//   - followers_lost   : sum of absolute negative daily deltas
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today.
+	Until *openapi_types.Date `form:"until,omitempty" json:"until,omitempty"`
+
+	// MetricType "total_value" returns aggregated totals (latest for follower_count, sum for gained/lost).
+	// "time_series" returns per-day values in the "values" array.
+	MetricType *GetInstagramFollowerHistoryParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+}
+
+// GetInstagramFollowerHistoryParamsMetricType defines parameters for GetInstagramFollowerHistory.
+type GetInstagramFollowerHistoryParamsMetricType string
+
+// GetLinkedInOrgAggregateAnalyticsParams defines parameters for GetLinkedInOrgAggregateAnalytics.
+type GetLinkedInOrgAggregateAnalyticsParams struct {
+	// AccountId The Zernio SocialAccount ID for the LinkedIn organization account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list. Defaults to
+	// "impressions,clicks,engagement_rate,organic_followers_gained,followers_gained,followers_lost".
+	//
+	// Share statistics (support both total_value and time_series):
+	//   - impressions
+	//   - unique_impressions
+	//   - clicks
+	//   - likes
+	//   - comments
+	//   - shares
+	//   - engagement_rate       (0..1, LinkedIn-computed)
+	//
+	// Follower-gain statistics (support total_value and time_series):
+	//   - organic_followers_gained   (per-day organic gains for time_series; sum of organic gains over the range for total_value)
+	//   - paid_followers_gained      (per-day paid gains for time_series; sum of paid gains over the range for total_value)
+	//
+	// Page-view statistics (total_value ONLY - LinkedIn platform limit):
+	//   - page_views_total
+	//   - page_views_overview
+	//   - page_views_careers
+	//   - page_views_jobs
+	//   - page_views_life
+	//
+	// Zernio-synthesized from daily follower snapshots:
+	//   - followers_gained
+	//   - followers_lost
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today.
+	Until      *openapi_types.Date                               `form:"until,omitempty" json:"until,omitempty"`
+	MetricType *GetLinkedInOrgAggregateAnalyticsParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+}
+
+// GetLinkedInOrgAggregateAnalyticsParamsMetricType defines parameters for GetLinkedInOrgAggregateAnalytics.
+type GetLinkedInOrgAggregateAnalyticsParamsMetricType string
+
 // GetPostTimelineParams defines parameters for GetPostTimeline.
 type GetPostTimelineParams struct {
 	// PostId The post to fetch timeline for. Accepts an ExternalPost ID, a platformPostId, or a Zernio Post ID.
@@ -8234,6 +8486,75 @@ type GetPostingFrequencyParams struct {
 
 // GetPostingFrequencyParamsSource defines parameters for GetPostingFrequency.
 type GetPostingFrequencyParamsSource string
+
+// GetTikTokAccountInsightsParams defines parameters for GetTikTokAccountInsights.
+type GetTikTokAccountInsightsParams struct {
+	// AccountId The Zernio SocialAccount ID for the TikTok account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list. Defaults to
+	// "follower_count,likes_count,video_count,followers_gained,followers_lost".
+	//
+	// Live from /v2/user/info/ (requires user.info.stats scope):
+	//   - follower_count  (cumulative; time series joined from AccountStats)
+	//   - following_count (cumulative; time series joined from AccountStats.metadata)
+	//   - likes_count     (cumulative; time series joined from AccountStats.metadata)
+	//   - video_count     (cumulative; time series joined from AccountStats.metadata)
+	//
+	// Zernio-synthesized:
+	//   - followers_gained  (sum of positive daily follower deltas)
+	//   - followers_lost    (sum of absolute negative daily deltas)
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today.
+	Until *openapi_types.Date `form:"until,omitempty" json:"until,omitempty"`
+
+	// MetricType "total_value" returns the latest cumulative counter value.
+	// "time_series" returns daily values joined from AccountStats snapshots.
+	MetricType *GetTikTokAccountInsightsParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+}
+
+// GetTikTokAccountInsightsParamsMetricType defines parameters for GetTikTokAccountInsights.
+type GetTikTokAccountInsightsParamsMetricType string
+
+// GetYouTubeChannelInsightsParams defines parameters for GetYouTubeChannelInsights.
+type GetYouTubeChannelInsightsParams struct {
+	// AccountId The Zernio SocialAccount ID for the YouTube account.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Metrics Comma-separated list. Defaults to "views,estimatedMinutesWatched,subscribersGained,subscribersLost".
+	//
+	// Live YouTube Analytics v2 metrics:
+	//   - views
+	//   - estimatedMinutesWatched
+	//   - averageViewDuration          (ratio - weighted mean computed across days)
+	//   - subscribersGained
+	//   - subscribersLost
+	//
+	// Zernio-synthesized from daily follower snapshots (cross-platform parity):
+	//   - followers_gained
+	//   - followers_lost
+	Metrics *string `form:"metrics,omitempty" json:"metrics,omitempty"`
+
+	// Since Start date (YYYY-MM-DD). Defaults to 30 days ago.
+	Since *openapi_types.Date `form:"since,omitempty" json:"since,omitempty"`
+
+	// Until End date (YYYY-MM-DD). Defaults to today. YouTube Analytics has a 2-3 day delay,
+	// so the fetch is internally clamped to 3 days ago; any requested range extending
+	// beyond that returns zero values for the tail days. The response's dateRange.until
+	// field reflects your requested value.
+	Until *openapi_types.Date `form:"until,omitempty" json:"until,omitempty"`
+
+	// MetricType "total_value" (default) returns aggregated totals.
+	// "time_series" returns per-day values in the "values" array.
+	MetricType *GetYouTubeChannelInsightsParamsMetricType `form:"metricType,omitempty" json:"metricType,omitempty"`
+}
+
+// GetYouTubeChannelInsightsParamsMetricType defines parameters for GetYouTubeChannelInsights.
+type GetYouTubeChannelInsightsParamsMetricType string
 
 // GetYouTubeDailyViewsParams defines parameters for GetYouTubeDailyViews.
 type GetYouTubeDailyViewsParams struct {
@@ -12132,6 +12453,9 @@ type ClientInterface interface {
 	// GetDailyMetrics request
 	GetDailyMetrics(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetFacebookPageInsights request
+	GetFacebookPageInsights(ctx context.Context, params *GetFacebookPageInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetGoogleBusinessPerformance request
 	GetGoogleBusinessPerformance(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -12144,11 +12468,23 @@ type ClientInterface interface {
 	// GetInstagramDemographics request
 	GetInstagramDemographics(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetInstagramFollowerHistory request
+	GetInstagramFollowerHistory(ctx context.Context, params *GetInstagramFollowerHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLinkedInOrgAggregateAnalytics request
+	GetLinkedInOrgAggregateAnalytics(ctx context.Context, params *GetLinkedInOrgAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPostTimeline request
 	GetPostTimeline(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPostingFrequency request
 	GetPostingFrequency(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTikTokAccountInsights request
+	GetTikTokAccountInsights(ctx context.Context, params *GetTikTokAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetYouTubeChannelInsights request
+	GetYouTubeChannelInsights(ctx context.Context, params *GetYouTubeChannelInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetYouTubeDailyViews request
 	GetYouTubeDailyViews(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14245,6 +14581,18 @@ func (c *Client) GetDailyMetrics(ctx context.Context, params *GetDailyMetricsPar
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetFacebookPageInsights(ctx context.Context, params *GetFacebookPageInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFacebookPageInsightsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetGoogleBusinessPerformance(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetGoogleBusinessPerformanceRequest(c.Server, params)
 	if err != nil {
@@ -14293,6 +14641,30 @@ func (c *Client) GetInstagramDemographics(ctx context.Context, params *GetInstag
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetInstagramFollowerHistory(ctx context.Context, params *GetInstagramFollowerHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstagramFollowerHistoryRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLinkedInOrgAggregateAnalytics(ctx context.Context, params *GetLinkedInOrgAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLinkedInOrgAggregateAnalyticsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetPostTimeline(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPostTimelineRequest(c.Server, params)
 	if err != nil {
@@ -14307,6 +14679,30 @@ func (c *Client) GetPostTimeline(ctx context.Context, params *GetPostTimelinePar
 
 func (c *Client) GetPostingFrequency(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPostingFrequencyRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTikTokAccountInsights(ctx context.Context, params *GetTikTokAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTikTokAccountInsightsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetYouTubeChannelInsights(ctx context.Context, params *GetYouTubeChannelInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetYouTubeChannelInsightsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -22419,6 +22815,115 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 	return req, nil
 }
 
+// NewGetFacebookPageInsightsRequest generates requests for GetFacebookPageInsights
+func NewGetFacebookPageInsightsRequest(server string, params *GetFacebookPageInsightsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/facebook/page-insights")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetGoogleBusinessPerformanceRequest generates requests for GetGoogleBusinessPerformance
 func NewGetGoogleBusinessPerformanceRequest(server string, params *GetGoogleBusinessPerformanceParams) (*http.Request, error) {
 	var err error
@@ -22807,6 +23312,224 @@ func NewGetInstagramDemographicsRequest(server string, params *GetInstagramDemog
 	return req, nil
 }
 
+// NewGetInstagramFollowerHistoryRequest generates requests for GetInstagramFollowerHistory
+func NewGetInstagramFollowerHistoryRequest(server string, params *GetInstagramFollowerHistoryParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/instagram/follower-history")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLinkedInOrgAggregateAnalyticsRequest generates requests for GetLinkedInOrgAggregateAnalytics
+func NewGetLinkedInOrgAggregateAnalyticsRequest(server string, params *GetLinkedInOrgAggregateAnalyticsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/linkedin/org-aggregate-analytics")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetPostTimelineRequest generates requests for GetPostTimeline
 func NewGetPostTimelineRequest(server string, params *GetPostTimelineParams) (*http.Request, error) {
 	var err error
@@ -22941,6 +23664,224 @@ func NewGetPostingFrequencyRequest(server string, params *GetPostingFrequencyPar
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTikTokAccountInsightsRequest generates requests for GetTikTokAccountInsights
+func NewGetTikTokAccountInsightsRequest(server string, params *GetTikTokAccountInsightsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/tiktok/account-insights")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetYouTubeChannelInsightsRequest generates requests for GetYouTubeChannelInsights
+func NewGetYouTubeChannelInsightsRequest(server string, params *GetYouTubeChannelInsightsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/youtube/channel-insights")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metrics", *params.Metrics, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MetricType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "metricType", *params.MetricType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -32391,6 +33332,9 @@ type ClientWithResponsesInterface interface {
 	// GetDailyMetricsWithResponse request
 	GetDailyMetricsWithResponse(ctx context.Context, params *GetDailyMetricsParams, reqEditors ...RequestEditorFn) (*GetDailyMetricsResponse, error)
 
+	// GetFacebookPageInsightsWithResponse request
+	GetFacebookPageInsightsWithResponse(ctx context.Context, params *GetFacebookPageInsightsParams, reqEditors ...RequestEditorFn) (*GetFacebookPageInsightsResponse, error)
+
 	// GetGoogleBusinessPerformanceWithResponse request
 	GetGoogleBusinessPerformanceWithResponse(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessPerformanceResponse, error)
 
@@ -32403,11 +33347,23 @@ type ClientWithResponsesInterface interface {
 	// GetInstagramDemographicsWithResponse request
 	GetInstagramDemographicsWithResponse(ctx context.Context, params *GetInstagramDemographicsParams, reqEditors ...RequestEditorFn) (*GetInstagramDemographicsResponse, error)
 
+	// GetInstagramFollowerHistoryWithResponse request
+	GetInstagramFollowerHistoryWithResponse(ctx context.Context, params *GetInstagramFollowerHistoryParams, reqEditors ...RequestEditorFn) (*GetInstagramFollowerHistoryResponse, error)
+
+	// GetLinkedInOrgAggregateAnalyticsWithResponse request
+	GetLinkedInOrgAggregateAnalyticsWithResponse(ctx context.Context, params *GetLinkedInOrgAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInOrgAggregateAnalyticsResponse, error)
+
 	// GetPostTimelineWithResponse request
 	GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error)
 
 	// GetPostingFrequencyWithResponse request
 	GetPostingFrequencyWithResponse(ctx context.Context, params *GetPostingFrequencyParams, reqEditors ...RequestEditorFn) (*GetPostingFrequencyResponse, error)
+
+	// GetTikTokAccountInsightsWithResponse request
+	GetTikTokAccountInsightsWithResponse(ctx context.Context, params *GetTikTokAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetTikTokAccountInsightsResponse, error)
+
+	// GetYouTubeChannelInsightsWithResponse request
+	GetYouTubeChannelInsightsWithResponse(ctx context.Context, params *GetYouTubeChannelInsightsParams, reqEditors ...RequestEditorFn) (*GetYouTubeChannelInsightsResponse, error)
 
 	// GetYouTubeDailyViewsWithResponse request
 	GetYouTubeDailyViewsWithResponse(ctx context.Context, params *GetYouTubeDailyViewsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDailyViewsResponse, error)
@@ -34617,6 +35573,12 @@ type GetLinkedInPostAnalyticsResponse struct {
 			// Reach Unique members who saw the post
 			Reach *int `json:"reach,omitempty"`
 
+			// Saves Times the post was saved (personal accounts only; 0 for organization accounts)
+			Saves *int `json:"saves,omitempty"`
+
+			// Sends Times the post was sent via LinkedIn messaging (personal accounts only; 0 for organization accounts)
+			Sends *int `json:"sends,omitempty"`
+
 			// Shares Reshares of the post
 			Shares *int `json:"shares,omitempty"`
 
@@ -36143,6 +37105,29 @@ func (r GetDailyMetricsResponse) StatusCode() int {
 	return 0
 }
 
+type GetFacebookPageInsightsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFacebookPageInsightsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFacebookPageInsightsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetGoogleBusinessPerformanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -36314,6 +37299,52 @@ func (r GetInstagramDemographicsResponse) StatusCode() int {
 	return 0
 }
 
+type GetInstagramFollowerHistoryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstagramFollowerHistoryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstagramFollowerHistoryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetLinkedInOrgAggregateAnalyticsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetLinkedInOrgAggregateAnalyticsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLinkedInOrgAggregateAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetPostTimelineResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -36423,6 +37454,53 @@ func (r GetPostingFrequencyResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetPostingFrequencyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTikTokAccountInsightsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTikTokAccountInsightsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTikTokAccountInsightsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetYouTubeChannelInsightsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstagramAccountInsightsResponse
+	JSON401      *Unauthorized
+	JSON412      *YouTubeScopeMissingResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetYouTubeChannelInsightsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetYouTubeChannelInsightsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43287,6 +44365,15 @@ func (c *ClientWithResponses) GetDailyMetricsWithResponse(ctx context.Context, p
 	return ParseGetDailyMetricsResponse(rsp)
 }
 
+// GetFacebookPageInsightsWithResponse request returning *GetFacebookPageInsightsResponse
+func (c *ClientWithResponses) GetFacebookPageInsightsWithResponse(ctx context.Context, params *GetFacebookPageInsightsParams, reqEditors ...RequestEditorFn) (*GetFacebookPageInsightsResponse, error) {
+	rsp, err := c.GetFacebookPageInsights(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFacebookPageInsightsResponse(rsp)
+}
+
 // GetGoogleBusinessPerformanceWithResponse request returning *GetGoogleBusinessPerformanceResponse
 func (c *ClientWithResponses) GetGoogleBusinessPerformanceWithResponse(ctx context.Context, params *GetGoogleBusinessPerformanceParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessPerformanceResponse, error) {
 	rsp, err := c.GetGoogleBusinessPerformance(ctx, params, reqEditors...)
@@ -43323,6 +44410,24 @@ func (c *ClientWithResponses) GetInstagramDemographicsWithResponse(ctx context.C
 	return ParseGetInstagramDemographicsResponse(rsp)
 }
 
+// GetInstagramFollowerHistoryWithResponse request returning *GetInstagramFollowerHistoryResponse
+func (c *ClientWithResponses) GetInstagramFollowerHistoryWithResponse(ctx context.Context, params *GetInstagramFollowerHistoryParams, reqEditors ...RequestEditorFn) (*GetInstagramFollowerHistoryResponse, error) {
+	rsp, err := c.GetInstagramFollowerHistory(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstagramFollowerHistoryResponse(rsp)
+}
+
+// GetLinkedInOrgAggregateAnalyticsWithResponse request returning *GetLinkedInOrgAggregateAnalyticsResponse
+func (c *ClientWithResponses) GetLinkedInOrgAggregateAnalyticsWithResponse(ctx context.Context, params *GetLinkedInOrgAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInOrgAggregateAnalyticsResponse, error) {
+	rsp, err := c.GetLinkedInOrgAggregateAnalytics(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLinkedInOrgAggregateAnalyticsResponse(rsp)
+}
+
 // GetPostTimelineWithResponse request returning *GetPostTimelineResponse
 func (c *ClientWithResponses) GetPostTimelineWithResponse(ctx context.Context, params *GetPostTimelineParams, reqEditors ...RequestEditorFn) (*GetPostTimelineResponse, error) {
 	rsp, err := c.GetPostTimeline(ctx, params, reqEditors...)
@@ -43339,6 +44444,24 @@ func (c *ClientWithResponses) GetPostingFrequencyWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseGetPostingFrequencyResponse(rsp)
+}
+
+// GetTikTokAccountInsightsWithResponse request returning *GetTikTokAccountInsightsResponse
+func (c *ClientWithResponses) GetTikTokAccountInsightsWithResponse(ctx context.Context, params *GetTikTokAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetTikTokAccountInsightsResponse, error) {
+	rsp, err := c.GetTikTokAccountInsights(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTikTokAccountInsightsResponse(rsp)
+}
+
+// GetYouTubeChannelInsightsWithResponse request returning *GetYouTubeChannelInsightsResponse
+func (c *ClientWithResponses) GetYouTubeChannelInsightsWithResponse(ctx context.Context, params *GetYouTubeChannelInsightsParams, reqEditors ...RequestEditorFn) (*GetYouTubeChannelInsightsResponse, error) {
+	rsp, err := c.GetYouTubeChannelInsights(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetYouTubeChannelInsightsResponse(rsp)
 }
 
 // GetYouTubeDailyViewsWithResponse request returning *GetYouTubeDailyViewsResponse
@@ -47616,6 +48739,12 @@ func ParseGetLinkedInPostAnalyticsResponse(rsp *http.Response) (*GetLinkedInPost
 				// Reach Unique members who saw the post
 				Reach *int `json:"reach,omitempty"`
 
+				// Saves Times the post was saved (personal accounts only; 0 for organization accounts)
+				Saves *int `json:"saves,omitempty"`
+
+				// Sends Times the post was sent via LinkedIn messaging (personal accounts only; 0 for organization accounts)
+				Sends *int `json:"sends,omitempty"`
+
 				// Shares Reshares of the post
 				Shares *int `json:"shares,omitempty"`
 
@@ -49672,6 +50801,39 @@ func ParseGetDailyMetricsResponse(rsp *http.Response) (*GetDailyMetricsResponse,
 	return response, nil
 }
 
+// ParseGetFacebookPageInsightsResponse parses an HTTP response from a GetFacebookPageInsightsWithResponse call
+func ParseGetFacebookPageInsightsResponse(rsp *http.Response) (*GetFacebookPageInsightsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFacebookPageInsightsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetGoogleBusinessPerformanceResponse parses an HTTP response from a GetGoogleBusinessPerformanceWithResponse call
 func ParseGetGoogleBusinessPerformanceResponse(rsp *http.Response) (*GetGoogleBusinessPerformanceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -49967,6 +51129,72 @@ func ParseGetInstagramDemographicsResponse(rsp *http.Response) (*GetInstagramDem
 	return response, nil
 }
 
+// ParseGetInstagramFollowerHistoryResponse parses an HTTP response from a GetInstagramFollowerHistoryWithResponse call
+func ParseGetInstagramFollowerHistoryResponse(rsp *http.Response) (*GetInstagramFollowerHistoryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstagramFollowerHistoryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLinkedInOrgAggregateAnalyticsResponse parses an HTTP response from a GetLinkedInOrgAggregateAnalyticsWithResponse call
+func ParseGetLinkedInOrgAggregateAnalyticsResponse(rsp *http.Response) (*GetLinkedInOrgAggregateAnalyticsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLinkedInOrgAggregateAnalyticsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetPostTimelineResponse parses an HTTP response from a GetPostTimelineWithResponse call
 func ParseGetPostTimelineResponse(rsp *http.Response) (*GetPostTimelineResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -50126,6 +51354,79 @@ func ParseGetPostingFrequencyResponse(rsp *http.Response) (*GetPostingFrequencyR
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTikTokAccountInsightsResponse parses an HTTP response from a GetTikTokAccountInsightsWithResponse call
+func ParseGetTikTokAccountInsightsResponse(rsp *http.Response) (*GetTikTokAccountInsightsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTikTokAccountInsightsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetYouTubeChannelInsightsResponse parses an HTTP response from a GetYouTubeChannelInsightsWithResponse call
+func ParseGetYouTubeChannelInsightsResponse(rsp *http.Response) (*GetYouTubeChannelInsightsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetYouTubeChannelInsightsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstagramAccountInsightsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 412:
+		var dest YouTubeScopeMissingResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON412 = &dest
 
 	}
 
