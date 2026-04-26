@@ -38183,14 +38183,24 @@ type GetCommentAutomationResponse struct {
 			UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 		} `json:"automation,omitempty"`
 		Logs *[]struct {
-			CommentId     *string                            `json:"commentId,omitempty"`
-			CommentText   *string                            `json:"commentText,omitempty"`
-			CommenterId   *string                            `json:"commenterId,omitempty"`
-			CommenterName *string                            `json:"commenterName,omitempty"`
-			CreatedAt     *time.Time                         `json:"createdAt,omitempty"`
-			Error         *string                            `json:"error,omitempty"`
-			Id            *string                            `json:"id,omitempty"`
-			Status        *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
+			CommentId *string `json:"commentId,omitempty"`
+
+			// CommentReplyError Public-reply error message if commentReplyStatus is failed
+			CommentReplyError *string `json:"commentReplyError,omitempty"`
+
+			// CommentReplyStatus Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
+			CommentReplyStatus *GetCommentAutomation200LogsCommentReplyStatus `json:"commentReplyStatus,omitempty"`
+			CommentText        *string                                        `json:"commentText,omitempty"`
+			CommenterId        *string                                        `json:"commenterId,omitempty"`
+			CommenterName      *string                                        `json:"commenterName,omitempty"`
+			CreatedAt          *time.Time                                     `json:"createdAt,omitempty"`
+
+			// Error DM error message if status is failed
+			Error *string `json:"error,omitempty"`
+			Id    *string `json:"id,omitempty"`
+
+			// Status DM outcome
+			Status *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
 		} `json:"logs,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -38198,6 +38208,7 @@ type GetCommentAutomationResponse struct {
 	JSON404 *NotFound
 }
 type GetCommentAutomation200AutomationMatchMode string
+type GetCommentAutomation200LogsCommentReplyStatus string
 type GetCommentAutomation200LogsStatus string
 
 // Status returns HTTPResponse.Status
@@ -38258,14 +38269,24 @@ type ListCommentAutomationLogsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Logs *[]struct {
-			CommentId     *string                                 `json:"commentId,omitempty"`
-			CommentText   *string                                 `json:"commentText,omitempty"`
-			CommenterId   *string                                 `json:"commenterId,omitempty"`
-			CommenterName *string                                 `json:"commenterName,omitempty"`
-			CreatedAt     *time.Time                              `json:"createdAt,omitempty"`
-			Error         *string                                 `json:"error,omitempty"`
-			Id            *string                                 `json:"id,omitempty"`
-			Status        *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
+			CommentId *string `json:"commentId,omitempty"`
+
+			// CommentReplyError Public-reply error message if commentReplyStatus is failed
+			CommentReplyError *string `json:"commentReplyError,omitempty"`
+
+			// CommentReplyStatus Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
+			CommentReplyStatus *ListCommentAutomationLogs200LogsCommentReplyStatus `json:"commentReplyStatus,omitempty"`
+			CommentText        *string                                             `json:"commentText,omitempty"`
+			CommenterId        *string                                             `json:"commenterId,omitempty"`
+			CommenterName      *string                                             `json:"commenterName,omitempty"`
+			CreatedAt          *time.Time                                          `json:"createdAt,omitempty"`
+
+			// Error DM error message if status is failed
+			Error *string `json:"error,omitempty"`
+			Id    *string `json:"id,omitempty"`
+
+			// Status DM outcome
+			Status *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
 		} `json:"logs,omitempty"`
 		Pagination *struct {
 			HasMore *bool `json:"hasMore,omitempty"`
@@ -38278,6 +38299,7 @@ type ListCommentAutomationLogsResponse struct {
 	JSON401 *Unauthorized
 	JSON404 *NotFound
 }
+type ListCommentAutomationLogs200LogsCommentReplyStatus string
 type ListCommentAutomationLogs200LogsStatus string
 
 // Status returns HTTPResponse.Status
@@ -52402,14 +52424,24 @@ func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomatio
 				UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 			} `json:"automation,omitempty"`
 			Logs *[]struct {
-				CommentId     *string                            `json:"commentId,omitempty"`
-				CommentText   *string                            `json:"commentText,omitempty"`
-				CommenterId   *string                            `json:"commenterId,omitempty"`
-				CommenterName *string                            `json:"commenterName,omitempty"`
-				CreatedAt     *time.Time                         `json:"createdAt,omitempty"`
-				Error         *string                            `json:"error,omitempty"`
-				Id            *string                            `json:"id,omitempty"`
-				Status        *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
+				CommentId *string `json:"commentId,omitempty"`
+
+				// CommentReplyError Public-reply error message if commentReplyStatus is failed
+				CommentReplyError *string `json:"commentReplyError,omitempty"`
+
+				// CommentReplyStatus Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
+				CommentReplyStatus *GetCommentAutomation200LogsCommentReplyStatus `json:"commentReplyStatus,omitempty"`
+				CommentText        *string                                        `json:"commentText,omitempty"`
+				CommenterId        *string                                        `json:"commenterId,omitempty"`
+				CommenterName      *string                                        `json:"commenterName,omitempty"`
+				CreatedAt          *time.Time                                     `json:"createdAt,omitempty"`
+
+				// Error DM error message if status is failed
+				Error *string `json:"error,omitempty"`
+				Id    *string `json:"id,omitempty"`
+
+				// Status DM outcome
+				Status *GetCommentAutomation200LogsStatus `json:"status,omitempty"`
 			} `json:"logs,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -52506,14 +52538,24 @@ func ParseListCommentAutomationLogsResponse(rsp *http.Response) (*ListCommentAut
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Logs *[]struct {
-				CommentId     *string                                 `json:"commentId,omitempty"`
-				CommentText   *string                                 `json:"commentText,omitempty"`
-				CommenterId   *string                                 `json:"commenterId,omitempty"`
-				CommenterName *string                                 `json:"commenterName,omitempty"`
-				CreatedAt     *time.Time                              `json:"createdAt,omitempty"`
-				Error         *string                                 `json:"error,omitempty"`
-				Id            *string                                 `json:"id,omitempty"`
-				Status        *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
+				CommentId *string `json:"commentId,omitempty"`
+
+				// CommentReplyError Public-reply error message if commentReplyStatus is failed
+				CommentReplyError *string `json:"commentReplyError,omitempty"`
+
+				// CommentReplyStatus Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
+				CommentReplyStatus *ListCommentAutomationLogs200LogsCommentReplyStatus `json:"commentReplyStatus,omitempty"`
+				CommentText        *string                                             `json:"commentText,omitempty"`
+				CommenterId        *string                                             `json:"commenterId,omitempty"`
+				CommenterName      *string                                             `json:"commenterName,omitempty"`
+				CreatedAt          *time.Time                                          `json:"createdAt,omitempty"`
+
+				// Error DM error message if status is failed
+				Error *string `json:"error,omitempty"`
+				Id    *string `json:"id,omitempty"`
+
+				// Status DM outcome
+				Status *ListCommentAutomationLogs200LogsStatus `json:"status,omitempty"`
 			} `json:"logs,omitempty"`
 			Pagination *struct {
 				HasMore *bool `json:"hasMore,omitempty"`
