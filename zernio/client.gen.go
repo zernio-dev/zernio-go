@@ -2616,6 +2616,27 @@ func (e CreateStandaloneAdJSONBodyCreativesCallToAction) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyGender.
+const (
+	CreateStandaloneAdJSONBodyGenderAll    CreateStandaloneAdJSONBodyGender = "all"
+	CreateStandaloneAdJSONBodyGenderFemale CreateStandaloneAdJSONBodyGender = "female"
+	CreateStandaloneAdJSONBodyGenderMale   CreateStandaloneAdJSONBodyGender = "male"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyGender enum.
+func (e CreateStandaloneAdJSONBodyGender) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyGenderAll:
+		return true
+	case CreateStandaloneAdJSONBodyGenderFemale:
+		return true
+	case CreateStandaloneAdJSONBodyGenderMale:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyGoal.
 const (
 	CreateStandaloneAdJSONBodyGoalAppPromotion   CreateStandaloneAdJSONBodyGoal = "app_promotion"
@@ -4406,28 +4427,28 @@ func (e GetRedditFeedParamsSort) Valid() bool {
 
 // Defines values for GetRedditFeedParamsT.
 const (
-	All   GetRedditFeedParamsT = "all"
-	Day   GetRedditFeedParamsT = "day"
-	Hour  GetRedditFeedParamsT = "hour"
-	Month GetRedditFeedParamsT = "month"
-	Week  GetRedditFeedParamsT = "week"
-	Year  GetRedditFeedParamsT = "year"
+	GetRedditFeedParamsTAll   GetRedditFeedParamsT = "all"
+	GetRedditFeedParamsTDay   GetRedditFeedParamsT = "day"
+	GetRedditFeedParamsTHour  GetRedditFeedParamsT = "hour"
+	GetRedditFeedParamsTMonth GetRedditFeedParamsT = "month"
+	GetRedditFeedParamsTWeek  GetRedditFeedParamsT = "week"
+	GetRedditFeedParamsTYear  GetRedditFeedParamsT = "year"
 )
 
 // Valid indicates whether the value is a known member of the GetRedditFeedParamsT enum.
 func (e GetRedditFeedParamsT) Valid() bool {
 	switch e {
-	case All:
+	case GetRedditFeedParamsTAll:
 		return true
-	case Day:
+	case GetRedditFeedParamsTDay:
 		return true
-	case Hour:
+	case GetRedditFeedParamsTHour:
 		return true
-	case Month:
+	case GetRedditFeedParamsTMonth:
 		return true
-	case Week:
+	case GetRedditFeedParamsTWeek:
 		return true
-	case Year:
+	case GetRedditFeedParamsTYear:
 		return true
 	default:
 		return false
@@ -8101,6 +8122,9 @@ type CreateStandaloneAdJSONBody struct {
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
+	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
+	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
+
 	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
@@ -8159,6 +8183,9 @@ type CreateStandaloneAdJSONBodyCampaignType string
 
 // CreateStandaloneAdJSONBodyCreativesCallToAction defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCreativesCallToAction string
+
+// CreateStandaloneAdJSONBodyGender defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyGender string
 
 // CreateStandaloneAdJSONBodyGoal defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGoal string
