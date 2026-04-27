@@ -2649,6 +2649,63 @@ func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	}
 }
 
+// Defines values for CreateCtwaAdJSONBodyAdvantageAudience.
+const (
+	CreateCtwaAdJSONBodyAdvantageAudienceN0 CreateCtwaAdJSONBodyAdvantageAudience = 0
+	CreateCtwaAdJSONBodyAdvantageAudienceN1 CreateCtwaAdJSONBodyAdvantageAudience = 1
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyAdvantageAudience enum.
+func (e CreateCtwaAdJSONBodyAdvantageAudience) Valid() bool {
+	switch e {
+	case CreateCtwaAdJSONBodyAdvantageAudienceN0:
+		return true
+	case CreateCtwaAdJSONBodyAdvantageAudienceN1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCtwaAdJSONBodyBudgetType.
+const (
+	CreateCtwaAdJSONBodyBudgetTypeDaily    CreateCtwaAdJSONBodyBudgetType = "daily"
+	CreateCtwaAdJSONBodyBudgetTypeLifetime CreateCtwaAdJSONBodyBudgetType = "lifetime"
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyBudgetType enum.
+func (e CreateCtwaAdJSONBodyBudgetType) Valid() bool {
+	switch e {
+	case CreateCtwaAdJSONBodyBudgetTypeDaily:
+		return true
+	case CreateCtwaAdJSONBodyBudgetTypeLifetime:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCtwaAdJSONBodyObjective.
+const (
+	OUTCOMEENGAGEMENT CreateCtwaAdJSONBodyObjective = "OUTCOME_ENGAGEMENT"
+	OUTCOMELEADS      CreateCtwaAdJSONBodyObjective = "OUTCOME_LEADS"
+	OUTCOMESALES      CreateCtwaAdJSONBodyObjective = "OUTCOME_SALES"
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyObjective enum.
+func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
+	switch e {
+	case OUTCOMEENGAGEMENT:
+		return true
+	case OUTCOMELEADS:
+		return true
+	case OUTCOMESALES:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAdTreeParamsSource.
 const (
 	GetAdTreeParamsSourceAll    GetAdTreeParamsSource = "all"
@@ -2702,16 +2759,16 @@ func (e GetAdTreeParamsPlatform) Valid() bool {
 
 // Defines values for UpdateAdJSONBodyBudgetType.
 const (
-	Daily    UpdateAdJSONBodyBudgetType = "daily"
-	Lifetime UpdateAdJSONBodyBudgetType = "lifetime"
+	UpdateAdJSONBodyBudgetTypeDaily    UpdateAdJSONBodyBudgetType = "daily"
+	UpdateAdJSONBodyBudgetTypeLifetime UpdateAdJSONBodyBudgetType = "lifetime"
 )
 
 // Valid indicates whether the value is a known member of the UpdateAdJSONBodyBudgetType enum.
 func (e UpdateAdJSONBodyBudgetType) Valid() bool {
 	switch e {
-	case Daily:
+	case UpdateAdJSONBodyBudgetTypeDaily:
 		return true
-	case Lifetime:
+	case UpdateAdJSONBodyBudgetTypeLifetime:
 		return true
 	default:
 		return false
@@ -4379,16 +4436,16 @@ func (e GetRedditFeedParamsT) Valid() bool {
 
 // Defines values for SearchRedditParamsRestrictSr.
 const (
-	SearchRedditParamsRestrictSrN0 SearchRedditParamsRestrictSr = "0"
-	SearchRedditParamsRestrictSrN1 SearchRedditParamsRestrictSr = "1"
+	N0 SearchRedditParamsRestrictSr = "0"
+	N1 SearchRedditParamsRestrictSr = "1"
 )
 
 // Valid indicates whether the value is a known member of the SearchRedditParamsRestrictSr enum.
 func (e SearchRedditParamsRestrictSr) Valid() bool {
 	switch e {
-	case SearchRedditParamsRestrictSrN0:
+	case N0:
 		return true
-	case SearchRedditParamsRestrictSrN1:
+	case N1:
 		return true
 	default:
 		return false
@@ -4713,6 +4770,33 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case ReviewNew:
 		return true
 	case ReviewUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendWhatsAppConversionJSONBodyEventName.
+const (
+	AddToCart        SendWhatsAppConversionJSONBodyEventName = "AddToCart"
+	InitiateCheckout SendWhatsAppConversionJSONBodyEventName = "InitiateCheckout"
+	LeadSubmitted    SendWhatsAppConversionJSONBodyEventName = "LeadSubmitted"
+	Purchase         SendWhatsAppConversionJSONBodyEventName = "Purchase"
+	ViewContent      SendWhatsAppConversionJSONBodyEventName = "ViewContent"
+)
+
+// Valid indicates whether the value is a known member of the SendWhatsAppConversionJSONBodyEventName enum.
+func (e SendWhatsAppConversionJSONBodyEventName) Valid() bool {
+	switch e {
+	case AddToCart:
+		return true
+	case InitiateCheckout:
+		return true
+	case LeadSubmitted:
+		return true
+	case Purchase:
+		return true
+	case ViewContent:
 		return true
 	default:
 		return false
@@ -8079,6 +8163,81 @@ type CreateStandaloneAdJSONBodyCreativesCallToAction string
 // CreateStandaloneAdJSONBodyGoal defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGoal string
 
+// CreateCtwaAdJSONBody defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBody struct {
+	// AccountId Facebook or Instagram SocialAccount ID.
+	AccountId string `json:"accountId"`
+
+	// AdAccountId Meta ad account ID, e.g. `act_123456789`.
+	AdAccountId string `json:"adAccountId"`
+
+	// AdvantageAudience Meta's Advantage+ audience expansion. `0` (default) keeps
+	// targeting strict; `1` lets Meta expand beyond the supplied
+	// targeting when its delivery system finds better matches.
+	// Always sent on CREATE (Meta requires it).
+	AdvantageAudience *CreateCtwaAdJSONBodyAdvantageAudience `json:"advantageAudience,omitempty"`
+	AgeMax            *int                                   `json:"ageMax,omitempty"`
+	AgeMin            *int                                   `json:"ageMin,omitempty"`
+
+	// AudienceId Custom audience ID to target.
+	AudienceId *string `json:"audienceId,omitempty"`
+
+	// Body Primary text shown above the image / video.
+	Body string `json:"body"`
+
+	// BudgetAmount Budget amount in the ad account's currency major units
+	// (e.g. dollars for USD, not cents). Must be > 0.
+	BudgetAmount float32                        `json:"budgetAmount"`
+	BudgetType   CreateCtwaAdJSONBodyBudgetType `json:"budgetType"`
+
+	// Countries ISO 3166-1 alpha-2 country codes. Defaults to `["US"]`.
+	Countries *[]string `json:"countries,omitempty"`
+
+	// Currency ISO 4217 currency code matching the ad account's currency
+	// (e.g. `USD`). Optional — Meta infers from the ad account
+	// when omitted.
+	Currency *string `json:"currency,omitempty"`
+
+	// EndDate ISO 8601 datetime. Required when `budgetType` is `lifetime`.
+	EndDate  *time.Time `json:"endDate,omitempty"`
+	Headline string     `json:"headline"`
+
+	// ImageUrl Image asset for image creatives. Mutually exclusive with
+	// `video`. Required if `video` is not supplied.
+	ImageUrl  *string `json:"imageUrl,omitempty"`
+	Interests *[]struct {
+		Id   string  `json:"id"`
+		Name *string `json:"name,omitempty"`
+	} `json:"interests,omitempty"`
+
+	// Name Ad display name. Used to derive campaign / ad set names.
+	Name string `json:"name"`
+
+	// Objective Defaults to `OUTCOME_ENGAGEMENT` (the broadly-supported CTWA
+	// objective). `OUTCOME_SALES` and `OUTCOME_LEADS` require
+	// additional account configuration (Dataset linked to the WABA
+	// for sales) and may be rejected by Meta if missing.
+	Objective *CreateCtwaAdJSONBodyObjective `json:"objective,omitempty"`
+
+	// Video Video creative. Mutually exclusive with `imageUrl`.
+	// Required if `imageUrl` is not supplied.
+	Video *struct {
+		// ThumbnailUrl Required by Meta for every video creative. Used as the
+		// ad thumbnail.
+		ThumbnailUrl string `json:"thumbnailUrl"`
+		Url          string `json:"url"`
+	} `json:"video,omitempty"`
+}
+
+// CreateCtwaAdJSONBodyAdvantageAudience defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyAdvantageAudience int
+
+// CreateCtwaAdJSONBodyBudgetType defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyBudgetType string
+
+// CreateCtwaAdJSONBodyObjective defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyObjective string
+
 // SearchAdInterestsParams defines parameters for SearchAdInterests.
 type SearchAdInterestsParams struct {
 	// Q Search query
@@ -10430,6 +10589,70 @@ type UploadWhatsAppProfilePhotoMultipartBody struct {
 	File openapi_types.File `json:"file"`
 }
 
+// SendWhatsAppConversionJSONBody defines parameters for SendWhatsAppConversion.
+type SendWhatsAppConversionJSONBody struct {
+	// AccountId WhatsApp SocialAccount ID.
+	AccountId string `json:"accountId"`
+
+	// ContentIds Optional product / content identifiers.
+	ContentIds *[]string `json:"contentIds,omitempty"`
+
+	// ConversationId Zernio Conversation `_id` (preferred lookup). The
+	// conversation must have a captured `ctwa_clid` in metadata
+	// (set automatically by the WhatsApp webhook on the first
+	// inbound message after a CTWA ad click).
+	ConversationId *string `json:"conversationId,omitempty"`
+
+	// Currency ISO 4217 currency code (e.g. `USD`).
+	Currency *string `json:"currency,omitempty"`
+
+	// Email User email. Normalized + SHA-256 hashed before sending to Meta.
+	Email *openapi_types.Email `json:"email,omitempty"`
+
+	// EventId Stable dedup key. Reuse to suppress duplicate events
+	// (Meta dedupes against pixel events with the same id).
+	EventId string `json:"eventId"`
+
+	// EventName Live-verified allowlist of event names accepted by Meta's
+	// CAPI for Business Messaging (Graph API v25.0). Other
+	// standard pixel events including `Lead`,
+	// `CompleteRegistration`, `Subscribe`, `Schedule`, `Contact`,
+	// `StartTrial`, `AddPaymentInfo`, `Search`, and
+	// `SubmitApplication` are rejected with subcode 2804066
+	// ("Messaging Event Invalid Event Type") on
+	// `action_source = business_messaging` events. Custom event
+	// names are also rejected.
+	//
+	// Use `LeadSubmitted` (NOT `Lead`) for lead-style conversions.
+	EventName SendWhatsAppConversionJSONBodyEventName `json:"eventName"`
+
+	// EventTime Unix seconds. Defaults to the time of the request when
+	// omitted. Meta's attribution window is 7 days from click;
+	// events older than that lose attribution.
+	EventTime *float32 `json:"eventTime,omitempty"`
+
+	// ExternalId Stable customer identifier. Lowercased + SHA-256 hashed
+	// before sending to Meta.
+	ExternalId *string `json:"externalId,omitempty"`
+
+	// PhoneE164 Contact phone number, digits only with no '+'. When used
+	// in lieu of `conversationId`, the handler resolves to the
+	// most recent CTWA-attributed conversation for this phone
+	// on the supplied account.
+	PhoneE164 *string `json:"phoneE164,omitempty"`
+
+	// TestCode Meta `test_event_code` passthrough. Routes the event to
+	// the Test Events tab in Events Manager instead of the
+	// production dataset, useful for development.
+	TestCode *string `json:"testCode,omitempty"`
+
+	// Value Conversion value (e.g. order total).
+	Value *float32 `json:"value,omitempty"`
+}
+
+// SendWhatsAppConversionJSONBodyEventName defines parameters for SendWhatsAppConversion.
+type SendWhatsAppConversionJSONBodyEventName string
+
 // ListWhatsAppFlowsParams defines parameters for ListWhatsAppFlows.
 type ListWhatsAppFlowsParams struct {
 	// AccountId WhatsApp social account ID
@@ -10873,6 +11096,9 @@ type SendConversionsJSONRequestBody SendConversionsJSONBody
 // CreateStandaloneAdJSONRequestBody defines body for CreateStandaloneAd for application/json ContentType.
 type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 
+// CreateCtwaAdJSONRequestBody defines body for CreateCtwaAd for application/json ContentType.
+type CreateCtwaAdJSONRequestBody CreateCtwaAdJSONBody
+
 // UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
 type UpdateAdJSONRequestBody UpdateAdJSONBody
 
@@ -11061,6 +11287,9 @@ type UpdateWhatsAppDisplayNameJSONRequestBody UpdateWhatsAppDisplayNameJSONBody
 
 // UploadWhatsAppProfilePhotoMultipartRequestBody defines body for UploadWhatsAppProfilePhoto for multipart/form-data ContentType.
 type UploadWhatsAppProfilePhotoMultipartRequestBody UploadWhatsAppProfilePhotoMultipartBody
+
+// SendWhatsAppConversionJSONRequestBody defines body for SendWhatsAppConversion for application/json ContentType.
+type SendWhatsAppConversionJSONRequestBody SendWhatsAppConversionJSONBody
 
 // CreateWhatsAppFlowJSONRequestBody defines body for CreateWhatsAppFlow for application/json ContentType.
 type CreateWhatsAppFlowJSONRequestBody CreateWhatsAppFlowJSONBody
@@ -12430,6 +12659,11 @@ type ClientInterface interface {
 
 	CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateCtwaAdWithBody request with any body
+	CreateCtwaAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -13019,6 +13253,11 @@ type ClientInterface interface {
 
 	// UploadWhatsAppProfilePhotoWithBody request with any body
 	UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendWhatsAppConversionWithBody request with any body
+	SendWhatsAppConversionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendWhatsAppConversion(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListWhatsAppFlows request
 	ListWhatsAppFlows(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14439,6 +14678,30 @@ func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, contentType str
 
 func (c *Client) CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateStandaloneAdRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCtwaAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCtwaAdRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCtwaAdRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -17031,6 +17294,30 @@ func (c *Client) UpdateWhatsAppDisplayName(ctx context.Context, body UpdateWhats
 
 func (c *Client) UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadWhatsAppProfilePhotoRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppConversionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppConversionRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendWhatsAppConversion(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendWhatsAppConversionRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -21783,6 +22070,46 @@ func NewCreateStandaloneAdRequestWithBody(server string, contentType string, bod
 	}
 
 	operationPath := fmt.Sprintf("/v1/ads/create")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateCtwaAdRequest calls the generic CreateCtwaAd builder with application/json body
+func NewCreateCtwaAdRequest(server string, body CreateCtwaAdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCtwaAdRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateCtwaAdRequestWithBody generates requests for CreateCtwaAd with any type of body
+func NewCreateCtwaAdRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/ctwa")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -31444,6 +31771,46 @@ func NewUploadWhatsAppProfilePhotoRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewSendWhatsAppConversionRequest calls the generic SendWhatsAppConversion builder with application/json body
+func NewSendWhatsAppConversionRequest(server string, body SendWhatsAppConversionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendWhatsAppConversionRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendWhatsAppConversionRequestWithBody generates requests for SendWhatsAppConversion with any type of body
+func NewSendWhatsAppConversionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/conversions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListWhatsAppFlowsRequest generates requests for ListWhatsAppFlows
 func NewListWhatsAppFlowsRequest(server string, params *ListWhatsAppFlowsParams) (*http.Request, error) {
 	var err error
@@ -33325,6 +33692,11 @@ type ClientWithResponsesInterface interface {
 
 	CreateStandaloneAdWithResponse(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
 
+	// CreateCtwaAdWithBodyWithResponse request with any body
+	CreateCtwaAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCtwaAdResponse, error)
+
+	CreateCtwaAdWithResponse(ctx context.Context, body CreateCtwaAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCtwaAdResponse, error)
+
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
@@ -33914,6 +34286,11 @@ type ClientWithResponsesInterface interface {
 
 	// UploadWhatsAppProfilePhotoWithBodyWithResponse request with any body
 	UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppProfilePhotoResponse, error)
+
+	// SendWhatsAppConversionWithBodyWithResponse request with any body
+	SendWhatsAppConversionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error)
+
+	SendWhatsAppConversionWithResponse(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error)
 
 	// ListWhatsAppFlowsWithResponse request
 	ListWhatsAppFlowsWithResponse(ctx context.Context, params *ListWhatsAppFlowsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowsResponse, error)
@@ -36698,6 +37075,33 @@ func (r CreateStandaloneAdResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateStandaloneAdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateCtwaAdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		// Ad The persisted Ad document.
+		Ad      *map[string]interface{} `json:"ad,omitempty"`
+		Message *string                 `json:"message,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCtwaAdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCtwaAdResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -42428,6 +42832,59 @@ func (r UploadWhatsAppProfilePhotoResponse) StatusCode() int {
 	return 0
 }
 
+type SendWhatsAppConversionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// EventsFailed Events rejected by Meta (see failures).
+		EventsFailed *int `json:"eventsFailed,omitempty"`
+
+		// EventsReceived Events accepted by Meta.
+		EventsReceived *int `json:"eventsReceived,omitempty"`
+
+		// Failures Per-event failure detail. Empty when all events were
+		// accepted.
+		Failures *[]struct {
+			Code *SendWhatsAppConversion_200_Failures_Code `json:"code,omitempty"`
+
+			// EventId Echoes back the eventId of the failed event.
+			EventId *string `json:"eventId,omitempty"`
+
+			// EventIndex Index into the submitted events array.
+			EventIndex *int    `json:"eventIndex,omitempty"`
+			Message    *string `json:"message,omitempty"`
+		} `json:"failures,omitempty"`
+		Platform *SendWhatsAppConversion200Platform `json:"platform,omitempty"`
+
+		// TraceId Meta `fbtrace_id` for debugging. Surface in support
+		// tickets.
+		TraceId *string `json:"traceId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type SendWhatsAppConversion200FailuresCode0 = string
+type SendWhatsAppConversion200FailuresCode1 = int
+type SendWhatsAppConversion_200_Failures_Code struct {
+	union json.RawMessage
+}
+type SendWhatsAppConversion200Platform string
+
+// Status returns HTTPResponse.Status
+func (r SendWhatsAppConversionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendWhatsAppConversionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListWhatsAppFlowsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -44306,6 +44763,23 @@ func (c *ClientWithResponses) CreateStandaloneAdWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseCreateStandaloneAdResponse(rsp)
+}
+
+// CreateCtwaAdWithBodyWithResponse request with arbitrary body returning *CreateCtwaAdResponse
+func (c *ClientWithResponses) CreateCtwaAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCtwaAdResponse, error) {
+	rsp, err := c.CreateCtwaAdWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCtwaAdResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateCtwaAdWithResponse(ctx context.Context, body CreateCtwaAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCtwaAdResponse, error) {
+	rsp, err := c.CreateCtwaAd(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCtwaAdResponse(rsp)
 }
 
 // SearchAdInterestsWithResponse request returning *SearchAdInterestsResponse
@@ -46192,6 +46666,23 @@ func (c *ClientWithResponses) UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx
 		return nil, err
 	}
 	return ParseUploadWhatsAppProfilePhotoResponse(rsp)
+}
+
+// SendWhatsAppConversionWithBodyWithResponse request with arbitrary body returning *SendWhatsAppConversionResponse
+func (c *ClientWithResponses) SendWhatsAppConversionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error) {
+	rsp, err := c.SendWhatsAppConversionWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppConversionResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendWhatsAppConversionWithResponse(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error) {
+	rsp, err := c.SendWhatsAppConversion(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendWhatsAppConversionResponse(rsp)
 }
 
 // ListWhatsAppFlowsWithResponse request returning *ListWhatsAppFlowsResponse
@@ -50212,6 +50703,43 @@ func ParseCreateStandaloneAdResponse(rsp *http.Response) (*CreateStandaloneAdRes
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
 		var dest struct {
 			union json.RawMessage
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCtwaAdResponse parses an HTTP response from a CreateCtwaAdWithResponse call
+func ParseCreateCtwaAdResponse(rsp *http.Response) (*CreateCtwaAdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCtwaAdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			// Ad The persisted Ad document.
+			Ad      *map[string]interface{} `json:"ad,omitempty"`
+			Message *string                 `json:"message,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -57904,6 +58432,63 @@ func ParseUploadWhatsAppProfilePhotoResponse(rsp *http.Response) (*UploadWhatsAp
 		var dest struct {
 			Message *string `json:"message,omitempty"`
 			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendWhatsAppConversionResponse parses an HTTP response from a SendWhatsAppConversionWithResponse call
+func ParseSendWhatsAppConversionResponse(rsp *http.Response) (*SendWhatsAppConversionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendWhatsAppConversionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// EventsFailed Events rejected by Meta (see failures).
+			EventsFailed *int `json:"eventsFailed,omitempty"`
+
+			// EventsReceived Events accepted by Meta.
+			EventsReceived *int `json:"eventsReceived,omitempty"`
+
+			// Failures Per-event failure detail. Empty when all events were
+			// accepted.
+			Failures *[]struct {
+				Code *SendWhatsAppConversion_200_Failures_Code `json:"code,omitempty"`
+
+				// EventId Echoes back the eventId of the failed event.
+				EventId *string `json:"eventId,omitempty"`
+
+				// EventIndex Index into the submitted events array.
+				EventIndex *int    `json:"eventIndex,omitempty"`
+				Message    *string `json:"message,omitempty"`
+			} `json:"failures,omitempty"`
+			Platform *SendWhatsAppConversion200Platform `json:"platform,omitempty"`
+
+			// TraceId Meta `fbtrace_id` for debugging. Surface in support
+			// tickets.
+			TraceId *string `json:"traceId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
