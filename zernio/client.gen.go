@@ -9801,6 +9801,9 @@ type ListPostsParams struct {
 
 	// SortBy Sort order for results.
 	SortBy *ListPostsParamsSortBy `form:"sortBy,omitempty" json:"sortBy,omitempty"`
+
+	// AccountId Filter posts to those published via a specific social account (24-char hex ObjectId).
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 }
 
 // ListPostsParamsStatus defines parameters for ListPosts.
@@ -28768,6 +28771,22 @@ func NewListPostsRequest(server string, params *ListPostsParams) (*http.Request,
 		if params.SortBy != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sortBy", *params.SortBy, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
