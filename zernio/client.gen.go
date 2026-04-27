@@ -3681,6 +3681,24 @@ func (e UpdateInboxConversationJSONBodyStatus) Valid() bool {
 	}
 }
 
+// Defines values for GetInboxConversationMessagesParamsSortOrder.
+const (
+	GetInboxConversationMessagesParamsSortOrderAsc  GetInboxConversationMessagesParamsSortOrder = "asc"
+	GetInboxConversationMessagesParamsSortOrderDesc GetInboxConversationMessagesParamsSortOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetInboxConversationMessagesParamsSortOrder enum.
+func (e GetInboxConversationMessagesParamsSortOrder) Valid() bool {
+	switch e {
+	case GetInboxConversationMessagesParamsSortOrderAsc:
+		return true
+	case GetInboxConversationMessagesParamsSortOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendInboxMessageJSONBodyAttachmentType.
 const (
 	SendInboxMessageJSONBodyAttachmentTypeAudio SendInboxMessageJSONBodyAttachmentType = "audio"
@@ -3998,16 +4016,16 @@ func (e ListInboxReviewsParamsSortBy) Valid() bool {
 
 // Defines values for ListInboxReviewsParamsSortOrder.
 const (
-	ListInboxReviewsParamsSortOrderAsc  ListInboxReviewsParamsSortOrder = "asc"
-	ListInboxReviewsParamsSortOrderDesc ListInboxReviewsParamsSortOrder = "desc"
+	Asc  ListInboxReviewsParamsSortOrder = "asc"
+	Desc ListInboxReviewsParamsSortOrder = "desc"
 )
 
 // Valid indicates whether the value is a known member of the ListInboxReviewsParamsSortOrder enum.
 func (e ListInboxReviewsParamsSortOrder) Valid() bool {
 	switch e {
-	case ListInboxReviewsParamsSortOrderAsc:
+	case Asc:
 		return true
-	case ListInboxReviewsParamsSortOrderDesc:
+	case Desc:
 		return true
 	default:
 		return false
@@ -9513,7 +9531,22 @@ type UpdateInboxConversationJSONBodyStatus string
 type GetInboxConversationMessagesParams struct {
 	// AccountId Social account ID
 	AccountId string `form:"accountId" json:"accountId"`
+
+	// Limit Number of messages to return per page. Default 100, max 100.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Cursor Opaque pagination cursor. Pass `pagination.nextCursor` from a prior response.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// SortOrder Order of returned messages. Default `asc` (oldest first, chat style).
+	// For Twitter, Facebook and Bluesky, only intra-page ordering is
+	// affected — pages always walk newest→oldest. See `sortOrderApplied`
+	// in the response.
+	SortOrder *GetInboxConversationMessagesParamsSortOrder `form:"sortOrder,omitempty" json:"sortOrder,omitempty"`
 }
+
+// GetInboxConversationMessagesParamsSortOrder defines parameters for GetInboxConversationMessages.
+type GetInboxConversationMessagesParamsSortOrder string
 
 // SendInboxMessageJSONBody defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBody struct {
@@ -28052,6 +28085,54 @@ func NewGetInboxConversationMessagesRequest(server string, conversationId string
 			}
 		}
 
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.SortOrder != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sortOrder", *params.SortOrder, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -40645,7 +40726,19 @@ type GetInboxConversationMessagesResponse struct {
 			// Subject Reddit message subject
 			Subject *string `json:"subject,omitempty"`
 		} `json:"messages,omitempty"`
-		Status *string `json:"status,omitempty"`
+		Pagination *struct {
+			// HasMore Whether more messages are available beyond this page.
+			HasMore *bool `json:"hasMore,omitempty"`
+
+			// NextCursor Opaque cursor to fetch the next page. `null` on the last page.
+			NextCursor *string `json:"nextCursor,omitempty"`
+		} `json:"pagination,omitempty"`
+
+		// SortOrderApplied Sort order actually applied to the returned page. May
+		// differ from the requested `sortOrder` for Twitter,
+		// Facebook and Bluesky (always `desc` regardless of request).
+		SortOrderApplied *GetInboxConversationMessages200SortOrderApplied `json:"sortOrderApplied,omitempty"`
+		Status           *string                                          `json:"status,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -40653,6 +40746,7 @@ type GetInboxConversationMessages200MessagesAttachmentsType string
 type GetInboxConversationMessages200MessagesDeliveryStatus string
 type GetInboxConversationMessages200MessagesDirection string
 type GetInboxConversationMessages200MessagesSenderVerifiedType string
+type GetInboxConversationMessages200SortOrderApplied string
 
 // Status returns HTTPResponse.Status
 func (r GetInboxConversationMessagesResponse) Status() string {
@@ -55496,7 +55590,19 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				// Subject Reddit message subject
 				Subject *string `json:"subject,omitempty"`
 			} `json:"messages,omitempty"`
-			Status *string `json:"status,omitempty"`
+			Pagination *struct {
+				// HasMore Whether more messages are available beyond this page.
+				HasMore *bool `json:"hasMore,omitempty"`
+
+				// NextCursor Opaque cursor to fetch the next page. `null` on the last page.
+				NextCursor *string `json:"nextCursor,omitempty"`
+			} `json:"pagination,omitempty"`
+
+			// SortOrderApplied Sort order actually applied to the returned page. May
+			// differ from the requested `sortOrder` for Twitter,
+			// Facebook and Bluesky (always `desc` regardless of request).
+			SortOrderApplied *GetInboxConversationMessages200SortOrderApplied `json:"sortOrderApplied,omitempty"`
+			Status           *string                                          `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
