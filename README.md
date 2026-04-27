@@ -242,7 +242,7 @@ func main() {
 | `client.ListAdAccountsWithResponse()` | List ad accounts |
 | `client.ListAdsWithResponse()` | List ads |
 | `client.ListConversionDestinationsWithResponse()` | List destinations for the Conversions API |
-| `client.CreateCtwaAdWithResponse()` | Create a Click-to-WhatsApp (CTWA) ad |
+| `client.CreateCtwaAdWithResponse()` | Create Click-to-WhatsApp ad |
 | `client.CreateStandaloneAdWithResponse()` | Create standalone ad |
 | `client.GetAdWithResponse()` | Get ad details |
 | `client.GetAdAnalyticsWithResponse()` | Get ad analytics |
@@ -435,7 +435,7 @@ func main() {
 | `client.ApproveWhatsAppGroupJoinRequestsWithResponse()` | Approve join requests |
 | `client.RejectWhatsAppGroupJoinRequestsWithResponse()` | Reject join requests |
 | `client.RemoveWhatsAppGroupParticipantsWithResponse()` | Remove participants |
-| `client.SendWhatsAppConversionWithResponse()` | Send a WhatsApp conversation event to Meta CAPI for Business Messaging |
+| `client.SendWhatsAppConversionWithResponse()` | Send WhatsApp conversion event |
 | `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
 
 ### WhatsApp Flows

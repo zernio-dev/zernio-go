@@ -8194,7 +8194,7 @@ type CreateCtwaAdJSONBody struct {
 	Countries *[]string `json:"countries,omitempty"`
 
 	// Currency ISO 4217 currency code matching the ad account's currency
-	// (e.g. `USD`). Optional — Meta infers from the ad account
+	// (e.g. `USD`). Optional; Meta infers from the ad account
 	// when omitted.
 	Currency *string `json:"currency,omitempty"`
 
