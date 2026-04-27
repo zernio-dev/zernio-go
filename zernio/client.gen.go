@@ -1355,29 +1355,32 @@ func (e UsageStatsBillingPeriod) Valid() bool {
 
 // Defines values for WebhookEvents.
 const (
-	WebhookEventsAccountConnected    WebhookEvents = "account.connected"
-	WebhookEventsAccountDisconnected WebhookEvents = "account.disconnected"
-	WebhookEventsCommentReceived     WebhookEvents = "comment.received"
-	WebhookEventsMessageDeleted      WebhookEvents = "message.deleted"
-	WebhookEventsMessageDelivered    WebhookEvents = "message.delivered"
-	WebhookEventsMessageEdited       WebhookEvents = "message.edited"
-	WebhookEventsMessageFailed       WebhookEvents = "message.failed"
-	WebhookEventsMessageRead         WebhookEvents = "message.read"
-	WebhookEventsMessageReceived     WebhookEvents = "message.received"
-	WebhookEventsMessageSent         WebhookEvents = "message.sent"
-	WebhookEventsPostCancelled       WebhookEvents = "post.cancelled"
-	WebhookEventsPostFailed          WebhookEvents = "post.failed"
-	WebhookEventsPostPartial         WebhookEvents = "post.partial"
-	WebhookEventsPostPublished       WebhookEvents = "post.published"
-	WebhookEventsPostRecycled        WebhookEvents = "post.recycled"
-	WebhookEventsPostScheduled       WebhookEvents = "post.scheduled"
-	WebhookEventsReviewNew           WebhookEvents = "review.new"
-	WebhookEventsReviewUpdated       WebhookEvents = "review.updated"
+	WebhookEventsAccountAdsInitialSyncCompleted WebhookEvents = "account.ads.initial_sync_completed"
+	WebhookEventsAccountConnected               WebhookEvents = "account.connected"
+	WebhookEventsAccountDisconnected            WebhookEvents = "account.disconnected"
+	WebhookEventsCommentReceived                WebhookEvents = "comment.received"
+	WebhookEventsMessageDeleted                 WebhookEvents = "message.deleted"
+	WebhookEventsMessageDelivered               WebhookEvents = "message.delivered"
+	WebhookEventsMessageEdited                  WebhookEvents = "message.edited"
+	WebhookEventsMessageFailed                  WebhookEvents = "message.failed"
+	WebhookEventsMessageRead                    WebhookEvents = "message.read"
+	WebhookEventsMessageReceived                WebhookEvents = "message.received"
+	WebhookEventsMessageSent                    WebhookEvents = "message.sent"
+	WebhookEventsPostCancelled                  WebhookEvents = "post.cancelled"
+	WebhookEventsPostFailed                     WebhookEvents = "post.failed"
+	WebhookEventsPostPartial                    WebhookEvents = "post.partial"
+	WebhookEventsPostPublished                  WebhookEvents = "post.published"
+	WebhookEventsPostRecycled                   WebhookEvents = "post.recycled"
+	WebhookEventsPostScheduled                  WebhookEvents = "post.scheduled"
+	WebhookEventsReviewNew                      WebhookEvents = "review.new"
+	WebhookEventsReviewUpdated                  WebhookEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the WebhookEvents enum.
 func (e WebhookEvents) Valid() bool {
 	switch e {
+	case WebhookEventsAccountAdsInitialSyncCompleted:
+		return true
 	case WebhookEventsAccountConnected:
 		return true
 	case WebhookEventsAccountDisconnected:
@@ -4616,23 +4619,26 @@ func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
 
 // Defines values for CreateWebhookSettingsJSONBodyEvents.
 const (
-	CreateWebhookSettingsJSONBodyEventsAccountConnected    CreateWebhookSettingsJSONBodyEvents = "account.connected"
-	CreateWebhookSettingsJSONBodyEventsAccountDisconnected CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
-	CreateWebhookSettingsJSONBodyEventsCommentReceived     CreateWebhookSettingsJSONBodyEvents = "comment.received"
-	CreateWebhookSettingsJSONBodyEventsMessageReceived     CreateWebhookSettingsJSONBodyEvents = "message.received"
-	CreateWebhookSettingsJSONBodyEventsPostCancelled       CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
-	CreateWebhookSettingsJSONBodyEventsPostFailed          CreateWebhookSettingsJSONBodyEvents = "post.failed"
-	CreateWebhookSettingsJSONBodyEventsPostPartial         CreateWebhookSettingsJSONBodyEvents = "post.partial"
-	CreateWebhookSettingsJSONBodyEventsPostPublished       CreateWebhookSettingsJSONBodyEvents = "post.published"
-	CreateWebhookSettingsJSONBodyEventsPostRecycled        CreateWebhookSettingsJSONBodyEvents = "post.recycled"
-	CreateWebhookSettingsJSONBodyEventsPostScheduled       CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
-	CreateWebhookSettingsJSONBodyEventsReviewNew           CreateWebhookSettingsJSONBodyEvents = "review.new"
-	CreateWebhookSettingsJSONBodyEventsReviewUpdated       CreateWebhookSettingsJSONBodyEvents = "review.updated"
+	CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted CreateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
+	CreateWebhookSettingsJSONBodyEventsAccountConnected               CreateWebhookSettingsJSONBodyEvents = "account.connected"
+	CreateWebhookSettingsJSONBodyEventsAccountDisconnected            CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CreateWebhookSettingsJSONBodyEventsCommentReceived                CreateWebhookSettingsJSONBodyEvents = "comment.received"
+	CreateWebhookSettingsJSONBodyEventsMessageReceived                CreateWebhookSettingsJSONBodyEvents = "message.received"
+	CreateWebhookSettingsJSONBodyEventsPostCancelled                  CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	CreateWebhookSettingsJSONBodyEventsPostFailed                     CreateWebhookSettingsJSONBodyEvents = "post.failed"
+	CreateWebhookSettingsJSONBodyEventsPostPartial                    CreateWebhookSettingsJSONBodyEvents = "post.partial"
+	CreateWebhookSettingsJSONBodyEventsPostPublished                  CreateWebhookSettingsJSONBodyEvents = "post.published"
+	CreateWebhookSettingsJSONBodyEventsPostRecycled                   CreateWebhookSettingsJSONBodyEvents = "post.recycled"
+	CreateWebhookSettingsJSONBodyEventsPostScheduled                  CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	CreateWebhookSettingsJSONBodyEventsReviewNew                      CreateWebhookSettingsJSONBodyEvents = "review.new"
+	CreateWebhookSettingsJSONBodyEventsReviewUpdated                  CreateWebhookSettingsJSONBodyEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the CreateWebhookSettingsJSONBodyEvents enum.
 func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	switch e {
+	case CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsAccountConnected:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsAccountDisconnected:
@@ -4664,23 +4670,26 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 
 // Defines values for UpdateWebhookSettingsJSONBodyEvents.
 const (
-	AccountConnected    UpdateWebhookSettingsJSONBodyEvents = "account.connected"
-	AccountDisconnected UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
-	CommentReceived     UpdateWebhookSettingsJSONBodyEvents = "comment.received"
-	MessageReceived     UpdateWebhookSettingsJSONBodyEvents = "message.received"
-	PostCancelled       UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
-	PostFailed          UpdateWebhookSettingsJSONBodyEvents = "post.failed"
-	PostPartial         UpdateWebhookSettingsJSONBodyEvents = "post.partial"
-	PostPublished       UpdateWebhookSettingsJSONBodyEvents = "post.published"
-	PostRecycled        UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
-	PostScheduled       UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
-	ReviewNew           UpdateWebhookSettingsJSONBodyEvents = "review.new"
-	ReviewUpdated       UpdateWebhookSettingsJSONBodyEvents = "review.updated"
+	AccountAdsInitialSyncCompleted UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
+	AccountConnected               UpdateWebhookSettingsJSONBodyEvents = "account.connected"
+	AccountDisconnected            UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CommentReceived                UpdateWebhookSettingsJSONBodyEvents = "comment.received"
+	MessageReceived                UpdateWebhookSettingsJSONBodyEvents = "message.received"
+	PostCancelled                  UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	PostFailed                     UpdateWebhookSettingsJSONBodyEvents = "post.failed"
+	PostPartial                    UpdateWebhookSettingsJSONBodyEvents = "post.partial"
+	PostPublished                  UpdateWebhookSettingsJSONBodyEvents = "post.published"
+	PostRecycled                   UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
+	PostScheduled                  UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	ReviewNew                      UpdateWebhookSettingsJSONBodyEvents = "review.new"
+	ReviewUpdated                  UpdateWebhookSettingsJSONBodyEvents = "review.updated"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWebhookSettingsJSONBodyEvents enum.
 func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	switch e {
+	case AccountAdsInitialSyncCompleted:
+		return true
 	case AccountConnected:
 		return true
 	case AccountDisconnected:
