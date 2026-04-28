@@ -36702,6 +36702,12 @@ type ListAdAccountsResponse struct {
 			Id     *string `json:"id,omitempty"`
 			Name   *string `json:"name,omitempty"`
 			Status *string `json:"status,omitempty"`
+
+			// TimezoneName IANA timezone of the ad account (Meta only). Drives daily-budget reset and Insights day boundaries.
+			TimezoneName *string `json:"timezoneName,omitempty"`
+
+			// TimezoneOffsetHoursUtc Signed UTC offset in hours, reflecting current DST (Meta only).
+			TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 		} `json:"accounts,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -50201,6 +50207,12 @@ func ParseListAdAccountsResponse(rsp *http.Response) (*ListAdAccountsResponse, e
 				Id     *string `json:"id,omitempty"`
 				Name   *string `json:"name,omitempty"`
 				Status *string `json:"status,omitempty"`
+
+				// TimezoneName IANA timezone of the ad account (Meta only). Drives daily-budget reset and Insights day boundaries.
+				TimezoneName *string `json:"timezoneName,omitempty"`
+
+				// TimezoneOffsetHoursUtc Signed UTC offset in hours, reflecting current DST (Meta only).
+				TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 			} `json:"accounts,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
