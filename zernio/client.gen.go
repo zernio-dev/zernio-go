@@ -7885,6 +7885,16 @@ type BoostPostJSONBody struct {
 	} `json:"budget"`
 	Currency *string `json:"currency,omitempty"`
 
+	// DsaBeneficiary Name of the legal entity benefiting from the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Not enforced at schema level; enforced server-side when targeting intersects EU member states.
+	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
+
+	// DsaPayor Name of the legal entity paying for the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Note Meta API spelling: dsa_payor (not dsa_payer).
+	DsaPayor *string `json:"dsaPayor,omitempty"`
+
 	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal BoostPostJSONBodyGoal `json:"goal"`
 	Name string                `json:"name"`
@@ -8137,6 +8147,16 @@ type CreateStandaloneAdJSONBody struct {
 	} `json:"creatives,omitempty"`
 	Currency *string `json:"currency,omitempty"`
 
+	// DsaBeneficiary Name of the legal entity benefiting from the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Not enforced at schema level; enforced server-side when targeting intersects EU member states.
+	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
+
+	// DsaPayor Name of the legal entity paying for the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Note Meta API spelling: dsa_payor (not dsa_payer).
+	DsaPayor *string `json:"dsaPayor,omitempty"`
+
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
@@ -8242,6 +8262,16 @@ type CreateCtwaAdJSONBody struct {
 	// (e.g. `USD`). Optional; Meta infers from the ad account
 	// when omitted.
 	Currency *string `json:"currency,omitempty"`
+
+	// DsaBeneficiary Name of the legal entity benefiting from the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Not enforced at schema level; enforced server-side when targeting intersects EU member states.
+	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
+
+	// DsaPayor Name of the legal entity paying for the ad.
+	// Required by Meta when targeting EU users (DSA Article 26).
+	// Note Meta API spelling: dsa_payor (not dsa_payer).
+	DsaPayor *string `json:"dsaPayor,omitempty"`
 
 	// EndDate ISO 8601 datetime. Required when `budgetType` is `lifetime`.
 	EndDate  *time.Time `json:"endDate,omitempty"`
