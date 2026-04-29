@@ -229,9 +229,9 @@ func main() {
 | `client.ListAdCampaignsWithResponse()` | List campaigns |
 | `client.BulkUpdateAdCampaignStatusWithResponse()` | Pause or resume many campaigns |
 | `client.GetAdTreeWithResponse()` | Get campaign tree |
-| `client.UpdateAdCampaignWithResponse()` | Update a campaign (budget) |
+| `client.UpdateAdCampaignWithResponse()` | Update a campaign (budget and/or bid strategy) |
 | `client.UpdateAdCampaignStatusWithResponse()` | Pause or resume a campaign |
-| `client.UpdateAdSetWithResponse()` | Update an ad set (budget and/or status) |
+| `client.UpdateAdSetWithResponse()` | Update an ad set (budget, status, and/or bid strategy) |
 | `client.UpdateAdSetStatusWithResponse()` | Pause or resume a single ad set |
 | `client.DeleteAdCampaignWithResponse()` | Delete a campaign |
 | `client.DuplicateAdCampaignWithResponse()` | Duplicate a campaign |

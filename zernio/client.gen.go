@@ -663,6 +663,30 @@ func (e ApiKeyScope) Valid() bool {
 	}
 }
 
+// Defines values for BidStrategy.
+const (
+	COSTCAP               BidStrategy = "COST_CAP"
+	LOWESTCOSTWITHBIDCAP  BidStrategy = "LOWEST_COST_WITH_BID_CAP"
+	LOWESTCOSTWITHMINROAS BidStrategy = "LOWEST_COST_WITH_MIN_ROAS"
+	LOWESTCOSTWITHOUTCAP  BidStrategy = "LOWEST_COST_WITHOUT_CAP"
+)
+
+// Valid indicates whether the value is a known member of the BidStrategy enum.
+func (e BidStrategy) Valid() bool {
+	switch e {
+	case COSTCAP:
+		return true
+	case LOWESTCOSTWITHBIDCAP:
+		return true
+	case LOWESTCOSTWITHMINROAS:
+		return true
+	case LOWESTCOSTWITHOUTCAP:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversionEventActionSource.
 const (
 	App             ConversionEventActionSource = "app"
@@ -5161,8 +5185,23 @@ type Ad struct {
 	AdSetName    *string   `json:"adSetName,omitempty"`
 	AdType       *AdAdType `json:"adType,omitempty"`
 
-	// BidStrategy Bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS). Ad set level overrides campaign level. Only present for Meta ads.
-	BidStrategy *string `json:"bidStrategy,omitempty"`
+	// BidAmount Bid cap in WHOLE currency units of the ad account (USD: 5 = $5.00; JPY: 100 = ¥100).
+	// Populated when bidStrategy is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. `null` for
+	// auto-bid (`LOWEST_COST_WITHOUT_CAP`).
+	//
+	// - Meta source: `bid_amount` on the ad set (smallest-denomination int, decoded here).
+	// - TikTok source: priority order `bid_price` -> `conversion_bid_price` -> `deep_cpa_bid`
+	//   (whichever is set on the ad group). TikTok stores all three in whole currency units.
+	//
+	// Source: facebook-business-sdk-codegen api_specs/specs/AdSet.json (`bid_amount`).
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Ad-set bid strategy (overrides campaign level on Meta). Populated for Meta and
+	// TikTok. TikTok's native `bid_type` is normalized to the cross-platform Meta enum:
+	// `BID_TYPE_NO_BID` -> `LOWEST_COST_WITHOUT_CAP`, `BID_TYPE_CUSTOM` ->
+	// `LOWEST_COST_WITH_BID_CAP`, deep_bid_type=MIN_ROAS or roas_bid>0 ->
+	// `LOWEST_COST_WITH_MIN_ROAS`, `BID_TYPE_MAX_CONVERSION` -> `LOWEST_COST_WITHOUT_CAP`.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 	Budget      *struct {
 		Amount *float32      `json:"amount,omitempty"`
 		Type   *AdBudgetType `json:"type,omitempty"`
@@ -5243,7 +5282,17 @@ type Ad struct {
 		ProductSetId *string `json:"product_set_id,omitempty"`
 	} `json:"promotedObject,omitempty"`
 	RejectionReason *string `json:"rejectionReason,omitempty"`
-	Schedule        *struct {
+
+	// RoasAverageFloor Minimum ROAS as a decimal multiplier (2.0 = 2.0x ROAS). Populated when bidStrategy
+	// is `LOWEST_COST_WITH_MIN_ROAS`.
+	//
+	// - Meta source: decoded from `bid_constraints.roas_average_floor` (Meta stores as
+	//   fixed-point int × 10000; we return the decimal).
+	// - TikTok source: `roas_bid` on the ad group (already a decimal).
+	//
+	// Source: facebook-business-sdk-codegen api_specs/specs/AdCampaignBidConstraint.json.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	Schedule         *struct {
 		EndDate   *time.Time `json:"endDate,omitempty"`
 		StartDate *time.Time `json:"startDate,omitempty"`
 	} `json:"schedule,omitempty"`
@@ -5275,8 +5324,11 @@ type AdCampaign struct {
 	AccountId *string `json:"accountId,omitempty"`
 	AdCount   *int    `json:"adCount,omitempty"`
 
-	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
-	BidStrategy *string `json:"bidStrategy,omitempty"`
+	// BidAmount Representative bid cap from the top-spending ad set (whole currency units). Populated when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Campaign-level bid strategy. Ad sets inherit this unless they override.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 
 	// Budget Effective budget (back-compat). Use `budgetLevel` to disambiguate CBO vs ABO.
 	Budget *struct {
@@ -5328,6 +5380,9 @@ type AdCampaign struct {
 
 	// ReviewStatus Platform-side review state of the campaign. See AdTreeCampaign.reviewStatus for the full description.
 	ReviewStatus *AdCampaignReviewStatus `json:"reviewStatus,omitempty"`
+
+	// RoasAverageFloor Representative ROAS floor from the top-spending ad set. Decimal multiplier (2.0 = 2.0x).
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 
 	// Status Delivery status derived from child ad statuses. Distinct from `reviewStatus`.
 	Status *AdStatus `json:"status,omitempty"`
@@ -5403,8 +5458,11 @@ type AdTreeAdSet struct {
 	// Ads Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent).
 	Ads *[]Ad `json:"ads,omitempty"`
 
+	// BidAmount Bid cap in whole currency units. Populated when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
 	// BidStrategy Bid strategy for this ad set (overrides campaign level when set)
-	BidStrategy *string `json:"bidStrategy,omitempty"`
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 
 	// Budget Effective budget at this level (back-compat). For CBO campaigns this mirrors the parent campaign's budget; for ABO this is the ad-set-specific budget. Use `adSetBudget` / parent `campaignBudget` + `budgetLevel` to disambiguate.
 	Budget *struct {
@@ -5423,6 +5481,9 @@ type AdTreeAdSet struct {
 		PageId          *string `json:"page_id,omitempty"`
 		PixelId         *string `json:"pixel_id,omitempty"`
 	} `json:"promotedObject,omitempty"`
+
+	// RoasAverageFloor Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Populated when bidStrategy is LOWEST_COST_WITH_MIN_ROAS.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 
 	// Status Derived from child ad statuses
 	Status *AdStatus `json:"status,omitempty"`
@@ -5443,8 +5504,11 @@ type AdTreeCampaign struct {
 	AdSetCount *int           `json:"adSetCount,omitempty"`
 	AdSets     *[]AdTreeAdSet `json:"adSets,omitempty"`
 
-	// BidStrategy Campaign-level bid strategy (e.g. LOWEST_COST_WITHOUT_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS)
-	BidStrategy *string `json:"bidStrategy,omitempty"`
+	// BidAmount Representative bid cap for the campaign — bubbled up from the top-spending ad set's `bid_amount` (whole currency units). Populated when the ad-set bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Campaign-level bid strategy. Ad sets inherit this unless they override.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 
 	// Budget Effective budget (back-compat). For CBO this mirrors `campaignBudget`, for ABO this mirrors the child ad-set budget. Use `budgetLevel` to disambiguate.
 	Budget *struct {
@@ -5499,6 +5563,9 @@ type AdTreeCampaign struct {
 	// For Meta, derived from `effective_status` + `issues_info` on
 	// the Campaign, plus ad-level PENDING_REVIEW rollup.
 	ReviewStatus *AdTreeCampaignReviewStatus `json:"reviewStatus,omitempty"`
+
+	// RoasAverageFloor Representative ROAS floor for the campaign — bubbled up from the top-spending ad set. Decimal multiplier (2.0 = 2.0x).
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 
 	// Status Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
@@ -5663,6 +5730,16 @@ type ApiKeyPermission string
 
 // ApiKeyScope 'full' grants access to all profiles, 'profiles' restricts to specific profiles
 type ApiKeyScope string
+
+// BidStrategy Meta bid strategy. Same enum applies at campaign and ad-set level; ad-set value (when set)
+// overrides campaign-level. Cross-field rules:
+//   - `LOWEST_COST_WITHOUT_CAP` (default): auto-bid, forbids `bidAmount` and `roasAverageFloor`.
+//   - `LOWEST_COST_WITH_BID_CAP` / `COST_CAP`: require `bidAmount` (whole currency units).
+//   - `LOWEST_COST_WITH_MIN_ROAS`: requires `roasAverageFloor` (decimal multiplier, 2.0 = 2.0x).
+//
+// Source: facebook-business-sdk-codegen api_specs/specs/enum_types.json (`AdSet_bid_strategy`,
+// `Campaign_bid_strategy`).
+type BidStrategy string
 
 // BlueskyPlatformData Bluesky post settings. Supports text posts with up to 4 images or a single video. threadItems creates a reply chain (Bluesky thread). Images exceeding 1MB are automatically compressed. Alt text supported via mediaItem properties.
 type BlueskyPlatformData struct {
@@ -7363,6 +7440,8 @@ type GetGoogleBusinessLocationDetailsParams struct {
 	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
 
 	// ReadMask Comma-separated fields to return. Available: name, title, phoneNumbers, categories, storefrontAddress, websiteUri, regularHours, specialHours, serviceArea, serviceItems, profile, openInfo, metadata, moreHours.
+	// `title` and `metadata` are always included in the response so the `location` summary block can be populated, even if you omit them here.
+	// Note: `location` is a derived response field, not a Google readMask value, passing it returns 400.
 	ReadMask *string `form:"readMask,omitempty" json:"readMask,omitempty"`
 }
 
@@ -7780,14 +7859,30 @@ type ListAdAccountsParams struct {
 
 // UpdateAdSetJSONBody defines parameters for UpdateAdSet.
 type UpdateAdSetJSONBody struct {
-	// Budget Omit if only toggling status
+	// BidAmount Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when
+	// bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's
+	// smallest-denomination integer.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Ad-set-level bid strategy. Overrides the campaign-level default.
+	// Supported on Meta (facebook, instagram) and TikTok. On TikTok the
+	// Meta-style enum is mapped to bid_type / bid_price / deep_bid_type
+	// automatically. Other platforms (linkedin, pinterest, google, twitter)
+	// return 501 Not Implemented when bidStrategy is set.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+
+	// Budget Omit if not updating budget
 	Budget *struct {
 		Amount *float32                       `json:"amount,omitempty"`
 		Type   *UpdateAdSetJSONBodyBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
 	Platform UpdateAdSetJSONBodyPlatform `json:"platform"`
 
-	// Status Omit if only updating budget
+	// RoasAverageFloor Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is
+	// LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+
+	// Status Omit if not toggling delivery state
 	Status *UpdateAdSetJSONBodyStatus `json:"status,omitempty"`
 }
 
@@ -7876,14 +7971,27 @@ type BoostPostJSONBody struct {
 	// AdAccountId Platform ad account ID
 	AdAccountId string `json:"adAccountId"`
 
-	// BidAmount Max bid cap (Meta only)
+	// BidAmount Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when
+	// `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. Backward-compat: providing
+	// `bidAmount` without `bidStrategy` is treated as `LOWEST_COST_WITH_BID_CAP`.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
-	Budget    struct {
+
+	// BidStrategy Meta bid strategy applied to the ad set. On TikTok, mapped to
+	// `bid_type` / `bid_price` / `deep_bid_type` automatically.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+	Budget      struct {
 		// Amount Minimum varies: TikTok=$20, Pinterest=$5, others=$1
 		Amount float32                     `json:"amount"`
 		Type   BoostPostJSONBodyBudgetType `json:"type"`
 	} `json:"budget"`
-	Currency *string `json:"currency,omitempty"`
+
+	// CallToAction TikTok-only. Call-to-action button label on the Spark Ad creative (e.g.
+	// `LEARN_MORE`, `SHOP_NOW`, `DOWNLOAD_NOW`, `SIGN_UP`, `WATCH_NOW`). Maps to
+	// `call_to_action` on the creative entry of /v2/ad/create/. Pass-through —
+	// the platform validates the value. See TikTok's "Enumeration - Call-to-Action"
+	// reference for the full list.
+	CallToAction *string `json:"callToAction,omitempty"`
+	Currency     *string `json:"currency,omitempty"`
 
 	// DsaBeneficiary Name of the legal entity benefiting from the ad.
 	// Required by Meta when targeting EU users (DSA Article 26).
@@ -7897,14 +8005,26 @@ type BoostPostJSONBody struct {
 
 	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal BoostPostJSONBodyGoal `json:"goal"`
-	Name string                `json:"name"`
+
+	// LinkUrl TikTok-only. Custom destination URL for the Spark Ad. Without this, TikTok
+	// Spark Ads have no clickable destination — required for traffic / conversion
+	// objectives. Maps to `landing_page_url` on the creative entry of /v2/ad/create/
+	// (TikTok SDK `AdcreateCreatives.landing_page_url`). Ignored on Meta / LinkedIn /
+	// Pinterest / X / Google (those infer the destination from the boosted post).
+	LinkUrl *string `json:"linkUrl,omitempty"`
+	Name    string  `json:"name"`
 
 	// PlatformPostId Platform post ID (alternative to postId)
 	PlatformPostId *string `json:"platformPostId,omitempty"`
 
 	// PostId Zernio post ID (provide this or platformPostId)
-	PostId   *string `json:"postId,omitempty"`
-	Schedule *struct {
+	PostId *string `json:"postId,omitempty"`
+
+	// RoasAverageFloor Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when
+	// `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as
+	// `bid_constraints.roas_average_floor` × 10000 (Meta uses fixed-point integers).
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	Schedule         *struct {
 		// EndDate Required for lifetime budgets
 		EndDate   *time.Time `json:"endDate,omitempty"`
 		StartDate *time.Time `json:"startDate,omitempty"`
@@ -7999,11 +8119,13 @@ type DeleteAdCampaignJSONBodyPlatform string
 
 // UpdateAdCampaignJSONBody defines parameters for UpdateAdCampaign.
 type UpdateAdCampaignJSONBody struct {
-	Budget struct {
+	// BidStrategy Campaign-level default. Ad sets inherit this unless they override.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+	Budget      *struct {
 		// Amount Budget amount in the ad account's currency
 		Amount float32                            `json:"amount"`
 		Type   UpdateAdCampaignJSONBodyBudgetType `json:"type"`
-	} `json:"budget"`
+	} `json:"budget,omitempty"`
 	Platform UpdateAdCampaignJSONBodyPlatform `json:"platform"`
 }
 
@@ -8086,8 +8208,11 @@ type CreateStandaloneAdJSONBody struct {
 
 	// AdSetId Meta-only. When present, switches to the attach shape: adds
 	// one new ad to this existing ad set without creating a new
-	// campaign. Budget, targeting, goal, and schedule are inherited
-	// from the ad set on Meta. Mutually exclusive with `creatives[]`.
+	// campaign. Budget, targeting, goal, schedule, AND bid strategy
+	// are inherited from the ad set on Meta — passing `bidStrategy`
+	// in attach mode returns 400. To change an existing ad set's
+	// bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive
+	// with `creatives[]`.
 	AdSetId *string `json:"adSetId,omitempty"`
 
 	// AdditionalDescriptions Google Search RSA only. Extra descriptions.
@@ -8103,6 +8228,13 @@ type CreateStandaloneAdJSONBody struct {
 
 	// AudienceId Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
+
+	// BidAmount Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when
+	// `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Meta bid strategy applied to the ad set.
+	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 
 	// BoardId Pinterest only. Board ID (auto-creates if not provided).
 	BoardId *string `json:"boardId,omitempty"`
@@ -8196,6 +8328,11 @@ type CreateStandaloneAdJSONBody struct {
 	// LongHeadline Google Display only. Defaults to `headline` if omitted.
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	Name         string  `json:"name"`
+
+	// RoasAverageFloor Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when
+	// `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as
+	// `bid_constraints.roas_average_floor` × 10000.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 
 	// Video Meta only (facebook, instagram). When set, creates a VIDEO ad on the legacy or attach shape. Mutually exclusive with `imageUrl`. For multi-creative, set `video` per entry inside `creatives[]` instead.
 	Video *struct {
@@ -35225,11 +35362,11 @@ type GetGoogleBusinessLocationDetailsResponse struct {
 			} `json:"primaryCategory,omitempty"`
 		} `json:"categories,omitempty"`
 
-		// Location Compact public-facing summary derived from `metadata`. Useful for
-		// surfacing the "leave a review" URL (e.g. behind a QR code) without
-		// parsing Google's raw `metadata` block. Populated when the readMask
-		// includes `metadata` (the default). For unverified or new locations,
-		// Google omits placeId/reviewUrl/mapsUri, so those return as null.
+		// Location Compact public-facing summary derived from Google's `metadata`. Useful
+		// for surfacing the "leave a review" URL (e.g. behind a QR code) without
+		// parsing the raw block. Always populated regardless of readMask.
+		// For unverified or new locations Google omits placeId/reviewUrl/mapsUri,
+		// so those return as null and `isVerified` is false.
 		Location *struct {
 			// IsVerified True when the location has Voice of Merchant (verified + live on Google)
 			IsVerified *bool `json:"isVerified,omitempty"`
@@ -36755,12 +36892,24 @@ type UpdateAdSetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		BidAmount *float32 `json:"bidAmount,omitempty"`
+
+		// BidStrategy Meta bid strategy. Same enum applies at campaign and ad-set level; ad-set value (when set)
+		// overrides campaign-level. Cross-field rules:
+		//   - `LOWEST_COST_WITHOUT_CAP` (default): auto-bid, forbids `bidAmount` and `roasAverageFloor`.
+		//   - `LOWEST_COST_WITH_BID_CAP` / `COST_CAP`: require `bidAmount` (whole currency units).
+		//   - `LOWEST_COST_WITH_MIN_ROAS`: requires `roasAverageFloor` (decimal multiplier, 2.0 = 2.0x).
+		// Source: facebook-business-sdk-codegen api_specs/specs/enum_types.json (`AdSet_bid_strategy`,
+		// `Campaign_bid_strategy`).
+		BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+
 		// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
-		Budget        *AdBudget                  `json:"budget,omitempty"`
-		BudgetLevel   *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
-		Status        *UpdateAdSet200Status      `json:"status,omitempty"`
-		StatusSkipped *int                       `json:"statusSkipped,omitempty"`
-		StatusUpdated *int                       `json:"statusUpdated,omitempty"`
+		Budget           *AdBudget                  `json:"budget,omitempty"`
+		BudgetLevel      *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
+		RoasAverageFloor *float32                   `json:"roasAverageFloor,omitempty"`
+		Status           *UpdateAdSet200Status      `json:"status,omitempty"`
+		StatusSkipped    *int                       `json:"statusSkipped,omitempty"`
+		StatusUpdated    *int                       `json:"statusUpdated,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -37074,6 +37223,15 @@ type UpdateAdCampaignResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// BidStrategy Meta bid strategy. Same enum applies at campaign and ad-set level; ad-set value (when set)
+		// overrides campaign-level. Cross-field rules:
+		//   - `LOWEST_COST_WITHOUT_CAP` (default): auto-bid, forbids `bidAmount` and `roasAverageFloor`.
+		//   - `LOWEST_COST_WITH_BID_CAP` / `COST_CAP`: require `bidAmount` (whole currency units).
+		//   - `LOWEST_COST_WITH_MIN_ROAS`: requires `roasAverageFloor` (decimal multiplier, 2.0 = 2.0x).
+		// Source: facebook-business-sdk-codegen api_specs/specs/enum_types.json (`AdSet_bid_strategy`,
+		// `Campaign_bid_strategy`).
+		BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+
 		// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
 		Budget      *AdBudget                       `json:"budget,omitempty"`
 		BudgetLevel *UpdateAdCampaign200BudgetLevel `json:"budgetLevel,omitempty"`
@@ -48217,11 +48375,11 @@ func ParseGetGoogleBusinessLocationDetailsResponse(rsp *http.Response) (*GetGoog
 				} `json:"primaryCategory,omitempty"`
 			} `json:"categories,omitempty"`
 
-			// Location Compact public-facing summary derived from `metadata`. Useful for
-			// surfacing the "leave a review" URL (e.g. behind a QR code) without
-			// parsing Google's raw `metadata` block. Populated when the readMask
-			// includes `metadata` (the default). For unverified or new locations,
-			// Google omits placeId/reviewUrl/mapsUri, so those return as null.
+			// Location Compact public-facing summary derived from Google's `metadata`. Useful
+			// for surfacing the "leave a review" URL (e.g. behind a QR code) without
+			// parsing the raw block. Always populated regardless of readMask.
+			// For unverified or new locations Google omits placeId/reviewUrl/mapsUri,
+			// so those return as null and `isVerified` is false.
 			Location *struct {
 				// IsVerified True when the location has Voice of Merchant (verified + live on Google)
 				IsVerified *bool `json:"isVerified,omitempty"`
@@ -50292,12 +50450,24 @@ func ParseUpdateAdSetResponse(rsp *http.Response) (*UpdateAdSetResponse, error) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			BidAmount *float32 `json:"bidAmount,omitempty"`
+
+			// BidStrategy Meta bid strategy. Same enum applies at campaign and ad-set level; ad-set value (when set)
+			// overrides campaign-level. Cross-field rules:
+			//   - `LOWEST_COST_WITHOUT_CAP` (default): auto-bid, forbids `bidAmount` and `roasAverageFloor`.
+			//   - `LOWEST_COST_WITH_BID_CAP` / `COST_CAP`: require `bidAmount` (whole currency units).
+			//   - `LOWEST_COST_WITH_MIN_ROAS`: requires `roasAverageFloor` (decimal multiplier, 2.0 = 2.0x).
+			// Source: facebook-business-sdk-codegen api_specs/specs/enum_types.json (`AdSet_bid_strategy`,
+			// `Campaign_bid_strategy`).
+			BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+
 			// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
-			Budget        *AdBudget                  `json:"budget,omitempty"`
-			BudgetLevel   *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
-			Status        *UpdateAdSet200Status      `json:"status,omitempty"`
-			StatusSkipped *int                       `json:"statusSkipped,omitempty"`
-			StatusUpdated *int                       `json:"statusUpdated,omitempty"`
+			Budget           *AdBudget                  `json:"budget,omitempty"`
+			BudgetLevel      *UpdateAdSet200BudgetLevel `json:"budgetLevel,omitempty"`
+			RoasAverageFloor *float32                   `json:"roasAverageFloor,omitempty"`
+			Status           *UpdateAdSet200Status      `json:"status,omitempty"`
+			StatusSkipped    *int                       `json:"statusSkipped,omitempty"`
+			StatusUpdated    *int                       `json:"statusUpdated,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -50735,6 +50905,15 @@ func ParseUpdateAdCampaignResponse(rsp *http.Response) (*UpdateAdCampaignRespons
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// BidStrategy Meta bid strategy. Same enum applies at campaign and ad-set level; ad-set value (when set)
+			// overrides campaign-level. Cross-field rules:
+			//   - `LOWEST_COST_WITHOUT_CAP` (default): auto-bid, forbids `bidAmount` and `roasAverageFloor`.
+			//   - `LOWEST_COST_WITH_BID_CAP` / `COST_CAP`: require `bidAmount` (whole currency units).
+			//   - `LOWEST_COST_WITH_MIN_ROAS`: requires `roasAverageFloor` (decimal multiplier, 2.0 = 2.0x).
+			// Source: facebook-business-sdk-codegen api_specs/specs/enum_types.json (`AdSet_bid_strategy`,
+			// `Campaign_bid_strategy`).
+			BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+
 			// Budget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
 			Budget      *AdBudget                       `json:"budget,omitempty"`
 			BudgetLevel *UpdateAdCampaign200BudgetLevel `json:"budgetLevel,omitempty"`
