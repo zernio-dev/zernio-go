@@ -253,7 +253,6 @@ func main() {
 | `client.BoostPostWithResponse()` | Boost post as ad |
 | `client.SearchAdInterestsWithResponse()` | Search targeting interests |
 | `client.SendConversionsWithResponse()` | Send conversion events to an ad platform |
-| `client.TriggerAdsInitialSyncWithResponse()` | Re-sync an ads account |
 
 ### Broadcasts
 | Method | Description |

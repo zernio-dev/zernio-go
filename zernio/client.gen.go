@@ -8519,14 +8519,6 @@ type SearchAdInterestsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
-// TriggerAdsInitialSyncJSONBody defines parameters for TriggerAdsInitialSync.
-type TriggerAdsInitialSyncJSONBody struct {
-	// AccountId ID of the ads SocialAccount to re-sync (e.g. `metaads` / `tiktokads` doc).
-	// Posting accounts (`facebook` / `tiktok`) are rejected — pass the ads-side
-	// account ID that owns the platform tokens.
-	AccountId string `json:"accountId"`
-}
-
 // GetAdTreeParams defines parameters for GetAdTree.
 type GetAdTreeParams struct {
 	// Page Page number (1-based)
@@ -11413,9 +11405,6 @@ type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 // CreateCtwaAdJSONRequestBody defines body for CreateCtwaAd for application/json ContentType.
 type CreateCtwaAdJSONRequestBody CreateCtwaAdJSONBody
 
-// TriggerAdsInitialSyncJSONRequestBody defines body for TriggerAdsInitialSync for application/json ContentType.
-type TriggerAdsInitialSyncJSONRequestBody TriggerAdsInitialSyncJSONBody
-
 // UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
 type UpdateAdJSONRequestBody UpdateAdJSONBody
 
@@ -12986,11 +12975,6 @@ type ClientInterface interface {
 
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// TriggerAdsInitialSyncWithBody request with any body
-	TriggerAdsInitialSyncWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	TriggerAdsInitialSync(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAdTree request
 	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -15051,30 +15035,6 @@ func (c *Client) CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestB
 
 func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdInterestsRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TriggerAdsInitialSyncWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTriggerAdsInitialSyncRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TriggerAdsInitialSync(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTriggerAdsInitialSyncRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -22620,46 +22580,6 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewTriggerAdsInitialSyncRequest calls the generic TriggerAdsInitialSync builder with application/json body
-func NewTriggerAdsInitialSyncRequest(server string, body TriggerAdsInitialSyncJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewTriggerAdsInitialSyncRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewTriggerAdsInitialSyncRequestWithBody generates requests for TriggerAdsInitialSync with any type of body
-func NewTriggerAdsInitialSyncRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/v1/ads/sync/initial")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -34229,11 +34149,6 @@ type ClientWithResponsesInterface interface {
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
-	// TriggerAdsInitialSyncWithBodyWithResponse request with any body
-	TriggerAdsInitialSyncWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error)
-
-	TriggerAdsInitialSyncWithResponse(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error)
-
 	// GetAdTreeWithResponse request
 	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
 
@@ -37739,36 +37654,6 @@ func (r SearchAdInterestsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SearchAdInterestsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type TriggerAdsInitialSyncResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON202      *struct {
-		Message *string                         `json:"message,omitempty"`
-		Status  *TriggerAdsInitialSync202Status `json:"status,omitempty"`
-
-		// TraceId Trace ID for the enqueued job. Reused on `already_queued`.
-		TraceId *string `json:"traceId,omitempty"`
-	}
-	JSON401 *Unauthorized
-}
-type TriggerAdsInitialSync202Status string
-
-// Status returns HTTPResponse.Status
-func (r TriggerAdsInitialSyncResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r TriggerAdsInitialSyncResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -45451,23 +45336,6 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 	return ParseSearchAdInterestsResponse(rsp)
 }
 
-// TriggerAdsInitialSyncWithBodyWithResponse request with arbitrary body returning *TriggerAdsInitialSyncResponse
-func (c *ClientWithResponses) TriggerAdsInitialSyncWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error) {
-	rsp, err := c.TriggerAdsInitialSyncWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTriggerAdsInitialSyncResponse(rsp)
-}
-
-func (c *ClientWithResponses) TriggerAdsInitialSyncWithResponse(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error) {
-	rsp, err := c.TriggerAdsInitialSync(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTriggerAdsInitialSyncResponse(rsp)
-}
-
 // GetAdTreeWithResponse request returning *GetAdTreeResponse
 func (c *ClientWithResponses) GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error) {
 	rsp, err := c.GetAdTree(ctx, params, reqEditors...)
@@ -51545,45 +51413,6 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 			return nil, err
 		}
 		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Unauthorized
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseTriggerAdsInitialSyncResponse parses an HTTP response from a TriggerAdsInitialSyncWithResponse call
-func ParseTriggerAdsInitialSyncResponse(rsp *http.Response) (*TriggerAdsInitialSyncResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &TriggerAdsInitialSyncResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
-		var dest struct {
-			Message *string                         `json:"message,omitempty"`
-			Status  *TriggerAdsInitialSync202Status `json:"status,omitempty"`
-
-			// TraceId Trace ID for the enqueued job. Reused on `already_queued`.
-			TraceId *string `json:"traceId,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON202 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
