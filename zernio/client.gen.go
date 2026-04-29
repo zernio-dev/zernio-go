@@ -2359,6 +2359,7 @@ func (e UpdateAdCampaignJSONBodyPlatform) Valid() bool {
 const (
 	DuplicateAdCampaignJSONBodyPlatformFacebook  DuplicateAdCampaignJSONBodyPlatform = "facebook"
 	DuplicateAdCampaignJSONBodyPlatformInstagram DuplicateAdCampaignJSONBodyPlatform = "instagram"
+	DuplicateAdCampaignJSONBodyPlatformTiktok    DuplicateAdCampaignJSONBodyPlatform = "tiktok"
 )
 
 // Valid indicates whether the value is a known member of the DuplicateAdCampaignJSONBodyPlatform enum.
@@ -2367,6 +2368,8 @@ func (e DuplicateAdCampaignJSONBodyPlatform) Valid() bool {
 	case DuplicateAdCampaignJSONBodyPlatformFacebook:
 		return true
 	case DuplicateAdCampaignJSONBodyPlatformInstagram:
+		return true
+	case DuplicateAdCampaignJSONBodyPlatformTiktok:
 		return true
 	default:
 		return false
@@ -5257,9 +5260,22 @@ type Ad struct {
 	OptimizationGoal    *string     `json:"optimizationGoal,omitempty"`
 	Platform            *AdPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string     `json:"platformAdAccountId,omitempty"`
-	PlatformAdId        *string     `json:"platformAdId,omitempty"`
-	PlatformAdSetId     *string     `json:"platformAdSetId,omitempty"`
-	PlatformCampaignId  *string     `json:"platformCampaignId,omitempty"`
+
+	// PlatformAdAccountName Human-readable advertiser/account name (Meta `AdAccount.name`, TikTok
+	// `advertiser_name`, LinkedIn / X / Pinterest equivalents). Refreshed every
+	// sync so platform-side renames propagate within one cycle. `null` when the
+	// platform doesn't return a name or the sync hasn't run yet.
+	PlatformAdAccountName *string `json:"platformAdAccountName,omitempty"`
+	PlatformAdId          *string `json:"platformAdId,omitempty"`
+	PlatformAdSetId       *string `json:"platformAdSetId,omitempty"`
+	PlatformCampaignId    *string `json:"platformCampaignId,omitempty"`
+
+	// PlatformCreatedAt Platform-reported creation timestamp (Meta `created_time`, TikTok `create_time`).
+	// Distinct from `createdAt` which reflects when Zernio first synced the doc — for
+	// sort/filter by "when the ad was actually created on the platform", read this field.
+	// `null` for legacy ads synced before this field was added; aggregations fall back
+	// to `createdAt` in that case.
+	PlatformCreatedAt *time.Time `json:"platformCreatedAt,omitempty"`
 
 	// PlatformObjective Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC). Only present for Meta ads.
 	PlatformObjective *string `json:"platformObjective,omitempty"`
@@ -5362,7 +5378,10 @@ type AdCampaign struct {
 	OptimizationGoal    *string             `json:"optimizationGoal,omitempty"`
 	Platform            *AdCampaignPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string             `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string             `json:"platformCampaignId,omitempty"`
+
+	// PlatformAdAccountName Human-readable advertiser/account name from the platform. Refreshed on every sync.
+	PlatformAdAccountName *string `json:"platformAdAccountName,omitempty"`
+	PlatformCampaignId    *string `json:"platformCampaignId,omitempty"`
 
 	// PlatformCampaignStatus Raw platform-level campaign status (Meta `effective_status`).
 	PlatformCampaignStatus *string `json:"platformCampaignStatus,omitempty"`
@@ -5540,7 +5559,10 @@ type AdTreeCampaign struct {
 	OptimizationGoal    *string                 `json:"optimizationGoal,omitempty"`
 	Platform            *AdTreeCampaignPlatform `json:"platform,omitempty"`
 	PlatformAdAccountId *string                 `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string                 `json:"platformCampaignId,omitempty"`
+
+	// PlatformAdAccountName Human-readable advertiser/account name from the platform. Refreshed on every sync.
+	PlatformAdAccountName *string `json:"platformAdAccountName,omitempty"`
+	PlatformCampaignId    *string `json:"platformCampaignId,omitempty"`
 
 	// PlatformCampaignStatus Raw platform-level campaign status (Meta `effective_status`: ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES). Distinct from per-ad `platformStatus`.
 	PlatformCampaignStatus *string `json:"platformCampaignStatus,omitempty"`
@@ -5748,6 +5770,20 @@ type BlueskyPlatformData struct {
 		Content    *string      `json:"content,omitempty"`
 		MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
 	} `json:"threadItems,omitempty"`
+}
+
+// BusinessCenter TikTok Business Center entity. Returned by `GET /v1/ads/business-centers`. BCs are
+// TikTok's agency container — one BC owns N advertisers (ad accounts). Most solo
+// advertisers don't have one; the agency token uses BCs to roll up multi-client access.
+type BusinessCenter struct {
+	// AdvertiserCount Number of advertisers (ad accounts) reachable under this BC for the calling token
+	AdvertiserCount *int `json:"advertiserCount,omitempty"`
+
+	// BcId Business Center ID
+	BcId *string `json:"bcId,omitempty"`
+
+	// Name Display name set by the BC owner
+	Name *string `json:"name,omitempty"`
 }
 
 // ConversionEvent A single conversion event to relay to the ad platform. All PII fields
@@ -7855,6 +7891,12 @@ type ListAdsParamsPlatform string
 type ListAdAccountsParams struct {
 	// AccountId Social account ID
 	AccountId string `form:"accountId" json:"accountId"`
+
+	// AdAccountId Filter response to a single platform ad account ID (e.g. `act_123` for Meta, advertiser_id for TikTok). Returns at most one item.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
+	// Limit Clamp the returned `accounts[]` length. Useful for typeahead pickers on agency tokens with hundreds of advertisers.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // UpdateAdSetJSONBody defines parameters for UpdateAdSet.
@@ -8030,6 +8072,14 @@ type BoostPostJSONBody struct {
 		StartDate *time.Time `json:"startDate,omitempty"`
 	} `json:"schedule,omitempty"`
 
+	// SparkAuthCode TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator
+	// Spark Ads — the advertiser can boost a video owned by a DIFFERENT TikTok
+	// account. Without this, boosts are limited to videos owned by the same
+	// account running the ads (same-BC creators only). The creator generates the
+	// code in their TikTok app's Promote settings and shares it with the
+	// advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
+	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
+
 	// SpecialAdCategories Meta only. Required for housing, employment, credit, or political ads.
 	SpecialAdCategories *[]BoostPostJSONBodySpecialAdCategories `json:"specialAdCategories,omitempty"`
 	Targeting           *struct {
@@ -8064,6 +8114,12 @@ type BoostPostJSONBodySpecialAdCategories string
 
 // BoostPostJSONBodyTargetingAdvantageAudience defines parameters for BoostPost.
 type BoostPostJSONBodyTargetingAdvantageAudience int
+
+// ListAdsBusinessCentersParams defines parameters for ListAdsBusinessCenters.
+type ListAdsBusinessCentersParams struct {
+	// AccountId ID of the `tiktokads` (or parent `tiktok` posting) SocialAccount
+	AccountId string `form:"accountId" json:"accountId"`
+}
 
 // ListAdCampaignsParams defines parameters for ListAdCampaigns.
 type ListAdCampaignsParams struct {
@@ -8213,6 +8269,10 @@ type CreateStandaloneAdJSONBody struct {
 	// in attach mode returns 400. To change an existing ad set's
 	// bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive
 	// with `creatives[]`.
+	//
+	// Supported on Meta (facebook, instagram) and TikTok. On TikTok
+	// the `adSetId` is the ad group ID; the new ad inherits the
+	// ad group's bid + budget + targeting.
 	AdSetId *string `json:"adSetId,omitempty"`
 
 	// AdditionalDescriptions Google Search RSA only. Extra descriptions.
@@ -8459,6 +8519,14 @@ type SearchAdInterestsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
+// TriggerAdsInitialSyncJSONBody defines parameters for TriggerAdsInitialSync.
+type TriggerAdsInitialSyncJSONBody struct {
+	// AccountId ID of the ads SocialAccount to re-sync (e.g. `metaads` / `tiktokads` doc).
+	// Posting accounts (`facebook` / `tiktok`) are rejected — pass the ads-side
+	// account ID that owns the platform tokens.
+	AccountId string `json:"accountId"`
+}
+
 // GetAdTreeParams defines parameters for GetAdTree.
 type GetAdTreeParams struct {
 	// Page Page number (1-based)
@@ -8503,10 +8571,29 @@ type UpdateAdJSONBody struct {
 		Amount *float32                    `json:"amount,omitempty"`
 		Type   *UpdateAdJSONBodyBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
+
+	// Creative Replace the ad's creative. Meta + TikTok only.
+	//
+	// - **Meta**: requires `headline`, `body`, `callToAction`, `linkUrl`, `imageUrl`. The
+	//   ad's existing creative is replaced via a new `/act_X/adcreatives` upload + ad
+	//   update. The old creative is retained on the ad account for historical reporting.
+	// - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives
+	//   have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes
+	//   `landing_page_url`; `videoUrl` triggers a fresh upload.
+	Creative *struct {
+		Body         *string `json:"body,omitempty"`
+		CallToAction *string `json:"callToAction,omitempty"`
+
+		// Headline Meta only
+		Headline *string `json:"headline,omitempty"`
+		ImageUrl *string `json:"imageUrl,omitempty"`
+		LinkUrl  *string `json:"linkUrl,omitempty"`
+		VideoUrl *string `json:"videoUrl,omitempty"`
+	} `json:"creative,omitempty"`
 	Name   *string                 `json:"name,omitempty"`
 	Status *UpdateAdJSONBodyStatus `json:"status,omitempty"`
 
-	// Targeting Meta-only. Targeting updates for other platforms are not supported after creation.
+	// Targeting Meta + TikTok only. Pinterest / X / LinkedIn / Google return 501.
 	Targeting *struct {
 		// AdvantageAudience Meta only. Omit to preserve the existing setting on update. 0 = disabled, 1 = enabled.
 		AdvantageAudience *UpdateAdJSONBodyTargetingAdvantageAudience `json:"advantage_audience,omitempty"`
@@ -11326,6 +11413,9 @@ type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 // CreateCtwaAdJSONRequestBody defines body for CreateCtwaAd for application/json ContentType.
 type CreateCtwaAdJSONRequestBody CreateCtwaAdJSONBody
 
+// TriggerAdsInitialSyncJSONRequestBody defines body for TriggerAdsInitialSync for application/json ContentType.
+type TriggerAdsInitialSyncJSONRequestBody TriggerAdsInitialSyncJSONBody
+
 // UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
 type UpdateAdJSONRequestBody UpdateAdJSONBody
 
@@ -12848,6 +12938,9 @@ type ClientInterface interface {
 
 	BoostPost(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListAdsBusinessCenters request
+	ListAdsBusinessCenters(ctx context.Context, params *ListAdsBusinessCentersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListAdCampaigns request
 	ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -12893,6 +12986,11 @@ type ClientInterface interface {
 
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// TriggerAdsInitialSyncWithBody request with any body
+	TriggerAdsInitialSyncWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	TriggerAdsInitialSync(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAdTree request
 	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14735,6 +14833,18 @@ func (c *Client) BoostPost(ctx context.Context, body BoostPostJSONRequestBody, r
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListAdsBusinessCenters(ctx context.Context, params *ListAdsBusinessCentersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdsBusinessCentersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListAdCampaigns(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAdCampaignsRequest(c.Server, params)
 	if err != nil {
@@ -14941,6 +15051,30 @@ func (c *Client) CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestB
 
 func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdInterestsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TriggerAdsInitialSyncWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerAdsInitialSyncRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TriggerAdsInitialSync(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerAdsInitialSyncRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -21474,6 +21608,38 @@ func NewListAdAccountsRequest(server string, params *ListAdAccountsParams) (*htt
 			}
 		}
 
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -21843,6 +22009,51 @@ func NewBoostPostRequestWithBody(server string, contentType string, body io.Read
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAdsBusinessCentersRequest generates requests for ListAdsBusinessCenters
+func NewListAdsBusinessCentersRequest(server string, params *ListAdsBusinessCentersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/business-centers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -22409,6 +22620,46 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewTriggerAdsInitialSyncRequest calls the generic TriggerAdsInitialSync builder with application/json body
+func NewTriggerAdsInitialSyncRequest(server string, body TriggerAdsInitialSyncJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewTriggerAdsInitialSyncRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewTriggerAdsInitialSyncRequestWithBody generates requests for TriggerAdsInitialSync with any type of body
+func NewTriggerAdsInitialSyncRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/sync/initial")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -33929,6 +34180,9 @@ type ClientWithResponsesInterface interface {
 
 	BoostPostWithResponse(ctx context.Context, body BoostPostJSONRequestBody, reqEditors ...RequestEditorFn) (*BoostPostResponse, error)
 
+	// ListAdsBusinessCentersWithResponse request
+	ListAdsBusinessCentersWithResponse(ctx context.Context, params *ListAdsBusinessCentersParams, reqEditors ...RequestEditorFn) (*ListAdsBusinessCentersResponse, error)
+
 	// ListAdCampaignsWithResponse request
 	ListAdCampaignsWithResponse(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*ListAdCampaignsResponse, error)
 
@@ -33974,6 +34228,11 @@ type ClientWithResponsesInterface interface {
 
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
+
+	// TriggerAdsInitialSyncWithBodyWithResponse request with any body
+	TriggerAdsInitialSyncWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error)
+
+	TriggerAdsInitialSyncWithResponse(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error)
 
 	// GetAdTreeWithResponse request
 	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
@@ -37128,6 +37387,31 @@ func (r BoostPostResponse) StatusCode() int {
 	return 0
 }
 
+type ListAdsBusinessCentersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		BusinessCenters *[]BusinessCenter `json:"businessCenters,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdsBusinessCentersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdsBusinessCentersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListAdCampaignsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -37455,6 +37739,36 @@ func (r SearchAdInterestsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SearchAdInterestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type TriggerAdsInitialSyncResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *struct {
+		Message *string                         `json:"message,omitempty"`
+		Status  *TriggerAdsInitialSync202Status `json:"status,omitempty"`
+
+		// TraceId Trace ID for the enqueued job. Reused on `already_queued`.
+		TraceId *string `json:"traceId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type TriggerAdsInitialSync202Status string
+
+// Status returns HTTPResponse.Status
+func (r TriggerAdsInitialSyncResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r TriggerAdsInitialSyncResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -44974,6 +45288,15 @@ func (c *ClientWithResponses) BoostPostWithResponse(ctx context.Context, body Bo
 	return ParseBoostPostResponse(rsp)
 }
 
+// ListAdsBusinessCentersWithResponse request returning *ListAdsBusinessCentersResponse
+func (c *ClientWithResponses) ListAdsBusinessCentersWithResponse(ctx context.Context, params *ListAdsBusinessCentersParams, reqEditors ...RequestEditorFn) (*ListAdsBusinessCentersResponse, error) {
+	rsp, err := c.ListAdsBusinessCenters(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdsBusinessCentersResponse(rsp)
+}
+
 // ListAdCampaignsWithResponse request returning *ListAdCampaignsResponse
 func (c *ClientWithResponses) ListAdCampaignsWithResponse(ctx context.Context, params *ListAdCampaignsParams, reqEditors ...RequestEditorFn) (*ListAdCampaignsResponse, error) {
 	rsp, err := c.ListAdCampaigns(ctx, params, reqEditors...)
@@ -45126,6 +45449,23 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseSearchAdInterestsResponse(rsp)
+}
+
+// TriggerAdsInitialSyncWithBodyWithResponse request with arbitrary body returning *TriggerAdsInitialSyncResponse
+func (c *ClientWithResponses) TriggerAdsInitialSyncWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error) {
+	rsp, err := c.TriggerAdsInitialSyncWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTriggerAdsInitialSyncResponse(rsp)
+}
+
+func (c *ClientWithResponses) TriggerAdsInitialSyncWithResponse(ctx context.Context, body TriggerAdsInitialSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerAdsInitialSyncResponse, error) {
+	rsp, err := c.TriggerAdsInitialSync(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTriggerAdsInitialSyncResponse(rsp)
 }
 
 // GetAdTreeWithResponse request returning *GetAdTreeResponse
@@ -50769,6 +51109,41 @@ func ParseBoostPostResponse(rsp *http.Response) (*BoostPostResponse, error) {
 	return response, nil
 }
 
+// ParseListAdsBusinessCentersResponse parses an HTTP response from a ListAdsBusinessCentersWithResponse call
+func ParseListAdsBusinessCentersResponse(rsp *http.Response) (*ListAdsBusinessCentersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdsBusinessCentersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			BusinessCenters *[]BusinessCenter `json:"businessCenters,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListAdCampaignsResponse parses an HTTP response from a ListAdCampaignsWithResponse call
 func ParseListAdCampaignsResponse(rsp *http.Response) (*ListAdCampaignsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -51170,6 +51545,45 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseTriggerAdsInitialSyncResponse parses an HTTP response from a TriggerAdsInitialSyncWithResponse call
+func ParseTriggerAdsInitialSyncResponse(rsp *http.Response) (*TriggerAdsInitialSyncResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &TriggerAdsInitialSyncResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest struct {
+			Message *string                         `json:"message,omitempty"`
+			Status  *TriggerAdsInitialSync202Status `json:"status,omitempty"`
+
+			// TraceId Trace ID for the enqueued job. Reused on `already_queued`.
+			TraceId *string `json:"traceId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
