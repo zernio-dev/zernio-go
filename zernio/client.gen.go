@@ -35224,6 +35224,28 @@ type GetGoogleBusinessLocationDetailsResponse struct {
 				Name *string `json:"name,omitempty"`
 			} `json:"primaryCategory,omitempty"`
 		} `json:"categories,omitempty"`
+
+		// Location Compact public-facing summary derived from `metadata`. Useful for
+		// surfacing the "leave a review" URL (e.g. behind a QR code) without
+		// parsing Google's raw `metadata` block. Populated when the readMask
+		// includes `metadata` (the default). For unverified or new locations,
+		// Google omits placeId/reviewUrl/mapsUri, so those return as null.
+		Location *struct {
+			// IsVerified True when the location has Voice of Merchant (verified + live on Google)
+			IsVerified *bool `json:"isVerified,omitempty"`
+
+			// MapsUri Public Google Maps URL for this location
+			MapsUri *string `json:"mapsUri,omitempty"`
+
+			// Name Business name as set in GBP
+			Name *string `json:"name,omitempty"`
+
+			// PlaceId Google Maps Place ID for this location
+			PlaceId *string `json:"placeId,omitempty"`
+
+			// ReviewUrl Public "write a review" URL Google generates for this place
+			ReviewUrl *string `json:"reviewUrl,omitempty"`
+		} `json:"location,omitempty"`
 		LocationId   *string `json:"locationId,omitempty"`
 		PhoneNumbers *struct {
 			AdditionalPhones *[]string `json:"additionalPhones,omitempty"`
@@ -48194,6 +48216,28 @@ func ParseGetGoogleBusinessLocationDetailsResponse(rsp *http.Response) (*GetGoog
 					Name *string `json:"name,omitempty"`
 				} `json:"primaryCategory,omitempty"`
 			} `json:"categories,omitempty"`
+
+			// Location Compact public-facing summary derived from `metadata`. Useful for
+			// surfacing the "leave a review" URL (e.g. behind a QR code) without
+			// parsing Google's raw `metadata` block. Populated when the readMask
+			// includes `metadata` (the default). For unverified or new locations,
+			// Google omits placeId/reviewUrl/mapsUri, so those return as null.
+			Location *struct {
+				// IsVerified True when the location has Voice of Merchant (verified + live on Google)
+				IsVerified *bool `json:"isVerified,omitempty"`
+
+				// MapsUri Public Google Maps URL for this location
+				MapsUri *string `json:"mapsUri,omitempty"`
+
+				// Name Business name as set in GBP
+				Name *string `json:"name,omitempty"`
+
+				// PlaceId Google Maps Place ID for this location
+				PlaceId *string `json:"placeId,omitempty"`
+
+				// ReviewUrl Public "write a review" URL Google generates for this place
+				ReviewUrl *string `json:"reviewUrl,omitempty"`
+			} `json:"location,omitempty"`
 			LocationId   *string `json:"locationId,omitempty"`
 			PhoneNumbers *struct {
 				AdditionalPhones *[]string `json:"additionalPhones,omitempty"`
