@@ -8316,7 +8316,7 @@ type CreateStandaloneAdJSONBody struct {
 	// BusinessName Google Display only
 	BusinessName *string `json:"businessName,omitempty"`
 
-	// CallToAction Required on legacy + attach shapes. Meta only.
+	// CallToAction Required on legacy + attach shapes for Meta. Honoured on TikTok too — passes through to the Spark Ad creative's `call_to_action`. Ignored by other platforms.
 	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
 
 	// CampaignType Google only
