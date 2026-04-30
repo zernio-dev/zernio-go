@@ -8360,7 +8360,7 @@ type CreateStandaloneAdJSONBody struct {
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
-	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform.
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted).
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
 	// Headline Required for Meta, Google, and Pinterest on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100.
@@ -8393,6 +8393,45 @@ type CreateStandaloneAdJSONBody struct {
 	// LongHeadline Google Display only. Defaults to `headline` if omitted.
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	Name         string  `json:"name"`
+
+	// PromotedObject Meta only. Forwarded to the ad set's `promoted_object` (snake-cased).
+	//
+	// Required for goals whose ad-set optimization_goal points at a specific
+	// event/page/app — without it Meta rejects the ad-set create with
+	// `error_subcode: 1815430` "Please select a promoted object for your ad set":
+	//   - `goal: conversions` (OFFSITE_CONVERSIONS) — requires `pixelId` + `customEventType`
+	//   - `goal: app_promotion` (APP_INSTALLS) — requires `applicationId` + `objectStoreUrl`
+	//   - `goal: lead_generation` (LEAD_GENERATION) — `pageId` is auto-filled from the connected Page when omitted
+	//
+	// Other goals (engagement, traffic, awareness, video_views) ignore this field.
+	PromotedObject *struct {
+		// ApplicationId App ID. Required for `goal: app_promotion`.
+		ApplicationId *string `json:"applicationId,omitempty"`
+
+		// CustomConversionId Custom Conversion ID, when optimising against one instead of a standard event.
+		CustomConversionId *string `json:"customConversionId,omitempty"`
+
+		// CustomEventType Standard event the campaign optimises against, e.g. `PURCHASE`, `LEAD`,
+		// `COMPLETE_REGISTRATION`, `ADD_TO_CART`. Uppercased internally so callers
+		// can pass any case. Required for `goal: conversions`.
+		CustomEventType *string `json:"customEventType,omitempty"`
+
+		// ObjectStoreUrl App Store / Play Store listing URL. Required for `goal: app_promotion`.
+		ObjectStoreUrl *string `json:"objectStoreUrl,omitempty"`
+
+		// PageId Facebook Page ID. Used by `goal: lead_generation`. Auto-filled from the
+		// connected Page when omitted.
+		PageId *string `json:"pageId,omitempty"`
+
+		// PixelId Facebook Pixel ID. Required for `goal: conversions`.
+		PixelId *string `json:"pixelId,omitempty"`
+
+		// ProductCatalogId Catalog ID for catalog/Advantage+ Shopping campaigns.
+		ProductCatalogId *string `json:"productCatalogId,omitempty"`
+
+		// ProductSetId Product Set ID inside the catalog.
+		ProductSetId *string `json:"productSetId,omitempty"`
+	} `json:"promotedObject,omitempty"`
 
 	// RoasAverageFloor Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when
 	// `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as
