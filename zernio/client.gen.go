@@ -2601,6 +2601,24 @@ func (e CreateStandaloneAdJSONBodyCampaignType) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyCitiesDistanceUnit.
+const (
+	Kilometer CreateStandaloneAdJSONBodyCitiesDistanceUnit = "kilometer"
+	Mile      CreateStandaloneAdJSONBodyCitiesDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCitiesDistanceUnit enum.
+func (e CreateStandaloneAdJSONBodyCitiesDistanceUnit) Valid() bool {
+	switch e {
+	case Kilometer:
+		return true
+	case Mile:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyCreativesCallToAction.
 const (
 	CreateStandaloneAdJSONBodyCreativesCallToActionBOOKTRAVEL CreateStandaloneAdJSONBodyCreativesCallToAction = "BOOK_TRAVEL"
@@ -2748,6 +2766,42 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 	case OUTCOMELEADS:
 		return true
 	case OUTCOMESALES:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SearchAdTargetingLocationsParamsType.
+const (
+	City         SearchAdTargetingLocationsParamsType = "city"
+	Country      SearchAdTargetingLocationsParamsType = "country"
+	GeoMarket    SearchAdTargetingLocationsParamsType = "geo_market"
+	MetroArea    SearchAdTargetingLocationsParamsType = "metro_area"
+	Neighborhood SearchAdTargetingLocationsParamsType = "neighborhood"
+	Region       SearchAdTargetingLocationsParamsType = "region"
+	Subcity      SearchAdTargetingLocationsParamsType = "subcity"
+	Zip          SearchAdTargetingLocationsParamsType = "zip"
+)
+
+// Valid indicates whether the value is a known member of the SearchAdTargetingLocationsParamsType enum.
+func (e SearchAdTargetingLocationsParamsType) Valid() bool {
+	switch e {
+	case City:
+		return true
+	case Country:
+		return true
+	case GeoMarket:
+		return true
+	case MetroArea:
+		return true
+	case Neighborhood:
+		return true
+	case Region:
+		return true
+	case Subcity:
+		return true
+	case Zip:
 		return true
 	default:
 		return false
@@ -8321,7 +8375,23 @@ type CreateStandaloneAdJSONBody struct {
 
 	// CampaignType Google only
 	CampaignType *CreateStandaloneAdJSONBodyCampaignType `json:"campaignType,omitempty"`
-	Countries    *[]string                               `json:"countries,omitempty"`
+
+	// Cities Meta-only. City-level geo targeting. Each city is targeted by Meta's opaque `key` (the city ID) which can be looked up via `GET /v1/ads/targeting/search?type=city&q=<name>&country_code=<ISO>`. Optional `radius` + `distance_unit` extend the targeting beyond the city limits (e.g. radius 25 km around the city center). Both must be set together, or both omitted (Meta defaults to ~16 km when omitted).
+	//
+	// Cannot overlap with the same country in `countries` (Meta returns a "locations overlap" error). Either drop the country or scope it to a different country.
+	Cities *[]struct {
+		// DistanceUnit Unit for radius. Required if radius is set.
+		DistanceUnit *CreateStandaloneAdJSONBodyCitiesDistanceUnit `json:"distance_unit,omitempty"`
+
+		// Key Meta city ID, from /v1/ads/targeting/search results.
+		Key string `json:"key"`
+
+		// Radius Optional radius around the city. Must be set together with distance_unit.
+		Radius *float32 `json:"radius,omitempty"`
+	} `json:"cities,omitempty"`
+
+	// Countries ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no `cities` or `regions` are provided.
+	Countries *[]string `json:"countries,omitempty"`
 
 	// Creatives Meta-only. When present, switches to the multi-creative shape:
 	// creates 1 campaign + 1 ad set + N ads (one per entry here).
@@ -8433,6 +8503,12 @@ type CreateStandaloneAdJSONBody struct {
 		ProductSetId *string `json:"productSetId,omitempty"`
 	} `json:"promotedObject,omitempty"`
 
+	// Regions Meta-only. Region-level (state/province) geo targeting. Each region is targeted by Meta's opaque `key` (the region ID) which can be looked up via `GET /v1/ads/targeting/search?type=region&q=<name>&country_code=<ISO>`.
+	Regions *[]struct {
+		// Key Meta region ID, from /v1/ads/targeting/search results.
+		Key string `json:"key"`
+	} `json:"regions,omitempty"`
+
 	// RoasAverageFloor Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when
 	// `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as
 	// `bid_constraints.roas_average_floor` × 10000.
@@ -8459,6 +8535,9 @@ type CreateStandaloneAdJSONBodyCallToAction string
 
 // CreateStandaloneAdJSONBodyCampaignType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCampaignType string
+
+// CreateStandaloneAdJSONBodyCitiesDistanceUnit defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCitiesDistanceUnit string
 
 // CreateStandaloneAdJSONBodyCreativesCallToAction defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCreativesCallToAction string
@@ -8562,6 +8641,27 @@ type SearchAdInterestsParams struct {
 	// AccountId Social account ID
 	AccountId string `form:"accountId" json:"accountId"`
 }
+
+// SearchAdTargetingLocationsParams defines parameters for SearchAdTargetingLocations.
+type SearchAdTargetingLocationsParams struct {
+	// AccountId Social account ID (must be a connected Facebook or Instagram account).
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Q Location name. Locality only — no region/country suffix.
+	Q string `form:"q" json:"q"`
+
+	// Type Type of location to search. Defaults to city.
+	Type *SearchAdTargetingLocationsParamsType `form:"type,omitempty" json:"type,omitempty"`
+
+	// CountryCode ISO 3166-1 alpha-2 country code (e.g. NL) to scope the search.
+	CountryCode *string `form:"countryCode,omitempty" json:"countryCode,omitempty"`
+
+	// Limit Maximum results to return.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// SearchAdTargetingLocationsParamsType defines parameters for SearchAdTargetingLocations.
+type SearchAdTargetingLocationsParamsType string
 
 // GetAdTreeParams defines parameters for GetAdTree.
 type GetAdTreeParams struct {
@@ -13029,6 +13129,9 @@ type ClientInterface interface {
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SearchAdTargetingLocations request
+	SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAdTree request
 	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -15088,6 +15191,18 @@ func (c *Client) CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestB
 
 func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdInterestsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchAdTargetingLocationsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -22624,6 +22739,111 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSearchAdTargetingLocationsRequest generates requests for SearchAdTargetingLocations
+func NewSearchAdTargetingLocationsRequest(server string, params *SearchAdTargetingLocationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/targeting/search")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "q", params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.CountryCode != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "countryCode", *params.CountryCode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		queryURL.RawQuery = queryValues.Encode()
@@ -34250,6 +34470,9 @@ type ClientWithResponsesInterface interface {
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
+	// SearchAdTargetingLocationsWithResponse request
+	SearchAdTargetingLocationsWithResponse(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingLocationsResponse, error)
+
 	// GetAdTreeWithResponse request
 	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
 
@@ -37755,6 +37978,54 @@ func (r SearchAdInterestsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r SearchAdInterestsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SearchAdTargetingLocationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Results *[]struct {
+			CountryCode *string `json:"countryCode,omitempty"`
+			CountryName *string `json:"countryName,omitempty"`
+
+			// Key Meta's opaque location ID. Use this in targeting.cities[].key / regions[].key.
+			Key  string `json:"key"`
+			Name string `json:"name"`
+
+			// Region Parent region/state name (cities only).
+			Region *string `json:"region,omitempty"`
+
+			// RegionId Parent region ID (cities only).
+			RegionId       *SearchAdTargetingLocations_200_Results_RegionId `json:"regionId,omitempty"`
+			SupportsCity   *bool                                            `json:"supportsCity,omitempty"`
+			SupportsRegion *bool                                            `json:"supportsRegion,omitempty"`
+
+			// Type Location type as returned by Meta (city, region, country, etc.).
+			Type string `json:"type"`
+		} `json:"results,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+type SearchAdTargetingLocations200ResultsRegionId0 = string
+type SearchAdTargetingLocations200ResultsRegionId1 = int
+type SearchAdTargetingLocations_200_Results_RegionId struct {
+	union json.RawMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchAdTargetingLocationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchAdTargetingLocationsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -45437,6 +45708,15 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 	return ParseSearchAdInterestsResponse(rsp)
 }
 
+// SearchAdTargetingLocationsWithResponse request returning *SearchAdTargetingLocationsResponse
+func (c *ClientWithResponses) SearchAdTargetingLocationsWithResponse(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingLocationsResponse, error) {
+	rsp, err := c.SearchAdTargetingLocations(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchAdTargetingLocationsResponse(rsp)
+}
+
 // GetAdTreeWithResponse request returning *GetAdTreeResponse
 func (c *ClientWithResponses) GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error) {
 	rsp, err := c.GetAdTree(ctx, params, reqEditors...)
@@ -51509,6 +51789,59 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 				Id       *string `json:"id,omitempty"`
 				Name     *string `json:"name,omitempty"`
 			} `json:"interests,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchAdTargetingLocationsResponse parses an HTTP response from a SearchAdTargetingLocationsWithResponse call
+func ParseSearchAdTargetingLocationsResponse(rsp *http.Response) (*SearchAdTargetingLocationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchAdTargetingLocationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Results *[]struct {
+				CountryCode *string `json:"countryCode,omitempty"`
+				CountryName *string `json:"countryName,omitempty"`
+
+				// Key Meta's opaque location ID. Use this in targeting.cities[].key / regions[].key.
+				Key  string `json:"key"`
+				Name string `json:"name"`
+
+				// Region Parent region/state name (cities only).
+				Region *string `json:"region,omitempty"`
+
+				// RegionId Parent region ID (cities only).
+				RegionId       *SearchAdTargetingLocations_200_Results_RegionId `json:"regionId,omitempty"`
+				SupportsCity   *bool                                            `json:"supportsCity,omitempty"`
+				SupportsRegion *bool                                            `json:"supportsRegion,omitempty"`
+
+				// Type Location type as returned by Meta (city, region, country, etc.).
+				Type string `json:"type"`
+			} `json:"results,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
