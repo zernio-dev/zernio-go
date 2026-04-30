@@ -2715,6 +2715,24 @@ func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyIdentityType.
+const (
+	CUSTOMIZEDUSER CreateStandaloneAdJSONBodyIdentityType = "CUSTOMIZED_USER"
+	TTUSER         CreateStandaloneAdJSONBodyIdentityType = "TT_USER"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyIdentityType enum.
+func (e CreateStandaloneAdJSONBodyIdentityType) Valid() bool {
+	switch e {
+	case CUSTOMIZEDUSER:
+		return true
+	case TTUSER:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateCtwaAdJSONBodyAdvantageAudience.
 const (
 	CreateCtwaAdJSONBodyAdvantageAudienceN0 CreateCtwaAdJSONBodyAdvantageAudience = 0
@@ -8361,6 +8379,23 @@ type CreateStandaloneAdJSONBody struct {
 	// Body Required on legacy + attach shapes. For X/Twitter this is the tweet text (max 280 chars including a ~24-char URL when `linkUrl` is set). Max: Google=90, Pinterest=500.
 	Body *string `json:"body,omitempty"`
 
+	// BrandIdentity TikTok only. Synthetic Brand Identity used when the ad
+	// attributes to a CUSTOMIZED_USER (instead of a real TT_USER
+	// @username). Required on the FIRST CUSTOMIZED_USER ad on a
+	// `tiktokads` SocialAccount with no cached identity; omit on
+	// subsequent ads (the identity is cached on the account after
+	// first creation). Non-TikTok platforms ignore this field.
+	//
+	// Alternative: configure once via `PATCH /v1/connect/tiktok-ads`,
+	// then create ads without this field.
+	BrandIdentity *struct {
+		// DisplayName Brand name shown above the ad on TikTok.
+		DisplayName string `json:"displayName"`
+
+		// ImageUrl Public URL of a square brand image (≥98×98 px, JPG/PNG). Used as the brand avatar on the ad.
+		ImageUrl string `json:"imageUrl"`
+	} `json:"brandIdentity,omitempty"`
+
 	// BudgetAmount Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 
@@ -8435,6 +8470,24 @@ type CreateStandaloneAdJSONBody struct {
 
 	// Headline Required for Meta, Google, and Pinterest on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100.
 	Headline *string `json:"headline,omitempty"`
+
+	// IdentityType TikTok only. Forces the identity attribution on the ad:
+	//
+	//   - `TT_USER`: the posting account's open_id (real @username
+	//     branding). Requires a connected TikTok posting account
+	//     on the same profile.
+	//   - `CUSTOMIZED_USER`: synthetic Brand Identity (display
+	//     name + avatar). Requires a configured Brand Identity
+	//     (cached on the `tiktokads` SocialAccount via
+	//     `PATCH /v1/connect/tiktok-ads`) or an inline
+	//     `brandIdentity` to create one on the fly.
+	//
+	// When omitted, defaults to `TT_USER` if a posting account is
+	// connected on this profile, else `CUSTOMIZED_USER`. Spark
+	// Ads (`POST /v1/ads/boost`) always use `TT_USER` regardless
+	// of this field — TikTok requires the original organic
+	// post's author identity for Spark.
+	IdentityType *CreateStandaloneAdJSONBodyIdentityType `json:"identityType,omitempty"`
 
 	// ImageUrl Image creative for Meta/Google/Pinterest on legacy + attach shapes (mutually exclusive with `video`). Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter. For Google Display, treated as the landscape image (alias of `images.landscape`); supply `images.square` alongside or the request is rejected.
 	ImageUrl *string `json:"imageUrl,omitempty"`
@@ -8547,6 +8600,9 @@ type CreateStandaloneAdJSONBodyGender string
 
 // CreateStandaloneAdJSONBodyGoal defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGoal string
+
+// CreateStandaloneAdJSONBodyIdentityType defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyIdentityType string
 
 // CreateCtwaAdJSONBody defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBody struct {
@@ -9572,6 +9628,18 @@ type InitiateTelegramConnectJSONBody struct {
 	ProfileId string `json:"profileId"`
 }
 
+// ConfigureTikTokAdsBrandIdentityJSONBody defines parameters for ConfigureTikTokAdsBrandIdentity.
+type ConfigureTikTokAdsBrandIdentityJSONBody struct {
+	// AccountId SocialAccount ID of the `tiktokads` account.
+	AccountId string `json:"accountId"`
+
+	// DisplayName Brand name shown above the ad on TikTok.
+	DisplayName string `json:"displayName"`
+
+	// ImageUrl Public URL of a square brand image (≥98×98 px, JPG/PNG, max 5 MB). Used as the brand avatar on the ad.
+	ImageUrl string `json:"imageUrl"`
+}
+
 // ConnectWhatsAppCredentialsJSONBody defines parameters for ConnectWhatsAppCredentials.
 type ConnectWhatsAppCredentialsJSONBody struct {
 	// AccessToken Permanent System User access token from Meta Business Suite
@@ -9614,7 +9682,10 @@ type ConnectAdsParams struct {
 	// ProfileId Your Zernio profile ID
 	ProfileId string `form:"profileId" json:"profileId"`
 
-	// AccountId Existing SocialAccount ID. Required for separate-token platforms (tiktok, twitter). Ignored for same-token and standalone platforms.
+	// AccountId Existing SocialAccount ID. Required for `twitter` (X Ads). Optional for `tiktok` —
+	// omit to enter ads-only mode (no TikTok posting account linked; ad creation uses
+	// a Brand Identity instead of a TT_USER). Ignored for same-token (`facebook`,
+	// `instagram`, `linkedin`, `pinterest`) and standalone (`googleads`) platforms.
 	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
 
 	// RedirectUrl Custom redirect URL after OAuth completes (same-token platforms only)
@@ -11600,6 +11671,9 @@ type SelectSnapchatProfileJSONRequestBody SelectSnapchatProfileJSONBody
 // InitiateTelegramConnectJSONRequestBody defines body for InitiateTelegramConnect for application/json ContentType.
 type InitiateTelegramConnectJSONRequestBody InitiateTelegramConnectJSONBody
 
+// ConfigureTikTokAdsBrandIdentityJSONRequestBody defines body for ConfigureTikTokAdsBrandIdentity for application/json ContentType.
+type ConfigureTikTokAdsBrandIdentityJSONRequestBody ConfigureTikTokAdsBrandIdentityJSONBody
+
 // ConnectWhatsAppCredentialsJSONRequestBody defines body for ConnectWhatsAppCredentials for application/json ContentType.
 type ConnectWhatsAppCredentialsJSONRequestBody ConnectWhatsAppCredentialsJSONBody
 
@@ -13330,6 +13404,11 @@ type ClientInterface interface {
 	InitiateTelegramConnectWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	InitiateTelegramConnect(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ConfigureTikTokAdsBrandIdentityWithBody request with any body
+	ConfigureTikTokAdsBrandIdentityWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ConfigureTikTokAdsBrandIdentity(ctx context.Context, body ConfigureTikTokAdsBrandIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ConnectWhatsAppCredentialsWithBody request with any body
 	ConnectWhatsAppCredentialsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -16055,6 +16134,30 @@ func (c *Client) InitiateTelegramConnectWithBody(ctx context.Context, contentTyp
 
 func (c *Client) InitiateTelegramConnect(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInitiateTelegramConnectRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConfigureTikTokAdsBrandIdentityWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConfigureTikTokAdsBrandIdentityRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConfigureTikTokAdsBrandIdentity(ctx context.Context, body ConfigureTikTokAdsBrandIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConfigureTikTokAdsBrandIdentityRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -26809,6 +26912,46 @@ func NewInitiateTelegramConnectRequestWithBody(server string, contentType string
 	return req, nil
 }
 
+// NewConfigureTikTokAdsBrandIdentityRequest calls the generic ConfigureTikTokAdsBrandIdentity builder with application/json body
+func NewConfigureTikTokAdsBrandIdentityRequest(server string, body ConfigureTikTokAdsBrandIdentityJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewConfigureTikTokAdsBrandIdentityRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewConfigureTikTokAdsBrandIdentityRequestWithBody generates requests for ConfigureTikTokAdsBrandIdentity with any type of body
+func NewConfigureTikTokAdsBrandIdentityRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connect/tiktok-ads")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewConnectWhatsAppCredentialsRequest calls the generic ConnectWhatsAppCredentials builder with application/json body
 func NewConnectWhatsAppCredentialsRequest(server string, body ConnectWhatsAppCredentialsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -34672,6 +34815,11 @@ type ClientWithResponsesInterface interface {
 
 	InitiateTelegramConnectWithResponse(ctx context.Context, body InitiateTelegramConnectJSONRequestBody, reqEditors ...RequestEditorFn) (*InitiateTelegramConnectResponse, error)
 
+	// ConfigureTikTokAdsBrandIdentityWithBodyWithResponse request with any body
+	ConfigureTikTokAdsBrandIdentityWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConfigureTikTokAdsBrandIdentityResponse, error)
+
+	ConfigureTikTokAdsBrandIdentityWithResponse(ctx context.Context, body ConfigureTikTokAdsBrandIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*ConfigureTikTokAdsBrandIdentityResponse, error)
+
 	// ConnectWhatsAppCredentialsWithBodyWithResponse request with any body
 	ConnectWhatsAppCredentialsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error)
 
@@ -40258,6 +40406,35 @@ func (r InitiateTelegramConnectResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r InitiateTelegramConnectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ConfigureTikTokAdsBrandIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DisplayName *string `json:"displayName,omitempty"`
+
+		// IdentityId The TikTok-assigned identity_id
+		IdentityId *string `json:"identityId,omitempty"`
+		Success    *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ConfigureTikTokAdsBrandIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConfigureTikTokAdsBrandIdentityResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -46340,6 +46517,23 @@ func (c *ClientWithResponses) InitiateTelegramConnectWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseInitiateTelegramConnectResponse(rsp)
+}
+
+// ConfigureTikTokAdsBrandIdentityWithBodyWithResponse request with arbitrary body returning *ConfigureTikTokAdsBrandIdentityResponse
+func (c *ClientWithResponses) ConfigureTikTokAdsBrandIdentityWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConfigureTikTokAdsBrandIdentityResponse, error) {
+	rsp, err := c.ConfigureTikTokAdsBrandIdentityWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConfigureTikTokAdsBrandIdentityResponse(rsp)
+}
+
+func (c *ClientWithResponses) ConfigureTikTokAdsBrandIdentityWithResponse(ctx context.Context, body ConfigureTikTokAdsBrandIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*ConfigureTikTokAdsBrandIdentityResponse, error) {
+	rsp, err := c.ConfigureTikTokAdsBrandIdentity(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConfigureTikTokAdsBrandIdentityResponse(rsp)
 }
 
 // ConnectWhatsAppCredentialsWithBodyWithResponse request with arbitrary body returning *ConnectWhatsAppCredentialsResponse
@@ -54941,6 +55135,45 @@ func ParseInitiateTelegramConnectResponse(rsp *http.Response) (*InitiateTelegram
 				Username     *string                                    `json:"username,omitempty"`
 			} `json:"account,omitempty"`
 			Message *string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseConfigureTikTokAdsBrandIdentityResponse parses an HTTP response from a ConfigureTikTokAdsBrandIdentityWithResponse call
+func ParseConfigureTikTokAdsBrandIdentityResponse(rsp *http.Response) (*ConfigureTikTokAdsBrandIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConfigureTikTokAdsBrandIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DisplayName *string `json:"displayName,omitempty"`
+
+			// IdentityId The TikTok-assigned identity_id
+			IdentityId *string `json:"identityId,omitempty"`
+			Success    *bool   `json:"success,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

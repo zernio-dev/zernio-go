@@ -184,6 +184,7 @@ func main() {
 | `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
 | `client.UpdateYoutubeDefaultPlaylistWithResponse()` | Set default YouTube playlist |
 | `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
+| `client.ConfigureTikTokAdsBrandIdentityWithResponse()` | Configure TikTok Ads Brand Identity |
 | `client.ConnectAdsWithResponse()` | Connect ads for a platform |
 | `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
 | `client.ConnectWhatsAppCredentialsWithResponse()` | Connect WhatsApp via credentials |
