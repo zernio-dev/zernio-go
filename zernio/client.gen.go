@@ -5776,7 +5776,10 @@ type BlueskyPlatformData struct {
 // TikTok's agency container — one BC owns N advertisers (ad accounts). Most solo
 // advertisers don't have one; the agency token uses BCs to roll up multi-client access.
 type BusinessCenter struct {
-	// AdvertiserCount Number of advertisers (ad accounts) reachable under this BC for the calling token
+	// AdvertiserCount Number of advertisers reachable under this BC for the calling token.
+	// `null` when the BC asset walk returned empty or failed (typical for
+	// agency apps without full BC asset read scope) — distinct from `0`,
+	// which would imply the BC genuinely has no advertisers.
 	AdvertiserCount *int `json:"advertiserCount,omitempty"`
 
 	// BcId Business Center ID
@@ -8087,7 +8090,9 @@ type BoostPostJSONBody struct {
 		AdvantageAudience *BoostPostJSONBodyTargetingAdvantageAudience `json:"advantage_audience,omitempty"`
 		AgeMax            *int                                         `json:"ageMax,omitempty"`
 		AgeMin            *int                                         `json:"ageMin,omitempty"`
-		Countries         *[]string                                    `json:"countries,omitempty"`
+
+		// Countries ISO country codes. Required for TikTok boosts (TikTok's ad group requires location_ids); optional on other platforms.
+		Countries *[]string `json:"countries,omitempty"`
 
 		// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 		Interests *[]struct {
