@@ -7410,6 +7410,11 @@ type Unauthorized struct {
 type CreateAccountGroupJSONBody struct {
 	AccountIds []string `json:"accountIds"`
 	Name       string   `json:"name"`
+
+	// ProfileId Deprecated. Accepted for backward compatibility but ignored.
+	// Groups are no longer scoped to a single profile.
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
+	ProfileId *string `json:"profileId,omitempty"`
 }
 
 // UpdateAccountGroupJSONBody defines parameters for UpdateAccountGroup.
@@ -9693,6 +9698,21 @@ type ConnectAdsParams struct {
 
 	// Headless Enable headless mode (same-token platforms only)
 	Headless *bool `form:"headless,omitempty" json:"headless,omitempty"`
+
+	// AdAccountId (metaads only) Scope ad sync to a single Meta ad account. Without this
+	// param, sync covers every `act_*` the connected token can see. Pass this
+	// to limit `sync.totalAds` / `synced` and the resulting ads to one ad
+	// account. Format: `act_<digits>` (matches what `/me/adaccounts` returns).
+	// Validated against the connected token; unreachable IDs return 400.
+	// For multiple accounts use `adAccountIds` instead.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
+	// AdAccountIds (metaads only) Scope ad sync to multiple Meta ad accounts. Repeat the
+	// param (`?adAccountIds=act_1&adAccountIds=act_2`) or comma-separate
+	// (`?adAccountIds=act_1,act_2`). Validated against the connected token.
+	// Persisted server-side; latest call wins. Omitting both `adAccountId`
+	// and `adAccountIds` keeps any previously persisted scope unchanged.
+	AdAccountIds *[]string `form:"adAccountIds,omitempty" json:"adAccountIds,omitempty"`
 }
 
 // ConnectAdsParamsPlatform defines parameters for ConnectAds.
@@ -27212,6 +27232,38 @@ func NewConnectAdsRequest(server string, platform ConnectAdsParamsPlatform, para
 
 		}
 
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AdAccountIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountIds", *params.AdAccountIds, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -35341,7 +35393,12 @@ type ListAccountGroupsResponse struct {
 		Groups *[]struct {
 			UnderscoreId *string   `json:"_id,omitempty"`
 			AccountIds   *[]string `json:"accountIds,omitempty"`
+			CreatedBy    *string   `json:"createdBy,omitempty"`
 			Name         *string   `json:"name,omitempty"`
+
+			// ProfileId Legacy field. Present only on groups created before
+			// cross-profile groups were supported. New groups omit it.
+			ProfileId *string `json:"profileId,omitempty"`
 		} `json:"groups,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -40544,7 +40601,11 @@ type ConnectAds2000 struct {
 	AlreadyConnected *bool   `json:"alreadyConnected,omitempty"`
 	DisplayName      *string `json:"displayName,omitempty"`
 	Platform         *string `json:"platform,omitempty"`
-	Username         *string `json:"username,omitempty"`
+
+	// ScopedAdAccountIds Echo of the persisted ad-account scope when the caller passed
+	// `adAccountId` / `adAccountIds`. Omitted when no scope is set.
+	ScopedAdAccountIds *[]string `json:"scopedAdAccountIds,omitempty"`
+	Username           *string   `json:"username,omitempty"`
 }
 type ConnectAds2001 struct {
 	AuthUrl *string `json:"authUrl,omitempty"`
@@ -48214,7 +48275,12 @@ func ParseListAccountGroupsResponse(rsp *http.Response) (*ListAccountGroupsRespo
 			Groups *[]struct {
 				UnderscoreId *string   `json:"_id,omitempty"`
 				AccountIds   *[]string `json:"accountIds,omitempty"`
+				CreatedBy    *string   `json:"createdBy,omitempty"`
 				Name         *string   `json:"name,omitempty"`
+
+				// ProfileId Legacy field. Present only on groups created before
+				// cross-profile groups were supported. New groups omit it.
+				ProfileId *string `json:"profileId,omitempty"`
 			} `json:"groups,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
