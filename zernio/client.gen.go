@@ -7410,9 +7410,6 @@ type Unauthorized struct {
 type CreateAccountGroupJSONBody struct {
 	AccountIds []string `json:"accountIds"`
 	Name       string   `json:"name"`
-
-	// ProfileId ID of the profile this group belongs to. All accountIds must belong to this profile.
-	ProfileId string `json:"profileId"`
 }
 
 // UpdateAccountGroupJSONBody defines parameters for UpdateAccountGroup.
