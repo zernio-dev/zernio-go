@@ -9372,10 +9372,10 @@ type CreateCommentAutomationJSONBody struct {
 	// Name Automation label
 	Name string `json:"name"`
 
-	// PlatformPostId Platform media/post ID
-	PlatformPostId string `json:"platformPostId"`
+	// PlatformPostId Platform media/post ID. Omit for an account-wide (any-post) automation.
+	PlatformPostId *string `json:"platformPostId,omitempty"`
 
-	// PostId Zernio post ID (optional)
+	// PostId Zernio post ID. Required only when also targeting a specific post via platformPostId.
 	PostId *string `json:"postId,omitempty"`
 
 	// PostTitle Post content snippet for display
