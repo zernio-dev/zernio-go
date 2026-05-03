@@ -360,18 +360,6 @@ func main() {
 | `client.GetGoogleBusinessServicesWithResponse()` | Get services |
 | `client.UpdateGoogleBusinessServicesWithResponse()` | Replace services |
 
-### Lead Forms
-| Method | Description |
-|--------|-------------|
-| `client.ListLeadFormLeadsWithResponse()` | List submitted leads for a form |
-| `client.ListLeadFormsWithResponse()` | List Meta Lead Gen Forms |
-| `client.CreateLeadFormWithResponse()` | Create a Meta Lead Gen Form |
-| `client.CreateLeadFormTestLeadWithResponse()` | Create a synthetic test lead |
-| `client.GetLeadFormWithResponse()` | Get a Lead Gen Form |
-| `client.UpdateLeadFormWithResponse()` | Update a Lead Gen Form (status only) |
-| `client.DeleteLeadFormWithResponse()` | Delete a Lead Gen Form |
-| `client.DeleteLeadFormTestLeadWithResponse()` | Delete a (test) lead |
-
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|
