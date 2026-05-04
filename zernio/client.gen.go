@@ -11842,6 +11842,19 @@ type SendPrivateReplyToCommentJSONBody struct {
 
 	// Message The message text to send as a private DM
 	Message string `json:"message"`
+
+	// QuickReplies Optional quick-reply chips appended to the message. Visible only in the
+	// Instagram and Messenger apps (not on web). Maximum 13 entries.
+	QuickReplies *[]struct {
+		// ImageUrl Optional thumbnail shown next to the chip title.
+		ImageUrl *string `json:"imageUrl,omitempty"`
+
+		// Payload Opaque value returned in the inbound webhook when the user taps the chip.
+		Payload string `json:"payload"`
+
+		// Title Label shown on the chip. Truncated by Meta beyond 20 characters.
+		Title string `json:"title"`
+	} `json:"quickReplies,omitempty"`
 }
 
 // SendPrivateReplyToComment200JSONResponseBodyPlatform defines parameters for SendPrivateReplyToComment.
