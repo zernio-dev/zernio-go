@@ -4500,6 +4500,21 @@ func (e ConnectWhatsAppCredentials200JSONResponseBodyAccountPlatform) Valid() bo
 	}
 }
 
+// Defines values for CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform.
+const (
+	CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatformWhatsapp CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform = "whatsapp"
+)
+
+// Valid indicates whether the value is a known member of the CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform enum.
+func (e CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform) Valid() bool {
+	switch e {
+	case CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatformWhatsapp:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetConnectUrlParamsPlatform.
 const (
 	GetConnectUrlParamsPlatformBluesky        GetConnectUrlParamsPlatform = "bluesky"
@@ -6212,31 +6227,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
-	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
-	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
-	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
-	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
-	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
+	Instagram CreateSequenceJSONBodyPlatform = "instagram"
+	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
+	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
+	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
+	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case CreateSequenceJSONBodyPlatformBluesky:
+	case Bluesky:
 		return true
-	case CreateSequenceJSONBodyPlatformFacebook:
+	case Facebook:
 		return true
-	case CreateSequenceJSONBodyPlatformInstagram:
+	case Instagram:
 		return true
-	case CreateSequenceJSONBodyPlatformReddit:
+	case Reddit:
 		return true
-	case CreateSequenceJSONBodyPlatformTelegram:
+	case Telegram:
 		return true
-	case CreateSequenceJSONBodyPlatformTwitter:
+	case Twitter:
 		return true
-	case CreateSequenceJSONBodyPlatformWhatsapp:
+	case Whatsapp:
 		return true
 	default:
 		return false
@@ -11952,6 +11967,48 @@ type ConnectWhatsAppCredentialsJSONBody struct {
 // ConnectWhatsAppCredentials200JSONResponseBodyAccountPlatform defines parameters for ConnectWhatsAppCredentials.
 type ConnectWhatsAppCredentials200JSONResponseBodyAccountPlatform string
 
+// ListWhatsAppPhoneNumbersParams defines parameters for ListWhatsAppPhoneNumbers.
+type ListWhatsAppPhoneNumbersParams struct {
+	// ProfileId The Zernio profile ID from the headless redirect
+	ProfileId string `form:"profileId" json:"profileId"`
+
+	// TempToken The temporary access token from the headless redirect
+	TempToken string `form:"tempToken" json:"tempToken"`
+
+	// XConnectToken Alternative auth for API users' end customers (used when the bearer token is scoped to a different user)
+	XConnectToken *string `json:"X-Connect-Token,omitempty"`
+}
+
+// CompleteWhatsAppPhoneSelectionJSONBody defines parameters for CompleteWhatsAppPhoneSelection.
+type CompleteWhatsAppPhoneSelectionJSONBody struct {
+	// PhoneNumberId The selected phone number ID (from listWhatsAppPhoneNumbers)
+	PhoneNumberId string `json:"phoneNumberId"`
+
+	// ProfileId The Zernio profile ID
+	ProfileId string `json:"profileId"`
+
+	// RedirectUrl Optional URL to receive the post-connection redirect target
+	RedirectUrl *string `json:"redirect_url,omitempty"`
+
+	// TempToken The temporary access token from the headless redirect
+	TempToken string `json:"tempToken"`
+
+	// UserProfile Optional user profile data (passthrough)
+	UserProfile *map[string]interface{} `json:"userProfile,omitempty"`
+
+	// WabaId The WABA ID containing the selected phone
+	WabaId string `json:"wabaId"`
+}
+
+// CompleteWhatsAppPhoneSelectionParams defines parameters for CompleteWhatsAppPhoneSelection.
+type CompleteWhatsAppPhoneSelectionParams struct {
+	// XConnectToken Alternative auth for API users' end customers
+	XConnectToken *string `json:"X-Connect-Token,omitempty"`
+}
+
+// CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform defines parameters for CompleteWhatsAppPhoneSelection.
+type CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform string
+
 // GetConnectUrlParams defines parameters for GetConnectUrl.
 type GetConnectUrlParams struct {
 	// ProfileId Your Zernio profile ID (get from /v1/profiles)
@@ -14244,6 +14301,9 @@ type ConfigureTikTokAdsBrandIdentityJSONRequestBody ConfigureTikTokAdsBrandIdent
 
 // ConnectWhatsAppCredentialsJSONRequestBody defines body for ConnectWhatsAppCredentials for application/json ContentType.
 type ConnectWhatsAppCredentialsJSONRequestBody ConnectWhatsAppCredentialsJSONBody
+
+// CompleteWhatsAppPhoneSelectionJSONRequestBody defines body for CompleteWhatsAppPhoneSelection for application/json ContentType.
+type CompleteWhatsAppPhoneSelectionJSONRequestBody CompleteWhatsAppPhoneSelectionJSONBody
 
 // HandleOAuthCallbackJSONRequestBody defines body for HandleOAuthCallback for application/json ContentType.
 type HandleOAuthCallbackJSONRequestBody HandleOAuthCallbackJSONBody
@@ -17280,6 +17340,14 @@ type ClientInterface interface {
 
 	ConnectWhatsAppCredentials(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListWhatsAppPhoneNumbers request
+	ListWhatsAppPhoneNumbers(ctx context.Context, params *ListWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CompleteWhatsAppPhoneSelectionWithBody request with any body
+	CompleteWhatsAppPhoneSelectionWithBody(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CompleteWhatsAppPhoneSelection(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, body CompleteWhatsAppPhoneSelectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetConnectUrl request
 	GetConnectUrl(ctx context.Context, platform GetConnectUrlParamsPlatform, params *GetConnectUrlParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -20059,6 +20127,42 @@ func (c *Client) ConnectWhatsAppCredentialsWithBody(ctx context.Context, content
 
 func (c *Client) ConnectWhatsAppCredentials(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewConnectWhatsAppCredentialsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppPhoneNumbers(ctx context.Context, params *ListWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppPhoneNumbersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CompleteWhatsAppPhoneSelectionWithBody(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCompleteWhatsAppPhoneSelectionRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CompleteWhatsAppPhoneSelection(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, body CompleteWhatsAppPhoneSelectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCompleteWhatsAppPhoneSelectionRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -30648,6 +30752,134 @@ func NewConnectWhatsAppCredentialsRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewListWhatsAppPhoneNumbersRequest generates requests for ListWhatsAppPhoneNumbers
+func NewListWhatsAppPhoneNumbersRequest(server string, params *ListWhatsAppPhoneNumbersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connect/whatsapp/select-phone-number")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tempToken", params.TempToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.XConnectToken != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Connect-Token", *params.XConnectToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Connect-Token", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewCompleteWhatsAppPhoneSelectionRequest calls the generic CompleteWhatsAppPhoneSelection builder with application/json body
+func NewCompleteWhatsAppPhoneSelectionRequest(server string, params *CompleteWhatsAppPhoneSelectionParams, body CompleteWhatsAppPhoneSelectionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCompleteWhatsAppPhoneSelectionRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewCompleteWhatsAppPhoneSelectionRequestWithBody generates requests for CompleteWhatsAppPhoneSelection with any type of body
+func NewCompleteWhatsAppPhoneSelectionRequestWithBody(server string, params *CompleteWhatsAppPhoneSelectionParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/connect/whatsapp/select-phone-number")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.XConnectToken != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Connect-Token", *params.XConnectToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Connect-Token", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetConnectUrlRequest generates requests for GetConnectUrl
 func NewGetConnectUrlRequest(server string, platform GetConnectUrlParamsPlatform, params *GetConnectUrlParams) (*http.Request, error) {
 	var err error
@@ -38404,6 +38636,14 @@ type ClientWithResponsesInterface interface {
 
 	ConnectWhatsAppCredentialsWithResponse(ctx context.Context, body ConnectWhatsAppCredentialsJSONRequestBody, reqEditors ...RequestEditorFn) (*ConnectWhatsAppCredentialsResponse, error)
 
+	// ListWhatsAppPhoneNumbersWithResponse request
+	ListWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *ListWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*ListWhatsAppPhoneNumbersResponse, error)
+
+	// CompleteWhatsAppPhoneSelectionWithBodyWithResponse request with any body
+	CompleteWhatsAppPhoneSelectionWithBodyWithResponse(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteWhatsAppPhoneSelectionResponse, error)
+
+	CompleteWhatsAppPhoneSelectionWithResponse(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, body CompleteWhatsAppPhoneSelectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CompleteWhatsAppPhoneSelectionResponse, error)
+
 	// GetConnectUrlWithResponse request
 	GetConnectUrlWithResponse(ctx context.Context, platform GetConnectUrlParamsPlatform, params *GetConnectUrlParams, reqEditors ...RequestEditorFn) (*GetConnectUrlResponse, error)
 
@@ -45109,6 +45349,116 @@ func (r ConnectWhatsAppCredentialsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ConnectWhatsAppCredentialsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWhatsAppPhoneNumbersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		PhoneNumbers *[]struct {
+			// DisplayPhoneNumber E.164-formatted display number
+			DisplayPhoneNumber *string `json:"display_phone_number,omitempty"`
+
+			// Id Phone Number ID (Meta)
+			Id *string `json:"id,omitempty"`
+
+			// MessagingLimitTier TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED
+			MessagingLimitTier *string `json:"messaging_limit_tier,omitempty"`
+
+			// NameStatus APPROVED, PENDING_REVIEW, DECLINED, or NONE
+			NameStatus *string `json:"name_status,omitempty"`
+
+			// QualityRating GREEN, YELLOW, RED, or UNKNOWN
+			QualityRating *string `json:"quality_rating,omitempty"`
+
+			// VerifiedName Meta-verified business name
+			VerifiedName *string `json:"verified_name,omitempty"`
+
+			// WabaId WhatsApp Business Account ID (Zernio enrichment)
+			WabaId *string `json:"wabaId,omitempty"`
+
+			// WabaName WABA display name (Zernio enrichment)
+			WabaName *string `json:"wabaName,omitempty"`
+		} `json:"phoneNumbers,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppPhoneNumbersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppPhoneNumbersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppPhoneNumbersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CompleteWhatsAppPhoneSelectionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Account *struct {
+			AccountId *string `json:"accountId,omitempty"`
+
+			// DisplayName Meta-verified business name
+			DisplayName         *string                                                           `json:"displayName,omitempty"`
+			IsActive            *bool                                                             `json:"isActive,omitempty"`
+			Platform            *CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform `json:"platform,omitempty"`
+			SelectedPhoneNumber *string                                                           `json:"selectedPhoneNumber,omitempty"`
+
+			// Username Display phone number
+			Username *string `json:"username,omitempty"`
+		} `json:"account,omitempty"`
+		Message *string `json:"message,omitempty"`
+
+		// RedirectUrl Present only if redirect_url was provided in the request
+		RedirectUrl *string `json:"redirect_url,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *Unauthorized
+	JSON404 *ErrorResponse
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CompleteWhatsAppPhoneSelectionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CompleteWhatsAppPhoneSelectionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CompleteWhatsAppPhoneSelectionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -52117,6 +52467,32 @@ func (c *ClientWithResponses) ConnectWhatsAppCredentialsWithResponse(ctx context
 		return nil, err
 	}
 	return ParseConnectWhatsAppCredentialsResponse(rsp)
+}
+
+// ListWhatsAppPhoneNumbersWithResponse request returning *ListWhatsAppPhoneNumbersResponse
+func (c *ClientWithResponses) ListWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *ListWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*ListWhatsAppPhoneNumbersResponse, error) {
+	rsp, err := c.ListWhatsAppPhoneNumbers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppPhoneNumbersResponse(rsp)
+}
+
+// CompleteWhatsAppPhoneSelectionWithBodyWithResponse request with arbitrary body returning *CompleteWhatsAppPhoneSelectionResponse
+func (c *ClientWithResponses) CompleteWhatsAppPhoneSelectionWithBodyWithResponse(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteWhatsAppPhoneSelectionResponse, error) {
+	rsp, err := c.CompleteWhatsAppPhoneSelectionWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCompleteWhatsAppPhoneSelectionResponse(rsp)
+}
+
+func (c *ClientWithResponses) CompleteWhatsAppPhoneSelectionWithResponse(ctx context.Context, params *CompleteWhatsAppPhoneSelectionParams, body CompleteWhatsAppPhoneSelectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CompleteWhatsAppPhoneSelectionResponse, error) {
+	rsp, err := c.CompleteWhatsAppPhoneSelection(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCompleteWhatsAppPhoneSelectionResponse(rsp)
 }
 
 // GetConnectUrlWithResponse request returning *GetConnectUrlResponse
@@ -60831,6 +61207,150 @@ func ParseConnectWhatsAppCredentialsResponse(rsp *http.Response) (*ConnectWhatsA
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppPhoneNumbersResponse parses an HTTP response from a ListWhatsAppPhoneNumbersWithResponse call
+func ParseListWhatsAppPhoneNumbersResponse(rsp *http.Response) (*ListWhatsAppPhoneNumbersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppPhoneNumbersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			PhoneNumbers *[]struct {
+				// DisplayPhoneNumber E.164-formatted display number
+				DisplayPhoneNumber *string `json:"display_phone_number,omitempty"`
+
+				// Id Phone Number ID (Meta)
+				Id *string `json:"id,omitempty"`
+
+				// MessagingLimitTier TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED
+				MessagingLimitTier *string `json:"messaging_limit_tier,omitempty"`
+
+				// NameStatus APPROVED, PENDING_REVIEW, DECLINED, or NONE
+				NameStatus *string `json:"name_status,omitempty"`
+
+				// QualityRating GREEN, YELLOW, RED, or UNKNOWN
+				QualityRating *string `json:"quality_rating,omitempty"`
+
+				// VerifiedName Meta-verified business name
+				VerifiedName *string `json:"verified_name,omitempty"`
+
+				// WabaId WhatsApp Business Account ID (Zernio enrichment)
+				WabaId *string `json:"wabaId,omitempty"`
+
+				// WabaName WABA display name (Zernio enrichment)
+				WabaName *string `json:"wabaName,omitempty"`
+			} `json:"phoneNumbers,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCompleteWhatsAppPhoneSelectionResponse parses an HTTP response from a CompleteWhatsAppPhoneSelectionWithResponse call
+func ParseCompleteWhatsAppPhoneSelectionResponse(rsp *http.Response) (*CompleteWhatsAppPhoneSelectionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CompleteWhatsAppPhoneSelectionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Account *struct {
+				AccountId *string `json:"accountId,omitempty"`
+
+				// DisplayName Meta-verified business name
+				DisplayName         *string                                                           `json:"displayName,omitempty"`
+				IsActive            *bool                                                             `json:"isActive,omitempty"`
+				Platform            *CompleteWhatsAppPhoneSelection200JSONResponseBodyAccountPlatform `json:"platform,omitempty"`
+				SelectedPhoneNumber *string                                                           `json:"selectedPhoneNumber,omitempty"`
+
+				// Username Display phone number
+				Username *string `json:"username,omitempty"`
+			} `json:"account,omitempty"`
+			Message *string `json:"message,omitempty"`
+
+			// RedirectUrl Present only if redirect_url was provided in the request
+			RedirectUrl *string `json:"redirect_url,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 

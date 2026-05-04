@@ -168,6 +168,7 @@ func main() {
 | `client.ListLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
 | `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest boards |
 | `client.ListSnapchatProfilesWithResponse()` | List Snapchat profiles |
+| `client.ListWhatsAppPhoneNumbersWithResponse()` | List WhatsApp phone numbers for selection |
 | `client.GetConnectUrlWithResponse()` | Get OAuth connect URL |
 | `client.GetFacebookPagesWithResponse()` | List Facebook pages |
 | `client.GetGmbLocationsWithResponse()` | List GBP locations |
@@ -185,6 +186,7 @@ func main() {
 | `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
 | `client.UpdateYoutubeDefaultPlaylistWithResponse()` | Set default YouTube playlist |
 | `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
+| `client.CompleteWhatsAppPhoneSelectionWithResponse()` | Complete WhatsApp phone number selection |
 | `client.ConfigureTikTokAdsBrandIdentityWithResponse()` | Configure TikTok Ads Brand Identity |
 | `client.ConnectAdsWithResponse()` | Connect ads for a platform |
 | `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
