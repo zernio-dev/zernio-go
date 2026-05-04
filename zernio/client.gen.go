@@ -1377,6 +1377,24 @@ func (e UsageStatsBillingPeriod) Valid() bool {
 	}
 }
 
+// Defines values for UsageStatsBillingSystem.
+const (
+	Metronome UsageStatsBillingSystem = "metronome"
+	Stripe    UsageStatsBillingSystem = "stripe"
+)
+
+// Valid indicates whether the value is a known member of the UsageStatsBillingSystem enum.
+func (e UsageStatsBillingSystem) Valid() bool {
+	switch e {
+	case Metronome:
+		return true
+	case Stripe:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WebhookEvents.
 const (
 	WebhookEventsAccountAdsInitialSyncCompleted WebhookEvents = "account.ads.initial_sync_completed"
@@ -1590,6 +1608,72 @@ func (e WhatsAppTemplateButtonType) Valid() bool {
 	}
 }
 
+// Defines values for XApiOperationTier.
+const (
+	XApiOperationTierXApi005 XApiOperationTier = "x_api_005"
+	XApiOperationTierXApi010 XApiOperationTier = "x_api_010"
+	XApiOperationTierXApi015 XApiOperationTier = "x_api_015"
+)
+
+// Valid indicates whether the value is a known member of the XApiOperationTier enum.
+func (e XApiOperationTier) Valid() bool {
+	switch e {
+	case XApiOperationTierXApi005:
+		return true
+	case XApiOperationTierXApi010:
+		return true
+	case XApiOperationTierXApi015:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for XApiOperationTriggeredByMetering.
+const (
+	Absorbed       XApiOperationTriggeredByMetering = "absorbed"
+	Always         XApiOperationTriggeredByMetering = "always"
+	AnalyticsOptin XApiOperationTriggeredByMetering = "analytics_optin"
+	InboxOptin     XApiOperationTriggeredByMetering = "inbox_optin"
+)
+
+// Valid indicates whether the value is a known member of the XApiOperationTriggeredByMetering enum.
+func (e XApiOperationTriggeredByMetering) Valid() bool {
+	switch e {
+	case Absorbed:
+		return true
+	case Always:
+		return true
+	case AnalyticsOptin:
+		return true
+	case InboxOptin:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for XApiPricingTiersTier.
+const (
+	XApiPricingTiersTierXApi005 XApiPricingTiersTier = "x_api_005"
+	XApiPricingTiersTierXApi010 XApiPricingTiersTier = "x_api_010"
+	XApiPricingTiersTierXApi015 XApiPricingTiersTier = "x_api_015"
+)
+
+// Valid indicates whether the value is a known member of the XApiPricingTiersTier enum.
+func (e XApiPricingTiersTier) Valid() bool {
+	switch e {
+	case XApiPricingTiersTierXApi005:
+		return true
+	case XApiPricingTiersTierXApi010:
+		return true
+	case XApiPricingTiersTierXApi015:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for YouTubePlatformDataVisibility.
 const (
 	YouTubePlatformDataVisibilityPrivate  YouTubePlatformDataVisibility = "private"
@@ -1605,6 +1689,42 @@ func (e YouTubePlatformDataVisibility) Valid() bool {
 	case YouTubePlatformDataVisibilityPublic:
 		return true
 	case YouTubePlatformDataVisibilityUnlisted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentRequiredCode.
+const (
+	PaymentRequiredCodePAYMENTREQUIRED PaymentRequiredCode = "PAYMENT_REQUIRED"
+)
+
+// Valid indicates whether the value is a known member of the PaymentRequiredCode enum.
+func (e PaymentRequiredCode) Valid() bool {
+	switch e {
+	case PaymentRequiredCodePAYMENTREQUIRED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentRequiredReason.
+const (
+	PaymentRequiredReasonEnterpriseRequired PaymentRequiredReason = "enterprise_required"
+	PaymentRequiredReasonFreeTierExceeded   PaymentRequiredReason = "free_tier_exceeded"
+	PaymentRequiredReasonTwitterPassthrough PaymentRequiredReason = "twitter_passthrough"
+)
+
+// Valid indicates whether the value is a known member of the PaymentRequiredReason enum.
+func (e PaymentRequiredReason) Valid() bool {
+	switch e {
+	case PaymentRequiredReasonEnterpriseRequired:
+		return true
+	case PaymentRequiredReasonFreeTierExceeded:
+		return true
+	case PaymentRequiredReasonTwitterPassthrough:
 		return true
 	default:
 		return false
@@ -4434,6 +4554,42 @@ func (e GetConnectUrlParamsPlatform) Valid() bool {
 	}
 }
 
+// Defines values for GetConnectUrl402JSONResponseBodyCode.
+const (
+	GetConnectUrl402JSONResponseBodyCodePAYMENTREQUIRED GetConnectUrl402JSONResponseBodyCode = "PAYMENT_REQUIRED"
+)
+
+// Valid indicates whether the value is a known member of the GetConnectUrl402JSONResponseBodyCode enum.
+func (e GetConnectUrl402JSONResponseBodyCode) Valid() bool {
+	switch e {
+	case GetConnectUrl402JSONResponseBodyCodePAYMENTREQUIRED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetConnectUrl402JSONResponseBodyReason.
+const (
+	GetConnectUrl402JSONResponseBodyReasonEnterpriseRequired GetConnectUrl402JSONResponseBodyReason = "enterprise_required"
+	GetConnectUrl402JSONResponseBodyReasonFreeTierExceeded   GetConnectUrl402JSONResponseBodyReason = "free_tier_exceeded"
+	GetConnectUrl402JSONResponseBodyReasonTwitterPassthrough GetConnectUrl402JSONResponseBodyReason = "twitter_passthrough"
+)
+
+// Valid indicates whether the value is a known member of the GetConnectUrl402JSONResponseBodyReason enum.
+func (e GetConnectUrl402JSONResponseBodyReason) Valid() bool {
+	switch e {
+	case GetConnectUrl402JSONResponseBodyReasonEnterpriseRequired:
+		return true
+	case GetConnectUrl402JSONResponseBodyReasonFreeTierExceeded:
+		return true
+	case GetConnectUrl402JSONResponseBodyReasonTwitterPassthrough:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConnectAdsParamsPlatform.
 const (
 	ConnectAdsParamsPlatformFacebook  ConnectAdsParamsPlatform = "facebook"
@@ -5856,6 +6012,42 @@ func (e UpdatePostMetadataJSONBodyPrivacyStatus) Valid() bool {
 	case UpdatePostMetadataJSONBodyPrivacyStatusPublic:
 		return true
 	case UpdatePostMetadataJSONBodyPrivacyStatusUnlisted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateProfile402JSONResponseBodyCode.
+const (
+	PAYMENTREQUIRED CreateProfile402JSONResponseBodyCode = "PAYMENT_REQUIRED"
+)
+
+// Valid indicates whether the value is a known member of the CreateProfile402JSONResponseBodyCode enum.
+func (e CreateProfile402JSONResponseBodyCode) Valid() bool {
+	switch e {
+	case PAYMENTREQUIRED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateProfile402JSONResponseBodyReason.
+const (
+	EnterpriseRequired CreateProfile402JSONResponseBodyReason = "enterprise_required"
+	FreeTierExceeded   CreateProfile402JSONResponseBodyReason = "free_tier_exceeded"
+	TwitterPassthrough CreateProfile402JSONResponseBodyReason = "twitter_passthrough"
+)
+
+// Valid indicates whether the value is a known member of the CreateProfile402JSONResponseBodyReason enum.
+func (e CreateProfile402JSONResponseBodyReason) Valid() bool {
+	switch e {
+	case EnterpriseRequired:
+		return true
+	case FreeTierExceeded:
+		return true
+	case TwitterPassthrough:
 		return true
 	default:
 		return false
@@ -8783,26 +8975,100 @@ type TwitterPlatformData struct {
 // TwitterPlatformDataReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers, "verified" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 type TwitterPlatformDataReplySettings string
 
-// UsageStats defines model for UsageStats.
+// UsageStats Plan and usage stats. The response shape depends on `billingSystem`:
+//   - Stripe users (default): per-period counters like `usage.uploads` and
+//     `usage.profiles` are returned, scoped by the plan's `limits`.
+//   - Metronome users (usage-based): `limits` are unlimited (-1). The
+//     `usage` block carries connected-account and per-X-operation counts,
+//     and the `spend` block carries current-period costs plus the X cap.
 type UsageStats struct {
+	// AutoUpgradeEnabled Stripe-only. Always false for Metronome users.
+	AutoUpgradeEnabled *bool `json:"autoUpgradeEnabled,omitempty"`
+
 	// BillingAnchorDay Day of month (1-31) when the billing cycle resets
 	BillingAnchorDay *int                     `json:"billingAnchorDay,omitempty"`
 	BillingPeriod    *UsageStatsBillingPeriod `json:"billingPeriod,omitempty"`
-	Limits           *struct {
+
+	// BillingSystem Which billing system the account is on. Shape of `usage`/`spend` differs.
+	BillingSystem *UsageStatsBillingSystem `json:"billingSystem,omitempty"`
+
+	// CustomerId Stripe customer ID, when present.
+	CustomerId *string `json:"customerId,omitempty"`
+
+	// HasAccess True if the account is in good standing. False for past-due/unpaid/paused subscriptions.
+	HasAccess *bool `json:"hasAccess,omitempty"`
+
+	// IsInvitedUser True if this is a team member; limits/usage reflect the account owner.
+	IsInvitedUser *bool `json:"isInvitedUser,omitempty"`
+
+	// Limits Plan limits. For Metronome users both fields are `-1` (unlimited).
+	Limits *struct {
 		Profiles *int `json:"profiles,omitempty"`
 		Uploads  *int `json:"uploads,omitempty"`
 	} `json:"limits,omitempty"`
 	PlanName   *string    `json:"planName,omitempty"`
 	SignupDate *time.Time `json:"signupDate,omitempty"`
-	Usage      *struct {
+
+	// Spend Metronome users only. Current-period spend summary.
+	Spend *struct {
+		// CreditsRemainingCents Free-tier credit remaining in cents. Applied before any charge.
+		CreditsRemainingCents *int `json:"creditsRemainingCents,omitempty"`
+
+		// CurrentPeriodCents Total current-period spend in cents (all products combined).
+		CurrentPeriodCents *int `json:"currentPeriodCents,omitempty"`
+
+		// XSpendCents Current-period X/Twitter API spend in cents, derived from the per-tier
+		// call counts. Rounded up for conservative enforcement against `xSpendLimitCents`.
+		XSpendCents *int `json:"xSpendCents,omitempty"`
+
+		// XSpendLimitCents Monthly X spend cap set by the account owner, or null if no cap.
+		// When current X spend hits this cap, analytics and inbox sync are
+		// auto-paused for X accounts. Publishing is never blocked by this cap.
+		XSpendLimitCents *int `json:"xSpendLimitCents,omitempty"`
+	} `json:"spend,omitempty"`
+
+	// Usage Per-period usage counts. Fields present depend on `billingSystem`:
+	// Stripe returns `uploads` / `profiles` / `lastReset`;
+	// Metronome returns `connectedAccounts` / `xApiCalls` / `xApiCallsByOperation`.
+	Usage *struct {
+		// ConnectedAccounts Metronome users only. Accounts currently connected across the team.
+		ConnectedAccounts *int `json:"connectedAccounts,omitempty"`
+
+		// LastReset Stripe users only.
 		LastReset *time.Time `json:"lastReset,omitempty"`
-		Profiles  *int       `json:"profiles,omitempty"`
-		Uploads   *int       `json:"uploads,omitempty"`
+
+		// Profiles Stripe users only. Profiles currently owned.
+		Profiles *int `json:"profiles,omitempty"`
+
+		// Uploads Stripe users only. Uploads consumed in the current period.
+		Uploads *int `json:"uploads,omitempty"`
+
+		// XApiCalls Metronome users only. Aggregated X API call counts bucketed by
+		// price tier (backward-compat). For per-operation breakdown use
+		// `xApiCallsByOperation`.
+		XApiCalls *struct {
+			// XApi005 Calls at $0.005 per call (reads, list mgmt, bookmarks, etc.)
+			XApi005 *int `json:"x_api_005,omitempty"`
+
+			// XApi010 Calls at $0.010 per call (publish/delete, DM reads, follows)
+			XApi010 *int `json:"x_api_010,omitempty"`
+
+			// XApi015 Calls at $0.015 per call (sending DMs, follow actions)
+			XApi015 *int `json:"x_api_015,omitempty"`
+		} `json:"xApiCalls,omitempty"`
+
+		// XApiCallsByOperation Metronome users only. Per-operation X API call counts keyed by
+		// operation (e.g. `posts_read`, `content_create`). Resolve each key
+		// to price and metadata via `GET /v1/billing/x-pricing`.
+		XApiCallsByOperation *map[string]int `json:"xApiCallsByOperation,omitempty"`
 	} `json:"usage,omitempty"`
 }
 
 // UsageStatsBillingPeriod defines model for UsageStats.BillingPeriod.
 type UsageStatsBillingPeriod string
+
+// UsageStatsBillingSystem Which billing system the account is on. Shape of `usage`/`spend` differs.
+type UsageStatsBillingSystem string
 
 // User defines model for User.
 type User struct {
@@ -8944,6 +9210,79 @@ type WhatsAppTemplateComponent struct {
 	union json.RawMessage
 }
 
+// XApiOperation A single X API operation with its per-call price and the Zernio platform methods that trigger it.
+type XApiOperation struct {
+	// DisplayName Human-readable label shown on Metronome invoices.
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// EventType Metronome `event_type` emitted when this operation runs.
+	EventType *string `json:"eventType,omitempty"`
+
+	// Operation Internal operation key. Matches keys in `xApiCallsByOperation`.
+	Operation *string `json:"operation,omitempty"`
+
+	// PricePerCallCents Per-call price in cents. Fractional values are intentional.
+	PricePerCallCents *float32 `json:"pricePerCallCents,omitempty"`
+	PricePerCallUsd   *float32 `json:"pricePerCallUsd,omitempty"`
+
+	// Tier Which aggregate price tier this operation falls into.
+	Tier *XApiOperationTier `json:"tier,omitempty"`
+
+	// TriggeredBy Zernio platform methods that emit this operation, with their metering rule.
+	TriggeredBy *[]struct {
+		// Metering When the method actually bills the user:
+		//   * `always` — every call is metered
+		//   * `analytics_optin` — only when the X account has analytics enabled
+		//   * `inbox_optin` — only when the X account has inbox sync enabled
+		//   * `absorbed` — Zernio eats the cost, never billed
+		Metering *XApiOperationTriggeredByMetering `json:"metering,omitempty"`
+
+		// Method Zernio platform method name.
+		Method *string `json:"method,omitempty"`
+	} `json:"triggeredBy,omitempty"`
+}
+
+// XApiOperationTier Which aggregate price tier this operation falls into.
+type XApiOperationTier string
+
+// XApiOperationTriggeredByMetering When the method actually bills the user:
+//   - `always` — every call is metered
+//   - `analytics_optin` — only when the X account has analytics enabled
+//   - `inbox_optin` — only when the X account has inbox sync enabled
+//   - `absorbed` — Zernio eats the cost, never billed
+type XApiOperationTriggeredByMetering string
+
+// XApiPricing Canonical X/Twitter API pricing table. Zernio passes X API costs through
+// at exact rates with zero markup, so every call you make has a known per-unit
+// price. Use this payload alongside `/v1/usage-stats` (which returns
+// per-operation call counts via `xApiCallsByOperation`) to compute exact
+// cost attribution by X action.
+type XApiPricing struct {
+	Currency *string `json:"currency,omitempty"`
+
+	// LastVerified Date the prices were last verified against X's published rates.
+	LastVerified *openapi_types.Date `json:"lastVerified,omitempty"`
+
+	// Markup Always 0% — Zernio does not mark up X API rates.
+	Markup *string `json:"markup,omitempty"`
+
+	// Operations Flat list of every X operation Zernio can perform, with its rate.
+	Operations *[]XApiOperation `json:"operations,omitempty"`
+	Source     *string          `json:"source,omitempty"`
+
+	// Tiers Rollup of operations grouped by their per-call price.
+	Tiers *[]struct {
+		OperationCount  *int     `json:"operationCount,omitempty"`
+		PricePerCallUsd *float32 `json:"pricePerCallUsd,omitempty"`
+
+		// Tier Historical bucket key used in `xApiCalls` aggregation.
+		Tier *XApiPricingTiersTier `json:"tier,omitempty"`
+	} `json:"tiers,omitempty"`
+}
+
+// XApiPricingTiersTier Historical bucket key used in `xApiCalls` aggregation.
+type XApiPricingTiersTier string
+
 // YouTubeDailyViewsResponse defines model for YouTubeDailyViewsResponse.
 type YouTubeDailyViewsResponse struct {
 	DailyViews *[]struct {
@@ -9051,6 +9390,55 @@ type NotFound struct {
 	Error *string `json:"error,omitempty"`
 }
 
+// PaymentRequired defines model for PaymentRequired.
+type PaymentRequired struct {
+	// Code Machine-readable error code. Stable across versions.
+	Code PaymentRequiredCode `json:"code"`
+
+	// DashboardUrl Deep-link to send the end-user to. For
+	// `free_tier_exceeded` and `twitter_passthrough` this is
+	// the Zernio billing tab. For `enterprise_required` this
+	// is the Zernio enterprise contact page.
+	DashboardUrl *string `json:"dashboard_url,omitempty"`
+
+	// Details Structured context for SDK clients that want to render their own UX. Keys vary by `reason`.
+	Details *struct {
+		// CurrentAccountCount How many accounts the team currently has connected. Set when reason=free_tier_exceeded or reason=enterprise_required.
+		CurrentAccountCount *int `json:"current_account_count,omitempty"`
+
+		// EffectiveAccountLimit The cap actually applied to this team. Equals
+		// `public_account_limit` for organic teams; for teams
+		// with a per-customer override (grandfathered legacy
+		// customers, signed enterprise contracts) this can
+		// be higher. Only set when reason=enterprise_required.
+		EffectiveAccountLimit *int `json:"effective_account_limit,omitempty"`
+
+		// FreeTierAccountLimit How many accounts the free tier allows. Only set when reason=free_tier_exceeded.
+		FreeTierAccountLimit *int `json:"free_tier_account_limit,omitempty"`
+
+		// HasPaymentMethod Whether the team currently has a card on file in Stripe. Set when reason=free_tier_exceeded or reason=twitter_passthrough.
+		HasPaymentMethod *bool `json:"has_payment_method,omitempty"`
+
+		// PublicAccountLimit Public pricing ceiling (the published cap beyond which an enterprise contract is required). Only set when reason=enterprise_required.
+		PublicAccountLimit *int `json:"public_account_limit,omitempty"`
+	} `json:"details,omitempty"`
+
+	// DocumentationUrl Link to the relevant documentation page.
+	DocumentationUrl *string `json:"documentation_url,omitempty"`
+
+	// Error Human-readable error message suitable for end-user display.
+	Error string `json:"error"`
+
+	// Reason Discriminator for which gate fired.
+	Reason PaymentRequiredReason `json:"reason"`
+}
+
+// PaymentRequiredCode Machine-readable error code. Stable across versions.
+type PaymentRequiredCode string
+
+// PaymentRequiredReason Discriminator for which gate fired.
+type PaymentRequiredReason string
+
 // Unauthorized defines model for Unauthorized.
 type Unauthorized struct {
 	Error *string `json:"error,omitempty"`
@@ -9143,6 +9531,25 @@ type GetAllAccountsHealth200JSONResponseBodyAccountsStatus string
 type UpdateAccountJSONBody struct {
 	DisplayName *string `json:"displayName,omitempty"`
 	Username    *string `json:"username,omitempty"`
+
+	// XCapabilities X/Twitter only. Per-account opt-in toggles for background API
+	// operations that incur X API pass-through costs. Each call is
+	// billed via Metronome at the X tier rate. Either field can be
+	// sent independently; omitted fields are unchanged.
+	XCapabilities *struct {
+		// Analytics Enable periodic analytics reads (impressions, likes, etc.)
+		// for this X account. Each X API call is metered as
+		// `posts_read` and billed pass-through (~$0.005/call at the
+		// time of writing — actual rate depends on X's pricing tier).
+		Analytics *bool `json:"analytics,omitempty"`
+
+		// Inbox Enable DM polling and inbox sync for this X account. DM
+		// reads are metered as `dm_event_read` (~$0.010/call) and
+		// DM sends as `dm_interaction_create` (~$0.015/call), both
+		// billed pass-through. DM sends fire only on user-initiated
+		// actions; reads/polling fire only when this flag is true.
+		Inbox *bool `json:"inbox,omitempty"`
+	} `json:"xCapabilities,omitempty"`
 }
 
 // ListConversionDestinations200JSONResponseBodyDestinationsStatus defines parameters for ListConversionDestinations.
@@ -11560,6 +11967,12 @@ type GetConnectUrlParams struct {
 // GetConnectUrlParamsPlatform defines parameters for GetConnectUrl.
 type GetConnectUrlParamsPlatform string
 
+// GetConnectUrl402JSONResponseBodyCode defines parameters for GetConnectUrl.
+type GetConnectUrl402JSONResponseBodyCode string
+
+// GetConnectUrl402JSONResponseBodyReason defines parameters for GetConnectUrl.
+type GetConnectUrl402JSONResponseBodyReason string
+
 // HandleOAuthCallbackJSONBody defines parameters for HandleOAuthCallback.
 type HandleOAuthCallbackJSONBody struct {
 	Code      string `json:"code"`
@@ -12716,6 +13129,12 @@ type CreateProfileJSONBody struct {
 	Description *string `json:"description,omitempty"`
 	Name        string  `json:"name"`
 }
+
+// CreateProfile402JSONResponseBodyCode defines parameters for CreateProfile.
+type CreateProfile402JSONResponseBodyCode string
+
+// CreateProfile402JSONResponseBodyReason defines parameters for CreateProfile.
+type CreateProfile402JSONResponseBodyReason string
 
 // UpdateProfileJSONBody defines parameters for UpdateProfile.
 type UpdateProfileJSONBody struct {
@@ -16731,6 +17150,9 @@ type ClientInterface interface {
 	// DeleteApiKey request
 	DeleteApiKey(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetXApiPricing request
+	GetXApiPricing(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListBroadcasts request
 	ListBroadcasts(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -19061,6 +19483,18 @@ func (c *Client) CreateApiKey(ctx context.Context, body CreateApiKeyJSONRequestB
 
 func (c *Client) DeleteApiKey(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteApiKeyRequest(c.Server, keyId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetXApiPricing(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetXApiPricingRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -28541,6 +28975,33 @@ func NewDeleteApiKeyRequest(server string, keyId string) (*http.Request, error) 
 	return req, nil
 }
 
+// NewGetXApiPricingRequest generates requests for GetXApiPricing
+func NewGetXApiPricingRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/billing/x-pricing")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListBroadcastsRequest generates requests for ListBroadcasts
 func NewListBroadcastsRequest(server string, params *ListBroadcastsParams) (*http.Request, error) {
 	var err error
@@ -37813,6 +38274,9 @@ type ClientWithResponsesInterface interface {
 	// DeleteApiKeyWithResponse request
 	DeleteApiKeyWithResponse(ctx context.Context, keyId string, reqEditors ...RequestEditorFn) (*DeleteApiKeyResponse, error)
 
+	// GetXApiPricingWithResponse request
+	GetXApiPricingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetXApiPricingResponse, error)
+
 	// ListBroadcastsWithResponse request
 	ListBroadcastsWithResponse(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*ListBroadcastsResponse, error)
 
@@ -38785,6 +39249,13 @@ type UpdateAccountResponse struct {
 		DisplayName *string `json:"displayName,omitempty"`
 		Message     *string `json:"message,omitempty"`
 		Username    *string `json:"username,omitempty"`
+
+		// XCapabilities Echo of the resulting `xCapabilities` state, returned only
+		// when the request body included an `xCapabilities` object.
+		XCapabilities *struct {
+			Analytics *bool `json:"analytics,omitempty"`
+			Inbox     *bool `json:"inbox,omitempty"`
+		} `json:"xCapabilities,omitempty"`
 	}
 	JSON401 *Unauthorized
 	JSON404 *NotFound
@@ -43064,6 +43535,37 @@ func (r DeleteApiKeyResponse) ContentType() string {
 	return ""
 }
 
+type GetXApiPricingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *XApiPricing
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetXApiPricingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetXApiPricingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetXApiPricingResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListBroadcastsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -44624,6 +45126,7 @@ type GetConnectUrlResponse struct {
 		State *string `json:"state,omitempty"`
 	}
 	JSON401 *Unauthorized
+	JSON402 *PaymentRequired
 }
 
 // Status returns HTTPResponse.Status
@@ -47044,6 +47547,7 @@ type CreateProfileResponse struct {
 	HTTPResponse *http.Response
 	JSON201      *ProfileCreateResponse
 	JSON401      *Unauthorized
+	JSON402      *PaymentRequired
 }
 
 // Status returns HTTPResponse.Status
@@ -51197,6 +51701,15 @@ func (c *ClientWithResponses) DeleteApiKeyWithResponse(ctx context.Context, keyI
 	return ParseDeleteApiKeyResponse(rsp)
 }
 
+// GetXApiPricingWithResponse request returning *GetXApiPricingResponse
+func (c *ClientWithResponses) GetXApiPricingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetXApiPricingResponse, error) {
+	rsp, err := c.GetXApiPricing(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetXApiPricingResponse(rsp)
+}
+
 // ListBroadcastsWithResponse request returning *ListBroadcastsResponse
 func (c *ClientWithResponses) ListBroadcastsWithResponse(ctx context.Context, params *ListBroadcastsParams, reqEditors ...RequestEditorFn) (*ListBroadcastsResponse, error) {
 	rsp, err := c.ListBroadcasts(ctx, params, reqEditors...)
@@ -53636,6 +54149,13 @@ func ParseUpdateAccountResponse(rsp *http.Response) (*UpdateAccountResponse, err
 			DisplayName *string `json:"displayName,omitempty"`
 			Message     *string `json:"message,omitempty"`
 			Username    *string `json:"username,omitempty"`
+
+			// XCapabilities Echo of the resulting `xCapabilities` state, returned only
+			// when the request body included an `xCapabilities` object.
+			XCapabilities *struct {
+				Analytics *bool `json:"analytics,omitempty"`
+				Inbox     *bool `json:"inbox,omitempty"`
+			} `json:"xCapabilities,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -58597,6 +59117,39 @@ func ParseDeleteApiKeyResponse(rsp *http.Response) (*DeleteApiKeyResponse, error
 	return response, nil
 }
 
+// ParseGetXApiPricingResponse parses an HTTP response from a GetXApiPricingWithResponse call
+func ParseGetXApiPricingResponse(rsp *http.Response) (*GetXApiPricingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetXApiPricingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest XApiPricing
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListBroadcastsResponse parses an HTTP response from a ListBroadcastsWithResponse call
 func ParseListBroadcastsResponse(rsp *http.Response) (*ListBroadcastsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -60317,6 +60870,13 @@ func ParseGetConnectUrlResponse(rsp *http.Response) (*GetConnectUrlResponse, err
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest PaymentRequired
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
 
 	}
 
@@ -62977,6 +63537,13 @@ func ParseCreateProfileResponse(rsp *http.Response) (*CreateProfileResponse, err
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest PaymentRequired
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
 
 	}
 
