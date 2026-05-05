@@ -4866,6 +4866,51 @@ func (e GetInboxPostComments200JSONResponseBodyCommentsFromVerifiedType) Valid()
 	}
 }
 
+// Defines values for SendPrivateReplyToCommentJSONBodyButtons0Type.
+const (
+	SendPrivateReplyToCommentJSONBodyButtons0TypeUrl SendPrivateReplyToCommentJSONBodyButtons0Type = "url"
+)
+
+// Valid indicates whether the value is a known member of the SendPrivateReplyToCommentJSONBodyButtons0Type enum.
+func (e SendPrivateReplyToCommentJSONBodyButtons0Type) Valid() bool {
+	switch e {
+	case SendPrivateReplyToCommentJSONBodyButtons0TypeUrl:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendPrivateReplyToCommentJSONBodyButtons1Type.
+const (
+	SendPrivateReplyToCommentJSONBodyButtons1TypePostback SendPrivateReplyToCommentJSONBodyButtons1Type = "postback"
+)
+
+// Valid indicates whether the value is a known member of the SendPrivateReplyToCommentJSONBodyButtons1Type enum.
+func (e SendPrivateReplyToCommentJSONBodyButtons1Type) Valid() bool {
+	switch e {
+	case SendPrivateReplyToCommentJSONBodyButtons1TypePostback:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendPrivateReplyToCommentJSONBodyButtons2Type.
+const (
+	SendPrivateReplyToCommentJSONBodyButtons2TypePhone SendPrivateReplyToCommentJSONBodyButtons2Type = "phone"
+)
+
+// Valid indicates whether the value is a known member of the SendPrivateReplyToCommentJSONBodyButtons2Type enum.
+func (e SendPrivateReplyToCommentJSONBodyButtons2Type) Valid() bool {
+	switch e {
+	case SendPrivateReplyToCommentJSONBodyButtons2TypePhone:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendPrivateReplyToComment200JSONResponseBodyPlatform.
 const (
 	SendPrivateReplyToComment200JSONResponseBodyPlatformFacebook  SendPrivateReplyToComment200JSONResponseBodyPlatform = "facebook"
@@ -6260,25 +6305,25 @@ func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyStepsTemplateVariableMappingField.
 const (
-	Company CreateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
-	Custom  CreateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
-	Email   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
-	Name    CreateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
-	Phone   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
+	CreateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany CreateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
+	CreateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom  CreateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
+	CreateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
+	CreateSequenceJSONBodyStepsTemplateVariableMappingFieldName    CreateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
+	CreateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone   CreateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyStepsTemplateVariableMappingField enum.
 func (e CreateSequenceJSONBodyStepsTemplateVariableMappingField) Valid() bool {
 	switch e {
-	case Company:
+	case CreateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany:
 		return true
-	case Custom:
+	case CreateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom:
 		return true
-	case Email:
+	case CreateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail:
 		return true
-	case Name:
+	case CreateSequenceJSONBodyStepsTemplateVariableMappingFieldName:
 		return true
-	case Phone:
+	case CreateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone:
 		return true
 	default:
 		return false
@@ -12310,11 +12355,19 @@ type SendPrivateReplyToCommentJSONBody struct {
 	// AccountId The social account ID (Instagram or Facebook)
 	AccountId string `json:"accountId"`
 
+	// Buttons Optional 1-3 inline buttons rendered as part of the same message bubble
+	// via Meta's button_template. Visible in the Instagram Message Requests
+	// folder (unlike quick replies). Mutually exclusive with `quickReplies`.
+	Buttons *[]SendPrivateReplyToCommentJSONBody_Buttons_Item `json:"buttons,omitempty"`
+
 	// Message The message text to send as a private DM
 	Message string `json:"message"`
 
 	// QuickReplies Optional quick-reply chips appended to the message. Visible only in the
-	// Instagram and Messenger apps (not on web). Maximum 13 entries.
+	// Instagram and Messenger apps (not on web). Maximum 13 entries. Mutually
+	// exclusive with `buttons`. Note: chips do NOT render in the Instagram
+	// Message Requests folder where DMs from non-followers land — use `buttons`
+	// instead for cold reach.
 	QuickReplies *[]struct {
 		// ImageUrl Optional thumbnail shown next to the chip title.
 		ImageUrl *string `json:"imageUrl,omitempty"`
@@ -12325,6 +12378,50 @@ type SendPrivateReplyToCommentJSONBody struct {
 		// Title Label shown on the chip. Truncated by Meta beyond 20 characters.
 		Title string `json:"title"`
 	} `json:"quickReplies,omitempty"`
+}
+
+// SendPrivateReplyToCommentJSONBodyButtons0 defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons0 struct {
+	// Title Label shown on the button.
+	Title string                                        `json:"title"`
+	Type  SendPrivateReplyToCommentJSONBodyButtons0Type `json:"type"`
+
+	// Url URL opened when the button is tapped.
+	Url string `json:"url"`
+}
+
+// SendPrivateReplyToCommentJSONBodyButtons0Type defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons0Type string
+
+// SendPrivateReplyToCommentJSONBodyButtons1 defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons1 struct {
+	// Payload Opaque value returned in the inbound webhook when the user taps the button.
+	Payload string `json:"payload"`
+
+	// Title Label shown on the button.
+	Title string                                        `json:"title"`
+	Type  SendPrivateReplyToCommentJSONBodyButtons1Type `json:"type"`
+}
+
+// SendPrivateReplyToCommentJSONBodyButtons1Type defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons1Type string
+
+// SendPrivateReplyToCommentJSONBodyButtons2 defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons2 struct {
+	// Phone E.164 phone number dialed when tapped. Facebook only.
+	Phone string `json:"phone"`
+
+	// Title Label shown on the button. Facebook only.
+	Title string                                        `json:"title"`
+	Type  SendPrivateReplyToCommentJSONBodyButtons2Type `json:"type"`
+}
+
+// SendPrivateReplyToCommentJSONBodyButtons2Type defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBodyButtons2Type string
+
+// SendPrivateReplyToCommentJSONBody_Buttons_Item defines parameters for SendPrivateReplyToComment.
+type SendPrivateReplyToCommentJSONBody_Buttons_Item struct {
+	union json.RawMessage
 }
 
 // SendPrivateReplyToComment200JSONResponseBodyPlatform defines parameters for SendPrivateReplyToComment.
@@ -15859,6 +15956,94 @@ func (t ConnectAds200JSONResponseBody) MarshalJSON() ([]byte, error) {
 }
 
 func (t *ConnectAds200JSONResponseBody) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsSendPrivateReplyToCommentJSONBodyButtons0 returns the union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as a SendPrivateReplyToCommentJSONBodyButtons0
+func (t SendPrivateReplyToCommentJSONBody_Buttons_Item) AsSendPrivateReplyToCommentJSONBodyButtons0() (SendPrivateReplyToCommentJSONBodyButtons0, error) {
+	var body SendPrivateReplyToCommentJSONBodyButtons0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSendPrivateReplyToCommentJSONBodyButtons0 overwrites any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as the provided SendPrivateReplyToCommentJSONBodyButtons0
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) FromSendPrivateReplyToCommentJSONBodyButtons0(v SendPrivateReplyToCommentJSONBodyButtons0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSendPrivateReplyToCommentJSONBodyButtons0 performs a merge with any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item, using the provided SendPrivateReplyToCommentJSONBodyButtons0
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) MergeSendPrivateReplyToCommentJSONBodyButtons0(v SendPrivateReplyToCommentJSONBodyButtons0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSendPrivateReplyToCommentJSONBodyButtons1 returns the union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as a SendPrivateReplyToCommentJSONBodyButtons1
+func (t SendPrivateReplyToCommentJSONBody_Buttons_Item) AsSendPrivateReplyToCommentJSONBodyButtons1() (SendPrivateReplyToCommentJSONBodyButtons1, error) {
+	var body SendPrivateReplyToCommentJSONBodyButtons1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSendPrivateReplyToCommentJSONBodyButtons1 overwrites any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as the provided SendPrivateReplyToCommentJSONBodyButtons1
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) FromSendPrivateReplyToCommentJSONBodyButtons1(v SendPrivateReplyToCommentJSONBodyButtons1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSendPrivateReplyToCommentJSONBodyButtons1 performs a merge with any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item, using the provided SendPrivateReplyToCommentJSONBodyButtons1
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) MergeSendPrivateReplyToCommentJSONBodyButtons1(v SendPrivateReplyToCommentJSONBodyButtons1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSendPrivateReplyToCommentJSONBodyButtons2 returns the union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as a SendPrivateReplyToCommentJSONBodyButtons2
+func (t SendPrivateReplyToCommentJSONBody_Buttons_Item) AsSendPrivateReplyToCommentJSONBodyButtons2() (SendPrivateReplyToCommentJSONBodyButtons2, error) {
+	var body SendPrivateReplyToCommentJSONBodyButtons2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSendPrivateReplyToCommentJSONBodyButtons2 overwrites any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item as the provided SendPrivateReplyToCommentJSONBodyButtons2
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) FromSendPrivateReplyToCommentJSONBodyButtons2(v SendPrivateReplyToCommentJSONBodyButtons2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSendPrivateReplyToCommentJSONBodyButtons2 performs a merge with any union data inside the SendPrivateReplyToCommentJSONBody_Buttons_Item, using the provided SendPrivateReplyToCommentJSONBodyButtons2
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) MergeSendPrivateReplyToCommentJSONBodyButtons2(v SendPrivateReplyToCommentJSONBodyButtons2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t SendPrivateReplyToCommentJSONBody_Buttons_Item) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *SendPrivateReplyToCommentJSONBody_Buttons_Item) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
