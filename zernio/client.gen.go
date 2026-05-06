@@ -7055,7 +7055,7 @@ func (e UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode) Valid() bool {
 
 // AccountWithFollowerStats defines model for AccountWithFollowerStats.
 type AccountWithFollowerStats struct {
-	UnderscoreId *string `json:"_id,omitempty"`
+	UnderscoreId string `json:"_id"`
 
 	// AccountStats Platform-specific account stats from the latest daily snapshot.
 	// Fields vary by platform. Only present if metadata has been captured.
@@ -7117,7 +7117,7 @@ type AccountWithFollowerStats struct {
 
 	// GrowthPercentage Percentage growth
 	GrowthPercentage *float32   `json:"growthPercentage,omitempty"`
-	IsActive         *bool      `json:"isActive,omitempty"`
+	IsActive         bool       `json:"isActive"`
 	LastUpdated      *time.Time `json:"lastUpdated,omitempty"`
 
 	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
@@ -7133,9 +7133,9 @@ type AccountWithFollowerStats struct {
 	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
 	// or derive from a posting account's OAuth token. null for standalone ads (Google Ads)
 	// and all posting accounts.
-	ParentAccountId *string                             `json:"parentAccountId,omitempty"`
-	Platform        *AccountWithFollowerStatsPlatform   `json:"platform,omitempty"`
-	ProfileId       *AccountWithFollowerStats_ProfileId `json:"profileId,omitempty"`
+	ParentAccountId *string                            `json:"parentAccountId,omitempty"`
+	Platform        AccountWithFollowerStatsPlatform   `json:"platform"`
+	ProfileId       AccountWithFollowerStats_ProfileId `json:"profileId"`
 
 	// ProfilePicture URL to the account's profile picture on the platform. May be null if the platform does not provide one.
 	ProfilePicture *string `json:"profilePicture,omitempty"`
@@ -8843,7 +8843,7 @@ type SnapchatPlatformDataContentType string
 
 // SocialAccount defines model for SocialAccount.
 type SocialAccount struct {
-	UnderscoreId *string `json:"_id,omitempty"`
+	UnderscoreId string  `json:"_id"`
 	DisplayName  *string `json:"displayName,omitempty"`
 
 	// Enabled Whether the user explicitly activated this account. false means the account was
@@ -8856,7 +8856,7 @@ type SocialAccount struct {
 
 	// FollowersLastUpdated Last time follower count was updated (only included if user has analytics add-on)
 	FollowersLastUpdated *time.Time `json:"followersLastUpdated,omitempty"`
-	IsActive             *bool      `json:"isActive,omitempty"`
+	IsActive             bool       `json:"isActive"`
 
 	// Metadata Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes:
 	// - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN)
@@ -8871,9 +8871,9 @@ type SocialAccount struct {
 	// ParentAccountId Reference to the parent posting SocialAccount. Set for ads accounts that share
 	// or derive from a posting account's OAuth token. null for standalone ads (Google Ads)
 	// and all posting accounts.
-	ParentAccountId *string                  `json:"parentAccountId,omitempty"`
-	Platform        *SocialAccountPlatform   `json:"platform,omitempty"`
-	ProfileId       *SocialAccount_ProfileId `json:"profileId,omitempty"`
+	ParentAccountId *string                 `json:"parentAccountId,omitempty"`
+	Platform        SocialAccountPlatform   `json:"platform"`
+	ProfileId       SocialAccount_ProfileId `json:"profileId"`
 
 	// ProfilePicture URL to the account's profile picture on the platform. May be null if the platform does not provide one.
 	ProfilePicture *string `json:"profilePicture,omitempty"`
@@ -39491,10 +39491,10 @@ type ListAccountsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Accounts *[]SocialAccount `json:"accounts,omitempty"`
+		Accounts []SocialAccount `json:"accounts"`
 
 		// HasAnalyticsAccess Whether user has analytics add-on access
-		HasAnalyticsAccess *bool       `json:"hasAnalyticsAccess,omitempty"`
+		HasAnalyticsAccess bool        `json:"hasAnalyticsAccess"`
 		Pagination         *Pagination `json:"pagination,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -54507,10 +54507,10 @@ func ParseListAccountsResponse(rsp *http.Response) (*ListAccountsResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Accounts *[]SocialAccount `json:"accounts,omitempty"`
+			Accounts []SocialAccount `json:"accounts"`
 
 			// HasAnalyticsAccess Whether user has analytics add-on access
-			HasAnalyticsAccess *bool       `json:"hasAnalyticsAccess,omitempty"`
+			HasAnalyticsAccess bool        `json:"hasAnalyticsAccess"`
 			Pagination         *Pagination `json:"pagination,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
