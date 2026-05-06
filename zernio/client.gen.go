@@ -10118,7 +10118,7 @@ type ListAdsParams struct {
 	// CampaignId Platform campaign ID (filter ads within a campaign)
 	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
 
-	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch when scoped to a specific accountId.
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
 	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
@@ -10974,7 +10974,7 @@ type GetAdTreeParams struct {
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch when scoped to a specific accountId.
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
 	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
@@ -11043,7 +11043,7 @@ type UpdateAdJSONBodyTargetingAdvantageAudience int
 
 // GetAdAnalyticsParams defines parameters for GetAdAnalytics.
 type GetAdAnalyticsParams struct {
-	// FromDate Start of date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch.
+	// FromDate Start of date range (YYYY-MM-DD). Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
 	// ToDate End of date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
