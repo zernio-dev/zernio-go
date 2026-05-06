@@ -10118,10 +10118,10 @@ type ListAdsParams struct {
 	// CampaignId Platform campaign ID (filter ads within a campaign)
 	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
 
-	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch when scoped to a specific accountId.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
-	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 }
 
@@ -10974,10 +10974,10 @@ type GetAdTreeParams struct {
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
+	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch when scoped to a specific accountId.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
-	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 }
 
@@ -11043,10 +11043,10 @@ type UpdateAdJSONBodyTargetingAdvantageAudience int
 
 // GetAdAnalyticsParams defines parameters for GetAdAnalytics.
 type GetAdAnalyticsParams struct {
-	// FromDate Start of date range (YYYY-MM-DD). Defaults to 90 days ago.
+	// FromDate Start of date range (YYYY-MM-DD). Defaults to 90 days ago. Ranges older than 90 days trigger an on-demand platform fetch.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
-	// ToDate End of date range (YYYY-MM-DD). Defaults to today. Max 90-day range.
+	// ToDate End of date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 
 	// Breakdowns Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
