@@ -687,6 +687,24 @@ func (e BidStrategy) Valid() bool {
 	}
 }
 
+// Defines values for ConversionDestinationStatus.
+const (
+	ConversionDestinationStatusActive   ConversionDestinationStatus = "active"
+	ConversionDestinationStatusInactive ConversionDestinationStatus = "inactive"
+)
+
+// Valid indicates whether the value is a known member of the ConversionDestinationStatus enum.
+func (e ConversionDestinationStatus) Valid() bool {
+	switch e {
+	case ConversionDestinationStatusActive:
+		return true
+	case ConversionDestinationStatusInactive:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversionEventActionSource.
 const (
 	App             ConversionEventActionSource = "app"
@@ -959,13 +977,13 @@ func (e LinkedInAggregateAnalyticsDailyResponseAggregation) Valid() bool {
 
 // Defines values for LinkedInAggregateAnalyticsTotalResponseAggregation.
 const (
-	TOTAL LinkedInAggregateAnalyticsTotalResponseAggregation = "TOTAL"
+	LinkedInAggregateAnalyticsTotalResponseAggregationTOTAL LinkedInAggregateAnalyticsTotalResponseAggregation = "TOTAL"
 )
 
 // Valid indicates whether the value is a known member of the LinkedInAggregateAnalyticsTotalResponseAggregation enum.
 func (e LinkedInAggregateAnalyticsTotalResponseAggregation) Valid() bool {
 	switch e {
-	case TOTAL:
+	case LinkedInAggregateAnalyticsTotalResponseAggregationTOTAL:
 		return true
 	default:
 		return false
@@ -1868,8 +1886,9 @@ func (e ListConversionDestinations200JSONResponseBodyDestinationsStatus) Valid()
 
 // Defines values for ListConversionDestinations200JSONResponseBodyPlatform.
 const (
-	ListConversionDestinations200JSONResponseBodyPlatformGoogleads ListConversionDestinations200JSONResponseBodyPlatform = "googleads"
-	ListConversionDestinations200JSONResponseBodyPlatformMetaads   ListConversionDestinations200JSONResponseBodyPlatform = "metaads"
+	ListConversionDestinations200JSONResponseBodyPlatformGoogleads   ListConversionDestinations200JSONResponseBodyPlatform = "googleads"
+	ListConversionDestinations200JSONResponseBodyPlatformLinkedinads ListConversionDestinations200JSONResponseBodyPlatform = "linkedinads"
+	ListConversionDestinations200JSONResponseBodyPlatformMetaads     ListConversionDestinations200JSONResponseBodyPlatform = "metaads"
 )
 
 // Valid indicates whether the value is a known member of the ListConversionDestinations200JSONResponseBodyPlatform enum.
@@ -1877,7 +1896,369 @@ func (e ListConversionDestinations200JSONResponseBodyPlatform) Valid() bool {
 	switch e {
 	case ListConversionDestinations200JSONResponseBodyPlatformGoogleads:
 		return true
+	case ListConversionDestinations200JSONResponseBodyPlatformLinkedinads:
+		return true
 	case ListConversionDestinations200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestinationJSONBodyAttributionType.
+const (
+	CreateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCAMPAIGN   CreateConversionDestinationJSONBodyAttributionType = "LAST_TOUCH_BY_CAMPAIGN"
+	CreateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCONVERSION CreateConversionDestinationJSONBodyAttributionType = "LAST_TOUCH_BY_CONVERSION"
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyAttributionType enum.
+func (e CreateConversionDestinationJSONBodyAttributionType) Valid() bool {
+	switch e {
+	case CreateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCAMPAIGN:
+		return true
+	case CreateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCONVERSION:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestinationJSONBodyAutoAssociationType.
+const (
+	CreateConversionDestinationJSONBodyAutoAssociationTypeALLCAMPAIGNS   CreateConversionDestinationJSONBodyAutoAssociationType = "ALL_CAMPAIGNS"
+	CreateConversionDestinationJSONBodyAutoAssociationTypeNONE           CreateConversionDestinationJSONBodyAutoAssociationType = "NONE"
+	CreateConversionDestinationJSONBodyAutoAssociationTypeOBJECTIVEBASED CreateConversionDestinationJSONBodyAutoAssociationType = "OBJECTIVE_BASED"
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyAutoAssociationType enum.
+func (e CreateConversionDestinationJSONBodyAutoAssociationType) Valid() bool {
+	switch e {
+	case CreateConversionDestinationJSONBodyAutoAssociationTypeALLCAMPAIGNS:
+		return true
+	case CreateConversionDestinationJSONBodyAutoAssociationTypeNONE:
+		return true
+	case CreateConversionDestinationJSONBodyAutoAssociationTypeOBJECTIVEBASED:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestinationJSONBodyPostClickAttributionWindowSize.
+const (
+	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN1   CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 1
+	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN30  CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 30
+	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN365 CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 365
+	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN7   CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 7
+	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN90  CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 90
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyPostClickAttributionWindowSize enum.
+func (e CreateConversionDestinationJSONBodyPostClickAttributionWindowSize) Valid() bool {
+	switch e {
+	case CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN1:
+		return true
+	case CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN30:
+		return true
+	case CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN365:
+		return true
+	case CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN7:
+		return true
+	case CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN90:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestinationJSONBodyValueType.
+const (
+	CreateConversionDestinationJSONBodyValueTypeDYNAMIC CreateConversionDestinationJSONBodyValueType = "DYNAMIC"
+	CreateConversionDestinationJSONBodyValueTypeFIXED   CreateConversionDestinationJSONBodyValueType = "FIXED"
+	CreateConversionDestinationJSONBodyValueTypeNOVALUE CreateConversionDestinationJSONBodyValueType = "NO_VALUE"
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyValueType enum.
+func (e CreateConversionDestinationJSONBodyValueType) Valid() bool {
+	switch e {
+	case CreateConversionDestinationJSONBodyValueTypeDYNAMIC:
+		return true
+	case CreateConversionDestinationJSONBodyValueTypeFIXED:
+		return true
+	case CreateConversionDestinationJSONBodyValueTypeNOVALUE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize.
+const (
+	CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN1   CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 1
+	CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN30  CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 30
+	CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN365 CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 365
+	CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN7   CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 7
+	CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN90  CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 90
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize enum.
+func (e CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize) Valid() bool {
+	switch e {
+	case CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN1:
+		return true
+	case CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN30:
+		return true
+	case CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN365:
+		return true
+	case CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN7:
+		return true
+	case CreateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN90:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateConversionDestination201JSONResponseBodyPlatform.
+const (
+	CreateConversionDestination201JSONResponseBodyPlatformLinkedinads CreateConversionDestination201JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestination201JSONResponseBodyPlatform enum.
+func (e CreateConversionDestination201JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case CreateConversionDestination201JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetConversionDestination200JSONResponseBodyPlatform.
+const (
+	GetConversionDestination200JSONResponseBodyPlatformLinkedinads GetConversionDestination200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the GetConversionDestination200JSONResponseBodyPlatform enum.
+func (e GetConversionDestination200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case GetConversionDestination200JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateConversionDestinationJSONBodyAttributionType.
+const (
+	UpdateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCAMPAIGN   UpdateConversionDestinationJSONBodyAttributionType = "LAST_TOUCH_BY_CAMPAIGN"
+	UpdateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCONVERSION UpdateConversionDestinationJSONBodyAttributionType = "LAST_TOUCH_BY_CONVERSION"
+)
+
+// Valid indicates whether the value is a known member of the UpdateConversionDestinationJSONBodyAttributionType enum.
+func (e UpdateConversionDestinationJSONBodyAttributionType) Valid() bool {
+	switch e {
+	case UpdateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCAMPAIGN:
+		return true
+	case UpdateConversionDestinationJSONBodyAttributionTypeLASTTOUCHBYCONVERSION:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize.
+const (
+	UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN1   UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize = 1
+	UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN30  UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize = 30
+	UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN365 UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize = 365
+	UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN7   UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize = 7
+	UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN90  UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize = 90
+)
+
+// Valid indicates whether the value is a known member of the UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize enum.
+func (e UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize) Valid() bool {
+	switch e {
+	case UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN1:
+		return true
+	case UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN30:
+		return true
+	case UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN365:
+		return true
+	case UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN7:
+		return true
+	case UpdateConversionDestinationJSONBodyPostClickAttributionWindowSizeN90:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateConversionDestinationJSONBodyValueType.
+const (
+	UpdateConversionDestinationJSONBodyValueTypeDYNAMIC UpdateConversionDestinationJSONBodyValueType = "DYNAMIC"
+	UpdateConversionDestinationJSONBodyValueTypeFIXED   UpdateConversionDestinationJSONBodyValueType = "FIXED"
+	UpdateConversionDestinationJSONBodyValueTypeNOVALUE UpdateConversionDestinationJSONBodyValueType = "NO_VALUE"
+)
+
+// Valid indicates whether the value is a known member of the UpdateConversionDestinationJSONBodyValueType enum.
+func (e UpdateConversionDestinationJSONBodyValueType) Valid() bool {
+	switch e {
+	case UpdateConversionDestinationJSONBodyValueTypeDYNAMIC:
+		return true
+	case UpdateConversionDestinationJSONBodyValueTypeFIXED:
+		return true
+	case UpdateConversionDestinationJSONBodyValueTypeNOVALUE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize.
+const (
+	UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN1   UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 1
+	UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN30  UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 30
+	UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN365 UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 365
+	UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN7   UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 7
+	UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN90  UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize = 90
+)
+
+// Valid indicates whether the value is a known member of the UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize enum.
+func (e UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize) Valid() bool {
+	switch e {
+	case UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN1:
+		return true
+	case UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN30:
+		return true
+	case UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN365:
+		return true
+	case UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN7:
+		return true
+	case UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSizeN90:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateConversionDestination200JSONResponseBodyPlatform.
+const (
+	UpdateConversionDestination200JSONResponseBodyPlatformLinkedinads UpdateConversionDestination200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the UpdateConversionDestination200JSONResponseBodyPlatform enum.
+func (e UpdateConversionDestination200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateConversionDestination200JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RemoveConversionAssociations200JSONResponseBodyPlatform.
+const (
+	RemoveConversionAssociations200JSONResponseBodyPlatformLinkedinads RemoveConversionAssociations200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the RemoveConversionAssociations200JSONResponseBodyPlatform enum.
+func (e RemoveConversionAssociations200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case RemoveConversionAssociations200JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListConversionAssociations200JSONResponseBodyPlatform.
+const (
+	ListConversionAssociations200JSONResponseBodyPlatformLinkedinads ListConversionAssociations200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the ListConversionAssociations200JSONResponseBodyPlatform enum.
+func (e ListConversionAssociations200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case ListConversionAssociations200JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AddConversionAssociations200JSONResponseBodyPlatform.
+const (
+	AddConversionAssociations200JSONResponseBodyPlatformLinkedinads AddConversionAssociations200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the AddConversionAssociations200JSONResponseBodyPlatform enum.
+func (e AddConversionAssociations200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case AddConversionAssociations200JSONResponseBodyPlatformLinkedinads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetConversionMetricsParamsGranularity.
+const (
+	GetConversionMetricsParamsGranularityALL     GetConversionMetricsParamsGranularity = "ALL"
+	GetConversionMetricsParamsGranularityDAILY   GetConversionMetricsParamsGranularity = "DAILY"
+	GetConversionMetricsParamsGranularityMONTHLY GetConversionMetricsParamsGranularity = "MONTHLY"
+	GetConversionMetricsParamsGranularityYEARLY  GetConversionMetricsParamsGranularity = "YEARLY"
+)
+
+// Valid indicates whether the value is a known member of the GetConversionMetricsParamsGranularity enum.
+func (e GetConversionMetricsParamsGranularity) Valid() bool {
+	switch e {
+	case GetConversionMetricsParamsGranularityALL:
+		return true
+	case GetConversionMetricsParamsGranularityDAILY:
+		return true
+	case GetConversionMetricsParamsGranularityMONTHLY:
+		return true
+	case GetConversionMetricsParamsGranularityYEARLY:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetConversionMetrics200JSONResponseBodyGranularity.
+const (
+	ALL     GetConversionMetrics200JSONResponseBodyGranularity = "ALL"
+	DAILY   GetConversionMetrics200JSONResponseBodyGranularity = "DAILY"
+	MONTHLY GetConversionMetrics200JSONResponseBodyGranularity = "MONTHLY"
+	YEARLY  GetConversionMetrics200JSONResponseBodyGranularity = "YEARLY"
+)
+
+// Valid indicates whether the value is a known member of the GetConversionMetrics200JSONResponseBodyGranularity enum.
+func (e GetConversionMetrics200JSONResponseBodyGranularity) Valid() bool {
+	switch e {
+	case ALL:
+		return true
+	case DAILY:
+		return true
+	case MONTHLY:
+		return true
+	case YEARLY:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetConversionMetrics200JSONResponseBodyPlatform.
+const (
+	GetConversionMetrics200JSONResponseBodyPlatformLinkedinads GetConversionMetrics200JSONResponseBodyPlatform = "linkedinads"
+)
+
+// Valid indicates whether the value is a known member of the GetConversionMetrics200JSONResponseBodyPlatform enum.
+func (e GetConversionMetrics200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case GetConversionMetrics200JSONResponseBodyPlatformLinkedinads:
 		return true
 	default:
 		return false
@@ -2993,14 +3374,17 @@ func (e SendConversionsJSONBodyConsentAdUserData) Valid() bool {
 
 // Defines values for SendConversions200JSONResponseBodyPlatform.
 const (
-	SendConversions200JSONResponseBodyPlatformGoogleads SendConversions200JSONResponseBodyPlatform = "googleads"
-	SendConversions200JSONResponseBodyPlatformMetaads   SendConversions200JSONResponseBodyPlatform = "metaads"
+	SendConversions200JSONResponseBodyPlatformGoogleads   SendConversions200JSONResponseBodyPlatform = "googleads"
+	SendConversions200JSONResponseBodyPlatformLinkedinads SendConversions200JSONResponseBodyPlatform = "linkedinads"
+	SendConversions200JSONResponseBodyPlatformMetaads     SendConversions200JSONResponseBodyPlatform = "metaads"
 )
 
 // Valid indicates whether the value is a known member of the SendConversions200JSONResponseBodyPlatform enum.
 func (e SendConversions200JSONResponseBodyPlatform) Valid() bool {
 	switch e {
 	case SendConversions200JSONResponseBodyPlatformGoogleads:
+		return true
+	case SendConversions200JSONResponseBodyPlatformLinkedinads:
 		return true
 	case SendConversions200JSONResponseBodyPlatformMetaads:
 		return true
@@ -6272,31 +6656,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
-	Instagram CreateSequenceJSONBodyPlatform = "instagram"
-	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
-	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
-	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
-	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateSequenceJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateSequenceJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateSequenceJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateSequenceJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateSequenceJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateSequenceJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateSequenceJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -6695,13 +7079,13 @@ func (e GetWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus) Valid() bool
 
 // Defines values for UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus.
 const (
-	UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatusPENDINGREVIEW UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus = "PENDING_REVIEW"
+	PENDINGREVIEW UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus = "PENDING_REVIEW"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus enum.
 func (e UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus) Valid() bool {
 	switch e {
-	case UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatusPENDINGREVIEW:
+	case PENDINGREVIEW:
 		return true
 	default:
 		return false
@@ -6941,28 +7325,28 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus.
 const (
-	Active         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
-	PendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
-	Provisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
-	Released       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
-	Releasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
-	Suspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus enum.
 func (e GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus) Valid() bool {
 	switch e {
-	case Active:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive:
 		return true
-	case PendingPayment:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment:
 		return true
-	case Provisioning:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning:
 		return true
-	case Released:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased:
 		return true
-	case Releasing:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing:
 		return true
-	case Suspended:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended:
 		return true
 	default:
 		return false
@@ -7799,6 +8183,33 @@ type BusinessCenter struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// ConversionDestination A discoverable conversion destination on an ad platform — a Meta pixel,
+// Google conversion action, or LinkedIn conversion rule. Returned by
+// `listConversionDestinations`, `getConversionDestination`,
+// `createConversionDestination`, and `updateConversionDestination`.
+type ConversionDestination struct {
+	// AdAccountId Set by adapters whose destinations are scoped to a specific ad
+	// account (LinkedIn). Pass back on subsequent CRUD calls to
+	// identify the parent ad account.
+	AdAccountId *string `json:"adAccountId,omitempty"`
+
+	// Id Platform-native identifier. Pass back as `destinationId` on event
+	// send and as the path segment on CRUD endpoints.
+	Id   string `json:"id"`
+	Name string `json:"name"`
+
+	// Status For LinkedIn, `inactive` means the rule is soft-deleted (`enabled: false`).
+	Status *ConversionDestinationStatus `json:"status,omitempty"`
+
+	// Type Present when the platform locks the event type/category to the
+	// destination (Google conversion actions, LinkedIn conversion rules).
+	// Absent for Meta pixels (which accept any event name per request).
+	Type *string `json:"type,omitempty"`
+}
+
+// ConversionDestinationStatus For LinkedIn, `inactive` means the rule is soft-deleted (`enabled: false`).
+type ConversionDestinationStatus string
+
 // ConversionEvent A single conversion event to relay to the ad platform. All PII fields
 // (email, phone, names) are hashed with SHA-256 server-side using each
 // platform's normalization rules before they leave Zernio. Callers send
@@ -7811,14 +8222,21 @@ type ConversionEvent struct {
 	Currency *string `json:"currency,omitempty"`
 
 	// EventId Unique dedup key. The same eventId must be used on pixel + CAPI
-	// to prevent double-counting. Mapped to event_id on Meta and
-	// transactionId on Google.
+	// to prevent double-counting. Mapped to event_id on Meta,
+	// transactionId on Google, eventId on LinkedIn (LinkedIn deduplicates
+	// against Insight Tag events with the same eventId; the Insight Tag
+	// event wins when both arrive).
 	EventId string `json:"eventId"`
 
 	// EventName Standard event name (Purchase, Lead, CompleteRegistration, AddToCart,
 	// InitiateCheckout, AddPaymentInfo, Subscribe, StartTrial, ViewContent,
 	// Search, Contact, SubmitApplication, Schedule) or a custom string
-	// (only supported on platforms that accept custom events).
+	// (only supported on platforms that accept custom events — Meta).
+	//
+	// Per-platform behavior:
+	// - Meta: free-form; standard names match Meta's built-ins.
+	// - Google: ignored — the conversion action's category determines the type.
+	// - LinkedIn: ignored — the conversion rule's `type` is locked to the destination.
 	EventName string `json:"eventName"`
 
 	// EventTime When the conversion happened, in unix seconds.
@@ -7855,6 +8273,14 @@ type ConversionEvent struct {
 			// Gclid Google click ID (from gclid URL param).
 			Gclid *string `json:"gclid,omitempty"`
 
+			// LiFatId LinkedIn first-party ad tracking click ID. Captured by
+			// parsing `li_fat_id` from landing-page URLs after the
+			// advertiser enables enhanced conversion tracking on the
+			// LinkedIn Insight Tag. Sent to LinkedIn as the
+			// LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID userId. Opaque
+			// token, not hashed.
+			LiFatId *string `json:"li_fat_id,omitempty"`
+
 			// Wbraid Google iOS 14.5+ web-to-app attribution ID.
 			Wbraid *string `json:"wbraid,omitempty"`
 		} `json:"clickIds,omitempty"`
@@ -7865,7 +8291,10 @@ type ConversionEvent struct {
 		// Email Plaintext email. Hashed server-side.
 		Email *string `json:"email,omitempty"`
 
-		// ExternalId Stable customer identifier (e.g. CRM user ID). Hashed server-side.
+		// ExternalId Stable customer identifier (e.g. CRM user ID). Hashed
+		// server-side for Meta and Google. Sent as plaintext to LinkedIn
+		// (LinkedIn's Conversions API spec requires the raw value).
+		// Maximum effective list size on LinkedIn is 1.
 		ExternalId *string `json:"externalId,omitempty"`
 
 		// FirstName Plaintext first name. Hashed server-side.
@@ -9654,6 +10083,190 @@ type ListConversionDestinations200JSONResponseBodyDestinationsStatus string
 // ListConversionDestinations200JSONResponseBodyPlatform defines parameters for ListConversionDestinations.
 type ListConversionDestinations200JSONResponseBodyPlatform string
 
+// CreateConversionDestinationJSONBody defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBody struct {
+	// AdAccountId Sponsored ad account ID. Numeric (e.g. "5123456") or
+	// full `urn:li:sponsoredAccount:{id}` URN.
+	AdAccountId     string                                              `json:"adAccountId"`
+	AttributionType *CreateConversionDestinationJSONBodyAttributionType `json:"attributionType,omitempty"`
+
+	// AutoAssociationType Controls campaign association at rule-creation time:
+	// - ALL_CAMPAIGNS: associate the rule with every active,
+	//   paused, and draft campaign in the ad account
+	// - OBJECTIVE_BASED: associate only campaigns whose
+	//   objective matches the rule's type
+	// - NONE: don't auto-associate. Manage associations via
+	//   the `/associations` endpoints below.
+	// Note: auto-association runs once at create time; new
+	// campaigns added after the rule still need explicit
+	// association.
+	AutoAssociationType *CreateConversionDestinationJSONBodyAutoAssociationType `json:"autoAssociationType,omitempty"`
+	Name                string                                                  `json:"name"`
+
+	// PostClickAttributionWindowSize Default 30. 365 only allowed for LEAD, PURCHASE,
+	// ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION rule
+	// types — the API rejects other combinations locally.
+	PostClickAttributionWindowSize *CreateConversionDestinationJSONBodyPostClickAttributionWindowSize `json:"postClickAttributionWindowSize,omitempty"`
+
+	// Type Either a unified standard event name (e.g. "Purchase",
+	// "Lead", "AddToCart") or a LinkedIn rule type enum value
+	// (e.g. "PURCHASE", "QUALIFIED_LEAD"). The API maps
+	// standard names to LinkedIn enum values automatically.
+	Type string `json:"type"`
+
+	// Value Static conversion value. Used when `valueType=FIXED`.
+	// The currency should match the ad account's currency.
+	Value *struct {
+		// Amount Decimal string (e.g. "49.99").
+		Amount string `json:"amount"`
+
+		// CurrencyCode ISO 4217 (e.g. "USD").
+		CurrencyCode string `json:"currencyCode"`
+	} `json:"value,omitempty"`
+
+	// ValueType DYNAMIC (default) uses the per-event `value` from
+	// `sendConversions`. FIXED uses the rule's `value` field.
+	// NO_VALUE drops monetary value entirely.
+	ValueType *CreateConversionDestinationJSONBodyValueType `json:"valueType,omitempty"`
+
+	// ViewThroughAttributionWindowSize Default 7. Same 365-day-window type restriction applies
+	// as `postClickAttributionWindowSize`.
+	ViewThroughAttributionWindowSize *CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize `json:"viewThroughAttributionWindowSize,omitempty"`
+}
+
+// CreateConversionDestinationJSONBodyAttributionType defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyAttributionType string
+
+// CreateConversionDestinationJSONBodyAutoAssociationType defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyAutoAssociationType string
+
+// CreateConversionDestinationJSONBodyPostClickAttributionWindowSize defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyPostClickAttributionWindowSize int
+
+// CreateConversionDestinationJSONBodyValueType defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyValueType string
+
+// CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize int
+
+// CreateConversionDestination201JSONResponseBodyPlatform defines parameters for CreateConversionDestination.
+type CreateConversionDestination201JSONResponseBodyPlatform string
+
+// DeleteConversionDestinationParams defines parameters for DeleteConversionDestination.
+type DeleteConversionDestinationParams struct {
+	// AdAccountId Required as query OR in JSON body.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+}
+
+// GetConversionDestinationParams defines parameters for GetConversionDestination.
+type GetConversionDestinationParams struct {
+	// AdAccountId Numeric ID or full `urn:li:sponsoredAccount:{id}` URN.
+	AdAccountId string `form:"adAccountId" json:"adAccountId"`
+}
+
+// GetConversionDestination200JSONResponseBodyPlatform defines parameters for GetConversionDestination.
+type GetConversionDestination200JSONResponseBodyPlatform string
+
+// UpdateConversionDestinationJSONBody defines parameters for UpdateConversionDestination.
+type UpdateConversionDestinationJSONBody struct {
+	AdAccountId     string                                              `json:"adAccountId"`
+	AttributionType *UpdateConversionDestinationJSONBodyAttributionType `json:"attributionType,omitempty"`
+
+	// Enabled Setting `false` is equivalent to calling DELETE — the
+	// rule will appear as `inactive` afterwards.
+	Enabled *bool   `json:"enabled,omitempty"`
+	Name    *string `json:"name,omitempty"`
+
+	// PostClickAttributionWindowSize 365 only allowed for LEAD, PURCHASE, ADD_TO_CART,
+	// QUALIFIED_LEAD, SUBMIT_APPLICATION rule types.
+	PostClickAttributionWindowSize *UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize `json:"postClickAttributionWindowSize,omitempty"`
+
+	// Value Used when `valueType=FIXED`.
+	Value *struct {
+		// Amount Decimal string (e.g. "49.99").
+		Amount *string `json:"amount,omitempty"`
+
+		// CurrencyCode ISO 4217.
+		CurrencyCode *string `json:"currencyCode,omitempty"`
+	} `json:"value,omitempty"`
+	ValueType *UpdateConversionDestinationJSONBodyValueType `json:"valueType,omitempty"`
+
+	// ViewThroughAttributionWindowSize 365 only allowed for LEAD, PURCHASE, ADD_TO_CART,
+	// QUALIFIED_LEAD, SUBMIT_APPLICATION rule types.
+	ViewThroughAttributionWindowSize *UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize `json:"viewThroughAttributionWindowSize,omitempty"`
+}
+
+// UpdateConversionDestinationJSONBodyAttributionType defines parameters for UpdateConversionDestination.
+type UpdateConversionDestinationJSONBodyAttributionType string
+
+// UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize defines parameters for UpdateConversionDestination.
+type UpdateConversionDestinationJSONBodyPostClickAttributionWindowSize int
+
+// UpdateConversionDestinationJSONBodyValueType defines parameters for UpdateConversionDestination.
+type UpdateConversionDestinationJSONBodyValueType string
+
+// UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize defines parameters for UpdateConversionDestination.
+type UpdateConversionDestinationJSONBodyViewThroughAttributionWindowSize int
+
+// UpdateConversionDestination200JSONResponseBodyPlatform defines parameters for UpdateConversionDestination.
+type UpdateConversionDestination200JSONResponseBodyPlatform string
+
+// RemoveConversionAssociationsParams defines parameters for RemoveConversionAssociations.
+type RemoveConversionAssociationsParams struct {
+	AdAccountId string `form:"adAccountId" json:"adAccountId"`
+
+	// CampaignIds Comma-separated list of campaign IDs.
+	CampaignIds string `form:"campaignIds" json:"campaignIds"`
+}
+
+// RemoveConversionAssociations200JSONResponseBodyPlatform defines parameters for RemoveConversionAssociations.
+type RemoveConversionAssociations200JSONResponseBodyPlatform string
+
+// ListConversionAssociationsParams defines parameters for ListConversionAssociations.
+type ListConversionAssociationsParams struct {
+	AdAccountId string `form:"adAccountId" json:"adAccountId"`
+}
+
+// ListConversionAssociations200JSONResponseBodyPlatform defines parameters for ListConversionAssociations.
+type ListConversionAssociations200JSONResponseBodyPlatform string
+
+// AddConversionAssociationsJSONBody defines parameters for AddConversionAssociations.
+type AddConversionAssociationsJSONBody struct {
+	AdAccountId string   `json:"adAccountId"`
+	CampaignIds []string `json:"campaignIds"`
+}
+
+// AddConversionAssociations200JSONResponseBodyPlatform defines parameters for AddConversionAssociations.
+type AddConversionAssociations200JSONResponseBodyPlatform string
+
+// GetConversionMetricsParams defines parameters for GetConversionMetrics.
+type GetConversionMetricsParams struct {
+	AdAccountId string                                 `form:"adAccountId" json:"adAccountId"`
+	StartDate   string                                 `form:"startDate" json:"startDate"`
+	EndDate     *string                                `form:"endDate,omitempty" json:"endDate,omitempty"`
+	Granularity *GetConversionMetricsParamsGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+}
+
+// GetConversionMetricsParamsGranularity defines parameters for GetConversionMetrics.
+type GetConversionMetricsParamsGranularity string
+
+// GetConversionMetrics200JSONResponseBodyGranularity defines parameters for GetConversionMetrics.
+type GetConversionMetrics200JSONResponseBodyGranularity string
+
+// GetConversionMetrics200JSONResponseBodyPlatform defines parameters for GetConversionMetrics.
+type GetConversionMetrics200JSONResponseBodyPlatform string
+
+// GetConversionMetrics200JSONResponseBodyRowsMetrics0 defines parameters for GetConversionMetrics.
+type GetConversionMetrics200JSONResponseBodyRowsMetrics0 = float32
+
+// GetConversionMetrics200JSONResponseBodyRowsMetrics1 defines parameters for GetConversionMetrics.
+type GetConversionMetrics200JSONResponseBodyRowsMetrics1 = string
+
+// GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties defines parameters for GetConversionMetrics.
+type GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties struct {
+	union json.RawMessage
+}
+
 // UpdateDiscordSettingsJSONBody defines parameters for UpdateDiscordSettings.
 type UpdateDiscordSettingsJSONBody struct {
 	// ChannelId Switch to a different channel in the same guild. Must be a text (0), announcement (5), or forum (15) channel.
@@ -10532,22 +11145,25 @@ type UpdateAdCampaignStatusJSONBodyStatus string
 
 // SendConversionsJSONBody defines parameters for SendConversions.
 type SendConversionsJSONBody struct {
-	// AccountId SocialAccount ID (metaads or googleads).
+	// AccountId SocialAccount ID (metaads, googleads, or linkedinads).
 	AccountId string `json:"accountId"`
 
 	// Consent Batch-level user consent. Required by Google for EEA/UK
-	// events under the Feb 2026 restrictions. Ignored by Meta.
+	// events under the Feb 2026 restrictions. Ignored by Meta
+	// and LinkedIn.
 	Consent *struct {
 		AdPersonalization *SendConversionsJSONBodyConsentAdPersonalization `json:"adPersonalization,omitempty"`
 		AdUserData        *SendConversionsJSONBodyConsentAdUserData        `json:"adUserData,omitempty"`
 	} `json:"consent,omitempty"`
 
 	// DestinationId Platform destination identifier. For Meta, the pixel/dataset
-	// ID. For Google, the conversion action resource name.
+	// ID. For Google, the conversion action resource name. For
+	// LinkedIn, the conversion rule ID or full
+	// `urn:lla:llaPartnerConversion:{id}` URN.
 	DestinationId string            `json:"destinationId"`
 	Events        []ConversionEvent `json:"events"`
 
-	// TestCode Meta `test_event_code` passthrough. Ignored by Google.
+	// TestCode Meta `test_event_code` passthrough. Ignored by Google and LinkedIn.
 	TestCode *string `json:"testCode,omitempty"`
 }
 
@@ -14294,6 +14910,15 @@ type UpdateAccountGroupJSONRequestBody UpdateAccountGroupJSONBody
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
 type UpdateAccountJSONRequestBody UpdateAccountJSONBody
 
+// CreateConversionDestinationJSONRequestBody defines body for CreateConversionDestination for application/json ContentType.
+type CreateConversionDestinationJSONRequestBody CreateConversionDestinationJSONBody
+
+// UpdateConversionDestinationJSONRequestBody defines body for UpdateConversionDestination for application/json ContentType.
+type UpdateConversionDestinationJSONRequestBody UpdateConversionDestinationJSONBody
+
+// AddConversionAssociationsJSONRequestBody defines body for AddConversionAssociations for application/json ContentType.
+type AddConversionAssociationsJSONRequestBody AddConversionAssociationsJSONBody
+
 // UpdateDiscordSettingsJSONRequestBody defines body for UpdateDiscordSettings for application/json ContentType.
 type UpdateDiscordSettingsJSONRequestBody UpdateDiscordSettingsJSONBody
 
@@ -15532,6 +16157,68 @@ func (t WhatsAppTemplateComponent) MarshalJSON() ([]byte, error) {
 }
 
 func (t *WhatsAppTemplateComponent) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsGetConversionMetrics200JSONResponseBodyRowsMetrics0 returns the union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties as a GetConversionMetrics200JSONResponseBodyRowsMetrics0
+func (t GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) AsGetConversionMetrics200JSONResponseBodyRowsMetrics0() (GetConversionMetrics200JSONResponseBodyRowsMetrics0, error) {
+	var body GetConversionMetrics200JSONResponseBodyRowsMetrics0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromGetConversionMetrics200JSONResponseBodyRowsMetrics0 overwrites any union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties as the provided GetConversionMetrics200JSONResponseBodyRowsMetrics0
+func (t *GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) FromGetConversionMetrics200JSONResponseBodyRowsMetrics0(v GetConversionMetrics200JSONResponseBodyRowsMetrics0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeGetConversionMetrics200JSONResponseBodyRowsMetrics0 performs a merge with any union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties, using the provided GetConversionMetrics200JSONResponseBodyRowsMetrics0
+func (t *GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) MergeGetConversionMetrics200JSONResponseBodyRowsMetrics0(v GetConversionMetrics200JSONResponseBodyRowsMetrics0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsGetConversionMetrics200JSONResponseBodyRowsMetrics1 returns the union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties as a GetConversionMetrics200JSONResponseBodyRowsMetrics1
+func (t GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) AsGetConversionMetrics200JSONResponseBodyRowsMetrics1() (GetConversionMetrics200JSONResponseBodyRowsMetrics1, error) {
+	var body GetConversionMetrics200JSONResponseBodyRowsMetrics1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromGetConversionMetrics200JSONResponseBodyRowsMetrics1 overwrites any union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties as the provided GetConversionMetrics200JSONResponseBodyRowsMetrics1
+func (t *GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) FromGetConversionMetrics200JSONResponseBodyRowsMetrics1(v GetConversionMetrics200JSONResponseBodyRowsMetrics1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeGetConversionMetrics200JSONResponseBodyRowsMetrics1 performs a merge with any union data inside the GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties, using the provided GetConversionMetrics200JSONResponseBodyRowsMetrics1
+func (t *GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) MergeGetConversionMetrics200JSONResponseBodyRowsMetrics1(v GetConversionMetrics200JSONResponseBodyRowsMetrics1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -17077,6 +17764,36 @@ type ClientInterface interface {
 	// ListConversionDestinations request
 	ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateConversionDestinationWithBody request with any body
+	CreateConversionDestinationWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateConversionDestination(ctx context.Context, accountId string, body CreateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteConversionDestination request
+	DeleteConversionDestination(ctx context.Context, accountId string, destinationId string, params *DeleteConversionDestinationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetConversionDestination request
+	GetConversionDestination(ctx context.Context, accountId string, destinationId string, params *GetConversionDestinationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateConversionDestinationWithBody request with any body
+	UpdateConversionDestinationWithBody(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateConversionDestination(ctx context.Context, accountId string, destinationId string, body UpdateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveConversionAssociations request
+	RemoveConversionAssociations(ctx context.Context, accountId string, destinationId string, params *RemoveConversionAssociationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListConversionAssociations request
+	ListConversionAssociations(ctx context.Context, accountId string, destinationId string, params *ListConversionAssociationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddConversionAssociationsWithBody request with any body
+	AddConversionAssociationsWithBody(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddConversionAssociations(ctx context.Context, accountId string, destinationId string, body AddConversionAssociationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetConversionMetrics request
+	GetConversionMetrics(ctx context.Context, accountId string, destinationId string, params *GetConversionMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetDiscordChannels request
 	GetDiscordChannels(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -18224,6 +18941,138 @@ func (c *Client) UpdateAccount(ctx context.Context, accountId string, body Updat
 
 func (c *Client) ListConversionDestinations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListConversionDestinationsRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateConversionDestinationWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateConversionDestinationRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateConversionDestination(ctx context.Context, accountId string, body CreateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateConversionDestinationRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteConversionDestination(ctx context.Context, accountId string, destinationId string, params *DeleteConversionDestinationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteConversionDestinationRequest(c.Server, accountId, destinationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetConversionDestination(ctx context.Context, accountId string, destinationId string, params *GetConversionDestinationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConversionDestinationRequest(c.Server, accountId, destinationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateConversionDestinationWithBody(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConversionDestinationRequestWithBody(c.Server, accountId, destinationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateConversionDestination(ctx context.Context, accountId string, destinationId string, body UpdateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConversionDestinationRequest(c.Server, accountId, destinationId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveConversionAssociations(ctx context.Context, accountId string, destinationId string, params *RemoveConversionAssociationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveConversionAssociationsRequest(c.Server, accountId, destinationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListConversionAssociations(ctx context.Context, accountId string, destinationId string, params *ListConversionAssociationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConversionAssociationsRequest(c.Server, accountId, destinationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddConversionAssociationsWithBody(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddConversionAssociationsRequestWithBody(c.Server, accountId, destinationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddConversionAssociations(ctx context.Context, accountId string, destinationId string, body AddConversionAssociationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddConversionAssociationsRequest(c.Server, accountId, destinationId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetConversionMetrics(ctx context.Context, accountId string, destinationId string, params *GetConversionMetricsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConversionMetricsRequest(c.Server, accountId, destinationId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -23197,6 +24046,525 @@ func NewListConversionDestinationsRequest(server string, accountId string) (*htt
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateConversionDestinationRequest calls the generic CreateConversionDestination builder with application/json body
+func NewCreateConversionDestinationRequest(server string, accountId string, body CreateConversionDestinationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateConversionDestinationRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewCreateConversionDestinationRequestWithBody generates requests for CreateConversionDestination with any type of body
+func NewCreateConversionDestinationRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteConversionDestinationRequest generates requests for DeleteConversionDestination
+func NewDeleteConversionDestinationRequest(server string, accountId string, destinationId string, params *DeleteConversionDestinationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetConversionDestinationRequest generates requests for GetConversionDestination
+func NewGetConversionDestinationRequest(server string, accountId string, destinationId string, params *GetConversionDestinationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateConversionDestinationRequest calls the generic UpdateConversionDestination builder with application/json body
+func NewUpdateConversionDestinationRequest(server string, accountId string, destinationId string, body UpdateConversionDestinationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateConversionDestinationRequestWithBody(server, accountId, destinationId, "application/json", bodyReader)
+}
+
+// NewUpdateConversionDestinationRequestWithBody generates requests for UpdateConversionDestination with any type of body
+func NewUpdateConversionDestinationRequestWithBody(server string, accountId string, destinationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveConversionAssociationsRequest generates requests for RemoveConversionAssociations
+func NewRemoveConversionAssociationsRequest(server string, accountId string, destinationId string, params *RemoveConversionAssociationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s/associations", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "campaignIds", params.CampaignIds, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListConversionAssociationsRequest generates requests for ListConversionAssociations
+func NewListConversionAssociationsRequest(server string, accountId string, destinationId string, params *ListConversionAssociationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s/associations", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddConversionAssociationsRequest calls the generic AddConversionAssociations builder with application/json body
+func NewAddConversionAssociationsRequest(server string, accountId string, destinationId string, body AddConversionAssociationsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddConversionAssociationsRequestWithBody(server, accountId, destinationId, "application/json", bodyReader)
+}
+
+// NewAddConversionAssociationsRequestWithBody generates requests for AddConversionAssociations with any type of body
+func NewAddConversionAssociationsRequestWithBody(server string, accountId string, destinationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s/associations", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetConversionMetricsRequest generates requests for GetConversionMetrics
+func NewGetConversionMetricsRequest(server string, accountId string, destinationId string, params *GetConversionMetricsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "destinationId", destinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/conversion-destinations/%s/metrics", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startDate", params.StartDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.EndDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endDate", *params.EndDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Granularity != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "granularity", *params.Granularity, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -38373,6 +39741,36 @@ type ClientWithResponsesInterface interface {
 	// ListConversionDestinationsWithResponse request
 	ListConversionDestinationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListConversionDestinationsResponse, error)
 
+	// CreateConversionDestinationWithBodyWithResponse request with any body
+	CreateConversionDestinationWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateConversionDestinationResponse, error)
+
+	CreateConversionDestinationWithResponse(ctx context.Context, accountId string, body CreateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConversionDestinationResponse, error)
+
+	// DeleteConversionDestinationWithResponse request
+	DeleteConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, params *DeleteConversionDestinationParams, reqEditors ...RequestEditorFn) (*DeleteConversionDestinationResponse, error)
+
+	// GetConversionDestinationWithResponse request
+	GetConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, params *GetConversionDestinationParams, reqEditors ...RequestEditorFn) (*GetConversionDestinationResponse, error)
+
+	// UpdateConversionDestinationWithBodyWithResponse request with any body
+	UpdateConversionDestinationWithBodyWithResponse(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConversionDestinationResponse, error)
+
+	UpdateConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, body UpdateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConversionDestinationResponse, error)
+
+	// RemoveConversionAssociationsWithResponse request
+	RemoveConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, params *RemoveConversionAssociationsParams, reqEditors ...RequestEditorFn) (*RemoveConversionAssociationsResponse, error)
+
+	// ListConversionAssociationsWithResponse request
+	ListConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, params *ListConversionAssociationsParams, reqEditors ...RequestEditorFn) (*ListConversionAssociationsResponse, error)
+
+	// AddConversionAssociationsWithBodyWithResponse request with any body
+	AddConversionAssociationsWithBodyWithResponse(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddConversionAssociationsResponse, error)
+
+	AddConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, body AddConversionAssociationsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddConversionAssociationsResponse, error)
+
+	// GetConversionMetricsWithResponse request
+	GetConversionMetricsWithResponse(ctx context.Context, accountId string, destinationId string, params *GetConversionMetricsParams, reqEditors ...RequestEditorFn) (*GetConversionMetricsResponse, error)
+
 	// GetDiscordChannelsWithResponse request
 	GetDiscordChannelsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordChannelsResponse, error)
 
@@ -39751,14 +41149,21 @@ type ListConversionDestinationsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Destinations *[]struct {
+			// AdAccountId Set by adapters whose destinations are scoped to a
+			// specific ad account (LinkedIn). Pass back on
+			// subsequent CRUD calls.
+			AdAccountId *string `json:"adAccountId,omitempty"`
+
 			// Id Destination identifier. Meta: pixel ID. Google:
-			// conversion action resource name.
+			// conversion action resource name. LinkedIn:
+			// numeric conversion rule ID.
 			Id     *string                                                          `json:"id,omitempty"`
 			Name   *string                                                          `json:"name,omitempty"`
 			Status *ListConversionDestinations200JSONResponseBodyDestinationsStatus `json:"status,omitempty"`
 
 			// Type Present when the platform locks event type to the
-			// destination (Google conversion actions).
+			// destination (Google conversion actions, LinkedIn
+			// conversion rules).
 			Type *string `json:"type,omitempty"`
 		} `json:"destinations,omitempty"`
 		Platform *ListConversionDestinations200JSONResponseBodyPlatform `json:"platform,omitempty"`
@@ -39784,6 +41189,311 @@ func (r ListConversionDestinationsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ListConversionDestinationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateConversionDestinationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+		// Google conversion action, or LinkedIn conversion rule. Returned by
+		// `listConversionDestinations`, `getConversionDestination`,
+		// `createConversionDestination`, and `updateConversionDestination`.
+		Destination *ConversionDestination                                  `json:"destination,omitempty"`
+		Platform    *CreateConversionDestination201JSONResponseBodyPlatform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateConversionDestinationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateConversionDestinationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateConversionDestinationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteConversionDestinationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteConversionDestinationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteConversionDestinationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteConversionDestinationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetConversionDestinationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+		// Google conversion action, or LinkedIn conversion rule. Returned by
+		// `listConversionDestinations`, `getConversionDestination`,
+		// `createConversionDestination`, and `updateConversionDestination`.
+		Destination *ConversionDestination                               `json:"destination,omitempty"`
+		Platform    *GetConversionDestination200JSONResponseBodyPlatform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConversionDestinationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConversionDestinationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetConversionDestinationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateConversionDestinationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+		// Google conversion action, or LinkedIn conversion rule. Returned by
+		// `listConversionDestinations`, `getConversionDestination`,
+		// `createConversionDestination`, and `updateConversionDestination`.
+		Destination *ConversionDestination                                  `json:"destination,omitempty"`
+		Platform    *UpdateConversionDestination200JSONResponseBodyPlatform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateConversionDestinationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateConversionDestinationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateConversionDestinationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveConversionAssociationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Failed *[]struct {
+			CampaignId *string `json:"campaignId,omitempty"`
+			Reason     *string `json:"reason,omitempty"`
+		} `json:"failed,omitempty"`
+		Platform *RemoveConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+		// Succeeded Numeric campaign IDs that were successfully removed.
+		Succeeded *[]string `json:"succeeded,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveConversionAssociationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveConversionAssociationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveConversionAssociationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListConversionAssociationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Associations *[]struct {
+			// AssociatedAt Epoch ms.
+			AssociatedAt *int    `json:"associatedAt,omitempty"`
+			CampaignId   *string `json:"campaignId,omitempty"`
+			ConversionId *string `json:"conversionId,omitempty"`
+		} `json:"associations,omitempty"`
+		Platform *ListConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListConversionAssociationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConversionAssociationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListConversionAssociationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddConversionAssociationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Failed *[]struct {
+			CampaignId *string `json:"campaignId,omitempty"`
+			Reason     *string `json:"reason,omitempty"`
+		} `json:"failed,omitempty"`
+		Platform *AddConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+		// Succeeded Numeric campaign IDs that were successfully associated.
+		Succeeded *[]string `json:"succeeded,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AddConversionAssociationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddConversionAssociationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddConversionAssociationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetConversionMetricsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Granularity *GetConversionMetrics200JSONResponseBodyGranularity `json:"granularity,omitempty"`
+		Platform    *GetConversionMetrics200JSONResponseBodyPlatform    `json:"platform,omitempty"`
+		Rows        *[]struct {
+			// End YYYY-MM-DD (inclusive)
+			End     *string                                                                               `json:"end,omitempty"`
+			Metrics *map[string]GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties `json:"metrics,omitempty"`
+
+			// Start YYYY-MM-DD
+			Start *string `json:"start,omitempty"`
+		} `json:"rows,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConversionMetricsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConversionMetricsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetConversionMetricsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -42645,7 +44355,9 @@ type SendConversionsResponse struct {
 		} `json:"failures,omitempty"`
 		Platform *SendConversions200JSONResponseBodyPlatform `json:"platform,omitempty"`
 
-		// TraceId Platform trace ID (fbtrace_id for Meta, requestId for Google) for debugging.
+		// TraceId Platform trace ID for debugging. fbtrace_id for Meta,
+		// requestId for Google. Absent for LinkedIn (LinkedIn's
+		// conversionEvents endpoint does not surface a trace ID).
 		TraceId *string `json:"traceId,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -51144,6 +52856,102 @@ func (c *ClientWithResponses) ListConversionDestinationsWithResponse(ctx context
 	return ParseListConversionDestinationsResponse(rsp)
 }
 
+// CreateConversionDestinationWithBodyWithResponse request with arbitrary body returning *CreateConversionDestinationResponse
+func (c *ClientWithResponses) CreateConversionDestinationWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateConversionDestinationResponse, error) {
+	rsp, err := c.CreateConversionDestinationWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateConversionDestinationResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateConversionDestinationWithResponse(ctx context.Context, accountId string, body CreateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConversionDestinationResponse, error) {
+	rsp, err := c.CreateConversionDestination(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateConversionDestinationResponse(rsp)
+}
+
+// DeleteConversionDestinationWithResponse request returning *DeleteConversionDestinationResponse
+func (c *ClientWithResponses) DeleteConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, params *DeleteConversionDestinationParams, reqEditors ...RequestEditorFn) (*DeleteConversionDestinationResponse, error) {
+	rsp, err := c.DeleteConversionDestination(ctx, accountId, destinationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteConversionDestinationResponse(rsp)
+}
+
+// GetConversionDestinationWithResponse request returning *GetConversionDestinationResponse
+func (c *ClientWithResponses) GetConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, params *GetConversionDestinationParams, reqEditors ...RequestEditorFn) (*GetConversionDestinationResponse, error) {
+	rsp, err := c.GetConversionDestination(ctx, accountId, destinationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConversionDestinationResponse(rsp)
+}
+
+// UpdateConversionDestinationWithBodyWithResponse request with arbitrary body returning *UpdateConversionDestinationResponse
+func (c *ClientWithResponses) UpdateConversionDestinationWithBodyWithResponse(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConversionDestinationResponse, error) {
+	rsp, err := c.UpdateConversionDestinationWithBody(ctx, accountId, destinationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateConversionDestinationResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateConversionDestinationWithResponse(ctx context.Context, accountId string, destinationId string, body UpdateConversionDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConversionDestinationResponse, error) {
+	rsp, err := c.UpdateConversionDestination(ctx, accountId, destinationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateConversionDestinationResponse(rsp)
+}
+
+// RemoveConversionAssociationsWithResponse request returning *RemoveConversionAssociationsResponse
+func (c *ClientWithResponses) RemoveConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, params *RemoveConversionAssociationsParams, reqEditors ...RequestEditorFn) (*RemoveConversionAssociationsResponse, error) {
+	rsp, err := c.RemoveConversionAssociations(ctx, accountId, destinationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveConversionAssociationsResponse(rsp)
+}
+
+// ListConversionAssociationsWithResponse request returning *ListConversionAssociationsResponse
+func (c *ClientWithResponses) ListConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, params *ListConversionAssociationsParams, reqEditors ...RequestEditorFn) (*ListConversionAssociationsResponse, error) {
+	rsp, err := c.ListConversionAssociations(ctx, accountId, destinationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConversionAssociationsResponse(rsp)
+}
+
+// AddConversionAssociationsWithBodyWithResponse request with arbitrary body returning *AddConversionAssociationsResponse
+func (c *ClientWithResponses) AddConversionAssociationsWithBodyWithResponse(ctx context.Context, accountId string, destinationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddConversionAssociationsResponse, error) {
+	rsp, err := c.AddConversionAssociationsWithBody(ctx, accountId, destinationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddConversionAssociationsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddConversionAssociationsWithResponse(ctx context.Context, accountId string, destinationId string, body AddConversionAssociationsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddConversionAssociationsResponse, error) {
+	rsp, err := c.AddConversionAssociations(ctx, accountId, destinationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddConversionAssociationsResponse(rsp)
+}
+
+// GetConversionMetricsWithResponse request returning *GetConversionMetricsResponse
+func (c *ClientWithResponses) GetConversionMetricsWithResponse(ctx context.Context, accountId string, destinationId string, params *GetConversionMetricsParams, reqEditors ...RequestEditorFn) (*GetConversionMetricsResponse, error) {
+	rsp, err := c.GetConversionMetrics(ctx, accountId, destinationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConversionMetricsResponse(rsp)
+}
+
 // GetDiscordChannelsWithResponse request returning *GetDiscordChannelsResponse
 func (c *ClientWithResponses) GetDiscordChannelsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetDiscordChannelsResponse, error) {
 	rsp, err := c.GetDiscordChannels(ctx, accountId, reqEditors...)
@@ -54795,17 +56603,339 @@ func ParseListConversionDestinationsResponse(rsp *http.Response) (*ListConversio
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Destinations *[]struct {
+				// AdAccountId Set by adapters whose destinations are scoped to a
+				// specific ad account (LinkedIn). Pass back on
+				// subsequent CRUD calls.
+				AdAccountId *string `json:"adAccountId,omitempty"`
+
 				// Id Destination identifier. Meta: pixel ID. Google:
-				// conversion action resource name.
+				// conversion action resource name. LinkedIn:
+				// numeric conversion rule ID.
 				Id     *string                                                          `json:"id,omitempty"`
 				Name   *string                                                          `json:"name,omitempty"`
 				Status *ListConversionDestinations200JSONResponseBodyDestinationsStatus `json:"status,omitempty"`
 
 				// Type Present when the platform locks event type to the
-				// destination (Google conversion actions).
+				// destination (Google conversion actions, LinkedIn
+				// conversion rules).
 				Type *string `json:"type,omitempty"`
 			} `json:"destinations,omitempty"`
 			Platform *ListConversionDestinations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateConversionDestinationResponse parses an HTTP response from a CreateConversionDestinationWithResponse call
+func ParseCreateConversionDestinationResponse(rsp *http.Response) (*CreateConversionDestinationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateConversionDestinationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+			// Google conversion action, or LinkedIn conversion rule. Returned by
+			// `listConversionDestinations`, `getConversionDestination`,
+			// `createConversionDestination`, and `updateConversionDestination`.
+			Destination *ConversionDestination                                  `json:"destination,omitempty"`
+			Platform    *CreateConversionDestination201JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteConversionDestinationResponse parses an HTTP response from a DeleteConversionDestinationWithResponse call
+func ParseDeleteConversionDestinationResponse(rsp *http.Response) (*DeleteConversionDestinationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteConversionDestinationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetConversionDestinationResponse parses an HTTP response from a GetConversionDestinationWithResponse call
+func ParseGetConversionDestinationResponse(rsp *http.Response) (*GetConversionDestinationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConversionDestinationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+			// Google conversion action, or LinkedIn conversion rule. Returned by
+			// `listConversionDestinations`, `getConversionDestination`,
+			// `createConversionDestination`, and `updateConversionDestination`.
+			Destination *ConversionDestination                               `json:"destination,omitempty"`
+			Platform    *GetConversionDestination200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateConversionDestinationResponse parses an HTTP response from a UpdateConversionDestinationWithResponse call
+func ParseUpdateConversionDestinationResponse(rsp *http.Response) (*UpdateConversionDestinationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateConversionDestinationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Destination A discoverable conversion destination on an ad platform — a Meta pixel,
+			// Google conversion action, or LinkedIn conversion rule. Returned by
+			// `listConversionDestinations`, `getConversionDestination`,
+			// `createConversionDestination`, and `updateConversionDestination`.
+			Destination *ConversionDestination                                  `json:"destination,omitempty"`
+			Platform    *UpdateConversionDestination200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveConversionAssociationsResponse parses an HTTP response from a RemoveConversionAssociationsWithResponse call
+func ParseRemoveConversionAssociationsResponse(rsp *http.Response) (*RemoveConversionAssociationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveConversionAssociationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Failed *[]struct {
+				CampaignId *string `json:"campaignId,omitempty"`
+				Reason     *string `json:"reason,omitempty"`
+			} `json:"failed,omitempty"`
+			Platform *RemoveConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+			// Succeeded Numeric campaign IDs that were successfully removed.
+			Succeeded *[]string `json:"succeeded,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListConversionAssociationsResponse parses an HTTP response from a ListConversionAssociationsWithResponse call
+func ParseListConversionAssociationsResponse(rsp *http.Response) (*ListConversionAssociationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConversionAssociationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Associations *[]struct {
+				// AssociatedAt Epoch ms.
+				AssociatedAt *int    `json:"associatedAt,omitempty"`
+				CampaignId   *string `json:"campaignId,omitempty"`
+				ConversionId *string `json:"conversionId,omitempty"`
+			} `json:"associations,omitempty"`
+			Platform *ListConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddConversionAssociationsResponse parses an HTTP response from a AddConversionAssociationsWithResponse call
+func ParseAddConversionAssociationsResponse(rsp *http.Response) (*AddConversionAssociationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddConversionAssociationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Failed *[]struct {
+				CampaignId *string `json:"campaignId,omitempty"`
+				Reason     *string `json:"reason,omitempty"`
+			} `json:"failed,omitempty"`
+			Platform *AddConversionAssociations200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+			// Succeeded Numeric campaign IDs that were successfully associated.
+			Succeeded *[]string `json:"succeeded,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetConversionMetricsResponse parses an HTTP response from a GetConversionMetricsWithResponse call
+func ParseGetConversionMetricsResponse(rsp *http.Response) (*GetConversionMetricsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConversionMetricsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Granularity *GetConversionMetrics200JSONResponseBodyGranularity `json:"granularity,omitempty"`
+			Platform    *GetConversionMetrics200JSONResponseBodyPlatform    `json:"platform,omitempty"`
+			Rows        *[]struct {
+				// End YYYY-MM-DD (inclusive)
+				End     *string                                                                               `json:"end,omitempty"`
+				Metrics *map[string]GetConversionMetrics200JSONResponseBody_Rows_Metrics_AdditionalProperties `json:"metrics,omitempty"`
+
+				// Start YYYY-MM-DD
+				Start *string `json:"start,omitempty"`
+			} `json:"rows,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -58043,7 +60173,9 @@ func ParseSendConversionsResponse(rsp *http.Response) (*SendConversionsResponse,
 			} `json:"failures,omitempty"`
 			Platform *SendConversions200JSONResponseBodyPlatform `json:"platform,omitempty"`
 
-			// TraceId Platform trace ID (fbtrace_id for Meta, requestId for Google) for debugging.
+			// TraceId Platform trace ID for debugging. fbtrace_id for Meta,
+			// requestId for Google. Absent for LinkedIn (LinkedIn's
+			// conversionEvents endpoint does not surface a trace ID).
 			TraceId *string `json:"traceId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
