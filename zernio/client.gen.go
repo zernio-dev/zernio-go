@@ -6537,7 +6537,13 @@ const (
 	CreateWebhookSettingsJSONBodyEventsAccountConnected               CreateWebhookSettingsJSONBodyEvents = "account.connected"
 	CreateWebhookSettingsJSONBodyEventsAccountDisconnected            CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CreateWebhookSettingsJSONBodyEventsCommentReceived                CreateWebhookSettingsJSONBodyEvents = "comment.received"
+	CreateWebhookSettingsJSONBodyEventsMessageDeleted                 CreateWebhookSettingsJSONBodyEvents = "message.deleted"
+	CreateWebhookSettingsJSONBodyEventsMessageDelivered               CreateWebhookSettingsJSONBodyEvents = "message.delivered"
+	CreateWebhookSettingsJSONBodyEventsMessageEdited                  CreateWebhookSettingsJSONBodyEvents = "message.edited"
+	CreateWebhookSettingsJSONBodyEventsMessageFailed                  CreateWebhookSettingsJSONBodyEvents = "message.failed"
+	CreateWebhookSettingsJSONBodyEventsMessageRead                    CreateWebhookSettingsJSONBodyEvents = "message.read"
 	CreateWebhookSettingsJSONBodyEventsMessageReceived                CreateWebhookSettingsJSONBodyEvents = "message.received"
+	CreateWebhookSettingsJSONBodyEventsMessageSent                    CreateWebhookSettingsJSONBodyEvents = "message.sent"
 	CreateWebhookSettingsJSONBodyEventsPostCancelled                  CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	CreateWebhookSettingsJSONBodyEventsPostFailed                     CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial                    CreateWebhookSettingsJSONBodyEvents = "post.partial"
@@ -6559,7 +6565,19 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsCommentReceived:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageDeleted:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageDelivered:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageEdited:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageFailed:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageRead:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsMessageReceived:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsMessageSent:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostCancelled:
 		return true
@@ -6588,7 +6606,13 @@ const (
 	AccountConnected               UpdateWebhookSettingsJSONBodyEvents = "account.connected"
 	AccountDisconnected            UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
 	CommentReceived                UpdateWebhookSettingsJSONBodyEvents = "comment.received"
+	MessageDeleted                 UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
+	MessageDelivered               UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
+	MessageEdited                  UpdateWebhookSettingsJSONBodyEvents = "message.edited"
+	MessageFailed                  UpdateWebhookSettingsJSONBodyEvents = "message.failed"
+	MessageRead                    UpdateWebhookSettingsJSONBodyEvents = "message.read"
 	MessageReceived                UpdateWebhookSettingsJSONBodyEvents = "message.received"
+	MessageSent                    UpdateWebhookSettingsJSONBodyEvents = "message.sent"
 	PostCancelled                  UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	PostFailed                     UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	PostPartial                    UpdateWebhookSettingsJSONBodyEvents = "post.partial"
@@ -6610,7 +6634,19 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CommentReceived:
 		return true
+	case MessageDeleted:
+		return true
+	case MessageDelivered:
+		return true
+	case MessageEdited:
+		return true
+	case MessageFailed:
+		return true
+	case MessageRead:
+		return true
 	case MessageReceived:
+		return true
+	case MessageSent:
 		return true
 	case PostCancelled:
 		return true
