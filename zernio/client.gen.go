@@ -1626,27 +1626,6 @@ func (e WhatsAppTemplateButtonType) Valid() bool {
 	}
 }
 
-// Defines values for XApiOperationTier.
-const (
-	XApiOperationTierXApi005 XApiOperationTier = "x_api_005"
-	XApiOperationTierXApi010 XApiOperationTier = "x_api_010"
-	XApiOperationTierXApi015 XApiOperationTier = "x_api_015"
-)
-
-// Valid indicates whether the value is a known member of the XApiOperationTier enum.
-func (e XApiOperationTier) Valid() bool {
-	switch e {
-	case XApiOperationTierXApi005:
-		return true
-	case XApiOperationTierXApi010:
-		return true
-	case XApiOperationTierXApi015:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for XApiOperationTriggeredByMetering.
 const (
 	Absorbed       XApiOperationTriggeredByMetering = "absorbed"
@@ -1665,27 +1644,6 @@ func (e XApiOperationTriggeredByMetering) Valid() bool {
 	case AnalyticsOptin:
 		return true
 	case InboxOptin:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for XApiPricingTiersTier.
-const (
-	XApiPricingTiersTierXApi005 XApiPricingTiersTier = "x_api_005"
-	XApiPricingTiersTierXApi010 XApiPricingTiersTier = "x_api_010"
-	XApiPricingTiersTierXApi015 XApiPricingTiersTier = "x_api_015"
-)
-
-// Valid indicates whether the value is a known member of the XApiPricingTiersTier enum.
-func (e XApiPricingTiersTier) Valid() bool {
-	switch e {
-	case XApiPricingTiersTierXApi005:
-		return true
-	case XApiPricingTiersTierXApi010:
-		return true
-	case XApiPricingTiersTierXApi015:
 		return true
 	default:
 		return false
@@ -9542,8 +9500,10 @@ type UsageStats struct {
 		// CurrentPeriodCents Total current-period spend in cents (all products combined).
 		CurrentPeriodCents *int `json:"currentPeriodCents,omitempty"`
 
-		// XSpendCents Current-period X/Twitter API spend in cents, derived from the per-tier
-		// call counts. Rounded up for conservative enforcement against `xSpendLimitCents`.
+		// XSpendCents Current-period X/Twitter API spend in cents, summed from
+		// `xApiCallsByOperation` × per-operation prices. Tier-agnostic
+		// (covers every price including the $0.200 URL tier). Rounded
+		// up for conservative enforcement against `xSpendLimitCents`.
 		XSpendCents *int `json:"xSpendCents,omitempty"`
 
 		// XSpendLimitCents Monthly X spend cap set by the account owner, or null if no cap.
@@ -9568,23 +9528,30 @@ type UsageStats struct {
 		// Uploads Stripe users only. Uploads consumed in the current period.
 		Uploads *int `json:"uploads,omitempty"`
 
-		// XApiCalls Metronome users only. Aggregated X API call counts bucketed by
-		// price tier (backward-compat). For per-operation breakdown use
-		// `xApiCallsByOperation`.
+		// XApiCalls **Deprecated.** Legacy 3-tier aggregate. Operations outside the
+		// three historical prices ($0.005/$0.010/$0.015) — notably the
+		// $0.200 "Posts with URL" tier added April 2026 — are silently
+		// excluded from this shape. Use `xApiCallsByOperation` instead;
+		// it captures every tier and is the source of truth for
+		// per-operation call counts.
+		// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
 		XApiCalls *struct {
-			// XApi005 Calls at $0.005 per call (reads, list mgmt, bookmarks, etc.)
+			// XApi005 Calls at $0.005 per call (reads, lists, bookmarks, content manage, etc.)
 			XApi005 *int `json:"x_api_005,omitempty"`
 
-			// XApi010 Calls at $0.010 per call (publish/delete, DM reads, follows)
+			// XApi010 Calls at $0.010 per call (user reads, DM reads, follow reads, trends, list create, privacy update)
 			XApi010 *int `json:"x_api_010,omitempty"`
 
-			// XApi015 Calls at $0.015 per call (sending DMs, follow actions)
+			// XApi015 Calls at $0.015 per call (posts/replies, DM sends, user interactions)
 			XApi015 *int `json:"x_api_015,omitempty"`
 		} `json:"xApiCalls,omitempty"`
 
 		// XApiCallsByOperation Metronome users only. Per-operation X API call counts keyed by
-		// operation (e.g. `posts_read`, `content_create`). Resolve each key
-		// to price and metadata via `GET /v1/billing/x-pricing`.
+		// operation (e.g. `posts_read`, `content_create`,
+		// `content_create_with_url`). Resolve each key to price and metadata
+		// via `GET /v1/billing/x-pricing`. This is the canonical source —
+		// covers every price tier including the $0.200 URL tier that
+		// `xApiCalls` excludes.
 		XApiCallsByOperation *map[string]int `json:"xApiCallsByOperation,omitempty"`
 	} `json:"usage,omitempty"`
 }
@@ -9750,8 +9717,10 @@ type XApiOperation struct {
 	PricePerCallCents *float32 `json:"pricePerCallCents,omitempty"`
 	PricePerCallUsd   *float32 `json:"pricePerCallUsd,omitempty"`
 
-	// Tier Which aggregate price tier this operation falls into.
-	Tier *XApiOperationTier `json:"tier,omitempty"`
+	// Tier Tier key derived from `pricePerCallUsd` (e.g. `x_api_005` for
+	// $0.005, `x_api_200` for $0.200). Useful for grouping operations
+	// by price in dashboards.
+	Tier *string `json:"tier,omitempty"`
 
 	// TriggeredBy Zernio platform methods that emit this operation, with their metering rule.
 	TriggeredBy *[]struct {
@@ -9766,9 +9735,6 @@ type XApiOperation struct {
 		Method *string `json:"method,omitempty"`
 	} `json:"triggeredBy,omitempty"`
 }
-
-// XApiOperationTier Which aggregate price tier this operation falls into.
-type XApiOperationTier string
 
 // XApiOperationTriggeredByMetering When the method actually bills the user:
 //   - `always` — every call is metered
@@ -9800,13 +9766,14 @@ type XApiPricing struct {
 		OperationCount  *int     `json:"operationCount,omitempty"`
 		PricePerCallUsd *float32 `json:"pricePerCallUsd,omitempty"`
 
-		// Tier Historical bucket key used in `xApiCalls` aggregation.
-		Tier *XApiPricingTiersTier `json:"tier,omitempty"`
+		// Tier Tier key derived from price (e.g. `x_api_005` for $0.005,
+		// `x_api_200` for $0.200). The first three keys map to the
+		// legacy `xApiCalls` aggregate; new tiers (e.g. `x_api_200`
+		// for the URL tier added April 2026) are surfaced here but
+		// not in the legacy shape.
+		Tier *string `json:"tier,omitempty"`
 	} `json:"tiers,omitempty"`
 }
-
-// XApiPricingTiersTier Historical bucket key used in `xApiCalls` aggregation.
-type XApiPricingTiersTier string
 
 // YouTubeDailyViewsResponse defines model for YouTubeDailyViewsResponse.
 type YouTubeDailyViewsResponse struct {
