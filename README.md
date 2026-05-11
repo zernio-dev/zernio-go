@@ -248,21 +248,29 @@ func main() {
 | `client.ListAdsBusinessCentersWithResponse()` | List TikTok Business Centers |
 | `client.ListConversionAssociationsWithResponse()` | List campaigns associated with a conversion destination |
 | `client.ListConversionDestinationsWithResponse()` | List destinations for the Conversions API |
+| `client.ListTrackingTagSharedAccountsWithResponse()` | List ad accounts a tracking tag is shared with |
+| `client.ListTrackingTagsWithResponse()` | List tracking tags (Meta Pixels) |
 | `client.CreateConversionDestinationWithResponse()` | Create a conversion destination (LinkedIn) |
 | `client.CreateCtwaAdWithResponse()` | Create Click-to-WhatsApp ad |
 | `client.CreateStandaloneAdWithResponse()` | Create standalone ad |
+| `client.CreateTrackingTagWithResponse()` | Create a tracking tag (Meta Pixel) |
 | `client.GetAdWithResponse()` | Get ad details |
 | `client.GetAdAnalyticsWithResponse()` | Get ad analytics |
 | `client.GetAdCommentsWithResponse()` | List comments on an ad |
 | `client.GetConversionDestinationWithResponse()` | Fetch a single conversion destination |
 | `client.GetConversionMetricsWithResponse()` | Fetch attribution metrics for a conversion destination |
+| `client.GetTrackingTagWithResponse()` | Fetch a single tracking tag (Meta Pixel) |
+| `client.GetTrackingTagStatsWithResponse()` | Aggregated event stats for a tracking tag (Meta Pixel) |
 | `client.UpdateAdWithResponse()` | Update ad |
 | `client.UpdateConversionDestinationWithResponse()` | Update a conversion destination |
+| `client.UpdateTrackingTagWithResponse()` | Update a tracking tag (Meta Pixel) |
 | `client.DeleteAdWithResponse()` | Cancel an ad |
 | `client.DeleteConversionDestinationWithResponse()` | Soft-delete a conversion destination |
 | `client.AddConversionAssociationsWithResponse()` | Associate campaigns with a conversion destination |
+| `client.AddTrackingTagSharedAccountWithResponse()` | Share a tracking tag with an ad account |
 | `client.BoostPostWithResponse()` | Boost post as ad |
 | `client.RemoveConversionAssociationsWithResponse()` | Remove campaign↔conversion associations |
+| `client.RemoveTrackingTagSharedAccountWithResponse()` | Stop sharing a tracking tag with an ad account |
 | `client.SearchAdInterestsWithResponse()` | Search targeting interests |
 | `client.SearchAdTargetingLocationsWithResponse()` | Search geo targeting locations (Meta) |
 | `client.SendConversionsWithResponse()` | Send conversion events to an ad platform |

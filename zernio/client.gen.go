@@ -1374,6 +1374,60 @@ func (e TikTokPlatformDataMediaType) Valid() bool {
 	}
 }
 
+// Defines values for TrackingTagKind.
+const (
+	InsightTag TrackingTagKind = "insight_tag"
+	Pixel      TrackingTagKind = "pixel"
+	Tag        TrackingTagKind = "tag"
+)
+
+// Valid indicates whether the value is a known member of the TrackingTagKind enum.
+func (e TrackingTagKind) Valid() bool {
+	switch e {
+	case InsightTag:
+		return true
+	case Pixel:
+		return true
+	case Tag:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TrackingTagPlatform.
+const (
+	TrackingTagPlatformMetaads TrackingTagPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the TrackingTagPlatform enum.
+func (e TrackingTagPlatform) Valid() bool {
+	switch e {
+	case TrackingTagPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TrackingTagStatus.
+const (
+	TrackingTagStatusActive   TrackingTagStatus = "active"
+	TrackingTagStatusInactive TrackingTagStatus = "inactive"
+)
+
+// Valid indicates whether the value is a known member of the TrackingTagStatus enum.
+func (e TrackingTagStatus) Valid() bool {
+	switch e {
+	case TrackingTagStatusActive:
+		return true
+	case TrackingTagStatusInactive:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TwitterPlatformDataReplySettings.
 const (
 	Following      TwitterPlatformDataReplySettings = "following"
@@ -2604,6 +2658,258 @@ func (e GetTikTokCreatorInfoParamsMediaType) Valid() bool {
 	}
 }
 
+// Defines values for ListTrackingTags200JSONResponseBodyPlatform.
+const (
+	ListTrackingTags200JSONResponseBodyPlatformMetaads ListTrackingTags200JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the ListTrackingTags200JSONResponseBodyPlatform enum.
+func (e ListTrackingTags200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case ListTrackingTags200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateTrackingTag201JSONResponseBodyPlatform.
+const (
+	CreateTrackingTag201JSONResponseBodyPlatformMetaads CreateTrackingTag201JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the CreateTrackingTag201JSONResponseBodyPlatform enum.
+func (e CreateTrackingTag201JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case CreateTrackingTag201JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetTrackingTag200JSONResponseBodyPlatform.
+const (
+	GetTrackingTag200JSONResponseBodyPlatformMetaads GetTrackingTag200JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the GetTrackingTag200JSONResponseBodyPlatform enum.
+func (e GetTrackingTag200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case GetTrackingTag200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateTrackingTagJSONBodyAutomaticMatchingFields.
+const (
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsCountry    UpdateTrackingTagJSONBodyAutomaticMatchingFields = "country"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsCt         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "ct"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsDb         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "db"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsEm         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "em"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsExternalId UpdateTrackingTagJSONBodyAutomaticMatchingFields = "external_id"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsFn         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "fn"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsGe         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "ge"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsLn         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "ln"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsPh         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "ph"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsSt         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "st"
+	UpdateTrackingTagJSONBodyAutomaticMatchingFieldsZp         UpdateTrackingTagJSONBodyAutomaticMatchingFields = "zp"
+)
+
+// Valid indicates whether the value is a known member of the UpdateTrackingTagJSONBodyAutomaticMatchingFields enum.
+func (e UpdateTrackingTagJSONBodyAutomaticMatchingFields) Valid() bool {
+	switch e {
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsCountry:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsCt:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsDb:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsEm:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsExternalId:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsFn:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsGe:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsLn:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsPh:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsSt:
+		return true
+	case UpdateTrackingTagJSONBodyAutomaticMatchingFieldsZp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateTrackingTagJSONBodyDataUseSetting.
+const (
+	UpdateTrackingTagJSONBodyDataUseSettingAdvertisingAndAnalytics UpdateTrackingTagJSONBodyDataUseSetting = "advertising_and_analytics"
+	UpdateTrackingTagJSONBodyDataUseSettingAnalyticsOnly           UpdateTrackingTagJSONBodyDataUseSetting = "analytics_only"
+	UpdateTrackingTagJSONBodyDataUseSettingEmpty                   UpdateTrackingTagJSONBodyDataUseSetting = "empty"
+)
+
+// Valid indicates whether the value is a known member of the UpdateTrackingTagJSONBodyDataUseSetting enum.
+func (e UpdateTrackingTagJSONBodyDataUseSetting) Valid() bool {
+	switch e {
+	case UpdateTrackingTagJSONBodyDataUseSettingAdvertisingAndAnalytics:
+		return true
+	case UpdateTrackingTagJSONBodyDataUseSettingAnalyticsOnly:
+		return true
+	case UpdateTrackingTagJSONBodyDataUseSettingEmpty:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateTrackingTagJSONBodyFirstPartyCookieStatus.
+const (
+	UpdateTrackingTagJSONBodyFirstPartyCookieStatusEmpty                    UpdateTrackingTagJSONBodyFirstPartyCookieStatus = "empty"
+	UpdateTrackingTagJSONBodyFirstPartyCookieStatusFirstPartyCookieDisabled UpdateTrackingTagJSONBodyFirstPartyCookieStatus = "first_party_cookie_disabled"
+	UpdateTrackingTagJSONBodyFirstPartyCookieStatusFirstPartyCookieEnabled  UpdateTrackingTagJSONBodyFirstPartyCookieStatus = "first_party_cookie_enabled"
+)
+
+// Valid indicates whether the value is a known member of the UpdateTrackingTagJSONBodyFirstPartyCookieStatus enum.
+func (e UpdateTrackingTagJSONBodyFirstPartyCookieStatus) Valid() bool {
+	switch e {
+	case UpdateTrackingTagJSONBodyFirstPartyCookieStatusEmpty:
+		return true
+	case UpdateTrackingTagJSONBodyFirstPartyCookieStatusFirstPartyCookieDisabled:
+		return true
+	case UpdateTrackingTagJSONBodyFirstPartyCookieStatusFirstPartyCookieEnabled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateTrackingTag200JSONResponseBodyPlatform.
+const (
+	UpdateTrackingTag200JSONResponseBodyPlatformMetaads UpdateTrackingTag200JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the UpdateTrackingTag200JSONResponseBodyPlatform enum.
+func (e UpdateTrackingTag200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case UpdateTrackingTag200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListTrackingTagSharedAccounts200JSONResponseBodyPlatform.
+const (
+	ListTrackingTagSharedAccounts200JSONResponseBodyPlatformMetaads ListTrackingTagSharedAccounts200JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the ListTrackingTagSharedAccounts200JSONResponseBodyPlatform enum.
+func (e ListTrackingTagSharedAccounts200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case ListTrackingTagSharedAccounts200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AddTrackingTagSharedAccount201JSONResponseBodyPlatform.
+const (
+	AddTrackingTagSharedAccount201JSONResponseBodyPlatformMetaads AddTrackingTagSharedAccount201JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the AddTrackingTagSharedAccount201JSONResponseBodyPlatform enum.
+func (e AddTrackingTagSharedAccount201JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case AddTrackingTagSharedAccount201JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetTrackingTagStatsParamsAggregation.
+const (
+	GetTrackingTagStatsParamsAggregationBrowserType            GetTrackingTagStatsParamsAggregation = "browser_type"
+	GetTrackingTagStatsParamsAggregationCustomDataField        GetTrackingTagStatsParamsAggregation = "custom_data_field"
+	GetTrackingTagStatsParamsAggregationDeviceOs               GetTrackingTagStatsParamsAggregation = "device_os"
+	GetTrackingTagStatsParamsAggregationDeviceType             GetTrackingTagStatsParamsAggregation = "device_type"
+	GetTrackingTagStatsParamsAggregationEvent                  GetTrackingTagStatsParamsAggregation = "event"
+	GetTrackingTagStatsParamsAggregationEventDetectionMethod   GetTrackingTagStatsParamsAggregation = "event_detection_method"
+	GetTrackingTagStatsParamsAggregationEventProcessingResults GetTrackingTagStatsParamsAggregation = "event_processing_results"
+	GetTrackingTagStatsParamsAggregationEventSource            GetTrackingTagStatsParamsAggregation = "event_source"
+	GetTrackingTagStatsParamsAggregationEventTotalCounts       GetTrackingTagStatsParamsAggregation = "event_total_counts"
+	GetTrackingTagStatsParamsAggregationEventValueCount        GetTrackingTagStatsParamsAggregation = "event_value_count"
+	GetTrackingTagStatsParamsAggregationHadPii                 GetTrackingTagStatsParamsAggregation = "had_pii"
+	GetTrackingTagStatsParamsAggregationHost                   GetTrackingTagStatsParamsAggregation = "host"
+	GetTrackingTagStatsParamsAggregationMatchKeys              GetTrackingTagStatsParamsAggregation = "match_keys"
+	GetTrackingTagStatsParamsAggregationPixelFire              GetTrackingTagStatsParamsAggregation = "pixel_fire"
+	GetTrackingTagStatsParamsAggregationUrl                    GetTrackingTagStatsParamsAggregation = "url"
+	GetTrackingTagStatsParamsAggregationUrlByRule              GetTrackingTagStatsParamsAggregation = "url_by_rule"
+)
+
+// Valid indicates whether the value is a known member of the GetTrackingTagStatsParamsAggregation enum.
+func (e GetTrackingTagStatsParamsAggregation) Valid() bool {
+	switch e {
+	case GetTrackingTagStatsParamsAggregationBrowserType:
+		return true
+	case GetTrackingTagStatsParamsAggregationCustomDataField:
+		return true
+	case GetTrackingTagStatsParamsAggregationDeviceOs:
+		return true
+	case GetTrackingTagStatsParamsAggregationDeviceType:
+		return true
+	case GetTrackingTagStatsParamsAggregationEvent:
+		return true
+	case GetTrackingTagStatsParamsAggregationEventDetectionMethod:
+		return true
+	case GetTrackingTagStatsParamsAggregationEventProcessingResults:
+		return true
+	case GetTrackingTagStatsParamsAggregationEventSource:
+		return true
+	case GetTrackingTagStatsParamsAggregationEventTotalCounts:
+		return true
+	case GetTrackingTagStatsParamsAggregationEventValueCount:
+		return true
+	case GetTrackingTagStatsParamsAggregationHadPii:
+		return true
+	case GetTrackingTagStatsParamsAggregationHost:
+		return true
+	case GetTrackingTagStatsParamsAggregationMatchKeys:
+		return true
+	case GetTrackingTagStatsParamsAggregationPixelFire:
+		return true
+	case GetTrackingTagStatsParamsAggregationUrl:
+		return true
+	case GetTrackingTagStatsParamsAggregationUrlByRule:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetTrackingTagStats200JSONResponseBodyPlatform.
+const (
+	GetTrackingTagStats200JSONResponseBodyPlatformMetaads GetTrackingTagStats200JSONResponseBodyPlatform = "metaads"
+)
+
+// Valid indicates whether the value is a known member of the GetTrackingTagStats200JSONResponseBodyPlatform enum.
+func (e GetTrackingTagStats200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case GetTrackingTagStats200JSONResponseBodyPlatformMetaads:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetYoutubePlaylists200JSONResponseBodyPlaylistsPrivacy.
 const (
 	GetYoutubePlaylists200JSONResponseBodyPlaylistsPrivacyPrivate  GetYoutubePlaylists200JSONResponseBodyPlaylistsPrivacy = "private"
@@ -3659,34 +3965,34 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 
 // Defines values for SearchAdTargetingLocationsParamsType.
 const (
-	City         SearchAdTargetingLocationsParamsType = "city"
-	Country      SearchAdTargetingLocationsParamsType = "country"
-	GeoMarket    SearchAdTargetingLocationsParamsType = "geo_market"
-	MetroArea    SearchAdTargetingLocationsParamsType = "metro_area"
-	Neighborhood SearchAdTargetingLocationsParamsType = "neighborhood"
-	Region       SearchAdTargetingLocationsParamsType = "region"
-	Subcity      SearchAdTargetingLocationsParamsType = "subcity"
-	Zip          SearchAdTargetingLocationsParamsType = "zip"
+	SearchAdTargetingLocationsParamsTypeCity         SearchAdTargetingLocationsParamsType = "city"
+	SearchAdTargetingLocationsParamsTypeCountry      SearchAdTargetingLocationsParamsType = "country"
+	SearchAdTargetingLocationsParamsTypeGeoMarket    SearchAdTargetingLocationsParamsType = "geo_market"
+	SearchAdTargetingLocationsParamsTypeMetroArea    SearchAdTargetingLocationsParamsType = "metro_area"
+	SearchAdTargetingLocationsParamsTypeNeighborhood SearchAdTargetingLocationsParamsType = "neighborhood"
+	SearchAdTargetingLocationsParamsTypeRegion       SearchAdTargetingLocationsParamsType = "region"
+	SearchAdTargetingLocationsParamsTypeSubcity      SearchAdTargetingLocationsParamsType = "subcity"
+	SearchAdTargetingLocationsParamsTypeZip          SearchAdTargetingLocationsParamsType = "zip"
 )
 
 // Valid indicates whether the value is a known member of the SearchAdTargetingLocationsParamsType enum.
 func (e SearchAdTargetingLocationsParamsType) Valid() bool {
 	switch e {
-	case City:
+	case SearchAdTargetingLocationsParamsTypeCity:
 		return true
-	case Country:
+	case SearchAdTargetingLocationsParamsTypeCountry:
 		return true
-	case GeoMarket:
+	case SearchAdTargetingLocationsParamsTypeGeoMarket:
 		return true
-	case MetroArea:
+	case SearchAdTargetingLocationsParamsTypeMetroArea:
 		return true
-	case Neighborhood:
+	case SearchAdTargetingLocationsParamsTypeNeighborhood:
 		return true
-	case Region:
+	case SearchAdTargetingLocationsParamsTypeRegion:
 		return true
-	case Subcity:
+	case SearchAdTargetingLocationsParamsTypeSubcity:
 		return true
-	case Zip:
+	case SearchAdTargetingLocationsParamsTypeZip:
 		return true
 	default:
 		return false
@@ -6635,31 +6941,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
-	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
-	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
-	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
-	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
-	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
+	Instagram CreateSequenceJSONBodyPlatform = "instagram"
+	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
+	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
+	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
+	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case CreateSequenceJSONBodyPlatformBluesky:
+	case Bluesky:
 		return true
-	case CreateSequenceJSONBodyPlatformFacebook:
+	case Facebook:
 		return true
-	case CreateSequenceJSONBodyPlatformInstagram:
+	case Instagram:
 		return true
-	case CreateSequenceJSONBodyPlatformReddit:
+	case Reddit:
 		return true
-	case CreateSequenceJSONBodyPlatformTelegram:
+	case Telegram:
 		return true
-	case CreateSequenceJSONBodyPlatformTwitter:
+	case Twitter:
 		return true
-	case CreateSequenceJSONBodyPlatformWhatsapp:
+	case Whatsapp:
 		return true
 	default:
 		return false
@@ -7100,13 +7406,13 @@ func (e SendWhatsAppConversionJSONBodyEventName) Valid() bool {
 
 // Defines values for SendWhatsAppConversion200JSONResponseBodyPlatform.
 const (
-	Metaads SendWhatsAppConversion200JSONResponseBodyPlatform = "metaads"
+	SendWhatsAppConversion200JSONResponseBodyPlatformMetaads SendWhatsAppConversion200JSONResponseBodyPlatform = "metaads"
 )
 
 // Valid indicates whether the value is a known member of the SendWhatsAppConversion200JSONResponseBodyPlatform enum.
 func (e SendWhatsAppConversion200JSONResponseBodyPlatform) Valid() bool {
 	switch e {
-	case Metaads:
+	case SendWhatsAppConversion200JSONResponseBodyPlatformMetaads:
 		return true
 	default:
 		return false
@@ -7304,28 +7610,28 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus.
 const (
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
+	Active         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
+	PendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
+	Provisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
+	Released       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
+	Releasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
+	Suspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus enum.
 func (e GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus) Valid() bool {
 	switch e {
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive:
+	case Active:
 		return true
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment:
+	case PendingPayment:
 		return true
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning:
+	case Provisioning:
 		return true
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased:
+	case Released:
 		return true
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing:
+	case Releasing:
 		return true
-	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended:
+	case Suspended:
 		return true
 	default:
 		return false
@@ -7397,19 +7703,19 @@ func (e CreateWhatsAppTemplateJSONBodyCategory) Valid() bool {
 
 // Defines values for CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType.
 const (
-	PhoneNumber CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "phone_number"
-	QuickReply  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "quick_reply"
-	Url         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "url"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePhoneNumber CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "phone_number"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQuickReply  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "quick_reply"
+	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeUrl         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "url"
 )
 
 // Valid indicates whether the value is a known member of the CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType enum.
 func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() bool {
 	switch e {
-	case PhoneNumber:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePhoneNumber:
 		return true
-	case QuickReply:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQuickReply:
 		return true
-	case Url:
+	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeUrl:
 		return true
 	default:
 		return false
@@ -9298,6 +9604,16 @@ type RedditPost struct {
 	Url *string `json:"url,omitempty"`
 }
 
+// SharedAdAccount An ad account a tracking tag is shared with (Meta `shared_accounts` edge).
+type SharedAdAccount struct {
+	// BusinessId Business Manager id that owns the ad account
+	BusinessId *string `json:"businessId,omitempty"`
+
+	// Id Ad account id, in `act_<digits>` form.
+	Id   string  `json:"id"`
+	Name *string `json:"name,omitempty"`
+}
+
 // SnapchatPlatformData Requires a Public Profile. Single media item only. Content types: story (ephemeral 24h), saved_story (permanent, title max 45 chars), spotlight (video, max 160 chars).
 type SnapchatPlatformData struct {
 	// ContentType Content type: story (ephemeral 24h, default), saved_story (permanent on Public Profile), spotlight (video feed)
@@ -9467,6 +9783,60 @@ type TikTokPlatformDataCommercialContentType string
 
 // TikTokPlatformDataMediaType Optional override. Defaults based on provided media items.
 type TikTokPlatformDataMediaType string
+
+// TrackingTag A platform measurement tag — the thing you create, install on a
+// website, send events to, and target ads against. On Meta this is a
+// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+// changing the contract; platform-specific fields are simply absent where
+// a platform has no equivalent. Returned by `listTrackingTags`,
+// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+type TrackingTag struct {
+	// Code The base-code `<script>` snippet to install on the site. Meta only;
+	// populated by `getTrackingTag`, omitted from the list view.
+	Code *string `json:"code,omitempty"`
+
+	// CreationTime Unix seconds the tag was created.
+	CreationTime *int `json:"creationTime,omitempty"`
+
+	// Id Platform-native tag id. Meta: numeric pixel id, as a string.
+	Id string `json:"id"`
+
+	// Installed Convenience flag derived from `lastFiredTime` — has the tag ever fired.
+	Installed *bool `json:"installed,omitempty"`
+
+	// IsUnavailable Whether the tag is in a broken/unavailable state (Meta `is_unavailable`).
+	IsUnavailable *bool `json:"isUnavailable,omitempty"`
+
+	// Kind Platform-native flavor of the tag (Meta: `pixel`).
+	Kind TrackingTagKind `json:"kind"`
+
+	// LastFiredTime Unix seconds of the last event the tag received, or `null` if it
+	// never fired. The practical "is it installed and working" signal.
+	LastFiredTime *int   `json:"lastFiredTime,omitempty"`
+	Name          string `json:"name"`
+
+	// OwnerAdAccountId Ad account id (`act_...`) that owns the tag, when reported.
+	OwnerAdAccountId *string `json:"ownerAdAccountId,omitempty"`
+
+	// OwnerBusinessId Business Manager id that owns the tag, or `null` when the tag lives
+	// on a personal (non-BM) ad account — such tags can't be shared with
+	// other ad accounts.
+	OwnerBusinessId *string             `json:"ownerBusinessId,omitempty"`
+	Platform        TrackingTagPlatform `json:"platform"`
+
+	// Status `inactive` when the platform reports the tag as broken/unavailable.
+	Status TrackingTagStatus `json:"status"`
+}
+
+// TrackingTagKind Platform-native flavor of the tag (Meta: `pixel`).
+type TrackingTagKind string
+
+// TrackingTagPlatform defines model for TrackingTag.Platform.
+type TrackingTagPlatform string
+
+// TrackingTagStatus `inactive` when the platform reports the tag as broken/unavailable.
+type TrackingTagStatus string
 
 // TwitterPlatformData X (Twitter) geo-restriction applies at the media level. Media in geo-restricted tweets will be hidden for users outside the specified countries; the tweet text itself remains visible globally. Requires media to be attached (ignored for text-only tweets).
 type TwitterPlatformData struct {
@@ -10744,6 +11114,91 @@ type GetTikTokCreatorInfoParams struct {
 
 // GetTikTokCreatorInfoParamsMediaType defines parameters for GetTikTokCreatorInfo.
 type GetTikTokCreatorInfoParamsMediaType string
+
+// ListTrackingTagsParams defines parameters for ListTrackingTags.
+type ListTrackingTagsParams struct {
+	// AdAccountId Optional. Scope to one ad account, e.g. `act_123456789`.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+}
+
+// ListTrackingTags200JSONResponseBodyPlatform defines parameters for ListTrackingTags.
+type ListTrackingTags200JSONResponseBodyPlatform string
+
+// CreateTrackingTagJSONBody defines parameters for CreateTrackingTag.
+type CreateTrackingTagJSONBody struct {
+	// AdAccountId Meta ad account id, e.g. `act_123456789`.
+	AdAccountId string `json:"adAccountId"`
+	Name        string `json:"name"`
+}
+
+// CreateTrackingTag201JSONResponseBodyPlatform defines parameters for CreateTrackingTag.
+type CreateTrackingTag201JSONResponseBodyPlatform string
+
+// GetTrackingTag200JSONResponseBodyPlatform defines parameters for GetTrackingTag.
+type GetTrackingTag200JSONResponseBodyPlatform string
+
+// UpdateTrackingTagJSONBody defines parameters for UpdateTrackingTag.
+type UpdateTrackingTagJSONBody struct {
+	// AutomaticMatchingFields Which user fields Advanced Matching may collect. Meta's
+	// terse codes: em=email, ph=phone, fn=first name, ln=last
+	// name, ge=gender, db=date of birth, ct=city, st=state,
+	// zp=zip.
+	AutomaticMatchingFields *[]UpdateTrackingTagJSONBodyAutomaticMatchingFields `json:"automaticMatchingFields,omitempty"`
+	DataUseSetting          *UpdateTrackingTagJSONBodyDataUseSetting            `json:"dataUseSetting,omitempty"`
+
+	// EnableAutomaticMatching Meta Advanced Matching toggle (`enable_automatic_matching`).
+	EnableAutomaticMatching *bool                                            `json:"enableAutomaticMatching,omitempty"`
+	FirstPartyCookieStatus  *UpdateTrackingTagJSONBodyFirstPartyCookieStatus `json:"firstPartyCookieStatus,omitempty"`
+	Name                    *string                                          `json:"name,omitempty"`
+}
+
+// UpdateTrackingTagJSONBodyAutomaticMatchingFields defines parameters for UpdateTrackingTag.
+type UpdateTrackingTagJSONBodyAutomaticMatchingFields string
+
+// UpdateTrackingTagJSONBodyDataUseSetting defines parameters for UpdateTrackingTag.
+type UpdateTrackingTagJSONBodyDataUseSetting string
+
+// UpdateTrackingTagJSONBodyFirstPartyCookieStatus defines parameters for UpdateTrackingTag.
+type UpdateTrackingTagJSONBodyFirstPartyCookieStatus string
+
+// UpdateTrackingTag200JSONResponseBodyPlatform defines parameters for UpdateTrackingTag.
+type UpdateTrackingTag200JSONResponseBodyPlatform string
+
+// RemoveTrackingTagSharedAccountParams defines parameters for RemoveTrackingTagSharedAccount.
+type RemoveTrackingTagSharedAccountParams struct {
+	// AdAccountId Ad account to unshare, e.g. `act_123456789`. May also be sent in the JSON body.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+}
+
+// ListTrackingTagSharedAccounts200JSONResponseBodyPlatform defines parameters for ListTrackingTagSharedAccounts.
+type ListTrackingTagSharedAccounts200JSONResponseBodyPlatform string
+
+// AddTrackingTagSharedAccountJSONBody defines parameters for AddTrackingTagSharedAccount.
+type AddTrackingTagSharedAccountJSONBody struct {
+	// AdAccountId Ad account to share with, e.g. `act_123456789`.
+	AdAccountId string `json:"adAccountId"`
+}
+
+// AddTrackingTagSharedAccount201JSONResponseBodyPlatform defines parameters for AddTrackingTagSharedAccount.
+type AddTrackingTagSharedAccount201JSONResponseBodyPlatform string
+
+// GetTrackingTagStatsParams defines parameters for GetTrackingTagStats.
+type GetTrackingTagStatsParams struct {
+	// Aggregation Aggregation dimension. Defaults to `event`.
+	Aggregation *GetTrackingTagStatsParamsAggregation `form:"aggregation,omitempty" json:"aggregation,omitempty"`
+
+	// StartTime Unix seconds lower bound.
+	StartTime *int `form:"startTime,omitempty" json:"startTime,omitempty"`
+
+	// EndTime Unix seconds upper bound.
+	EndTime *int `form:"endTime,omitempty" json:"endTime,omitempty"`
+}
+
+// GetTrackingTagStatsParamsAggregation defines parameters for GetTrackingTagStats.
+type GetTrackingTagStatsParamsAggregation string
+
+// GetTrackingTagStats200JSONResponseBodyPlatform defines parameters for GetTrackingTagStats.
+type GetTrackingTagStats200JSONResponseBodyPlatform string
 
 // GetYoutubePlaylists200JSONResponseBodyPlaylistsPrivacy defines parameters for GetYoutubePlaylists.
 type GetYoutubePlaylists200JSONResponseBodyPlaylistsPrivacy string
@@ -14985,6 +15440,15 @@ type UpdateRedditSubredditsJSONRequestBody UpdateRedditSubredditsJSONBody
 // SetTelegramCommandsJSONRequestBody defines body for SetTelegramCommands for application/json ContentType.
 type SetTelegramCommandsJSONRequestBody SetTelegramCommandsJSONBody
 
+// CreateTrackingTagJSONRequestBody defines body for CreateTrackingTag for application/json ContentType.
+type CreateTrackingTagJSONRequestBody CreateTrackingTagJSONBody
+
+// UpdateTrackingTagJSONRequestBody defines body for UpdateTrackingTag for application/json ContentType.
+type UpdateTrackingTagJSONRequestBody UpdateTrackingTagJSONBody
+
+// AddTrackingTagSharedAccountJSONRequestBody defines body for AddTrackingTagSharedAccount for application/json ContentType.
+type AddTrackingTagSharedAccountJSONRequestBody AddTrackingTagSharedAccountJSONBody
+
 // UpdateYoutubeDefaultPlaylistJSONRequestBody defines body for UpdateYoutubeDefaultPlaylist for application/json ContentType.
 type UpdateYoutubeDefaultPlaylistJSONRequestBody UpdateYoutubeDefaultPlaylistJSONBody
 
@@ -17981,6 +18445,36 @@ type ClientInterface interface {
 	// GetTikTokCreatorInfo request
 	GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListTrackingTags request
+	ListTrackingTags(ctx context.Context, accountId string, params *ListTrackingTagsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateTrackingTagWithBody request with any body
+	CreateTrackingTagWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateTrackingTag(ctx context.Context, accountId string, body CreateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTrackingTag request
+	GetTrackingTag(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateTrackingTagWithBody request with any body
+	UpdateTrackingTagWithBody(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateTrackingTag(ctx context.Context, accountId string, tagId string, body UpdateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveTrackingTagSharedAccount request
+	RemoveTrackingTagSharedAccount(ctx context.Context, accountId string, tagId string, params *RemoveTrackingTagSharedAccountParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTrackingTagSharedAccounts request
+	ListTrackingTagSharedAccounts(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddTrackingTagSharedAccountWithBody request with any body
+	AddTrackingTagSharedAccountWithBody(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddTrackingTagSharedAccount(ctx context.Context, accountId string, tagId string, body AddTrackingTagSharedAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTrackingTagStats request
+	GetTrackingTagStats(ctx context.Context, accountId string, tagId string, params *GetTrackingTagStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetYoutubePlaylists request
 	GetYoutubePlaylists(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -19844,6 +20338,138 @@ func (c *Client) SetTelegramCommands(ctx context.Context, accountId string, body
 
 func (c *Client) GetTikTokCreatorInfo(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTikTokCreatorInfoRequest(c.Server, accountId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTrackingTags(ctx context.Context, accountId string, params *ListTrackingTagsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTrackingTagsRequest(c.Server, accountId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTrackingTagWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTrackingTagRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTrackingTag(ctx context.Context, accountId string, body CreateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTrackingTagRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTrackingTag(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTrackingTagRequest(c.Server, accountId, tagId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateTrackingTagWithBody(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTrackingTagRequestWithBody(c.Server, accountId, tagId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateTrackingTag(ctx context.Context, accountId string, tagId string, body UpdateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTrackingTagRequest(c.Server, accountId, tagId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveTrackingTagSharedAccount(ctx context.Context, accountId string, tagId string, params *RemoveTrackingTagSharedAccountParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveTrackingTagSharedAccountRequest(c.Server, accountId, tagId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTrackingTagSharedAccounts(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTrackingTagSharedAccountsRequest(c.Server, accountId, tagId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddTrackingTagSharedAccountWithBody(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddTrackingTagSharedAccountRequestWithBody(c.Server, accountId, tagId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddTrackingTagSharedAccount(ctx context.Context, accountId string, tagId string, body AddTrackingTagSharedAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddTrackingTagSharedAccountRequest(c.Server, accountId, tagId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTrackingTagStats(ctx context.Context, accountId string, tagId string, params *GetTrackingTagStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTrackingTagStatsRequest(c.Server, accountId, tagId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -27102,6 +27728,464 @@ func NewGetTikTokCreatorInfoRequest(server string, accountId string, params *Get
 		if params.MediaType != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mediaType", *params.MediaType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListTrackingTagsRequest generates requests for ListTrackingTags
+func NewListTrackingTagsRequest(server string, accountId string, params *ListTrackingTagsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateTrackingTagRequest calls the generic CreateTrackingTag builder with application/json body
+func NewCreateTrackingTagRequest(server string, accountId string, body CreateTrackingTagJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTrackingTagRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewCreateTrackingTagRequestWithBody generates requests for CreateTrackingTag with any type of body
+func NewCreateTrackingTagRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTrackingTagRequest generates requests for GetTrackingTag
+func NewGetTrackingTagRequest(server string, accountId string, tagId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateTrackingTagRequest calls the generic UpdateTrackingTag builder with application/json body
+func NewUpdateTrackingTagRequest(server string, accountId string, tagId string, body UpdateTrackingTagJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateTrackingTagRequestWithBody(server, accountId, tagId, "application/json", bodyReader)
+}
+
+// NewUpdateTrackingTagRequestWithBody generates requests for UpdateTrackingTag with any type of body
+func NewUpdateTrackingTagRequestWithBody(server string, accountId string, tagId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveTrackingTagSharedAccountRequest generates requests for RemoveTrackingTagSharedAccount
+func NewRemoveTrackingTagSharedAccountRequest(server string, accountId string, tagId string, params *RemoveTrackingTagSharedAccountParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s/shared-accounts", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListTrackingTagSharedAccountsRequest generates requests for ListTrackingTagSharedAccounts
+func NewListTrackingTagSharedAccountsRequest(server string, accountId string, tagId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s/shared-accounts", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddTrackingTagSharedAccountRequest calls the generic AddTrackingTagSharedAccount builder with application/json body
+func NewAddTrackingTagSharedAccountRequest(server string, accountId string, tagId string, body AddTrackingTagSharedAccountJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddTrackingTagSharedAccountRequestWithBody(server, accountId, tagId, "application/json", bodyReader)
+}
+
+// NewAddTrackingTagSharedAccountRequestWithBody generates requests for AddTrackingTagSharedAccount with any type of body
+func NewAddTrackingTagSharedAccountRequestWithBody(server string, accountId string, tagId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s/shared-accounts", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTrackingTagStatsRequest generates requests for GetTrackingTagStats
+func NewGetTrackingTagStatsRequest(server string, accountId string, tagId string, params *GetTrackingTagStatsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "tagId", tagId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/tracking-tags/%s/stats", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Aggregation != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "aggregation", *params.Aggregation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.StartTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startTime", *params.StartTime, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.EndTime != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endTime", *params.EndTime, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -39958,6 +41042,36 @@ type ClientWithResponsesInterface interface {
 	// GetTikTokCreatorInfoWithResponse request
 	GetTikTokCreatorInfoWithResponse(ctx context.Context, accountId string, params *GetTikTokCreatorInfoParams, reqEditors ...RequestEditorFn) (*GetTikTokCreatorInfoResponse, error)
 
+	// ListTrackingTagsWithResponse request
+	ListTrackingTagsWithResponse(ctx context.Context, accountId string, params *ListTrackingTagsParams, reqEditors ...RequestEditorFn) (*ListTrackingTagsResponse, error)
+
+	// CreateTrackingTagWithBodyWithResponse request with any body
+	CreateTrackingTagWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTrackingTagResponse, error)
+
+	CreateTrackingTagWithResponse(ctx context.Context, accountId string, body CreateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTrackingTagResponse, error)
+
+	// GetTrackingTagWithResponse request
+	GetTrackingTagWithResponse(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*GetTrackingTagResponse, error)
+
+	// UpdateTrackingTagWithBodyWithResponse request with any body
+	UpdateTrackingTagWithBodyWithResponse(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTrackingTagResponse, error)
+
+	UpdateTrackingTagWithResponse(ctx context.Context, accountId string, tagId string, body UpdateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTrackingTagResponse, error)
+
+	// RemoveTrackingTagSharedAccountWithResponse request
+	RemoveTrackingTagSharedAccountWithResponse(ctx context.Context, accountId string, tagId string, params *RemoveTrackingTagSharedAccountParams, reqEditors ...RequestEditorFn) (*RemoveTrackingTagSharedAccountResponse, error)
+
+	// ListTrackingTagSharedAccountsWithResponse request
+	ListTrackingTagSharedAccountsWithResponse(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*ListTrackingTagSharedAccountsResponse, error)
+
+	// AddTrackingTagSharedAccountWithBodyWithResponse request with any body
+	AddTrackingTagSharedAccountWithBodyWithResponse(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddTrackingTagSharedAccountResponse, error)
+
+	AddTrackingTagSharedAccountWithResponse(ctx context.Context, accountId string, tagId string, body AddTrackingTagSharedAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*AddTrackingTagSharedAccountResponse, error)
+
+	// GetTrackingTagStatsWithResponse request
+	GetTrackingTagStatsWithResponse(ctx context.Context, accountId string, tagId string, params *GetTrackingTagStatsParams, reqEditors ...RequestEditorFn) (*GetTrackingTagStatsResponse, error)
+
 	// GetYoutubePlaylistsWithResponse request
 	GetYoutubePlaylistsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetYoutubePlaylistsResponse, error)
 
@@ -43617,6 +44731,303 @@ func (r GetTikTokCreatorInfoResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetTikTokCreatorInfoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListTrackingTagsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *ListTrackingTags200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		Tags     *[]TrackingTag                               `json:"tags,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTrackingTagsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTrackingTagsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListTrackingTagsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateTrackingTagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Platform *CreateTrackingTag201JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+		// Tag A platform measurement tag — the thing you create, install on a
+		// website, send events to, and target ads against. On Meta this is a
+		// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+		// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+		// changing the contract; platform-specific fields are simply absent where
+		// a platform has no equivalent. Returned by `listTrackingTags`,
+		// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+		Tag *TrackingTag `json:"tag,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateTrackingTagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateTrackingTagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateTrackingTagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTrackingTagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *GetTrackingTag200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+		// Tag A platform measurement tag — the thing you create, install on a
+		// website, send events to, and target ads against. On Meta this is a
+		// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+		// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+		// changing the contract; platform-specific fields are simply absent where
+		// a platform has no equivalent. Returned by `listTrackingTags`,
+		// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+		Tag *TrackingTag `json:"tag,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTrackingTagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTrackingTagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTrackingTagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateTrackingTagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *UpdateTrackingTag200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+		// Tag A platform measurement tag — the thing you create, install on a
+		// website, send events to, and target ads against. On Meta this is a
+		// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+		// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+		// changing the contract; platform-specific fields are simply absent where
+		// a platform has no equivalent. Returned by `listTrackingTags`,
+		// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+		Tag *TrackingTag `json:"tag,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateTrackingTagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateTrackingTagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateTrackingTagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveTrackingTagSharedAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveTrackingTagSharedAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveTrackingTagSharedAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveTrackingTagSharedAccountResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListTrackingTagSharedAccountsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform       *ListTrackingTagSharedAccounts200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		SharedAccounts *[]SharedAdAccount                                        `json:"sharedAccounts,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTrackingTagSharedAccountsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTrackingTagSharedAccountsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListTrackingTagSharedAccountsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddTrackingTagSharedAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Ok       *bool                                                   `json:"ok,omitempty"`
+		Platform *AddTrackingTagSharedAccount201JSONResponseBodyPlatform `json:"platform,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AddTrackingTagSharedAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddTrackingTagSharedAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddTrackingTagSharedAccountResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTrackingTagStatsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *GetTrackingTagStats200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		Stats    *struct {
+			Aggregation *string                   `json:"aggregation,omitempty"`
+			EndTime     *int                      `json:"endTime,omitempty"`
+			Rows        *[]map[string]interface{} `json:"rows,omitempty"`
+			StartTime   *int                      `json:"startTime,omitempty"`
+		} `json:"stats,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTrackingTagStatsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTrackingTagStatsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTrackingTagStatsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -53527,6 +54938,102 @@ func (c *ClientWithResponses) GetTikTokCreatorInfoWithResponse(ctx context.Conte
 	return ParseGetTikTokCreatorInfoResponse(rsp)
 }
 
+// ListTrackingTagsWithResponse request returning *ListTrackingTagsResponse
+func (c *ClientWithResponses) ListTrackingTagsWithResponse(ctx context.Context, accountId string, params *ListTrackingTagsParams, reqEditors ...RequestEditorFn) (*ListTrackingTagsResponse, error) {
+	rsp, err := c.ListTrackingTags(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTrackingTagsResponse(rsp)
+}
+
+// CreateTrackingTagWithBodyWithResponse request with arbitrary body returning *CreateTrackingTagResponse
+func (c *ClientWithResponses) CreateTrackingTagWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTrackingTagResponse, error) {
+	rsp, err := c.CreateTrackingTagWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTrackingTagResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateTrackingTagWithResponse(ctx context.Context, accountId string, body CreateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTrackingTagResponse, error) {
+	rsp, err := c.CreateTrackingTag(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTrackingTagResponse(rsp)
+}
+
+// GetTrackingTagWithResponse request returning *GetTrackingTagResponse
+func (c *ClientWithResponses) GetTrackingTagWithResponse(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*GetTrackingTagResponse, error) {
+	rsp, err := c.GetTrackingTag(ctx, accountId, tagId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTrackingTagResponse(rsp)
+}
+
+// UpdateTrackingTagWithBodyWithResponse request with arbitrary body returning *UpdateTrackingTagResponse
+func (c *ClientWithResponses) UpdateTrackingTagWithBodyWithResponse(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTrackingTagResponse, error) {
+	rsp, err := c.UpdateTrackingTagWithBody(ctx, accountId, tagId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTrackingTagResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateTrackingTagWithResponse(ctx context.Context, accountId string, tagId string, body UpdateTrackingTagJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTrackingTagResponse, error) {
+	rsp, err := c.UpdateTrackingTag(ctx, accountId, tagId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTrackingTagResponse(rsp)
+}
+
+// RemoveTrackingTagSharedAccountWithResponse request returning *RemoveTrackingTagSharedAccountResponse
+func (c *ClientWithResponses) RemoveTrackingTagSharedAccountWithResponse(ctx context.Context, accountId string, tagId string, params *RemoveTrackingTagSharedAccountParams, reqEditors ...RequestEditorFn) (*RemoveTrackingTagSharedAccountResponse, error) {
+	rsp, err := c.RemoveTrackingTagSharedAccount(ctx, accountId, tagId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveTrackingTagSharedAccountResponse(rsp)
+}
+
+// ListTrackingTagSharedAccountsWithResponse request returning *ListTrackingTagSharedAccountsResponse
+func (c *ClientWithResponses) ListTrackingTagSharedAccountsWithResponse(ctx context.Context, accountId string, tagId string, reqEditors ...RequestEditorFn) (*ListTrackingTagSharedAccountsResponse, error) {
+	rsp, err := c.ListTrackingTagSharedAccounts(ctx, accountId, tagId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTrackingTagSharedAccountsResponse(rsp)
+}
+
+// AddTrackingTagSharedAccountWithBodyWithResponse request with arbitrary body returning *AddTrackingTagSharedAccountResponse
+func (c *ClientWithResponses) AddTrackingTagSharedAccountWithBodyWithResponse(ctx context.Context, accountId string, tagId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddTrackingTagSharedAccountResponse, error) {
+	rsp, err := c.AddTrackingTagSharedAccountWithBody(ctx, accountId, tagId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddTrackingTagSharedAccountResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddTrackingTagSharedAccountWithResponse(ctx context.Context, accountId string, tagId string, body AddTrackingTagSharedAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*AddTrackingTagSharedAccountResponse, error) {
+	rsp, err := c.AddTrackingTagSharedAccount(ctx, accountId, tagId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddTrackingTagSharedAccountResponse(rsp)
+}
+
+// GetTrackingTagStatsWithResponse request returning *GetTrackingTagStatsResponse
+func (c *ClientWithResponses) GetTrackingTagStatsWithResponse(ctx context.Context, accountId string, tagId string, params *GetTrackingTagStatsParams, reqEditors ...RequestEditorFn) (*GetTrackingTagStatsResponse, error) {
+	rsp, err := c.GetTrackingTagStats(ctx, accountId, tagId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTrackingTagStatsResponse(rsp)
+}
+
 // GetYoutubePlaylistsWithResponse request returning *GetYoutubePlaylistsResponse
 func (c *ClientWithResponses) GetYoutubePlaylistsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetYoutubePlaylistsResponse, error) {
 	rsp, err := c.GetYoutubePlaylists(ctx, accountId, reqEditors...)
@@ -59377,6 +60884,313 @@ func ParseGetTikTokCreatorInfoResponse(rsp *http.Response) (*GetTikTokCreatorInf
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTrackingTagsResponse parses an HTTP response from a ListTrackingTagsWithResponse call
+func ParseListTrackingTagsResponse(rsp *http.Response) (*ListTrackingTagsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTrackingTagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *ListTrackingTags200JSONResponseBodyPlatform `json:"platform,omitempty"`
+			Tags     *[]TrackingTag                               `json:"tags,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateTrackingTagResponse parses an HTTP response from a CreateTrackingTagWithResponse call
+func ParseCreateTrackingTagResponse(rsp *http.Response) (*CreateTrackingTagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateTrackingTagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Platform *CreateTrackingTag201JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+			// Tag A platform measurement tag — the thing you create, install on a
+			// website, send events to, and target ads against. On Meta this is a
+			// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+			// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+			// changing the contract; platform-specific fields are simply absent where
+			// a platform has no equivalent. Returned by `listTrackingTags`,
+			// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+			Tag *TrackingTag `json:"tag,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTrackingTagResponse parses an HTTP response from a GetTrackingTagWithResponse call
+func ParseGetTrackingTagResponse(rsp *http.Response) (*GetTrackingTagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTrackingTagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *GetTrackingTag200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+			// Tag A platform measurement tag — the thing you create, install on a
+			// website, send events to, and target ads against. On Meta this is a
+			// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+			// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+			// changing the contract; platform-specific fields are simply absent where
+			// a platform has no equivalent. Returned by `listTrackingTags`,
+			// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+			Tag *TrackingTag `json:"tag,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateTrackingTagResponse parses an HTTP response from a UpdateTrackingTagWithResponse call
+func ParseUpdateTrackingTagResponse(rsp *http.Response) (*UpdateTrackingTagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateTrackingTagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *UpdateTrackingTag200JSONResponseBodyPlatform `json:"platform,omitempty"`
+
+			// Tag A platform measurement tag — the thing you create, install on a
+			// website, send events to, and target ads against. On Meta this is a
+			// Pixel (`kind: pixel`). The shape is platform-neutral so other platforms
+			// (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without
+			// changing the contract; platform-specific fields are simply absent where
+			// a platform has no equivalent. Returned by `listTrackingTags`,
+			// `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+			Tag *TrackingTag `json:"tag,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveTrackingTagSharedAccountResponse parses an HTTP response from a RemoveTrackingTagSharedAccountWithResponse call
+func ParseRemoveTrackingTagSharedAccountResponse(rsp *http.Response) (*RemoveTrackingTagSharedAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveTrackingTagSharedAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTrackingTagSharedAccountsResponse parses an HTTP response from a ListTrackingTagSharedAccountsWithResponse call
+func ParseListTrackingTagSharedAccountsResponse(rsp *http.Response) (*ListTrackingTagSharedAccountsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTrackingTagSharedAccountsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform       *ListTrackingTagSharedAccounts200JSONResponseBodyPlatform `json:"platform,omitempty"`
+			SharedAccounts *[]SharedAdAccount                                        `json:"sharedAccounts,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddTrackingTagSharedAccountResponse parses an HTTP response from a AddTrackingTagSharedAccountWithResponse call
+func ParseAddTrackingTagSharedAccountResponse(rsp *http.Response) (*AddTrackingTagSharedAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddTrackingTagSharedAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Ok       *bool                                                   `json:"ok,omitempty"`
+			Platform *AddTrackingTagSharedAccount201JSONResponseBodyPlatform `json:"platform,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTrackingTagStatsResponse parses an HTTP response from a GetTrackingTagStatsWithResponse call
+func ParseGetTrackingTagStatsResponse(rsp *http.Response) (*GetTrackingTagStatsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTrackingTagStatsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *GetTrackingTagStats200JSONResponseBodyPlatform `json:"platform,omitempty"`
+			Stats    *struct {
+				Aggregation *string                   `json:"aggregation,omitempty"`
+				EndTime     *int                      `json:"endTime,omitempty"`
+				Rows        *[]map[string]interface{} `json:"rows,omitempty"`
+				StartTime   *int                      `json:"startTime,omitempty"`
+			} `json:"stats,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
