@@ -759,6 +759,27 @@ func (e DiscordPlatformDataThreadFromMessageAutoArchiveDuration) Valid() bool {
 	}
 }
 
+// Defines values for DmButtonType.
+const (
+	DmButtonTypePhone    DmButtonType = "phone"
+	DmButtonTypePostback DmButtonType = "postback"
+	DmButtonTypeUrl      DmButtonType = "url"
+)
+
+// Valid indicates whether the value is a known member of the DmButtonType enum.
+func (e DmButtonType) Valid() bool {
+	switch e {
+	case DmButtonTypePhone:
+		return true
+	case DmButtonTypePostback:
+		return true
+	case DmButtonTypeUrl:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for FacebookPlatformDataContentType.
 const (
 	FacebookPlatformDataContentTypeReel  FacebookPlatformDataContentType = "reel"
@@ -7376,19 +7397,19 @@ func (e CreateWhatsAppTemplateJSONBodyCategory) Valid() bool {
 
 // Defines values for CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType.
 const (
-	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePhoneNumber CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "phone_number"
-	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQuickReply  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "quick_reply"
-	CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeUrl         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "url"
+	PhoneNumber CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "phone_number"
+	QuickReply  CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "quick_reply"
+	Url         CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType = "url"
 )
 
 // Valid indicates whether the value is a known member of the CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType enum.
 func (e CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsType) Valid() bool {
 	switch e {
-	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypePhoneNumber:
+	case PhoneNumber:
 		return true
-	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeQuickReply:
+	case QuickReply:
 		return true
-	case CreateWhatsAppTemplateJSONBodyLibraryTemplateButtonInputsTypeUrl:
+	case Url:
 		return true
 	default:
 		return false
@@ -8384,6 +8405,28 @@ type DiscordPlatformData struct {
 
 // DiscordPlatformDataThreadFromMessageAutoArchiveDuration Auto-archive after inactivity (minutes)
 type DiscordPlatformDataThreadFromMessageAutoArchiveDuration int
+
+// DmButton A single inline button rendered inside an auto-DM via Meta's button_template.
+// Up to 3 buttons per automation. `url` and `postback` work on Instagram and
+// Facebook; `phone` is Facebook-only. When buttons are set, `dmMessage` becomes
+// the button_template text and must be 640 characters or less.
+type DmButton struct {
+	// Payload Postback payload delivered via the messaging_postbacks webhook (required when type is postback)
+	Payload *string `json:"payload,omitempty"`
+
+	// Phone Phone number, e.g. +14155551234 (required when type is phone; Facebook only)
+	Phone *string `json:"phone,omitempty"`
+
+	// Title Button label (20 chars max)
+	Title string       `json:"title"`
+	Type  DmButtonType `json:"type"`
+
+	// Url Target URL (required when type is url)
+	Url *string `json:"url,omitempty"`
+}
+
+// DmButtonType defines model for DmButton.Type.
+type DmButtonType string
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
@@ -12238,10 +12281,13 @@ type CreateCommentAutomationJSONBody struct {
 	// AccountId Instagram or Facebook account ID
 	AccountId string `json:"accountId"`
 
+	// Buttons Optional inline DM buttons (1-3). Phone buttons are Facebook-only. Omit or pass [] for a plain-text DM.
+	Buttons *[]DmButton `json:"buttons,omitempty"`
+
 	// CommentReply Optional public reply to the comment
 	CommentReply *string `json:"commentReply,omitempty"`
 
-	// DmMessage DM text to send to commenter
+	// DmMessage DM text to send to commenter. Max 640 chars when buttons are set, otherwise ~1000.
 	DmMessage string `json:"dmMessage"`
 
 	// Keywords Trigger keywords (empty = any comment triggers)
@@ -12279,6 +12325,8 @@ type GetCommentAutomation200JSONResponseBodyLogsStatus string
 
 // UpdateCommentAutomationJSONBody defines parameters for UpdateCommentAutomation.
 type UpdateCommentAutomationJSONBody struct {
+	// Buttons Inline DM buttons (1-3). Pass [] to clear all buttons.
+	Buttons      *[]DmButton                               `json:"buttons,omitempty"`
 	CommentReply *string                                   `json:"commentReply,omitempty"`
 	DmMessage    *string                                   `json:"dmMessage,omitempty"`
 	IsActive     *bool                                     `json:"isActive,omitempty"`
@@ -46163,7 +46211,10 @@ type ListCommentAutomationsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Automations *[]struct {
-			AccountId      *string                                                        `json:"accountId,omitempty"`
+			AccountId *string `json:"accountId,omitempty"`
+
+			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+			Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
 			CommentReply   *string                                                        `json:"commentReply,omitempty"`
 			CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 			DmMessage      *string                                                        `json:"dmMessage,omitempty"`
@@ -46216,6 +46267,8 @@ type CreateCommentAutomationResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Automation *struct {
+			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+			Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
 			CommentReply   *string                                                        `json:"commentReply,omitempty"`
 			CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 			DmMessage      *string                                                        `json:"dmMessage,omitempty"`
@@ -46297,7 +46350,10 @@ type GetCommentAutomationResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Automation *struct {
-			AccountId      *string                                                     `json:"accountId,omitempty"`
+			AccountId *string `json:"accountId,omitempty"`
+
+			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+			Buttons        *[]DmButton                                                 `json:"buttons,omitempty"`
 			CommentReply   *string                                                     `json:"commentReply,omitempty"`
 			CreatedAt      *time.Time                                                  `json:"createdAt,omitempty"`
 			DmMessage      *string                                                     `json:"dmMessage,omitempty"`
@@ -46372,6 +46428,8 @@ type UpdateCommentAutomationResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Automation *struct {
+			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+			Buttons      *[]DmButton                                                    `json:"buttons,omitempty"`
 			CommentReply *string                                                        `json:"commentReply,omitempty"`
 			DmMessage    *string                                                        `json:"dmMessage,omitempty"`
 			Id           *string                                                        `json:"id,omitempty"`
@@ -62377,7 +62435,10 @@ func ParseListCommentAutomationsResponse(rsp *http.Response) (*ListCommentAutoma
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Automations *[]struct {
-				AccountId      *string                                                        `json:"accountId,omitempty"`
+				AccountId *string `json:"accountId,omitempty"`
+
+				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+				Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
 				CommentReply   *string                                                        `json:"commentReply,omitempty"`
 				CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 				DmMessage      *string                                                        `json:"dmMessage,omitempty"`
@@ -62432,6 +62493,8 @@ func ParseCreateCommentAutomationResponse(rsp *http.Response) (*CreateCommentAut
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Automation *struct {
+				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+				Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
 				CommentReply   *string                                                        `json:"commentReply,omitempty"`
 				CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 				DmMessage      *string                                                        `json:"dmMessage,omitempty"`
@@ -62517,7 +62580,10 @@ func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomatio
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Automation *struct {
-				AccountId      *string                                                     `json:"accountId,omitempty"`
+				AccountId *string `json:"accountId,omitempty"`
+
+				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+				Buttons        *[]DmButton                                                 `json:"buttons,omitempty"`
 				CommentReply   *string                                                     `json:"commentReply,omitempty"`
 				CreatedAt      *time.Time                                                  `json:"createdAt,omitempty"`
 				DmMessage      *string                                                     `json:"dmMessage,omitempty"`
@@ -62600,6 +62666,8 @@ func ParseUpdateCommentAutomationResponse(rsp *http.Response) (*UpdateCommentAut
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Automation *struct {
+				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
+				Buttons      *[]DmButton                                                    `json:"buttons,omitempty"`
 				CommentReply *string                                                        `json:"commentReply,omitempty"`
 				DmMessage    *string                                                        `json:"dmMessage,omitempty"`
 				Id           *string                                                        `json:"id,omitempty"`
