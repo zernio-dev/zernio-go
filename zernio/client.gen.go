@@ -4104,6 +4104,42 @@ func (e UpdateAdJSONBodyTargetingAdvantageAudience) Valid() bool {
 	}
 }
 
+// Defines values for GetAdCommentsParamsPlacement.
+const (
+	GetAdCommentsParamsPlacementFacebook  GetAdCommentsParamsPlacement = "facebook"
+	GetAdCommentsParamsPlacementInstagram GetAdCommentsParamsPlacement = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the GetAdCommentsParamsPlacement enum.
+func (e GetAdCommentsParamsPlacement) Valid() bool {
+	switch e {
+	case GetAdCommentsParamsPlacementFacebook:
+		return true
+	case GetAdCommentsParamsPlacementInstagram:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAdComments200JSONResponseBodyMetaPlacement.
+const (
+	GetAdComments200JSONResponseBodyMetaPlacementFacebook  GetAdComments200JSONResponseBodyMetaPlacement = "facebook"
+	GetAdComments200JSONResponseBodyMetaPlacementInstagram GetAdComments200JSONResponseBodyMetaPlacement = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the GetAdComments200JSONResponseBodyMetaPlacement enum.
+func (e GetAdComments200JSONResponseBodyMetaPlacement) Valid() bool {
+	switch e {
+	case GetAdComments200JSONResponseBodyMetaPlacementFacebook:
+		return true
+	case GetAdComments200JSONResponseBodyMetaPlacementInstagram:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAdComments200JSONResponseBodyMetaPlatform.
 const (
 	GetAdComments200JSONResponseBodyMetaPlatformFacebook  GetAdComments200JSONResponseBodyMetaPlatform = "facebook"
@@ -5508,6 +5544,24 @@ func (e ListInboxCommentsParamsSortOrder) Valid() bool {
 	case ListInboxCommentsParamsSortOrderAsc:
 		return true
 	case ListInboxCommentsParamsSortOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListInboxComments200JSONResponseBodyDataPlacement.
+const (
+	ListInboxComments200JSONResponseBodyDataPlacementFacebook  ListInboxComments200JSONResponseBodyDataPlacement = "facebook"
+	ListInboxComments200JSONResponseBodyDataPlacementInstagram ListInboxComments200JSONResponseBodyDataPlacement = "instagram"
+)
+
+// Valid indicates whether the value is a known member of the ListInboxComments200JSONResponseBodyDataPlacement enum.
+func (e ListInboxComments200JSONResponseBodyDataPlacement) Valid() bool {
+	switch e {
+	case ListInboxComments200JSONResponseBodyDataPlacementFacebook:
+		return true
+	case ListInboxComments200JSONResponseBodyDataPlacementInstagram:
 		return true
 	default:
 		return false
@@ -6944,31 +6998,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
-	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
-	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
-	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
-	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
-	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
+	Instagram CreateSequenceJSONBodyPlatform = "instagram"
+	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
+	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
+	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
+	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case CreateSequenceJSONBodyPlatformBluesky:
+	case Bluesky:
 		return true
-	case CreateSequenceJSONBodyPlatformFacebook:
+	case Facebook:
 		return true
-	case CreateSequenceJSONBodyPlatformInstagram:
+	case Instagram:
 		return true
-	case CreateSequenceJSONBodyPlatformReddit:
+	case Reddit:
 		return true
-	case CreateSequenceJSONBodyPlatformTelegram:
+	case Telegram:
 		return true
-	case CreateSequenceJSONBodyPlatformTwitter:
+	case Twitter:
 		return true
-	case CreateSequenceJSONBodyPlatformWhatsapp:
+	case Whatsapp:
 		return true
 	default:
 		return false
@@ -12199,11 +12253,19 @@ type GetAdAnalyticsParams struct {
 
 // GetAdCommentsParams defines parameters for GetAdComments.
 type GetAdCommentsParams struct {
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+	// Placement Which side of the ad to return comments for. Omit to default to the Instagram side when present, else Facebook. Returns ad_not_commentable if the ad has no such placement.
+	Placement *GetAdCommentsParamsPlacement `form:"placement,omitempty" json:"placement,omitempty"`
+	Limit     *int                          `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// Cursor Pagination cursor from a previous response.
 	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 }
+
+// GetAdCommentsParamsPlacement defines parameters for GetAdComments.
+type GetAdCommentsParamsPlacement string
+
+// GetAdComments200JSONResponseBodyMetaPlacement defines parameters for GetAdComments.
+type GetAdComments200JSONResponseBodyMetaPlacement string
 
 // GetAdComments200JSONResponseBodyMetaPlatform defines parameters for GetAdComments.
 type GetAdComments200JSONResponseBodyMetaPlatform string
@@ -13426,6 +13488,9 @@ type ListInboxCommentsParamsSortBy string
 
 // ListInboxCommentsParamsSortOrder defines parameters for ListInboxComments.
 type ListInboxCommentsParamsSortOrder string
+
+// ListInboxComments200JSONResponseBodyDataPlacement defines parameters for ListInboxComments.
+type ListInboxComments200JSONResponseBodyDataPlacement string
 
 // DeleteInboxCommentParams defines parameters for DeleteInboxComment.
 type DeleteInboxCommentParams struct {
@@ -30045,6 +30110,18 @@ func NewGetAdCommentsRequest(server string, adId string, params *GetAdCommentsPa
 		// per the OpenAPI spec (e.g. "color=blue,black,brown").
 		var rawQueryFragments []string
 
+		if params.Placement != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "placement", *params.Placement, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Limit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
@@ -46259,7 +46336,7 @@ type GetAdCommentsResponse struct {
 			// AdId Internal Zernio ad ID.
 			AdId string `json:"adId"`
 
-			// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
+			// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 			EffectiveStoryId string `json:"effectiveStoryId"`
 
 			// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
@@ -46269,9 +46346,14 @@ type GetAdCommentsResponse struct {
 			InstagramPermalink *string `json:"instagramPermalink,omitempty"`
 
 			// InstagramUserId Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
-			InstagramUserId *string                                      `json:"instagramUserId,omitempty"`
-			LastUpdated     time.Time                                    `json:"lastUpdated"`
-			Platform        GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
+			InstagramUserId *string   `json:"instagramUserId,omitempty"`
+			LastUpdated     time.Time `json:"lastUpdated"`
+
+			// Placement The placement these comments are for — useful when you didn't pass ?placement= and want to know which one you got.
+			Placement GetAdComments200JSONResponseBodyMetaPlacement `json:"placement"`
+
+			// Platform Which side these comments are on (same as `placement`).
+			Platform GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
 
 			// PlatformAdId Meta ad ID.
 			PlatformAdId string `json:"platformAdId"`
@@ -49562,7 +49644,7 @@ type ListInboxCommentsResponse struct {
 			AccountId       *string `json:"accountId,omitempty"`
 			AccountUsername *string `json:"accountUsername,omitempty"`
 
-			// AdId Internal Zernio ad id — only on ad rows (same value as `id`).
+			// AdId Internal Zernio ad id — only on ad rows.
 			AdId *string `json:"adId,omitempty"`
 
 			// Cid Bluesky content identifier
@@ -49572,12 +49654,15 @@ type ListInboxCommentsResponse struct {
 			CreatedTime  *time.Time `json:"createdTime,omitempty"`
 			Id           *string    `json:"id,omitempty"`
 
-			// IsAd True when this row is an ad (boosted/dark post). `platform` is then the comment platform (facebook or instagram), `id` equals `adId`, and the thread is at GET /v1/ads/{adId}/comments.
+			// IsAd True when this row is an ad (boosted/dark post). `platform` is then the placement (facebook = the Page dark post / instagram = the IG media), `id` is `{adId}:{placement}`, and the thread is at GET /v1/ads/{adId}/comments?placement={placement}.
 			IsAd      *bool   `json:"isAd,omitempty"`
 			LikeCount *int    `json:"likeCount,omitempty"`
 			Permalink *string `json:"permalink,omitempty"`
 			Picture   *string `json:"picture,omitempty"`
-			Platform  *string `json:"platform,omitempty"`
+
+			// Placement Which side of the ad this row's comments are on — only on ad rows.
+			Placement *ListInboxComments200JSONResponseBodyDataPlacement `json:"placement,omitempty"`
+			Platform  *string                                            `json:"platform,omitempty"`
 
 			// Subreddit Reddit subreddit name
 			Subreddit *string `json:"subreddit,omitempty"`
@@ -62558,7 +62643,7 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 				// AdId Internal Zernio ad ID.
 				AdId string `json:"adId"`
 
-				// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
+				// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 				EffectiveStoryId string `json:"effectiveStoryId"`
 
 				// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
@@ -62568,9 +62653,14 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 				InstagramPermalink *string `json:"instagramPermalink,omitempty"`
 
 				// InstagramUserId Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
-				InstagramUserId *string                                      `json:"instagramUserId,omitempty"`
-				LastUpdated     time.Time                                    `json:"lastUpdated"`
-				Platform        GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
+				InstagramUserId *string   `json:"instagramUserId,omitempty"`
+				LastUpdated     time.Time `json:"lastUpdated"`
+
+				// Placement The placement these comments are for — useful when you didn't pass ?placement= and want to know which one you got.
+				Placement GetAdComments200JSONResponseBodyMetaPlacement `json:"placement"`
+
+				// Platform Which side these comments are on (same as `placement`).
+				Platform GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
 
 				// PlatformAdId Meta ad ID.
 				PlatformAdId string `json:"platformAdId"`
@@ -66379,7 +66469,7 @@ func ParseListInboxCommentsResponse(rsp *http.Response) (*ListInboxCommentsRespo
 				AccountId       *string `json:"accountId,omitempty"`
 				AccountUsername *string `json:"accountUsername,omitempty"`
 
-				// AdId Internal Zernio ad id — only on ad rows (same value as `id`).
+				// AdId Internal Zernio ad id — only on ad rows.
 				AdId *string `json:"adId,omitempty"`
 
 				// Cid Bluesky content identifier
@@ -66389,12 +66479,15 @@ func ParseListInboxCommentsResponse(rsp *http.Response) (*ListInboxCommentsRespo
 				CreatedTime  *time.Time `json:"createdTime,omitempty"`
 				Id           *string    `json:"id,omitempty"`
 
-				// IsAd True when this row is an ad (boosted/dark post). `platform` is then the comment platform (facebook or instagram), `id` equals `adId`, and the thread is at GET /v1/ads/{adId}/comments.
+				// IsAd True when this row is an ad (boosted/dark post). `platform` is then the placement (facebook = the Page dark post / instagram = the IG media), `id` is `{adId}:{placement}`, and the thread is at GET /v1/ads/{adId}/comments?placement={placement}.
 				IsAd      *bool   `json:"isAd,omitempty"`
 				LikeCount *int    `json:"likeCount,omitempty"`
 				Permalink *string `json:"permalink,omitempty"`
 				Picture   *string `json:"picture,omitempty"`
-				Platform  *string `json:"platform,omitempty"`
+
+				// Placement Which side of the ad this row's comments are on — only on ad rows.
+				Placement *ListInboxComments200JSONResponseBodyDataPlacement `json:"placement,omitempty"`
+				Platform  *string                                            `json:"platform,omitempty"`
 
 				// Subreddit Reddit subreddit name
 				Subreddit *string `json:"subreddit,omitempty"`
