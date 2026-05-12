@@ -11944,7 +11944,7 @@ type CreateStandaloneAdJSONBody struct {
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
-	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). LinkedIn-specific: only `engagement`, `traffic`, and `awareness` are supported for standalone ads (creates a Direct Sponsored Content single image ad); `traffic` requires `linkUrl`. For `video_views` / `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). TikTok-specific: `conversions` (website-conversion ad group) requires `promotedObject.pixelId` (your TikTok Pixel ID) and accepts an optional `promotedObject.customEventType` (a TikTok `optimization_event` code like `ON_WEB_ORDER`, `INITIATE_ORDER`, `ON_WEB_REGISTER`, `FORM`); to inherit a pixel + event from an existing ad group, pass `adSetId` instead. LinkedIn-specific: only `engagement`, `traffic`, and `awareness` are supported for standalone ads (creates a Direct Sponsored Content single image ad); `traffic` requires `linkUrl`. For `video_views` / `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
 	// Headline Required for Meta, Google, Pinterest, and LinkedIn on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100, LinkedIn=400. On LinkedIn this is the ad's headline (the bold text on the creative); for traffic ads it's the link card title.
@@ -11999,16 +11999,27 @@ type CreateStandaloneAdJSONBody struct {
 	// OrganizationId LinkedIn only. The Company Page that authors the Direct Sponsored Content ("dark") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
 
-	// PromotedObject Meta only. Forwarded to the ad set's `promoted_object` (snake-cased).
+	// PromotedObject What the ad optimises against. Behaviour depends on the platform.
 	//
+	// **Meta**: forwarded to the ad set's `promoted_object` (snake-cased).
 	// Required for goals whose ad-set optimization_goal points at a specific
-	// event/page/app — without it Meta rejects the ad-set create with
-	// `error_subcode: 1815430` "Please select a promoted object for your ad set":
-	//   - `goal: conversions` (OFFSITE_CONVERSIONS) — requires `pixelId` + `customEventType`
-	//   - `goal: app_promotion` (APP_INSTALLS) — requires `applicationId` + `objectStoreUrl`
-	//   - `goal: lead_generation` (LEAD_GENERATION) — `pageId` is auto-filled from the connected Page when omitted
+	// event/page/app (without it Meta rejects the ad-set create with
+	// `error_subcode: 1815430` "Please select a promoted object for your ad set"):
+	//   - `goal: conversions` (OFFSITE_CONVERSIONS): requires `pixelId` + `customEventType`
+	//   - `goal: app_promotion` (APP_INSTALLS): requires `applicationId` + `objectStoreUrl`
+	//   - `goal: lead_generation` (LEAD_GENERATION): `pageId` is auto-filled from the connected Page when omitted
 	//
-	// Other goals (engagement, traffic, awareness, video_views) ignore this field.
+	// Other Meta goals (engagement, traffic, awareness, video_views) ignore this field.
+	//
+	// **TikTok**: only `goal: conversions` uses it.
+	//   - `pixelId` maps to the ad group's `pixel_id`. Required: a TikTok website-conversion
+	//     ad group without a pixel is rejected with `40002: Please select a pixel`.
+	//   - `customEventType` maps to the ad group's `optimization_event` (the pixel event to
+	//     optimise for). Optional: TikTok accepts a pixel-only auto-bid conversion ad group.
+	//     See the `customEventType` field below for the valid TikTok codes.
+	//
+	// The remaining `promotedObject.*` fields are Meta-only. Platforms other than
+	// Meta and TikTok ignore `promotedObject` entirely.
 	PromotedObject *struct {
 		// ApplicationId App ID. Required for `goal: app_promotion`.
 		ApplicationId *string `json:"applicationId,omitempty"`
@@ -12016,9 +12027,18 @@ type CreateStandaloneAdJSONBody struct {
 		// CustomConversionId Custom Conversion ID, when optimising against one instead of a standard event.
 		CustomConversionId *string `json:"customConversionId,omitempty"`
 
-		// CustomEventType Standard event the campaign optimises against, e.g. `PURCHASE`, `LEAD`,
-		// `COMPLETE_REGISTRATION`, `ADD_TO_CART`. Uppercased internally so callers
-		// can pass any case. Required for `goal: conversions`.
+		// CustomEventType The event the campaign/ad group optimises against.
+		//
+		// **Meta:** standard event like `PURCHASE`, `LEAD`, `COMPLETE_REGISTRATION`,
+		// `ADD_TO_CART`. Uppercased internally so callers can pass any case. Required
+		// for `goal: conversions`.
+		//
+		// **TikTok:** an `optimization_event` code (UPPER_SNAKE, not Meta's vocabulary
+		// and not PascalCase), e.g. `ON_WEB_ORDER` (Complete Payment), `INITIATE_ORDER`
+		// (Place an Order), `ON_WEB_CART` (Add to Cart), `ON_WEB_REGISTER` (Complete
+		// Registration), `FORM` (Submit Form), `ON_WEB_DETAIL` (View Content). Must be
+		// one of the events your TikTok Pixel is configured to track; passed through
+		// verbatim and validated by TikTok. Optional for `goal: conversions`.
 		CustomEventType *string `json:"customEventType,omitempty"`
 
 		// ObjectStoreUrl App Store / Play Store listing URL. Required for `goal: app_promotion`.
@@ -12028,7 +12048,8 @@ type CreateStandaloneAdJSONBody struct {
 		// connected Page when omitted.
 		PageId *string `json:"pageId,omitempty"`
 
-		// PixelId Facebook Pixel ID. Required for `goal: conversions`.
+		// PixelId Pixel ID. **Meta:** Facebook Pixel ID, required for `goal: conversions`.
+		// **TikTok:** TikTok Pixel ID, required for `goal: conversions`.
 		PixelId *string `json:"pixelId,omitempty"`
 
 		// ProductCatalogId Catalog ID for catalog/Advantage+ Shopping campaigns.
