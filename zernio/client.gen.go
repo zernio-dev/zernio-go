@@ -46339,7 +46339,10 @@ type GetAdCommentsResponse struct {
 			// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 			EffectiveStoryId string `json:"effectiveStoryId"`
 
-			// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
+			// FacebookAccountId Facebook-only. The connected Facebook Page SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
+			FacebookAccountId *string `json:"facebookAccountId,omitempty"`
+
+			// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete.
 			InstagramAccountId *string `json:"instagramAccountId,omitempty"`
 
 			// InstagramPermalink Instagram-only. Public permalink of the boosted IG post (creative.instagram_permalink_url).
@@ -62646,7 +62649,10 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 				// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 				EffectiveStoryId string `json:"effectiveStoryId"`
 
-				// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
+				// FacebookAccountId Facebook-only. The connected Facebook Page SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
+				FacebookAccountId *string `json:"facebookAccountId,omitempty"`
+
+				// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete.
 				InstagramAccountId *string `json:"instagramAccountId,omitempty"`
 
 				// InstagramPermalink Instagram-only. Public permalink of the boosted IG post (creative.instagram_permalink_url).
