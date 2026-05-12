@@ -5445,6 +5445,7 @@ const (
 	ListInboxCommentsParamsPlatformFacebook  ListInboxCommentsParamsPlatform = "facebook"
 	ListInboxCommentsParamsPlatformInstagram ListInboxCommentsParamsPlatform = "instagram"
 	ListInboxCommentsParamsPlatformLinkedin  ListInboxCommentsParamsPlatform = "linkedin"
+	ListInboxCommentsParamsPlatformMetaads   ListInboxCommentsParamsPlatform = "metaads"
 	ListInboxCommentsParamsPlatformReddit    ListInboxCommentsParamsPlatform = "reddit"
 	ListInboxCommentsParamsPlatformThreads   ListInboxCommentsParamsPlatform = "threads"
 	ListInboxCommentsParamsPlatformTwitter   ListInboxCommentsParamsPlatform = "twitter"
@@ -5461,6 +5462,8 @@ func (e ListInboxCommentsParamsPlatform) Valid() bool {
 	case ListInboxCommentsParamsPlatformInstagram:
 		return true
 	case ListInboxCommentsParamsPlatformLinkedin:
+		return true
+	case ListInboxCommentsParamsPlatformMetaads:
 		return true
 	case ListInboxCommentsParamsPlatformReddit:
 		return true
@@ -6941,31 +6944,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
-	Instagram CreateSequenceJSONBodyPlatform = "instagram"
-	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
-	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
-	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
-	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateSequenceJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateSequenceJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateSequenceJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateSequenceJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateSequenceJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateSequenceJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateSequenceJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -7406,13 +7409,13 @@ func (e SendWhatsAppConversionJSONBodyEventName) Valid() bool {
 
 // Defines values for SendWhatsAppConversion200JSONResponseBodyPlatform.
 const (
-	SendWhatsAppConversion200JSONResponseBodyPlatformMetaads SendWhatsAppConversion200JSONResponseBodyPlatform = "metaads"
+	Metaads SendWhatsAppConversion200JSONResponseBodyPlatform = "metaads"
 )
 
 // Valid indicates whether the value is a known member of the SendWhatsAppConversion200JSONResponseBodyPlatform enum.
 func (e SendWhatsAppConversion200JSONResponseBodyPlatform) Valid() bool {
 	switch e {
-	case SendWhatsAppConversion200JSONResponseBodyPlatformMetaads:
+	case Metaads:
 		return true
 	default:
 		return false
@@ -7896,6 +7899,12 @@ type Ad struct {
 		// Body Ad copy/text
 		Body *string `json:"body,omitempty"`
 
+		// EffectiveInstagramMediaId Meta `effective_instagram_media_id` — the Instagram media ID of the boosted post the ad's engagement lives on. Pass to GET /v1/ads?effectiveInstagramMediaId= to map a Business-Manager-visible IG post back to this ad.
+		EffectiveInstagramMediaId *string `json:"effectiveInstagramMediaId,omitempty"`
+
+		// EffectiveObjectStoryId Meta `effective_object_story_id` — `{pageId}_{postId}` of the Facebook post the ad's engagement (comments) lives on. Pass to GET /v1/ads?effectiveObjectStoryId= to map a Business-Manager-visible post back to this ad; GET /v1/ads/{adId}/comments resolves comments against it.
+		EffectiveObjectStoryId *string `json:"effectiveObjectStoryId,omitempty"`
+
 		// GoogleDescription Google Ads description
 		GoogleDescription *string `json:"googleDescription,omitempty"`
 
@@ -7905,11 +7914,20 @@ type Ad struct {
 		// ImageUrl Alternative image URL
 		ImageUrl *string `json:"imageUrl,omitempty"`
 
+		// InstagramPermalinkUrl Meta `instagram_permalink_url` — public Instagram post URL of the boosted media.
+		InstagramPermalinkUrl *string `json:"instagramPermalinkUrl,omitempty"`
+
+		// InstagramUserId Meta `instagram_user_id` — the Instagram-scoped business ID that owns the boosted media.
+		InstagramUserId *string `json:"instagramUserId,omitempty"`
+
 		// LinkUrl Destination URL
 		LinkUrl *string `json:"linkUrl,omitempty"`
 
 		// MediaUrls All media URLs for this ad (carousel images, multiple assets). Populated for Meta (carousel child_attachments), Google Ads (responsive display marketing_images), and LinkedIn (multi-image posts).
 		MediaUrls *[]string `json:"mediaUrls,omitempty"`
+
+		// ObjectStoryId Meta creative `object_story_id` (the SHARE reference). Frequently absent — Meta omits it for SHARE creatives. Use effectiveObjectStoryId instead.
+		ObjectStoryId *string `json:"objectStoryId,omitempty"`
 
 		// ObjectType Meta creative object_type (e.g. SHARE, VIDEO, PRIVACY_CHECK_FAIL, POST_DELETED). Use this to render state-aware previews — when Meta moderation strips image/video fields, only thumbnailUrl at 64x64 is available.
 		ObjectType           *string `json:"objectType,omitempty"`
@@ -11232,6 +11250,15 @@ type ListAdsParams struct {
 	// CampaignId Platform campaign ID (filter ads within a campaign)
 	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
 
+	// PlatformAdId Meta ad ID. Returns the ad with this platform-side ad ID.
+	PlatformAdId *string `form:"platformAdId,omitempty" json:"platformAdId,omitempty"`
+
+	// EffectiveObjectStoryId Facebook `{pageId}_{postId}` of the post the ad's engagement lives on (Meta `effective_object_story_id`). Use to map a Business-Manager-visible post back to the Zernio ad.
+	EffectiveObjectStoryId *string `form:"effectiveObjectStoryId,omitempty" json:"effectiveObjectStoryId,omitempty"`
+
+	// EffectiveInstagramMediaId Instagram media ID of the boosted post (Meta `effective_instagram_media_id`). Use to map a Business-Manager-visible IG post back to the Zernio ad.
+	EffectiveInstagramMediaId *string `form:"effectiveInstagramMediaId,omitempty" json:"effectiveInstagramMediaId,omitempty"`
+
 	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
@@ -13370,7 +13397,7 @@ type ListInboxCommentsParams struct {
 	// ProfileId Filter by profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// Platform Filter by platform
+	// Platform Filter by platform. `metaads` is a synthetic value meaning the user's ads (boosted/dark posts) only; `facebook`/`instagram` return organic posts only.
 	Platform *ListInboxCommentsParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
 
 	// MinComments Minimum comment count
@@ -28417,6 +28444,42 @@ func NewListAdsRequest(server string, params *ListAdsParams) (*http.Request, err
 		if params.CampaignId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "campaignId", *params.CampaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.PlatformAdId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platformAdId", *params.PlatformAdId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.EffectiveObjectStoryId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "effectiveObjectStoryId", *params.EffectiveObjectStoryId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.EffectiveInstagramMediaId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "effectiveInstagramMediaId", *params.EffectiveInstagramMediaId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -49499,16 +49562,22 @@ type ListInboxCommentsResponse struct {
 			AccountId       *string `json:"accountId,omitempty"`
 			AccountUsername *string `json:"accountUsername,omitempty"`
 
+			// AdId Internal Zernio ad id — only on ad rows (same value as `id`).
+			AdId *string `json:"adId,omitempty"`
+
 			// Cid Bluesky content identifier
 			Cid          *string    `json:"cid,omitempty"`
 			CommentCount *int       `json:"commentCount,omitempty"`
 			Content      *string    `json:"content,omitempty"`
 			CreatedTime  *time.Time `json:"createdTime,omitempty"`
 			Id           *string    `json:"id,omitempty"`
-			LikeCount    *int       `json:"likeCount,omitempty"`
-			Permalink    *string    `json:"permalink,omitempty"`
-			Picture      *string    `json:"picture,omitempty"`
-			Platform     *string    `json:"platform,omitempty"`
+
+			// IsAd True when this row is an ad (boosted/dark post). `platform` is then the comment platform (facebook or instagram), `id` equals `adId`, and the thread is at GET /v1/ads/{adId}/comments.
+			IsAd      *bool   `json:"isAd,omitempty"`
+			LikeCount *int    `json:"likeCount,omitempty"`
+			Permalink *string `json:"permalink,omitempty"`
+			Picture   *string `json:"picture,omitempty"`
+			Platform  *string `json:"platform,omitempty"`
 
 			// Subreddit Reddit subreddit name
 			Subreddit *string `json:"subreddit,omitempty"`
@@ -49659,7 +49728,16 @@ type GetInboxPostCommentsResponse struct {
 			Url *string `json:"url,omitempty"`
 		} `json:"comments,omitempty"`
 		Meta *struct {
-			AccountId   *string    `json:"accountId,omitempty"`
+			AccountId *string `json:"accountId,omitempty"`
+
+			// AdComments (Facebook/Instagram only) Present when this post has no organic comments but is a boosted post — the engagement lives on the ad. Use the ad-comments endpoint instead.
+			AdComments *struct {
+				// AdCommentsUrl Path to fetch the ad's comments (GET /v1/ads/{adId}/comments)
+				AdCommentsUrl *string `json:"adCommentsUrl,omitempty"`
+
+				// AdId Internal Zernio ad ID
+				AdId *string `json:"adId,omitempty"`
+			} `json:"adComments,omitempty"`
 			LastUpdated *time.Time `json:"lastUpdated,omitempty"`
 			Platform    *string    `json:"platform,omitempty"`
 			PostId      *string    `json:"postId,omitempty"`
@@ -66301,16 +66379,22 @@ func ParseListInboxCommentsResponse(rsp *http.Response) (*ListInboxCommentsRespo
 				AccountId       *string `json:"accountId,omitempty"`
 				AccountUsername *string `json:"accountUsername,omitempty"`
 
+				// AdId Internal Zernio ad id — only on ad rows (same value as `id`).
+				AdId *string `json:"adId,omitempty"`
+
 				// Cid Bluesky content identifier
 				Cid          *string    `json:"cid,omitempty"`
 				CommentCount *int       `json:"commentCount,omitempty"`
 				Content      *string    `json:"content,omitempty"`
 				CreatedTime  *time.Time `json:"createdTime,omitempty"`
 				Id           *string    `json:"id,omitempty"`
-				LikeCount    *int       `json:"likeCount,omitempty"`
-				Permalink    *string    `json:"permalink,omitempty"`
-				Picture      *string    `json:"picture,omitempty"`
-				Platform     *string    `json:"platform,omitempty"`
+
+				// IsAd True when this row is an ad (boosted/dark post). `platform` is then the comment platform (facebook or instagram), `id` equals `adId`, and the thread is at GET /v1/ads/{adId}/comments.
+				IsAd      *bool   `json:"isAd,omitempty"`
+				LikeCount *int    `json:"likeCount,omitempty"`
+				Permalink *string `json:"permalink,omitempty"`
+				Picture   *string `json:"picture,omitempty"`
+				Platform  *string `json:"platform,omitempty"`
 
 				// Subreddit Reddit subreddit name
 				Subreddit *string `json:"subreddit,omitempty"`
@@ -66471,7 +66555,16 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 				Url *string `json:"url,omitempty"`
 			} `json:"comments,omitempty"`
 			Meta *struct {
-				AccountId   *string    `json:"accountId,omitempty"`
+				AccountId *string `json:"accountId,omitempty"`
+
+				// AdComments (Facebook/Instagram only) Present when this post has no organic comments but is a boosted post — the engagement lives on the ad. Use the ad-comments endpoint instead.
+				AdComments *struct {
+					// AdCommentsUrl Path to fetch the ad's comments (GET /v1/ads/{adId}/comments)
+					AdCommentsUrl *string `json:"adCommentsUrl,omitempty"`
+
+					// AdId Internal Zernio ad ID
+					AdId *string `json:"adId,omitempty"`
+				} `json:"adComments,omitempty"`
 				LastUpdated *time.Time `json:"lastUpdated,omitempty"`
 				Platform    *string    `json:"platform,omitempty"`
 				PostId      *string    `json:"postId,omitempty"`
