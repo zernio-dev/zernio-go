@@ -46197,9 +46197,18 @@ type GetAdCommentsResponse struct {
 			AdId string `json:"adId"`
 
 			// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
-			EffectiveStoryId string                                       `json:"effectiveStoryId"`
-			LastUpdated      time.Time                                    `json:"lastUpdated"`
-			Platform         GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
+			EffectiveStoryId string `json:"effectiveStoryId"`
+
+			// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
+			InstagramAccountId *string `json:"instagramAccountId,omitempty"`
+
+			// InstagramPermalink Instagram-only. Public permalink of the boosted IG post (creative.instagram_permalink_url).
+			InstagramPermalink *string `json:"instagramPermalink,omitempty"`
+
+			// InstagramUserId Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
+			InstagramUserId *string                                      `json:"instagramUserId,omitempty"`
+			LastUpdated     time.Time                                    `json:"lastUpdated"`
+			Platform        GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
 
 			// PlatformAdId Meta ad ID.
 			PlatformAdId string `json:"platformAdId"`
@@ -62472,9 +62481,18 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 				AdId string `json:"adId"`
 
 				// EffectiveStoryId Underlying post ID the comments belong to. effective_object_story_id for Facebook, effective_instagram_media_id for Instagram.
-				EffectiveStoryId string                                       `json:"effectiveStoryId"`
-				LastUpdated      time.Time                                    `json:"lastUpdated"`
-				Platform         GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
+				EffectiveStoryId string `json:"effectiveStoryId"`
+
+				// InstagramAccountId Instagram-only. The connected Instagram SocialAccount these comments were read through — use it for reply/hide actions via /v1/inbox/comments.
+				InstagramAccountId *string `json:"instagramAccountId,omitempty"`
+
+				// InstagramPermalink Instagram-only. Public permalink of the boosted IG post (creative.instagram_permalink_url).
+				InstagramPermalink *string `json:"instagramPermalink,omitempty"`
+
+				// InstagramUserId Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
+				InstagramUserId *string                                      `json:"instagramUserId,omitempty"`
+				LastUpdated     time.Time                                    `json:"lastUpdated"`
+				Platform        GetAdComments200JSONResponseBodyMetaPlatform `json:"platform"`
 
 				// PlatformAdId Meta ad ID.
 				PlatformAdId string `json:"platformAdId"`
