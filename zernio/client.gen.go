@@ -3696,6 +3696,48 @@ func (e CreateStandaloneAdJSONBodyAdvantageAudience) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyAttributionSpecEventType.
+const (
+	CLICKTHROUGH     CreateStandaloneAdJSONBodyAttributionSpecEventType = "CLICK_THROUGH"
+	ENGAGEDVIDEOVIEW CreateStandaloneAdJSONBodyAttributionSpecEventType = "ENGAGED_VIDEO_VIEW"
+	VIEWTHROUGH      CreateStandaloneAdJSONBodyAttributionSpecEventType = "VIEW_THROUGH"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyAttributionSpecEventType enum.
+func (e CreateStandaloneAdJSONBodyAttributionSpecEventType) Valid() bool {
+	switch e {
+	case CLICKTHROUGH:
+		return true
+	case ENGAGEDVIDEOVIEW:
+		return true
+	case VIEWTHROUGH:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyAttributionSpecWindowDays.
+const (
+	CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN1  CreateStandaloneAdJSONBodyAttributionSpecWindowDays = 1
+	CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN28 CreateStandaloneAdJSONBodyAttributionSpecWindowDays = 28
+	CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN7  CreateStandaloneAdJSONBodyAttributionSpecWindowDays = 7
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyAttributionSpecWindowDays enum.
+func (e CreateStandaloneAdJSONBodyAttributionSpecWindowDays) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN1:
+		return true
+	case CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN28:
+		return true
+	case CreateStandaloneAdJSONBodyAttributionSpecWindowDaysN7:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyBudgetType.
 const (
 	CreateStandaloneAdJSONBodyBudgetTypeDaily    CreateStandaloneAdJSONBodyBudgetType = "daily"
@@ -3716,22 +3758,36 @@ func (e CreateStandaloneAdJSONBodyBudgetType) Valid() bool {
 
 // Defines values for CreateStandaloneAdJSONBodyCallToAction.
 const (
-	CreateStandaloneAdJSONBodyCallToActionBOOKTRAVEL CreateStandaloneAdJSONBodyCallToAction = "BOOK_TRAVEL"
-	CreateStandaloneAdJSONBodyCallToActionCONTACTUS  CreateStandaloneAdJSONBodyCallToAction = "CONTACT_US"
-	CreateStandaloneAdJSONBodyCallToActionDOWNLOAD   CreateStandaloneAdJSONBodyCallToAction = "DOWNLOAD"
-	CreateStandaloneAdJSONBodyCallToActionGETOFFER   CreateStandaloneAdJSONBodyCallToAction = "GET_OFFER"
-	CreateStandaloneAdJSONBodyCallToActionGETQUOTE   CreateStandaloneAdJSONBodyCallToAction = "GET_QUOTE"
-	CreateStandaloneAdJSONBodyCallToActionLEARNMORE  CreateStandaloneAdJSONBodyCallToAction = "LEARN_MORE"
-	CreateStandaloneAdJSONBodyCallToActionSHOPNOW    CreateStandaloneAdJSONBodyCallToAction = "SHOP_NOW"
-	CreateStandaloneAdJSONBodyCallToActionSIGNUP     CreateStandaloneAdJSONBodyCallToAction = "SIGN_UP"
-	CreateStandaloneAdJSONBodyCallToActionSUBSCRIBE  CreateStandaloneAdJSONBodyCallToAction = "SUBSCRIBE"
-	CreateStandaloneAdJSONBodyCallToActionWATCHMORE  CreateStandaloneAdJSONBodyCallToAction = "WATCH_MORE"
+	CreateStandaloneAdJSONBodyCallToActionAPPLY       CreateStandaloneAdJSONBodyCallToAction = "APPLY"
+	CreateStandaloneAdJSONBodyCallToActionATTEND      CreateStandaloneAdJSONBodyCallToAction = "ATTEND"
+	CreateStandaloneAdJSONBodyCallToActionBOOKTRAVEL  CreateStandaloneAdJSONBodyCallToAction = "BOOK_TRAVEL"
+	CreateStandaloneAdJSONBodyCallToActionBUYNOW      CreateStandaloneAdJSONBodyCallToAction = "BUY_NOW"
+	CreateStandaloneAdJSONBodyCallToActionCONTACTUS   CreateStandaloneAdJSONBodyCallToAction = "CONTACT_US"
+	CreateStandaloneAdJSONBodyCallToActionDOWNLOAD    CreateStandaloneAdJSONBodyCallToAction = "DOWNLOAD"
+	CreateStandaloneAdJSONBodyCallToActionGETOFFER    CreateStandaloneAdJSONBodyCallToAction = "GET_OFFER"
+	CreateStandaloneAdJSONBodyCallToActionGETQUOTE    CreateStandaloneAdJSONBodyCallToAction = "GET_QUOTE"
+	CreateStandaloneAdJSONBodyCallToActionJOIN        CreateStandaloneAdJSONBodyCallToAction = "JOIN"
+	CreateStandaloneAdJSONBodyCallToActionLEARNMORE   CreateStandaloneAdJSONBodyCallToAction = "LEARN_MORE"
+	CreateStandaloneAdJSONBodyCallToActionREGISTER    CreateStandaloneAdJSONBodyCallToAction = "REGISTER"
+	CreateStandaloneAdJSONBodyCallToActionREQUESTDEMO CreateStandaloneAdJSONBodyCallToAction = "REQUEST_DEMO"
+	CreateStandaloneAdJSONBodyCallToActionSEEMORE     CreateStandaloneAdJSONBodyCallToAction = "SEE_MORE"
+	CreateStandaloneAdJSONBodyCallToActionSHOPNOW     CreateStandaloneAdJSONBodyCallToAction = "SHOP_NOW"
+	CreateStandaloneAdJSONBodyCallToActionSIGNUP      CreateStandaloneAdJSONBodyCallToAction = "SIGN_UP"
+	CreateStandaloneAdJSONBodyCallToActionSUBSCRIBE   CreateStandaloneAdJSONBodyCallToAction = "SUBSCRIBE"
+	CreateStandaloneAdJSONBodyCallToActionVIEWQUOTE   CreateStandaloneAdJSONBodyCallToAction = "VIEW_QUOTE"
+	CreateStandaloneAdJSONBodyCallToActionWATCHMORE   CreateStandaloneAdJSONBodyCallToAction = "WATCH_MORE"
 )
 
 // Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCallToAction enum.
 func (e CreateStandaloneAdJSONBodyCallToAction) Valid() bool {
 	switch e {
+	case CreateStandaloneAdJSONBodyCallToActionAPPLY:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionATTEND:
+		return true
 	case CreateStandaloneAdJSONBodyCallToActionBOOKTRAVEL:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionBUYNOW:
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionCONTACTUS:
 		return true
@@ -3741,13 +3797,23 @@ func (e CreateStandaloneAdJSONBodyCallToAction) Valid() bool {
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionGETQUOTE:
 		return true
+	case CreateStandaloneAdJSONBodyCallToActionJOIN:
+		return true
 	case CreateStandaloneAdJSONBodyCallToActionLEARNMORE:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionREGISTER:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionREQUESTDEMO:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionSEEMORE:
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionSHOPNOW:
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionSIGNUP:
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionSUBSCRIBE:
+		return true
+	case CreateStandaloneAdJSONBodyCallToActionVIEWQUOTE:
 		return true
 	case CreateStandaloneAdJSONBodyCallToActionWATCHMORE:
 		return true
@@ -6911,16 +6977,16 @@ func (e GetRedditFeedParamsT) Valid() bool {
 
 // Defines values for SearchRedditParamsRestrictSr.
 const (
-	N0 SearchRedditParamsRestrictSr = "0"
-	N1 SearchRedditParamsRestrictSr = "1"
+	SearchRedditParamsRestrictSrN0 SearchRedditParamsRestrictSr = "0"
+	SearchRedditParamsRestrictSrN1 SearchRedditParamsRestrictSr = "1"
 )
 
 // Valid indicates whether the value is a known member of the SearchRedditParamsRestrictSr enum.
 func (e SearchRedditParamsRestrictSr) Valid() bool {
 	switch e {
-	case N0:
+	case SearchRedditParamsRestrictSrN0:
 		return true
-	case N1:
+	case SearchRedditParamsRestrictSrN1:
 		return true
 	default:
 		return false
@@ -11762,6 +11828,20 @@ type CreateStandaloneAdJSONBody struct {
 	AgeMax            *int                                         `json:"ageMax,omitempty"`
 	AgeMin            *int                                         `json:"ageMin,omitempty"`
 
+	// AttributionSpec Meta only. Conversion attribution window for the ad set — maps 1:1 to Meta's
+	// ad-set `attribution_spec`. Only honored for conversion goals (`conversions`,
+	// `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement.
+	// Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the
+	// valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view
+	// windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside
+	// `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos
+	// surface as a Meta 400.
+	// Example: `[{ "eventType": "CLICK_THROUGH", "windowDays": 7 }, { "eventType": "VIEW_THROUGH", "windowDays": 1 }]`
+	AttributionSpec *[]struct {
+		EventType  CreateStandaloneAdJSONBodyAttributionSpecEventType  `json:"eventType"`
+		WindowDays CreateStandaloneAdJSONBodyAttributionSpecWindowDays `json:"windowDays"`
+	} `json:"attributionSpec,omitempty"`
+
 	// AudienceId Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
 
@@ -11775,7 +11855,7 @@ type CreateStandaloneAdJSONBody struct {
 	// BoardId Pinterest only. Board ID (auto-creates if not provided).
 	BoardId *string `json:"boardId,omitempty"`
 
-	// Body Required on legacy + attach shapes. For X/Twitter this is the tweet text (max 280 chars including a ~24-char URL when `linkUrl` is set). Max: Google=90, Pinterest=500.
+	// Body Required on legacy + attach shapes. For X/Twitter this is the tweet text (max 280 chars including a ~24-char URL when `linkUrl` is set). On LinkedIn this is the post commentary (the intro text shown above the ad). Max: Google=90, Pinterest=500.
 	Body *string `json:"body,omitempty"`
 
 	// BrandIdentity TikTok only. Synthetic Brand Identity used when the ad
@@ -11804,7 +11884,7 @@ type CreateStandaloneAdJSONBody struct {
 	// BusinessName Google Display only
 	BusinessName *string `json:"businessName,omitempty"`
 
-	// CallToAction Required on legacy + attach shapes for Meta. Honoured on TikTok too — passes through to the Spark Ad creative's `call_to_action`. Ignored by other platforms.
+	// CallToAction Required on legacy + attach shapes for Meta. Honoured on TikTok (passes through to the Spark Ad creative's `call_to_action`) and on LinkedIn (the CTA button on the ad; defaults to LEARN_MORE when `linkUrl` is set). LinkedIn accepts: LEARN_MORE, SIGN_UP, DOWNLOAD, SUBSCRIBE, REGISTER, JOIN, ATTEND, REQUEST_DEMO, VIEW_QUOTE, APPLY, SEE_MORE, SHOP_NOW, BUY_NOW. Ignored by Google, Pinterest, and X/Twitter.
 	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
 
 	// CampaignType Google only
@@ -11824,7 +11904,7 @@ type CreateStandaloneAdJSONBody struct {
 		Radius *float32 `json:"radius,omitempty"`
 	} `json:"cities,omitempty"`
 
-	// Countries ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no `cities` or `regions` are provided.
+	// Countries ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no `cities` or `regions` are provided. (LinkedIn currently honours country-level targeting only.)
 	Countries *[]string `json:"countries,omitempty"`
 
 	// Creatives Meta-only. When present, switches to the multi-creative shape:
@@ -11864,10 +11944,10 @@ type CreateStandaloneAdJSONBody struct {
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
-	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted).
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). LinkedIn-specific: only `engagement`, `traffic`, and `awareness` are supported for standalone ads (creates a Direct Sponsored Content single image ad); `traffic` requires `linkUrl`. For `video_views` / `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
-	// Headline Required for Meta, Google, and Pinterest on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100.
+	// Headline Required for Meta, Google, Pinterest, and LinkedIn on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100, LinkedIn=400. On LinkedIn this is the ad's headline (the bold text on the creative); for traffic ads it's the link card title.
 	Headline *string `json:"headline,omitempty"`
 
 	// IdentityType TikTok only. Forces the identity attribution on the ad:
@@ -11888,7 +11968,7 @@ type CreateStandaloneAdJSONBody struct {
 	// post's author identity for Spark.
 	IdentityType *CreateStandaloneAdJSONBodyIdentityType `json:"identityType,omitempty"`
 
-	// ImageUrl Image creative for Meta/Google/Pinterest on legacy + attach shapes (mutually exclusive with `video`). Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter. For Google Display, treated as the landscape image (alias of `images.landscape`); supply `images.square` alongside or the request is rejected.
+	// ImageUrl Image creative for Meta/Google/Pinterest/LinkedIn on legacy + attach shapes (mutually exclusive with `video`). Required for LinkedIn ads. Not required for Google Search campaigns. For TikTok, this field carries the VIDEO URL (the TikTok ads endpoint is video-only; the field retains the `imageUrl` name for cross-platform consistency). Ignored for X/Twitter. For Google Display, treated as the landscape image (alias of `images.landscape`); supply `images.square` alongside or the request is rejected. For LinkedIn the image is uploaded to LinkedIn under the authoring Company Page (see `organizationId`); recommended ratio 1.91:1 (e.g. 1200×627).
 	ImageUrl *string `json:"imageUrl,omitempty"`
 
 	// Images Google Display (Responsive Display Ads) only. Google RDA requires both a landscape (1.91:1) and a square (1:1) marketing image; sending only one is rejected upstream as 'Too few.' (NOT_ENOUGH_*_MARKETING_IMAGE_ASSET). Supply both URLs here. Either this field or the legacy `imageUrl` can provide the landscape, but `square` has no legacy counterpart so it must be set here for Display.
@@ -11909,12 +11989,15 @@ type CreateStandaloneAdJSONBody struct {
 	// Keywords Google Search only
 	Keywords *[]string `json:"keywords,omitempty"`
 
-	// LinkUrl Required on legacy + attach shapes. Skip for multi-creative.
+	// LinkUrl Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 
-	// LongHeadline Google Display only. Defaults to `headline` if omitted.
+	// LongHeadline Google Display only — defaults to `headline` if omitted. On LinkedIn, reused as the optional secondary description text on traffic (link) ads; omitted if not provided.
 	LongHeadline *string `json:"longHeadline,omitempty"`
 	Name         string  `json:"name"`
+
+	// OrganizationId LinkedIn only. The Company Page that authors the Direct Sponsored Content ("dark") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
+	OrganizationId *string `json:"organizationId,omitempty"`
 
 	// PromotedObject Meta only. Forwarded to the ad set's `promoted_object` (snake-cased).
 	//
@@ -11978,6 +12061,12 @@ type CreateStandaloneAdJSONBody struct {
 
 // CreateStandaloneAdJSONBodyAdvantageAudience defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyAdvantageAudience int
+
+// CreateStandaloneAdJSONBodyAttributionSpecEventType defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyAttributionSpecEventType string
+
+// CreateStandaloneAdJSONBodyAttributionSpecWindowDays defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyAttributionSpecWindowDays int
 
 // CreateStandaloneAdJSONBodyBudgetType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyBudgetType string
