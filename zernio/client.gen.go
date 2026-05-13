@@ -10570,6 +10570,12 @@ type GetAllAccountsHealthParamsStatus string
 // GetAllAccountsHealth200JSONResponseBodyAccountsStatus defines parameters for GetAllAccountsHealth.
 type GetAllAccountsHealth200JSONResponseBodyAccountsStatus string
 
+// MoveAccountToProfileJSONBody defines parameters for MoveAccountToProfile.
+type MoveAccountToProfileJSONBody struct {
+	// ProfileId Target profile ID (must be a valid ObjectId and owned by the same user as the account).
+	ProfileId string `json:"profileId"`
+}
+
 // UpdateAccountJSONBody defines parameters for UpdateAccount.
 type UpdateAccountJSONBody struct {
 	DisplayName *string `json:"displayName,omitempty"`
@@ -15579,6 +15585,9 @@ type CreateAccountGroupJSONRequestBody CreateAccountGroupJSONBody
 // UpdateAccountGroupJSONRequestBody defines body for UpdateAccountGroup for application/json ContentType.
 type UpdateAccountGroupJSONRequestBody UpdateAccountGroupJSONBody
 
+// MoveAccountToProfileJSONRequestBody defines body for MoveAccountToProfile for application/json ContentType.
+type MoveAccountToProfileJSONRequestBody MoveAccountToProfileJSONBody
+
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
 type UpdateAccountJSONRequestBody UpdateAccountJSONBody
 
@@ -18437,6 +18446,11 @@ type ClientInterface interface {
 	// DeleteAccount request
 	DeleteAccount(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// MoveAccountToProfileWithBody request with any body
+	MoveAccountToProfileWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	MoveAccountToProfile(ctx context.Context, accountId string, body MoveAccountToProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UpdateAccountWithBody request with any body
 	UpdateAccountWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -19616,6 +19630,30 @@ func (c *Client) GetAllAccountsHealth(ctx context.Context, params *GetAllAccount
 
 func (c *Client) DeleteAccount(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteAccountRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MoveAccountToProfileWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMoveAccountToProfileRequestWithBody(c.Server, accountId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MoveAccountToProfile(ctx context.Context, accountId string, body MoveAccountToProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMoveAccountToProfileRequest(c.Server, accountId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -24814,6 +24852,53 @@ func NewDeleteAccountRequest(server string, accountId string) (*http.Request, er
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewMoveAccountToProfileRequest calls the generic MoveAccountToProfile builder with application/json body
+func NewMoveAccountToProfileRequest(server string, accountId string, body MoveAccountToProfileJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewMoveAccountToProfileRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewMoveAccountToProfileRequestWithBody generates requests for MoveAccountToProfile with any type of body
+func NewMoveAccountToProfileRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -41082,6 +41167,11 @@ type ClientWithResponsesInterface interface {
 	// DeleteAccountWithResponse request
 	DeleteAccountWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*DeleteAccountResponse, error)
 
+	// MoveAccountToProfileWithBodyWithResponse request with any body
+	MoveAccountToProfileWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveAccountToProfileResponse, error)
+
+	MoveAccountToProfileWithResponse(ctx context.Context, accountId string, body MoveAccountToProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveAccountToProfileResponse, error)
+
 	// UpdateAccountWithBodyWithResponse request with any body
 	UpdateAccountWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountResponse, error)
 
@@ -42474,6 +42564,40 @@ func (r DeleteAccountResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r DeleteAccountResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type MoveAccountToProfileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message   *string `json:"message,omitempty"`
+		ProfileId *string `json:"profileId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r MoveAccountToProfileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MoveAccountToProfileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r MoveAccountToProfileResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -54551,6 +54675,23 @@ func (c *ClientWithResponses) DeleteAccountWithResponse(ctx context.Context, acc
 	return ParseDeleteAccountResponse(rsp)
 }
 
+// MoveAccountToProfileWithBodyWithResponse request with arbitrary body returning *MoveAccountToProfileResponse
+func (c *ClientWithResponses) MoveAccountToProfileWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MoveAccountToProfileResponse, error) {
+	rsp, err := c.MoveAccountToProfileWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMoveAccountToProfileResponse(rsp)
+}
+
+func (c *ClientWithResponses) MoveAccountToProfileWithResponse(ctx context.Context, accountId string, body MoveAccountToProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*MoveAccountToProfileResponse, error) {
+	rsp, err := c.MoveAccountToProfile(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMoveAccountToProfileResponse(rsp)
+}
+
 // UpdateAccountWithBodyWithResponse request with arbitrary body returning *UpdateAccountResponse
 func (c *ClientWithResponses) UpdateAccountWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountResponse, error) {
 	rsp, err := c.UpdateAccountWithBody(ctx, accountId, contentType, body, reqEditors...)
@@ -58346,6 +58487,42 @@ func ParseDeleteAccountResponse(rsp *http.Response) (*DeleteAccountResponse, err
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMoveAccountToProfileResponse parses an HTTP response from a MoveAccountToProfileWithResponse call
+func ParseMoveAccountToProfileResponse(rsp *http.Response) (*MoveAccountToProfileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MoveAccountToProfileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message   *string `json:"message,omitempty"`
+			ProfileId *string `json:"profileId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
