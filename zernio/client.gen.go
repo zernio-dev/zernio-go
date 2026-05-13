@@ -10145,7 +10145,7 @@ type Webhook struct {
 	// Name Webhook name (for identification)
 	Name *string `json:"name,omitempty"`
 
-	// Secret Secret key for HMAC-SHA256 signature (not returned in responses for security)
+	// Secret Secret key for HMAC-SHA256 signature verification.
 	Secret *string `json:"secret,omitempty"`
 
 	// Url Webhook endpoint URL
