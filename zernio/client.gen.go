@@ -12302,6 +12302,9 @@ type GetAdsTimelineParams struct {
 	// AccountId Social account ID. Sibling-expanded to its linked posting↔ads pair.
 	AccountId string `form:"accountId" json:"accountId"`
 
+	// AdAccountId Optional platform-native ad account ID (e.g. Meta `act_…`, TikTok advertiser ID). Use when the connection wraps multiple platform ad accounts and the chart should show one only. Note: rows ingested before 2026-05-13 don't carry this column; the recurring 7-day re-sync repopulates them naturally.
+	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
+
 	// FromDate Inclusive start of metrics range (YYYY-MM-DD). Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
@@ -30008,6 +30011,18 @@ func NewGetAdsTimelineRequest(server string, params *GetAdsTimelineParams) (*htt
 			for _, qp := range strings.Split(queryFrag, "&") {
 				rawQueryFragments = append(rawQueryFragments, qp)
 			}
+		}
+
+		if params.AdAccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", *params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
 		}
 
 		if params.FromDate != nil {
