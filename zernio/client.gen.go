@@ -4065,6 +4065,39 @@ func (e SearchAdTargetingLocationsParamsType) Valid() bool {
 	}
 }
 
+// Defines values for GetAdsTimelineParamsPlatform.
+const (
+	GetAdsTimelineParamsPlatformFacebook  GetAdsTimelineParamsPlatform = "facebook"
+	GetAdsTimelineParamsPlatformGoogle    GetAdsTimelineParamsPlatform = "google"
+	GetAdsTimelineParamsPlatformInstagram GetAdsTimelineParamsPlatform = "instagram"
+	GetAdsTimelineParamsPlatformLinkedin  GetAdsTimelineParamsPlatform = "linkedin"
+	GetAdsTimelineParamsPlatformPinterest GetAdsTimelineParamsPlatform = "pinterest"
+	GetAdsTimelineParamsPlatformTiktok    GetAdsTimelineParamsPlatform = "tiktok"
+	GetAdsTimelineParamsPlatformTwitter   GetAdsTimelineParamsPlatform = "twitter"
+)
+
+// Valid indicates whether the value is a known member of the GetAdsTimelineParamsPlatform enum.
+func (e GetAdsTimelineParamsPlatform) Valid() bool {
+	switch e {
+	case GetAdsTimelineParamsPlatformFacebook:
+		return true
+	case GetAdsTimelineParamsPlatformGoogle:
+		return true
+	case GetAdsTimelineParamsPlatformInstagram:
+		return true
+	case GetAdsTimelineParamsPlatformLinkedin:
+		return true
+	case GetAdsTimelineParamsPlatformPinterest:
+		return true
+	case GetAdsTimelineParamsPlatformTiktok:
+		return true
+	case GetAdsTimelineParamsPlatformTwitter:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAdTreeParamsSource.
 const (
 	GetAdTreeParamsSourceAll    GetAdTreeParamsSource = "all"
@@ -6836,13 +6869,13 @@ func (e UnpublishPostJSONBodyPlatform) Valid() bool {
 
 // Defines values for UpdatePostMetadataJSONBodyPlatform.
 const (
-	Youtube UpdatePostMetadataJSONBodyPlatform = "youtube"
+	UpdatePostMetadataJSONBodyPlatformYoutube UpdatePostMetadataJSONBodyPlatform = "youtube"
 )
 
 // Valid indicates whether the value is a known member of the UpdatePostMetadataJSONBodyPlatform enum.
 func (e UpdatePostMetadataJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Youtube:
+	case UpdatePostMetadataJSONBodyPlatformYoutube:
 		return true
 	default:
 		return false
@@ -12263,6 +12296,24 @@ type SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 = int
 type SearchAdTargetingLocations200JSONResponseBody_Results_RegionId struct {
 	union json.RawMessage
 }
+
+// GetAdsTimelineParams defines parameters for GetAdsTimeline.
+type GetAdsTimelineParams struct {
+	// AccountId Social account ID. Sibling-expanded to its linked posting↔ads pair.
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// FromDate Inclusive start of metrics range (YYYY-MM-DD). Defaults to 90 days ago.
+	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate Inclusive end of metrics range (YYYY-MM-DD). Defaults to today. Max 730-day range.
+	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+
+	// Platform Restrict to one platform.
+	Platform *GetAdsTimelineParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+}
+
+// GetAdsTimelineParamsPlatform defines parameters for GetAdsTimeline.
+type GetAdsTimelineParamsPlatform string
 
 // GetAdTreeParams defines parameters for GetAdTree.
 type GetAdTreeParams struct {
@@ -18791,6 +18842,9 @@ type ClientInterface interface {
 	// SearchAdTargetingLocations request
 	SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAdsTimeline request
+	GetAdsTimeline(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAdTree request
 	GetAdTree(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -21166,6 +21220,18 @@ func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterest
 
 func (c *Client) SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdTargetingLocationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdsTimeline(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdsTimelineRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -29885,6 +29951,92 @@ func NewSearchAdTargetingLocationsRequest(server string, params *SearchAdTargeti
 		if params.Limit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAdsTimelineRequest generates requests for GetAdsTimeline
+func NewGetAdsTimelineRequest(server string, params *GetAdsTimelineParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/timeline")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -41512,6 +41664,9 @@ type ClientWithResponsesInterface interface {
 	// SearchAdTargetingLocationsWithResponse request
 	SearchAdTargetingLocationsWithResponse(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingLocationsResponse, error)
 
+	// GetAdsTimelineWithResponse request
+	GetAdsTimelineWithResponse(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*GetAdsTimelineResponse, error)
+
 	// GetAdTreeWithResponse request
 	GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error)
 
@@ -46335,6 +46490,72 @@ func (r SearchAdTargetingLocationsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SearchAdTargetingLocationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetAdsTimelineResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Rows *[]struct {
+			// ActionValues Monetary mirror of `actions` in native currency.
+			ActionValues *map[string]float32 `json:"actionValues,omitempty"`
+
+			// Actions Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
+			Actions *map[string]float32 `json:"actions,omitempty"`
+			Clicks  *int                `json:"clicks,omitempty"`
+
+			// Conversions Sum of conversion events matching the campaign optimization goal. Meta-only at time of writing.
+			Conversions       *int     `json:"conversions,omitempty"`
+			CostPerConversion *float32 `json:"costPerConversion,omitempty"`
+
+			// Cpc Cost per click in native currency.
+			Cpc *float32 `json:"cpc,omitempty"`
+
+			// Cpm Cost per 1000 impressions in native currency.
+			Cpm *float32 `json:"cpm,omitempty"`
+
+			// Ctr Click-through rate as a percentage (0–100).
+			Ctr         *float32            `json:"ctr,omitempty"`
+			Date        *openapi_types.Date `json:"date,omitempty"`
+			Engagement  *int                `json:"engagement,omitempty"`
+			Impressions *int                `json:"impressions,omitempty"`
+
+			// PurchaseValue Sum of purchase-type action values on this day, native currency.
+			PurchaseValue *float32 `json:"purchaseValue,omitempty"`
+			Reach         *int     `json:"reach,omitempty"`
+
+			// Roas Derived purchaseValue / spend.
+			Roas *float32 `json:"roas,omitempty"`
+
+			// Spend Native currency units (matches /ads/tree convention).
+			Spend *float32 `json:"spend,omitempty"`
+		} `json:"rows,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdsTimelineResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdsTimelineResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetAdsTimelineResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -55788,6 +56009,15 @@ func (c *ClientWithResponses) SearchAdTargetingLocationsWithResponse(ctx context
 	return ParseSearchAdTargetingLocationsResponse(rsp)
 }
 
+// GetAdsTimelineWithResponse request returning *GetAdsTimelineResponse
+func (c *ClientWithResponses) GetAdsTimelineWithResponse(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*GetAdsTimelineResponse, error) {
+	rsp, err := c.GetAdsTimeline(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdsTimelineResponse(rsp)
+}
+
 // GetAdTreeWithResponse request returning *GetAdTreeResponse
 func (c *ClientWithResponses) GetAdTreeWithResponse(ctx context.Context, params *GetAdTreeParams, reqEditors ...RequestEditorFn) (*GetAdTreeResponse, error) {
 	rsp, err := c.GetAdTree(ctx, params, reqEditors...)
@@ -62640,6 +62870,74 @@ func ParseSearchAdTargetingLocationsResponse(rsp *http.Response) (*SearchAdTarge
 				// Type Location type as returned by Meta (city, region, country, etc.).
 				Type string `json:"type"`
 			} `json:"results,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdsTimelineResponse parses an HTTP response from a GetAdsTimelineWithResponse call
+func ParseGetAdsTimelineResponse(rsp *http.Response) (*GetAdsTimelineResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdsTimelineResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Rows *[]struct {
+				// ActionValues Monetary mirror of `actions` in native currency.
+				ActionValues *map[string]float32 `json:"actionValues,omitempty"`
+
+				// Actions Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
+				Actions *map[string]float32 `json:"actions,omitempty"`
+				Clicks  *int                `json:"clicks,omitempty"`
+
+				// Conversions Sum of conversion events matching the campaign optimization goal. Meta-only at time of writing.
+				Conversions       *int     `json:"conversions,omitempty"`
+				CostPerConversion *float32 `json:"costPerConversion,omitempty"`
+
+				// Cpc Cost per click in native currency.
+				Cpc *float32 `json:"cpc,omitempty"`
+
+				// Cpm Cost per 1000 impressions in native currency.
+				Cpm *float32 `json:"cpm,omitempty"`
+
+				// Ctr Click-through rate as a percentage (0–100).
+				Ctr         *float32            `json:"ctr,omitempty"`
+				Date        *openapi_types.Date `json:"date,omitempty"`
+				Engagement  *int                `json:"engagement,omitempty"`
+				Impressions *int                `json:"impressions,omitempty"`
+
+				// PurchaseValue Sum of purchase-type action values on this day, native currency.
+				PurchaseValue *float32 `json:"purchaseValue,omitempty"`
+				Reach         *int     `json:"reach,omitempty"`
+
+				// Roas Derived purchaseValue / spend.
+				Roas *float32 `json:"roas,omitempty"`
+
+				// Spend Native currency units (matches /ads/tree convention).
+				Spend *float32 `json:"spend,omitempty"`
+			} `json:"rows,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
