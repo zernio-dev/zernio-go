@@ -1493,6 +1493,7 @@ const (
 	WebhookEventsAccountAdsInitialSyncCompleted WebhookEvents = "account.ads.initial_sync_completed"
 	WebhookEventsAccountConnected               WebhookEvents = "account.connected"
 	WebhookEventsAccountDisconnected            WebhookEvents = "account.disconnected"
+	WebhookEventsAdStatusChanged                WebhookEvents = "ad.status_changed"
 	WebhookEventsCommentReceived                WebhookEvents = "comment.received"
 	WebhookEventsMessageDeleted                 WebhookEvents = "message.deleted"
 	WebhookEventsMessageDelivered               WebhookEvents = "message.delivered"
@@ -1519,6 +1520,8 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsAccountConnected:
 		return true
 	case WebhookEventsAccountDisconnected:
+		return true
+	case WebhookEventsAdStatusChanged:
 		return true
 	case WebhookEventsCommentReceived:
 		return true
@@ -7361,6 +7364,7 @@ const (
 	CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted CreateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
 	CreateWebhookSettingsJSONBodyEventsAccountConnected               CreateWebhookSettingsJSONBodyEvents = "account.connected"
 	CreateWebhookSettingsJSONBodyEventsAccountDisconnected            CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CreateWebhookSettingsJSONBodyEventsAdStatusChanged                CreateWebhookSettingsJSONBodyEvents = "ad.status_changed"
 	CreateWebhookSettingsJSONBodyEventsCommentReceived                CreateWebhookSettingsJSONBodyEvents = "comment.received"
 	CreateWebhookSettingsJSONBodyEventsMessageDeleted                 CreateWebhookSettingsJSONBodyEvents = "message.deleted"
 	CreateWebhookSettingsJSONBodyEventsMessageDelivered               CreateWebhookSettingsJSONBodyEvents = "message.delivered"
@@ -7387,6 +7391,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CreateWebhookSettingsJSONBodyEventsAccountConnected:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsAccountDisconnected:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsAdStatusChanged:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsCommentReceived:
 		return true
@@ -7430,6 +7436,7 @@ const (
 	AccountAdsInitialSyncCompleted UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
 	AccountConnected               UpdateWebhookSettingsJSONBodyEvents = "account.connected"
 	AccountDisconnected            UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	AdStatusChanged                UpdateWebhookSettingsJSONBodyEvents = "ad.status_changed"
 	CommentReceived                UpdateWebhookSettingsJSONBodyEvents = "comment.received"
 	MessageDeleted                 UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
 	MessageDelivered               UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
@@ -7456,6 +7463,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case AccountConnected:
 		return true
 	case AccountDisconnected:
+		return true
+	case AdStatusChanged:
 		return true
 	case CommentReceived:
 		return true
@@ -46719,6 +46728,8 @@ type GetAdAnalyticsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Ad *struct {
+			// Currency ISO 4217 code of the ad account that owns this ad (e.g. USD, THB, INR). All money values in `summary` and `daily` are in this currency. Null only on legacy ads synced before currency was persisted.
+			Currency *string `json:"currency,omitempty"`
 			Id       *string `json:"id,omitempty"`
 			Name     *string `json:"name,omitempty"`
 			Platform *string `json:"platform,omitempty"`
@@ -63151,6 +63162,8 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Ad *struct {
+				// Currency ISO 4217 code of the ad account that owns this ad (e.g. USD, THB, INR). All money values in `summary` and `daily` are in this currency. Null only on legacy ads synced before currency was persisted.
+				Currency *string `json:"currency,omitempty"`
 				Id       *string `json:"id,omitempty"`
 				Name     *string `json:"name,omitempty"`
 				Platform *string `json:"platform,omitempty"`
