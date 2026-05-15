@@ -1535,6 +1535,8 @@ const (
 	WebhookEventsPostCancelled                  WebhookEvents = "post.cancelled"
 	WebhookEventsPostFailed                     WebhookEvents = "post.failed"
 	WebhookEventsPostPartial                    WebhookEvents = "post.partial"
+	WebhookEventsPostPlatformFailed             WebhookEvents = "post.platform.failed"
+	WebhookEventsPostPlatformPublished          WebhookEvents = "post.platform.published"
 	WebhookEventsPostPublished                  WebhookEvents = "post.published"
 	WebhookEventsPostRecycled                   WebhookEvents = "post.recycled"
 	WebhookEventsPostScheduled                  WebhookEvents = "post.scheduled"
@@ -1575,6 +1577,10 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsPostFailed:
 		return true
 	case WebhookEventsPostPartial:
+		return true
+	case WebhookEventsPostPlatformFailed:
+		return true
+	case WebhookEventsPostPlatformPublished:
 		return true
 	case WebhookEventsPostPublished:
 		return true
@@ -7433,11 +7439,14 @@ const (
 	CreateWebhookSettingsJSONBodyEventsPostCancelled                  CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	CreateWebhookSettingsJSONBodyEventsPostFailed                     CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial                    CreateWebhookSettingsJSONBodyEvents = "post.partial"
+	CreateWebhookSettingsJSONBodyEventsPostPlatformFailed             CreateWebhookSettingsJSONBodyEvents = "post.platform.failed"
+	CreateWebhookSettingsJSONBodyEventsPostPlatformPublished          CreateWebhookSettingsJSONBodyEvents = "post.platform.published"
 	CreateWebhookSettingsJSONBodyEventsPostPublished                  CreateWebhookSettingsJSONBodyEvents = "post.published"
 	CreateWebhookSettingsJSONBodyEventsPostRecycled                   CreateWebhookSettingsJSONBodyEvents = "post.recycled"
 	CreateWebhookSettingsJSONBodyEventsPostScheduled                  CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
 	CreateWebhookSettingsJSONBodyEventsReviewNew                      CreateWebhookSettingsJSONBodyEvents = "review.new"
 	CreateWebhookSettingsJSONBodyEventsReviewUpdated                  CreateWebhookSettingsJSONBodyEvents = "review.updated"
+	CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated  CreateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the CreateWebhookSettingsJSONBodyEvents enum.
@@ -7473,6 +7482,10 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostPartial:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsPostPlatformFailed:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsPostPlatformPublished:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsPostPublished:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostRecycled:
@@ -7482,6 +7495,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CreateWebhookSettingsJSONBodyEventsReviewNew:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsReviewUpdated:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated:
 		return true
 	default:
 		return false
@@ -7505,11 +7520,14 @@ const (
 	PostCancelled                  UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
 	PostFailed                     UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	PostPartial                    UpdateWebhookSettingsJSONBodyEvents = "post.partial"
+	PostPlatformFailed             UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
+	PostPlatformPublished          UpdateWebhookSettingsJSONBodyEvents = "post.platform.published"
 	PostPublished                  UpdateWebhookSettingsJSONBodyEvents = "post.published"
 	PostRecycled                   UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
 	PostScheduled                  UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
 	ReviewNew                      UpdateWebhookSettingsJSONBodyEvents = "review.new"
 	ReviewUpdated                  UpdateWebhookSettingsJSONBodyEvents = "review.updated"
+	WhatsappTemplateStatusUpdated  UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWebhookSettingsJSONBodyEvents enum.
@@ -7545,6 +7563,10 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case PostPartial:
 		return true
+	case PostPlatformFailed:
+		return true
+	case PostPlatformPublished:
+		return true
 	case PostPublished:
 		return true
 	case PostRecycled:
@@ -7554,6 +7576,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case ReviewNew:
 		return true
 	case ReviewUpdated:
+		return true
+	case WhatsappTemplateStatusUpdated:
 		return true
 	default:
 		return false
