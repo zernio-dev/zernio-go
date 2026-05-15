@@ -14727,6 +14727,12 @@ type CreatePostJSONBody struct {
 	Title          *string             `json:"title,omitempty"`
 }
 
+// CreatePostParams defines parameters for CreatePost.
+type CreatePostParams struct {
+	// XRequestId Optional client-generated request identifier for safe retry (idempotency). When two requests carry the same value, the second is treated as a retry of the first and returns the original post (HTTP 200) instead of creating a duplicate. Window is ~5 minutes from the first request. Generate a UUID per logical call. SDKs do this automatically; HTTP clients should set it themselves or omit it. See the operation description for the full idempotency contract.
+	XRequestId *openapi_types.UUID `json:"x-request-id,omitempty"`
+}
+
 // CreatePostJSONBodyMediaItemsType defines parameters for CreatePost.
 type CreatePostJSONBodyMediaItemsType string
 
@@ -19537,9 +19543,9 @@ type ClientInterface interface {
 	ListPosts(ctx context.Context, params *ListPostsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreatePostWithBody request with any body
-	CreatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePostWithBody(ctx context.Context, params *CreatePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreatePost(ctx context.Context, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePost(ctx context.Context, params *CreatePostParams, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BulkUploadPostsWithBody request with any body
 	BulkUploadPostsWithBody(ctx context.Context, params *BulkUploadPostsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -23303,8 +23309,8 @@ func (c *Client) ListPosts(ctx context.Context, params *ListPostsParams, reqEdit
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePostRequestWithBody(c.Server, contentType, body)
+func (c *Client) CreatePostWithBody(ctx context.Context, params *CreatePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePostRequestWithBody(c.Server, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -23315,8 +23321,8 @@ func (c *Client) CreatePostWithBody(ctx context.Context, contentType string, bod
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePost(ctx context.Context, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePostRequest(c.Server, body)
+func (c *Client) CreatePost(ctx context.Context, params *CreatePostParams, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePostRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -37441,18 +37447,18 @@ func NewListPostsRequest(server string, params *ListPostsParams) (*http.Request,
 }
 
 // NewCreatePostRequest calls the generic CreatePost builder with application/json body
-func NewCreatePostRequest(server string, body CreatePostJSONRequestBody) (*http.Request, error) {
+func NewCreatePostRequest(server string, params *CreatePostParams, body CreatePostJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreatePostRequestWithBody(server, "application/json", bodyReader)
+	return NewCreatePostRequestWithBody(server, params, "application/json", bodyReader)
 }
 
 // NewCreatePostRequestWithBody generates requests for CreatePost with any type of body
-func NewCreatePostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreatePostRequestWithBody(server string, params *CreatePostParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -37476,6 +37482,21 @@ func NewCreatePostRequestWithBody(server string, contentType string, body io.Rea
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.XRequestId != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "x-request-id", *params.XRequestId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("x-request-id", headerParam0)
+		}
+
+	}
 
 	return req, nil
 }
@@ -42534,9 +42555,9 @@ type ClientWithResponsesInterface interface {
 	ListPostsWithResponse(ctx context.Context, params *ListPostsParams, reqEditors ...RequestEditorFn) (*ListPostsResponse, error)
 
 	// CreatePostWithBodyWithResponse request with any body
-	CreatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePostResponse, error)
+	CreatePostWithBodyWithResponse(ctx context.Context, params *CreatePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePostResponse, error)
 
-	CreatePostWithResponse(ctx context.Context, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePostResponse, error)
+	CreatePostWithResponse(ctx context.Context, params *CreatePostParams, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePostResponse, error)
 
 	// BulkUploadPostsWithBodyWithResponse request with any body
 	BulkUploadPostsWithBodyWithResponse(ctx context.Context, params *BulkUploadPostsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkUploadPostsResponse, error)
@@ -57849,16 +57870,16 @@ func (c *ClientWithResponses) ListPostsWithResponse(ctx context.Context, params 
 }
 
 // CreatePostWithBodyWithResponse request with arbitrary body returning *CreatePostResponse
-func (c *ClientWithResponses) CreatePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePostResponse, error) {
-	rsp, err := c.CreatePostWithBody(ctx, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreatePostWithBodyWithResponse(ctx context.Context, params *CreatePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePostResponse, error) {
+	rsp, err := c.CreatePostWithBody(ctx, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreatePostResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreatePostWithResponse(ctx context.Context, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePostResponse, error) {
-	rsp, err := c.CreatePost(ctx, body, reqEditors...)
+func (c *ClientWithResponses) CreatePostWithResponse(ctx context.Context, params *CreatePostParams, body CreatePostJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePostResponse, error) {
+	rsp, err := c.CreatePost(ctx, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
