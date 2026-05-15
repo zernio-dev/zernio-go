@@ -9032,8 +9032,23 @@ type ErrorResponse struct {
 	Error   *string                 `json:"error,omitempty"`
 }
 
-// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
+// FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 type FacebookPlatformData struct {
+	// CarouselCards Renders the post as a multi-link carousel (organic Page post). When set, mediaItems must be provided with the same length and all items must be images (no videos). Each cards[i] adds the click-through link and headline for the image at mediaItems[i]. Mutually exclusive with contentType=story|reel. Facebook display truncates name at ~35 chars and description at ~30 chars; longer strings are accepted but get truncated on render.
+	CarouselCards *[]struct {
+		// Description Per-card subhead (optional, ~30-char display).
+		Description *string `json:"description,omitempty"`
+
+		// Link Per-card click destination (required).
+		Link string `json:"link"`
+
+		// Name Per-card headline (optional, ~35-char display).
+		Name *string `json:"name,omitempty"`
+	} `json:"carouselCards,omitempty"`
+
+	// CarouselLink Optional top-level "See more" destination shown on the carousel end card. Defaults to the first card's link when omitted. Only used together with carouselCards.
+	CarouselLink *string `json:"carouselLink,omitempty"`
+
 	// ContentType Set to 'story' for Page Stories (24h ephemeral) or 'reel' for Reels (short vertical video). Defaults to feed post if omitted.
 	ContentType *FacebookPlatformDataContentType `json:"contentType,omitempty"`
 
@@ -14654,7 +14669,7 @@ type CreatePostJSONBody struct {
 	Content             *string `json:"content,omitempty"`
 	CrosspostingEnabled *bool   `json:"crosspostingEnabled,omitempty"`
 
-	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
 	Hashtags         *[]string             `json:"hashtags,omitempty"`
 
@@ -14758,7 +14773,7 @@ type BulkUploadPostsParams struct {
 type UpdatePostJSONBody struct {
 	Content *string `json:"content,omitempty"`
 
-	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
+	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
 
 	// Recycling Configure automatic post recycling (reposting at regular intervals).
