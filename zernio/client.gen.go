@@ -11800,6 +11800,12 @@ type ListAdCampaignsParams struct {
 
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// FromDate Start of metrics date range (YYYY-MM-DD, inclusive). Defaults to 90 days ago when both date params are omitted.
+	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
+
+	// ToDate End of metrics date range (YYYY-MM-DD, inclusive). Defaults to today. Max 730-day range.
+	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
 }
 
 // ListAdCampaignsParamsSource defines parameters for ListAdCampaigns.
@@ -29849,6 +29855,30 @@ func NewListAdCampaignsRequest(server string, params *ListAdCampaignsParams) (*h
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.FromDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", *params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
