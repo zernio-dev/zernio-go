@@ -1540,6 +1540,7 @@ const (
 	WebhookEventsPostScheduled                  WebhookEvents = "post.scheduled"
 	WebhookEventsReviewNew                      WebhookEvents = "review.new"
 	WebhookEventsReviewUpdated                  WebhookEvents = "review.updated"
+	WebhookEventsWhatsappTemplateStatusUpdated  WebhookEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the WebhookEvents enum.
@@ -1584,6 +1585,8 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsReviewNew:
 		return true
 	case WebhookEventsReviewUpdated:
+		return true
+	case WebhookEventsWhatsappTemplateStatusUpdated:
 		return true
 	default:
 		return false
