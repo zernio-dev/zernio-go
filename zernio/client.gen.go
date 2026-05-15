@@ -665,22 +665,22 @@ func (e ApiKeyScope) Valid() bool {
 
 // Defines values for BidStrategy.
 const (
-	COSTCAP               BidStrategy = "COST_CAP"
-	LOWESTCOSTWITHBIDCAP  BidStrategy = "LOWEST_COST_WITH_BID_CAP"
-	LOWESTCOSTWITHMINROAS BidStrategy = "LOWEST_COST_WITH_MIN_ROAS"
-	LOWESTCOSTWITHOUTCAP  BidStrategy = "LOWEST_COST_WITHOUT_CAP"
+	BidStrategyCOSTCAP               BidStrategy = "COST_CAP"
+	BidStrategyLOWESTCOSTWITHBIDCAP  BidStrategy = "LOWEST_COST_WITH_BID_CAP"
+	BidStrategyLOWESTCOSTWITHMINROAS BidStrategy = "LOWEST_COST_WITH_MIN_ROAS"
+	BidStrategyLOWESTCOSTWITHOUTCAP  BidStrategy = "LOWEST_COST_WITHOUT_CAP"
 )
 
 // Valid indicates whether the value is a known member of the BidStrategy enum.
 func (e BidStrategy) Valid() bool {
 	switch e {
-	case COSTCAP:
+	case BidStrategyCOSTCAP:
 		return true
-	case LOWESTCOSTWITHBIDCAP:
+	case BidStrategyLOWESTCOSTWITHBIDCAP:
 		return true
-	case LOWESTCOSTWITHMINROAS:
+	case BidStrategyLOWESTCOSTWITHMINROAS:
 		return true
-	case LOWESTCOSTWITHOUTCAP:
+	case BidStrategyLOWESTCOSTWITHOUTCAP:
 		return true
 	default:
 		return false
@@ -729,6 +729,36 @@ func (e ConversionEventActionSource) Valid() bool {
 	case SystemGenerated:
 		return true
 	case Web:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CtwaMultiResponseAdType.
+const (
+	Multi CtwaMultiResponseAdType = "multi"
+)
+
+// Valid indicates whether the value is a known member of the CtwaMultiResponseAdType enum.
+func (e CtwaMultiResponseAdType) Valid() bool {
+	switch e {
+	case Multi:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CtwaSingleResponseAdType.
+const (
+	Single CtwaSingleResponseAdType = "single"
+)
+
+// Valid indicates whether the value is a known member of the CtwaSingleResponseAdType enum.
+func (e CtwaSingleResponseAdType) Valid() bool {
+	switch e {
+	case Single:
 		return true
 	default:
 		return false
@@ -3987,6 +4017,30 @@ func (e CreateCtwaAdJSONBodyAdvantageAudience) Valid() bool {
 	case CreateCtwaAdJSONBodyAdvantageAudienceN0:
 		return true
 	case CreateCtwaAdJSONBodyAdvantageAudienceN1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCtwaAdJSONBodyBidStrategy.
+const (
+	CreateCtwaAdJSONBodyBidStrategyCOSTCAP               CreateCtwaAdJSONBodyBidStrategy = "COST_CAP"
+	CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHBIDCAP  CreateCtwaAdJSONBodyBidStrategy = "LOWEST_COST_WITH_BID_CAP"
+	CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHMINROAS CreateCtwaAdJSONBodyBidStrategy = "LOWEST_COST_WITH_MIN_ROAS"
+	CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHOUTCAP  CreateCtwaAdJSONBodyBidStrategy = "LOWEST_COST_WITHOUT_CAP"
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyBidStrategy enum.
+func (e CreateCtwaAdJSONBodyBidStrategy) Valid() bool {
+	switch e {
+	case CreateCtwaAdJSONBodyBidStrategyCOSTCAP:
+		return true
+	case CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHBIDCAP:
+		return true
+	case CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHMINROAS:
+		return true
+	case CreateCtwaAdJSONBodyBidStrategyLOWESTCOSTWITHOUTCAP:
 		return true
 	default:
 		return false
@@ -8785,6 +8839,37 @@ type ConversionEvent struct {
 // ConversionEventActionSource Where the conversion happened. Used by Meta; Google ignores.
 type ConversionEventActionSource string
 
+// CtwaMultiResponse Response returned by `POST /v1/ads/ctwa` when the request used the
+// multi-creative shape (`creatives[]`). N persisted Ad documents share
+// the returned `platformCampaignId` and `platformAdSetId`. `adType` is
+// the union discriminator.
+type CtwaMultiResponse struct {
+	AdType CtwaMultiResponseAdType `json:"adType"`
+
+	// Ads The persisted Ad documents (one per creative), all sharing the same
+	// `platformCampaignId` and `platformAdSetId`.
+	Ads                []map[string]interface{} `json:"ads"`
+	Message            string                   `json:"message"`
+	PlatformAdSetId    string                   `json:"platformAdSetId"`
+	PlatformCampaignId string                   `json:"platformCampaignId"`
+}
+
+// CtwaMultiResponseAdType defines model for CtwaMultiResponse.AdType.
+type CtwaMultiResponseAdType string
+
+// CtwaSingleResponse Response returned by `POST /v1/ads/ctwa` when the request used the
+// single-creative shape (top-level headline / body / imageUrl|video).
+// `adType` is the union discriminator.
+type CtwaSingleResponse struct {
+	// Ad The persisted Ad document.
+	Ad      map[string]interface{}   `json:"ad"`
+	AdType  CtwaSingleResponseAdType `json:"adType"`
+	Message string                   `json:"message"`
+}
+
+// CtwaSingleResponseAdType defines model for CtwaSingleResponse.AdType.
+type CtwaSingleResponseAdType string
+
 // DiscordPlatformData Discord message settings. Supports plain text (2,000 chars), rich embeds (up to 10), native polls, forum posts, threads, and announcement crossposts. Media attachments support images (JPEG, PNG, GIF, WebP), videos (MP4), and documents (up to 10 files, 25 MB each). Webhook identity (username + avatar) can be customized per-account via PATCH /v1/connect/discord or per-post via webhookUsername/webhookAvatarUrl.
 type DiscordPlatformData struct {
 	// ChannelId Target channel snowflake ID. Determines which channel in the connected server receives the message.
@@ -11142,6 +11227,12 @@ type BatchGetGoogleBusinessReviewsJSONBody struct {
 	PageToken *string `json:"pageToken,omitempty"`
 }
 
+// ReplyToGoogleBusinessReviewJSONBody defines parameters for ReplyToGoogleBusinessReview.
+type ReplyToGoogleBusinessReviewJSONBody struct {
+	// Comment The reply text to post on the review. Must be non-empty.
+	Comment string `json:"comment"`
+}
+
 // GetGoogleBusinessServicesParams defines parameters for GetGoogleBusinessServices.
 type GetGoogleBusinessServicesParams struct {
 	// LocationId Override which location to query. If omitted, uses the account's selected location.
@@ -12199,8 +12290,22 @@ type CreateCtwaAdJSONBody struct {
 	// AudienceId Custom audience ID to target.
 	AudienceId *string `json:"audienceId,omitempty"`
 
-	// Body Primary text shown above the image / video.
-	Body string `json:"body"`
+	// BidAmount Whole currency units (e.g. `5` = $5.00 on a USD account).
+	// Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP`
+	// or `COST_CAP`; rejected otherwise.
+	BidAmount *float32 `json:"bidAmount,omitempty"`
+
+	// BidStrategy Meta bid strategy applied to the shared ad set. Defaults to
+	// `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted.
+	// `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require
+	// `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires
+	// `roasAverageFloor`. CTWA's `optimization_goal` is fixed to
+	// `CONVERSATIONS`, but the bid strategy is independent.
+	BidStrategy *CreateCtwaAdJSONBodyBidStrategy `json:"bidStrategy,omitempty"`
+
+	// Body Primary text shown above the image / video. Single-creative
+	// shape only. Mutually exclusive with `creatives[]`.
+	Body *string `json:"body,omitempty"`
 
 	// BudgetAmount Budget amount in the ad account's currency major units
 	// (e.g. dollars for USD, not cents). Must be > 0.
@@ -12209,6 +12314,31 @@ type CreateCtwaAdJSONBody struct {
 
 	// Countries ISO 3166-1 alpha-2 country codes. Defaults to `["US"]`.
 	Countries *[]string `json:"countries,omitempty"`
+
+	// Creatives Multi-creative shape: N CTWA ads under one campaign + one
+	// ad set, sharing budget and targeting. Mutually exclusive
+	// with the top-level single-creative fields (`headline` /
+	// `body` / `imageUrl` / `video`). Each entry must supply its
+	// own headline, body, and exactly one of `imageUrl` /
+	// `video`.
+	Creatives *[]struct {
+		// Body Primary text shown above the image / video.
+		Body     string `json:"body"`
+		Headline string `json:"headline"`
+
+		// ImageUrl Image asset. Mutually exclusive with this entry's
+		// `video`. Required if `video` is not supplied.
+		ImageUrl *string `json:"imageUrl,omitempty"`
+
+		// Video Video creative. Mutually exclusive with this entry's
+		// `imageUrl`. Required if `imageUrl` is not supplied.
+		Video *struct {
+			// ThumbnailUrl Required by Meta for every video creative. Used
+			// as the ad thumbnail.
+			ThumbnailUrl string `json:"thumbnailUrl"`
+			Url          string `json:"url"`
+		} `json:"video,omitempty"`
+	} `json:"creatives,omitempty"`
 
 	// Currency ISO 4217 currency code matching the ad account's currency
 	// (e.g. `USD`). Optional; Meta infers from the ad account
@@ -12226,11 +12356,15 @@ type CreateCtwaAdJSONBody struct {
 	DsaPayor *string `json:"dsaPayor,omitempty"`
 
 	// EndDate ISO 8601 datetime. Required when `budgetType` is `lifetime`.
-	EndDate  *time.Time `json:"endDate,omitempty"`
-	Headline string     `json:"headline"`
+	EndDate *time.Time `json:"endDate,omitempty"`
 
-	// ImageUrl Image asset for image creatives. Mutually exclusive with
-	// `video`. Required if `video` is not supplied.
+	// Headline Single-creative shape only. Mutually exclusive with
+	// `creatives[]`.
+	Headline *string `json:"headline,omitempty"`
+
+	// ImageUrl Image asset for single-creative shape. Mutually exclusive
+	// with `video` and with `creatives[]`. Required on the
+	// single-creative shape if `video` is not supplied.
 	ImageUrl  *string `json:"imageUrl,omitempty"`
 	Interests *[]struct {
 		Id   string  `json:"id"`
@@ -12238,6 +12372,9 @@ type CreateCtwaAdJSONBody struct {
 	} `json:"interests,omitempty"`
 
 	// Name Ad display name. Used to derive campaign / ad set names.
+	// On the multi-creative shape, each ad's Meta name gets a
+	// " #N" suffix (1-indexed) so Ads Manager shows them as a
+	// numbered batch.
 	Name string `json:"name"`
 
 	// Objective Defaults to `OUTCOME_ENGAGEMENT` (the broadly-supported CTWA
@@ -12246,8 +12383,15 @@ type CreateCtwaAdJSONBody struct {
 	// for sales) and may be rejected by Meta if missing.
 	Objective *CreateCtwaAdJSONBodyObjective `json:"objective,omitempty"`
 
-	// Video Video creative. Mutually exclusive with `imageUrl`.
-	// Required if `imageUrl` is not supplied.
+	// RoasAverageFloor Decimal ROAS multiplier (e.g. `2.0` = 2.0× ROAS floor).
+	// Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`;
+	// rejected otherwise. Meta enforces its own upper bound
+	// server-side.
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+
+	// Video Video creative for single-creative shape. Mutually
+	// exclusive with `imageUrl` and with `creatives[]`. Required
+	// on the single-creative shape if `imageUrl` is not supplied.
 	Video *struct {
 		// ThumbnailUrl Required by Meta for every video creative. Used as the
 		// ad thumbnail.
@@ -12259,11 +12403,19 @@ type CreateCtwaAdJSONBody struct {
 // CreateCtwaAdJSONBodyAdvantageAudience defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBodyAdvantageAudience int
 
+// CreateCtwaAdJSONBodyBidStrategy defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyBidStrategy string
+
 // CreateCtwaAdJSONBodyBudgetType defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBodyBudgetType string
 
 // CreateCtwaAdJSONBodyObjective defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBodyObjective string
+
+// CreateCtwaAd201JSONResponseBody defines parameters for CreateCtwaAd.
+type CreateCtwaAd201JSONResponseBody struct {
+	union json.RawMessage
+}
 
 // SearchAdInterestsParams defines parameters for SearchAdInterests.
 type SearchAdInterestsParams struct {
@@ -15693,6 +15845,9 @@ type CreateGoogleBusinessPlaceActionJSONRequestBody CreateGoogleBusinessPlaceAct
 // BatchGetGoogleBusinessReviewsJSONRequestBody defines body for BatchGetGoogleBusinessReviews for application/json ContentType.
 type BatchGetGoogleBusinessReviewsJSONRequestBody BatchGetGoogleBusinessReviewsJSONBody
 
+// ReplyToGoogleBusinessReviewJSONRequestBody defines body for ReplyToGoogleBusinessReview for application/json ContentType.
+type ReplyToGoogleBusinessReviewJSONRequestBody ReplyToGoogleBusinessReviewJSONBody
+
 // UpdateGoogleBusinessServicesJSONRequestBody defines body for UpdateGoogleBusinessServices for application/json ContentType.
 type UpdateGoogleBusinessServicesJSONRequestBody UpdateGoogleBusinessServicesJSONBody
 
@@ -17158,6 +17313,95 @@ func (t CreateStandaloneAd201JSONResponseBody) MarshalJSON() ([]byte, error) {
 }
 
 func (t *CreateStandaloneAd201JSONResponseBody) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCtwaSingleResponse returns the union data inside the CreateCtwaAd201JSONResponseBody as a CtwaSingleResponse
+func (t CreateCtwaAd201JSONResponseBody) AsCtwaSingleResponse() (CtwaSingleResponse, error) {
+	var body CtwaSingleResponse
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCtwaSingleResponse overwrites any union data inside the CreateCtwaAd201JSONResponseBody as the provided CtwaSingleResponse
+func (t *CreateCtwaAd201JSONResponseBody) FromCtwaSingleResponse(v CtwaSingleResponse) error {
+	v.AdType = "single"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCtwaSingleResponse performs a merge with any union data inside the CreateCtwaAd201JSONResponseBody, using the provided CtwaSingleResponse
+func (t *CreateCtwaAd201JSONResponseBody) MergeCtwaSingleResponse(v CtwaSingleResponse) error {
+	v.AdType = "single"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCtwaMultiResponse returns the union data inside the CreateCtwaAd201JSONResponseBody as a CtwaMultiResponse
+func (t CreateCtwaAd201JSONResponseBody) AsCtwaMultiResponse() (CtwaMultiResponse, error) {
+	var body CtwaMultiResponse
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCtwaMultiResponse overwrites any union data inside the CreateCtwaAd201JSONResponseBody as the provided CtwaMultiResponse
+func (t *CreateCtwaAd201JSONResponseBody) FromCtwaMultiResponse(v CtwaMultiResponse) error {
+	v.AdType = "multi"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCtwaMultiResponse performs a merge with any union data inside the CreateCtwaAd201JSONResponseBody, using the provided CtwaMultiResponse
+func (t *CreateCtwaAd201JSONResponseBody) MergeCtwaMultiResponse(v CtwaMultiResponse) error {
+	v.AdType = "multi"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateCtwaAd201JSONResponseBody) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"adType"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t CreateCtwaAd201JSONResponseBody) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "multi":
+		return t.AsCtwaMultiResponse()
+	case "single":
+		return t.AsCtwaSingleResponse()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t CreateCtwaAd201JSONResponseBody) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateCtwaAd201JSONResponseBody) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -18637,6 +18881,14 @@ type ClientInterface interface {
 	BatchGetGoogleBusinessReviewsWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	BatchGetGoogleBusinessReviews(ctx context.Context, accountId string, body BatchGetGoogleBusinessReviewsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteGoogleBusinessReviewReply request
+	DeleteGoogleBusinessReviewReply(ctx context.Context, accountId string, reviewId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReplyToGoogleBusinessReviewWithBody request with any body
+	ReplyToGoogleBusinessReviewWithBody(ctx context.Context, accountId string, reviewId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ReplyToGoogleBusinessReview(ctx context.Context, accountId string, reviewId string, body ReplyToGoogleBusinessReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGoogleBusinessServices request
 	GetGoogleBusinessServices(ctx context.Context, accountId string, params *GetGoogleBusinessServicesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -20272,6 +20524,42 @@ func (c *Client) BatchGetGoogleBusinessReviewsWithBody(ctx context.Context, acco
 
 func (c *Client) BatchGetGoogleBusinessReviews(ctx context.Context, accountId string, body BatchGetGoogleBusinessReviewsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBatchGetGoogleBusinessReviewsRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteGoogleBusinessReviewReply(ctx context.Context, accountId string, reviewId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteGoogleBusinessReviewReplyRequest(c.Server, accountId, reviewId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReplyToGoogleBusinessReviewWithBody(ctx context.Context, accountId string, reviewId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReplyToGoogleBusinessReviewRequestWithBody(c.Server, accountId, reviewId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReplyToGoogleBusinessReview(ctx context.Context, accountId string, reviewId string, body ReplyToGoogleBusinessReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReplyToGoogleBusinessReviewRequest(c.Server, accountId, reviewId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -26918,6 +27206,101 @@ func NewBatchGetGoogleBusinessReviewsRequestWithBody(server string, accountId st
 	}
 
 	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-reviews/batch", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteGoogleBusinessReviewReplyRequest generates requests for DeleteGoogleBusinessReviewReply
+func NewDeleteGoogleBusinessReviewReplyRequest(server string, accountId string, reviewId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "reviewId", reviewId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-reviews/%s/reply", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewReplyToGoogleBusinessReviewRequest calls the generic ReplyToGoogleBusinessReview builder with application/json body
+func NewReplyToGoogleBusinessReviewRequest(server string, accountId string, reviewId string, body ReplyToGoogleBusinessReviewJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReplyToGoogleBusinessReviewRequestWithBody(server, accountId, reviewId, "application/json", bodyReader)
+}
+
+// NewReplyToGoogleBusinessReviewRequestWithBody generates requests for ReplyToGoogleBusinessReview with any type of body
+func NewReplyToGoogleBusinessReviewRequestWithBody(server string, accountId string, reviewId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "reviewId", reviewId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-reviews/%s/reply", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -41472,6 +41855,14 @@ type ClientWithResponsesInterface interface {
 
 	BatchGetGoogleBusinessReviewsWithResponse(ctx context.Context, accountId string, body BatchGetGoogleBusinessReviewsJSONRequestBody, reqEditors ...RequestEditorFn) (*BatchGetGoogleBusinessReviewsResponse, error)
 
+	// DeleteGoogleBusinessReviewReplyWithResponse request
+	DeleteGoogleBusinessReviewReplyWithResponse(ctx context.Context, accountId string, reviewId string, reqEditors ...RequestEditorFn) (*DeleteGoogleBusinessReviewReplyResponse, error)
+
+	// ReplyToGoogleBusinessReviewWithBodyWithResponse request with any body
+	ReplyToGoogleBusinessReviewWithBodyWithResponse(ctx context.Context, accountId string, reviewId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReplyToGoogleBusinessReviewResponse, error)
+
+	ReplyToGoogleBusinessReviewWithResponse(ctx context.Context, accountId string, reviewId string, body ReplyToGoogleBusinessReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*ReplyToGoogleBusinessReviewResponse, error)
+
 	// GetGoogleBusinessServicesWithResponse request
 	GetGoogleBusinessServicesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessServicesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessServicesResponse, error)
 
@@ -44234,6 +44625,82 @@ func (r BatchGetGoogleBusinessReviewsResponse) ContentType() string {
 	return ""
 }
 
+type DeleteGoogleBusinessReviewReplyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message  *string `json:"message,omitempty"`
+		Platform *string `json:"platform,omitempty"`
+		Success  *bool   `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteGoogleBusinessReviewReplyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteGoogleBusinessReviewReplyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteGoogleBusinessReviewReplyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReplyToGoogleBusinessReviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *string `json:"platform,omitempty"`
+		ReviewId *string `json:"reviewId,omitempty"`
+		Success  *bool   `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ReplyToGoogleBusinessReviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReplyToGoogleBusinessReviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReplyToGoogleBusinessReviewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetGoogleBusinessServicesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -46400,12 +46867,8 @@ func (r CreateStandaloneAdResponse) ContentType() string {
 type CreateCtwaAdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *struct {
-		// Ad The persisted Ad document.
-		Ad      *map[string]interface{} `json:"ad,omitempty"`
-		Message *string                 `json:"message,omitempty"`
-	}
-	JSON401 *Unauthorized
+	JSON201      *CreateCtwaAd201JSONResponseBody
+	JSON401      *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -55339,6 +55802,32 @@ func (c *ClientWithResponses) BatchGetGoogleBusinessReviewsWithResponse(ctx cont
 	return ParseBatchGetGoogleBusinessReviewsResponse(rsp)
 }
 
+// DeleteGoogleBusinessReviewReplyWithResponse request returning *DeleteGoogleBusinessReviewReplyResponse
+func (c *ClientWithResponses) DeleteGoogleBusinessReviewReplyWithResponse(ctx context.Context, accountId string, reviewId string, reqEditors ...RequestEditorFn) (*DeleteGoogleBusinessReviewReplyResponse, error) {
+	rsp, err := c.DeleteGoogleBusinessReviewReply(ctx, accountId, reviewId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteGoogleBusinessReviewReplyResponse(rsp)
+}
+
+// ReplyToGoogleBusinessReviewWithBodyWithResponse request with arbitrary body returning *ReplyToGoogleBusinessReviewResponse
+func (c *ClientWithResponses) ReplyToGoogleBusinessReviewWithBodyWithResponse(ctx context.Context, accountId string, reviewId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReplyToGoogleBusinessReviewResponse, error) {
+	rsp, err := c.ReplyToGoogleBusinessReviewWithBody(ctx, accountId, reviewId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReplyToGoogleBusinessReviewResponse(rsp)
+}
+
+func (c *ClientWithResponses) ReplyToGoogleBusinessReviewWithResponse(ctx context.Context, accountId string, reviewId string, body ReplyToGoogleBusinessReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*ReplyToGoogleBusinessReviewResponse, error) {
+	rsp, err := c.ReplyToGoogleBusinessReview(ctx, accountId, reviewId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReplyToGoogleBusinessReviewResponse(rsp)
+}
+
 // GetGoogleBusinessServicesWithResponse request returning *GetGoogleBusinessServicesResponse
 func (c *ClientWithResponses) GetGoogleBusinessServicesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessServicesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessServicesResponse, error) {
 	rsp, err := c.GetGoogleBusinessServices(ctx, accountId, params, reqEditors...)
@@ -60456,6 +60945,122 @@ func ParseBatchGetGoogleBusinessReviewsResponse(rsp *http.Response) (*BatchGetGo
 	return response, nil
 }
 
+// ParseDeleteGoogleBusinessReviewReplyResponse parses an HTTP response from a DeleteGoogleBusinessReviewReplyWithResponse call
+func ParseDeleteGoogleBusinessReviewReplyResponse(rsp *http.Response) (*DeleteGoogleBusinessReviewReplyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteGoogleBusinessReviewReplyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message  *string `json:"message,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+			Success  *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReplyToGoogleBusinessReviewResponse parses an HTTP response from a ReplyToGoogleBusinessReviewWithResponse call
+func ParseReplyToGoogleBusinessReviewResponse(rsp *http.Response) (*ReplyToGoogleBusinessReviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReplyToGoogleBusinessReviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *string `json:"platform,omitempty"`
+			ReviewId *string `json:"reviewId,omitempty"`
+			Success  *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetGoogleBusinessServicesResponse parses an HTTP response from a GetGoogleBusinessServicesWithResponse call
 func ParseGetGoogleBusinessServicesResponse(rsp *http.Response) (*GetGoogleBusinessServicesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -62800,11 +63405,7 @@ func ParseCreateCtwaAdResponse(rsp *http.Response) (*CreateCtwaAdResponse, error
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest struct {
-			// Ad The persisted Ad document.
-			Ad      *map[string]interface{} `json:"ad,omitempty"`
-			Message *string                 `json:"message,omitempty"`
-		}
+		var dest CreateCtwaAd201JSONResponseBody
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
