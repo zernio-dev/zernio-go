@@ -10972,6 +10972,12 @@ type UpdateDiscordSettingsJSONBody struct {
 	WebhookUsername *string `json:"webhookUsername,omitempty"`
 }
 
+// GetFacebookPagesParams defines parameters for GetFacebookPages.
+type GetFacebookPagesParams struct {
+	// Refresh When true, bypasses the page cache and fetches fresh pages from Meta. Rate-limited server-side to 1 refresh per 60s. Pages no longer accessible to the connected account will be removed from the list on refresh.
+	Refresh *bool `form:"refresh,omitempty" json:"refresh,omitempty"`
+}
+
 // UpdateFacebookPageJSONBody defines parameters for UpdateFacebookPage.
 type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
@@ -18862,7 +18868,7 @@ type ClientInterface interface {
 	UpdateDiscordSettings(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetFacebookPages request
-	GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetFacebookPages(ctx context.Context, accountId string, params *GetFacebookPagesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateFacebookPageWithBody request with any body
 	UpdateFacebookPageWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -20252,8 +20258,8 @@ func (c *Client) UpdateDiscordSettings(ctx context.Context, accountId string, bo
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetFacebookPages(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetFacebookPagesRequest(c.Server, accountId)
+func (c *Client) GetFacebookPages(ctx context.Context, accountId string, params *GetFacebookPagesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFacebookPagesRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -26039,7 +26045,7 @@ func NewUpdateDiscordSettingsRequestWithBody(server string, accountId string, co
 }
 
 // NewGetFacebookPagesRequest generates requests for GetFacebookPages
-func NewGetFacebookPagesRequest(server string, accountId string) (*http.Request, error) {
+func NewGetFacebookPagesRequest(server string, accountId string, params *GetFacebookPagesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -26062,6 +26068,33 @@ func NewGetFacebookPagesRequest(server string, accountId string) (*http.Request,
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Refresh != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "refresh", *params.Refresh, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -41874,7 +41907,7 @@ type ClientWithResponsesInterface interface {
 	UpdateDiscordSettingsWithResponse(ctx context.Context, accountId string, body UpdateDiscordSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDiscordSettingsResponse, error)
 
 	// GetFacebookPagesWithResponse request
-	GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error)
+	GetFacebookPagesWithResponse(ctx context.Context, accountId string, params *GetFacebookPagesParams, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error)
 
 	// UpdateFacebookPageWithBodyWithResponse request with any body
 	UpdateFacebookPageWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateFacebookPageResponse, error)
@@ -55653,8 +55686,8 @@ func (c *ClientWithResponses) UpdateDiscordSettingsWithResponse(ctx context.Cont
 }
 
 // GetFacebookPagesWithResponse request returning *GetFacebookPagesResponse
-func (c *ClientWithResponses) GetFacebookPagesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error) {
-	rsp, err := c.GetFacebookPages(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) GetFacebookPagesWithResponse(ctx context.Context, accountId string, params *GetFacebookPagesParams, reqEditors ...RequestEditorFn) (*GetFacebookPagesResponse, error) {
+	rsp, err := c.GetFacebookPages(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
