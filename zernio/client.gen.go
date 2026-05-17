@@ -4215,6 +4215,30 @@ func (e GetAdTreeParamsPlatform) Valid() bool {
 	}
 }
 
+// Defines values for GetAdTreeParamsSort.
+const (
+	Newest    GetAdTreeParamsSort = "newest"
+	Oldest    GetAdTreeParamsSort = "oldest"
+	SpendAsc  GetAdTreeParamsSort = "spend_asc"
+	SpendDesc GetAdTreeParamsSort = "spend_desc"
+)
+
+// Valid indicates whether the value is a known member of the GetAdTreeParamsSort enum.
+func (e GetAdTreeParamsSort) Valid() bool {
+	switch e {
+	case Newest:
+		return true
+	case Oldest:
+		return true
+	case SpendAsc:
+		return true
+	case SpendDesc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UpdateAdJSONBodyBudgetType.
 const (
 	UpdateAdJSONBodyBudgetTypeDaily    UpdateAdJSONBodyBudgetType = "daily"
@@ -12562,6 +12586,9 @@ type GetAdTreeParams struct {
 
 	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
 	ToDate *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+
+	// Sort Campaign-level sort order. `newest` (default) / `oldest` order by the campaign's newest-ad createdAt. `spend_desc` / `spend_asc` order by aggregated spend in the requested date range; campaigns with no spend land at the end.
+	Sort *GetAdTreeParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
 }
 
 // GetAdTreeParamsSource defines parameters for GetAdTree.
@@ -12569,6 +12596,9 @@ type GetAdTreeParamsSource string
 
 // GetAdTreeParamsPlatform defines parameters for GetAdTree.
 type GetAdTreeParamsPlatform string
+
+// GetAdTreeParamsSort defines parameters for GetAdTree.
+type GetAdTreeParamsSort string
 
 // UpdateAdJSONBody defines parameters for UpdateAd.
 type UpdateAdJSONBody struct {
@@ -30717,6 +30747,18 @@ func NewGetAdTreeRequest(server string, params *GetAdTreeParams) (*http.Request,
 		if params.ToDate != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
