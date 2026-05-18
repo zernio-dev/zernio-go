@@ -2568,6 +2568,27 @@ func (e GetAccountHealth200JSONResponseBodyStatus) Valid() bool {
 	}
 }
 
+// Defines values for GetInstagramStoryInsights200JSONResponseBodyDataSource.
+const (
+	GetInstagramStoryInsights200JSONResponseBodyDataSourceCached      GetInstagramStoryInsights200JSONResponseBodyDataSource = "cached"
+	GetInstagramStoryInsights200JSONResponseBodyDataSourceLive        GetInstagramStoryInsights200JSONResponseBodyDataSource = "live"
+	GetInstagramStoryInsights200JSONResponseBodyDataSourceUnavailable GetInstagramStoryInsights200JSONResponseBodyDataSource = "unavailable"
+)
+
+// Valid indicates whether the value is a known member of the GetInstagramStoryInsights200JSONResponseBodyDataSource enum.
+func (e GetInstagramStoryInsights200JSONResponseBodyDataSource) Valid() bool {
+	switch e {
+	case GetInstagramStoryInsights200JSONResponseBodyDataSourceCached:
+		return true
+	case GetInstagramStoryInsights200JSONResponseBodyDataSourceLive:
+		return true
+	case GetInstagramStoryInsights200JSONResponseBodyDataSourceUnavailable:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetLinkedInAggregateAnalyticsParamsAggregation.
 const (
 	GetLinkedInAggregateAnalyticsParamsAggregationDAILY GetLinkedInAggregateAnalyticsParamsAggregation = "DAILY"
@@ -7886,28 +7907,28 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus.
 const (
-	Active         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
-	PendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
-	Provisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
-	Released       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
-	Releasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
-	Suspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus enum.
 func (e GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus) Valid() bool {
 	switch e {
-	case Active:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive:
 		return true
-	case PendingPayment:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment:
 		return true
-	case Provisioning:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning:
 		return true
-	case Released:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased:
 		return true
-	case Releasing:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing:
 		return true
-	case Suspended:
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended:
 		return true
 	default:
 		return false
@@ -11355,6 +11376,9 @@ type SetInstagramIceBreakersJSONBody struct {
 		Question string `json:"question"`
 	} `json:"ice_breakers"`
 }
+
+// GetInstagramStoryInsights200JSONResponseBodyDataSource defines parameters for GetInstagramStoryInsights.
+type GetInstagramStoryInsights200JSONResponseBodyDataSource string
 
 // GetLinkedInAggregateAnalyticsParams defines parameters for GetLinkedInAggregateAnalytics.
 type GetLinkedInAggregateAnalyticsParams struct {
@@ -19008,6 +19032,12 @@ type ClientInterface interface {
 
 	SetInstagramIceBreakers(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListInstagramStories request
+	ListInstagramStories(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstagramStoryInsights request
+	GetInstagramStoryInsights(ctx context.Context, accountId string, storyId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetLinkedInAggregateAnalytics request
 	GetLinkedInAggregateAnalytics(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -20752,6 +20782,30 @@ func (c *Client) SetInstagramIceBreakersWithBody(ctx context.Context, accountId 
 
 func (c *Client) SetInstagramIceBreakers(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSetInstagramIceBreakersRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListInstagramStories(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListInstagramStoriesRequest(c.Server, accountId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInstagramStoryInsights(ctx context.Context, accountId string, storyId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstagramStoryInsightsRequest(c.Server, accountId, storyId)
 	if err != nil {
 		return nil, err
 	}
@@ -27723,6 +27777,81 @@ func NewSetInstagramIceBreakersRequestWithBody(server string, accountId string, 
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListInstagramStoriesRequest generates requests for ListInstagramStories
+func NewListInstagramStoriesRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/instagram/stories", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstagramStoryInsightsRequest generates requests for GetInstagramStoryInsights
+func NewGetInstagramStoryInsightsRequest(server string, accountId string, storyId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "storyId", storyId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/instagram/stories/%s/insights", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -42059,6 +42188,12 @@ type ClientWithResponsesInterface interface {
 
 	SetInstagramIceBreakersWithResponse(ctx context.Context, accountId string, body SetInstagramIceBreakersJSONRequestBody, reqEditors ...RequestEditorFn) (*SetInstagramIceBreakersResponse, error)
 
+	// ListInstagramStoriesWithResponse request
+	ListInstagramStoriesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListInstagramStoriesResponse, error)
+
+	// GetInstagramStoryInsightsWithResponse request
+	GetInstagramStoryInsightsWithResponse(ctx context.Context, accountId string, storyId string, reqEditors ...RequestEditorFn) (*GetInstagramStoryInsightsResponse, error)
+
 	// GetLinkedInAggregateAnalyticsWithResponse request
 	GetLinkedInAggregateAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInAggregateAnalyticsResponse, error)
 
@@ -45128,6 +45263,125 @@ func (r SetInstagramIceBreakersResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SetInstagramIceBreakersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListInstagramStoriesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data []struct {
+			// Id Instagram media ID of the story.
+			Id string `json:"id"`
+
+			// MediaProductType Always 'STORY' for this endpoint.
+			MediaProductType *string `json:"mediaProductType,omitempty"`
+
+			// MediaType IMAGE / VIDEO / CAROUSEL_ALBUM
+			MediaType *string `json:"mediaType,omitempty"`
+
+			// MediaUrl Direct media URL. Null if Meta flagged the story for copyright. URL expires when the story expires.
+			MediaUrl *string `json:"mediaUrl,omitempty"`
+
+			// Permalink Public Instagram permalink to the story (only viewable while live).
+			Permalink *string `json:"permalink,omitempty"`
+
+			// ThumbnailUrl Thumbnail URL for video stories.
+			ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+
+			// Timestamp When the story was posted.
+			Timestamp *time.Time `json:"timestamp,omitempty"`
+		} `json:"data"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListInstagramStoriesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListInstagramStoriesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListInstagramStoriesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInstagramStoryInsightsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data struct {
+			Metrics struct {
+				// Exits Closed Stories interface entirely.
+				Exits   int `json:"exits"`
+				Follows int `json:"follows"`
+
+				// Navigation Total nav actions (tapsForward + tapsBack + exits + swipesForward).
+				Navigation    int `json:"navigation"`
+				ProfileVisits int `json:"profileVisits"`
+
+				// Reach Unique accounts that saw the story.
+				Reach int `json:"reach"`
+
+				// Replies DMs sent in reply to the story.
+				Replies int `json:"replies"`
+				Reposts int `json:"reposts"`
+				Shares  int `json:"shares"`
+
+				// SwipesForward Swiped left to next account's story.
+				SwipesForward int `json:"swipesForward"`
+
+				// TapsBack Tapped left to previous slide.
+				TapsBack int `json:"tapsBack"`
+
+				// TapsForward Tapped right to next slide of SAME story.
+				TapsForward       int `json:"tapsForward"`
+				TotalInteractions int `json:"totalInteractions"`
+
+				// Views Total story plays. Replaces deprecated 'impressions' for media created after 2024-07-02.
+				Views int `json:"views"`
+			} `json:"metrics"`
+			Source GetInstagramStoryInsights200JSONResponseBodyDataSource `json:"source"`
+		} `json:"data"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstagramStoryInsightsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstagramStoryInsightsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInstagramStoryInsightsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -56072,6 +56326,24 @@ func (c *ClientWithResponses) SetInstagramIceBreakersWithResponse(ctx context.Co
 	return ParseSetInstagramIceBreakersResponse(rsp)
 }
 
+// ListInstagramStoriesWithResponse request returning *ListInstagramStoriesResponse
+func (c *ClientWithResponses) ListInstagramStoriesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListInstagramStoriesResponse, error) {
+	rsp, err := c.ListInstagramStories(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListInstagramStoriesResponse(rsp)
+}
+
+// GetInstagramStoryInsightsWithResponse request returning *GetInstagramStoryInsightsResponse
+func (c *ClientWithResponses) GetInstagramStoryInsightsWithResponse(ctx context.Context, accountId string, storyId string, reqEditors ...RequestEditorFn) (*GetInstagramStoryInsightsResponse, error) {
+	rsp, err := c.GetInstagramStoryInsights(ctx, accountId, storyId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstagramStoryInsightsResponse(rsp)
+}
+
 // GetLinkedInAggregateAnalyticsWithResponse request returning *GetLinkedInAggregateAnalyticsResponse
 func (c *ClientWithResponses) GetLinkedInAggregateAnalyticsWithResponse(ctx context.Context, accountId string, params *GetLinkedInAggregateAnalyticsParams, reqEditors ...RequestEditorFn) (*GetLinkedInAggregateAnalyticsResponse, error) {
 	rsp, err := c.GetLinkedInAggregateAnalytics(ctx, accountId, params, reqEditors...)
@@ -61494,6 +61766,129 @@ func ParseSetInstagramIceBreakersResponse(rsp *http.Response) (*SetInstagramIceB
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListInstagramStoriesResponse parses an HTTP response from a ListInstagramStoriesWithResponse call
+func ParseListInstagramStoriesResponse(rsp *http.Response) (*ListInstagramStoriesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListInstagramStoriesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data []struct {
+				// Id Instagram media ID of the story.
+				Id string `json:"id"`
+
+				// MediaProductType Always 'STORY' for this endpoint.
+				MediaProductType *string `json:"mediaProductType,omitempty"`
+
+				// MediaType IMAGE / VIDEO / CAROUSEL_ALBUM
+				MediaType *string `json:"mediaType,omitempty"`
+
+				// MediaUrl Direct media URL. Null if Meta flagged the story for copyright. URL expires when the story expires.
+				MediaUrl *string `json:"mediaUrl,omitempty"`
+
+				// Permalink Public Instagram permalink to the story (only viewable while live).
+				Permalink *string `json:"permalink,omitempty"`
+
+				// ThumbnailUrl Thumbnail URL for video stories.
+				ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+
+				// Timestamp When the story was posted.
+				Timestamp *time.Time `json:"timestamp,omitempty"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstagramStoryInsightsResponse parses an HTTP response from a GetInstagramStoryInsightsWithResponse call
+func ParseGetInstagramStoryInsightsResponse(rsp *http.Response) (*GetInstagramStoryInsightsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstagramStoryInsightsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data struct {
+				Metrics struct {
+					// Exits Closed Stories interface entirely.
+					Exits   int `json:"exits"`
+					Follows int `json:"follows"`
+
+					// Navigation Total nav actions (tapsForward + tapsBack + exits + swipesForward).
+					Navigation    int `json:"navigation"`
+					ProfileVisits int `json:"profileVisits"`
+
+					// Reach Unique accounts that saw the story.
+					Reach int `json:"reach"`
+
+					// Replies DMs sent in reply to the story.
+					Replies int `json:"replies"`
+					Reposts int `json:"reposts"`
+					Shares  int `json:"shares"`
+
+					// SwipesForward Swiped left to next account's story.
+					SwipesForward int `json:"swipesForward"`
+
+					// TapsBack Tapped left to previous slide.
+					TapsBack int `json:"tapsBack"`
+
+					// TapsForward Tapped right to next slide of SAME story.
+					TapsForward       int `json:"tapsForward"`
+					TotalInteractions int `json:"totalInteractions"`
+
+					// Views Total story plays. Replaces deprecated 'impressions' for media created after 2024-07-02.
+					Views int `json:"views"`
+				} `json:"metrics"`
+				Source GetInstagramStoryInsights200JSONResponseBodyDataSource `json:"source"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

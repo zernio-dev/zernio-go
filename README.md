@@ -375,6 +375,12 @@ func main() {
 | `client.GetGoogleBusinessServicesWithResponse()` | Get services |
 | `client.UpdateGoogleBusinessServicesWithResponse()` | Replace services |
 
+### Instagram
+| Method | Description |
+|--------|-------------|
+| `client.ListInstagramStoriesWithResponse()` | List active Instagram stories |
+| `client.GetInstagramStoryInsightsWithResponse()` | Get Instagram story insights |
+
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|
