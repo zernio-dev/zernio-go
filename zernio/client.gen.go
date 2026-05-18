@@ -1860,6 +1860,7 @@ const (
 	GetAllAccountsHealthParamsPlatformThreads        GetAllAccountsHealthParamsPlatform = "threads"
 	GetAllAccountsHealthParamsPlatformTiktok         GetAllAccountsHealthParamsPlatform = "tiktok"
 	GetAllAccountsHealthParamsPlatformTwitter        GetAllAccountsHealthParamsPlatform = "twitter"
+	GetAllAccountsHealthParamsPlatformWhatsapp       GetAllAccountsHealthParamsPlatform = "whatsapp"
 	GetAllAccountsHealthParamsPlatformYoutube        GetAllAccountsHealthParamsPlatform = "youtube"
 )
 
@@ -1891,6 +1892,8 @@ func (e GetAllAccountsHealthParamsPlatform) Valid() bool {
 	case GetAllAccountsHealthParamsPlatformTiktok:
 		return true
 	case GetAllAccountsHealthParamsPlatformTwitter:
+		return true
+	case GetAllAccountsHealthParamsPlatformWhatsapp:
 		return true
 	case GetAllAccountsHealthParamsPlatformYoutube:
 		return true
@@ -5424,6 +5427,7 @@ const (
 	GetConnectUrlParamsPlatformThreads        GetConnectUrlParamsPlatform = "threads"
 	GetConnectUrlParamsPlatformTiktok         GetConnectUrlParamsPlatform = "tiktok"
 	GetConnectUrlParamsPlatformTwitter        GetConnectUrlParamsPlatform = "twitter"
+	GetConnectUrlParamsPlatformWhatsapp       GetConnectUrlParamsPlatform = "whatsapp"
 	GetConnectUrlParamsPlatformYoutube        GetConnectUrlParamsPlatform = "youtube"
 )
 
@@ -5455,6 +5459,8 @@ func (e GetConnectUrlParamsPlatform) Valid() bool {
 	case GetConnectUrlParamsPlatformTiktok:
 		return true
 	case GetConnectUrlParamsPlatformTwitter:
+		return true
+	case GetConnectUrlParamsPlatformWhatsapp:
 		return true
 	case GetConnectUrlParamsPlatformYoutube:
 		return true
