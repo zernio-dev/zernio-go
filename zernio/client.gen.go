@@ -48981,11 +48981,14 @@ type ListBroadcastRecipientsResponse struct {
 			Total   *int  `json:"total,omitempty"`
 		} `json:"pagination,omitempty"`
 		Recipients *[]struct {
-			ChannelId          *string                                                     `json:"channelId,omitempty"`
-			ContactId          *string                                                     `json:"contactId,omitempty"`
-			ContactName        *string                                                     `json:"contactName,omitempty"`
-			DeliveredAt        *time.Time                                                  `json:"deliveredAt,omitempty"`
-			Error              *string                                                     `json:"error,omitempty"`
+			ChannelId   *string    `json:"channelId,omitempty"`
+			ContactId   *string    `json:"contactId,omitempty"`
+			ContactName *string    `json:"contactName,omitempty"`
+			DeliveredAt *time.Time `json:"deliveredAt,omitempty"`
+			Error       *string    `json:"error,omitempty"`
+
+			// ErrorCode Meta WhatsApp error code (e.g. 131049 for antispam, 131021 for invalid phone, 131026 for re-engagement required). Only populated for status=failed.
+			ErrorCode          *int                                                        `json:"errorCode,omitempty"`
 			Id                 *string                                                     `json:"id,omitempty"`
 			MessageId          *string                                                     `json:"messageId,omitempty"`
 			PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
@@ -66022,11 +66025,14 @@ func ParseListBroadcastRecipientsResponse(rsp *http.Response) (*ListBroadcastRec
 				Total   *int  `json:"total,omitempty"`
 			} `json:"pagination,omitempty"`
 			Recipients *[]struct {
-				ChannelId          *string                                                     `json:"channelId,omitempty"`
-				ContactId          *string                                                     `json:"contactId,omitempty"`
-				ContactName        *string                                                     `json:"contactName,omitempty"`
-				DeliveredAt        *time.Time                                                  `json:"deliveredAt,omitempty"`
-				Error              *string                                                     `json:"error,omitempty"`
+				ChannelId   *string    `json:"channelId,omitempty"`
+				ContactId   *string    `json:"contactId,omitempty"`
+				ContactName *string    `json:"contactName,omitempty"`
+				DeliveredAt *time.Time `json:"deliveredAt,omitempty"`
+				Error       *string    `json:"error,omitempty"`
+
+				// ErrorCode Meta WhatsApp error code (e.g. 131049 for antispam, 131021 for invalid phone, 131026 for re-engagement required). Only populated for status=failed.
+				ErrorCode          *int                                                        `json:"errorCode,omitempty"`
 				Id                 *string                                                     `json:"id,omitempty"`
 				MessageId          *string                                                     `json:"messageId,omitempty"`
 				PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
