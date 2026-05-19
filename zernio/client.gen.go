@@ -15437,6 +15437,16 @@ type RetweetPostJSONBody struct {
 	TweetId string `json:"tweetId"`
 }
 
+// GetUsageStatsParams defines parameters for GetUsageStats.
+type GetUsageStatsParams struct {
+	// Reconcile For Stripe subscription users, `true` forces a subscription
+	// reconciliation pass even when cached plan data looks complete.
+	// Omit the parameter, or pass `false`, to use the default
+	// first-time-only reconciliation behavior. Invalid boolean values are
+	// rejected.
+	Reconcile *bool `form:"reconcile,omitempty" json:"reconcile,omitempty"`
+}
+
 // DeleteWebhookSettingsParams defines parameters for DeleteWebhookSettings.
 type DeleteWebhookSettingsParams struct {
 	// Id Webhook ID to delete
@@ -19911,7 +19921,7 @@ type ClientInterface interface {
 	RetweetPost(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUsageStats request
-	GetUsageStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetUsageStats(ctx context.Context, params *GetUsageStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListUsers request
 	ListUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -24273,8 +24283,8 @@ func (c *Client) RetweetPost(ctx context.Context, body RetweetPostJSONRequestBod
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetUsageStats(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetUsageStatsRequest(c.Server)
+func (c *Client) GetUsageStats(ctx context.Context, params *GetUsageStatsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUsageStatsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -39978,7 +39988,7 @@ func NewRetweetPostRequestWithBody(server string, contentType string, body io.Re
 }
 
 // NewGetUsageStatsRequest generates requests for GetUsageStats
-func NewGetUsageStatsRequest(server string) (*http.Request, error) {
+func NewGetUsageStatsRequest(server string, params *GetUsageStatsParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -39994,6 +40004,33 @@ func NewGetUsageStatsRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Reconcile != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "reconcile", *params.Reconcile, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -43121,7 +43158,7 @@ type ClientWithResponsesInterface interface {
 	RetweetPostWithResponse(ctx context.Context, body RetweetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*RetweetPostResponse, error)
 
 	// GetUsageStatsWithResponse request
-	GetUsageStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUsageStatsResponse, error)
+	GetUsageStatsWithResponse(ctx context.Context, params *GetUsageStatsParams, reqEditors ...RequestEditorFn) (*GetUsageStatsResponse, error)
 
 	// ListUsersWithResponse request
 	ListUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUsersResponse, error)
@@ -58946,8 +58983,8 @@ func (c *ClientWithResponses) RetweetPostWithResponse(ctx context.Context, body 
 }
 
 // GetUsageStatsWithResponse request returning *GetUsageStatsResponse
-func (c *ClientWithResponses) GetUsageStatsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUsageStatsResponse, error) {
-	rsp, err := c.GetUsageStats(ctx, reqEditors...)
+func (c *ClientWithResponses) GetUsageStatsWithResponse(ctx context.Context, params *GetUsageStatsParams, reqEditors ...RequestEditorFn) (*GetUsageStatsResponse, error) {
+	rsp, err := c.GetUsageStats(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
