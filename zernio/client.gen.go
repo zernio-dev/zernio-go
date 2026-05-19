@@ -4854,6 +4854,33 @@ func (e GetBroadcast200JSONResponseBodyBroadcastStatus) Valid() bool {
 	}
 }
 
+// Defines values for UpdateBroadcastJSONBodyTemplateVariableMappingField.
+const (
+	UpdateBroadcastJSONBodyTemplateVariableMappingFieldCompany UpdateBroadcastJSONBodyTemplateVariableMappingField = "company"
+	UpdateBroadcastJSONBodyTemplateVariableMappingFieldCustom  UpdateBroadcastJSONBodyTemplateVariableMappingField = "custom"
+	UpdateBroadcastJSONBodyTemplateVariableMappingFieldEmail   UpdateBroadcastJSONBodyTemplateVariableMappingField = "email"
+	UpdateBroadcastJSONBodyTemplateVariableMappingFieldName    UpdateBroadcastJSONBodyTemplateVariableMappingField = "name"
+	UpdateBroadcastJSONBodyTemplateVariableMappingFieldPhone   UpdateBroadcastJSONBodyTemplateVariableMappingField = "phone"
+)
+
+// Valid indicates whether the value is a known member of the UpdateBroadcastJSONBodyTemplateVariableMappingField enum.
+func (e UpdateBroadcastJSONBodyTemplateVariableMappingField) Valid() bool {
+	switch e {
+	case UpdateBroadcastJSONBodyTemplateVariableMappingFieldCompany:
+		return true
+	case UpdateBroadcastJSONBodyTemplateVariableMappingFieldCustom:
+		return true
+	case UpdateBroadcastJSONBodyTemplateVariableMappingFieldEmail:
+		return true
+	case UpdateBroadcastJSONBodyTemplateVariableMappingFieldName:
+		return true
+	case UpdateBroadcastJSONBodyTemplateVariableMappingFieldPhone:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListBroadcastRecipientsParamsStatus.
 const (
 	ListBroadcastRecipientsParamsStatusDelivered ListBroadcastRecipientsParamsStatus = "delivered"
@@ -7287,6 +7314,33 @@ func (e GetSequence200JSONResponseBodySequenceStatus) Valid() bool {
 	case GetSequence200JSONResponseBodySequenceStatusDraft:
 		return true
 	case GetSequence200JSONResponseBodySequenceStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateSequenceJSONBodyStepsTemplateVariableMappingField.
+const (
+	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
+	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom  UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
+	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
+	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldName    UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
+	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
+)
+
+// Valid indicates whether the value is a known member of the UpdateSequenceJSONBodyStepsTemplateVariableMappingField enum.
+func (e UpdateSequenceJSONBodyStepsTemplateVariableMappingField) Valid() bool {
+	switch e {
+	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany:
+		return true
+	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom:
+		return true
+	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail:
+		return true
+	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldName:
+		return true
+	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone:
 		return true
 	default:
 		return false
@@ -13220,6 +13274,35 @@ type CreateBroadcastJSONBodyPlatform string
 // GetBroadcast200JSONResponseBodyBroadcastStatus defines parameters for GetBroadcast.
 type GetBroadcast200JSONResponseBodyBroadcastStatus string
 
+// UpdateBroadcastJSONBody defines parameters for UpdateBroadcast.
+type UpdateBroadcastJSONBody struct {
+	Description *string `json:"description,omitempty"`
+
+	// Message Generic message payload (used for non-WhatsApp platforms).
+	Message *struct {
+		Text *string `json:"text,omitempty"`
+	} `json:"message,omitempty"`
+	Name *string `json:"name,omitempty"`
+
+	// SegmentFilters Recipient segment filters (tags, channels, subscription state).
+	SegmentFilters *map[string]interface{} `json:"segmentFilters,omitempty"`
+
+	// Template WhatsApp template payload (used when platform is `whatsapp`).
+	Template *struct {
+		Language *string `json:"language,omitempty"`
+		Name     *string `json:"name,omitempty"`
+
+		// VariableMapping Maps template variable positions to contact fields. Keys are position strings ("1", "2"); values are { field, customValue }.
+		VariableMapping *map[string]struct {
+			CustomValue *string                                              `json:"customValue,omitempty"`
+			Field       *UpdateBroadcastJSONBodyTemplateVariableMappingField `json:"field,omitempty"`
+		} `json:"variableMapping,omitempty"`
+	} `json:"template,omitempty"`
+}
+
+// UpdateBroadcastJSONBodyTemplateVariableMappingField defines parameters for UpdateBroadcast.
+type UpdateBroadcastJSONBodyTemplateVariableMappingField string
+
 // ListBroadcastRecipientsParams defines parameters for ListBroadcastRecipients.
 type ListBroadcastRecipientsParams struct {
 	Status *ListBroadcastRecipientsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
@@ -15142,6 +15225,34 @@ type CreateSequenceJSONBodyStepsTemplateVariableMappingField string
 // GetSequence200JSONResponseBodySequenceStatus defines parameters for GetSequence.
 type GetSequence200JSONResponseBodySequenceStatus string
 
+// UpdateSequenceJSONBody defines parameters for UpdateSequence.
+type UpdateSequenceJSONBody struct {
+	Description       *string `json:"description,omitempty"`
+	ExitOnReply       *bool   `json:"exitOnReply,omitempty"`
+	ExitOnUnsubscribe *bool   `json:"exitOnUnsubscribe,omitempty"`
+	Name              *string `json:"name,omitempty"`
+
+	// Steps Replace the full step list. Only allowed while the sequence is draft or paused.
+	Steps *[]struct {
+		DelayMinutes int `json:"delayMinutes"`
+		Message      *struct {
+			Text *string `json:"text,omitempty"`
+		} `json:"message,omitempty"`
+		Order    int `json:"order"`
+		Template *struct {
+			Language        *string `json:"language,omitempty"`
+			Name            *string `json:"name,omitempty"`
+			VariableMapping *map[string]struct {
+				CustomValue *string                                                  `json:"customValue,omitempty"`
+				Field       *UpdateSequenceJSONBodyStepsTemplateVariableMappingField `json:"field,omitempty"`
+			} `json:"variableMapping,omitempty"`
+		} `json:"template,omitempty"`
+	} `json:"steps,omitempty"`
+}
+
+// UpdateSequenceJSONBodyStepsTemplateVariableMappingField defines parameters for UpdateSequence.
+type UpdateSequenceJSONBodyStepsTemplateVariableMappingField string
+
 // EnrollContactsJSONBody defines parameters for EnrollContacts.
 type EnrollContactsJSONBody struct {
 	// ChannelIds Optional. Auto-detected if not provided.
@@ -16049,6 +16160,9 @@ type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody CreateBroadcastJSONBody
 
+// UpdateBroadcastJSONRequestBody defines body for UpdateBroadcast for application/json ContentType.
+type UpdateBroadcastJSONRequestBody UpdateBroadcastJSONBody
+
 // AddBroadcastRecipientsJSONRequestBody defines body for AddBroadcastRecipients for application/json ContentType.
 type AddBroadcastRecipientsJSONRequestBody AddBroadcastRecipientsJSONBody
 
@@ -16195,6 +16309,9 @@ type UpdateQueueSlotJSONRequestBody UpdateQueueSlotJSONBody
 
 // CreateSequenceJSONRequestBody defines body for CreateSequence for application/json ContentType.
 type CreateSequenceJSONRequestBody CreateSequenceJSONBody
+
+// UpdateSequenceJSONRequestBody defines body for UpdateSequence for application/json ContentType.
+type UpdateSequenceJSONRequestBody UpdateSequenceJSONBody
 
 // EnrollContactsJSONRequestBody defines body for EnrollContacts for application/json ContentType.
 type EnrollContactsJSONRequestBody EnrollContactsJSONBody
@@ -19334,8 +19451,10 @@ type ClientInterface interface {
 	// GetBroadcast request
 	GetBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateBroadcast request
-	UpdateBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// UpdateBroadcastWithBody request with any body
+	UpdateBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateBroadcast(ctx context.Context, broadcastId string, body UpdateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CancelBroadcast request
 	CancelBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -19727,8 +19846,10 @@ type ClientInterface interface {
 	// GetSequence request
 	GetSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateSequence request
-	UpdateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// UpdateSequenceWithBody request with any body
+	UpdateSequenceWithBody(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSequence(ctx context.Context, sequenceId string, body UpdateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ActivateSequence request
 	ActivateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -22100,8 +22221,20 @@ func (c *Client) GetBroadcast(ctx context.Context, broadcastId string, reqEditor
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateBroadcast(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateBroadcastRequest(c.Server, broadcastId)
+func (c *Client) UpdateBroadcastWithBody(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateBroadcastRequestWithBody(c.Server, broadcastId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateBroadcast(ctx context.Context, broadcastId string, body UpdateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateBroadcastRequest(c.Server, broadcastId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -23852,8 +23985,20 @@ func (c *Client) GetSequence(ctx context.Context, sequenceId string, reqEditors 
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSequenceRequest(c.Server, sequenceId)
+func (c *Client) UpdateSequenceWithBody(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSequenceRequestWithBody(c.Server, sequenceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSequence(ctx context.Context, sequenceId string, body UpdateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSequenceRequest(c.Server, sequenceId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -33186,8 +33331,19 @@ func NewGetBroadcastRequest(server string, broadcastId string) (*http.Request, e
 	return req, nil
 }
 
-// NewUpdateBroadcastRequest generates requests for UpdateBroadcast
-func NewUpdateBroadcastRequest(server string, broadcastId string) (*http.Request, error) {
+// NewUpdateBroadcastRequest calls the generic UpdateBroadcast builder with application/json body
+func NewUpdateBroadcastRequest(server string, broadcastId string, body UpdateBroadcastJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateBroadcastRequestWithBody(server, broadcastId, "application/json", bodyReader)
+}
+
+// NewUpdateBroadcastRequestWithBody generates requests for UpdateBroadcast with any type of body
+func NewUpdateBroadcastRequestWithBody(server string, broadcastId string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -33212,10 +33368,12 @@ func NewUpdateBroadcastRequest(server string, broadcastId string) (*http.Request
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -39055,8 +39213,19 @@ func NewGetSequenceRequest(server string, sequenceId string) (*http.Request, err
 	return req, nil
 }
 
-// NewUpdateSequenceRequest generates requests for UpdateSequence
-func NewUpdateSequenceRequest(server string, sequenceId string) (*http.Request, error) {
+// NewUpdateSequenceRequest calls the generic UpdateSequence builder with application/json body
+func NewUpdateSequenceRequest(server string, sequenceId string, body UpdateSequenceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSequenceRequestWithBody(server, sequenceId, "application/json", bodyReader)
+}
+
+// NewUpdateSequenceRequestWithBody generates requests for UpdateSequence with any type of body
+func NewUpdateSequenceRequestWithBody(server string, sequenceId string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -39081,10 +39250,12 @@ func NewUpdateSequenceRequest(server string, sequenceId string) (*http.Request, 
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -42490,8 +42661,10 @@ type ClientWithResponsesInterface interface {
 	// GetBroadcastWithResponse request
 	GetBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*GetBroadcastResponse, error)
 
-	// UpdateBroadcastWithResponse request
-	UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error)
+	// UpdateBroadcastWithBodyWithResponse request with any body
+	UpdateBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error)
+
+	UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, body UpdateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error)
 
 	// CancelBroadcastWithResponse request
 	CancelBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*CancelBroadcastResponse, error)
@@ -42883,8 +43056,10 @@ type ClientWithResponsesInterface interface {
 	// GetSequenceWithResponse request
 	GetSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*GetSequenceResponse, error)
 
-	// UpdateSequenceWithResponse request
-	UpdateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error)
+	// UpdateSequenceWithBodyWithResponse request with any body
+	UpdateSequenceWithBodyWithResponse(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error)
+
+	UpdateSequenceWithResponse(ctx context.Context, sequenceId string, body UpdateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error)
 
 	// ActivateSequenceWithResponse request
 	ActivateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*ActivateSequenceResponse, error)
@@ -57285,9 +57460,17 @@ func (c *ClientWithResponses) GetBroadcastWithResponse(ctx context.Context, broa
 	return ParseGetBroadcastResponse(rsp)
 }
 
-// UpdateBroadcastWithResponse request returning *UpdateBroadcastResponse
-func (c *ClientWithResponses) UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error) {
-	rsp, err := c.UpdateBroadcast(ctx, broadcastId, reqEditors...)
+// UpdateBroadcastWithBodyWithResponse request with arbitrary body returning *UpdateBroadcastResponse
+func (c *ClientWithResponses) UpdateBroadcastWithBodyWithResponse(ctx context.Context, broadcastId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error) {
+	rsp, err := c.UpdateBroadcastWithBody(ctx, broadcastId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateBroadcastResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateBroadcastWithResponse(ctx context.Context, broadcastId string, body UpdateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateBroadcastResponse, error) {
+	rsp, err := c.UpdateBroadcast(ctx, broadcastId, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -58554,9 +58737,17 @@ func (c *ClientWithResponses) GetSequenceWithResponse(ctx context.Context, seque
 	return ParseGetSequenceResponse(rsp)
 }
 
-// UpdateSequenceWithResponse request returning *UpdateSequenceResponse
-func (c *ClientWithResponses) UpdateSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error) {
-	rsp, err := c.UpdateSequence(ctx, sequenceId, reqEditors...)
+// UpdateSequenceWithBodyWithResponse request with arbitrary body returning *UpdateSequenceResponse
+func (c *ClientWithResponses) UpdateSequenceWithBodyWithResponse(ctx context.Context, sequenceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error) {
+	rsp, err := c.UpdateSequenceWithBody(ctx, sequenceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSequenceResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSequenceWithResponse(ctx context.Context, sequenceId string, body UpdateSequenceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSequenceResponse, error) {
+	rsp, err := c.UpdateSequence(ctx, sequenceId, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
