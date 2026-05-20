@@ -8817,6 +8817,50 @@ type BlueskyPlatformData struct {
 	} `json:"threadItems,omitempty"`
 }
 
+// BulkUploadResult Result of a CSV bulk upload. The same shape is returned for `200` (all rows
+// succeeded or all failed) and `207` (mixed). Per-row outcomes live in `results`;
+// the row's success is `ok`, and failures carry machine-readable codes in `errors`.
+type BulkUploadResult struct {
+	// Invalid Count of rows that failed (total - valid)
+	Invalid *int `json:"invalid,omitempty"`
+
+	// RateLimitedAccounts Present only when one or more rows targeted an account currently in cooldown.
+	// Lets callers map `rate_limited:*` row errors back to structured metadata without
+	// parsing the error strings.
+	RateLimitedAccounts *[]struct {
+		AccountId        *string    `json:"accountId,omitempty"`
+		Platform         *string    `json:"platform,omitempty"`
+		RateLimitedUntil *time.Time `json:"rateLimitedUntil,omitempty"`
+		Username         *string    `json:"username,omitempty"`
+	} `json:"rateLimitedAccounts,omitempty"`
+
+	// Results One entry per CSV data row, in row order.
+	Results *[]struct {
+		// CreatedPostId ID of the created post. Present only when `ok` is true and not a dry run.
+		CreatedPostId *string `json:"createdPostId,omitempty"`
+
+		// Errors Machine-readable failure codes for this row. Present only when `ok` is false.
+		// Examples: `unknown_profile:<id>`, `no_account_for_platform:<platform>`,
+		// `schedule_time_missing`, `rate_limited:<platform>:@<username>:<remaining>`.
+		Errors *[]string `json:"errors,omitempty"`
+
+		// Ok Whether the row was created successfully
+		Ok *bool `json:"ok,omitempty"`
+
+		// RowIndex 1-based index of the CSV data row (header excluded)
+		RowIndex *int `json:"rowIndex,omitempty"`
+	} `json:"results,omitempty"`
+
+	// Total Number of data rows processed from the CSV
+	Total *int `json:"total,omitempty"`
+
+	// Valid Count of rows that succeeded (results[].ok === true)
+	Valid *int `json:"valid,omitempty"`
+
+	// Warnings Top-level advisory warnings (e.g. `rows_exceed_advisory_limit:500`). Empty when none.
+	Warnings *[]string `json:"warnings,omitempty"`
+}
+
 // BusinessCenter TikTok Business Center entity. Returned by `GET /v1/ads/business-centers`. BCs are
 // TikTok's agency container — one BC owns N advertisers (ad accounts). Most solo
 // advertisers don't have one; the agency token uses BCs to roll up multi-client access.
@@ -52704,19 +52748,10 @@ func (r CreatePostResponse) ContentType() string {
 type BulkUploadPostsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Created *int `json:"created,omitempty"`
-		Errors  *[]struct {
-			Error *string `json:"error,omitempty"`
-			Row   *int    `json:"row,omitempty"`
-		} `json:"errors,omitempty"`
-		Failed    *int    `json:"failed,omitempty"`
-		Posts     *[]Post `json:"posts,omitempty"`
-		Success   *bool   `json:"success,omitempty"`
-		TotalRows *int    `json:"totalRows,omitempty"`
-	}
-	JSON401 *Unauthorized
-	JSON429 *struct {
+	JSON200      *BulkUploadResult
+	JSON207      *BulkUploadResult
+	JSON401      *Unauthorized
+	JSON429      *struct {
 		Details *map[string]interface{} `json:"details,omitempty"`
 		Error   *string                 `json:"error,omitempty"`
 	}
@@ -70080,21 +70115,18 @@ func ParseBulkUploadPostsResponse(rsp *http.Response) (*BulkUploadPostsResponse,
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Created *int `json:"created,omitempty"`
-			Errors  *[]struct {
-				Error *string `json:"error,omitempty"`
-				Row   *int    `json:"row,omitempty"`
-			} `json:"errors,omitempty"`
-			Failed    *int    `json:"failed,omitempty"`
-			Posts     *[]Post `json:"posts,omitempty"`
-			Success   *bool   `json:"success,omitempty"`
-			TotalRows *int    `json:"totalRows,omitempty"`
-		}
+		var dest BulkUploadResult
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 207:
+		var dest BulkUploadResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON207 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
