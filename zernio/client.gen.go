@@ -14703,6 +14703,12 @@ type AddMessageReactionJSONBody struct {
 	Emoji string `json:"emoji"`
 }
 
+// MarkConversationReadJSONBody defines parameters for MarkConversationRead.
+type MarkConversationReadJSONBody struct {
+	// AccountId Social account ID
+	AccountId string `json:"accountId"`
+}
+
 // SendTypingIndicatorJSONBody defines parameters for SendTypingIndicator.
 type SendTypingIndicatorJSONBody struct {
 	// AccountId Social account ID
@@ -16312,6 +16318,9 @@ type EditInboxMessageJSONRequestBody EditInboxMessageJSONBody
 
 // AddMessageReactionJSONRequestBody defines body for AddMessageReaction for application/json ContentType.
 type AddMessageReactionJSONRequestBody AddMessageReactionJSONBody
+
+// MarkConversationReadJSONRequestBody defines body for MarkConversationRead for application/json ContentType.
+type MarkConversationReadJSONRequestBody MarkConversationReadJSONBody
 
 // SendTypingIndicatorJSONRequestBody defines body for SendTypingIndicator for application/json ContentType.
 type SendTypingIndicatorJSONRequestBody SendTypingIndicatorJSONBody
@@ -19764,6 +19773,11 @@ type ClientInterface interface {
 	AddMessageReactionWithBody(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	AddMessageReaction(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MarkConversationReadWithBody request with any body
+	MarkConversationReadWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	MarkConversationRead(ctx context.Context, conversationId string, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SendTypingIndicatorWithBody request with any body
 	SendTypingIndicatorWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -23429,6 +23443,30 @@ func (c *Client) AddMessageReactionWithBody(ctx context.Context, conversationId 
 
 func (c *Client) AddMessageReaction(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddMessageReactionRequest(c.Server, conversationId, messageId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MarkConversationReadWithBody(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMarkConversationReadRequestWithBody(c.Server, conversationId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) MarkConversationRead(ctx context.Context, conversationId string, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewMarkConversationReadRequest(c.Server, conversationId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -37147,6 +37185,53 @@ func NewAddMessageReactionRequestWithBody(server string, conversationId string, 
 	return req, nil
 }
 
+// NewMarkConversationReadRequest calls the generic MarkConversationRead builder with application/json body
+func NewMarkConversationReadRequest(server string, conversationId string, body MarkConversationReadJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewMarkConversationReadRequestWithBody(server, conversationId, "application/json", bodyReader)
+}
+
+// NewMarkConversationReadRequestWithBody generates requests for MarkConversationRead with any type of body
+func NewMarkConversationReadRequestWithBody(server string, conversationId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inbox/conversations/%s/read", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewSendTypingIndicatorRequest calls the generic SendTypingIndicator builder with application/json body
 func NewSendTypingIndicatorRequest(server string, conversationId string, body SendTypingIndicatorJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -43001,6 +43086,11 @@ type ClientWithResponsesInterface interface {
 	AddMessageReactionWithBodyWithResponse(ctx context.Context, conversationId string, messageId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error)
 
 	AddMessageReactionWithResponse(ctx context.Context, conversationId string, messageId string, body AddMessageReactionJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMessageReactionResponse, error)
+
+	// MarkConversationReadWithBodyWithResponse request with any body
+	MarkConversationReadWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MarkConversationReadResponse, error)
+
+	MarkConversationReadWithResponse(ctx context.Context, conversationId string, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*MarkConversationReadResponse, error)
 
 	// SendTypingIndicatorWithBodyWithResponse request with any body
 	SendTypingIndicatorWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendTypingIndicatorResponse, error)
@@ -52284,6 +52374,41 @@ func (r AddMessageReactionResponse) ContentType() string {
 	return ""
 }
 
+type MarkConversationReadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// MarkedCount Number of messages marked read by this call
+		MarkedCount *int  `json:"markedCount,omitempty"`
+		Success     *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r MarkConversationReadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MarkConversationReadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r MarkConversationReadResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SendTypingIndicatorResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -58372,6 +58497,23 @@ func (c *ClientWithResponses) AddMessageReactionWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseAddMessageReactionResponse(rsp)
+}
+
+// MarkConversationReadWithBodyWithResponse request with arbitrary body returning *MarkConversationReadResponse
+func (c *ClientWithResponses) MarkConversationReadWithBodyWithResponse(ctx context.Context, conversationId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MarkConversationReadResponse, error) {
+	rsp, err := c.MarkConversationReadWithBody(ctx, conversationId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMarkConversationReadResponse(rsp)
+}
+
+func (c *ClientWithResponses) MarkConversationReadWithResponse(ctx context.Context, conversationId string, body MarkConversationReadJSONRequestBody, reqEditors ...RequestEditorFn) (*MarkConversationReadResponse, error) {
+	rsp, err := c.MarkConversationRead(ctx, conversationId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMarkConversationReadResponse(rsp)
 }
 
 // SendTypingIndicatorWithBodyWithResponse request with arbitrary body returning *SendTypingIndicatorResponse
@@ -69571,6 +69713,43 @@ func ParseAddMessageReactionResponse(rsp *http.Response) (*AddMessageReactionRes
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMarkConversationReadResponse parses an HTTP response from a MarkConversationReadWithResponse call
+func ParseMarkConversationReadResponse(rsp *http.Response) (*MarkConversationReadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MarkConversationReadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// MarkedCount Number of messages marked read by this call
+			MarkedCount *int  `json:"markedCount,omitempty"`
+			Success     *bool `json:"success,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
