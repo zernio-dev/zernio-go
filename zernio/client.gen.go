@@ -3203,11 +3203,16 @@ func (e UpdateAdSetStatusJSONBodyStatus) Valid() bool {
 
 // Defines values for ListAdAudiencesParamsPlatform.
 const (
-	ListAdAudiencesParamsPlatformFacebook  ListAdAudiencesParamsPlatform = "facebook"
-	ListAdAudiencesParamsPlatformGoogleads ListAdAudiencesParamsPlatform = "googleads"
-	ListAdAudiencesParamsPlatformInstagram ListAdAudiencesParamsPlatform = "instagram"
-	ListAdAudiencesParamsPlatformPinterest ListAdAudiencesParamsPlatform = "pinterest"
-	ListAdAudiencesParamsPlatformTiktok    ListAdAudiencesParamsPlatform = "tiktok"
+	ListAdAudiencesParamsPlatformFacebook    ListAdAudiencesParamsPlatform = "facebook"
+	ListAdAudiencesParamsPlatformGoogleads   ListAdAudiencesParamsPlatform = "googleads"
+	ListAdAudiencesParamsPlatformInstagram   ListAdAudiencesParamsPlatform = "instagram"
+	ListAdAudiencesParamsPlatformLinkedin    ListAdAudiencesParamsPlatform = "linkedin"
+	ListAdAudiencesParamsPlatformLinkedinads ListAdAudiencesParamsPlatform = "linkedinads"
+	ListAdAudiencesParamsPlatformPinterest   ListAdAudiencesParamsPlatform = "pinterest"
+	ListAdAudiencesParamsPlatformTiktok      ListAdAudiencesParamsPlatform = "tiktok"
+	ListAdAudiencesParamsPlatformTiktokads   ListAdAudiencesParamsPlatform = "tiktokads"
+	ListAdAudiencesParamsPlatformTwitter     ListAdAudiencesParamsPlatform = "twitter"
+	ListAdAudiencesParamsPlatformXads        ListAdAudiencesParamsPlatform = "xads"
 )
 
 // Valid indicates whether the value is a known member of the ListAdAudiencesParamsPlatform enum.
@@ -3219,9 +3224,19 @@ func (e ListAdAudiencesParamsPlatform) Valid() bool {
 		return true
 	case ListAdAudiencesParamsPlatformInstagram:
 		return true
+	case ListAdAudiencesParamsPlatformLinkedin:
+		return true
+	case ListAdAudiencesParamsPlatformLinkedinads:
+		return true
 	case ListAdAudiencesParamsPlatformPinterest:
 		return true
 	case ListAdAudiencesParamsPlatformTiktok:
+		return true
+	case ListAdAudiencesParamsPlatformTiktokads:
+		return true
+	case ListAdAudiencesParamsPlatformTwitter:
+		return true
+	case ListAdAudiencesParamsPlatformXads:
 		return true
 	default:
 		return false
@@ -7013,13 +7028,13 @@ func (e UnpublishPostJSONBodyPlatform) Valid() bool {
 
 // Defines values for UpdatePostMetadataJSONBodyPlatform.
 const (
-	UpdatePostMetadataJSONBodyPlatformYoutube UpdatePostMetadataJSONBodyPlatform = "youtube"
+	Youtube UpdatePostMetadataJSONBodyPlatform = "youtube"
 )
 
 // Valid indicates whether the value is a known member of the UpdatePostMetadataJSONBodyPlatform enum.
 func (e UpdatePostMetadataJSONBodyPlatform) Valid() bool {
 	switch e {
-	case UpdatePostMetadataJSONBodyPlatformYoutube:
+	case Youtube:
 		return true
 	default:
 		return false
@@ -7241,31 +7256,31 @@ func (e ListSequences200JSONResponseBodySequencesStatus) Valid() bool {
 
 // Defines values for CreateSequenceJSONBodyPlatform.
 const (
-	Bluesky   CreateSequenceJSONBodyPlatform = "bluesky"
-	Facebook  CreateSequenceJSONBodyPlatform = "facebook"
-	Instagram CreateSequenceJSONBodyPlatform = "instagram"
-	Reddit    CreateSequenceJSONBodyPlatform = "reddit"
-	Telegram  CreateSequenceJSONBodyPlatform = "telegram"
-	Twitter   CreateSequenceJSONBodyPlatform = "twitter"
-	Whatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
+	CreateSequenceJSONBodyPlatformBluesky   CreateSequenceJSONBodyPlatform = "bluesky"
+	CreateSequenceJSONBodyPlatformFacebook  CreateSequenceJSONBodyPlatform = "facebook"
+	CreateSequenceJSONBodyPlatformInstagram CreateSequenceJSONBodyPlatform = "instagram"
+	CreateSequenceJSONBodyPlatformReddit    CreateSequenceJSONBodyPlatform = "reddit"
+	CreateSequenceJSONBodyPlatformTelegram  CreateSequenceJSONBodyPlatform = "telegram"
+	CreateSequenceJSONBodyPlatformTwitter   CreateSequenceJSONBodyPlatform = "twitter"
+	CreateSequenceJSONBodyPlatformWhatsapp  CreateSequenceJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateSequenceJSONBodyPlatform enum.
 func (e CreateSequenceJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateSequenceJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateSequenceJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateSequenceJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateSequenceJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateSequenceJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateSequenceJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateSequenceJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
