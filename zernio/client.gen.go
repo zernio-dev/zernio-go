@@ -5055,6 +5055,33 @@ func (e CreateBroadcastJSONBodyPlatform) Valid() bool {
 	}
 }
 
+// Defines values for CreateBroadcastJSONBodyTemplateVariableMappingField.
+const (
+	CreateBroadcastJSONBodyTemplateVariableMappingFieldCompany CreateBroadcastJSONBodyTemplateVariableMappingField = "company"
+	CreateBroadcastJSONBodyTemplateVariableMappingFieldCustom  CreateBroadcastJSONBodyTemplateVariableMappingField = "custom"
+	CreateBroadcastJSONBodyTemplateVariableMappingFieldEmail   CreateBroadcastJSONBodyTemplateVariableMappingField = "email"
+	CreateBroadcastJSONBodyTemplateVariableMappingFieldName    CreateBroadcastJSONBodyTemplateVariableMappingField = "name"
+	CreateBroadcastJSONBodyTemplateVariableMappingFieldPhone   CreateBroadcastJSONBodyTemplateVariableMappingField = "phone"
+)
+
+// Valid indicates whether the value is a known member of the CreateBroadcastJSONBodyTemplateVariableMappingField enum.
+func (e CreateBroadcastJSONBodyTemplateVariableMappingField) Valid() bool {
+	switch e {
+	case CreateBroadcastJSONBodyTemplateVariableMappingFieldCompany:
+		return true
+	case CreateBroadcastJSONBodyTemplateVariableMappingFieldCustom:
+		return true
+	case CreateBroadcastJSONBodyTemplateVariableMappingFieldEmail:
+		return true
+	case CreateBroadcastJSONBodyTemplateVariableMappingFieldName:
+		return true
+	case CreateBroadcastJSONBodyTemplateVariableMappingFieldPhone:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetBroadcast200JSONResponseBodyBroadcastStatus.
 const (
 	GetBroadcast200JSONResponseBodyBroadcastStatusCancelled GetBroadcast200JSONResponseBodyBroadcastStatus = "cancelled"
@@ -7553,25 +7580,25 @@ func (e GetSequence200JSONResponseBodySequenceStatus) Valid() bool {
 
 // Defines values for UpdateSequenceJSONBodyStepsTemplateVariableMappingField.
 const (
-	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
-	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom  UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
-	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
-	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldName    UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
-	UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
+	Company UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "company"
+	Custom  UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "custom"
+	Email   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "email"
+	Name    UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "name"
+	Phone   UpdateSequenceJSONBodyStepsTemplateVariableMappingField = "phone"
 )
 
 // Valid indicates whether the value is a known member of the UpdateSequenceJSONBodyStepsTemplateVariableMappingField enum.
 func (e UpdateSequenceJSONBodyStepsTemplateVariableMappingField) Valid() bool {
 	switch e {
-	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCompany:
+	case Company:
 		return true
-	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldCustom:
+	case Custom:
 		return true
-	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldEmail:
+	case Email:
 		return true
-	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldName:
+	case Name:
 		return true
-	case UpdateSequenceJSONBodyStepsTemplateVariableMappingFieldPhone:
+	case Phone:
 		return true
 	default:
 		return false
@@ -13626,11 +13653,21 @@ type CreateBroadcastJSONBody struct {
 		Components *[]interface{} `json:"components,omitempty"`
 		Language   *string        `json:"language,omitempty"`
 		Name       *string        `json:"name,omitempty"`
+
+		// VariableMapping Maps template variable positions ("1", "2") to contact fields or static values. Resolved per recipient at send time.
+		VariableMapping *map[string]struct {
+			// CustomValue Static value used when field is "custom"
+			CustomValue *string                                              `json:"customValue,omitempty"`
+			Field       *CreateBroadcastJSONBodyTemplateVariableMappingField `json:"field,omitempty"`
+		} `json:"variableMapping,omitempty"`
 	} `json:"template,omitempty"`
 }
 
 // CreateBroadcastJSONBodyPlatform defines parameters for CreateBroadcast.
 type CreateBroadcastJSONBodyPlatform string
+
+// CreateBroadcastJSONBodyTemplateVariableMappingField defines parameters for CreateBroadcast.
+type CreateBroadcastJSONBodyTemplateVariableMappingField string
 
 // GetBroadcast200JSONResponseBodyBroadcastStatus defines parameters for GetBroadcast.
 type GetBroadcast200JSONResponseBodyBroadcastStatus string
