@@ -1540,6 +1540,7 @@ const (
 	WebhookEventsPostPublished                  WebhookEvents = "post.published"
 	WebhookEventsPostRecycled                   WebhookEvents = "post.recycled"
 	WebhookEventsPostScheduled                  WebhookEvents = "post.scheduled"
+	WebhookEventsReactionReceived               WebhookEvents = "reaction.received"
 	WebhookEventsReviewNew                      WebhookEvents = "review.new"
 	WebhookEventsReviewUpdated                  WebhookEvents = "review.updated"
 	WebhookEventsWhatsappTemplateStatusUpdated  WebhookEvents = "whatsapp.template.status_updated"
@@ -1587,6 +1588,8 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsPostRecycled:
 		return true
 	case WebhookEventsPostScheduled:
+		return true
+	case WebhookEventsReactionReceived:
 		return true
 	case WebhookEventsReviewNew:
 		return true
@@ -7564,6 +7567,7 @@ const (
 	CreateWebhookSettingsJSONBodyEventsPostPublished                  CreateWebhookSettingsJSONBodyEvents = "post.published"
 	CreateWebhookSettingsJSONBodyEventsPostRecycled                   CreateWebhookSettingsJSONBodyEvents = "post.recycled"
 	CreateWebhookSettingsJSONBodyEventsPostScheduled                  CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	CreateWebhookSettingsJSONBodyEventsReactionReceived               CreateWebhookSettingsJSONBodyEvents = "reaction.received"
 	CreateWebhookSettingsJSONBodyEventsReviewNew                      CreateWebhookSettingsJSONBodyEvents = "review.new"
 	CreateWebhookSettingsJSONBodyEventsReviewUpdated                  CreateWebhookSettingsJSONBodyEvents = "review.updated"
 	CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated  CreateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
@@ -7612,6 +7616,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostScheduled:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsReactionReceived:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsReviewNew:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsReviewUpdated:
@@ -7645,6 +7651,7 @@ const (
 	PostPublished                  UpdateWebhookSettingsJSONBodyEvents = "post.published"
 	PostRecycled                   UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
 	PostScheduled                  UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	ReactionReceived               UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
 	ReviewNew                      UpdateWebhookSettingsJSONBodyEvents = "review.new"
 	ReviewUpdated                  UpdateWebhookSettingsJSONBodyEvents = "review.updated"
 	WhatsappTemplateStatusUpdated  UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
@@ -7692,6 +7699,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case PostRecycled:
 		return true
 	case PostScheduled:
+		return true
+	case ReactionReceived:
 		return true
 	case ReviewNew:
 		return true
