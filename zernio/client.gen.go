@@ -2550,6 +2550,219 @@ func (e GetGoogleBusinessReviews200JSONResponseBodyReviewsStarRating) Valid() bo
 	}
 }
 
+// Defines values for GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod.
+const (
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodADDRESS       GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "ADDRESS"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodAUTO          GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "AUTO"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodEMAIL         GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "EMAIL"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodPHONECALL     GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "PHONE_CALL"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodSMS           GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "SMS"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodVETTEDPARTNER GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod = "VETTED_PARTNER"
+)
+
+// Valid indicates whether the value is a known member of the GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod enum.
+func (e GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod) Valid() bool {
+	switch e {
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodADDRESS:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodAUTO:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodEMAIL:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodPHONECALL:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodSMS:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethodVETTEDPARTNER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState.
+const (
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStateCOMPLETED GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState = "COMPLETED"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStateFAILED    GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState = "FAILED"
+	GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStatePENDING   GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState = "PENDING"
+)
+
+// Valid indicates whether the value is a known member of the GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState enum.
+func (e GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState) Valid() bool {
+	switch e {
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStateCOMPLETED:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStateFAILED:
+		return true
+	case GetGoogleBusinessVerifications200JSONResponseBodyVerificationsStatePENDING:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StartGoogleBusinessVerificationJSONBodyMethod.
+const (
+	StartGoogleBusinessVerificationJSONBodyMethodADDRESS       StartGoogleBusinessVerificationJSONBodyMethod = "ADDRESS"
+	StartGoogleBusinessVerificationJSONBodyMethodAUTO          StartGoogleBusinessVerificationJSONBodyMethod = "AUTO"
+	StartGoogleBusinessVerificationJSONBodyMethodEMAIL         StartGoogleBusinessVerificationJSONBodyMethod = "EMAIL"
+	StartGoogleBusinessVerificationJSONBodyMethodPHONECALL     StartGoogleBusinessVerificationJSONBodyMethod = "PHONE_CALL"
+	StartGoogleBusinessVerificationJSONBodyMethodSMS           StartGoogleBusinessVerificationJSONBodyMethod = "SMS"
+	StartGoogleBusinessVerificationJSONBodyMethodVETTEDPARTNER StartGoogleBusinessVerificationJSONBodyMethod = "VETTED_PARTNER"
+)
+
+// Valid indicates whether the value is a known member of the StartGoogleBusinessVerificationJSONBodyMethod enum.
+func (e StartGoogleBusinessVerificationJSONBodyMethod) Valid() bool {
+	switch e {
+	case StartGoogleBusinessVerificationJSONBodyMethodADDRESS:
+		return true
+	case StartGoogleBusinessVerificationJSONBodyMethodAUTO:
+		return true
+	case StartGoogleBusinessVerificationJSONBodyMethodEMAIL:
+		return true
+	case StartGoogleBusinessVerificationJSONBodyMethodPHONECALL:
+		return true
+	case StartGoogleBusinessVerificationJSONBodyMethodSMS:
+		return true
+	case StartGoogleBusinessVerificationJSONBodyMethodVETTEDPARTNER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod.
+const (
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodADDRESS       StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "ADDRESS"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodAUTO          StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "AUTO"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodEMAIL         StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "EMAIL"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodPHONECALL     StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "PHONE_CALL"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodSMS           StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "SMS"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodVETTEDPARTNER StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "VETTED_PARTNER"
+)
+
+// Valid indicates whether the value is a known member of the StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod enum.
+func (e StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod) Valid() bool {
+	switch e {
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodADDRESS:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodAUTO:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodEMAIL:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodPHONECALL:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodSMS:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationMethodVETTEDPARTNER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StartGoogleBusinessVerification200JSONResponseBodyVerificationState.
+const (
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationStateCOMPLETED StartGoogleBusinessVerification200JSONResponseBodyVerificationState = "COMPLETED"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationStateFAILED    StartGoogleBusinessVerification200JSONResponseBodyVerificationState = "FAILED"
+	StartGoogleBusinessVerification200JSONResponseBodyVerificationStatePENDING   StartGoogleBusinessVerification200JSONResponseBodyVerificationState = "PENDING"
+)
+
+// Valid indicates whether the value is a known member of the StartGoogleBusinessVerification200JSONResponseBodyVerificationState enum.
+func (e StartGoogleBusinessVerification200JSONResponseBodyVerificationState) Valid() bool {
+	switch e {
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationStateCOMPLETED:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationStateFAILED:
+		return true
+	case StartGoogleBusinessVerification200JSONResponseBodyVerificationStatePENDING:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod.
+const (
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodADDRESS       FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "ADDRESS"
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodAUTO          FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "AUTO"
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodEMAIL         FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "EMAIL"
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodPHONECALL     FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "PHONE_CALL"
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodSMS           FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "SMS"
+	FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodVETTEDPARTNER FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod = "VETTED_PARTNER"
+)
+
+// Valid indicates whether the value is a known member of the FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod enum.
+func (e FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod) Valid() bool {
+	switch e {
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodADDRESS:
+		return true
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodAUTO:
+		return true
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodEMAIL:
+		return true
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodPHONECALL:
+		return true
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodSMS:
+		return true
+	case FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethodVETTEDPARTNER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod.
+const (
+	ADDRESS       CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "ADDRESS"
+	AUTO          CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "AUTO"
+	EMAIL         CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "EMAIL"
+	PHONECALL     CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "PHONE_CALL"
+	SMS           CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "SMS"
+	VETTEDPARTNER CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod = "VETTED_PARTNER"
+)
+
+// Valid indicates whether the value is a known member of the CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod enum.
+func (e CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod) Valid() bool {
+	switch e {
+	case ADDRESS:
+		return true
+	case AUTO:
+		return true
+	case EMAIL:
+		return true
+	case PHONECALL:
+		return true
+	case SMS:
+		return true
+	case VETTEDPARTNER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState.
+const (
+	CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStateCOMPLETED CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState = "COMPLETED"
+	CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStateFAILED    CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState = "FAILED"
+	CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStatePENDING   CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState = "PENDING"
+)
+
+// Valid indicates whether the value is a known member of the CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState enum.
+func (e CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState) Valid() bool {
+	switch e {
+	case CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStateCOMPLETED:
+		return true
+	case CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStateFAILED:
+		return true
+	case CompleteGoogleBusinessVerification200JSONResponseBodyVerificationStatePENDING:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAccountHealth200JSONResponseBodyStatus.
 const (
 	Error   GetAccountHealth200JSONResponseBodyStatus = "error"
@@ -8036,19 +8249,19 @@ func (e GetWhatsAppTemplates200JSONResponseBodyTemplatesCategory) Valid() bool {
 
 // Defines values for GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus.
 const (
-	APPROVED GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "APPROVED"
-	PENDING  GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "PENDING"
-	REJECTED GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "REJECTED"
+	GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusAPPROVED GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "APPROVED"
+	GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusPENDING  GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "PENDING"
+	GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusREJECTED GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus = "REJECTED"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus enum.
 func (e GetWhatsAppTemplates200JSONResponseBodyTemplatesStatus) Valid() bool {
 	switch e {
-	case APPROVED:
+	case GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusAPPROVED:
 		return true
-	case PENDING:
+	case GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusPENDING:
 		return true
-	case REJECTED:
+	case GetWhatsAppTemplates200JSONResponseBodyTemplatesStatusREJECTED:
 		return true
 	default:
 		return false
@@ -11488,6 +11701,86 @@ type UpdateGoogleBusinessServicesParams struct {
 	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
 }
 
+// GetGoogleBusinessVerificationsParams defines parameters for GetGoogleBusinessVerifications.
+type GetGoogleBusinessVerificationsParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
+// GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod defines parameters for GetGoogleBusinessVerifications.
+type GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod string
+
+// GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState defines parameters for GetGoogleBusinessVerifications.
+type GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState string
+
+// StartGoogleBusinessVerificationJSONBody defines parameters for StartGoogleBusinessVerification.
+type StartGoogleBusinessVerificationJSONBody struct {
+	// Context ServiceBusinessContext (e.g. service address). Required for service-area businesses.
+	Context *map[string]interface{} `json:"context,omitempty"`
+
+	// EmailAddress For EMAIL.
+	EmailAddress *string `json:"emailAddress,omitempty"`
+	LanguageCode *string `json:"languageCode,omitempty"`
+
+	// MailerContact For ADDRESS (postcard) verification.
+	MailerContact *map[string]interface{} `json:"mailerContact,omitempty"`
+
+	// Method The verification method. Selects which method-specific field below is required.
+	Method StartGoogleBusinessVerificationJSONBodyMethod `json:"method"`
+
+	// PhoneNumber For PHONE_CALL / SMS.
+	PhoneNumber *string `json:"phoneNumber,omitempty"`
+}
+
+// StartGoogleBusinessVerificationParams defines parameters for StartGoogleBusinessVerification.
+type StartGoogleBusinessVerificationParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
+// StartGoogleBusinessVerificationJSONBodyMethod defines parameters for StartGoogleBusinessVerification.
+type StartGoogleBusinessVerificationJSONBodyMethod string
+
+// StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod defines parameters for StartGoogleBusinessVerification.
+type StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod string
+
+// StartGoogleBusinessVerification200JSONResponseBodyVerificationState defines parameters for StartGoogleBusinessVerification.
+type StartGoogleBusinessVerification200JSONResponseBodyVerificationState string
+
+// FetchGoogleBusinessVerificationOptionsJSONBody defines parameters for FetchGoogleBusinessVerificationOptions.
+type FetchGoogleBusinessVerificationOptionsJSONBody struct {
+	// Context ServiceBusinessContext. Required for service-area businesses (must include the service address).
+	Context      *map[string]interface{} `json:"context,omitempty"`
+	LanguageCode string                  `json:"languageCode"`
+}
+
+// FetchGoogleBusinessVerificationOptionsParams defines parameters for FetchGoogleBusinessVerificationOptions.
+type FetchGoogleBusinessVerificationOptionsParams struct {
+	// LocationId Override which location to query. If omitted, uses the account's selected location.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
+// FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod defines parameters for FetchGoogleBusinessVerificationOptions.
+type FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod string
+
+// CompleteGoogleBusinessVerificationJSONBody defines parameters for CompleteGoogleBusinessVerification.
+type CompleteGoogleBusinessVerificationJSONBody struct {
+	// Pin The code Google sent to the business.
+	Pin string `json:"pin"`
+}
+
+// CompleteGoogleBusinessVerificationParams defines parameters for CompleteGoogleBusinessVerification.
+type CompleteGoogleBusinessVerificationParams struct {
+	// LocationId Override which location to target. If omitted, uses the account's selected location.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+}
+
+// CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod defines parameters for CompleteGoogleBusinessVerification.
+type CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod string
+
+// CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState defines parameters for CompleteGoogleBusinessVerification.
+type CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState string
+
 // GetAccountHealth200JSONResponseBodyStatus defines parameters for GetAccountHealth.
 type GetAccountHealth200JSONResponseBodyStatus string
 
@@ -11843,7 +12136,7 @@ type ListAdAudiences200JSONResponseBodyAudiencesType string
 type CreateAdAudienceJSONBody struct {
 	AccountId string `json:"accountId"`
 
-	// AdAccountId Must start with act_
+	// AdAccountId Platform ad account ID. Must start with act_ for Meta; bare platform id for others (Google customer id, X/TikTok/LinkedIn/Pinterest account id).
 	AdAccountId string `json:"adAccountId"`
 
 	// Country 2-letter code, required for lookalike audiences
@@ -16166,6 +16459,15 @@ type ReplyToGoogleBusinessReviewJSONRequestBody ReplyToGoogleBusinessReviewJSONB
 // UpdateGoogleBusinessServicesJSONRequestBody defines body for UpdateGoogleBusinessServices for application/json ContentType.
 type UpdateGoogleBusinessServicesJSONRequestBody UpdateGoogleBusinessServicesJSONBody
 
+// StartGoogleBusinessVerificationJSONRequestBody defines body for StartGoogleBusinessVerification for application/json ContentType.
+type StartGoogleBusinessVerificationJSONRequestBody StartGoogleBusinessVerificationJSONBody
+
+// FetchGoogleBusinessVerificationOptionsJSONRequestBody defines body for FetchGoogleBusinessVerificationOptions for application/json ContentType.
+type FetchGoogleBusinessVerificationOptionsJSONRequestBody FetchGoogleBusinessVerificationOptionsJSONBody
+
+// CompleteGoogleBusinessVerificationJSONRequestBody defines body for CompleteGoogleBusinessVerification for application/json ContentType.
+type CompleteGoogleBusinessVerificationJSONRequestBody CompleteGoogleBusinessVerificationJSONBody
+
 // SetInstagramIceBreakersJSONRequestBody defines body for SetInstagramIceBreakers for application/json ContentType.
 type SetInstagramIceBreakersJSONRequestBody SetInstagramIceBreakersJSONBody
 
@@ -19222,6 +19524,24 @@ type ClientInterface interface {
 
 	UpdateGoogleBusinessServices(ctx context.Context, accountId string, params *UpdateGoogleBusinessServicesParams, body UpdateGoogleBusinessServicesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetGoogleBusinessVerifications request
+	GetGoogleBusinessVerifications(ctx context.Context, accountId string, params *GetGoogleBusinessVerificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StartGoogleBusinessVerificationWithBody request with any body
+	StartGoogleBusinessVerificationWithBody(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	StartGoogleBusinessVerification(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, body StartGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FetchGoogleBusinessVerificationOptionsWithBody request with any body
+	FetchGoogleBusinessVerificationOptionsWithBody(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	FetchGoogleBusinessVerificationOptions(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, body FetchGoogleBusinessVerificationOptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CompleteGoogleBusinessVerificationWithBody request with any body
+	CompleteGoogleBusinessVerificationWithBody(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CompleteGoogleBusinessVerification(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, body CompleteGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAccountHealth request
 	GetAccountHealth(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -20935,6 +21255,90 @@ func (c *Client) UpdateGoogleBusinessServicesWithBody(ctx context.Context, accou
 
 func (c *Client) UpdateGoogleBusinessServices(ctx context.Context, accountId string, params *UpdateGoogleBusinessServicesParams, body UpdateGoogleBusinessServicesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateGoogleBusinessServicesRequest(c.Server, accountId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGoogleBusinessVerifications(ctx context.Context, accountId string, params *GetGoogleBusinessVerificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGoogleBusinessVerificationsRequest(c.Server, accountId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) StartGoogleBusinessVerificationWithBody(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartGoogleBusinessVerificationRequestWithBody(c.Server, accountId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) StartGoogleBusinessVerification(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, body StartGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStartGoogleBusinessVerificationRequest(c.Server, accountId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FetchGoogleBusinessVerificationOptionsWithBody(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFetchGoogleBusinessVerificationOptionsRequestWithBody(c.Server, accountId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FetchGoogleBusinessVerificationOptions(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, body FetchGoogleBusinessVerificationOptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFetchGoogleBusinessVerificationOptionsRequest(c.Server, accountId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CompleteGoogleBusinessVerificationWithBody(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCompleteGoogleBusinessVerificationRequestWithBody(c.Server, accountId, verificationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CompleteGoogleBusinessVerification(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, body CompleteGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCompleteGoogleBusinessVerificationRequest(c.Server, accountId, verificationId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -27884,6 +28288,296 @@ func NewUpdateGoogleBusinessServicesRequestWithBody(server string, accountId str
 	}
 
 	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetGoogleBusinessVerificationsRequest generates requests for GetGoogleBusinessVerifications
+func NewGetGoogleBusinessVerificationsRequest(server string, accountId string, params *GetGoogleBusinessVerificationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-verifications", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewStartGoogleBusinessVerificationRequest calls the generic StartGoogleBusinessVerification builder with application/json body
+func NewStartGoogleBusinessVerificationRequest(server string, accountId string, params *StartGoogleBusinessVerificationParams, body StartGoogleBusinessVerificationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewStartGoogleBusinessVerificationRequestWithBody(server, accountId, params, "application/json", bodyReader)
+}
+
+// NewStartGoogleBusinessVerificationRequestWithBody generates requests for StartGoogleBusinessVerification with any type of body
+func NewStartGoogleBusinessVerificationRequestWithBody(server string, accountId string, params *StartGoogleBusinessVerificationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-verifications", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFetchGoogleBusinessVerificationOptionsRequest calls the generic FetchGoogleBusinessVerificationOptions builder with application/json body
+func NewFetchGoogleBusinessVerificationOptionsRequest(server string, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, body FetchGoogleBusinessVerificationOptionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFetchGoogleBusinessVerificationOptionsRequestWithBody(server, accountId, params, "application/json", bodyReader)
+}
+
+// NewFetchGoogleBusinessVerificationOptionsRequestWithBody generates requests for FetchGoogleBusinessVerificationOptions with any type of body
+func NewFetchGoogleBusinessVerificationOptionsRequestWithBody(server string, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-verifications/options", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCompleteGoogleBusinessVerificationRequest calls the generic CompleteGoogleBusinessVerification builder with application/json body
+func NewCompleteGoogleBusinessVerificationRequest(server string, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, body CompleteGoogleBusinessVerificationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCompleteGoogleBusinessVerificationRequestWithBody(server, accountId, verificationId, params, "application/json", bodyReader)
+}
+
+// NewCompleteGoogleBusinessVerificationRequestWithBody generates requests for CompleteGoogleBusinessVerification with any type of body
+func NewCompleteGoogleBusinessVerificationRequestWithBody(server string, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "verificationId", verificationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-verifications/%s/complete", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -42535,6 +43229,24 @@ type ClientWithResponsesInterface interface {
 
 	UpdateGoogleBusinessServicesWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessServicesParams, body UpdateGoogleBusinessServicesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessServicesResponse, error)
 
+	// GetGoogleBusinessVerificationsWithResponse request
+	GetGoogleBusinessVerificationsWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessVerificationsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessVerificationsResponse, error)
+
+	// StartGoogleBusinessVerificationWithBodyWithResponse request with any body
+	StartGoogleBusinessVerificationWithBodyWithResponse(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartGoogleBusinessVerificationResponse, error)
+
+	StartGoogleBusinessVerificationWithResponse(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, body StartGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*StartGoogleBusinessVerificationResponse, error)
+
+	// FetchGoogleBusinessVerificationOptionsWithBodyWithResponse request with any body
+	FetchGoogleBusinessVerificationOptionsWithBodyWithResponse(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FetchGoogleBusinessVerificationOptionsResponse, error)
+
+	FetchGoogleBusinessVerificationOptionsWithResponse(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, body FetchGoogleBusinessVerificationOptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*FetchGoogleBusinessVerificationOptionsResponse, error)
+
+	// CompleteGoogleBusinessVerificationWithBodyWithResponse request with any body
+	CompleteGoogleBusinessVerificationWithBodyWithResponse(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteGoogleBusinessVerificationResponse, error)
+
+	CompleteGoogleBusinessVerificationWithResponse(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, body CompleteGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*CompleteGoogleBusinessVerificationResponse, error)
+
 	// GetAccountHealthWithResponse request
 	GetAccountHealthWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetAccountHealthResponse, error)
 
@@ -45462,6 +46174,198 @@ func (r UpdateGoogleBusinessServicesResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateGoogleBusinessServicesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGoogleBusinessVerificationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId  *string `json:"accountId,omitempty"`
+		LocationId *string `json:"locationId,omitempty"`
+		Success    *bool   `json:"success,omitempty"`
+
+		// Verifications Verification history, newest first. Empty when none exist.
+		Verifications *[]struct {
+			CreateTime *time.Time `json:"createTime,omitempty"`
+
+			// Method Method used (omitted on some entries).
+			Method *GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod `json:"method,omitempty"`
+
+			// Name Resource name, e.g. "locations/123/verifications/0T1776879124712". The last segment is the verificationId.
+			Name  *string                                                              `json:"name,omitempty"`
+			State *GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState `json:"state,omitempty"`
+		} `json:"verifications,omitempty"`
+
+		// VoiceOfMerchantState Raw Voice of Merchant state from Google.
+		VoiceOfMerchantState *struct {
+			// HasBusinessAuthority True when the authenticated user has owner/manager authority over the listing.
+			HasBusinessAuthority *bool `json:"hasBusinessAuthority,omitempty"`
+
+			// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews
+			HasVoiceOfMerchant *bool `json:"hasVoiceOfMerchant,omitempty"`
+
+			// Verify Present when verification is the path to Voice of Merchant.
+			Verify *struct {
+				// HasPendingVerification True when a verification is already in progress.
+				HasPendingVerification *bool `json:"hasPendingVerification,omitempty"`
+			} `json:"verify,omitempty"`
+		} `json:"voiceOfMerchantState,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGoogleBusinessVerificationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGoogleBusinessVerificationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGoogleBusinessVerificationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type StartGoogleBusinessVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId    *string `json:"accountId,omitempty"`
+		LocationId   *string `json:"locationId,omitempty"`
+		Success      *bool   `json:"success,omitempty"`
+		Verification *struct {
+			CreateTime *time.Time                                                            `json:"createTime,omitempty"`
+			Method     *StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod `json:"method,omitempty"`
+			Name       *string                                                               `json:"name,omitempty"`
+			State      *StartGoogleBusinessVerification200JSONResponseBodyVerificationState  `json:"state,omitempty"`
+		} `json:"verification,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r StartGoogleBusinessVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r StartGoogleBusinessVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r StartGoogleBusinessVerificationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type FetchGoogleBusinessVerificationOptionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId  *string `json:"accountId,omitempty"`
+		LocationId *string `json:"locationId,omitempty"`
+		Options    *[]struct {
+			// PhoneNumber Present for PHONE_CALL / SMS.
+			PhoneNumber        *string                                                                             `json:"phoneNumber,omitempty"`
+			VerificationMethod *FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod `json:"verificationMethod,omitempty"`
+		} `json:"options,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r FetchGoogleBusinessVerificationOptionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FetchGoogleBusinessVerificationOptionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r FetchGoogleBusinessVerificationOptionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CompleteGoogleBusinessVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId    *string `json:"accountId,omitempty"`
+		LocationId   *string `json:"locationId,omitempty"`
+		Success      *bool   `json:"success,omitempty"`
+		Verification *struct {
+			CreateTime *time.Time                                                               `json:"createTime,omitempty"`
+			Method     *CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod `json:"method,omitempty"`
+			Name       *string                                                                  `json:"name,omitempty"`
+			State      *CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState  `json:"state,omitempty"`
+		} `json:"verification,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r CompleteGoogleBusinessVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CompleteGoogleBusinessVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CompleteGoogleBusinessVerificationResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -56681,6 +57585,66 @@ func (c *ClientWithResponses) UpdateGoogleBusinessServicesWithResponse(ctx conte
 	return ParseUpdateGoogleBusinessServicesResponse(rsp)
 }
 
+// GetGoogleBusinessVerificationsWithResponse request returning *GetGoogleBusinessVerificationsResponse
+func (c *ClientWithResponses) GetGoogleBusinessVerificationsWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessVerificationsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessVerificationsResponse, error) {
+	rsp, err := c.GetGoogleBusinessVerifications(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGoogleBusinessVerificationsResponse(rsp)
+}
+
+// StartGoogleBusinessVerificationWithBodyWithResponse request with arbitrary body returning *StartGoogleBusinessVerificationResponse
+func (c *ClientWithResponses) StartGoogleBusinessVerificationWithBodyWithResponse(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*StartGoogleBusinessVerificationResponse, error) {
+	rsp, err := c.StartGoogleBusinessVerificationWithBody(ctx, accountId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartGoogleBusinessVerificationResponse(rsp)
+}
+
+func (c *ClientWithResponses) StartGoogleBusinessVerificationWithResponse(ctx context.Context, accountId string, params *StartGoogleBusinessVerificationParams, body StartGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*StartGoogleBusinessVerificationResponse, error) {
+	rsp, err := c.StartGoogleBusinessVerification(ctx, accountId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStartGoogleBusinessVerificationResponse(rsp)
+}
+
+// FetchGoogleBusinessVerificationOptionsWithBodyWithResponse request with arbitrary body returning *FetchGoogleBusinessVerificationOptionsResponse
+func (c *ClientWithResponses) FetchGoogleBusinessVerificationOptionsWithBodyWithResponse(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FetchGoogleBusinessVerificationOptionsResponse, error) {
+	rsp, err := c.FetchGoogleBusinessVerificationOptionsWithBody(ctx, accountId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFetchGoogleBusinessVerificationOptionsResponse(rsp)
+}
+
+func (c *ClientWithResponses) FetchGoogleBusinessVerificationOptionsWithResponse(ctx context.Context, accountId string, params *FetchGoogleBusinessVerificationOptionsParams, body FetchGoogleBusinessVerificationOptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*FetchGoogleBusinessVerificationOptionsResponse, error) {
+	rsp, err := c.FetchGoogleBusinessVerificationOptions(ctx, accountId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFetchGoogleBusinessVerificationOptionsResponse(rsp)
+}
+
+// CompleteGoogleBusinessVerificationWithBodyWithResponse request with arbitrary body returning *CompleteGoogleBusinessVerificationResponse
+func (c *ClientWithResponses) CompleteGoogleBusinessVerificationWithBodyWithResponse(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CompleteGoogleBusinessVerificationResponse, error) {
+	rsp, err := c.CompleteGoogleBusinessVerificationWithBody(ctx, accountId, verificationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCompleteGoogleBusinessVerificationResponse(rsp)
+}
+
+func (c *ClientWithResponses) CompleteGoogleBusinessVerificationWithResponse(ctx context.Context, accountId string, verificationId string, params *CompleteGoogleBusinessVerificationParams, body CompleteGoogleBusinessVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*CompleteGoogleBusinessVerificationResponse, error) {
+	rsp, err := c.CompleteGoogleBusinessVerification(ctx, accountId, verificationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCompleteGoogleBusinessVerificationResponse(rsp)
+}
+
 // GetAccountHealthWithResponse request returning *GetAccountHealthResponse
 func (c *ClientWithResponses) GetAccountHealthWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetAccountHealthResponse, error) {
 	rsp, err := c.GetAccountHealth(ctx, accountId, reqEditors...)
@@ -62031,6 +62995,254 @@ func ParseUpdateGoogleBusinessServicesResponse(rsp *http.Response) (*UpdateGoogl
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGoogleBusinessVerificationsResponse parses an HTTP response from a GetGoogleBusinessVerificationsWithResponse call
+func ParseGetGoogleBusinessVerificationsResponse(rsp *http.Response) (*GetGoogleBusinessVerificationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGoogleBusinessVerificationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId  *string `json:"accountId,omitempty"`
+			LocationId *string `json:"locationId,omitempty"`
+			Success    *bool   `json:"success,omitempty"`
+
+			// Verifications Verification history, newest first. Empty when none exist.
+			Verifications *[]struct {
+				CreateTime *time.Time `json:"createTime,omitempty"`
+
+				// Method Method used (omitted on some entries).
+				Method *GetGoogleBusinessVerifications200JSONResponseBodyVerificationsMethod `json:"method,omitempty"`
+
+				// Name Resource name, e.g. "locations/123/verifications/0T1776879124712". The last segment is the verificationId.
+				Name  *string                                                              `json:"name,omitempty"`
+				State *GetGoogleBusinessVerifications200JSONResponseBodyVerificationsState `json:"state,omitempty"`
+			} `json:"verifications,omitempty"`
+
+			// VoiceOfMerchantState Raw Voice of Merchant state from Google.
+			VoiceOfMerchantState *struct {
+				// HasBusinessAuthority True when the authenticated user has owner/manager authority over the listing.
+				HasBusinessAuthority *bool `json:"hasBusinessAuthority,omitempty"`
+
+				// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews
+				HasVoiceOfMerchant *bool `json:"hasVoiceOfMerchant,omitempty"`
+
+				// Verify Present when verification is the path to Voice of Merchant.
+				Verify *struct {
+					// HasPendingVerification True when a verification is already in progress.
+					HasPendingVerification *bool `json:"hasPendingVerification,omitempty"`
+				} `json:"verify,omitempty"`
+			} `json:"voiceOfMerchantState,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseStartGoogleBusinessVerificationResponse parses an HTTP response from a StartGoogleBusinessVerificationWithResponse call
+func ParseStartGoogleBusinessVerificationResponse(rsp *http.Response) (*StartGoogleBusinessVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &StartGoogleBusinessVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId    *string `json:"accountId,omitempty"`
+			LocationId   *string `json:"locationId,omitempty"`
+			Success      *bool   `json:"success,omitempty"`
+			Verification *struct {
+				CreateTime *time.Time                                                            `json:"createTime,omitempty"`
+				Method     *StartGoogleBusinessVerification200JSONResponseBodyVerificationMethod `json:"method,omitempty"`
+				Name       *string                                                               `json:"name,omitempty"`
+				State      *StartGoogleBusinessVerification200JSONResponseBodyVerificationState  `json:"state,omitempty"`
+			} `json:"verification,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFetchGoogleBusinessVerificationOptionsResponse parses an HTTP response from a FetchGoogleBusinessVerificationOptionsWithResponse call
+func ParseFetchGoogleBusinessVerificationOptionsResponse(rsp *http.Response) (*FetchGoogleBusinessVerificationOptionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FetchGoogleBusinessVerificationOptionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId  *string `json:"accountId,omitempty"`
+			LocationId *string `json:"locationId,omitempty"`
+			Options    *[]struct {
+				// PhoneNumber Present for PHONE_CALL / SMS.
+				PhoneNumber        *string                                                                             `json:"phoneNumber,omitempty"`
+				VerificationMethod *FetchGoogleBusinessVerificationOptions200JSONResponseBodyOptionsVerificationMethod `json:"verificationMethod,omitempty"`
+			} `json:"options,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCompleteGoogleBusinessVerificationResponse parses an HTTP response from a CompleteGoogleBusinessVerificationWithResponse call
+func ParseCompleteGoogleBusinessVerificationResponse(rsp *http.Response) (*CompleteGoogleBusinessVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CompleteGoogleBusinessVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId    *string `json:"accountId,omitempty"`
+			LocationId   *string `json:"locationId,omitempty"`
+			Success      *bool   `json:"success,omitempty"`
+			Verification *struct {
+				CreateTime *time.Time                                                               `json:"createTime,omitempty"`
+				Method     *CompleteGoogleBusinessVerification200JSONResponseBodyVerificationMethod `json:"method,omitempty"`
+				Name       *string                                                                  `json:"name,omitempty"`
+				State      *CompleteGoogleBusinessVerification200JSONResponseBodyVerificationState  `json:"state,omitempty"`
+			} `json:"verification,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
