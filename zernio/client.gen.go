@@ -9879,6 +9879,8 @@ type LinkedInPlatformData struct {
 
 // MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Zernio auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
 type MediaItem struct {
+	// AltText Accessibility alternative text for an image, applied on every platform that supports it: Instagram (feed images only, not Reels/Stories), Facebook, Threads, X/Twitter (max 1000 chars), LinkedIn, Bluesky, and Pinterest (max 500 chars). Ignored on platforms without alt-text support (TikTok, YouTube, Snapchat, Telegram, Reddit, Google Business, WhatsApp) and on video items where the platform does not accept it. Set once per image; the same value is sent to each selected platform.
+	AltText  *string `json:"altText,omitempty"`
 	Filename *string `json:"filename,omitempty"`
 
 	// InstagramThumbnail Custom cover image URL for Instagram Reels. Can also be set via platformSpecificData.instagramThumbnail or platformSpecificData.reelCover. Resolution order: this field > platformSpecificData.instagramThumbnail > platformSpecificData.reelCover > platformSpecificData.thumbnailUrl (legacy).
