@@ -1344,6 +1344,87 @@ func (e SocialAccountPlatform) Valid() bool {
 	}
 }
 
+// Defines values for TargetingSpecCitiesDistanceUnit.
+const (
+	TargetingSpecCitiesDistanceUnitKilometer TargetingSpecCitiesDistanceUnit = "kilometer"
+	TargetingSpecCitiesDistanceUnitMile      TargetingSpecCitiesDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the TargetingSpecCitiesDistanceUnit enum.
+func (e TargetingSpecCitiesDistanceUnit) Valid() bool {
+	switch e {
+	case TargetingSpecCitiesDistanceUnitKilometer:
+		return true
+	case TargetingSpecCitiesDistanceUnitMile:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TargetingSpecCustomLocationsDistanceUnit.
+const (
+	TargetingSpecCustomLocationsDistanceUnitKilometer TargetingSpecCustomLocationsDistanceUnit = "kilometer"
+	TargetingSpecCustomLocationsDistanceUnitMile      TargetingSpecCustomLocationsDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the TargetingSpecCustomLocationsDistanceUnit enum.
+func (e TargetingSpecCustomLocationsDistanceUnit) Valid() bool {
+	switch e {
+	case TargetingSpecCustomLocationsDistanceUnitKilometer:
+		return true
+	case TargetingSpecCustomLocationsDistanceUnitMile:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TargetingSpecGender.
+const (
+	TargetingSpecGenderAll    TargetingSpecGender = "all"
+	TargetingSpecGenderFemale TargetingSpecGender = "female"
+	TargetingSpecGenderMale   TargetingSpecGender = "male"
+)
+
+// Valid indicates whether the value is a known member of the TargetingSpecGender enum.
+func (e TargetingSpecGender) Valid() bool {
+	switch e {
+	case TargetingSpecGenderAll:
+		return true
+	case TargetingSpecGenderFemale:
+		return true
+	case TargetingSpecGenderMale:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TargetingSpecIncomeTier.
+const (
+	TargetingSpecIncomeTierTop10   TargetingSpecIncomeTier = "top_10"
+	TargetingSpecIncomeTierTop1025 TargetingSpecIncomeTier = "top_10_25"
+	TargetingSpecIncomeTierTop2550 TargetingSpecIncomeTier = "top_25_50"
+	TargetingSpecIncomeTierTop5    TargetingSpecIncomeTier = "top_5"
+)
+
+// Valid indicates whether the value is a known member of the TargetingSpecIncomeTier enum.
+func (e TargetingSpecIncomeTier) Valid() bool {
+	switch e {
+	case TargetingSpecIncomeTierTop10:
+		return true
+	case TargetingSpecIncomeTierTop1025:
+		return true
+	case TargetingSpecIncomeTierTop2550:
+		return true
+	case TargetingSpecIncomeTierTop5:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TelegramPlatformDataParseMode.
 const (
 	HTML       TelegramPlatformDataParseMode = "HTML"
@@ -3459,11 +3540,36 @@ func (e ListAdAudiencesParamsPlatform) Valid() bool {
 	}
 }
 
+// Defines values for ListAdAudiencesParamsType.
+const (
+	ListAdAudiencesParamsTypeCustomerList   ListAdAudiencesParamsType = "customer_list"
+	ListAdAudiencesParamsTypeLookalike      ListAdAudiencesParamsType = "lookalike"
+	ListAdAudiencesParamsTypeSavedTargeting ListAdAudiencesParamsType = "saved_targeting"
+	ListAdAudiencesParamsTypeWebsite        ListAdAudiencesParamsType = "website"
+)
+
+// Valid indicates whether the value is a known member of the ListAdAudiencesParamsType enum.
+func (e ListAdAudiencesParamsType) Valid() bool {
+	switch e {
+	case ListAdAudiencesParamsTypeCustomerList:
+		return true
+	case ListAdAudiencesParamsTypeLookalike:
+		return true
+	case ListAdAudiencesParamsTypeSavedTargeting:
+		return true
+	case ListAdAudiencesParamsTypeWebsite:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListAdAudiences200JSONResponseBodyAudiencesType.
 const (
-	ListAdAudiences200JSONResponseBodyAudiencesTypeCustomerList ListAdAudiences200JSONResponseBodyAudiencesType = "customer_list"
-	ListAdAudiences200JSONResponseBodyAudiencesTypeLookalike    ListAdAudiences200JSONResponseBodyAudiencesType = "lookalike"
-	ListAdAudiences200JSONResponseBodyAudiencesTypeWebsite      ListAdAudiences200JSONResponseBodyAudiencesType = "website"
+	ListAdAudiences200JSONResponseBodyAudiencesTypeCustomerList   ListAdAudiences200JSONResponseBodyAudiencesType = "customer_list"
+	ListAdAudiences200JSONResponseBodyAudiencesTypeLookalike      ListAdAudiences200JSONResponseBodyAudiencesType = "lookalike"
+	ListAdAudiences200JSONResponseBodyAudiencesTypeSavedTargeting ListAdAudiences200JSONResponseBodyAudiencesType = "saved_targeting"
+	ListAdAudiences200JSONResponseBodyAudiencesTypeWebsite        ListAdAudiences200JSONResponseBodyAudiencesType = "website"
 )
 
 // Valid indicates whether the value is a known member of the ListAdAudiences200JSONResponseBodyAudiencesType enum.
@@ -3473,6 +3579,8 @@ func (e ListAdAudiences200JSONResponseBodyAudiencesType) Valid() bool {
 		return true
 	case ListAdAudiences200JSONResponseBodyAudiencesTypeLookalike:
 		return true
+	case ListAdAudiences200JSONResponseBodyAudiencesTypeSavedTargeting:
+		return true
 	case ListAdAudiences200JSONResponseBodyAudiencesTypeWebsite:
 		return true
 	default:
@@ -3480,21 +3588,36 @@ func (e ListAdAudiences200JSONResponseBodyAudiencesType) Valid() bool {
 	}
 }
 
-// Defines values for CreateAdAudienceJSONBodyType.
+// Defines values for CreateAdAudienceJSONBody0Type.
 const (
-	CreateAdAudienceJSONBodyTypeCustomerList CreateAdAudienceJSONBodyType = "customer_list"
-	CreateAdAudienceJSONBodyTypeLookalike    CreateAdAudienceJSONBodyType = "lookalike"
-	CreateAdAudienceJSONBodyTypeWebsite      CreateAdAudienceJSONBodyType = "website"
+	CustomerList CreateAdAudienceJSONBody0Type = "customer_list"
+	Lookalike    CreateAdAudienceJSONBody0Type = "lookalike"
+	Website      CreateAdAudienceJSONBody0Type = "website"
 )
 
-// Valid indicates whether the value is a known member of the CreateAdAudienceJSONBodyType enum.
-func (e CreateAdAudienceJSONBodyType) Valid() bool {
+// Valid indicates whether the value is a known member of the CreateAdAudienceJSONBody0Type enum.
+func (e CreateAdAudienceJSONBody0Type) Valid() bool {
 	switch e {
-	case CreateAdAudienceJSONBodyTypeCustomerList:
+	case CustomerList:
 		return true
-	case CreateAdAudienceJSONBodyTypeLookalike:
+	case Lookalike:
 		return true
-	case CreateAdAudienceJSONBodyTypeWebsite:
+	case Website:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateAdAudienceJSONBody1Type.
+const (
+	SavedTargeting CreateAdAudienceJSONBody1Type = "saved_targeting"
+)
+
+// Valid indicates whether the value is a known member of the CreateAdAudienceJSONBody1Type enum.
+func (e CreateAdAudienceJSONBody1Type) Valid() bool {
+	switch e {
+	case SavedTargeting:
 		return true
 	default:
 		return false
@@ -3554,22 +3677,22 @@ func (e BoostPostJSONBodyGoal) Valid() bool {
 
 // Defines values for BoostPostJSONBodySpecialAdCategories.
 const (
-	CREDIT                  BoostPostJSONBodySpecialAdCategories = "CREDIT"
-	EMPLOYMENT              BoostPostJSONBodySpecialAdCategories = "EMPLOYMENT"
-	HOUSING                 BoostPostJSONBodySpecialAdCategories = "HOUSING"
-	ISSUESELECTIONSPOLITICS BoostPostJSONBodySpecialAdCategories = "ISSUES_ELECTIONS_POLITICS"
+	BoostPostJSONBodySpecialAdCategoriesCREDIT                  BoostPostJSONBodySpecialAdCategories = "CREDIT"
+	BoostPostJSONBodySpecialAdCategoriesEMPLOYMENT              BoostPostJSONBodySpecialAdCategories = "EMPLOYMENT"
+	BoostPostJSONBodySpecialAdCategoriesHOUSING                 BoostPostJSONBodySpecialAdCategories = "HOUSING"
+	BoostPostJSONBodySpecialAdCategoriesISSUESELECTIONSPOLITICS BoostPostJSONBodySpecialAdCategories = "ISSUES_ELECTIONS_POLITICS"
 )
 
 // Valid indicates whether the value is a known member of the BoostPostJSONBodySpecialAdCategories enum.
 func (e BoostPostJSONBodySpecialAdCategories) Valid() bool {
 	switch e {
-	case CREDIT:
+	case BoostPostJSONBodySpecialAdCategoriesCREDIT:
 		return true
-	case EMPLOYMENT:
+	case BoostPostJSONBodySpecialAdCategoriesEMPLOYMENT:
 		return true
-	case HOUSING:
+	case BoostPostJSONBodySpecialAdCategoriesHOUSING:
 		return true
-	case ISSUESELECTIONSPOLITICS:
+	case BoostPostJSONBodySpecialAdCategoriesISSUESELECTIONSPOLITICS:
 		return true
 	default:
 		return false
@@ -4139,16 +4262,16 @@ func (e CreateStandaloneAdJSONBodyCampaignType) Valid() bool {
 
 // Defines values for CreateStandaloneAdJSONBodyCitiesDistanceUnit.
 const (
-	Kilometer CreateStandaloneAdJSONBodyCitiesDistanceUnit = "kilometer"
-	Mile      CreateStandaloneAdJSONBodyCitiesDistanceUnit = "mile"
+	CreateStandaloneAdJSONBodyCitiesDistanceUnitKilometer CreateStandaloneAdJSONBodyCitiesDistanceUnit = "kilometer"
+	CreateStandaloneAdJSONBodyCitiesDistanceUnitMile      CreateStandaloneAdJSONBodyCitiesDistanceUnit = "mile"
 )
 
 // Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCitiesDistanceUnit enum.
 func (e CreateStandaloneAdJSONBodyCitiesDistanceUnit) Valid() bool {
 	switch e {
-	case Kilometer:
+	case CreateStandaloneAdJSONBodyCitiesDistanceUnitKilometer:
 		return true
-	case Mile:
+	case CreateStandaloneAdJSONBodyCitiesDistanceUnitMile:
 		return true
 	default:
 		return false
@@ -4191,6 +4314,24 @@ func (e CreateStandaloneAdJSONBodyCreativesCallToAction) Valid() bool {
 	case CreateStandaloneAdJSONBodyCreativesCallToActionSUBSCRIBE:
 		return true
 	case CreateStandaloneAdJSONBodyCreativesCallToActionWATCHMORE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit.
+const (
+	CreateStandaloneAdJSONBodyCustomLocationsDistanceUnitKilometer CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit = "kilometer"
+	CreateStandaloneAdJSONBodyCustomLocationsDistanceUnitMile      CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit enum.
+func (e CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyCustomLocationsDistanceUnitKilometer:
+		return true
+	case CreateStandaloneAdJSONBodyCustomLocationsDistanceUnitMile:
 		return true
 	default:
 		return false
@@ -4263,6 +4404,54 @@ func (e CreateStandaloneAdJSONBodyIdentityType) Valid() bool {
 	case CUSTOMIZEDUSER:
 		return true
 	case TTUSER:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyIncomeTier.
+const (
+	CreateStandaloneAdJSONBodyIncomeTierTop10   CreateStandaloneAdJSONBodyIncomeTier = "top_10"
+	CreateStandaloneAdJSONBodyIncomeTierTop1025 CreateStandaloneAdJSONBodyIncomeTier = "top_10_25"
+	CreateStandaloneAdJSONBodyIncomeTierTop2550 CreateStandaloneAdJSONBodyIncomeTier = "top_25_50"
+	CreateStandaloneAdJSONBodyIncomeTierTop5    CreateStandaloneAdJSONBodyIncomeTier = "top_5"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyIncomeTier enum.
+func (e CreateStandaloneAdJSONBodyIncomeTier) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyIncomeTierTop10:
+		return true
+	case CreateStandaloneAdJSONBodyIncomeTierTop1025:
+		return true
+	case CreateStandaloneAdJSONBodyIncomeTierTop2550:
+		return true
+	case CreateStandaloneAdJSONBodyIncomeTierTop5:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodySpecialAdCategories.
+const (
+	CreateStandaloneAdJSONBodySpecialAdCategoriesCREDIT                  CreateStandaloneAdJSONBodySpecialAdCategories = "CREDIT"
+	CreateStandaloneAdJSONBodySpecialAdCategoriesEMPLOYMENT              CreateStandaloneAdJSONBodySpecialAdCategories = "EMPLOYMENT"
+	CreateStandaloneAdJSONBodySpecialAdCategoriesHOUSING                 CreateStandaloneAdJSONBodySpecialAdCategories = "HOUSING"
+	CreateStandaloneAdJSONBodySpecialAdCategoriesISSUESELECTIONSPOLITICS CreateStandaloneAdJSONBodySpecialAdCategories = "ISSUES_ELECTIONS_POLITICS"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodySpecialAdCategories enum.
+func (e CreateStandaloneAdJSONBodySpecialAdCategories) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodySpecialAdCategoriesCREDIT:
+		return true
+	case CreateStandaloneAdJSONBodySpecialAdCategoriesEMPLOYMENT:
+		return true
+	case CreateStandaloneAdJSONBodySpecialAdCategoriesHOUSING:
+		return true
+	case CreateStandaloneAdJSONBodySpecialAdCategoriesISSUESELECTIONSPOLITICS:
 		return true
 	default:
 		return false
@@ -4350,36 +4539,51 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 	}
 }
 
-// Defines values for SearchAdTargetingLocationsParamsType.
+// Defines values for SearchAdTargetingParamsDimension.
 const (
-	SearchAdTargetingLocationsParamsTypeCity         SearchAdTargetingLocationsParamsType = "city"
-	SearchAdTargetingLocationsParamsTypeCountry      SearchAdTargetingLocationsParamsType = "country"
-	SearchAdTargetingLocationsParamsTypeGeoMarket    SearchAdTargetingLocationsParamsType = "geo_market"
-	SearchAdTargetingLocationsParamsTypeMetroArea    SearchAdTargetingLocationsParamsType = "metro_area"
-	SearchAdTargetingLocationsParamsTypeNeighborhood SearchAdTargetingLocationsParamsType = "neighborhood"
-	SearchAdTargetingLocationsParamsTypeRegion       SearchAdTargetingLocationsParamsType = "region"
-	SearchAdTargetingLocationsParamsTypeSubcity      SearchAdTargetingLocationsParamsType = "subcity"
-	SearchAdTargetingLocationsParamsTypeZip          SearchAdTargetingLocationsParamsType = "zip"
+	Behavior SearchAdTargetingParamsDimension = "behavior"
+	Geo      SearchAdTargetingParamsDimension = "geo"
+	Income   SearchAdTargetingParamsDimension = "income"
+	Interest SearchAdTargetingParamsDimension = "interest"
 )
 
-// Valid indicates whether the value is a known member of the SearchAdTargetingLocationsParamsType enum.
-func (e SearchAdTargetingLocationsParamsType) Valid() bool {
+// Valid indicates whether the value is a known member of the SearchAdTargetingParamsDimension enum.
+func (e SearchAdTargetingParamsDimension) Valid() bool {
 	switch e {
-	case SearchAdTargetingLocationsParamsTypeCity:
+	case Behavior:
 		return true
-	case SearchAdTargetingLocationsParamsTypeCountry:
+	case Geo:
 		return true
-	case SearchAdTargetingLocationsParamsTypeGeoMarket:
+	case Income:
 		return true
-	case SearchAdTargetingLocationsParamsTypeMetroArea:
+	case Interest:
 		return true
-	case SearchAdTargetingLocationsParamsTypeNeighborhood:
+	default:
+		return false
+	}
+}
+
+// Defines values for SearchAdTargetingParamsGeoType.
+const (
+	SearchAdTargetingParamsGeoTypeCity    SearchAdTargetingParamsGeoType = "city"
+	SearchAdTargetingParamsGeoTypeCountry SearchAdTargetingParamsGeoType = "country"
+	SearchAdTargetingParamsGeoTypeMetro   SearchAdTargetingParamsGeoType = "metro"
+	SearchAdTargetingParamsGeoTypeRegion  SearchAdTargetingParamsGeoType = "region"
+	SearchAdTargetingParamsGeoTypeZip     SearchAdTargetingParamsGeoType = "zip"
+)
+
+// Valid indicates whether the value is a known member of the SearchAdTargetingParamsGeoType enum.
+func (e SearchAdTargetingParamsGeoType) Valid() bool {
+	switch e {
+	case SearchAdTargetingParamsGeoTypeCity:
 		return true
-	case SearchAdTargetingLocationsParamsTypeRegion:
+	case SearchAdTargetingParamsGeoTypeCountry:
 		return true
-	case SearchAdTargetingLocationsParamsTypeSubcity:
+	case SearchAdTargetingParamsGeoTypeMetro:
 		return true
-	case SearchAdTargetingLocationsParamsTypeZip:
+	case SearchAdTargetingParamsGeoTypeRegion:
+		return true
+	case SearchAdTargetingParamsGeoTypeZip:
 		return true
 	default:
 		return false
@@ -5528,25 +5732,25 @@ func (e SelectLinkedInOrganization200JSONResponseBodyAccountPlatform) Valid() bo
 
 // Defines values for GetPendingOAuthData200JSONResponseBodySelectionType.
 const (
-	Boards        GetPendingOAuthData200JSONResponseBodySelectionType = "boards"
-	Locations     GetPendingOAuthData200JSONResponseBodySelectionType = "locations"
-	Organizations GetPendingOAuthData200JSONResponseBodySelectionType = "organizations"
-	Pages         GetPendingOAuthData200JSONResponseBodySelectionType = "pages"
-	Profiles      GetPendingOAuthData200JSONResponseBodySelectionType = "profiles"
+	GetPendingOAuthData200JSONResponseBodySelectionTypeBoards        GetPendingOAuthData200JSONResponseBodySelectionType = "boards"
+	GetPendingOAuthData200JSONResponseBodySelectionTypeLocations     GetPendingOAuthData200JSONResponseBodySelectionType = "locations"
+	GetPendingOAuthData200JSONResponseBodySelectionTypeOrganizations GetPendingOAuthData200JSONResponseBodySelectionType = "organizations"
+	GetPendingOAuthData200JSONResponseBodySelectionTypePages         GetPendingOAuthData200JSONResponseBodySelectionType = "pages"
+	GetPendingOAuthData200JSONResponseBodySelectionTypeProfiles      GetPendingOAuthData200JSONResponseBodySelectionType = "profiles"
 )
 
 // Valid indicates whether the value is a known member of the GetPendingOAuthData200JSONResponseBodySelectionType enum.
 func (e GetPendingOAuthData200JSONResponseBodySelectionType) Valid() bool {
 	switch e {
-	case Boards:
+	case GetPendingOAuthData200JSONResponseBodySelectionTypeBoards:
 		return true
-	case Locations:
+	case GetPendingOAuthData200JSONResponseBodySelectionTypeLocations:
 		return true
-	case Organizations:
+	case GetPendingOAuthData200JSONResponseBodySelectionTypeOrganizations:
 		return true
-	case Pages:
+	case GetPendingOAuthData200JSONResponseBodySelectionTypePages:
 		return true
-	case Profiles:
+	case GetPendingOAuthData200JSONResponseBodySelectionTypeProfiles:
 		return true
 	default:
 		return false
@@ -10314,6 +10518,144 @@ type SocialAccount_ProfileId struct {
 	union json.RawMessage
 }
 
+// TargetingSpec Normalized, platform-agnostic ad-targeting spec. Every field is optional, an
+// empty object targets the platform's default broadest audience. Field names are
+// camelCase and identical across `POST /v1/ads/create` (the `targeting` object),
+// `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences, so a
+// spec resolved once can be reused verbatim.
+//
+// Entity ids (`regions[].key`, `cities[].key`, `zips[].key`, `metros[].key`,
+// `interests[].id`, `behaviors[].id`) are the platform's opaque identifiers
+// resolved via `GET /v1/ads/targeting/search`. A spec is therefore meaningful only
+// for the platform it was built against, except the portable fields (`countries`,
+// `ageMin`/`ageMax`, `gender`, `incomeTier`, `languages`) which carry across
+// platforms. Fields a platform cannot honour are rejected at create time with
+// `INVALID_FIELD_VALUE` naming the offending field (not silently dropped).
+type TargetingSpec struct {
+	AgeMax *int `json:"ageMax,omitempty"`
+	AgeMin *int `json:"ageMin,omitempty"`
+
+	// AudienceExclude Platform audience IDs to exclude.
+	AudienceExclude *[]string `json:"audienceExclude,omitempty"`
+
+	// AudienceInclude Platform audience IDs to include.
+	AudienceInclude *[]string `json:"audienceInclude,omitempty"`
+
+	// Behaviors Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok.
+	Behaviors *[]struct {
+		Id   string  `json:"id"`
+		Name *string `json:"name,omitempty"`
+	} `json:"behaviors,omitempty"`
+
+	// Cities City targeting. Optional `radius` + `distanceUnit` extend beyond the city limits; both must be set together or both omitted. `radius` is only honoured on platforms whose capability map allows city radius (Meta).
+	Cities *[]struct {
+		// DistanceUnit Required if radius is set.
+		DistanceUnit *TargetingSpecCitiesDistanceUnit `json:"distanceUnit,omitempty"`
+		Key          string                           `json:"key"`
+		Name         *string                          `json:"name,omitempty"`
+
+		// Radius Radius around the city. Requires distanceUnit.
+		Radius *float32 `json:"radius,omitempty"`
+	} `json:"cities,omitempty"`
+
+	// CompanySizes LinkedIn B2B only.
+	CompanySizes *[]string `json:"companySizes,omitempty"`
+
+	// Countries ISO 3166-1 alpha-2 country codes (e.g. ['US']).
+	Countries *[]string `json:"countries,omitempty"`
+
+	// CustomLocations Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured only where the capability map allows radius (Meta).
+	CustomLocations *[]struct {
+		Address      *string                                  `json:"address,omitempty"`
+		DistanceUnit TargetingSpecCustomLocationsDistanceUnit `json:"distanceUnit"`
+		Latitude     float32                                  `json:"latitude"`
+		Longitude    float32                                  `json:"longitude"`
+		Name         *string                                  `json:"name,omitempty"`
+
+		// Radius Positive radius around the point.
+		Radius float32 `json:"radius"`
+	} `json:"customLocations,omitempty"`
+
+	// ExcludedLocations Geo to exclude from the audience. A subset of the inclusion geo shape.
+	ExcludedLocations *struct {
+		Cities *[]struct {
+			Key  string  `json:"key"`
+			Name *string `json:"name,omitempty"`
+		} `json:"cities,omitempty"`
+		Countries *[]string `json:"countries,omitempty"`
+		Regions   *[]struct {
+			Key  string  `json:"key"`
+			Name *string `json:"name,omitempty"`
+		} `json:"regions,omitempty"`
+		Zips *[]struct {
+			Key  string  `json:"key"`
+			Name *string `json:"name,omitempty"`
+		} `json:"zips,omitempty"`
+	} `json:"excludedLocations,omitempty"`
+
+	// Gender Restrict by gender. 'all' (default) targets everyone.
+	Gender *TargetingSpecGender `json:"gender,omitempty"`
+
+	// IncomeTier Normalized household-income tier (ZIP/percentile based). Meta and TikTok
+	// express all four. Google maps only `top_10` (its INCOME_RANGE_90_UP); other
+	// tiers on Google, and any income tier on LinkedIn / X / Pinterest, are rejected.
+	// On Meta, income/zip targeting requires the relevant `specialAdCategories` to be
+	// unset (housing/employment/credit ads cannot use it).
+	IncomeTier *TargetingSpecIncomeTier `json:"incomeTier,omitempty"`
+
+	// Industries LinkedIn B2B only. Industry URN id fragments.
+	Industries *[]string `json:"industries,omitempty"`
+
+	// Interests Interest entities from /v1/ads/targeting/search?dimension=interest. Each carries the platform's opaque id.
+	Interests *[]struct {
+		Id   string  `json:"id"`
+		Name *string `json:"name,omitempty"`
+	} `json:"interests,omitempty"`
+
+	// JobFunctions LinkedIn B2B only.
+	JobFunctions *[]string `json:"jobFunctions,omitempty"`
+
+	// Languages Language codes (e.g. ['en']).
+	Languages *[]string `json:"languages,omitempty"`
+
+	// Metros DMA / metro-area targeting. `key` is the platform's metro ID (e.g. Meta `DMA:807`).
+	Metros *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"metros,omitempty"`
+
+	// Regions Region/state targeting. `key` is the platform location ID from /v1/ads/targeting/search?dimension=geo&geoType=region.
+	Regions *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"regions,omitempty"`
+
+	// Seniorities LinkedIn B2B only.
+	Seniorities *[]string `json:"seniorities,omitempty"`
+
+	// Zips Postal/ZIP targeting. `key` is the platform's postal location ID (e.g. Meta `US:94304`). Supported on Meta, Google, TikTok, Pinterest, X.
+	Zips *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"zips,omitempty"`
+}
+
+// TargetingSpecCitiesDistanceUnit Required if radius is set.
+type TargetingSpecCitiesDistanceUnit string
+
+// TargetingSpecCustomLocationsDistanceUnit defines model for TargetingSpec.CustomLocations.DistanceUnit.
+type TargetingSpecCustomLocationsDistanceUnit string
+
+// TargetingSpecGender Restrict by gender. 'all' (default) targets everyone.
+type TargetingSpecGender string
+
+// TargetingSpecIncomeTier Normalized household-income tier (ZIP/percentile based). Meta and TikTok
+// express all four. Google maps only `top_10` (its INCOME_RANGE_90_UP); other
+// tiers on Google, and any income tier on LinkedIn / X / Pinterest, are rejected.
+// On Meta, income/zip targeting requires the relevant `specialAdCategories` to be
+// unset (housing/employment/credit ads cannot use it).
+type TargetingSpecIncomeTier string
+
 // TelegramPlatformData Text, images (up to 10), videos (up to 10), and mixed media albums. Captions up to 1024 chars for media, 4096 for text-only.
 type TelegramPlatformData struct {
 	// DisableNotification Send the message silently (users will receive notification without sound)
@@ -12069,16 +12411,27 @@ type ListAdAudiencesParams struct {
 	// AdAccountId Platform ad account ID
 	AdAccountId string                         `form:"adAccountId" json:"adAccountId"`
 	Platform    *ListAdAudiencesParamsPlatform `form:"platform,omitempty" json:"platform,omitempty"`
+
+	// Type Filter to one audience type. `saved_targeting` returns stored TargetingSpec audiences (each item carries a `spec`); the other types return uploaded/derived audiences.
+	Type *ListAdAudiencesParamsType `form:"type,omitempty" json:"type,omitempty"`
 }
 
 // ListAdAudiencesParamsPlatform defines parameters for ListAdAudiences.
 type ListAdAudiencesParamsPlatform string
+
+// ListAdAudiencesParamsType defines parameters for ListAdAudiences.
+type ListAdAudiencesParamsType string
 
 // ListAdAudiences200JSONResponseBodyAudiencesType defines parameters for ListAdAudiences.
 type ListAdAudiences200JSONResponseBodyAudiencesType string
 
 // CreateAdAudienceJSONBody defines parameters for CreateAdAudience.
 type CreateAdAudienceJSONBody struct {
+	union json.RawMessage
+}
+
+// CreateAdAudienceJSONBody0 defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBody0 struct {
 	AccountId string `json:"accountId"`
 
 	// AdAccountId Platform ad account ID. Must start with act_ for Meta; bare platform id for others (Google customer id, X/TikTok/LinkedIn/Pinterest account id).
@@ -12105,12 +12458,27 @@ type CreateAdAudienceJSONBody struct {
 	Rule *map[string]interface{} `json:"rule,omitempty"`
 
 	// SourceAudienceId Required for lookalike audiences
-	SourceAudienceId *string                      `json:"sourceAudienceId,omitempty"`
-	Type             CreateAdAudienceJSONBodyType `json:"type"`
+	SourceAudienceId *string                       `json:"sourceAudienceId,omitempty"`
+	Type             CreateAdAudienceJSONBody0Type `json:"type"`
 }
 
-// CreateAdAudienceJSONBodyType defines parameters for CreateAdAudience.
-type CreateAdAudienceJSONBodyType string
+// CreateAdAudienceJSONBody0Type defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBody0Type string
+
+// CreateAdAudienceJSONBody1 defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBody1 struct {
+	// AccountId Social account ID on the target ad platform.
+	AccountId   string  `json:"accountId"`
+	Description *string `json:"description,omitempty"`
+	Name        string  `json:"name"`
+
+	// Spec The targeting spec to store.
+	Spec TargetingSpec                 `json:"spec"`
+	Type CreateAdAudienceJSONBody1Type `json:"type"`
+}
+
+// CreateAdAudienceJSONBody1Type defines parameters for CreateAdAudience.
+type CreateAdAudienceJSONBody1Type string
 
 // AddUsersToAdAudienceJSONBody defines parameters for AddUsersToAdAudience.
 type AddUsersToAdAudienceJSONBody struct {
@@ -12452,6 +12820,12 @@ type CreateStandaloneAdJSONBody struct {
 	// AudienceId Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
 
+	// Behaviors Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok. Each must include id.
+	Behaviors *[]struct {
+		Id   string  `json:"id"`
+		Name *string `json:"name,omitempty"`
+	} `json:"behaviors,omitempty"`
+
 	// BidAmount Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when
 	// `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
@@ -12535,6 +12909,16 @@ type CreateStandaloneAdJSONBody struct {
 	} `json:"creatives,omitempty"`
 	Currency *string `json:"currency,omitempty"`
 
+	// CustomLocations Point-radius (lat/lng) geo targeting. Meta only (custom_locations). Rejected on platforms without radius support.
+	CustomLocations *[]struct {
+		Address      *string                                               `json:"address,omitempty"`
+		DistanceUnit CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit `json:"distanceUnit"`
+		Latitude     float32                                               `json:"latitude"`
+		Longitude    float32                                               `json:"longitude"`
+		Name         *string                                               `json:"name,omitempty"`
+		Radius       float32                                               `json:"radius"`
+	} `json:"customLocations,omitempty"`
+
 	// DsaBeneficiary Name of the legal entity benefiting from the ad.
 	// Required by Meta when targeting EU users (DSA Article 26).
 	// Not enforced at schema level; enforced server-side when targeting intersects EU member states.
@@ -12587,6 +12971,11 @@ type CreateStandaloneAdJSONBody struct {
 		Square *string `json:"square,omitempty"`
 	} `json:"images,omitempty"`
 
+	// IncomeTier Normalized household-income tier. Meta and TikTok express all four; Google maps only
+	// `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible
+	// with housing/employment/credit `specialAdCategories`.
+	IncomeTier *CreateStandaloneAdJSONBodyIncomeTier `json:"incomeTier,omitempty"`
+
 	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests *[]struct {
 		Id   string `json:"id"`
@@ -12596,12 +12985,21 @@ type CreateStandaloneAdJSONBody struct {
 	// Keywords Google Search only
 	Keywords *[]string `json:"keywords,omitempty"`
 
+	// Languages Language codes (e.g. ['en']). Restricts the audience by language.
+	Languages *[]string `json:"languages,omitempty"`
+
 	// LinkUrl Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 
 	// LongHeadline Google Display only — defaults to `headline` if omitted. On LinkedIn, reused as the optional secondary description text on traffic (link) ads; omitted if not provided.
 	LongHeadline *string `json:"longHeadline,omitempty"`
-	Name         string  `json:"name"`
+
+	// Metros DMA / metro-area geo targeting. `key` is the platform's metro ID from /v1/ads/targeting/search?dimension=geo&geoType=metro.
+	Metros *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"metros,omitempty"`
+	Name string `json:"name"`
 
 	// OrganizationId LinkedIn only. The Company Page that authors the Direct Sponsored Content ("dark") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
@@ -12677,6 +13075,16 @@ type CreateStandaloneAdJSONBody struct {
 	// `bid_constraints.roas_average_floor` × 10000.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 
+	// SavedTargetingId ID of a `saved_targeting` audience (created via POST /v1/ads/audiences). When set, its stored
+	// TargetingSpec is expanded as the base targeting; inline fields on this body merge on top. Lets you
+	// reuse a named targeting preset without re-sending every field.
+	SavedTargetingId *string `json:"savedTargetingId,omitempty"`
+
+	// SpecialAdCategories Meta only. Declares the ad's special category, required for housing, employment, credit, or
+	// political/social-issue ads (Meta enforces restricted targeting for these). Note: setting a special
+	// category disables income/zip targeting on Meta.
+	SpecialAdCategories *[]CreateStandaloneAdJSONBodySpecialAdCategories `json:"specialAdCategories,omitempty"`
+
 	// Video Meta (facebook, instagram) and LinkedIn. When set, creates a VIDEO ad on the legacy (or, for Meta, attach) shape. Mutually exclusive with `imageUrl`. For Meta multi-creative, set `video` per entry inside `creatives[]` instead. For LinkedIn the video is uploaded to LinkedIn under the authoring Company Page (see `organizationId`) and the campaign format is set to SINGLE_VIDEO; LinkedIn ignores `thumbnailUrl` (it auto-generates the poster frame) — supply MP4 H.264/AAC, 3s-30min, 75KB-500MB.
 	Video *struct {
 		// ThumbnailUrl Public URL of a still-image thumbnail for the video. Required by Meta on every video creative (uploaded as an ad image and referenced in object_story_spec.video_data). Ignored by LinkedIn (auto-generated poster frame).
@@ -12685,6 +13093,12 @@ type CreateStandaloneAdJSONBody struct {
 		// Url Public URL of the video. Meta: uploaded via chunked transfer on /act_X/advideos, then the request blocks on Meta's transcoding until status.video_status === 'ready'. LinkedIn: uploaded via the Videos API (multipart), then the request blocks until LinkedIn finishes transcoding (status AVAILABLE) — short clips take ~10-30s.
 		Url string `json:"url"`
 	} `json:"video,omitempty"`
+
+	// Zips Postal/ZIP geo targeting. `key` is the platform's postal location ID from /v1/ads/targeting/search?dimension=geo&geoType=zip. Supported on Meta, Google, TikTok, Pinterest, X.
+	Zips *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"zips,omitempty"`
 }
 
 // CreateStandaloneAdJSONBodyAdvantageAudience defines parameters for CreateStandaloneAd.
@@ -12711,6 +13125,9 @@ type CreateStandaloneAdJSONBodyCitiesDistanceUnit string
 // CreateStandaloneAdJSONBodyCreativesCallToAction defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCreativesCallToAction string
 
+// CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit string
+
 // CreateStandaloneAdJSONBodyGender defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGender string
 
@@ -12719,6 +13136,12 @@ type CreateStandaloneAdJSONBodyGoal string
 
 // CreateStandaloneAdJSONBodyIdentityType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyIdentityType string
+
+// CreateStandaloneAdJSONBodyIncomeTier defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyIncomeTier string
+
+// CreateStandaloneAdJSONBodySpecialAdCategories defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodySpecialAdCategories string
 
 // CreateStandaloneAd201JSONResponseBody0 defines parameters for CreateStandaloneAd.
 type CreateStandaloneAd201JSONResponseBody0 struct {
@@ -12894,37 +13317,46 @@ type SearchAdInterestsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
-// SearchAdTargetingLocationsParams defines parameters for SearchAdTargetingLocations.
-type SearchAdTargetingLocationsParams struct {
-	// AccountId Social account ID (must be a connected Facebook or Instagram account).
+// EstimateAdReachJSONBody defines parameters for EstimateAdReach.
+type EstimateAdReachJSONBody struct {
+	// AccountId Social account ID on the target ad platform.
+	AccountId string `json:"accountId"`
+
+	// OptimizationGoal Optional. The optimization goal the estimate should assume (platform's
+	// own vocabulary, e.g. Meta `REACH`, `LINK_CLICKS`, `OFFSITE_CONVERSIONS`).
+	// Some platforms vary the estimate by goal; omit to use the platform default.
+	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
+
+	// Spec The targeting spec to estimate. Same shape used by POST /v1/ads/create.
+	Spec TargetingSpec `json:"spec"`
+}
+
+// SearchAdTargetingParams defines parameters for SearchAdTargeting.
+type SearchAdTargetingParams struct {
+	// AccountId Social account ID (a connected account on the target ad platform).
 	AccountId string `form:"accountId" json:"accountId"`
 
-	// Q Location name. Locality only — no region/country suffix.
+	// Q Search query. For geo, the locality name only (no region/country suffix).
 	Q string `form:"q" json:"q"`
 
-	// Type Type of location to search. Defaults to city.
-	Type *SearchAdTargetingLocationsParamsType `form:"type,omitempty" json:"type,omitempty"`
+	// Dimension What to search. `geo` resolves locations (scope further with `geoType`), `interest`/`behavior` resolve audience entities, `income` resolves income-tier options. Defaults to `interest` for backward compatibility with the deprecated /v1/ads/interests alias.
+	Dimension *SearchAdTargetingParamsDimension `form:"dimension,omitempty" json:"dimension,omitempty"`
 
-	// CountryCode ISO 3166-1 alpha-2 country code (e.g. NL) to scope the search.
+	// GeoType Only used when `dimension=geo`. The kind of location to resolve. Defaults to `city`.
+	GeoType *SearchAdTargetingParamsGeoType `form:"geoType,omitempty" json:"geoType,omitempty"`
+
+	// CountryCode ISO 3166-1 alpha-2 country code (e.g. NL) to scope a geo search.
 	CountryCode *string `form:"countryCode,omitempty" json:"countryCode,omitempty"`
 
 	// Limit Maximum results to return.
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
-// SearchAdTargetingLocationsParamsType defines parameters for SearchAdTargetingLocations.
-type SearchAdTargetingLocationsParamsType string
+// SearchAdTargetingParamsDimension defines parameters for SearchAdTargeting.
+type SearchAdTargetingParamsDimension string
 
-// SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0 defines parameters for SearchAdTargetingLocations.
-type SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0 = string
-
-// SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 defines parameters for SearchAdTargetingLocations.
-type SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 = int
-
-// SearchAdTargetingLocations200JSONResponseBody_Results_RegionId defines parameters for SearchAdTargetingLocations.
-type SearchAdTargetingLocations200JSONResponseBody_Results_RegionId struct {
-	union json.RawMessage
-}
+// SearchAdTargetingParamsGeoType defines parameters for SearchAdTargeting.
+type SearchAdTargetingParamsGeoType string
 
 // GetAdsTimelineParams defines parameters for GetAdsTimeline.
 type GetAdsTimelineParams struct {
@@ -16468,6 +16900,9 @@ type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 // CreateCtwaAdJSONRequestBody defines body for CreateCtwaAd for application/json ContentType.
 type CreateCtwaAdJSONRequestBody CreateCtwaAdJSONBody
 
+// EstimateAdReachJSONRequestBody defines body for EstimateAdReach for application/json ContentType.
+type EstimateAdReachJSONRequestBody EstimateAdReachJSONBody
+
 // UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
 type UpdateAdJSONRequestBody UpdateAdJSONBody
 
@@ -17750,6 +18185,68 @@ func (t *GetLinkedInAggregateAnalytics200JSONResponseBody) UnmarshalJSON(b []byt
 	return err
 }
 
+// AsCreateAdAudienceJSONBody0 returns the union data inside the CreateAdAudienceJSONBody as a CreateAdAudienceJSONBody0
+func (t CreateAdAudienceJSONBody) AsCreateAdAudienceJSONBody0() (CreateAdAudienceJSONBody0, error) {
+	var body CreateAdAudienceJSONBody0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateAdAudienceJSONBody0 overwrites any union data inside the CreateAdAudienceJSONBody as the provided CreateAdAudienceJSONBody0
+func (t *CreateAdAudienceJSONBody) FromCreateAdAudienceJSONBody0(v CreateAdAudienceJSONBody0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateAdAudienceJSONBody0 performs a merge with any union data inside the CreateAdAudienceJSONBody, using the provided CreateAdAudienceJSONBody0
+func (t *CreateAdAudienceJSONBody) MergeCreateAdAudienceJSONBody0(v CreateAdAudienceJSONBody0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateAdAudienceJSONBody1 returns the union data inside the CreateAdAudienceJSONBody as a CreateAdAudienceJSONBody1
+func (t CreateAdAudienceJSONBody) AsCreateAdAudienceJSONBody1() (CreateAdAudienceJSONBody1, error) {
+	var body CreateAdAudienceJSONBody1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateAdAudienceJSONBody1 overwrites any union data inside the CreateAdAudienceJSONBody as the provided CreateAdAudienceJSONBody1
+func (t *CreateAdAudienceJSONBody) FromCreateAdAudienceJSONBody1(v CreateAdAudienceJSONBody1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateAdAudienceJSONBody1 performs a merge with any union data inside the CreateAdAudienceJSONBody, using the provided CreateAdAudienceJSONBody1
+func (t *CreateAdAudienceJSONBody) MergeCreateAdAudienceJSONBody1(v CreateAdAudienceJSONBody1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateAdAudienceJSONBody) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateAdAudienceJSONBody) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsSendConversions200JSONResponseBodyFailuresCode0 returns the union data inside the SendConversions200JSONResponseBody_Failures_Code as a SendConversions200JSONResponseBodyFailuresCode0
 func (t SendConversions200JSONResponseBody_Failures_Code) AsSendConversions200JSONResponseBodyFailuresCode0() (SendConversions200JSONResponseBodyFailuresCode0, error) {
 	var body SendConversions200JSONResponseBodyFailuresCode0
@@ -17959,68 +18456,6 @@ func (t CreateCtwaAd201JSONResponseBody) MarshalJSON() ([]byte, error) {
 }
 
 func (t *CreateCtwaAd201JSONResponseBody) UnmarshalJSON(b []byte) error {
-	err := t.union.UnmarshalJSON(b)
-	return err
-}
-
-// AsSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0 returns the union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId as a SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0
-func (t SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) AsSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0() (SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0, error) {
-	var body SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0 overwrites any union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId as the provided SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0
-func (t *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) FromSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0(v SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0 performs a merge with any union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId, using the provided SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0
-func (t *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) MergeSearchAdTargetingLocations200JSONResponseBodyResultsRegionId0(v SearchAdTargetingLocations200JSONResponseBodyResultsRegionId0) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 returns the union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId as a SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1
-func (t SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) AsSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1() (SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1, error) {
-	var body SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 overwrites any union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId as the provided SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1
-func (t *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) FromSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1(v SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1) error {
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1 performs a merge with any union data inside the SearchAdTargetingLocations200JSONResponseBody_Results_RegionId, using the provided SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1
-func (t *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) MergeSearchAdTargetingLocations200JSONResponseBodyResultsRegionId1(v SearchAdTargetingLocations200JSONResponseBodyResultsRegionId1) error {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-func (t SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) MarshalJSON() ([]byte, error) {
-	b, err := t.union.MarshalJSON()
-	return b, err
-}
-
-func (t *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -19684,8 +20119,13 @@ type ClientInterface interface {
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// SearchAdTargetingLocations request
-	SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// EstimateAdReachWithBody request with any body
+	EstimateAdReachWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EstimateAdReach(ctx context.Context, body EstimateAdReachJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SearchAdTargeting request
+	SearchAdTargeting(ctx context.Context, params *SearchAdTargetingParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAdsTimeline request
 	GetAdsTimeline(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -22216,8 +22656,32 @@ func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterest
 	return c.Client.Do(req)
 }
 
-func (c *Client) SearchAdTargetingLocations(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewSearchAdTargetingLocationsRequest(c.Server, params)
+func (c *Client) EstimateAdReachWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEstimateAdReachRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EstimateAdReach(ctx context.Context, body EstimateAdReachJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEstimateAdReachRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SearchAdTargeting(ctx context.Context, params *SearchAdTargetingParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchAdTargetingRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -30610,6 +31074,18 @@ func NewListAdAudiencesRequest(server string, params *ListAdAudiencesParams) (*h
 
 		}
 
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if encoded := queryValues.Encode(); encoded != "" {
 			rawQueryFragments = append(rawQueryFragments, encoded)
 		}
@@ -31437,8 +31913,48 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 	return req, nil
 }
 
-// NewSearchAdTargetingLocationsRequest generates requests for SearchAdTargetingLocations
-func NewSearchAdTargetingLocationsRequest(server string, params *SearchAdTargetingLocationsParams) (*http.Request, error) {
+// NewEstimateAdReachRequest calls the generic EstimateAdReach builder with application/json body
+func NewEstimateAdReachRequest(server string, body EstimateAdReachJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEstimateAdReachRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewEstimateAdReachRequestWithBody generates requests for EstimateAdReach with any type of body
+func NewEstimateAdReachRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/targeting/reach-estimate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSearchAdTargetingRequest generates requests for SearchAdTargeting
+func NewSearchAdTargetingRequest(server string, params *SearchAdTargetingParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -31481,9 +31997,21 @@ func NewSearchAdTargetingLocationsRequest(server string, params *SearchAdTargeti
 			}
 		}
 
-		if params.Type != nil {
+		if params.Dimension != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "dimension", *params.Dimension, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.GeoType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "geoType", *params.GeoType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -43389,8 +43917,13 @@ type ClientWithResponsesInterface interface {
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
-	// SearchAdTargetingLocationsWithResponse request
-	SearchAdTargetingLocationsWithResponse(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingLocationsResponse, error)
+	// EstimateAdReachWithBodyWithResponse request with any body
+	EstimateAdReachWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error)
+
+	EstimateAdReachWithResponse(ctx context.Context, body EstimateAdReachJSONRequestBody, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error)
+
+	// SearchAdTargetingWithResponse request
+	SearchAdTargetingWithResponse(ctx context.Context, params *SearchAdTargetingParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingResponse, error)
 
 	// GetAdsTimelineWithResponse request
 	GetAdsTimelineWithResponse(ctx context.Context, params *GetAdsTimelineParams, reqEditors ...RequestEditorFn) (*GetAdsTimelineResponse, error)
@@ -47930,14 +48463,17 @@ type ListAdAudiencesResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Audiences *[]struct {
-			Description        *string                                          `json:"description,omitempty"`
-			Id                 *string                                          `json:"id,omitempty"`
-			Name               *string                                          `json:"name,omitempty"`
-			Platform           *string                                          `json:"platform,omitempty"`
-			PlatformAudienceId *string                                          `json:"platformAudienceId,omitempty"`
-			Size               *int                                             `json:"size,omitempty"`
-			Status             *string                                          `json:"status,omitempty"`
-			Type               *ListAdAudiences200JSONResponseBodyAudiencesType `json:"type,omitempty"`
+			Description        *string `json:"description,omitempty"`
+			Id                 *string `json:"id,omitempty"`
+			Name               *string `json:"name,omitempty"`
+			Platform           *string `json:"platform,omitempty"`
+			PlatformAudienceId *string `json:"platformAudienceId,omitempty"`
+			Size               *int    `json:"size,omitempty"`
+
+			// Spec Present (and the only meaningful payload) when `type` is `saved_targeting`. Null for uploaded/derived audience types.
+			Spec   *TargetingSpec                                   `json:"spec,omitempty"`
+			Status *string                                          `json:"status,omitempty"`
+			Type   *ListAdAudiences200JSONResponseBodyAudiencesType `json:"type,omitempty"`
 		} `json:"audiences,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -48565,35 +49101,34 @@ func (r SearchAdInterestsResponse) ContentType() string {
 	return ""
 }
 
-type SearchAdTargetingLocationsResponse struct {
+type EstimateAdReachResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Results *[]struct {
-			CountryCode *string `json:"countryCode,omitempty"`
-			CountryName *string `json:"countryName,omitempty"`
+		// Available Whether a pre-flight estimate is available on this platform. False for Google and TikTok.
+		Available bool `json:"available"`
 
-			// Key Meta's opaque location ID. Use this in targeting.cities[].key / regions[].key.
-			Key  string `json:"key"`
-			Name string `json:"name"`
+		// Currency Currency of any monetary fields in the estimate, when applicable.
+		Currency *string `json:"currency,omitempty"`
 
-			// Region Parent region/state name (cities only).
-			Region *string `json:"region,omitempty"`
+		// Daily Optional estimated daily reach/results at the given budget, when the platform returns it.
+		Daily *int `json:"daily,omitempty"`
 
-			// RegionId Parent region ID (cities only).
-			RegionId       *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId `json:"regionId,omitempty"`
-			SupportsCity   *bool                                                           `json:"supportsCity,omitempty"`
-			SupportsRegion *bool                                                           `json:"supportsRegion,omitempty"`
+		// EstimateReady Meta only. False when Meta is still computing the estimate (the audience is too new); retry shortly.
+		EstimateReady *bool `json:"estimateReady,omitempty"`
 
-			// Type Location type as returned by Meta (city, region, country, etc.).
-			Type string `json:"type"`
-		} `json:"results,omitempty"`
+		// Lower Lower bound of the estimated reachable audience. Present only when available.
+		Lower *int `json:"lower,omitempty"`
+
+		// Upper Upper bound of the estimated reachable audience. Present only when available.
+		Upper *int `json:"upper,omitempty"`
 	}
 	JSON401 *Unauthorized
+	JSON404 *NotFound
 }
 
 // Status returns HTTPResponse.Status
-func (r SearchAdTargetingLocationsResponse) Status() string {
+func (r EstimateAdReachResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -48601,7 +49136,7 @@ func (r SearchAdTargetingLocationsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r SearchAdTargetingLocationsResponse) StatusCode() int {
+func (r EstimateAdReachResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -48609,7 +49144,55 @@ func (r SearchAdTargetingLocationsResponse) StatusCode() int {
 }
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
-func (r SearchAdTargetingLocationsResponse) ContentType() string {
+func (r EstimateAdReachResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SearchAdTargetingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Results *[]struct {
+			// AudienceSize Optional estimated reachable users for this option, when the platform returns it.
+			AudienceSize *int `json:"audienceSize,omitempty"`
+
+			// Id The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec.
+			Id string `json:"id"`
+
+			// Name Human-readable label.
+			Name string `json:"name"`
+
+			// Path Optional breadcrumb of parent labels (e.g. ['United States', 'California', 'Los Angeles']). Disambiguates same-named results.
+			Path *[]string `json:"path,omitempty"`
+
+			// Type What the result is (e.g. city, region, country, zip, metro, interest, behavior, income).
+			Type string `json:"type"`
+		} `json:"results,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchAdTargetingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchAdTargetingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SearchAdTargetingResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -58298,13 +58881,30 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 	return ParseSearchAdInterestsResponse(rsp)
 }
 
-// SearchAdTargetingLocationsWithResponse request returning *SearchAdTargetingLocationsResponse
-func (c *ClientWithResponses) SearchAdTargetingLocationsWithResponse(ctx context.Context, params *SearchAdTargetingLocationsParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingLocationsResponse, error) {
-	rsp, err := c.SearchAdTargetingLocations(ctx, params, reqEditors...)
+// EstimateAdReachWithBodyWithResponse request with arbitrary body returning *EstimateAdReachResponse
+func (c *ClientWithResponses) EstimateAdReachWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error) {
+	rsp, err := c.EstimateAdReachWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseSearchAdTargetingLocationsResponse(rsp)
+	return ParseEstimateAdReachResponse(rsp)
+}
+
+func (c *ClientWithResponses) EstimateAdReachWithResponse(ctx context.Context, body EstimateAdReachJSONRequestBody, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error) {
+	rsp, err := c.EstimateAdReach(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEstimateAdReachResponse(rsp)
+}
+
+// SearchAdTargetingWithResponse request returning *SearchAdTargetingResponse
+func (c *ClientWithResponses) SearchAdTargetingWithResponse(ctx context.Context, params *SearchAdTargetingParams, reqEditors ...RequestEditorFn) (*SearchAdTargetingResponse, error) {
+	rsp, err := c.SearchAdTargeting(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchAdTargetingResponse(rsp)
 }
 
 // GetAdsTimelineWithResponse request returning *GetAdsTimelineResponse
@@ -64974,14 +65574,17 @@ func ParseListAdAudiencesResponse(rsp *http.Response) (*ListAdAudiencesResponse,
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Audiences *[]struct {
-				Description        *string                                          `json:"description,omitempty"`
-				Id                 *string                                          `json:"id,omitempty"`
-				Name               *string                                          `json:"name,omitempty"`
-				Platform           *string                                          `json:"platform,omitempty"`
-				PlatformAudienceId *string                                          `json:"platformAudienceId,omitempty"`
-				Size               *int                                             `json:"size,omitempty"`
-				Status             *string                                          `json:"status,omitempty"`
-				Type               *ListAdAudiences200JSONResponseBodyAudiencesType `json:"type,omitempty"`
+				Description        *string `json:"description,omitempty"`
+				Id                 *string `json:"id,omitempty"`
+				Name               *string `json:"name,omitempty"`
+				Platform           *string `json:"platform,omitempty"`
+				PlatformAudienceId *string `json:"platformAudienceId,omitempty"`
+				Size               *int    `json:"size,omitempty"`
+
+				// Spec Present (and the only meaningful payload) when `type` is `saved_targeting`. Null for uploaded/derived audience types.
+				Spec   *TargetingSpec                                   `json:"spec,omitempty"`
+				Status *string                                          `json:"status,omitempty"`
+				Type   *ListAdAudiences200JSONResponseBodyAudiencesType `json:"type,omitempty"`
 			} `json:"audiences,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -65649,15 +66252,73 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 	return response, nil
 }
 
-// ParseSearchAdTargetingLocationsResponse parses an HTTP response from a SearchAdTargetingLocationsWithResponse call
-func ParseSearchAdTargetingLocationsResponse(rsp *http.Response) (*SearchAdTargetingLocationsResponse, error) {
+// ParseEstimateAdReachResponse parses an HTTP response from a EstimateAdReachWithResponse call
+func ParseEstimateAdReachResponse(rsp *http.Response) (*EstimateAdReachResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &SearchAdTargetingLocationsResponse{
+	response := &EstimateAdReachResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Available Whether a pre-flight estimate is available on this platform. False for Google and TikTok.
+			Available bool `json:"available"`
+
+			// Currency Currency of any monetary fields in the estimate, when applicable.
+			Currency *string `json:"currency,omitempty"`
+
+			// Daily Optional estimated daily reach/results at the given budget, when the platform returns it.
+			Daily *int `json:"daily,omitempty"`
+
+			// EstimateReady Meta only. False when Meta is still computing the estimate (the audience is too new); retry shortly.
+			EstimateReady *bool `json:"estimateReady,omitempty"`
+
+			// Lower Lower bound of the estimated reachable audience. Present only when available.
+			Lower *int `json:"lower,omitempty"`
+
+			// Upper Upper bound of the estimated reachable audience. Present only when available.
+			Upper *int `json:"upper,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchAdTargetingResponse parses an HTTP response from a SearchAdTargetingWithResponse call
+func ParseSearchAdTargetingResponse(rsp *http.Response) (*SearchAdTargetingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchAdTargetingResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -65666,22 +66327,19 @@ func ParseSearchAdTargetingLocationsResponse(rsp *http.Response) (*SearchAdTarge
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Results *[]struct {
-				CountryCode *string `json:"countryCode,omitempty"`
-				CountryName *string `json:"countryName,omitempty"`
+				// AudienceSize Optional estimated reachable users for this option, when the platform returns it.
+				AudienceSize *int `json:"audienceSize,omitempty"`
 
-				// Key Meta's opaque location ID. Use this in targeting.cities[].key / regions[].key.
-				Key  string `json:"key"`
+				// Id The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec.
+				Id string `json:"id"`
+
+				// Name Human-readable label.
 				Name string `json:"name"`
 
-				// Region Parent region/state name (cities only).
-				Region *string `json:"region,omitempty"`
+				// Path Optional breadcrumb of parent labels (e.g. ['United States', 'California', 'Los Angeles']). Disambiguates same-named results.
+				Path *[]string `json:"path,omitempty"`
 
-				// RegionId Parent region ID (cities only).
-				RegionId       *SearchAdTargetingLocations200JSONResponseBody_Results_RegionId `json:"regionId,omitempty"`
-				SupportsCity   *bool                                                           `json:"supportsCity,omitempty"`
-				SupportsRegion *bool                                                           `json:"supportsRegion,omitempty"`
-
-				// Type Location type as returned by Meta (city, region, country, etc.).
+				// Type What the result is (e.g. city, region, country, zip, metro, interest, behavior, income).
 				Type string `json:"type"`
 			} `json:"results,omitempty"`
 		}
