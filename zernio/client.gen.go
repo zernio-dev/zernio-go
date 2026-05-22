@@ -7626,42 +7626,6 @@ func (e ValidateMedia200JSONResponseBodyType) Valid() bool {
 	}
 }
 
-// Defines values for ValidatePostJSONBodyMediaItemsType.
-const (
-	ValidatePostJSONBodyMediaItemsTypeImage ValidatePostJSONBodyMediaItemsType = "image"
-	ValidatePostJSONBodyMediaItemsTypeVideo ValidatePostJSONBodyMediaItemsType = "video"
-)
-
-// Valid indicates whether the value is a known member of the ValidatePostJSONBodyMediaItemsType enum.
-func (e ValidatePostJSONBodyMediaItemsType) Valid() bool {
-	switch e {
-	case ValidatePostJSONBodyMediaItemsTypeImage:
-		return true
-	case ValidatePostJSONBodyMediaItemsTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ValidatePostJSONBodyPlatformsCustomMediaType.
-const (
-	ValidatePostJSONBodyPlatformsCustomMediaTypeImage ValidatePostJSONBodyPlatformsCustomMediaType = "image"
-	ValidatePostJSONBodyPlatformsCustomMediaTypeVideo ValidatePostJSONBodyPlatformsCustomMediaType = "video"
-)
-
-// Valid indicates whether the value is a known member of the ValidatePostJSONBodyPlatformsCustomMediaType enum.
-func (e ValidatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
-	switch e {
-	case ValidatePostJSONBodyPlatformsCustomMediaTypeImage:
-		return true
-	case ValidatePostJSONBodyPlatformsCustomMediaTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for ValidatePostJSONBodyPlatformsPlatform.
 const (
 	ValidatePostJSONBodyPlatformsPlatformBluesky        ValidatePostJSONBodyPlatformsPlatform = "bluesky"
@@ -15634,28 +15598,16 @@ type ValidatePostJSONBody struct {
 	Content *string `json:"content,omitempty"`
 
 	// MediaItems Root media items shared across platforms
-	MediaItems *[]struct {
-		Type *ValidatePostJSONBodyMediaItemsType `json:"type,omitempty"`
-		Url  *string                             `json:"url,omitempty"`
-	} `json:"mediaItems,omitempty"`
+	MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
 
 	// Platforms Target platforms (same format as POST /v1/posts)
 	Platforms []struct {
-		CustomContent *string `json:"customContent,omitempty"`
-		CustomMedia   *[]struct {
-			Type *ValidatePostJSONBodyPlatformsCustomMediaType `json:"type,omitempty"`
-			Url  *string                                       `json:"url,omitempty"`
-		} `json:"customMedia,omitempty"`
+		CustomContent        *string                               `json:"customContent,omitempty"`
+		CustomMedia          *[]MediaItem                          `json:"customMedia,omitempty"`
 		Platform             ValidatePostJSONBodyPlatformsPlatform `json:"platform"`
 		PlatformSpecificData *map[string]interface{}               `json:"platformSpecificData,omitempty"`
 	} `json:"platforms"`
 }
-
-// ValidatePostJSONBodyMediaItemsType defines parameters for ValidatePost.
-type ValidatePostJSONBodyMediaItemsType string
-
-// ValidatePostJSONBodyPlatformsCustomMediaType defines parameters for ValidatePost.
-type ValidatePostJSONBodyPlatformsCustomMediaType string
 
 // ValidatePostJSONBodyPlatformsPlatform defines parameters for ValidatePost.
 type ValidatePostJSONBodyPlatformsPlatform string
