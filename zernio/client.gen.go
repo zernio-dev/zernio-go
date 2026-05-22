@@ -7164,54 +7164,6 @@ func (e ListPostsParamsSortBy) Valid() bool {
 	}
 }
 
-// Defines values for CreatePostJSONBodyMediaItemsType.
-const (
-	CreatePostJSONBodyMediaItemsTypeDocument CreatePostJSONBodyMediaItemsType = "document"
-	CreatePostJSONBodyMediaItemsTypeGif      CreatePostJSONBodyMediaItemsType = "gif"
-	CreatePostJSONBodyMediaItemsTypeImage    CreatePostJSONBodyMediaItemsType = "image"
-	CreatePostJSONBodyMediaItemsTypeVideo    CreatePostJSONBodyMediaItemsType = "video"
-)
-
-// Valid indicates whether the value is a known member of the CreatePostJSONBodyMediaItemsType enum.
-func (e CreatePostJSONBodyMediaItemsType) Valid() bool {
-	switch e {
-	case CreatePostJSONBodyMediaItemsTypeDocument:
-		return true
-	case CreatePostJSONBodyMediaItemsTypeGif:
-		return true
-	case CreatePostJSONBodyMediaItemsTypeImage:
-		return true
-	case CreatePostJSONBodyMediaItemsTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreatePostJSONBodyPlatformsCustomMediaType.
-const (
-	CreatePostJSONBodyPlatformsCustomMediaTypeDocument CreatePostJSONBodyPlatformsCustomMediaType = "document"
-	CreatePostJSONBodyPlatformsCustomMediaTypeGif      CreatePostJSONBodyPlatformsCustomMediaType = "gif"
-	CreatePostJSONBodyPlatformsCustomMediaTypeImage    CreatePostJSONBodyPlatformsCustomMediaType = "image"
-	CreatePostJSONBodyPlatformsCustomMediaTypeVideo    CreatePostJSONBodyPlatformsCustomMediaType = "video"
-)
-
-// Valid indicates whether the value is a known member of the CreatePostJSONBodyPlatformsCustomMediaType enum.
-func (e CreatePostJSONBodyPlatformsCustomMediaType) Valid() bool {
-	switch e {
-	case CreatePostJSONBodyPlatformsCustomMediaTypeDocument:
-		return true
-	case CreatePostJSONBodyPlatformsCustomMediaTypeGif:
-		return true
-	case CreatePostJSONBodyPlatformsCustomMediaTypeImage:
-		return true
-	case CreatePostJSONBodyPlatformsCustomMediaTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for EditPostJSONBodyPlatform.
 const (
 	EditPostJSONBodyPlatformTwitter EditPostJSONBodyPlatform = "twitter"
@@ -15229,11 +15181,8 @@ type CreatePostJSONBody struct {
 	Hashtags         *[]string             `json:"hashtags,omitempty"`
 
 	// IsDraft When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
-	IsDraft    *bool `json:"isDraft,omitempty"`
-	MediaItems *[]struct {
-		Type *CreatePostJSONBodyMediaItemsType `json:"type,omitempty"`
-		Url  *string                           `json:"url,omitempty"`
-	} `json:"mediaItems,omitempty"`
+	IsDraft    *bool        `json:"isDraft,omitempty"`
+	MediaItems *[]MediaItem `json:"mediaItems,omitempty"`
 
 	// Mentions Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
 	Mentions *[]string               `json:"mentions,omitempty"`
@@ -15244,11 +15193,8 @@ type CreatePostJSONBody struct {
 		AccountId *string `json:"accountId,omitempty"`
 
 		// CustomContent Platform-specific text override. When set, this content is used instead of the top-level post content for this platform. Useful for tailoring captions per platform (e.g. keeping tweets under 280 characters).
-		CustomContent *string `json:"customContent,omitempty"`
-		CustomMedia   *[]struct {
-			Type *CreatePostJSONBodyPlatformsCustomMediaType `json:"type,omitempty"`
-			Url  *string                                     `json:"url,omitempty"`
-		} `json:"customMedia,omitempty"`
+		CustomContent        *string                                            `json:"customContent,omitempty"`
+		CustomMedia          *[]MediaItem                                       `json:"customMedia,omitempty"`
 		Platform             *string                                            `json:"platform,omitempty"`
 		PlatformSpecificData *CreatePostJSONBody_Platforms_PlatformSpecificData `json:"platformSpecificData,omitempty"`
 
@@ -15302,12 +15248,6 @@ type CreatePostParams struct {
 	// XRequestId Optional client-generated request identifier for safe retry (idempotency). When two requests carry the same value, the second is treated as a retry of the first and returns the original post (HTTP 200) instead of creating a duplicate. Window is ~5 minutes from the first request. Generate a UUID per logical call. SDKs do this automatically; HTTP clients should set it themselves or omit it. See the operation description for the full idempotency contract.
 	XRequestId *openapi_types.UUID `json:"x-request-id,omitempty"`
 }
-
-// CreatePostJSONBodyMediaItemsType defines parameters for CreatePost.
-type CreatePostJSONBodyMediaItemsType string
-
-// CreatePostJSONBodyPlatformsCustomMediaType defines parameters for CreatePost.
-type CreatePostJSONBodyPlatformsCustomMediaType string
 
 // CreatePostJSONBody_Platforms_PlatformSpecificData defines parameters for CreatePost.
 type CreatePostJSONBody_Platforms_PlatformSpecificData struct {
