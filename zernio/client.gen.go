@@ -52417,6 +52417,49 @@ type GetInboxPostCommentsResponse struct {
 			Cursor  *string `json:"cursor,omitempty"`
 			HasMore *bool   `json:"hasMore,omitempty"`
 		} `json:"pagination,omitempty"`
+
+		// Post (Reddit only) Metadata for the target post, returned alongside the comments in Reddit's
+		// single round-trip. Lets integrators render a preview of the post the user is commenting on
+		// without an additional request. Absent for non-Reddit platforms and when the upstream
+		// response is missing the post listing (deleted post, malformed response).
+		Post *struct {
+			// Author Reddit username
+			Author *string `json:"author,omitempty"`
+
+			// CreatedUtc Unix timestamp in seconds
+			CreatedUtc *int `json:"createdUtc,omitempty"`
+
+			// FlairText Link flair text if any
+			FlairText *string `json:"flairText,omitempty"`
+
+			// Fullname Fullname with type prefix (e.g. "t3_1tjtj26")
+			Fullname *string `json:"fullname,omitempty"`
+
+			// Id Reddit post base36 id (e.g. "1tjtj26")
+			Id *string `json:"id,omitempty"`
+
+			// IsGallery True if the post is a Reddit gallery (multiple images)
+			IsGallery   *bool `json:"isGallery,omitempty"`
+			NumComments *int  `json:"numComments,omitempty"`
+			Over18      *bool `json:"over18,omitempty"`
+
+			// Permalink Absolute URL to the post on reddit.com
+			Permalink *string `json:"permalink,omitempty"`
+
+			// Score Net upvotes (upvotes minus downvotes)
+			Score *int `json:"score,omitempty"`
+
+			// Selftext Body text for self-posts (empty for link posts)
+			Selftext *string `json:"selftext,omitempty"`
+			Stickied *bool   `json:"stickied,omitempty"`
+
+			// Subreddit Subreddit name
+			Subreddit *string `json:"subreddit,omitempty"`
+			Title     *string `json:"title,omitempty"`
+
+			// Url For link posts
+			Url *string `json:"url,omitempty"`
+		} `json:"post,omitempty"`
 		Status *string `json:"status,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -70036,6 +70079,49 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 				Cursor  *string `json:"cursor,omitempty"`
 				HasMore *bool   `json:"hasMore,omitempty"`
 			} `json:"pagination,omitempty"`
+
+			// Post (Reddit only) Metadata for the target post, returned alongside the comments in Reddit's
+			// single round-trip. Lets integrators render a preview of the post the user is commenting on
+			// without an additional request. Absent for non-Reddit platforms and when the upstream
+			// response is missing the post listing (deleted post, malformed response).
+			Post *struct {
+				// Author Reddit username
+				Author *string `json:"author,omitempty"`
+
+				// CreatedUtc Unix timestamp in seconds
+				CreatedUtc *int `json:"createdUtc,omitempty"`
+
+				// FlairText Link flair text if any
+				FlairText *string `json:"flairText,omitempty"`
+
+				// Fullname Fullname with type prefix (e.g. "t3_1tjtj26")
+				Fullname *string `json:"fullname,omitempty"`
+
+				// Id Reddit post base36 id (e.g. "1tjtj26")
+				Id *string `json:"id,omitempty"`
+
+				// IsGallery True if the post is a Reddit gallery (multiple images)
+				IsGallery   *bool `json:"isGallery,omitempty"`
+				NumComments *int  `json:"numComments,omitempty"`
+				Over18      *bool `json:"over18,omitempty"`
+
+				// Permalink Absolute URL to the post on reddit.com
+				Permalink *string `json:"permalink,omitempty"`
+
+				// Score Net upvotes (upvotes minus downvotes)
+				Score *int `json:"score,omitempty"`
+
+				// Selftext Body text for self-posts (empty for link posts)
+				Selftext *string `json:"selftext,omitempty"`
+				Stickied *bool   `json:"stickied,omitempty"`
+
+				// Subreddit Subreddit name
+				Subreddit *string `json:"subreddit,omitempty"`
+				Title     *string `json:"title,omitempty"`
+
+				// Url For link posts
+				Url *string `json:"url,omitempty"`
+			} `json:"post,omitempty"`
 			Status *string `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
