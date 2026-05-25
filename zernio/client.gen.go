@@ -10203,13 +10203,19 @@ type PostVisibility string
 
 // PostAnalytics defines model for PostAnalytics.
 type PostAnalytics struct {
-	Clicks         *int       `json:"clicks,omitempty"`
-	Comments       *int       `json:"comments,omitempty"`
-	EngagementRate *float32   `json:"engagementRate,omitempty"`
-	Impressions    *int       `json:"impressions,omitempty"`
-	LastUpdated    *time.Time `json:"lastUpdated,omitempty"`
-	Likes          *int       `json:"likes,omitempty"`
-	Reach          *int       `json:"reach,omitempty"`
+	Clicks         *int     `json:"clicks,omitempty"`
+	Comments       *int     `json:"comments,omitempty"`
+	EngagementRate *float32 `json:"engagementRate,omitempty"`
+
+	// IgReelsAvgWatchTime Instagram Reels only: average watch time per play, in milliseconds. 0 for non-Reels media and other platforms.
+	IgReelsAvgWatchTime *int `json:"igReelsAvgWatchTime,omitempty"`
+
+	// IgReelsVideoViewTotalTime Instagram Reels only: total watch time including replays, in milliseconds. 0 for non-Reels media and other platforms.
+	IgReelsVideoViewTotalTime *int       `json:"igReelsVideoViewTotalTime,omitempty"`
+	Impressions               *int       `json:"impressions,omitempty"`
+	LastUpdated               *time.Time `json:"lastUpdated,omitempty"`
+	Likes                     *int       `json:"likes,omitempty"`
+	Reach                     *int       `json:"reach,omitempty"`
 
 	// Saves Number of saves/bookmarks (Instagram, Pinterest)
 	Saves  *int `json:"saves,omitempty"`
