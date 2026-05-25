@@ -252,19 +252,26 @@ func main() {
 | `client.ListAdsBusinessCentersWithResponse()` | List TikTok Business Centers |
 | `client.ListConversionAssociationsWithResponse()` | List campaigns associated with a conversion destination |
 | `client.ListConversionDestinationsWithResponse()` | List destinations for the Conversions API |
+| `client.ListFormLeadsWithResponse()` | List leads for a single form |
+| `client.ListLeadFormsWithResponse()` | List Lead Gen (Instant) forms |
+| `client.ListLeadsWithResponse()` | List submitted leads (cross-form CRM view) |
 | `client.CreateConversionDestinationWithResponse()` | Create a conversion destination (LinkedIn) |
 | `client.CreateCtwaAdWithResponse()` | Create Click-to-WhatsApp ad(s) |
+| `client.CreateLeadFormWithResponse()` | Create a Lead Gen (Instant) form |
 | `client.CreateStandaloneAdWithResponse()` | Create standalone ad |
+| `client.CreateTestLeadWithResponse()` | Create a synthetic test lead |
 | `client.GetAdWithResponse()` | Get ad details |
 | `client.GetAdAnalyticsWithResponse()` | Get ad analytics |
 | `client.GetAdCommentsWithResponse()` | List comments on an ad |
 | `client.GetConversionDestinationWithResponse()` | Fetch a single conversion destination |
 | `client.GetConversionMetricsWithResponse()` | Fetch attribution metrics for a conversion destination |
+| `client.GetLeadFormWithResponse()` | Get a single Lead Gen form |
 | `client.UpdateAdWithResponse()` | Update ad |
 | `client.UpdateConversionDestinationWithResponse()` | Update a conversion destination |
 | `client.DeleteAdWithResponse()` | Cancel an ad |
 | `client.DeleteConversionDestinationWithResponse()` | Soft-delete a conversion destination |
 | `client.AddConversionAssociationsWithResponse()` | Associate campaigns with a conversion destination |
+| `client.ArchiveLeadFormWithResponse()` | Archive a Lead Gen form |
 | `client.BoostPostWithResponse()` | Boost post as ad |
 | `client.EstimateAdReachWithResponse()` | Estimate audience reach |
 | `client.RemoveConversionAssociationsWithResponse()` | Remove campaign↔conversion associations |

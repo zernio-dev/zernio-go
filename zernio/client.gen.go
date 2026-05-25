@@ -12988,7 +12988,10 @@ type CreateStandaloneAdJSONBody struct {
 	// Languages Language codes (e.g. ['en']). Restricts the audience by language.
 	Languages *[]string `json:"languages,omitempty"`
 
-	// LinkUrl Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`.
+	// LeadGenFormId Meta Lead Gen forms only (facebook/instagram). The leadgen_forms ID to attach to the ad's creative — create one via POST /v1/ads/lead-forms. REQUIRED when `goal` is `lead_generation`; ignored otherwise. The ad set's promoted_object.page_id + LEAD_GENERATION optimization are derived automatically from the goal.
+	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
+
+	// LinkUrl Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`. NOT required when `goal` is `lead_generation` (the ad opens a Lead Gen form instead of a destination).
 	LinkUrl *string `json:"linkUrl,omitempty"`
 
 	// LongHeadline Google Display only — defaults to `headline` if omitted. On LinkedIn, reused as the optional secondary description text on traffic (link) ads; omitted if not provided.
@@ -13315,6 +13318,91 @@ type SearchAdInterestsParams struct {
 
 	// AccountId Social account ID
 	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ListLeadFormsParams defines parameters for ListLeadForms.
+type ListLeadFormsParams struct {
+	// AccountId Connected facebook account id.
+	AccountId string  `form:"accountId" json:"accountId"`
+	Limit     *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	Cursor    *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+}
+
+// CreateLeadFormJSONBody defines parameters for CreateLeadForm.
+type CreateLeadFormJSONBody struct {
+	AccountId             string  `json:"accountId"`
+	FollowUpActionUrl     *string `json:"followUpActionUrl,omitempty"`
+	IsOptimizedForQuality *bool   `json:"isOptimizedForQuality,omitempty"`
+	Locale                *string `json:"locale,omitempty"`
+	Name                  string  `json:"name"`
+	PrivacyPolicyLinkText *string `json:"privacyPolicyLinkText,omitempty"`
+	PrivacyPolicyUrl      string  `json:"privacyPolicyUrl"`
+	Questions             []struct {
+		InlineContext *string `json:"inline_context,omitempty"`
+
+		// Key CUSTOM questions only.
+		Key *string `json:"key,omitempty"`
+
+		// Label CUSTOM questions only.
+		Label   *string `json:"label,omitempty"`
+		Options *[]struct {
+			Key   *string `json:"key,omitempty"`
+			Value *string `json:"value,omitempty"`
+		} `json:"options,omitempty"`
+
+		// Type EMAIL, PHONE, FULL_NAME, FIRST_NAME, LAST_NAME, CUSTOM, …
+		Type string `json:"type"`
+	} `json:"questions"`
+	ThankYouBody       *string `json:"thankYouBody,omitempty"`
+	ThankYouButtonText *string `json:"thankYouButtonText,omitempty"`
+	ThankYouButtonType *string `json:"thankYouButtonType,omitempty"`
+	ThankYouTitle      *string `json:"thankYouTitle,omitempty"`
+	ThankYouWebsiteUrl *string `json:"thankYouWebsiteUrl,omitempty"`
+}
+
+// ArchiveLeadFormParams defines parameters for ArchiveLeadForm.
+type ArchiveLeadFormParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// GetLeadFormParams defines parameters for GetLeadForm.
+type GetLeadFormParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ListFormLeadsParams defines parameters for ListFormLeads.
+type ListFormLeadsParams struct {
+	AccountId string  `form:"accountId" json:"accountId"`
+	Limit     *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	Cursor    *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Since Unix seconds.
+	Since *int `form:"since,omitempty" json:"since,omitempty"`
+}
+
+// CreateTestLeadJSONBody defines parameters for CreateTestLead.
+type CreateTestLeadJSONBody struct {
+	AccountId string `json:"accountId"`
+	FieldData []struct {
+		Name   string   `json:"name"`
+		Values []string `json:"values"`
+	} `json:"fieldData"`
+}
+
+// ListLeadsParams defines parameters for ListLeads.
+type ListLeadsParams struct {
+	// FormId Filter to a single lead form.
+	FormId *string `form:"formId,omitempty" json:"formId,omitempty"`
+
+	// AccountId Filter to a single connected account.
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+	Limit     *int    `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Since Unix seconds; only leads created at/after this Meta timestamp.
+	Since *int `form:"since,omitempty" json:"since,omitempty"`
+
+	// Cursor Keyset cursor from a previous response's pagination.cursor.
+	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 }
 
 // EstimateAdReachJSONBody defines parameters for EstimateAdReach.
@@ -16900,6 +16988,12 @@ type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 // CreateCtwaAdJSONRequestBody defines body for CreateCtwaAd for application/json ContentType.
 type CreateCtwaAdJSONRequestBody CreateCtwaAdJSONBody
 
+// CreateLeadFormJSONRequestBody defines body for CreateLeadForm for application/json ContentType.
+type CreateLeadFormJSONRequestBody CreateLeadFormJSONBody
+
+// CreateTestLeadJSONRequestBody defines body for CreateTestLead for application/json ContentType.
+type CreateTestLeadJSONRequestBody CreateTestLeadJSONBody
+
 // EstimateAdReachJSONRequestBody defines body for EstimateAdReach for application/json ContentType.
 type EstimateAdReachJSONRequestBody EstimateAdReachJSONBody
 
@@ -20119,6 +20213,31 @@ type ClientInterface interface {
 	// SearchAdInterests request
 	SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListLeadForms request
+	ListLeadForms(ctx context.Context, params *ListLeadFormsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateLeadFormWithBody request with any body
+	CreateLeadFormWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateLeadForm(ctx context.Context, body CreateLeadFormJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArchiveLeadForm request
+	ArchiveLeadForm(ctx context.Context, formId string, params *ArchiveLeadFormParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLeadForm request
+	GetLeadForm(ctx context.Context, formId string, params *GetLeadFormParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListFormLeads request
+	ListFormLeads(ctx context.Context, formId string, params *ListFormLeadsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateTestLeadWithBody request with any body
+	CreateTestLeadWithBody(ctx context.Context, formId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateTestLead(ctx context.Context, formId string, body CreateTestLeadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListLeads request
+	ListLeads(ctx context.Context, params *ListLeadsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// EstimateAdReachWithBody request with any body
 	EstimateAdReachWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -22646,6 +22765,114 @@ func (c *Client) CreateCtwaAd(ctx context.Context, body CreateCtwaAdJSONRequestB
 
 func (c *Client) SearchAdInterests(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAdInterestsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListLeadForms(ctx context.Context, params *ListLeadFormsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListLeadFormsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateLeadFormWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateLeadFormRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateLeadForm(ctx context.Context, body CreateLeadFormJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateLeadFormRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArchiveLeadForm(ctx context.Context, formId string, params *ArchiveLeadFormParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArchiveLeadFormRequest(c.Server, formId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLeadForm(ctx context.Context, formId string, params *GetLeadFormParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLeadFormRequest(c.Server, formId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListFormLeads(ctx context.Context, formId string, params *ListFormLeadsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListFormLeadsRequest(c.Server, formId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTestLeadWithBody(ctx context.Context, formId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTestLeadRequestWithBody(c.Server, formId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTestLead(ctx context.Context, formId string, body CreateTestLeadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTestLeadRequest(c.Server, formId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListLeads(ctx context.Context, params *ListLeadsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListLeadsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -31897,6 +32124,476 @@ func NewSearchAdInterestsRequest(server string, params *SearchAdInterestsParams)
 			for _, qp := range strings.Split(queryFrag, "&") {
 				rawQueryFragments = append(rawQueryFragments, qp)
 			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListLeadFormsRequest generates requests for ListLeadForms
+func NewListLeadFormsRequest(server string, params *ListLeadFormsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateLeadFormRequest calls the generic CreateLeadForm builder with application/json body
+func NewCreateLeadFormRequest(server string, body CreateLeadFormJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateLeadFormRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateLeadFormRequestWithBody generates requests for CreateLeadForm with any type of body
+func NewCreateLeadFormRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewArchiveLeadFormRequest generates requests for ArchiveLeadForm
+func NewArchiveLeadFormRequest(server string, formId string, params *ArchiveLeadFormParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "formId", formId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLeadFormRequest generates requests for GetLeadForm
+func NewGetLeadFormRequest(server string, formId string, params *GetLeadFormParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "formId", formId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListFormLeadsRequest generates requests for ListFormLeads
+func NewListFormLeadsRequest(server string, formId string, params *ListFormLeadsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "formId", formId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms/%s/leads", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateTestLeadRequest calls the generic CreateTestLead builder with application/json body
+func NewCreateTestLeadRequest(server string, formId string, body CreateTestLeadJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTestLeadRequestWithBody(server, formId, "application/json", bodyReader)
+}
+
+// NewCreateTestLeadRequestWithBody generates requests for CreateTestLead with any type of body
+func NewCreateTestLeadRequestWithBody(server string, formId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "formId", formId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/lead-forms/%s/test-leads", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListLeadsRequest generates requests for ListLeads
+func NewListLeadsRequest(server string, params *ListLeadsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/leads")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.FormId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "formId", *params.FormId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
 		}
 
 		if encoded := queryValues.Encode(); encoded != "" {
@@ -43917,6 +44614,31 @@ type ClientWithResponsesInterface interface {
 	// SearchAdInterestsWithResponse request
 	SearchAdInterestsWithResponse(ctx context.Context, params *SearchAdInterestsParams, reqEditors ...RequestEditorFn) (*SearchAdInterestsResponse, error)
 
+	// ListLeadFormsWithResponse request
+	ListLeadFormsWithResponse(ctx context.Context, params *ListLeadFormsParams, reqEditors ...RequestEditorFn) (*ListLeadFormsResponse, error)
+
+	// CreateLeadFormWithBodyWithResponse request with any body
+	CreateLeadFormWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateLeadFormResponse, error)
+
+	CreateLeadFormWithResponse(ctx context.Context, body CreateLeadFormJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateLeadFormResponse, error)
+
+	// ArchiveLeadFormWithResponse request
+	ArchiveLeadFormWithResponse(ctx context.Context, formId string, params *ArchiveLeadFormParams, reqEditors ...RequestEditorFn) (*ArchiveLeadFormResponse, error)
+
+	// GetLeadFormWithResponse request
+	GetLeadFormWithResponse(ctx context.Context, formId string, params *GetLeadFormParams, reqEditors ...RequestEditorFn) (*GetLeadFormResponse, error)
+
+	// ListFormLeadsWithResponse request
+	ListFormLeadsWithResponse(ctx context.Context, formId string, params *ListFormLeadsParams, reqEditors ...RequestEditorFn) (*ListFormLeadsResponse, error)
+
+	// CreateTestLeadWithBodyWithResponse request with any body
+	CreateTestLeadWithBodyWithResponse(ctx context.Context, formId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestLeadResponse, error)
+
+	CreateTestLeadWithResponse(ctx context.Context, formId string, body CreateTestLeadJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestLeadResponse, error)
+
+	// ListLeadsWithResponse request
+	ListLeadsWithResponse(ctx context.Context, params *ListLeadsParams, reqEditors ...RequestEditorFn) (*ListLeadsResponse, error)
+
 	// EstimateAdReachWithBodyWithResponse request with any body
 	EstimateAdReachWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error)
 
@@ -49095,6 +49817,292 @@ func (r SearchAdInterestsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SearchAdInterestsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListLeadFormsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Forms      *[]map[string]interface{} `json:"forms,omitempty"`
+		Pagination *struct {
+			Cursor  *string `json:"cursor,omitempty"`
+			HasMore *bool   `json:"hasMore,omitempty"`
+		} `json:"pagination,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListLeadFormsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListLeadFormsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListLeadFormsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateLeadFormResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Form *struct {
+			Id   *string `json:"id,omitempty"`
+			Name *string `json:"name,omitempty"`
+		} `json:"form,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateLeadFormResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateLeadFormResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateLeadFormResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ArchiveLeadFormResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Archived *bool   `json:"archived,omitempty"`
+		FormId   *string `json:"formId,omitempty"`
+		Status   *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ArchiveLeadFormResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArchiveLeadFormResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ArchiveLeadFormResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetLeadFormResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Form   *map[string]interface{} `json:"form,omitempty"`
+		Status *string                 `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetLeadFormResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLeadFormResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetLeadFormResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListFormLeadsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Leads *[]struct {
+			AdId        *string                   `json:"adId,omitempty"`
+			CreatedTime *string                   `json:"createdTime,omitempty"`
+			FieldData   *[]map[string]interface{} `json:"fieldData,omitempty"`
+			Fields      *map[string]string        `json:"fields,omitempty"`
+			FormId      *string                   `json:"formId,omitempty"`
+			Id          *string                   `json:"id,omitempty"`
+		} `json:"leads,omitempty"`
+		Pagination *struct {
+			Cursor  *string `json:"cursor,omitempty"`
+			HasMore *bool   `json:"hasMore,omitempty"`
+		} `json:"pagination,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListFormLeadsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListFormLeadsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListFormLeadsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateTestLeadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Status   *string `json:"status,omitempty"`
+		TestLead *struct {
+			Id *string `json:"id,omitempty"`
+		} `json:"testLead,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateTestLeadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateTestLeadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateTestLeadResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListLeadsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Leads *[]struct {
+			AccountId  *string `json:"accountId,omitempty"`
+			AdId       *string `json:"adId,omitempty"`
+			AdsetId    *string `json:"adsetId,omitempty"`
+			CampaignId *string `json:"campaignId,omitempty"`
+
+			// CreatedTime ISO 8601.
+			CreatedTime *string `json:"createdTime,omitempty"`
+
+			// FieldData Raw Meta field_data.
+			FieldData *[]map[string]interface{} `json:"fieldData,omitempty"`
+
+			// Fields Question key → answer.
+			Fields   *map[string]string `json:"fields,omitempty"`
+			FormId   *string            `json:"formId,omitempty"`
+			FormName *string            `json:"formName,omitempty"`
+
+			// Id Zernio lead id.
+			Id        *string `json:"id,omitempty"`
+			IsOrganic *bool   `json:"isOrganic,omitempty"`
+
+			// LeadgenId Meta lead id.
+			LeadgenId *string `json:"leadgenId,omitempty"`
+		} `json:"leads,omitempty"`
+		Pagination *struct {
+			Cursor  *string `json:"cursor,omitempty"`
+			HasMore *bool   `json:"hasMore,omitempty"`
+		} `json:"pagination,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListLeadsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListLeadsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListLeadsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -58881,6 +59889,85 @@ func (c *ClientWithResponses) SearchAdInterestsWithResponse(ctx context.Context,
 	return ParseSearchAdInterestsResponse(rsp)
 }
 
+// ListLeadFormsWithResponse request returning *ListLeadFormsResponse
+func (c *ClientWithResponses) ListLeadFormsWithResponse(ctx context.Context, params *ListLeadFormsParams, reqEditors ...RequestEditorFn) (*ListLeadFormsResponse, error) {
+	rsp, err := c.ListLeadForms(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListLeadFormsResponse(rsp)
+}
+
+// CreateLeadFormWithBodyWithResponse request with arbitrary body returning *CreateLeadFormResponse
+func (c *ClientWithResponses) CreateLeadFormWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateLeadFormResponse, error) {
+	rsp, err := c.CreateLeadFormWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateLeadFormResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateLeadFormWithResponse(ctx context.Context, body CreateLeadFormJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateLeadFormResponse, error) {
+	rsp, err := c.CreateLeadForm(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateLeadFormResponse(rsp)
+}
+
+// ArchiveLeadFormWithResponse request returning *ArchiveLeadFormResponse
+func (c *ClientWithResponses) ArchiveLeadFormWithResponse(ctx context.Context, formId string, params *ArchiveLeadFormParams, reqEditors ...RequestEditorFn) (*ArchiveLeadFormResponse, error) {
+	rsp, err := c.ArchiveLeadForm(ctx, formId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArchiveLeadFormResponse(rsp)
+}
+
+// GetLeadFormWithResponse request returning *GetLeadFormResponse
+func (c *ClientWithResponses) GetLeadFormWithResponse(ctx context.Context, formId string, params *GetLeadFormParams, reqEditors ...RequestEditorFn) (*GetLeadFormResponse, error) {
+	rsp, err := c.GetLeadForm(ctx, formId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLeadFormResponse(rsp)
+}
+
+// ListFormLeadsWithResponse request returning *ListFormLeadsResponse
+func (c *ClientWithResponses) ListFormLeadsWithResponse(ctx context.Context, formId string, params *ListFormLeadsParams, reqEditors ...RequestEditorFn) (*ListFormLeadsResponse, error) {
+	rsp, err := c.ListFormLeads(ctx, formId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListFormLeadsResponse(rsp)
+}
+
+// CreateTestLeadWithBodyWithResponse request with arbitrary body returning *CreateTestLeadResponse
+func (c *ClientWithResponses) CreateTestLeadWithBodyWithResponse(ctx context.Context, formId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestLeadResponse, error) {
+	rsp, err := c.CreateTestLeadWithBody(ctx, formId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTestLeadResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateTestLeadWithResponse(ctx context.Context, formId string, body CreateTestLeadJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestLeadResponse, error) {
+	rsp, err := c.CreateTestLead(ctx, formId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTestLeadResponse(rsp)
+}
+
+// ListLeadsWithResponse request returning *ListLeadsResponse
+func (c *ClientWithResponses) ListLeadsWithResponse(ctx context.Context, params *ListLeadsParams, reqEditors ...RequestEditorFn) (*ListLeadsResponse, error) {
+	rsp, err := c.ListLeads(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListLeadsResponse(rsp)
+}
+
 // EstimateAdReachWithBodyWithResponse request with arbitrary body returning *EstimateAdReachResponse
 func (c *ClientWithResponses) EstimateAdReachWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EstimateAdReachResponse, error) {
 	rsp, err := c.EstimateAdReachWithBody(ctx, contentType, body, reqEditors...)
@@ -66234,6 +67321,306 @@ func ParseSearchAdInterestsResponse(rsp *http.Response) (*SearchAdInterestsRespo
 				Id       *string `json:"id,omitempty"`
 				Name     *string `json:"name,omitempty"`
 			} `json:"interests,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListLeadFormsResponse parses an HTTP response from a ListLeadFormsWithResponse call
+func ParseListLeadFormsResponse(rsp *http.Response) (*ListLeadFormsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListLeadFormsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Forms      *[]map[string]interface{} `json:"forms,omitempty"`
+			Pagination *struct {
+				Cursor  *string `json:"cursor,omitempty"`
+				HasMore *bool   `json:"hasMore,omitempty"`
+			} `json:"pagination,omitempty"`
+			Status *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateLeadFormResponse parses an HTTP response from a CreateLeadFormWithResponse call
+func ParseCreateLeadFormResponse(rsp *http.Response) (*CreateLeadFormResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateLeadFormResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Form *struct {
+				Id   *string `json:"id,omitempty"`
+				Name *string `json:"name,omitempty"`
+			} `json:"form,omitempty"`
+			Status *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArchiveLeadFormResponse parses an HTTP response from a ArchiveLeadFormWithResponse call
+func ParseArchiveLeadFormResponse(rsp *http.Response) (*ArchiveLeadFormResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArchiveLeadFormResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Archived *bool   `json:"archived,omitempty"`
+			FormId   *string `json:"formId,omitempty"`
+			Status   *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLeadFormResponse parses an HTTP response from a GetLeadFormWithResponse call
+func ParseGetLeadFormResponse(rsp *http.Response) (*GetLeadFormResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLeadFormResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Form   *map[string]interface{} `json:"form,omitempty"`
+			Status *string                 `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListFormLeadsResponse parses an HTTP response from a ListFormLeadsWithResponse call
+func ParseListFormLeadsResponse(rsp *http.Response) (*ListFormLeadsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListFormLeadsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Leads *[]struct {
+				AdId        *string                   `json:"adId,omitempty"`
+				CreatedTime *string                   `json:"createdTime,omitempty"`
+				FieldData   *[]map[string]interface{} `json:"fieldData,omitempty"`
+				Fields      *map[string]string        `json:"fields,omitempty"`
+				FormId      *string                   `json:"formId,omitempty"`
+				Id          *string                   `json:"id,omitempty"`
+			} `json:"leads,omitempty"`
+			Pagination *struct {
+				Cursor  *string `json:"cursor,omitempty"`
+				HasMore *bool   `json:"hasMore,omitempty"`
+			} `json:"pagination,omitempty"`
+			Status *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateTestLeadResponse parses an HTTP response from a CreateTestLeadWithResponse call
+func ParseCreateTestLeadResponse(rsp *http.Response) (*CreateTestLeadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateTestLeadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Status   *string `json:"status,omitempty"`
+			TestLead *struct {
+				Id *string `json:"id,omitempty"`
+			} `json:"testLead,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListLeadsResponse parses an HTTP response from a ListLeadsWithResponse call
+func ParseListLeadsResponse(rsp *http.Response) (*ListLeadsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListLeadsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Leads *[]struct {
+				AccountId  *string `json:"accountId,omitempty"`
+				AdId       *string `json:"adId,omitempty"`
+				AdsetId    *string `json:"adsetId,omitempty"`
+				CampaignId *string `json:"campaignId,omitempty"`
+
+				// CreatedTime ISO 8601.
+				CreatedTime *string `json:"createdTime,omitempty"`
+
+				// FieldData Raw Meta field_data.
+				FieldData *[]map[string]interface{} `json:"fieldData,omitempty"`
+
+				// Fields Question key → answer.
+				Fields   *map[string]string `json:"fields,omitempty"`
+				FormId   *string            `json:"formId,omitempty"`
+				FormName *string            `json:"formName,omitempty"`
+
+				// Id Zernio lead id.
+				Id        *string `json:"id,omitempty"`
+				IsOrganic *bool   `json:"isOrganic,omitempty"`
+
+				// LeadgenId Meta lead id.
+				LeadgenId *string `json:"leadgenId,omitempty"`
+			} `json:"leads,omitempty"`
+			Pagination *struct {
+				Cursor  *string `json:"cursor,omitempty"`
+				HasMore *bool   `json:"hasMore,omitempty"`
+			} `json:"pagination,omitempty"`
+			Status *string `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
