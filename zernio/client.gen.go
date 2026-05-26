@@ -7008,6 +7008,21 @@ func (e SendInboxMessageJSONBodyTemplateType) Valid() bool {
 	}
 }
 
+// Defines values for SendInboxMessageMultipartBodyVoiceNote.
+const (
+	SendInboxMessageMultipartBodyVoiceNoteTrue SendInboxMessageMultipartBodyVoiceNote = "true"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageMultipartBodyVoiceNote enum.
+func (e SendInboxMessageMultipartBodyVoiceNote) Valid() bool {
+	switch e {
+	case SendInboxMessageMultipartBodyVoiceNoteTrue:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendInboxMessage400JSONResponseBodyCode.
 const (
 	SendInboxMessage400JSONResponseBodyCodePLATFORMLIMITATION SendInboxMessage400JSONResponseBodyCode = "PLATFORM_LIMITATION"
@@ -7499,13 +7514,13 @@ func (e CreateProfile402JSONResponseBodyReason) Valid() bool {
 
 // Defines values for ListQueueSlotsParamsAll.
 const (
-	True ListQueueSlotsParamsAll = "true"
+	ListQueueSlotsParamsAllTrue ListQueueSlotsParamsAll = "true"
 )
 
 // Valid indicates whether the value is a known member of the ListQueueSlotsParamsAll enum.
 func (e ListQueueSlotsParamsAll) Valid() bool {
 	switch e {
-	case True:
+	case ListQueueSlotsParamsAllTrue:
 		return true
 	default:
 		return false
@@ -15383,6 +15398,9 @@ type SendInboxMessageMultipartBody struct {
 
 	// Template JSON string of template object (same schema as application/json body)
 	Template *string `json:"template,omitempty"`
+
+	// VoiceNote WhatsApp-only. Set to "true" when the audio attachment is an in-browser voice recording; the server transcodes it to a WhatsApp-native container (ogg/Opus). Omit for regular audio file uploads.
+	VoiceNote *SendInboxMessageMultipartBodyVoiceNote `json:"voiceNote,omitempty"`
 }
 
 // SendInboxMessageJSONBodyAttachmentType defines parameters for SendInboxMessage.
@@ -15499,6 +15517,9 @@ type SendInboxMessageJSONBodyTemplateElementsButtonsType string
 
 // SendInboxMessageJSONBodyTemplateType defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyTemplateType string
+
+// SendInboxMessageMultipartBodyVoiceNote defines parameters for SendInboxMessage.
+type SendInboxMessageMultipartBodyVoiceNote string
 
 // SendInboxMessage400JSONResponseBodyCode defines parameters for SendInboxMessage.
 type SendInboxMessage400JSONResponseBodyCode string
@@ -54675,7 +54696,14 @@ type GetInboxConversationMessagesResponse struct {
 			// IsStoryMention Instagram story mention
 			IsStoryMention *bool   `json:"isStoryMention,omitempty"`
 			Message        *string `json:"message,omitempty"`
-			Platform       *string `json:"platform,omitempty"`
+
+			// Metadata Platform-specific extras. Free-form, but commonly includes:
+			// `quotedMessageId` (platformMessageId this message replies to),
+			// `waInteractive` (a compact descriptor of WhatsApp interactive
+			// content sent: buttons / list / cta_url / flow), and for inbound
+			// interactive taps `interactiveType` / `interactiveId`.
+			Metadata *map[string]interface{} `json:"metadata,omitempty"`
+			Platform *string                 `json:"platform,omitempty"`
 
 			// Reactions Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
 			Reactions *[]struct {
@@ -72840,7 +72868,14 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				// IsStoryMention Instagram story mention
 				IsStoryMention *bool   `json:"isStoryMention,omitempty"`
 				Message        *string `json:"message,omitempty"`
-				Platform       *string `json:"platform,omitempty"`
+
+				// Metadata Platform-specific extras. Free-form, but commonly includes:
+				// `quotedMessageId` (platformMessageId this message replies to),
+				// `waInteractive` (a compact descriptor of WhatsApp interactive
+				// content sent: buttons / list / cta_url / flow), and for inbound
+				// interactive taps `interactiveType` / `interactiveId`.
+				Metadata *map[string]interface{} `json:"metadata,omitempty"`
+				Platform *string                 `json:"platform,omitempty"`
 
 				// Reactions Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
 				Reactions *[]struct {
