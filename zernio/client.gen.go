@@ -15200,6 +15200,27 @@ type SendInboxMessageJSONBody struct {
 		Url *string `json:"url,omitempty"`
 	} `json:"buttons,omitempty"`
 
+	// Contacts WhatsApp-only. Send one or more contact cards.
+	Contacts *[]struct {
+		Emails *[]struct {
+			Email *string `json:"email,omitempty"`
+			Type  *string `json:"type,omitempty"`
+		} `json:"emails,omitempty"`
+		Name struct {
+			FirstName *string `json:"first_name,omitempty"`
+
+			// FormattedName Full display name.
+			FormattedName string  `json:"formatted_name"`
+			LastName      *string `json:"last_name,omitempty"`
+		} `json:"name"`
+		Phones *[]struct {
+			Phone *string `json:"phone,omitempty"`
+
+			// Type e.g. CELL, WORK, HOME.
+			Type *string `json:"type,omitempty"`
+		} `json:"phones,omitempty"`
+	} `json:"contacts,omitempty"`
+
 	// Interactive WhatsApp-only. Rich interactive payload for list messages, CTA URL
 	// buttons, and Flow prompts. When set, takes priority over `buttons`
 	// and `quickReplies`. The shape mirrors Meta's Cloud API `interactive`
@@ -15245,6 +15266,21 @@ type SendInboxMessageJSONBody struct {
 		// Type Which interactive layout to render.
 		Type SendInboxMessageJSONBodyInteractiveType `json:"type"`
 	} `json:"interactive,omitempty"`
+
+	// Location WhatsApp-only. Send a location pin.
+	Location *struct {
+		// Address Optional street address.
+		Address *string `json:"address,omitempty"`
+
+		// Latitude Latitude in decimal degrees.
+		Latitude float32 `json:"latitude"`
+
+		// Longitude Longitude in decimal degrees.
+		Longitude float32 `json:"longitude"`
+
+		// Name Optional location name.
+		Name *string `json:"name,omitempty"`
+	} `json:"location,omitempty"`
 
 	// Message Message text
 	Message *string `json:"message,omitempty"`
@@ -54637,12 +54673,21 @@ type GetInboxConversationMessagesResponse struct {
 			IsEdited *bool `json:"isEdited,omitempty"`
 
 			// IsStoryMention Instagram story mention
-			IsStoryMention *bool      `json:"isStoryMention,omitempty"`
-			Message        *string    `json:"message,omitempty"`
-			Platform       *string    `json:"platform,omitempty"`
-			ReadAt         *time.Time `json:"readAt,omitempty"`
-			SenderId       *string    `json:"senderId,omitempty"`
-			SenderName     *string    `json:"senderName,omitempty"`
+			IsStoryMention *bool   `json:"isStoryMention,omitempty"`
+			Message        *string `json:"message,omitempty"`
+			Platform       *string `json:"platform,omitempty"`
+
+			// Reactions Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
+			Reactions *[]struct {
+				Emoji *string `json:"emoji,omitempty"`
+
+				// FromMe true if the connected account reacted
+				FromMe    *bool      `json:"fromMe,omitempty"`
+				ReactedAt *time.Time `json:"reactedAt,omitempty"`
+			} `json:"reactions,omitempty"`
+			ReadAt     *time.Time `json:"readAt,omitempty"`
+			SenderId   *string    `json:"senderId,omitempty"`
+			SenderName *string    `json:"senderName,omitempty"`
 
 			// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
 			SenderVerifiedType *GetInboxConversationMessages200JSONResponseBodyMessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
@@ -72793,12 +72838,21 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				IsEdited *bool `json:"isEdited,omitempty"`
 
 				// IsStoryMention Instagram story mention
-				IsStoryMention *bool      `json:"isStoryMention,omitempty"`
-				Message        *string    `json:"message,omitempty"`
-				Platform       *string    `json:"platform,omitempty"`
-				ReadAt         *time.Time `json:"readAt,omitempty"`
-				SenderId       *string    `json:"senderId,omitempty"`
-				SenderName     *string    `json:"senderName,omitempty"`
+				IsStoryMention *bool   `json:"isStoryMention,omitempty"`
+				Message        *string `json:"message,omitempty"`
+				Platform       *string `json:"platform,omitempty"`
+
+				// Reactions Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
+				Reactions *[]struct {
+					Emoji *string `json:"emoji,omitempty"`
+
+					// FromMe true if the connected account reacted
+					FromMe    *bool      `json:"fromMe,omitempty"`
+					ReactedAt *time.Time `json:"reactedAt,omitempty"`
+				} `json:"reactions,omitempty"`
+				ReadAt     *time.Time `json:"readAt,omitempty"`
+				SenderId   *string    `json:"senderId,omitempty"`
+				SenderName *string    `json:"senderName,omitempty"`
 
 				// SenderVerifiedType X/Twitter verified badge type. Only present for Twitter/X messages.
 				SenderVerifiedType *GetInboxConversationMessages200JSONResponseBodyMessagesSenderVerifiedType `json:"senderVerifiedType,omitempty"`
