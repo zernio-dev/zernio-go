@@ -16556,10 +16556,13 @@ type CreateWhatsAppFlowJSONBody struct {
 	// AccountId WhatsApp social account ID
 	AccountId string `json:"accountId"`
 
+	// AsVersion When cloning, true keeps the clone in cloneFlowId's version lineage (auto-numbered next version); false/absent creates an independent flow. Ignored without cloneFlowId.
+	AsVersion *bool `json:"asVersion,omitempty"`
+
 	// Categories Flow categories
 	Categories []CreateWhatsAppFlowJSONBodyCategories `json:"categories"`
 
-	// CloneFlowId Optional: ID of an existing flow to clone
+	// CloneFlowId Optional: ID of an existing flow to clone the Flow JSON from
 	CloneFlowId *string `json:"cloneFlowId,omitempty"`
 
 	// Name Flow display name
@@ -16676,10 +16679,25 @@ type UploadWhatsAppFlowJsonJSONBody_FlowJson struct {
 	union json.RawMessage
 }
 
+// GetWhatsAppFlowPreviewParams defines parameters for GetWhatsAppFlowPreview.
+type GetWhatsAppFlowPreviewParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Invalidate Mint a fresh preview link (default false)
+	Invalidate *bool `form:"invalidate,omitempty" json:"invalidate,omitempty"`
+}
+
 // PublishWhatsAppFlowJSONBody defines parameters for PublishWhatsAppFlow.
 type PublishWhatsAppFlowJSONBody struct {
 	// AccountId WhatsApp social account ID
 	AccountId string `json:"accountId"`
+}
+
+// ListWhatsAppFlowVersionsParams defines parameters for ListWhatsAppFlowVersions.
+type ListWhatsAppFlowVersionsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
 }
 
 // GetWhatsAppPhoneNumbersParams defines parameters for GetWhatsAppPhoneNumbers.
@@ -20976,10 +20994,16 @@ type ClientInterface interface {
 
 	UploadWhatsAppFlowJson(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWhatsAppFlowPreview request
+	GetWhatsAppFlowPreview(ctx context.Context, flowId string, params *GetWhatsAppFlowPreviewParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// PublishWhatsAppFlowWithBody request with any body
 	PublishWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PublishWhatsAppFlow(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppFlowVersions request
+	ListWhatsAppFlowVersions(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppPhoneNumbers request
 	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25896,6 +25920,18 @@ func (c *Client) UploadWhatsAppFlowJson(ctx context.Context, flowId string, body
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetWhatsAppFlowPreview(ctx context.Context, flowId string, params *GetWhatsAppFlowPreviewParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppFlowPreviewRequest(c.Server, flowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) PublishWhatsAppFlowWithBody(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPublishWhatsAppFlowRequestWithBody(c.Server, flowId, contentType, body)
 	if err != nil {
@@ -25910,6 +25946,18 @@ func (c *Client) PublishWhatsAppFlowWithBody(ctx context.Context, flowId string,
 
 func (c *Client) PublishWhatsAppFlow(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPublishWhatsAppFlowRequest(c.Server, flowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppFlowVersions(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppFlowVersionsRequest(c.Server, flowId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -43078,6 +43126,75 @@ func NewUploadWhatsAppFlowJsonRequestWithBody(server string, flowId string, cont
 	return req, nil
 }
 
+// NewGetWhatsAppFlowPreviewRequest generates requests for GetWhatsAppFlowPreview
+func NewGetWhatsAppFlowPreviewRequest(server string, flowId string, params *GetWhatsAppFlowPreviewParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/preview", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Invalidate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "invalidate", *params.Invalidate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewPublishWhatsAppFlowRequest calls the generic PublishWhatsAppFlow builder with application/json body
 func NewPublishWhatsAppFlowRequest(server string, flowId string, body PublishWhatsAppFlowJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -43121,6 +43238,63 @@ func NewPublishWhatsAppFlowRequestWithBody(server string, flowId string, content
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListWhatsAppFlowVersionsRequest generates requests for ListWhatsAppFlowVersions
+func NewListWhatsAppFlowVersionsRequest(server string, flowId string, params *ListWhatsAppFlowVersionsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "flowId", flowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/flows/%s/versions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -45377,10 +45551,16 @@ type ClientWithResponsesInterface interface {
 
 	UploadWhatsAppFlowJsonWithResponse(ctx context.Context, flowId string, body UploadWhatsAppFlowJsonJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadWhatsAppFlowJsonResponse, error)
 
+	// GetWhatsAppFlowPreviewWithResponse request
+	GetWhatsAppFlowPreviewWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowPreviewParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowPreviewResponse, error)
+
 	// PublishWhatsAppFlowWithBodyWithResponse request with any body
 	PublishWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error)
 
 	PublishWhatsAppFlowWithResponse(ctx context.Context, flowId string, body PublishWhatsAppFlowJSONRequestBody, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error)
+
+	// ListWhatsAppFlowVersionsWithResponse request
+	ListWhatsAppFlowVersionsWithResponse(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowVersionsResponse, error)
 
 	// GetWhatsAppPhoneNumbersWithResponse request
 	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
@@ -57538,11 +57718,17 @@ type ListWhatsAppFlowsResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Flows *[]struct {
-			Categories       *[]string                                        `json:"categories,omitempty"`
-			Id               *string                                          `json:"id,omitempty"`
+			Categories *[]string `json:"categories,omitempty"`
+			Id         *string   `json:"id,omitempty"`
+
+			// LineageId Stable group key for the flow's version lineage (the root flow's ID).
+			LineageId        *string                                          `json:"lineageId,omitempty"`
 			Name             *string                                          `json:"name,omitempty"`
 			Status           *ListWhatsAppFlows200JSONResponseBodyFlowsStatus `json:"status,omitempty"`
 			ValidationErrors *[]map[string]interface{}                        `json:"validation_errors,omitempty"`
+
+			// Version 1-based version within the flow's clone lineage (Zernio-tracked; Meta has no native versioning). Standalone flows are version 1.
+			Version *int `json:"version,omitempty"`
 		} `json:"flows,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -57580,8 +57766,14 @@ type CreateWhatsAppFlowResponse struct {
 		Flow *struct {
 			Categories *[]string `json:"categories,omitempty"`
 			Id         *string   `json:"id,omitempty"`
-			Name       *string   `json:"name,omitempty"`
-			Status     *string   `json:"status,omitempty"`
+
+			// LineageId Version-lineage group key
+			LineageId *string `json:"lineageId,omitempty"`
+			Name      *string `json:"name,omitempty"`
+			Status    *string `json:"status,omitempty"`
+
+			// Version Version within the clone lineage
+			Version *int `json:"version,omitempty"`
 		} `json:"flow,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -57875,6 +58067,40 @@ func (r UploadWhatsAppFlowJsonResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppFlowPreviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ExpiresAt  *string `json:"expires_at,omitempty"`
+		PreviewUrl *string `json:"preview_url,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppFlowPreviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppFlowPreviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppFlowPreviewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type PublishWhatsAppFlowResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -57902,6 +58128,48 @@ func (r PublishWhatsAppFlowResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r PublishWhatsAppFlowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWhatsAppFlowVersionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Versions *[]struct {
+			FlowId *string `json:"flowId,omitempty"`
+
+			// Missing True when Meta no longer has this flow
+			Missing      *bool   `json:"missing,omitempty"`
+			Name         *string `json:"name,omitempty"`
+			ParentFlowId *string `json:"parentFlowId,omitempty"`
+			Status       *string `json:"status,omitempty"`
+			Version      *int    `json:"version,omitempty"`
+		} `json:"versions,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppFlowVersionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppFlowVersionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppFlowVersionsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -62192,6 +62460,15 @@ func (c *ClientWithResponses) UploadWhatsAppFlowJsonWithResponse(ctx context.Con
 	return ParseUploadWhatsAppFlowJsonResponse(rsp)
 }
 
+// GetWhatsAppFlowPreviewWithResponse request returning *GetWhatsAppFlowPreviewResponse
+func (c *ClientWithResponses) GetWhatsAppFlowPreviewWithResponse(ctx context.Context, flowId string, params *GetWhatsAppFlowPreviewParams, reqEditors ...RequestEditorFn) (*GetWhatsAppFlowPreviewResponse, error) {
+	rsp, err := c.GetWhatsAppFlowPreview(ctx, flowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppFlowPreviewResponse(rsp)
+}
+
 // PublishWhatsAppFlowWithBodyWithResponse request with arbitrary body returning *PublishWhatsAppFlowResponse
 func (c *ClientWithResponses) PublishWhatsAppFlowWithBodyWithResponse(ctx context.Context, flowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PublishWhatsAppFlowResponse, error) {
 	rsp, err := c.PublishWhatsAppFlowWithBody(ctx, flowId, contentType, body, reqEditors...)
@@ -62207,6 +62484,15 @@ func (c *ClientWithResponses) PublishWhatsAppFlowWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParsePublishWhatsAppFlowResponse(rsp)
+}
+
+// ListWhatsAppFlowVersionsWithResponse request returning *ListWhatsAppFlowVersionsResponse
+func (c *ClientWithResponses) ListWhatsAppFlowVersionsWithResponse(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowVersionsResponse, error) {
+	rsp, err := c.ListWhatsAppFlowVersions(ctx, flowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppFlowVersionsResponse(rsp)
 }
 
 // GetWhatsAppPhoneNumbersWithResponse request returning *GetWhatsAppPhoneNumbersResponse
@@ -76004,11 +76290,17 @@ func ParseListWhatsAppFlowsResponse(rsp *http.Response) (*ListWhatsAppFlowsRespo
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Flows *[]struct {
-				Categories       *[]string                                        `json:"categories,omitempty"`
-				Id               *string                                          `json:"id,omitempty"`
+				Categories *[]string `json:"categories,omitempty"`
+				Id         *string   `json:"id,omitempty"`
+
+				// LineageId Stable group key for the flow's version lineage (the root flow's ID).
+				LineageId        *string                                          `json:"lineageId,omitempty"`
 				Name             *string                                          `json:"name,omitempty"`
 				Status           *ListWhatsAppFlows200JSONResponseBodyFlowsStatus `json:"status,omitempty"`
 				ValidationErrors *[]map[string]interface{}                        `json:"validation_errors,omitempty"`
+
+				// Version 1-based version within the flow's clone lineage (Zernio-tracked; Meta has no native versioning). Standalone flows are version 1.
+				Version *int `json:"version,omitempty"`
 			} `json:"flows,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -76048,8 +76340,14 @@ func ParseCreateWhatsAppFlowResponse(rsp *http.Response) (*CreateWhatsAppFlowRes
 			Flow *struct {
 				Categories *[]string `json:"categories,omitempty"`
 				Id         *string   `json:"id,omitempty"`
-				Name       *string   `json:"name,omitempty"`
-				Status     *string   `json:"status,omitempty"`
+
+				// LineageId Version-lineage group key
+				LineageId *string `json:"lineageId,omitempty"`
+				Name      *string `json:"name,omitempty"`
+				Status    *string `json:"status,omitempty"`
+
+				// Version Version within the clone lineage
+				Version *int `json:"version,omitempty"`
 			} `json:"flow,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -76347,6 +76645,42 @@ func ParseUploadWhatsAppFlowJsonResponse(rsp *http.Response) (*UploadWhatsAppFlo
 	return response, nil
 }
 
+// ParseGetWhatsAppFlowPreviewResponse parses an HTTP response from a GetWhatsAppFlowPreviewWithResponse call
+func ParseGetWhatsAppFlowPreviewResponse(rsp *http.Response) (*GetWhatsAppFlowPreviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppFlowPreviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ExpiresAt  *string `json:"expires_at,omitempty"`
+			PreviewUrl *string `json:"preview_url,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParsePublishWhatsAppFlowResponse parses an HTTP response from a PublishWhatsAppFlowWithResponse call
 func ParsePublishWhatsAppFlowResponse(rsp *http.Response) (*PublishWhatsAppFlowResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -76364,6 +76698,50 @@ func ParsePublishWhatsAppFlowResponse(rsp *http.Response) (*PublishWhatsAppFlowR
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppFlowVersionsResponse parses an HTTP response from a ListWhatsAppFlowVersionsWithResponse call
+func ParseListWhatsAppFlowVersionsResponse(rsp *http.Response) (*ListWhatsAppFlowVersionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppFlowVersionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Versions *[]struct {
+				FlowId *string `json:"flowId,omitempty"`
+
+				// Missing True when Meta no longer has this flow
+				Missing      *bool   `json:"missing,omitempty"`
+				Name         *string `json:"name,omitempty"`
+				ParentFlowId *string `json:"parentFlowId,omitempty"`
+				Status       *string `json:"status,omitempty"`
+				Version      *int    `json:"version,omitempty"`
+			} `json:"versions,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
