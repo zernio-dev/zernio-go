@@ -494,6 +494,7 @@ func main() {
 ### WhatsApp Flows
 | Method | Description |
 |--------|-------------|
+| `client.ListWhatsAppFlowResponsesWithResponse()` | List flow responses |
 | `client.ListWhatsAppFlowVersionsWithResponse()` | List flow versions |
 | `client.ListWhatsAppFlowsWithResponse()` | List flows |
 | `client.CreateWhatsAppFlowWithResponse()` | Create flow |
