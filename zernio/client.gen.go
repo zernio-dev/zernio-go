@@ -15162,9 +15162,10 @@ type GetInboxConversationMessagesParams struct {
 	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 
 	// SortOrder Order of returned messages. Default `asc` (oldest first, chat style).
-	// For Twitter, Facebook and Bluesky, only intra-page ordering is
-	// affected — pages always walk newest→oldest. See `sortOrderApplied`
-	// in the response.
+	// Twitter, Instagram, Telegram, WhatsApp and Reddit honor this order
+	// across cursor pages. For Facebook and Bluesky, only intra-page
+	// ordering is affected — pages always walk newest→oldest. See
+	// `sortOrderApplied` in the response.
 	SortOrder *GetInboxConversationMessagesParamsSortOrder `form:"sortOrder,omitempty" json:"sortOrder,omitempty"`
 }
 
@@ -54738,8 +54739,8 @@ type GetInboxConversationMessagesResponse struct {
 		} `json:"pagination,omitempty"`
 
 		// SortOrderApplied Sort order actually applied to the returned page. May
-		// differ from the requested `sortOrder` for Twitter,
-		// Facebook and Bluesky (always `desc` regardless of request).
+		// differ from the requested `sortOrder` for Facebook and
+		// Bluesky (always `desc` regardless of request).
 		SortOrderApplied *GetInboxConversationMessages200JSONResponseBodySortOrderApplied `json:"sortOrderApplied,omitempty"`
 		Status           *string                                                          `json:"status,omitempty"`
 	}
@@ -72910,8 +72911,8 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 			} `json:"pagination,omitempty"`
 
 			// SortOrderApplied Sort order actually applied to the returned page. May
-			// differ from the requested `sortOrder` for Twitter,
-			// Facebook and Bluesky (always `desc` regardless of request).
+			// differ from the requested `sortOrder` for Facebook and
+			// Bluesky (always `desc` regardless of request).
 			SortOrderApplied *GetInboxConversationMessages200JSONResponseBodySortOrderApplied `json:"sortOrderApplied,omitempty"`
 			Status           *string                                                          `json:"status,omitempty"`
 		}
