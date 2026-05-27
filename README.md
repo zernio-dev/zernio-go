@@ -511,6 +511,7 @@ func main() {
 ### WhatsApp Phone Numbers
 | Method | Description |
 |--------|-------------|
+| `client.GetWhatsAppNumberInfoWithResponse()` | Get number status |
 | `client.GetWhatsAppPhoneNumberWithResponse()` | Get phone number |
 | `client.GetWhatsAppPhoneNumbersWithResponse()` | List phone numbers |
 | `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |

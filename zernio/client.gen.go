@@ -16712,6 +16712,12 @@ type ListWhatsAppFlowVersionsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
+// GetWhatsAppNumberInfoParams defines parameters for GetWhatsAppNumberInfo.
+type GetWhatsAppNumberInfoParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
 // GetWhatsAppPhoneNumbersParams defines parameters for GetWhatsAppPhoneNumbers.
 type GetWhatsAppPhoneNumbersParams struct {
 	// Status Filter by status (by default excludes released numbers)
@@ -21028,6 +21034,9 @@ type ClientInterface interface {
 
 	// ListWhatsAppFlowVersions request
 	ListWhatsAppFlowVersions(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppNumberInfo request
+	GetWhatsAppNumberInfo(ctx context.Context, params *GetWhatsAppNumberInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppPhoneNumbers request
 	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25997,6 +26006,18 @@ func (c *Client) PublishWhatsAppFlow(ctx context.Context, flowId string, body Pu
 
 func (c *Client) ListWhatsAppFlowVersions(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListWhatsAppFlowVersionsRequest(c.Server, flowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppNumberInfo(ctx context.Context, params *GetWhatsAppNumberInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppNumberInfoRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -43424,6 +43445,56 @@ func NewListWhatsAppFlowVersionsRequest(server string, flowId string, params *Li
 	return req, nil
 }
 
+// NewGetWhatsAppNumberInfoRequest generates requests for GetWhatsAppNumberInfo
+func NewGetWhatsAppNumberInfoRequest(server string, params *GetWhatsAppNumberInfoParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/number-info")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetWhatsAppPhoneNumbersRequest generates requests for GetWhatsAppPhoneNumbers
 func NewGetWhatsAppPhoneNumbersRequest(server string, params *GetWhatsAppPhoneNumbersParams) (*http.Request, error) {
 	var err error
@@ -45747,6 +45818,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListWhatsAppFlowVersionsWithResponse request
 	ListWhatsAppFlowVersionsWithResponse(ctx context.Context, flowId string, params *ListWhatsAppFlowVersionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowVersionsResponse, error)
+
+	// GetWhatsAppNumberInfoWithResponse request
+	GetWhatsAppNumberInfoWithResponse(ctx context.Context, params *GetWhatsAppNumberInfoParams, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberInfoResponse, error)
 
 	// GetWhatsAppPhoneNumbersWithResponse request
 	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
@@ -58415,6 +58489,74 @@ func (r ListWhatsAppFlowVersionsResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppNumberInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Phone *struct {
+			DisplayPhoneNumber *string `json:"display_phone_number,omitempty"`
+
+			// HealthStatus Meta's can_send_message health object (messaging + calling signals)
+			HealthStatus              *map[string]interface{} `json:"health_status,omitempty"`
+			IsOfficialBusinessAccount *bool                   `json:"is_official_business_account,omitempty"`
+
+			// MessagingLimitTier e.g. TIER_250, TIER_1K, TIER_UNLIMITED
+			MessagingLimitTier *string `json:"messaging_limit_tier,omitempty"`
+
+			// NameStatus APPROVED, AVAILABLE_WITHOUT_REVIEW, PENDING_REVIEW, DECLINED, EXPIRED, NONE
+			NameStatus *string `json:"name_status,omitempty"`
+
+			// PlatformType e.g. CLOUD_API
+			PlatformType *string `json:"platform_type,omitempty"`
+
+			// QualityRating GREEN, YELLOW, RED, UNKNOWN
+			QualityRating *string `json:"quality_rating,omitempty"`
+
+			// Status e.g. CONNECTED
+			Status     *string `json:"status,omitempty"`
+			Throughput *struct {
+				// Level STANDARD or HIGH
+				Level *string `json:"level,omitempty"`
+			} `json:"throughput,omitempty"`
+			VerifiedName *string `json:"verified_name,omitempty"`
+		} `json:"phone,omitempty"`
+		Waba *struct {
+			// BusinessVerificationStatus verified, not_verified, pending, ...
+			BusinessVerificationStatus *string                 `json:"business_verification_status,omitempty"`
+			HealthStatus               *map[string]interface{} `json:"health_status,omitempty"`
+			Name                       *string                 `json:"name,omitempty"`
+
+			// TimezoneId Meta integer timezone-enum id
+			TimezoneId *string `json:"timezone_id,omitempty"`
+		} `json:"waba,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppNumberInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppNumberInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppNumberInfoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetWhatsAppPhoneNumbersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -62786,6 +62928,15 @@ func (c *ClientWithResponses) ListWhatsAppFlowVersionsWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseListWhatsAppFlowVersionsResponse(rsp)
+}
+
+// GetWhatsAppNumberInfoWithResponse request returning *GetWhatsAppNumberInfoResponse
+func (c *ClientWithResponses) GetWhatsAppNumberInfoWithResponse(ctx context.Context, params *GetWhatsAppNumberInfoParams, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberInfoResponse, error) {
+	rsp, err := c.GetWhatsAppNumberInfo(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppNumberInfoResponse(rsp)
 }
 
 // GetWhatsAppPhoneNumbersWithResponse request returning *GetWhatsAppPhoneNumbersResponse
@@ -77096,6 +77247,76 @@ func ParseListWhatsAppFlowVersionsResponse(rsp *http.Response) (*ListWhatsAppFlo
 				Status       *string `json:"status,omitempty"`
 				Version      *int    `json:"version,omitempty"`
 			} `json:"versions,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppNumberInfoResponse parses an HTTP response from a GetWhatsAppNumberInfoWithResponse call
+func ParseGetWhatsAppNumberInfoResponse(rsp *http.Response) (*GetWhatsAppNumberInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppNumberInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Phone *struct {
+				DisplayPhoneNumber *string `json:"display_phone_number,omitempty"`
+
+				// HealthStatus Meta's can_send_message health object (messaging + calling signals)
+				HealthStatus              *map[string]interface{} `json:"health_status,omitempty"`
+				IsOfficialBusinessAccount *bool                   `json:"is_official_business_account,omitempty"`
+
+				// MessagingLimitTier e.g. TIER_250, TIER_1K, TIER_UNLIMITED
+				MessagingLimitTier *string `json:"messaging_limit_tier,omitempty"`
+
+				// NameStatus APPROVED, AVAILABLE_WITHOUT_REVIEW, PENDING_REVIEW, DECLINED, EXPIRED, NONE
+				NameStatus *string `json:"name_status,omitempty"`
+
+				// PlatformType e.g. CLOUD_API
+				PlatformType *string `json:"platform_type,omitempty"`
+
+				// QualityRating GREEN, YELLOW, RED, UNKNOWN
+				QualityRating *string `json:"quality_rating,omitempty"`
+
+				// Status e.g. CONNECTED
+				Status     *string `json:"status,omitempty"`
+				Throughput *struct {
+					// Level STANDARD or HIGH
+					Level *string `json:"level,omitempty"`
+				} `json:"throughput,omitempty"`
+				VerifiedName *string `json:"verified_name,omitempty"`
+			} `json:"phone,omitempty"`
+			Waba *struct {
+				// BusinessVerificationStatus verified, not_verified, pending, ...
+				BusinessVerificationStatus *string                 `json:"business_verification_status,omitempty"`
+				HealthStatus               *map[string]interface{} `json:"health_status,omitempty"`
+				Name                       *string                 `json:"name,omitempty"`
+
+				// TimezoneId Meta integer timezone-enum id
+				TimezoneId *string `json:"timezone_id,omitempty"`
+			} `json:"waba,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
