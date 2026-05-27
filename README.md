@@ -516,6 +516,11 @@ func main() {
 | `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |
 | `client.ReleaseWhatsAppPhoneNumberWithResponse()` | Release phone number |
 
+### WhatsApp Templates
+| Method | Description |
+|--------|-------------|
+| `client.GetWhatsAppLibraryTemplateWithResponse()` | Look up a library template |
+
 ### Invites
 | Method | Description |
 |--------|-------------|

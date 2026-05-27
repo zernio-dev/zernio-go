@@ -16761,6 +16761,15 @@ type PurchaseWhatsAppPhoneNumber200JSONResponseBody struct {
 // GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus defines parameters for GetWhatsAppPhoneNumber.
 type GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus string
 
+// GetWhatsAppLibraryTemplateParams defines parameters for GetWhatsAppLibraryTemplate.
+type GetWhatsAppLibraryTemplateParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Name Exact library template name
+	Name string `form:"name" json:"name"`
+}
+
 // GetWhatsAppTemplatesParams defines parameters for GetWhatsAppTemplates.
 type GetWhatsAppTemplatesParams struct {
 	// AccountId WhatsApp social account ID
@@ -21033,6 +21042,9 @@ type ClientInterface interface {
 
 	// GetWhatsAppPhoneNumber request
 	GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppLibraryTemplate request
+	GetWhatsAppLibraryTemplate(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppTemplates request
 	GetWhatsAppTemplates(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -26045,6 +26057,18 @@ func (c *Client) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId s
 
 func (c *Client) GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppLibraryTemplate(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppLibraryTemplateRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -43574,6 +43598,64 @@ func NewGetWhatsAppPhoneNumberRequest(server string, phoneNumberId string) (*htt
 	return req, nil
 }
 
+// NewGetWhatsAppLibraryTemplateRequest generates requests for GetWhatsAppLibraryTemplate
+func NewGetWhatsAppLibraryTemplateRequest(server string, params *GetWhatsAppLibraryTemplateParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/template-library")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "name", params.Name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetWhatsAppTemplatesRequest generates requests for GetWhatsAppTemplates
 func NewGetWhatsAppTemplatesRequest(server string, params *GetWhatsAppTemplatesParams) (*http.Request, error) {
 	var err error
@@ -45679,6 +45761,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetWhatsAppPhoneNumberWithResponse request
 	GetWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumberResponse, error)
+
+	// GetWhatsAppLibraryTemplateWithResponse request
+	GetWhatsAppLibraryTemplateWithResponse(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppLibraryTemplateResponse, error)
 
 	// GetWhatsAppTemplatesWithResponse request
 	GetWhatsAppTemplatesWithResponse(ctx context.Context, params *GetWhatsAppTemplatesParams, reqEditors ...RequestEditorFn) (*GetWhatsAppTemplatesResponse, error)
@@ -58488,6 +58573,51 @@ func (r GetWhatsAppPhoneNumberResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppLibraryTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Template *struct {
+			Body       *string   `json:"body,omitempty"`
+			BodyParams *[]string `json:"body_params,omitempty"`
+			Buttons    *[]struct {
+				Text *string `json:"text,omitempty"`
+
+				// Type QUICK_REPLY, URL, PHONE_NUMBER, OTP, FLOW, ...
+				Type *string `json:"type,omitempty"`
+			} `json:"buttons,omitempty"`
+			Category *string `json:"category,omitempty"`
+			Language *string `json:"language,omitempty"`
+			Name     *string `json:"name,omitempty"`
+		} `json:"template,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppLibraryTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppLibraryTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppLibraryTemplateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetWhatsAppTemplatesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -62700,6 +62830,15 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumberWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseGetWhatsAppPhoneNumberResponse(rsp)
+}
+
+// GetWhatsAppLibraryTemplateWithResponse request returning *GetWhatsAppLibraryTemplateResponse
+func (c *ClientWithResponses) GetWhatsAppLibraryTemplateWithResponse(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppLibraryTemplateResponse, error) {
+	rsp, err := c.GetWhatsAppLibraryTemplate(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppLibraryTemplateResponse(rsp)
 }
 
 // GetWhatsAppTemplatesWithResponse request returning *GetWhatsAppTemplatesResponse
@@ -77147,6 +77286,53 @@ func ParseGetWhatsAppPhoneNumberResponse(rsp *http.Response) (*GetWhatsAppPhoneN
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppLibraryTemplateResponse parses an HTTP response from a GetWhatsAppLibraryTemplateWithResponse call
+func ParseGetWhatsAppLibraryTemplateResponse(rsp *http.Response) (*GetWhatsAppLibraryTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppLibraryTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Template *struct {
+				Body       *string   `json:"body,omitempty"`
+				BodyParams *[]string `json:"body_params,omitempty"`
+				Buttons    *[]struct {
+					Text *string `json:"text,omitempty"`
+
+					// Type QUICK_REPLY, URL, PHONE_NUMBER, OTP, FLOW, ...
+					Type *string `json:"type,omitempty"`
+				} `json:"buttons,omitempty"`
+				Category *string `json:"category,omitempty"`
+				Language *string `json:"language,omitempty"`
+				Name     *string `json:"name,omitempty"`
+			} `json:"template,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
