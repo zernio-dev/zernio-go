@@ -15366,6 +15366,13 @@ type SendInboxMessageJSONBody struct {
 		// Type Template type
 		Type *SendInboxMessageJSONBodyTemplateType `json:"type,omitempty"`
 	} `json:"template,omitempty"`
+
+	// VoiceNote WhatsApp only. When `true` on an audio attachment, the message is sent
+	// as a voice message (PTT) — the recipient sees the waveform + voice-note
+	// UI instead of a basic audio attachment. The audio file MUST be `.ogg`
+	// encoded with the OPUS codec (mono) per Meta's voice-message contract;
+	// other formats are rejected by WhatsApp. Ignored for non-audio attachments.
+	VoiceNote *bool `json:"voiceNote,omitempty"`
 }
 
 // SendInboxMessageMultipartBody defines parameters for SendInboxMessage.
