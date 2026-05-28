@@ -16542,6 +16542,18 @@ type SendWhatsAppConversion200JSONResponseBody_Failures_Code struct {
 // SendWhatsAppConversion200JSONResponseBodyPlatform defines parameters for SendWhatsAppConversion.
 type SendWhatsAppConversion200JSONResponseBodyPlatform string
 
+// GetWhatsAppDatasetParams defines parameters for GetWhatsAppDataset.
+type GetWhatsAppDatasetParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// CreateWhatsAppDatasetJSONBody defines parameters for CreateWhatsAppDataset.
+type CreateWhatsAppDatasetJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+}
+
 // ListWhatsAppFlowResponsesParams defines parameters for ListWhatsAppFlowResponses.
 type ListWhatsAppFlowResponsesParams struct {
 	// AccountId WhatsApp social account ID
@@ -17321,6 +17333,9 @@ type UploadWhatsAppProfilePhotoMultipartRequestBody UploadWhatsAppProfilePhotoMu
 
 // SendWhatsAppConversionJSONRequestBody defines body for SendWhatsAppConversion for application/json ContentType.
 type SendWhatsAppConversionJSONRequestBody SendWhatsAppConversionJSONBody
+
+// CreateWhatsAppDatasetJSONRequestBody defines body for CreateWhatsAppDataset for application/json ContentType.
+type CreateWhatsAppDatasetJSONRequestBody CreateWhatsAppDatasetJSONBody
 
 // CreateWhatsAppFlowJSONRequestBody defines body for CreateWhatsAppFlow for application/json ContentType.
 type CreateWhatsAppFlowJSONRequestBody CreateWhatsAppFlowJSONBody
@@ -20983,6 +20998,14 @@ type ClientInterface interface {
 	SendWhatsAppConversionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	SendWhatsAppConversion(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppDataset request
+	GetWhatsAppDataset(ctx context.Context, params *GetWhatsAppDatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppDatasetWithBody request with any body
+	CreateWhatsAppDatasetWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppDataset(ctx context.Context, body CreateWhatsAppDatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListWhatsAppFlowResponses request
 	ListWhatsAppFlowResponses(ctx context.Context, params *ListWhatsAppFlowResponsesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25778,6 +25801,42 @@ func (c *Client) SendWhatsAppConversionWithBody(ctx context.Context, contentType
 
 func (c *Client) SendWhatsAppConversion(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSendWhatsAppConversionRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppDataset(ctx context.Context, params *GetWhatsAppDatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppDatasetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppDatasetWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppDatasetRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppDataset(ctx context.Context, body CreateWhatsAppDatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppDatasetRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -42744,6 +42803,96 @@ func NewSendWhatsAppConversionRequestWithBody(server string, contentType string,
 	return req, nil
 }
 
+// NewGetWhatsAppDatasetRequest generates requests for GetWhatsAppDataset
+func NewGetWhatsAppDatasetRequest(server string, params *GetWhatsAppDatasetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/dataset")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppDatasetRequest calls the generic CreateWhatsAppDataset builder with application/json body
+func NewCreateWhatsAppDatasetRequest(server string, body CreateWhatsAppDatasetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppDatasetRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppDatasetRequestWithBody generates requests for CreateWhatsAppDataset with any type of body
+func NewCreateWhatsAppDatasetRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/dataset")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListWhatsAppFlowResponsesRequest generates requests for ListWhatsAppFlowResponses
 func NewListWhatsAppFlowResponsesRequest(server string, params *ListWhatsAppFlowResponsesParams) (*http.Request, error) {
 	var err error
@@ -45767,6 +45916,14 @@ type ClientWithResponsesInterface interface {
 	SendWhatsAppConversionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error)
 
 	SendWhatsAppConversionWithResponse(ctx context.Context, body SendWhatsAppConversionJSONRequestBody, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error)
+
+	// GetWhatsAppDatasetWithResponse request
+	GetWhatsAppDatasetWithResponse(ctx context.Context, params *GetWhatsAppDatasetParams, reqEditors ...RequestEditorFn) (*GetWhatsAppDatasetResponse, error)
+
+	// CreateWhatsAppDatasetWithBodyWithResponse request with any body
+	CreateWhatsAppDatasetWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppDatasetResponse, error)
+
+	CreateWhatsAppDatasetWithResponse(ctx context.Context, body CreateWhatsAppDatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppDatasetResponse, error)
 
 	// ListWhatsAppFlowResponsesWithResponse request
 	ListWhatsAppFlowResponsesWithResponse(ctx context.Context, params *ListWhatsAppFlowResponsesParams, reqEditors ...RequestEditorFn) (*ListWhatsAppFlowResponsesResponse, error)
@@ -57976,6 +58133,77 @@ func (r SendWhatsAppConversionResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppDatasetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// DatasetId Meta dataset ID linked to the WABA, or null if not provisioned yet
+		DatasetId *string `json:"datasetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppDatasetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppDatasetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppDatasetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateWhatsAppDatasetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Created True if Meta created a new dataset on this call; false if one already existed
+		Created *bool `json:"created,omitempty"`
+
+		// DatasetId Meta dataset ID linked to the WABA
+		DatasetId *string `json:"datasetId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppDatasetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppDatasetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateWhatsAppDatasetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListWhatsAppFlowResponsesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -62763,6 +62991,32 @@ func (c *ClientWithResponses) SendWhatsAppConversionWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseSendWhatsAppConversionResponse(rsp)
+}
+
+// GetWhatsAppDatasetWithResponse request returning *GetWhatsAppDatasetResponse
+func (c *ClientWithResponses) GetWhatsAppDatasetWithResponse(ctx context.Context, params *GetWhatsAppDatasetParams, reqEditors ...RequestEditorFn) (*GetWhatsAppDatasetResponse, error) {
+	rsp, err := c.GetWhatsAppDataset(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppDatasetResponse(rsp)
+}
+
+// CreateWhatsAppDatasetWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppDatasetResponse
+func (c *ClientWithResponses) CreateWhatsAppDatasetWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppDatasetResponse, error) {
+	rsp, err := c.CreateWhatsAppDatasetWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppDatasetResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppDatasetWithResponse(ctx context.Context, body CreateWhatsAppDatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppDatasetResponse, error) {
+	rsp, err := c.CreateWhatsAppDataset(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppDatasetResponse(rsp)
 }
 
 // ListWhatsAppFlowResponsesWithResponse request returning *ListWhatsAppFlowResponsesResponse
@@ -76708,6 +76962,81 @@ func ParseSendWhatsAppConversionResponse(rsp *http.Response) (*SendWhatsAppConve
 			// TraceId Meta `fbtrace_id` for debugging. Surface in support
 			// tickets.
 			TraceId *string `json:"traceId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppDatasetResponse parses an HTTP response from a GetWhatsAppDatasetWithResponse call
+func ParseGetWhatsAppDatasetResponse(rsp *http.Response) (*GetWhatsAppDatasetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppDatasetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// DatasetId Meta dataset ID linked to the WABA, or null if not provisioned yet
+			DatasetId *string `json:"datasetId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppDatasetResponse parses an HTTP response from a CreateWhatsAppDatasetWithResponse call
+func ParseCreateWhatsAppDatasetResponse(rsp *http.Response) (*CreateWhatsAppDatasetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppDatasetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Created True if Meta created a new dataset on this call; false if one already existed
+			Created *bool `json:"created,omitempty"`
+
+			// DatasetId Meta dataset ID linked to the WABA
+			DatasetId *string `json:"datasetId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

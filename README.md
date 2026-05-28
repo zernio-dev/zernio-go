@@ -470,10 +470,12 @@ func main() {
 |--------|-------------|
 | `client.ListWhatsAppGroupChatsWithResponse()` | List active groups |
 | `client.ListWhatsAppGroupJoinRequestsWithResponse()` | List join requests |
+| `client.CreateWhatsAppDatasetWithResponse()` | Provision CTWA conversions dataset |
 | `client.CreateWhatsAppGroupChatWithResponse()` | Create group |
 | `client.CreateWhatsAppGroupInviteLinkWithResponse()` | Create invite link |
 | `client.CreateWhatsAppTemplateWithResponse()` | Create template |
 | `client.GetWhatsAppBusinessProfileWithResponse()` | Get business profile |
+| `client.GetWhatsAppDatasetWithResponse()` | Get CTWA conversions dataset |
 | `client.GetWhatsAppDisplayNameWithResponse()` | Get display name status |
 | `client.GetWhatsAppGroupChatWithResponse()` | Get group info |
 | `client.GetWhatsAppTemplateWithResponse()` | Get template |
