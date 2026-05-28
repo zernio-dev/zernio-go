@@ -16464,6 +16464,15 @@ type UploadWhatsAppProfilePhotoMultipartBody struct {
 	File openapi_types.File `json:"file"`
 }
 
+// ListWhatsAppConversionsParams defines parameters for ListWhatsAppConversions.
+type ListWhatsAppConversionsParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Limit Max events to return (1-200, default 50).
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // SendWhatsAppConversionJSONBody defines parameters for SendWhatsAppConversion.
 type SendWhatsAppConversionJSONBody struct {
 	// AccountId WhatsApp SocialAccount ID.
@@ -20993,6 +21002,9 @@ type ClientInterface interface {
 
 	// UploadWhatsAppProfilePhotoWithBody request with any body
 	UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppConversions request
+	ListWhatsAppConversions(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SendWhatsAppConversionWithBody request with any body
 	SendWhatsAppConversionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25777,6 +25789,18 @@ func (c *Client) UpdateWhatsAppDisplayName(ctx context.Context, body UpdateWhats
 
 func (c *Client) UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadWhatsAppProfilePhotoRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppConversions(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppConversionsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -42763,6 +42787,68 @@ func NewUploadWhatsAppProfilePhotoRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewListWhatsAppConversionsRequest generates requests for ListWhatsAppConversions
+func NewListWhatsAppConversionsRequest(server string, params *ListWhatsAppConversionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/conversions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewSendWhatsAppConversionRequest calls the generic SendWhatsAppConversion builder with application/json body
 func NewSendWhatsAppConversionRequest(server string, body SendWhatsAppConversionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -45911,6 +45997,9 @@ type ClientWithResponsesInterface interface {
 
 	// UploadWhatsAppProfilePhotoWithBodyWithResponse request with any body
 	UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppProfilePhotoResponse, error)
+
+	// ListWhatsAppConversionsWithResponse request
+	ListWhatsAppConversionsWithResponse(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppConversionsResponse, error)
 
 	// SendWhatsAppConversionWithBodyWithResponse request with any body
 	SendWhatsAppConversionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendWhatsAppConversionResponse, error)
@@ -58078,6 +58167,57 @@ func (r UploadWhatsAppProfilePhotoResponse) ContentType() string {
 	return ""
 }
 
+type ListWhatsAppConversionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Events *[]struct {
+			ConversationId *string `json:"conversationId,omitempty"`
+			DurationMs     *int    `json:"durationMs,omitempty"`
+
+			// EventName One of LeadSubmitted, Purchase, AddToCart, InitiateCheckout, ViewContent.
+			EventName *string `json:"eventName,omitempty"`
+
+			// EventsFailed Number of events Meta rejected (usually 0).
+			EventsFailed *int `json:"eventsFailed,omitempty"`
+
+			// EventsReceived Number of events Meta accepted on this send (usually 1).
+			EventsReceived *int `json:"eventsReceived,omitempty"`
+
+			// Timestamp When the event was sent to Meta.
+			Timestamp *time.Time `json:"timestamp,omitempty"`
+
+			// TraceId Meta fbtrace_id for cross-referencing in Events Manager.
+			TraceId *string `json:"traceId,omitempty"`
+		} `json:"events,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppConversionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppConversionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppConversionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SendWhatsAppConversionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -62974,6 +63114,15 @@ func (c *ClientWithResponses) UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx
 		return nil, err
 	}
 	return ParseUploadWhatsAppProfilePhotoResponse(rsp)
+}
+
+// ListWhatsAppConversionsWithResponse request returning *ListWhatsAppConversionsResponse
+func (c *ClientWithResponses) ListWhatsAppConversionsWithResponse(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppConversionsResponse, error) {
+	rsp, err := c.ListWhatsAppConversions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppConversionsResponse(rsp)
 }
 
 // SendWhatsAppConversionWithBodyWithResponse request with arbitrary body returning *SendWhatsAppConversionResponse
@@ -76905,6 +77054,59 @@ func ParseUploadWhatsAppProfilePhotoResponse(rsp *http.Response) (*UploadWhatsAp
 		var dest struct {
 			Message *string `json:"message,omitempty"`
 			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppConversionsResponse parses an HTTP response from a ListWhatsAppConversionsWithResponse call
+func ParseListWhatsAppConversionsResponse(rsp *http.Response) (*ListWhatsAppConversionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppConversionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Events *[]struct {
+				ConversationId *string `json:"conversationId,omitempty"`
+				DurationMs     *int    `json:"durationMs,omitempty"`
+
+				// EventName One of LeadSubmitted, Purchase, AddToCart, InitiateCheckout, ViewContent.
+				EventName *string `json:"eventName,omitempty"`
+
+				// EventsFailed Number of events Meta rejected (usually 0).
+				EventsFailed *int `json:"eventsFailed,omitempty"`
+
+				// EventsReceived Number of events Meta accepted on this send (usually 1).
+				EventsReceived *int `json:"eventsReceived,omitempty"`
+
+				// Timestamp When the event was sent to Meta.
+				Timestamp *time.Time `json:"timestamp,omitempty"`
+
+				// TraceId Meta fbtrace_id for cross-referencing in Events Manager.
+				TraceId *string `json:"traceId,omitempty"`
+			} `json:"events,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
