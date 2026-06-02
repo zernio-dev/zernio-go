@@ -470,22 +470,22 @@ func (e AdTreeCampaignPlatform) Valid() bool {
 
 // Defines values for AdTreeCampaignReviewStatus.
 const (
-	Approved   AdTreeCampaignReviewStatus = "approved"
-	InReview   AdTreeCampaignReviewStatus = "in_review"
-	Rejected   AdTreeCampaignReviewStatus = "rejected"
-	WithIssues AdTreeCampaignReviewStatus = "with_issues"
+	AdTreeCampaignReviewStatusApproved   AdTreeCampaignReviewStatus = "approved"
+	AdTreeCampaignReviewStatusInReview   AdTreeCampaignReviewStatus = "in_review"
+	AdTreeCampaignReviewStatusRejected   AdTreeCampaignReviewStatus = "rejected"
+	AdTreeCampaignReviewStatusWithIssues AdTreeCampaignReviewStatus = "with_issues"
 )
 
 // Valid indicates whether the value is a known member of the AdTreeCampaignReviewStatus enum.
 func (e AdTreeCampaignReviewStatus) Valid() bool {
 	switch e {
-	case Approved:
+	case AdTreeCampaignReviewStatusApproved:
 		return true
-	case InReview:
+	case AdTreeCampaignReviewStatusInReview:
 		return true
-	case Rejected:
+	case AdTreeCampaignReviewStatusRejected:
 		return true
-	case WithIssues:
+	case AdTreeCampaignReviewStatusWithIssues:
 		return true
 	default:
 		return false
@@ -783,6 +783,66 @@ func (e DiscordPlatformDataThreadFromMessageAutoArchiveDuration) Valid() bool {
 	case N4320:
 		return true
 	case N60:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DiscordScheduledEventEntityType.
+const (
+	DiscordScheduledEventEntityTypeN1 DiscordScheduledEventEntityType = 1
+	DiscordScheduledEventEntityTypeN2 DiscordScheduledEventEntityType = 2
+	DiscordScheduledEventEntityTypeN3 DiscordScheduledEventEntityType = 3
+)
+
+// Valid indicates whether the value is a known member of the DiscordScheduledEventEntityType enum.
+func (e DiscordScheduledEventEntityType) Valid() bool {
+	switch e {
+	case DiscordScheduledEventEntityTypeN1:
+		return true
+	case DiscordScheduledEventEntityTypeN2:
+		return true
+	case DiscordScheduledEventEntityTypeN3:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DiscordScheduledEventPrivacyLevel.
+const (
+	DiscordScheduledEventPrivacyLevelN2 DiscordScheduledEventPrivacyLevel = 2
+)
+
+// Valid indicates whether the value is a known member of the DiscordScheduledEventPrivacyLevel enum.
+func (e DiscordScheduledEventPrivacyLevel) Valid() bool {
+	switch e {
+	case DiscordScheduledEventPrivacyLevelN2:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DiscordScheduledEventStatus.
+const (
+	DiscordScheduledEventStatusN1 DiscordScheduledEventStatus = 1
+	DiscordScheduledEventStatusN2 DiscordScheduledEventStatus = 2
+	DiscordScheduledEventStatusN3 DiscordScheduledEventStatus = 3
+	DiscordScheduledEventStatusN4 DiscordScheduledEventStatus = 4
+)
+
+// Valid indicates whether the value is a known member of the DiscordScheduledEventStatus enum.
+func (e DiscordScheduledEventStatus) Valid() bool {
+	switch e {
+	case DiscordScheduledEventStatusN1:
+		return true
+	case DiscordScheduledEventStatusN2:
+		return true
+	case DiscordScheduledEventStatusN3:
+		return true
+	case DiscordScheduledEventStatusN4:
 		return true
 	default:
 		return false
@@ -1601,30 +1661,33 @@ func (e UsageStatsBillingSystem) Valid() bool {
 
 // Defines values for WebhookEvents.
 const (
-	WebhookEventsAccountAdsInitialSyncCompleted WebhookEvents = "account.ads.initial_sync_completed"
-	WebhookEventsAccountConnected               WebhookEvents = "account.connected"
-	WebhookEventsAccountDisconnected            WebhookEvents = "account.disconnected"
-	WebhookEventsAdStatusChanged                WebhookEvents = "ad.status_changed"
-	WebhookEventsCommentReceived                WebhookEvents = "comment.received"
-	WebhookEventsMessageDeleted                 WebhookEvents = "message.deleted"
-	WebhookEventsMessageDelivered               WebhookEvents = "message.delivered"
-	WebhookEventsMessageEdited                  WebhookEvents = "message.edited"
-	WebhookEventsMessageFailed                  WebhookEvents = "message.failed"
-	WebhookEventsMessageRead                    WebhookEvents = "message.read"
-	WebhookEventsMessageReceived                WebhookEvents = "message.received"
-	WebhookEventsMessageSent                    WebhookEvents = "message.sent"
-	WebhookEventsPostCancelled                  WebhookEvents = "post.cancelled"
-	WebhookEventsPostFailed                     WebhookEvents = "post.failed"
-	WebhookEventsPostPartial                    WebhookEvents = "post.partial"
-	WebhookEventsPostPlatformFailed             WebhookEvents = "post.platform.failed"
-	WebhookEventsPostPlatformPublished          WebhookEvents = "post.platform.published"
-	WebhookEventsPostPublished                  WebhookEvents = "post.published"
-	WebhookEventsPostRecycled                   WebhookEvents = "post.recycled"
-	WebhookEventsPostScheduled                  WebhookEvents = "post.scheduled"
-	WebhookEventsReactionReceived               WebhookEvents = "reaction.received"
-	WebhookEventsReviewNew                      WebhookEvents = "review.new"
-	WebhookEventsReviewUpdated                  WebhookEvents = "review.updated"
-	WebhookEventsWhatsappTemplateStatusUpdated  WebhookEvents = "whatsapp.template.status_updated"
+	WebhookEventsAccountAdsInitialSyncCompleted     WebhookEvents = "account.ads.initial_sync_completed"
+	WebhookEventsAccountConnected                   WebhookEvents = "account.connected"
+	WebhookEventsAccountDisconnected                WebhookEvents = "account.disconnected"
+	WebhookEventsAdStatusChanged                    WebhookEvents = "ad.status_changed"
+	WebhookEventsCommentReceived                    WebhookEvents = "comment.received"
+	WebhookEventsMessageDeleted                     WebhookEvents = "message.deleted"
+	WebhookEventsMessageDelivered                   WebhookEvents = "message.delivered"
+	WebhookEventsMessageEdited                      WebhookEvents = "message.edited"
+	WebhookEventsMessageFailed                      WebhookEvents = "message.failed"
+	WebhookEventsMessageRead                        WebhookEvents = "message.read"
+	WebhookEventsMessageReceived                    WebhookEvents = "message.received"
+	WebhookEventsMessageSent                        WebhookEvents = "message.sent"
+	WebhookEventsPostCancelled                      WebhookEvents = "post.cancelled"
+	WebhookEventsPostFailed                         WebhookEvents = "post.failed"
+	WebhookEventsPostPartial                        WebhookEvents = "post.partial"
+	WebhookEventsPostPlatformFailed                 WebhookEvents = "post.platform.failed"
+	WebhookEventsPostPlatformPublished              WebhookEvents = "post.platform.published"
+	WebhookEventsPostPublished                      WebhookEvents = "post.published"
+	WebhookEventsPostRecycled                       WebhookEvents = "post.recycled"
+	WebhookEventsPostScheduled                      WebhookEvents = "post.scheduled"
+	WebhookEventsReactionReceived                   WebhookEvents = "reaction.received"
+	WebhookEventsReviewNew                          WebhookEvents = "review.new"
+	WebhookEventsReviewUpdated                      WebhookEvents = "review.updated"
+	WebhookEventsWhatsappNumberActivated            WebhookEvents = "whatsapp.number.activated"
+	WebhookEventsWhatsappNumberDeclined             WebhookEvents = "whatsapp.number.declined"
+	WebhookEventsWhatsappNumberVerificationRequired WebhookEvents = "whatsapp.number.verification_required"
+	WebhookEventsWhatsappTemplateStatusUpdated      WebhookEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the WebhookEvents enum.
@@ -1675,6 +1738,12 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsReviewNew:
 		return true
 	case WebhookEventsReviewUpdated:
+		return true
+	case WebhookEventsWhatsappNumberActivated:
+		return true
+	case WebhookEventsWhatsappNumberDeclined:
+		return true
+	case WebhookEventsWhatsappNumberVerificationRequired:
 		return true
 	case WebhookEventsWhatsappTemplateStatusUpdated:
 		return true
@@ -1773,6 +1842,24 @@ func (e WhatsAppHeaderComponentType) Valid() bool {
 	}
 }
 
+// Defines values for WhatsAppSandboxSessionStatus.
+const (
+	WhatsAppSandboxSessionStatusActive  WhatsAppSandboxSessionStatus = "active"
+	WhatsAppSandboxSessionStatusPending WhatsAppSandboxSessionStatus = "pending"
+)
+
+// Valid indicates whether the value is a known member of the WhatsAppSandboxSessionStatus enum.
+func (e WhatsAppSandboxSessionStatus) Valid() bool {
+	switch e {
+	case WhatsAppSandboxSessionStatusActive:
+		return true
+	case WhatsAppSandboxSessionStatusPending:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WhatsAppTemplateButtonOtpType.
 const (
 	CopyCode WhatsAppTemplateButtonOtpType = "copy_code"
@@ -1821,6 +1908,126 @@ func (e WhatsAppTemplateButtonType) Valid() bool {
 	case WhatsAppTemplateButtonTypeQuickReply:
 		return true
 	case WhatsAppTemplateButtonTypeUrl:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WorkflowExecutionEventAction.
+const (
+	ExecutionCompleted WorkflowExecutionEventAction = "execution_completed"
+	ExecutionExited    WorkflowExecutionEventAction = "execution_exited"
+	ExecutionPaused    WorkflowExecutionEventAction = "execution_paused"
+	ExecutionResumed   WorkflowExecutionEventAction = "execution_resumed"
+	ExecutionStarted   WorkflowExecutionEventAction = "execution_started"
+	NodeCompleted      WorkflowExecutionEventAction = "node_completed"
+	NodeFailed         WorkflowExecutionEventAction = "node_failed"
+	NodeSkipped        WorkflowExecutionEventAction = "node_skipped"
+	NodeStarted        WorkflowExecutionEventAction = "node_started"
+)
+
+// Valid indicates whether the value is a known member of the WorkflowExecutionEventAction enum.
+func (e WorkflowExecutionEventAction) Valid() bool {
+	switch e {
+	case ExecutionCompleted:
+		return true
+	case ExecutionExited:
+		return true
+	case ExecutionPaused:
+		return true
+	case ExecutionResumed:
+		return true
+	case ExecutionStarted:
+		return true
+	case NodeCompleted:
+		return true
+	case NodeFailed:
+		return true
+	case NodeSkipped:
+		return true
+	case NodeStarted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WorkflowExecutionEventStatus.
+const (
+	WorkflowExecutionEventStatusFailed  WorkflowExecutionEventStatus = "failed"
+	WorkflowExecutionEventStatusPending WorkflowExecutionEventStatus = "pending"
+	WorkflowExecutionEventStatusSuccess WorkflowExecutionEventStatus = "success"
+)
+
+// Valid indicates whether the value is a known member of the WorkflowExecutionEventStatus enum.
+func (e WorkflowExecutionEventStatus) Valid() bool {
+	switch e {
+	case WorkflowExecutionEventStatusFailed:
+		return true
+	case WorkflowExecutionEventStatusPending:
+		return true
+	case WorkflowExecutionEventStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WorkflowNodeType.
+const (
+	WorkflowNodeTypeABSplit        WorkflowNodeType = "a_b_split"
+	WorkflowNodeTypeAddTag         WorkflowNodeType = "add_tag"
+	WorkflowNodeTypeAi             WorkflowNodeType = "ai"
+	WorkflowNodeTypeCondition      WorkflowNodeType = "condition"
+	WorkflowNodeTypeDelay          WorkflowNodeType = "delay"
+	WorkflowNodeTypeEnd            WorkflowNodeType = "end"
+	WorkflowNodeTypeEnrollSequence WorkflowNodeType = "enroll_sequence"
+	WorkflowNodeTypeHandoff        WorkflowNodeType = "handoff"
+	WorkflowNodeTypeRemoveTag      WorkflowNodeType = "remove_tag"
+	WorkflowNodeTypeSendMessage    WorkflowNodeType = "send_message"
+	WorkflowNodeTypeSetField       WorkflowNodeType = "set_field"
+	WorkflowNodeTypeSetVariable    WorkflowNodeType = "set_variable"
+	WorkflowNodeTypeStartCall      WorkflowNodeType = "start_call"
+	WorkflowNodeTypeTrigger        WorkflowNodeType = "trigger"
+	WorkflowNodeTypeWaitForReply   WorkflowNodeType = "wait_for_reply"
+	WorkflowNodeTypeWebhook        WorkflowNodeType = "webhook"
+)
+
+// Valid indicates whether the value is a known member of the WorkflowNodeType enum.
+func (e WorkflowNodeType) Valid() bool {
+	switch e {
+	case WorkflowNodeTypeABSplit:
+		return true
+	case WorkflowNodeTypeAddTag:
+		return true
+	case WorkflowNodeTypeAi:
+		return true
+	case WorkflowNodeTypeCondition:
+		return true
+	case WorkflowNodeTypeDelay:
+		return true
+	case WorkflowNodeTypeEnd:
+		return true
+	case WorkflowNodeTypeEnrollSequence:
+		return true
+	case WorkflowNodeTypeHandoff:
+		return true
+	case WorkflowNodeTypeRemoveTag:
+		return true
+	case WorkflowNodeTypeSendMessage:
+		return true
+	case WorkflowNodeTypeSetField:
+		return true
+	case WorkflowNodeTypeSetVariable:
+		return true
+	case WorkflowNodeTypeStartCall:
+		return true
+	case WorkflowNodeTypeTrigger:
+		return true
+	case WorkflowNodeTypeWaitForReply:
+		return true
+	case WorkflowNodeTypeWebhook:
 		return true
 	default:
 		return false
@@ -2867,19 +3074,19 @@ func (e GetAccountHealth200JSONResponseBodyStatus) Valid() bool {
 
 // Defines values for GetInstagramStoryInsights200JSONResponseBodyDataSource.
 const (
-	GetInstagramStoryInsights200JSONResponseBodyDataSourceCached      GetInstagramStoryInsights200JSONResponseBodyDataSource = "cached"
-	GetInstagramStoryInsights200JSONResponseBodyDataSourceLive        GetInstagramStoryInsights200JSONResponseBodyDataSource = "live"
-	GetInstagramStoryInsights200JSONResponseBodyDataSourceUnavailable GetInstagramStoryInsights200JSONResponseBodyDataSource = "unavailable"
+	Cached      GetInstagramStoryInsights200JSONResponseBodyDataSource = "cached"
+	Live        GetInstagramStoryInsights200JSONResponseBodyDataSource = "live"
+	Unavailable GetInstagramStoryInsights200JSONResponseBodyDataSource = "unavailable"
 )
 
 // Valid indicates whether the value is a known member of the GetInstagramStoryInsights200JSONResponseBodyDataSource enum.
 func (e GetInstagramStoryInsights200JSONResponseBodyDataSource) Valid() bool {
 	switch e {
-	case GetInstagramStoryInsights200JSONResponseBodyDataSourceCached:
+	case Cached:
 		return true
-	case GetInstagramStoryInsights200JSONResponseBodyDataSourceLive:
+	case Live:
 		return true
-	case GetInstagramStoryInsights200JSONResponseBodyDataSourceUnavailable:
+	case Unavailable:
 		return true
 	default:
 		return false
@@ -4518,6 +4725,42 @@ func (e CreateCtwaAdJSONBodyBudgetType) Valid() bool {
 	}
 }
 
+// Defines values for CreateCtwaAdJSONBodyCitiesDistanceUnit.
+const (
+	CreateCtwaAdJSONBodyCitiesDistanceUnitKilometer CreateCtwaAdJSONBodyCitiesDistanceUnit = "kilometer"
+	CreateCtwaAdJSONBodyCitiesDistanceUnitMile      CreateCtwaAdJSONBodyCitiesDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyCitiesDistanceUnit enum.
+func (e CreateCtwaAdJSONBodyCitiesDistanceUnit) Valid() bool {
+	switch e {
+	case CreateCtwaAdJSONBodyCitiesDistanceUnitKilometer:
+		return true
+	case CreateCtwaAdJSONBodyCitiesDistanceUnitMile:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCtwaAdJSONBodyCustomLocationsDistanceUnit.
+const (
+	CreateCtwaAdJSONBodyCustomLocationsDistanceUnitKilometer CreateCtwaAdJSONBodyCustomLocationsDistanceUnit = "kilometer"
+	CreateCtwaAdJSONBodyCustomLocationsDistanceUnitMile      CreateCtwaAdJSONBodyCustomLocationsDistanceUnit = "mile"
+)
+
+// Valid indicates whether the value is a known member of the CreateCtwaAdJSONBodyCustomLocationsDistanceUnit enum.
+func (e CreateCtwaAdJSONBodyCustomLocationsDistanceUnit) Valid() bool {
+	switch e {
+	case CreateCtwaAdJSONBodyCustomLocationsDistanceUnitKilometer:
+		return true
+	case CreateCtwaAdJSONBodyCustomLocationsDistanceUnitMile:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateCtwaAdJSONBodyObjective.
 const (
 	OUTCOMEENGAGEMENT CreateCtwaAdJSONBodyObjective = "OUTCOME_ENGAGEMENT"
@@ -4746,6 +4989,24 @@ func (e UpdateAdJSONBodyTargetingAdvantageAudience) Valid() bool {
 	case UpdateAdJSONBodyTargetingAdvantageAudienceN0:
 		return true
 	case UpdateAdJSONBodyTargetingAdvantageAudienceN1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAdAnalytics200JSONResponseBodyAdTrigger.
+const (
+	GetAdAnalytics200JSONResponseBodyAdTriggerComment    GetAdAnalytics200JSONResponseBodyAdTrigger = "comment"
+	GetAdAnalytics200JSONResponseBodyAdTriggerStoryReply GetAdAnalytics200JSONResponseBodyAdTrigger = "story_reply"
+)
+
+// Valid indicates whether the value is a known member of the GetAdAnalytics200JSONResponseBodyAdTrigger enum.
+func (e GetAdAnalytics200JSONResponseBodyAdTrigger) Valid() bool {
+	switch e {
+	case GetAdAnalytics200JSONResponseBodyAdTriggerComment:
+		return true
+	case GetAdAnalytics200JSONResponseBodyAdTriggerStoryReply:
 		return true
 	default:
 		return false
@@ -5454,6 +5715,24 @@ func (e ListCommentAutomations200JSONResponseBodyAutomationsPlatform) Valid() bo
 	}
 }
 
+// Defines values for ListCommentAutomations200JSONResponseBodyAutomationsTrigger.
+const (
+	ListCommentAutomations200JSONResponseBodyAutomationsTriggerComment    ListCommentAutomations200JSONResponseBodyAutomationsTrigger = "comment"
+	ListCommentAutomations200JSONResponseBodyAutomationsTriggerStoryReply ListCommentAutomations200JSONResponseBodyAutomationsTrigger = "story_reply"
+)
+
+// Valid indicates whether the value is a known member of the ListCommentAutomations200JSONResponseBodyAutomationsTrigger enum.
+func (e ListCommentAutomations200JSONResponseBodyAutomationsTrigger) Valid() bool {
+	switch e {
+	case ListCommentAutomations200JSONResponseBodyAutomationsTriggerComment:
+		return true
+	case ListCommentAutomations200JSONResponseBodyAutomationsTriggerStoryReply:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateCommentAutomationJSONBodyMatchMode.
 const (
 	CreateCommentAutomationJSONBodyMatchModeContains CreateCommentAutomationJSONBodyMatchMode = "contains"
@@ -5466,6 +5745,24 @@ func (e CreateCommentAutomationJSONBodyMatchMode) Valid() bool {
 	case CreateCommentAutomationJSONBodyMatchModeContains:
 		return true
 	case CreateCommentAutomationJSONBodyMatchModeExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateCommentAutomationJSONBodyTrigger.
+const (
+	CreateCommentAutomationJSONBodyTriggerComment    CreateCommentAutomationJSONBodyTrigger = "comment"
+	CreateCommentAutomationJSONBodyTriggerStoryReply CreateCommentAutomationJSONBodyTrigger = "story_reply"
+)
+
+// Valid indicates whether the value is a known member of the CreateCommentAutomationJSONBodyTrigger enum.
+func (e CreateCommentAutomationJSONBodyTrigger) Valid() bool {
+	switch e {
+	case CreateCommentAutomationJSONBodyTriggerComment:
+		return true
+	case CreateCommentAutomationJSONBodyTriggerStoryReply:
 		return true
 	default:
 		return false
@@ -5490,6 +5787,24 @@ func (e CreateCommentAutomation200JSONResponseBodyAutomationMatchMode) Valid() b
 	}
 }
 
+// Defines values for CreateCommentAutomation200JSONResponseBodyAutomationTrigger.
+const (
+	CreateCommentAutomation200JSONResponseBodyAutomationTriggerComment    CreateCommentAutomation200JSONResponseBodyAutomationTrigger = "comment"
+	CreateCommentAutomation200JSONResponseBodyAutomationTriggerStoryReply CreateCommentAutomation200JSONResponseBodyAutomationTrigger = "story_reply"
+)
+
+// Valid indicates whether the value is a known member of the CreateCommentAutomation200JSONResponseBodyAutomationTrigger enum.
+func (e CreateCommentAutomation200JSONResponseBodyAutomationTrigger) Valid() bool {
+	switch e {
+	case CreateCommentAutomation200JSONResponseBodyAutomationTriggerComment:
+		return true
+	case CreateCommentAutomation200JSONResponseBodyAutomationTriggerStoryReply:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetCommentAutomation200JSONResponseBodyAutomationMatchMode.
 const (
 	GetCommentAutomation200JSONResponseBodyAutomationMatchModeContains GetCommentAutomation200JSONResponseBodyAutomationMatchMode = "contains"
@@ -5502,6 +5817,24 @@ func (e GetCommentAutomation200JSONResponseBodyAutomationMatchMode) Valid() bool
 	case GetCommentAutomation200JSONResponseBodyAutomationMatchModeContains:
 		return true
 	case GetCommentAutomation200JSONResponseBodyAutomationMatchModeExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetCommentAutomation200JSONResponseBodyAutomationTrigger.
+const (
+	Comment    GetCommentAutomation200JSONResponseBodyAutomationTrigger = "comment"
+	StoryReply GetCommentAutomation200JSONResponseBodyAutomationTrigger = "story_reply"
+)
+
+// Valid indicates whether the value is a known member of the GetCommentAutomation200JSONResponseBodyAutomationTrigger enum.
+func (e GetCommentAutomation200JSONResponseBodyAutomationTrigger) Valid() bool {
+	switch e {
+	case Comment:
+		return true
+	case StoryReply:
 		return true
 	default:
 		return false
@@ -6180,6 +6513,159 @@ func (e CreateCustomField200JSONResponseBodyFieldType) Valid() bool {
 	}
 }
 
+// Defines values for UnpinDiscordMessage200JSONResponseBodyOperation.
+const (
+	MessageUnpinned UnpinDiscordMessage200JSONResponseBodyOperation = "message_unpinned"
+)
+
+// Valid indicates whether the value is a known member of the UnpinDiscordMessage200JSONResponseBodyOperation enum.
+func (e UnpinDiscordMessage200JSONResponseBodyOperation) Valid() bool {
+	switch e {
+	case MessageUnpinned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PinDiscordMessage200JSONResponseBodyOperation.
+const (
+	MessagePinned PinDiscordMessage200JSONResponseBodyOperation = "message_pinned"
+)
+
+// Valid indicates whether the value is a known member of the PinDiscordMessage200JSONResponseBodyOperation enum.
+func (e PinDiscordMessage200JSONResponseBodyOperation) Valid() bool {
+	switch e {
+	case MessagePinned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendDiscordDirectMessageJSONBodyAttachmentsType.
+const (
+	SendDiscordDirectMessageJSONBodyAttachmentsTypeDocument SendDiscordDirectMessageJSONBodyAttachmentsType = "document"
+	SendDiscordDirectMessageJSONBodyAttachmentsTypeGif      SendDiscordDirectMessageJSONBodyAttachmentsType = "gif"
+	SendDiscordDirectMessageJSONBodyAttachmentsTypeImage    SendDiscordDirectMessageJSONBodyAttachmentsType = "image"
+	SendDiscordDirectMessageJSONBodyAttachmentsTypeVideo    SendDiscordDirectMessageJSONBodyAttachmentsType = "video"
+)
+
+// Valid indicates whether the value is a known member of the SendDiscordDirectMessageJSONBodyAttachmentsType enum.
+func (e SendDiscordDirectMessageJSONBodyAttachmentsType) Valid() bool {
+	switch e {
+	case SendDiscordDirectMessageJSONBodyAttachmentsTypeDocument:
+		return true
+	case SendDiscordDirectMessageJSONBodyAttachmentsTypeGif:
+		return true
+	case SendDiscordDirectMessageJSONBodyAttachmentsTypeImage:
+		return true
+	case SendDiscordDirectMessageJSONBodyAttachmentsTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateDiscordScheduledEventJSONBodyEntity0Type.
+const (
+	External CreateDiscordScheduledEventJSONBodyEntity0Type = "external"
+)
+
+// Valid indicates whether the value is a known member of the CreateDiscordScheduledEventJSONBodyEntity0Type enum.
+func (e CreateDiscordScheduledEventJSONBodyEntity0Type) Valid() bool {
+	switch e {
+	case External:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateDiscordScheduledEventJSONBodyEntity1Type.
+const (
+	Voice CreateDiscordScheduledEventJSONBodyEntity1Type = "voice"
+)
+
+// Valid indicates whether the value is a known member of the CreateDiscordScheduledEventJSONBodyEntity1Type enum.
+func (e CreateDiscordScheduledEventJSONBodyEntity1Type) Valid() bool {
+	switch e {
+	case Voice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateDiscordScheduledEventJSONBodyEntity2Type.
+const (
+	Stage CreateDiscordScheduledEventJSONBodyEntity2Type = "stage"
+)
+
+// Valid indicates whether the value is a known member of the CreateDiscordScheduledEventJSONBodyEntity2Type enum.
+func (e CreateDiscordScheduledEventJSONBodyEntity2Type) Valid() bool {
+	switch e {
+	case Stage:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateDiscordScheduledEventJSONBodyStatus.
+const (
+	UpdateDiscordScheduledEventJSONBodyStatusActive    UpdateDiscordScheduledEventJSONBodyStatus = "active"
+	UpdateDiscordScheduledEventJSONBodyStatusCancelled UpdateDiscordScheduledEventJSONBodyStatus = "cancelled"
+	UpdateDiscordScheduledEventJSONBodyStatusCompleted UpdateDiscordScheduledEventJSONBodyStatus = "completed"
+	UpdateDiscordScheduledEventJSONBodyStatusScheduled UpdateDiscordScheduledEventJSONBodyStatus = "scheduled"
+)
+
+// Valid indicates whether the value is a known member of the UpdateDiscordScheduledEventJSONBodyStatus enum.
+func (e UpdateDiscordScheduledEventJSONBodyStatus) Valid() bool {
+	switch e {
+	case UpdateDiscordScheduledEventJSONBodyStatusActive:
+		return true
+	case UpdateDiscordScheduledEventJSONBodyStatusCancelled:
+		return true
+	case UpdateDiscordScheduledEventJSONBodyStatusCompleted:
+		return true
+	case UpdateDiscordScheduledEventJSONBodyStatusScheduled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RemoveDiscordMemberRole200JSONResponseBodyOperation.
+const (
+	RoleRemoved RemoveDiscordMemberRole200JSONResponseBodyOperation = "role_removed"
+)
+
+// Valid indicates whether the value is a known member of the RemoveDiscordMemberRole200JSONResponseBodyOperation enum.
+func (e RemoveDiscordMemberRole200JSONResponseBodyOperation) Valid() bool {
+	switch e {
+	case RoleRemoved:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AddDiscordMemberRole200JSONResponseBodyOperation.
+const (
+	RoleAssigned AddDiscordMemberRole200JSONResponseBodyOperation = "role_assigned"
+)
+
+// Valid indicates whether the value is a known member of the AddDiscordMemberRole200JSONResponseBodyOperation enum.
+func (e AddDiscordMemberRole200JSONResponseBodyOperation) Valid() bool {
+	switch e {
+	case RoleAssigned:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListInboxCommentsParamsPlatform.
 const (
 	ListInboxCommentsParamsPlatformBluesky   ListInboxCommentsParamsPlatform = "bluesky"
@@ -6839,13 +7325,13 @@ func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction) Valid() 
 
 // Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion.
 const (
-	N3 SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion = "3"
+	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersionN3 SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion = "3"
 )
 
 // Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion enum.
 func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion) Valid() bool {
 	switch e {
-	case N3:
+	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersionN3:
 		return true
 	default:
 		return false
@@ -7073,16 +7559,16 @@ func (e ListInboxReviewsParamsPlatform) Valid() bool {
 
 // Defines values for ListInboxReviewsParamsSortBy.
 const (
-	Date   ListInboxReviewsParamsSortBy = "date"
-	Rating ListInboxReviewsParamsSortBy = "rating"
+	ListInboxReviewsParamsSortByDate   ListInboxReviewsParamsSortBy = "date"
+	ListInboxReviewsParamsSortByRating ListInboxReviewsParamsSortBy = "rating"
 )
 
 // Valid indicates whether the value is a known member of the ListInboxReviewsParamsSortBy enum.
 func (e ListInboxReviewsParamsSortBy) Valid() bool {
 	switch e {
-	case Date:
+	case ListInboxReviewsParamsSortByDate:
 		return true
-	case Rating:
+	case ListInboxReviewsParamsSortByRating:
 		return true
 	default:
 		return false
@@ -7310,19 +7796,19 @@ func (e GetMediaPresignedUrlJSONBodyContentType) Valid() bool {
 
 // Defines values for GetMediaPresignedUrl200JSONResponseBodyType.
 const (
-	GetMediaPresignedUrl200JSONResponseBodyTypeDocument GetMediaPresignedUrl200JSONResponseBodyType = "document"
-	GetMediaPresignedUrl200JSONResponseBodyTypeImage    GetMediaPresignedUrl200JSONResponseBodyType = "image"
-	GetMediaPresignedUrl200JSONResponseBodyTypeVideo    GetMediaPresignedUrl200JSONResponseBodyType = "video"
+	Document GetMediaPresignedUrl200JSONResponseBodyType = "document"
+	Image    GetMediaPresignedUrl200JSONResponseBodyType = "image"
+	Video    GetMediaPresignedUrl200JSONResponseBodyType = "video"
 )
 
 // Valid indicates whether the value is a known member of the GetMediaPresignedUrl200JSONResponseBodyType enum.
 func (e GetMediaPresignedUrl200JSONResponseBodyType) Valid() bool {
 	switch e {
-	case GetMediaPresignedUrl200JSONResponseBodyTypeDocument:
+	case Document:
 		return true
-	case GetMediaPresignedUrl200JSONResponseBodyTypeImage:
+	case Image:
 		return true
-	case GetMediaPresignedUrl200JSONResponseBodyTypeVideo:
+	case Video:
 		return true
 	default:
 		return false
@@ -7583,16 +8069,16 @@ func (e GetRedditFeedParamsT) Valid() bool {
 
 // Defines values for SearchRedditParamsRestrictSr.
 const (
-	SearchRedditParamsRestrictSrN0 SearchRedditParamsRestrictSr = "0"
-	SearchRedditParamsRestrictSrN1 SearchRedditParamsRestrictSr = "1"
+	N0 SearchRedditParamsRestrictSr = "0"
+	N1 SearchRedditParamsRestrictSr = "1"
 )
 
 // Valid indicates whether the value is a known member of the SearchRedditParamsRestrictSr enum.
 func (e SearchRedditParamsRestrictSr) Valid() bool {
 	switch e {
-	case SearchRedditParamsRestrictSrN0:
+	case N0:
 		return true
-	case SearchRedditParamsRestrictSrN1:
+	case N1:
 		return true
 	default:
 		return false
@@ -7922,30 +8408,33 @@ func (e ValidateSubreddit200JSONResponseBody0SubredditType) Valid() bool {
 
 // Defines values for CreateWebhookSettingsJSONBodyEvents.
 const (
-	CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted CreateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
-	CreateWebhookSettingsJSONBodyEventsAccountConnected               CreateWebhookSettingsJSONBodyEvents = "account.connected"
-	CreateWebhookSettingsJSONBodyEventsAccountDisconnected            CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
-	CreateWebhookSettingsJSONBodyEventsAdStatusChanged                CreateWebhookSettingsJSONBodyEvents = "ad.status_changed"
-	CreateWebhookSettingsJSONBodyEventsCommentReceived                CreateWebhookSettingsJSONBodyEvents = "comment.received"
-	CreateWebhookSettingsJSONBodyEventsMessageDeleted                 CreateWebhookSettingsJSONBodyEvents = "message.deleted"
-	CreateWebhookSettingsJSONBodyEventsMessageDelivered               CreateWebhookSettingsJSONBodyEvents = "message.delivered"
-	CreateWebhookSettingsJSONBodyEventsMessageEdited                  CreateWebhookSettingsJSONBodyEvents = "message.edited"
-	CreateWebhookSettingsJSONBodyEventsMessageFailed                  CreateWebhookSettingsJSONBodyEvents = "message.failed"
-	CreateWebhookSettingsJSONBodyEventsMessageRead                    CreateWebhookSettingsJSONBodyEvents = "message.read"
-	CreateWebhookSettingsJSONBodyEventsMessageReceived                CreateWebhookSettingsJSONBodyEvents = "message.received"
-	CreateWebhookSettingsJSONBodyEventsMessageSent                    CreateWebhookSettingsJSONBodyEvents = "message.sent"
-	CreateWebhookSettingsJSONBodyEventsPostCancelled                  CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
-	CreateWebhookSettingsJSONBodyEventsPostFailed                     CreateWebhookSettingsJSONBodyEvents = "post.failed"
-	CreateWebhookSettingsJSONBodyEventsPostPartial                    CreateWebhookSettingsJSONBodyEvents = "post.partial"
-	CreateWebhookSettingsJSONBodyEventsPostPlatformFailed             CreateWebhookSettingsJSONBodyEvents = "post.platform.failed"
-	CreateWebhookSettingsJSONBodyEventsPostPlatformPublished          CreateWebhookSettingsJSONBodyEvents = "post.platform.published"
-	CreateWebhookSettingsJSONBodyEventsPostPublished                  CreateWebhookSettingsJSONBodyEvents = "post.published"
-	CreateWebhookSettingsJSONBodyEventsPostRecycled                   CreateWebhookSettingsJSONBodyEvents = "post.recycled"
-	CreateWebhookSettingsJSONBodyEventsPostScheduled                  CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
-	CreateWebhookSettingsJSONBodyEventsReactionReceived               CreateWebhookSettingsJSONBodyEvents = "reaction.received"
-	CreateWebhookSettingsJSONBodyEventsReviewNew                      CreateWebhookSettingsJSONBodyEvents = "review.new"
-	CreateWebhookSettingsJSONBodyEventsReviewUpdated                  CreateWebhookSettingsJSONBodyEvents = "review.updated"
-	CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated  CreateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
+	CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted     CreateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
+	CreateWebhookSettingsJSONBodyEventsAccountConnected                   CreateWebhookSettingsJSONBodyEvents = "account.connected"
+	CreateWebhookSettingsJSONBodyEventsAccountDisconnected                CreateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	CreateWebhookSettingsJSONBodyEventsAdStatusChanged                    CreateWebhookSettingsJSONBodyEvents = "ad.status_changed"
+	CreateWebhookSettingsJSONBodyEventsCommentReceived                    CreateWebhookSettingsJSONBodyEvents = "comment.received"
+	CreateWebhookSettingsJSONBodyEventsMessageDeleted                     CreateWebhookSettingsJSONBodyEvents = "message.deleted"
+	CreateWebhookSettingsJSONBodyEventsMessageDelivered                   CreateWebhookSettingsJSONBodyEvents = "message.delivered"
+	CreateWebhookSettingsJSONBodyEventsMessageEdited                      CreateWebhookSettingsJSONBodyEvents = "message.edited"
+	CreateWebhookSettingsJSONBodyEventsMessageFailed                      CreateWebhookSettingsJSONBodyEvents = "message.failed"
+	CreateWebhookSettingsJSONBodyEventsMessageRead                        CreateWebhookSettingsJSONBodyEvents = "message.read"
+	CreateWebhookSettingsJSONBodyEventsMessageReceived                    CreateWebhookSettingsJSONBodyEvents = "message.received"
+	CreateWebhookSettingsJSONBodyEventsMessageSent                        CreateWebhookSettingsJSONBodyEvents = "message.sent"
+	CreateWebhookSettingsJSONBodyEventsPostCancelled                      CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	CreateWebhookSettingsJSONBodyEventsPostFailed                         CreateWebhookSettingsJSONBodyEvents = "post.failed"
+	CreateWebhookSettingsJSONBodyEventsPostPartial                        CreateWebhookSettingsJSONBodyEvents = "post.partial"
+	CreateWebhookSettingsJSONBodyEventsPostPlatformFailed                 CreateWebhookSettingsJSONBodyEvents = "post.platform.failed"
+	CreateWebhookSettingsJSONBodyEventsPostPlatformPublished              CreateWebhookSettingsJSONBodyEvents = "post.platform.published"
+	CreateWebhookSettingsJSONBodyEventsPostPublished                      CreateWebhookSettingsJSONBodyEvents = "post.published"
+	CreateWebhookSettingsJSONBodyEventsPostRecycled                       CreateWebhookSettingsJSONBodyEvents = "post.recycled"
+	CreateWebhookSettingsJSONBodyEventsPostScheduled                      CreateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	CreateWebhookSettingsJSONBodyEventsReactionReceived                   CreateWebhookSettingsJSONBodyEvents = "reaction.received"
+	CreateWebhookSettingsJSONBodyEventsReviewNew                          CreateWebhookSettingsJSONBodyEvents = "review.new"
+	CreateWebhookSettingsJSONBodyEventsReviewUpdated                      CreateWebhookSettingsJSONBodyEvents = "review.updated"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberActivated            CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined             CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.verification_required"
+	CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated      CreateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the CreateWebhookSettingsJSONBodyEvents enum.
@@ -7997,6 +8486,12 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsReviewUpdated:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberActivated:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated:
 		return true
 	default:
@@ -8006,30 +8501,33 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 
 // Defines values for UpdateWebhookSettingsJSONBodyEvents.
 const (
-	AccountAdsInitialSyncCompleted UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
-	AccountConnected               UpdateWebhookSettingsJSONBodyEvents = "account.connected"
-	AccountDisconnected            UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
-	AdStatusChanged                UpdateWebhookSettingsJSONBodyEvents = "ad.status_changed"
-	CommentReceived                UpdateWebhookSettingsJSONBodyEvents = "comment.received"
-	MessageDeleted                 UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
-	MessageDelivered               UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
-	MessageEdited                  UpdateWebhookSettingsJSONBodyEvents = "message.edited"
-	MessageFailed                  UpdateWebhookSettingsJSONBodyEvents = "message.failed"
-	MessageRead                    UpdateWebhookSettingsJSONBodyEvents = "message.read"
-	MessageReceived                UpdateWebhookSettingsJSONBodyEvents = "message.received"
-	MessageSent                    UpdateWebhookSettingsJSONBodyEvents = "message.sent"
-	PostCancelled                  UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
-	PostFailed                     UpdateWebhookSettingsJSONBodyEvents = "post.failed"
-	PostPartial                    UpdateWebhookSettingsJSONBodyEvents = "post.partial"
-	PostPlatformFailed             UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
-	PostPlatformPublished          UpdateWebhookSettingsJSONBodyEvents = "post.platform.published"
-	PostPublished                  UpdateWebhookSettingsJSONBodyEvents = "post.published"
-	PostRecycled                   UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
-	PostScheduled                  UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
-	ReactionReceived               UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
-	ReviewNew                      UpdateWebhookSettingsJSONBodyEvents = "review.new"
-	ReviewUpdated                  UpdateWebhookSettingsJSONBodyEvents = "review.updated"
-	WhatsappTemplateStatusUpdated  UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
+	AccountAdsInitialSyncCompleted     UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
+	AccountConnected                   UpdateWebhookSettingsJSONBodyEvents = "account.connected"
+	AccountDisconnected                UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	AdStatusChanged                    UpdateWebhookSettingsJSONBodyEvents = "ad.status_changed"
+	CommentReceived                    UpdateWebhookSettingsJSONBodyEvents = "comment.received"
+	MessageDeleted                     UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
+	MessageDelivered                   UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
+	MessageEdited                      UpdateWebhookSettingsJSONBodyEvents = "message.edited"
+	MessageFailed                      UpdateWebhookSettingsJSONBodyEvents = "message.failed"
+	MessageRead                        UpdateWebhookSettingsJSONBodyEvents = "message.read"
+	MessageReceived                    UpdateWebhookSettingsJSONBodyEvents = "message.received"
+	MessageSent                        UpdateWebhookSettingsJSONBodyEvents = "message.sent"
+	PostCancelled                      UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	PostFailed                         UpdateWebhookSettingsJSONBodyEvents = "post.failed"
+	PostPartial                        UpdateWebhookSettingsJSONBodyEvents = "post.partial"
+	PostPlatformFailed                 UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
+	PostPlatformPublished              UpdateWebhookSettingsJSONBodyEvents = "post.platform.published"
+	PostPublished                      UpdateWebhookSettingsJSONBodyEvents = "post.published"
+	PostRecycled                       UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
+	PostScheduled                      UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	ReactionReceived                   UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
+	ReviewNew                          UpdateWebhookSettingsJSONBodyEvents = "review.new"
+	ReviewUpdated                      UpdateWebhookSettingsJSONBodyEvents = "review.updated"
+	WhatsappNumberActivated            UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
+	WhatsappNumberDeclined             UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
+	WhatsappNumberVerificationRequired UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.verification_required"
+	WhatsappTemplateStatusUpdated      UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWebhookSettingsJSONBodyEvents enum.
@@ -8081,6 +8579,12 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case ReviewUpdated:
 		return true
+	case WhatsappNumberActivated:
+		return true
+	case WhatsappNumberDeclined:
+		return true
+	case WhatsappNumberVerificationRequired:
+		return true
 	case WhatsappTemplateStatusUpdated:
 		return true
 	default:
@@ -8121,6 +8625,183 @@ const (
 func (e UpdateWhatsAppDisplayName200JSONResponseBodyDisplayNameStatus) Valid() bool {
 	switch e {
 	case PENDINGREVIEW:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName.
+const (
+	GetWhatsAppCallPermissions200JSONResponseBodyActionsActionNameSendCallPermissionRequest GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName = "send_call_permission_request"
+	GetWhatsAppCallPermissions200JSONResponseBodyActionsActionNameStartCall                 GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName = "start_call"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName enum.
+func (e GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName) Valid() bool {
+	switch e {
+	case GetWhatsAppCallPermissions200JSONResponseBodyActionsActionNameSendCallPermissionRequest:
+		return true
+	case GetWhatsAppCallPermissions200JSONResponseBodyActionsActionNameStartCall:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus.
+const (
+	NoPermission GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus = "no_permission"
+	Permanent    GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus = "permanent"
+	Temporary    GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus = "temporary"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus enum.
+func (e GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus) Valid() bool {
+	switch e {
+	case NoPermission:
+		return true
+	case Permanent:
+		return true
+	case Temporary:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWhatsAppCallsParamsStatus.
+const (
+	ListWhatsAppCallsParamsStatusAnswered ListWhatsAppCallsParamsStatus = "answered"
+	ListWhatsAppCallsParamsStatusEnded    ListWhatsAppCallsParamsStatus = "ended"
+	ListWhatsAppCallsParamsStatusFailed   ListWhatsAppCallsParamsStatus = "failed"
+	ListWhatsAppCallsParamsStatusRinging  ListWhatsAppCallsParamsStatus = "ringing"
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppCallsParamsStatus enum.
+func (e ListWhatsAppCallsParamsStatus) Valid() bool {
+	switch e {
+	case ListWhatsAppCallsParamsStatusAnswered:
+		return true
+	case ListWhatsAppCallsParamsStatusEnded:
+		return true
+	case ListWhatsAppCallsParamsStatusFailed:
+		return true
+	case ListWhatsAppCallsParamsStatusRinging:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWhatsAppCallsParamsDirection.
+const (
+	ListWhatsAppCallsParamsDirectionInbound  ListWhatsAppCallsParamsDirection = "inbound"
+	ListWhatsAppCallsParamsDirectionOutbound ListWhatsAppCallsParamsDirection = "outbound"
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppCallsParamsDirection enum.
+func (e ListWhatsAppCallsParamsDirection) Valid() bool {
+	switch e {
+	case ListWhatsAppCallsParamsDirectionInbound:
+		return true
+	case ListWhatsAppCallsParamsDirectionOutbound:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWhatsAppCalls200JSONResponseBodyCallsDirection.
+const (
+	ListWhatsAppCalls200JSONResponseBodyCallsDirectionInbound  ListWhatsAppCalls200JSONResponseBodyCallsDirection = "inbound"
+	ListWhatsAppCalls200JSONResponseBodyCallsDirectionOutbound ListWhatsAppCalls200JSONResponseBodyCallsDirection = "outbound"
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppCalls200JSONResponseBodyCallsDirection enum.
+func (e ListWhatsAppCalls200JSONResponseBodyCallsDirection) Valid() bool {
+	switch e {
+	case ListWhatsAppCalls200JSONResponseBodyCallsDirectionInbound:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsDirectionOutbound:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWhatsAppCalls200JSONResponseBodyCallsEndReason.
+const (
+	ListWhatsAppCalls200JSONResponseBodyCallsEndReasonError    ListWhatsAppCalls200JSONResponseBodyCallsEndReason = "error"
+	ListWhatsAppCalls200JSONResponseBodyCallsEndReasonHangup   ListWhatsAppCalls200JSONResponseBodyCallsEndReason = "hangup"
+	ListWhatsAppCalls200JSONResponseBodyCallsEndReasonNoAnswer ListWhatsAppCalls200JSONResponseBodyCallsEndReason = "no_answer"
+	ListWhatsAppCalls200JSONResponseBodyCallsEndReasonRejected ListWhatsAppCalls200JSONResponseBodyCallsEndReason = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppCalls200JSONResponseBodyCallsEndReason enum.
+func (e ListWhatsAppCalls200JSONResponseBodyCallsEndReason) Valid() bool {
+	switch e {
+	case ListWhatsAppCalls200JSONResponseBodyCallsEndReasonError:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsEndReasonHangup:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsEndReasonNoAnswer:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsEndReasonRejected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWhatsAppCalls200JSONResponseBodyCallsStatus.
+const (
+	ListWhatsAppCalls200JSONResponseBodyCallsStatusAnswered ListWhatsAppCalls200JSONResponseBodyCallsStatus = "answered"
+	ListWhatsAppCalls200JSONResponseBodyCallsStatusEnded    ListWhatsAppCalls200JSONResponseBodyCallsStatus = "ended"
+	ListWhatsAppCalls200JSONResponseBodyCallsStatusFailed   ListWhatsAppCalls200JSONResponseBodyCallsStatus = "failed"
+	ListWhatsAppCalls200JSONResponseBodyCallsStatusRinging  ListWhatsAppCalls200JSONResponseBodyCallsStatus = "ringing"
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppCalls200JSONResponseBodyCallsStatus enum.
+func (e ListWhatsAppCalls200JSONResponseBodyCallsStatus) Valid() bool {
+	switch e {
+	case ListWhatsAppCalls200JSONResponseBodyCallsStatusAnswered:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsStatusEnded:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsStatusFailed:
+		return true
+	case ListWhatsAppCalls200JSONResponseBodyCallsStatusRinging:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InitiateWhatsAppCall200JSONResponseBodyDirection.
+const (
+	Outbound InitiateWhatsAppCall200JSONResponseBodyDirection = "outbound"
+)
+
+// Valid indicates whether the value is a known member of the InitiateWhatsAppCall200JSONResponseBodyDirection enum.
+func (e InitiateWhatsAppCall200JSONResponseBodyDirection) Valid() bool {
+	switch e {
+	case Outbound:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InitiateWhatsAppCall200JSONResponseBodyStatus.
+const (
+	Dialing InitiateWhatsAppCall200JSONResponseBodyStatus = "dialing"
+)
+
+// Valid indicates whether the value is a known member of the InitiateWhatsAppCall200JSONResponseBodyStatus enum.
+func (e InitiateWhatsAppCall200JSONResponseBodyStatus) Valid() bool {
+	switch e {
+	case Dialing:
 		return true
 	default:
 		return false
@@ -8303,11 +8984,14 @@ func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumbersParamsStatus.
 const (
-	GetWhatsAppPhoneNumbersParamsStatusActive       GetWhatsAppPhoneNumbersParamsStatus = "active"
-	GetWhatsAppPhoneNumbersParamsStatusProvisioning GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
-	GetWhatsAppPhoneNumbersParamsStatusReleased     GetWhatsAppPhoneNumbersParamsStatus = "released"
-	GetWhatsAppPhoneNumbersParamsStatusReleasing    GetWhatsAppPhoneNumbersParamsStatus = "releasing"
-	GetWhatsAppPhoneNumbersParamsStatusSuspended    GetWhatsAppPhoneNumbersParamsStatus = "suspended"
+	GetWhatsAppPhoneNumbersParamsStatusActive             GetWhatsAppPhoneNumbersParamsStatus = "active"
+	GetWhatsAppPhoneNumbersParamsStatusPendingPayment     GetWhatsAppPhoneNumbersParamsStatus = "pending_payment"
+	GetWhatsAppPhoneNumbersParamsStatusPendingRegulatory  GetWhatsAppPhoneNumbersParamsStatus = "pending_regulatory"
+	GetWhatsAppPhoneNumbersParamsStatusProvisioning       GetWhatsAppPhoneNumbersParamsStatus = "provisioning"
+	GetWhatsAppPhoneNumbersParamsStatusRegulatoryDeclined GetWhatsAppPhoneNumbersParamsStatus = "regulatory_declined"
+	GetWhatsAppPhoneNumbersParamsStatusReleased           GetWhatsAppPhoneNumbersParamsStatus = "released"
+	GetWhatsAppPhoneNumbersParamsStatusReleasing          GetWhatsAppPhoneNumbersParamsStatus = "releasing"
+	GetWhatsAppPhoneNumbersParamsStatusSuspended          GetWhatsAppPhoneNumbersParamsStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumbersParamsStatus enum.
@@ -8315,7 +8999,13 @@ func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
 	switch e {
 	case GetWhatsAppPhoneNumbersParamsStatusActive:
 		return true
+	case GetWhatsAppPhoneNumbersParamsStatusPendingPayment:
+		return true
+	case GetWhatsAppPhoneNumbersParamsStatusPendingRegulatory:
+		return true
 	case GetWhatsAppPhoneNumbersParamsStatusProvisioning:
+		return true
+	case GetWhatsAppPhoneNumbersParamsStatusRegulatoryDeclined:
 		return true
 	case GetWhatsAppPhoneNumbersParamsStatusReleased:
 		return true
@@ -8330,12 +9020,14 @@ func (e GetWhatsAppPhoneNumbersParamsStatus) Valid() bool {
 
 // Defines values for GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus.
 const (
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusActive         GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "active"
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusPendingPayment GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "pending_payment"
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusProvisioning   GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "provisioning"
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleased       GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "released"
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleasing      GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "releasing"
-	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusSuspended      GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "suspended"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusActive             GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "active"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusPendingPayment     GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "pending_payment"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusPendingRegulatory  GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "pending_regulatory"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusProvisioning       GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "provisioning"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusRegulatoryDeclined GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "regulatory_declined"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleased           GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "released"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleasing          GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "releasing"
+	GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusSuspended          GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus enum.
@@ -8345,7 +9037,11 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 		return true
 	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusPendingPayment:
 		return true
+	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusPendingRegulatory:
+		return true
 	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusProvisioning:
+		return true
+	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusRegulatoryDeclined:
 		return true
 	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleased:
 		return true
@@ -8358,14 +9054,103 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 	}
 }
 
+// Defines values for ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier.
+const (
+	ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN1 ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier = 1
+	ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN2 ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier = 2
+	ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN3 ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier = 3
+	ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN4 ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier = 4
+)
+
+// Valid indicates whether the value is a known member of the ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier enum.
+func (e ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier) Valid() bool {
+	switch e {
+	case ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN1:
+		return true
+	case ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN2:
+		return true
+	case ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN3:
+		return true
+	case ListWhatsAppNumberCountries200JSONResponseBodyCountriesTierN4:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind.
+const (
+	GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindAction  GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind = "action"
+	GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindAddress GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind = "address"
+	GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindDate    GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind = "date"
+	GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindFile    GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind = "file"
+	GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindText    GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind = "text"
+)
+
+// Valid indicates whether the value is a known member of the GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind enum.
+func (e GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind) Valid() bool {
+	switch e {
+	case GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindAction:
+		return true
+	case GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindAddress:
+		return true
+	case GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindDate:
+		return true
+	case GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindFile:
+		return true
+	case GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKindText:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SubmitWhatsAppNumberKyc200JSONResponseBodyStatus.
+const (
+	KycAlreadySubmitted SubmitWhatsAppNumberKyc200JSONResponseBodyStatus = "kyc_already_submitted"
+	KycReused           SubmitWhatsAppNumberKyc200JSONResponseBodyStatus = "kyc_reused"
+	KycSubmitted        SubmitWhatsAppNumberKyc200JSONResponseBodyStatus = "kyc_submitted"
+)
+
+// Valid indicates whether the value is a known member of the SubmitWhatsAppNumberKyc200JSONResponseBodyStatus enum.
+func (e SubmitWhatsAppNumberKyc200JSONResponseBodyStatus) Valid() bool {
+	switch e {
+	case KycAlreadySubmitted:
+		return true
+	case KycReused:
+		return true
+	case KycSubmitted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus.
+const (
+	KycRequired PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus = "kyc_required"
+)
+
+// Valid indicates whether the value is a known member of the PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus enum.
+func (e PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus) Valid() bool {
+	switch e {
+	case KycRequired:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus.
 const (
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive         GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning   GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
-	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended      GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusActive             GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "active"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment     GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_payment"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingRegulatory  GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "pending_regulatory"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning       GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "provisioning"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusRegulatoryDeclined GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "regulatory_declined"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased           GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "released"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleasing          GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "releasing"
+	GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusSuspended          GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus = "suspended"
 )
 
 // Valid indicates whether the value is a known member of the GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus enum.
@@ -8375,7 +9160,11 @@ func (e GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus) Valid() bool
 		return true
 	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingPayment:
 		return true
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusPendingRegulatory:
+		return true
 	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusProvisioning:
+		return true
+	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusRegulatoryDeclined:
 		return true
 	case GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatusReleased:
 		return true
@@ -8502,6 +9291,216 @@ func (e UpdateWhatsAppGroupChatJSONBodyJoinApprovalMode) Valid() bool {
 	case UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeApprovalRequired:
 		return true
 	case UpdateWhatsAppGroupChatJSONBodyJoinApprovalModeAutoApprove:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflowsParamsStatus.
+const (
+	ListWorkflowsParamsStatusActive ListWorkflowsParamsStatus = "active"
+	ListWorkflowsParamsStatusDraft  ListWorkflowsParamsStatus = "draft"
+	ListWorkflowsParamsStatusPaused ListWorkflowsParamsStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflowsParamsStatus enum.
+func (e ListWorkflowsParamsStatus) Valid() bool {
+	switch e {
+	case ListWorkflowsParamsStatusActive:
+		return true
+	case ListWorkflowsParamsStatusDraft:
+		return true
+	case ListWorkflowsParamsStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflows200JSONResponseBodyWorkflowsStatus.
+const (
+	ListWorkflows200JSONResponseBodyWorkflowsStatusActive ListWorkflows200JSONResponseBodyWorkflowsStatus = "active"
+	ListWorkflows200JSONResponseBodyWorkflowsStatusDraft  ListWorkflows200JSONResponseBodyWorkflowsStatus = "draft"
+	ListWorkflows200JSONResponseBodyWorkflowsStatusPaused ListWorkflows200JSONResponseBodyWorkflowsStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflows200JSONResponseBodyWorkflowsStatus enum.
+func (e ListWorkflows200JSONResponseBodyWorkflowsStatus) Valid() bool {
+	switch e {
+	case ListWorkflows200JSONResponseBodyWorkflowsStatusActive:
+		return true
+	case ListWorkflows200JSONResponseBodyWorkflowsStatusDraft:
+		return true
+	case ListWorkflows200JSONResponseBodyWorkflowsStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateWorkflowJSONBodyPlatform.
+const (
+	Bluesky   CreateWorkflowJSONBodyPlatform = "bluesky"
+	Facebook  CreateWorkflowJSONBodyPlatform = "facebook"
+	Instagram CreateWorkflowJSONBodyPlatform = "instagram"
+	Reddit    CreateWorkflowJSONBodyPlatform = "reddit"
+	Telegram  CreateWorkflowJSONBodyPlatform = "telegram"
+	Twitter   CreateWorkflowJSONBodyPlatform = "twitter"
+	Whatsapp  CreateWorkflowJSONBodyPlatform = "whatsapp"
+)
+
+// Valid indicates whether the value is a known member of the CreateWorkflowJSONBodyPlatform enum.
+func (e CreateWorkflowJSONBodyPlatform) Valid() bool {
+	switch e {
+	case Bluesky:
+		return true
+	case Facebook:
+		return true
+	case Instagram:
+		return true
+	case Reddit:
+		return true
+	case Telegram:
+		return true
+	case Twitter:
+		return true
+	case Whatsapp:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetWorkflow200JSONResponseBodyWorkflowStatus.
+const (
+	GetWorkflow200JSONResponseBodyWorkflowStatusActive GetWorkflow200JSONResponseBodyWorkflowStatus = "active"
+	GetWorkflow200JSONResponseBodyWorkflowStatusDraft  GetWorkflow200JSONResponseBodyWorkflowStatus = "draft"
+	GetWorkflow200JSONResponseBodyWorkflowStatusPaused GetWorkflow200JSONResponseBodyWorkflowStatus = "paused"
+)
+
+// Valid indicates whether the value is a known member of the GetWorkflow200JSONResponseBodyWorkflowStatus enum.
+func (e GetWorkflow200JSONResponseBodyWorkflowStatus) Valid() bool {
+	switch e {
+	case GetWorkflow200JSONResponseBodyWorkflowStatusActive:
+		return true
+	case GetWorkflow200JSONResponseBodyWorkflowStatusDraft:
+		return true
+	case GetWorkflow200JSONResponseBodyWorkflowStatusPaused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DuplicateWorkflow201JSONResponseBodyWorkflowStatus.
+const (
+	DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft DuplicateWorkflow201JSONResponseBodyWorkflowStatus = "draft"
+)
+
+// Valid indicates whether the value is a known member of the DuplicateWorkflow201JSONResponseBodyWorkflowStatus enum.
+func (e DuplicateWorkflow201JSONResponseBodyWorkflowStatus) Valid() bool {
+	switch e {
+	case DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflowExecutionsParamsStatus.
+const (
+	ListWorkflowExecutionsParamsStatusCompleted ListWorkflowExecutionsParamsStatus = "completed"
+	ListWorkflowExecutionsParamsStatusExited    ListWorkflowExecutionsParamsStatus = "exited"
+	ListWorkflowExecutionsParamsStatusFailed    ListWorkflowExecutionsParamsStatus = "failed"
+	ListWorkflowExecutionsParamsStatusRunning   ListWorkflowExecutionsParamsStatus = "running"
+	ListWorkflowExecutionsParamsStatusWaiting   ListWorkflowExecutionsParamsStatus = "waiting"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflowExecutionsParamsStatus enum.
+func (e ListWorkflowExecutionsParamsStatus) Valid() bool {
+	switch e {
+	case ListWorkflowExecutionsParamsStatusCompleted:
+		return true
+	case ListWorkflowExecutionsParamsStatusExited:
+		return true
+	case ListWorkflowExecutionsParamsStatusFailed:
+		return true
+	case ListWorkflowExecutionsParamsStatusRunning:
+		return true
+	case ListWorkflowExecutionsParamsStatusWaiting:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflowExecutions200JSONResponseBodyExecutionsStatus.
+const (
+	ListWorkflowExecutions200JSONResponseBodyExecutionsStatusCompleted ListWorkflowExecutions200JSONResponseBodyExecutionsStatus = "completed"
+	ListWorkflowExecutions200JSONResponseBodyExecutionsStatusExited    ListWorkflowExecutions200JSONResponseBodyExecutionsStatus = "exited"
+	ListWorkflowExecutions200JSONResponseBodyExecutionsStatusFailed    ListWorkflowExecutions200JSONResponseBodyExecutionsStatus = "failed"
+	ListWorkflowExecutions200JSONResponseBodyExecutionsStatusRunning   ListWorkflowExecutions200JSONResponseBodyExecutionsStatus = "running"
+	ListWorkflowExecutions200JSONResponseBodyExecutionsStatusWaiting   ListWorkflowExecutions200JSONResponseBodyExecutionsStatus = "waiting"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflowExecutions200JSONResponseBodyExecutionsStatus enum.
+func (e ListWorkflowExecutions200JSONResponseBodyExecutionsStatus) Valid() bool {
+	switch e {
+	case ListWorkflowExecutions200JSONResponseBodyExecutionsStatusCompleted:
+		return true
+	case ListWorkflowExecutions200JSONResponseBodyExecutionsStatusExited:
+		return true
+	case ListWorkflowExecutions200JSONResponseBodyExecutionsStatusFailed:
+		return true
+	case ListWorkflowExecutions200JSONResponseBodyExecutionsStatusRunning:
+		return true
+	case ListWorkflowExecutions200JSONResponseBodyExecutionsStatusWaiting:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind.
+const (
+	Reply ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind = "reply"
+	Timer ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind = "timer"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind enum.
+func (e ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind) Valid() bool {
+	switch e {
+	case Reply:
+		return true
+	case Timer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus.
+const (
+	Completed ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "completed"
+	Exited    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "exited"
+	Failed    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "failed"
+	Running   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "running"
+	Waiting   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "waiting"
+)
+
+// Valid indicates whether the value is a known member of the ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus enum.
+func (e ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus) Valid() bool {
+	switch e {
+	case Completed:
+		return true
+	case Exited:
+		return true
+	case Failed:
+		return true
+	case Running:
+		return true
+	case Waiting:
 		return true
 	default:
 		return false
@@ -9551,6 +10550,54 @@ type DiscordPlatformData struct {
 
 // DiscordPlatformDataThreadFromMessageAutoArchiveDuration Auto-archive after inactivity (minutes)
 type DiscordPlatformDataThreadFromMessageAutoArchiveDuration int
+
+// DiscordScheduledEvent Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+// image hash) which we pass through verbatim.
+type DiscordScheduledEvent struct {
+	// ChannelId Voice/stage channel ID; null for external events.
+	ChannelId      *string `json:"channel_id,omitempty"`
+	CreatorId      *string `json:"creator_id,omitempty"`
+	Description    *string `json:"description,omitempty"`
+	EntityId       *string `json:"entity_id,omitempty"`
+	EntityMetadata *struct {
+		// Location External event location string.
+		Location *string `json:"location,omitempty"`
+	} `json:"entity_metadata,omitempty"`
+
+	// EntityType 1=STAGE_INSTANCE, 2=VOICE, 3=EXTERNAL
+	EntityType *DiscordScheduledEventEntityType `json:"entity_type,omitempty"`
+	GuildId    *string                          `json:"guild_id,omitempty"`
+
+	// Id Event snowflake ID
+	Id *string `json:"id,omitempty"`
+
+	// Image Cover image hash; build URL via cdn.discordapp.com.
+	Image *string `json:"image,omitempty"`
+	Name  *string `json:"name,omitempty"`
+
+	// PrivacyLevel Always 2 (GUILD_ONLY) — Discord deprecated PUBLIC events.
+	PrivacyLevel *DiscordScheduledEventPrivacyLevel `json:"privacy_level,omitempty"`
+
+	// ScheduledEndTime Required for external events; optional for voice/stage.
+	ScheduledEndTime   *time.Time `json:"scheduled_end_time,omitempty"`
+	ScheduledStartTime *time.Time `json:"scheduled_start_time,omitempty"`
+
+	// Status 1=SCHEDULED, 2=ACTIVE, 3=COMPLETED, 4=CANCELED
+	Status *DiscordScheduledEventStatus `json:"status,omitempty"`
+
+	// UserCount Number of members who RSVP'd. Only present when withUserCount=true on list.
+	UserCount *int `json:"user_count,omitempty"`
+}
+
+// DiscordScheduledEventEntityType 1=STAGE_INSTANCE, 2=VOICE, 3=EXTERNAL
+type DiscordScheduledEventEntityType int
+
+// DiscordScheduledEventPrivacyLevel Always 2 (GUILD_ONLY) — Discord deprecated PUBLIC events.
+type DiscordScheduledEventPrivacyLevel int
+
+// DiscordScheduledEventStatus 1=SCHEDULED, 2=ACTIVE, 3=COMPLETED, 4=CANCELED
+type DiscordScheduledEventStatus int
 
 // DmButton A single inline button rendered inside an auto-DM via Meta's button_template.
 // Up to 3 buttons per automation. `url` and `postback` work on Instagram and
@@ -10856,6 +11903,9 @@ type TwitterPlatformData struct {
 		Options []string `json:"options"`
 	} `json:"poll,omitempty"`
 
+	// QuoteTweetId ID (or full status URL) of an existing tweet to quote-repost. The published tweet becomes a quote tweet of the target. Mutually exclusive with media and poll. X only permits quoting your own posts or posts you are mentioned in / part of the conversation thread of; quoting an arbitrary other account's post is rejected by X. Billed at the standard create rate ($0.015), unlike pasting a tweet URL into the text which is billed at the URL rate ($0.20). For threads, applies to the first tweet only.
+	QuoteTweetId *string `json:"quoteTweetId,omitempty"`
+
 	// ReplySettings Controls who can reply to the tweet. "following" allows only people you follow, "mentionedUsers" allows only mentioned users, "subscribers" allows only subscribers, "verified" allows only verified users. Omit for default (everyone can reply). For threads, applies to the first tweet only. Cannot be combined with replyToTweetId.
 	ReplySettings *TwitterPlatformDataReplySettings `json:"replySettings,omitempty"`
 
@@ -11079,6 +12129,35 @@ type WhatsAppHeaderComponentFormat string
 // WhatsAppHeaderComponentType defines model for WhatsAppHeaderComponent.Type.
 type WhatsAppHeaderComponentType string
 
+// WhatsAppSandboxSession A per-user activation session against the shared WhatsApp sandbox number.
+// Transitions `pending → active` when the inbound webhook receives a reply
+// from the matching phone (the reply itself proves ownership).
+type WhatsAppSandboxSession struct {
+	// ActivatedAt When the session transitioned `pending → active`, or null.
+	ActivatedAt *time.Time `json:"activatedAt,omitempty"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+
+	// ExpiresAt UTC timestamp at which the session becomes invalid. Pending sessions
+	// get a 24h window; activated sessions get 7 days.
+	ExpiresAt time.Time `json:"expiresAt"`
+
+	// Id Session id. Use this to revoke via DELETE.
+	Id string `json:"id"`
+
+	// PhoneE164 Digits-only E.164 form (no +, spaces, or dashes).
+	PhoneE164 string `json:"phoneE164"`
+
+	// Status `pending` until the phone replies to the activation template, then
+	// `active`. Expired sessions are pruned by TTL and never appear in
+	// list responses.
+	Status WhatsAppSandboxSessionStatus `json:"status"`
+}
+
+// WhatsAppSandboxSessionStatus `pending` until the phone replies to the activation template, then
+// `active`. Expired sessions are pruned by TTL and never appear in
+// list responses.
+type WhatsAppSandboxSessionStatus string
+
 // WhatsAppTemplateButton defines model for WhatsAppTemplateButton.
 type WhatsAppTemplateButton struct {
 	AutofillText *string `json:"autofill_text,omitempty"`
@@ -11115,6 +12194,127 @@ type WhatsAppTemplateButtonType string
 type WhatsAppTemplateComponent struct {
 	union json.RawMessage
 }
+
+// WorkflowEdge A directed edge between two nodes.
+type WorkflowEdge struct {
+	Id string `json:"id"`
+
+	// Source Source node id
+	Source string `json:"source"`
+
+	// SourceHandle Selects a branch output of a multi-output node. Null (or omitted) = the node's single/default output. Known handles per node type:
+	//
+	//   - **condition** — a rule's `id`, or `'default'` (no rule matched)
+	//   - **wait_for_reply** — `'reply'` (contact replied) | `'timeout'` (no reply in window)
+	//   - **webhook** — `'success'` (2xx) | `'error'` (non-2xx / fetch failed)
+	//   - **ai** — `'success'` (text/JSON response) | `'tool:<toolName>'` (model invoked
+	//     that tool) | `'error'` (upstream failure / non-JSON in JSON mode)
+	//   - **start_call** — `'success'` | `'permission_required'` | `'failed'`
+	//   - **a_b_split** — `'a'` | `'b'`
+	//   - **enroll_sequence** — `'success'` | `'error'`
+	SourceHandle *string `json:"sourceHandle,omitempty"`
+
+	// Target Target node id
+	Target string `json:"target"`
+}
+
+// WorkflowExecutionEvent One entry in a workflow execution's timeline. Emitted by the executor on every node visit and lifecycle transition, surfaced by `GET /v1/workflows/{workflowId}/executions/ {executionId}/events` for run inspection in the Runs UI.
+type WorkflowExecutionEvent struct {
+	Action *WorkflowExecutionEventAction `json:"action,omitempty"`
+
+	// At Event timestamp (UTC)
+	At *time.Time `json:"at,omitempty"`
+
+	// DurationMs Node run time; present on `node_completed` and `node_failed`
+	DurationMs *int `json:"durationMs,omitempty"`
+
+	// ErrorMessage Failure detail; present on `node_failed` and `execution_exited`
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+
+	// Meta Per-node-type payload. Shape varies — see WorkflowNode `type`. Examples:
+	//   `send_message` → `{ messageType, text, recipient }`,
+	//   `webhook` → `{ url, method, statusCode, responseTimeMs, responsePreview }`,
+	//   `ai` → `{ model, provider, inputTokens, outputTokens, responsePreview }`,
+	//   `condition` → `{ matchedHandle, rulesEvaluated }`,
+	//   `a_b_split` → `{ percentage, chosen }`.
+	Meta *map[string]interface{} `json:"meta,omitempty"`
+
+	// NodeId Present on `node_*` events
+	NodeId *string `json:"nodeId,omitempty"`
+
+	// NodeType Present on `node_*` events
+	NodeType *string `json:"nodeType,omitempty"`
+
+	// SourceHandle The edge handle the executor followed out of this node (see `WorkflowEdge.sourceHandle`)
+	SourceHandle *string                       `json:"sourceHandle,omitempty"`
+	Status       *WorkflowExecutionEventStatus `json:"status,omitempty"`
+}
+
+// WorkflowExecutionEventAction defines model for WorkflowExecutionEvent.Action.
+type WorkflowExecutionEventAction string
+
+// WorkflowExecutionEventStatus defines model for WorkflowExecutionEvent.Status.
+type WorkflowExecutionEventStatus string
+
+// WorkflowNode A node in a workflow graph. `config` shape depends on `type`.
+type WorkflowNode struct {
+	// Config Type-specific settings. All string fields support `{{variable}}` interpolation against the run's variable bag (resolved at execution time).
+	//
+	// **trigger**: `{ triggerType: inbound_message|api_call|whatsapp_event, keywords:[string], matchType: any|contains|exact|regex, onlyFirstMessage:boolean, eventType: message_sent|message_delivered|message_read|message_failed|reaction }`. Default `triggerType` is `inbound_message` for legacy nodes. `eventType` is only honored when `triggerType` is `whatsapp_event` (WhatsApp-only).
+	//
+	// **send_message**: `{ messageType: text|template|media|interactive, text, template:{name,language,variableMapping}, media:{mediaType:image|video|audio|document, url,caption}, interactive }`. `template` and `interactive` are WhatsApp-only.
+	//
+	// **wait_for_reply**: `{ timeoutMinutes:int (max 43200), saveAs:string }`. Resume via the `'reply'` edge on inbound, or `'timeout'` edge after `timeoutMinutes` of silence.
+	//
+	// **condition**: `{ rules:[{ id, variable, operator: equals|not_equals|contains|not_contains|starts_with|ends_with|exists|not_exists|matches, value }] }`. First matching rule takes its `id` as the sourceHandle; otherwise `'default'`.
+	//
+	// **set_variable**: `{ assignments:[{ name, value }] }`. Run-scoped (lives only for this execution; use `set_field` for persistent values).
+	//
+	// **delay**: `{ delayMinutes:int (max 43200) }`. Suspends the run, resumes via timer.
+	//
+	// **webhook**: `{ url, method: GET|POST|PUT|PATCH|DELETE, headers, bodyTemplate, saveAs }`. SSRF-guarded (private/loopback/metadata IPs rejected). Response saved as `{ status, ok, body }` to `vars[saveAs]`. Edge: `'success'` on 2xx, `'error'` otherwise.
+	//
+	// **ai**: `{ provider: anthropic|openai|google|mistral|groq, model, preset: smart|tools|cheap, systemPrompt, userPromptTemplate, saveAs, temperature, maxTokens, outputType: text|json, tools:[{ name, description, parameters }] }`. Set `provider` + `model` for BYOK (uses your stored API key); omit `provider` for the legacy Telnyx path. Edges: `'success'`, `'tool:<name>'` (model picked a tool), `'error'`.
+	//
+	// **handoff**: `{ note, assignTo }`. Terminates the run as `exited`, flags the conversation for a human operator.
+	//
+	// **start_call**: `{ to, forwardTo, requirePermissionFirst, recordingEnabled, saveAs }`. WhatsApp-only. `forwardTo` can be `tel:+E164`, `sip:user@host`, or `wss://…` (AI voice agent). Edges: `'success'`, `'permission_required'`, `'failed'`.
+	//
+	// **a_b_split**: `{ percentage: number 0-100 (default 50) }`. Random branch picker. Edges: `'a'` (with probability `percentage/100`), `'b'`.
+	//
+	// **set_field**: `{ field, value }`. Persistent custom field on the Contact (vs `set_variable` which is run-scoped). Field name is sanitized to `[A-Za-z0-9_]`. No-op on `api_call` runs (no contact).
+	//
+	// **enroll_sequence**: `{ sequenceId, saveAs }`. Enrolls the run's contact into a Sequence. Edges: `'success'`, `'error'`.
+	//
+	// **add_tag** / **remove_tag**: `{ tag }`. Push or pull a tag on the Contact. No-op on `api_call` runs.
+	//
+	// **end**: no config. Terminates the run as `completed`.
+	Config *map[string]interface{} `json:"config,omitempty"`
+
+	// Id Stable node id referenced by edges
+	Id string `json:"id"`
+
+	// Position Canvas coordinates (ignored by the executor; used by the visual builder).
+	Position *struct {
+		X *float32 `json:"x,omitempty"`
+		Y *float32 `json:"y,omitempty"`
+	} `json:"position,omitempty"`
+
+	// Type Node kind. The 16 supported types break into four groups:
+	//   messaging (send_message),
+	//   control flow (trigger, condition, delay, wait_for_reply, a_b_split, end),
+	//   data ops (set_variable, set_field, add_tag, remove_tag, enroll_sequence),
+	//   integrations (webhook, ai, handoff, start_call).
+	Type WorkflowNodeType `json:"type"`
+}
+
+// WorkflowNodeType Node kind. The 16 supported types break into four groups:
+//
+//	messaging (send_message),
+//	control flow (trigger, condition, delay, wait_for_reply, a_b_split, end),
+//	data ops (set_variable, set_field, add_tag, remove_tag, enroll_sequence),
+//	integrations (webhook, ai, handoff, start_call).
+type WorkflowNodeType string
 
 // XApiOperation A single X API operation with its per-call price and the Zernio platform methods that trigger it.
 type XApiOperation struct {
@@ -13227,7 +14427,20 @@ type CreateCtwaAdJSONBody struct {
 	BudgetAmount float32                        `json:"budgetAmount"`
 	BudgetType   CreateCtwaAdJSONBodyBudgetType `json:"budgetType"`
 
-	// Countries ISO 3166-1 alpha-2 country codes. Defaults to `["US"]`.
+	// Cities City-level geo targeting for local CTWA campaigns (e.g.
+	// 25km radius around Milan). Each entry maps to Meta's
+	// TargetingGeoLocationCity. `key` is Meta's city ID
+	// (lookupable via GET /v1/ads/targeting/search). `radius`
+	// and `distance_unit` are coupled: set both or neither.
+	Cities *[]struct {
+		DistanceUnit *CreateCtwaAdJSONBodyCitiesDistanceUnit `json:"distance_unit,omitempty"`
+		Key          string                                  `json:"key"`
+		Radius       *float32                                `json:"radius,omitempty"`
+	} `json:"cities,omitempty"`
+
+	// Countries ISO 3166-1 alpha-2 country codes. Defaults to `["US"]` only
+	// when no other geo (`cities`, `regions`, `zips`, `metros`,
+	// `customLocations`) is supplied.
 	Countries *[]string `json:"countries,omitempty"`
 
 	// Creatives Multi-creative shape: N CTWA ads under one campaign + one
@@ -13260,6 +14473,18 @@ type CreateCtwaAdJSONBody struct {
 	// when omitted.
 	Currency *string `json:"currency,omitempty"`
 
+	// CustomLocations Point-radius geo (Meta `geo_locations.custom_locations`).
+	// Use for targeting a radius around a specific lat/long when
+	// no Meta city/region key fits. `distanceUnit` is required.
+	CustomLocations *[]struct {
+		Address      *string                                         `json:"address,omitempty"`
+		DistanceUnit CreateCtwaAdJSONBodyCustomLocationsDistanceUnit `json:"distanceUnit"`
+		Latitude     float32                                         `json:"latitude"`
+		Longitude    float32                                         `json:"longitude"`
+		Name         *string                                         `json:"name,omitempty"`
+		Radius       float32                                         `json:"radius"`
+	} `json:"customLocations,omitempty"`
+
 	// DsaBeneficiary Name of the legal entity benefiting from the ad.
 	// Required by Meta when targeting EU users (DSA Article 26).
 	// Not enforced at schema level; enforced server-side when targeting intersects EU member states.
@@ -13286,6 +14511,13 @@ type CreateCtwaAdJSONBody struct {
 		Name *string `json:"name,omitempty"`
 	} `json:"interests,omitempty"`
 
+	// Metros DMA / metro-area geo targeting. `key` is Meta's metro id
+	// (e.g. `DMA:807`).
+	Metros *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"metros,omitempty"`
+
 	// Name Ad display name. Used to derive campaign / ad set names.
 	// On the multi-creative shape, each ad's Meta name gets a
 	// " #N" suffix (1-indexed) so Ads Manager shows them as a
@@ -13297,6 +14529,12 @@ type CreateCtwaAdJSONBody struct {
 	// additional account configuration (Dataset linked to the WABA
 	// for sales) and may be rejected by Meta if missing.
 	Objective *CreateCtwaAdJSONBodyObjective `json:"objective,omitempty"`
+
+	// Regions Region / state-level geo targeting. `key` is Meta's region
+	// ID (lookupable via GET /v1/ads/targeting/search?type=region).
+	Regions *[]struct {
+		Key string `json:"key"`
+	} `json:"regions,omitempty"`
 
 	// RoasAverageFloor Decimal ROAS multiplier (e.g. `2.0` = 2.0× ROAS floor).
 	// Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`;
@@ -13313,6 +14551,13 @@ type CreateCtwaAdJSONBody struct {
 		ThumbnailUrl string `json:"thumbnailUrl"`
 		Url          string `json:"url"`
 	} `json:"video,omitempty"`
+
+	// Zips ZIP / postal-code geo targeting. `key` is the platform's
+	// postal id resolved via /v1/ads/targeting/search.
+	Zips *[]struct {
+		Key  string  `json:"key"`
+		Name *string `json:"name,omitempty"`
+	} `json:"zips,omitempty"`
 }
 
 // CreateCtwaAdJSONBodyAdvantageAudience defines parameters for CreateCtwaAd.
@@ -13323,6 +14568,12 @@ type CreateCtwaAdJSONBodyBidStrategy string
 
 // CreateCtwaAdJSONBodyBudgetType defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBodyBudgetType string
+
+// CreateCtwaAdJSONBodyCitiesDistanceUnit defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyCitiesDistanceUnit string
+
+// CreateCtwaAdJSONBodyCustomLocationsDistanceUnit defines parameters for CreateCtwaAd.
+type CreateCtwaAdJSONBodyCustomLocationsDistanceUnit string
 
 // CreateCtwaAdJSONBodyObjective defines parameters for CreateCtwaAd.
 type CreateCtwaAdJSONBodyObjective string
@@ -13596,6 +14847,9 @@ type GetAdAnalyticsParams struct {
 	// Breakdowns Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
 	Breakdowns *string `form:"breakdowns,omitempty" json:"breakdowns,omitempty"`
 }
+
+// GetAdAnalytics200JSONResponseBodyAdTrigger defines parameters for GetAdAnalytics.
+type GetAdAnalytics200JSONResponseBodyAdTrigger string
 
 // GetAdCommentsParams defines parameters for GetAdComments.
 type GetAdCommentsParams struct {
@@ -14205,6 +15459,9 @@ type ListCommentAutomations200JSONResponseBodyAutomationsMatchMode string
 // ListCommentAutomations200JSONResponseBodyAutomationsPlatform defines parameters for ListCommentAutomations.
 type ListCommentAutomations200JSONResponseBodyAutomationsPlatform string
 
+// ListCommentAutomations200JSONResponseBodyAutomationsTrigger defines parameters for ListCommentAutomations.
+type ListCommentAutomations200JSONResponseBodyAutomationsTrigger string
+
 // CreateCommentAutomationJSONBody defines parameters for CreateCommentAutomation.
 type CreateCommentAutomationJSONBody struct {
 	// AccountId Instagram or Facebook account ID
@@ -14213,6 +15470,9 @@ type CreateCommentAutomationJSONBody struct {
 	// Buttons Optional inline DM buttons (1-3). Phone buttons are Facebook-only. Omit or pass [] for a plain-text DM.
 	Buttons *[]DmButton `json:"buttons,omitempty"`
 
+	// ClickTag Optional tag applied to a contact when they click a tracked link (requires linkTracking). Lets you segment clickers for broadcasts/sequences.
+	ClickTag *string `json:"clickTag,omitempty"`
+
 	// CommentReply Optional public reply to the comment
 	CommentReply *string `json:"commentReply,omitempty"`
 
@@ -14220,13 +15480,16 @@ type CreateCommentAutomationJSONBody struct {
 	DmMessage string `json:"dmMessage"`
 
 	// Keywords Trigger keywords (empty = any comment triggers)
-	Keywords  *[]string                                 `json:"keywords,omitempty"`
-	MatchMode *CreateCommentAutomationJSONBodyMatchMode `json:"matchMode,omitempty"`
+	Keywords *[]string `json:"keywords,omitempty"`
+
+	// LinkTracking Wrap link buttons in the DM in a tracked redirect so clicks are counted (Link Clicks / CTR). Pass false to send links exactly as written. Defaults to on.
+	LinkTracking *bool                                     `json:"linkTracking,omitempty"`
+	MatchMode    *CreateCommentAutomationJSONBodyMatchMode `json:"matchMode,omitempty"`
 
 	// Name Automation label
 	Name string `json:"name"`
 
-	// PlatformPostId Platform media/post ID. Omit for an account-wide (any-post) automation.
+	// PlatformPostId Platform media/post ID (or story media id when trigger=story_reply). Omit for an account-wide (any-post / any-story) automation.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
 
 	// PostId Zernio post ID. Required only when also targeting a specific post via platformPostId.
@@ -14235,16 +15498,28 @@ type CreateCommentAutomationJSONBody struct {
 	// PostTitle Post content snippet for display
 	PostTitle *string `json:"postTitle,omitempty"`
 	ProfileId string  `json:"profileId"`
+
+	// Trigger What fires the automation. 'comment' (keyword comment on a post) or 'story_reply' (keyword reply to an Instagram story). For 'story_reply', platformPostId is the story media id (omit for any story).
+	Trigger *CreateCommentAutomationJSONBodyTrigger `json:"trigger,omitempty"`
 }
 
 // CreateCommentAutomationJSONBodyMatchMode defines parameters for CreateCommentAutomation.
 type CreateCommentAutomationJSONBodyMatchMode string
 
+// CreateCommentAutomationJSONBodyTrigger defines parameters for CreateCommentAutomation.
+type CreateCommentAutomationJSONBodyTrigger string
+
 // CreateCommentAutomation200JSONResponseBodyAutomationMatchMode defines parameters for CreateCommentAutomation.
 type CreateCommentAutomation200JSONResponseBodyAutomationMatchMode string
 
+// CreateCommentAutomation200JSONResponseBodyAutomationTrigger defines parameters for CreateCommentAutomation.
+type CreateCommentAutomation200JSONResponseBodyAutomationTrigger string
+
 // GetCommentAutomation200JSONResponseBodyAutomationMatchMode defines parameters for GetCommentAutomation.
 type GetCommentAutomation200JSONResponseBodyAutomationMatchMode string
+
+// GetCommentAutomation200JSONResponseBodyAutomationTrigger defines parameters for GetCommentAutomation.
+type GetCommentAutomation200JSONResponseBodyAutomationTrigger string
 
 // GetCommentAutomation200JSONResponseBodyLogsCommentReplyStatus defines parameters for GetCommentAutomation.
 type GetCommentAutomation200JSONResponseBodyLogsCommentReplyStatus string
@@ -14255,11 +15530,17 @@ type GetCommentAutomation200JSONResponseBodyLogsStatus string
 // UpdateCommentAutomationJSONBody defines parameters for UpdateCommentAutomation.
 type UpdateCommentAutomationJSONBody struct {
 	// Buttons Inline DM buttons (1-3). Pass [] to clear all buttons.
-	Buttons      *[]DmButton                               `json:"buttons,omitempty"`
-	CommentReply *string                                   `json:"commentReply,omitempty"`
-	DmMessage    *string                                   `json:"dmMessage,omitempty"`
-	IsActive     *bool                                     `json:"isActive,omitempty"`
-	Keywords     *[]string                                 `json:"keywords,omitempty"`
+	Buttons *[]DmButton `json:"buttons,omitempty"`
+
+	// ClickTag Tag applied to a contact when they click a tracked link (requires linkTracking). Empty string clears it.
+	ClickTag     *string   `json:"clickTag,omitempty"`
+	CommentReply *string   `json:"commentReply,omitempty"`
+	DmMessage    *string   `json:"dmMessage,omitempty"`
+	IsActive     *bool     `json:"isActive,omitempty"`
+	Keywords     *[]string `json:"keywords,omitempty"`
+
+	// LinkTracking Wrap link buttons in a tracked redirect to count clicks. Pass false to send links untouched.
+	LinkTracking *bool                                     `json:"linkTracking,omitempty"`
 	MatchMode    *UpdateCommentAutomationJSONBodyMatchMode `json:"matchMode,omitempty"`
 	Name         *string                                   `json:"name,omitempty"`
 }
@@ -14837,6 +16118,181 @@ type CreateCustomField200JSONResponseBodyFieldType string
 type UpdateCustomFieldJSONBody struct {
 	Name    *string   `json:"name,omitempty"`
 	Options *[]string `json:"options,omitempty"`
+}
+
+// ListDiscordPinnedMessagesParams defines parameters for ListDiscordPinnedMessages.
+type ListDiscordPinnedMessagesParams struct {
+	// AccountId SocialAccount _id of any Discord account in the same guild.
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UnpinDiscordMessageParams defines parameters for UnpinDiscordMessage.
+type UnpinDiscordMessageParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UnpinDiscordMessage200JSONResponseBodyOperation defines parameters for UnpinDiscordMessage.
+type UnpinDiscordMessage200JSONResponseBodyOperation string
+
+// PinDiscordMessageParams defines parameters for PinDiscordMessage.
+type PinDiscordMessageParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// PinDiscordMessage200JSONResponseBodyOperation defines parameters for PinDiscordMessage.
+type PinDiscordMessage200JSONResponseBodyOperation string
+
+// SendDiscordDirectMessageJSONBody defines parameters for SendDiscordDirectMessage.
+type SendDiscordDirectMessageJSONBody struct {
+	// AccountId SocialAccount _id of the connected Discord account the bot speaks as. Caller must own the account (directly or via team membership).
+	AccountId string `json:"accountId"`
+
+	// Attachments Up to 10 media attachments. Each is `{ type: image|video|gif|document, url, filename?, mimeType?, size? }`.
+	Attachments *[]struct {
+		Filename *string                                         `json:"filename,omitempty"`
+		MimeType *string                                         `json:"mimeType,omitempty"`
+		Size     *int                                            `json:"size,omitempty"`
+		Type     SendDiscordDirectMessageJSONBodyAttachmentsType `json:"type"`
+		Url      string                                          `json:"url"`
+	} `json:"attachments,omitempty"`
+
+	// Content Message text, up to 2,000 characters.
+	Content *string `json:"content,omitempty"`
+
+	// Embeds Up to 10 Discord embeds. Same shape as channel-post embeds (title, description, color, fields, etc.). See DiscordPlatformData.embeds for the embed object schema.
+	Embeds *[]map[string]interface{} `json:"embeds,omitempty"`
+
+	// Tts Send as text-to-speech message.
+	Tts *bool `json:"tts,omitempty"`
+
+	// UserId Discord snowflake ID of the recipient (15-21 digits).
+	UserId string `json:"userId"`
+}
+
+// SendDiscordDirectMessageJSONBodyAttachmentsType defines parameters for SendDiscordDirectMessage.
+type SendDiscordDirectMessageJSONBodyAttachmentsType string
+
+// ListDiscordScheduledEventsParams defines parameters for ListDiscordScheduledEvents.
+type ListDiscordScheduledEventsParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// WithUserCount Include user_count on each event.
+	WithUserCount *bool `form:"withUserCount,omitempty" json:"withUserCount,omitempty"`
+}
+
+// CreateDiscordScheduledEventJSONBody defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBody struct {
+	AccountId   string                                     `json:"accountId"`
+	Description *string                                    `json:"description,omitempty"`
+	Entity      CreateDiscordScheduledEventJSONBody_Entity `json:"entity"`
+
+	// ImageDataUri Optional cover image as a base64 data URI.
+	ImageDataUri *string `json:"imageDataUri,omitempty"`
+	Name         string  `json:"name"`
+
+	// StartsAt ISO 8601 start time. Must be in the future.
+	StartsAt time.Time `json:"startsAt"`
+}
+
+// CreateDiscordScheduledEventJSONBodyEntity0 defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity0 struct {
+	EndsAt time.Time `json:"endsAt"`
+
+	// Location Where the event takes place (e.g. "Zoom link", "123 Main St")
+	Location string                                         `json:"location"`
+	Type     CreateDiscordScheduledEventJSONBodyEntity0Type `json:"type"`
+}
+
+// CreateDiscordScheduledEventJSONBodyEntity0Type defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity0Type string
+
+// CreateDiscordScheduledEventJSONBodyEntity1 defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity1 struct {
+	// ChannelId Voice channel snowflake.
+	ChannelId string                                         `json:"channelId"`
+	EndsAt    *time.Time                                     `json:"endsAt,omitempty"`
+	Type      CreateDiscordScheduledEventJSONBodyEntity1Type `json:"type"`
+}
+
+// CreateDiscordScheduledEventJSONBodyEntity1Type defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity1Type string
+
+// CreateDiscordScheduledEventJSONBodyEntity2 defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity2 struct {
+	// ChannelId Stage channel snowflake.
+	ChannelId string                                         `json:"channelId"`
+	EndsAt    *time.Time                                     `json:"endsAt,omitempty"`
+	Type      CreateDiscordScheduledEventJSONBodyEntity2Type `json:"type"`
+}
+
+// CreateDiscordScheduledEventJSONBodyEntity2Type defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBodyEntity2Type string
+
+// CreateDiscordScheduledEventJSONBody_Entity defines parameters for CreateDiscordScheduledEvent.
+type CreateDiscordScheduledEventJSONBody_Entity struct {
+	union json.RawMessage
+}
+
+// DeleteDiscordScheduledEventParams defines parameters for DeleteDiscordScheduledEvent.
+type DeleteDiscordScheduledEventParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// GetDiscordScheduledEventParams defines parameters for GetDiscordScheduledEvent.
+type GetDiscordScheduledEventParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateDiscordScheduledEventJSONBody defines parameters for UpdateDiscordScheduledEvent.
+type UpdateDiscordScheduledEventJSONBody struct {
+	AccountId    string     `json:"accountId"`
+	Description  *string    `json:"description,omitempty"`
+	EndsAt       *time.Time `json:"endsAt,omitempty"`
+	ImageDataUri *string    `json:"imageDataUri,omitempty"`
+
+	// Location For external events.
+	Location *string    `json:"location,omitempty"`
+	Name     *string    `json:"name,omitempty"`
+	StartsAt *time.Time `json:"startsAt,omitempty"`
+
+	// Status Status transition. Most common: 'cancelled' to cancel an event.
+	Status *UpdateDiscordScheduledEventJSONBodyStatus `json:"status,omitempty"`
+}
+
+// UpdateDiscordScheduledEventJSONBodyStatus defines parameters for UpdateDiscordScheduledEvent.
+type UpdateDiscordScheduledEventJSONBodyStatus string
+
+// ListDiscordGuildMembersParams defines parameters for ListDiscordGuildMembers.
+type ListDiscordGuildMembersParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Limit Page size (1-1000).
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Snowflake of the last member from the previous page.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+}
+
+// RemoveDiscordMemberRoleParams defines parameters for RemoveDiscordMemberRole.
+type RemoveDiscordMemberRoleParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// RemoveDiscordMemberRole200JSONResponseBodyOperation defines parameters for RemoveDiscordMemberRole.
+type RemoveDiscordMemberRole200JSONResponseBodyOperation string
+
+// AddDiscordMemberRoleParams defines parameters for AddDiscordMemberRole.
+type AddDiscordMemberRoleParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// AddDiscordMemberRole200JSONResponseBodyOperation defines parameters for AddDiscordMemberRole.
+type AddDiscordMemberRole200JSONResponseBodyOperation string
+
+// ListDiscordGuildRolesParams defines parameters for ListDiscordGuildRoles.
+type ListDiscordGuildRolesParams struct {
+	// AccountId SocialAccount _id of the Discord account bound to this guild
+	AccountId string `form:"accountId" json:"accountId"`
 }
 
 // ListInboxCommentsParams defines parameters for ListInboxComments.
@@ -16471,6 +17927,88 @@ type UploadWhatsAppProfilePhotoMultipartBody struct {
 	File openapi_types.File `json:"file"`
 }
 
+// GetWhatsAppCallPermissionsParams defines parameters for GetWhatsAppCallPermissions.
+type GetWhatsAppCallPermissionsParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// To Consumer wa_id (E.164
+	To string `form:"to" json:"to"`
+}
+
+// GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName defines parameters for GetWhatsAppCallPermissions.
+type GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName string
+
+// GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus defines parameters for GetWhatsAppCallPermissions.
+type GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus string
+
+// GetWhatsAppCallingConfigParams defines parameters for GetWhatsAppCallingConfig.
+type GetWhatsAppCallingConfigParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// ListWhatsAppCallsParams defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCallsParams struct {
+	AccountId string                            `form:"accountId" json:"accountId"`
+	Status    *ListWhatsAppCallsParamsStatus    `form:"status,omitempty" json:"status,omitempty"`
+	Direction *ListWhatsAppCallsParamsDirection `form:"direction,omitempty" json:"direction,omitempty"`
+	Since     *time.Time                        `form:"since,omitempty" json:"since,omitempty"`
+	Until     *time.Time                        `form:"until,omitempty" json:"until,omitempty"`
+	Limit     *int                              `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListWhatsAppCallsParamsStatus defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCallsParamsStatus string
+
+// ListWhatsAppCallsParamsDirection defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCallsParamsDirection string
+
+// ListWhatsAppCalls200JSONResponseBodyCallsDirection defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCalls200JSONResponseBodyCallsDirection string
+
+// ListWhatsAppCalls200JSONResponseBodyCallsEndReason defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCalls200JSONResponseBodyCallsEndReason string
+
+// ListWhatsAppCalls200JSONResponseBodyCallsStatus defines parameters for ListWhatsAppCalls.
+type ListWhatsAppCalls200JSONResponseBodyCallsStatus string
+
+// InitiateWhatsAppCallJSONBody defines parameters for InitiateWhatsAppCall.
+type InitiateWhatsAppCallJSONBody struct {
+	AccountId string `json:"accountId"`
+
+	// BizOpaqueCallbackData Accepted for forward compatibility. Not currently echoed
+	// back in webhook payloads (SIP-first flow does not pass
+	// through Meta's Graph API where Meta would echo this).
+	BizOpaqueCallbackData *string `json:"biz_opaque_callback_data,omitempty"`
+
+	// ForwardTo Per-call destination override. Same accepted shape as the
+	// number's stored forwardTo (tel:+E164, sip:..., wss://...).
+	ForwardTo      *string `json:"forwardTo,omitempty"`
+	RecordOverride *bool   `json:"recordOverride,omitempty"`
+
+	// To Consumer wa_id (E.164
+	To string `json:"to"`
+}
+
+// InitiateWhatsAppCall200JSONResponseBodyDirection defines parameters for InitiateWhatsAppCall.
+type InitiateWhatsAppCall200JSONResponseBodyDirection string
+
+// InitiateWhatsAppCall200JSONResponseBodyStatus defines parameters for InitiateWhatsAppCall.
+type InitiateWhatsAppCall200JSONResponseBodyStatus string
+
+// GetWhatsAppCallEstimateParams defines parameters for GetWhatsAppCallEstimate.
+type GetWhatsAppCallEstimateParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+	To        string `form:"to" json:"to"`
+	Minutes   *int   `form:"minutes,omitempty" json:"minutes,omitempty"`
+	Recording *bool  `form:"recording,omitempty" json:"recording,omitempty"`
+}
+
+// GetWhatsAppCallParams defines parameters for GetWhatsAppCall.
+type GetWhatsAppCallParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
 // ListWhatsAppConversionsParams defines parameters for ListWhatsAppConversions.
 type ListWhatsAppConversionsParams struct {
 	// AccountId WhatsApp social account ID
@@ -16761,8 +18299,78 @@ type GetWhatsAppPhoneNumbersParamsStatus string
 // GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus defines parameters for GetWhatsAppPhoneNumbers.
 type GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus string
 
+// SearchAvailableWhatsAppNumbersParams defines parameters for SearchAvailableWhatsAppNumbers.
+type SearchAvailableWhatsAppNumbersParams struct {
+	Country *string `form:"country,omitempty" json:"country,omitempty"`
+
+	// Type Number type; defaults to the country's WhatsApp-safe type
+	Type *string `form:"type,omitempty" json:"type,omitempty"`
+
+	// Prefix Area code
+	Prefix *string `form:"prefix,omitempty" json:"prefix,omitempty"`
+
+	// Locality City
+	Locality *string `form:"locality,omitempty" json:"locality,omitempty"`
+
+	// Contains Pattern to match within the number
+	Contains *string `form:"contains,omitempty" json:"contains,omitempty"`
+	Limit    *int    `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier defines parameters for ListWhatsAppNumberCountries.
+type ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier int
+
+// GetWhatsAppNumberKycFormParams defines parameters for GetWhatsAppNumberKycForm.
+type GetWhatsAppNumberKycFormParams struct {
+	Country   string `form:"country" json:"country"`
+	ProfileId string `form:"profileId" json:"profileId"`
+}
+
+// GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind defines parameters for GetWhatsAppNumberKycForm.
+type GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind string
+
+// SubmitWhatsAppNumberKycJSONBody defines parameters for SubmitWhatsAppNumberKyc.
+type SubmitWhatsAppNumberKycJSONBody struct {
+	Address *struct {
+		AdministrativeArea *string `json:"administrative_area,omitempty"`
+		BusinessName       *string `json:"business_name,omitempty"`
+		CountryCode        *string `json:"country_code,omitempty"`
+		FirstName          *string `json:"first_name,omitempty"`
+		LastName           *string `json:"last_name,omitempty"`
+		Locality           *string `json:"locality,omitempty"`
+		PostalCode         *string `json:"postal_code,omitempty"`
+		RequirementId      *string `json:"requirementId,omitempty"`
+		StreetAddress      *string `json:"street_address,omitempty"`
+	} `json:"address,omitempty"`
+	Country   string `json:"country"`
+	Documents *[]struct {
+		Base64        *string `json:"base64,omitempty"`
+		Filename      *string `json:"filename,omitempty"`
+		RequirementId *string `json:"requirementId,omitempty"`
+	} `json:"documents,omitempty"`
+
+	// EndUserFirstName End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
+	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
+
+	// EndUserLastName End user's legal last name. Same condition as endUserFirstName.
+	EndUserLastName *string `json:"endUserLastName,omitempty"`
+	ProfileId       string  `json:"profileId"`
+
+	// Reuse Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
+	Reuse *bool `json:"reuse,omitempty"`
+
+	// Values requirementId → textual value
+	Values *map[string]string `json:"values,omitempty"`
+}
+
+// SubmitWhatsAppNumberKyc200JSONResponseBodyStatus defines parameters for SubmitWhatsAppNumberKyc.
+type SubmitWhatsAppNumberKyc200JSONResponseBodyStatus string
+
 // PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumberJSONBody struct {
+	// Country ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: "kyc_required", kycUrl } — the customer must complete KYC at that URL before the number is ordered. See GET /v1/whatsapp/phone-numbers/countries.
+	Country *string `json:"country,omitempty"`
+
 	// ProfileId Profile to associate the number with
 	ProfileId string `json:"profileId"`
 }
@@ -16792,8 +18400,46 @@ type PurchaseWhatsAppPhoneNumber200JSONResponseBody struct {
 	union json.RawMessage
 }
 
+// PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus defines parameters for PurchaseWhatsAppPhoneNumber.
+type PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus string
+
+// DisableWhatsAppCallingParams defines parameters for DisableWhatsAppCalling.
+type DisableWhatsAppCallingParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
+// UpdateWhatsAppCallingJSONBody defines parameters for UpdateWhatsAppCalling.
+type UpdateWhatsAppCallingJSONBody struct {
+	AccountId         string    `json:"accountId"`
+	CallIconCountries *[]string `json:"callIconCountries,omitempty"`
+	ForwardTo         *string   `json:"forwardTo,omitempty"`
+	RecordingEnabled  *bool     `json:"recordingEnabled,omitempty"`
+	SipAuthPassword   *string   `json:"sipAuthPassword,omitempty"`
+	SipAuthUsername   *string   `json:"sipAuthUsername,omitempty"`
+}
+
+// EnableWhatsAppCallingJSONBody defines parameters for EnableWhatsAppCalling.
+type EnableWhatsAppCallingJSONBody struct {
+	AccountId         string    `json:"accountId"`
+	CallIconCountries *[]string `json:"callIconCountries,omitempty"`
+
+	// ForwardTo tel:+E164 / sip:... / wss://... destination
+	ForwardTo        string `json:"forwardTo"`
+	RecordingEnabled *bool  `json:"recordingEnabled,omitempty"`
+
+	// SipAuthPassword Stored encrypted
+	SipAuthPassword *string `json:"sipAuthPassword,omitempty"`
+	SipAuthUsername *string `json:"sipAuthUsername,omitempty"`
+}
+
 // GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus defines parameters for GetWhatsAppPhoneNumber.
 type GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus string
+
+// CreateWhatsAppSandboxSessionJSONBody defines parameters for CreateWhatsAppSandboxSession.
+type CreateWhatsAppSandboxSessionJSONBody struct {
+	// Phone Recipient phone in international format. Digits, spaces, dashes and a leading `+` are all accepted; the server normalizes to E.164 digits-only.
+	Phone string `json:"phone"`
+}
 
 // GetWhatsAppLibraryTemplateParams defines parameters for GetWhatsAppLibraryTemplate.
 type GetWhatsAppLibraryTemplateParams struct {
@@ -16998,6 +18644,86 @@ type AddWhatsAppGroupParticipantsParams struct {
 	// AccountId WhatsApp social account ID
 	AccountId string `form:"accountId" json:"accountId"`
 }
+
+// ListWorkflowsParams defines parameters for ListWorkflows.
+type ListWorkflowsParams struct {
+	// ProfileId Filter by profile. Omit to list across all profiles
+	ProfileId *string                    `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Status    *ListWorkflowsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit     *int                       `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip      *int                       `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListWorkflowsParamsStatus defines parameters for ListWorkflows.
+type ListWorkflowsParamsStatus string
+
+// ListWorkflows200JSONResponseBodyWorkflowsStatus defines parameters for ListWorkflows.
+type ListWorkflows200JSONResponseBodyWorkflowsStatus string
+
+// CreateWorkflowJSONBody defines parameters for CreateWorkflow.
+type CreateWorkflowJSONBody struct {
+	AccountId   string          `json:"accountId"`
+	Description *string         `json:"description,omitempty"`
+	Edges       *[]WorkflowEdge `json:"edges,omitempty"`
+
+	// EntryNodeId The trigger node id; derived from the single trigger node if omitted
+	EntryNodeId *string                         `json:"entryNodeId,omitempty"`
+	Name        string                          `json:"name"`
+	Nodes       *[]WorkflowNode                 `json:"nodes,omitempty"`
+	Platform    *CreateWorkflowJSONBodyPlatform `json:"platform,omitempty"`
+	ProfileId   string                          `json:"profileId"`
+}
+
+// CreateWorkflowJSONBodyPlatform defines parameters for CreateWorkflow.
+type CreateWorkflowJSONBodyPlatform string
+
+// GetWorkflow200JSONResponseBodyWorkflowStatus defines parameters for GetWorkflow.
+type GetWorkflow200JSONResponseBodyWorkflowStatus string
+
+// UpdateWorkflowJSONBody defines parameters for UpdateWorkflow.
+type UpdateWorkflowJSONBody struct {
+	// AccountId Reassign the workflow to a different `SocialAccount`. `platform` and `profileId` are derived server-side from the new account (the client never sends them directly). The account must belong to the caller's workspace and be on a workflow-supported platform (whatsapp, instagram, facebook, telegram, twitter, bluesky, reddit). Changing this triggers a graph revalidation against the new platform.
+	AccountId   *string         `json:"accountId,omitempty"`
+	Description *string         `json:"description,omitempty"`
+	Edges       *[]WorkflowEdge `json:"edges,omitempty"`
+	EntryNodeId *string         `json:"entryNodeId,omitempty"`
+	Name        *string         `json:"name,omitempty"`
+	Nodes       *[]WorkflowNode `json:"nodes,omitempty"`
+}
+
+// DuplicateWorkflow201JSONResponseBodyWorkflowStatus defines parameters for DuplicateWorkflow.
+type DuplicateWorkflow201JSONResponseBodyWorkflowStatus string
+
+// ListWorkflowExecutionsParams defines parameters for ListWorkflowExecutions.
+type ListWorkflowExecutionsParams struct {
+	Status *ListWorkflowExecutionsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit  *int                                `form:"limit,omitempty" json:"limit,omitempty"`
+	Skip   *int                                `form:"skip,omitempty" json:"skip,omitempty"`
+}
+
+// ListWorkflowExecutionsParamsStatus defines parameters for ListWorkflowExecutions.
+type ListWorkflowExecutionsParamsStatus string
+
+// ListWorkflowExecutions200JSONResponseBodyExecutionsStatus defines parameters for ListWorkflowExecutions.
+type ListWorkflowExecutions200JSONResponseBodyExecutionsStatus string
+
+// ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind defines parameters for ListWorkflowExecutions.
+type ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind string
+
+// TriggerWorkflowJSONBody defines parameters for TriggerWorkflow.
+type TriggerWorkflowJSONBody struct {
+	// ConversationId An existing conversation to run in (required for non-WhatsApp workflows)
+	ConversationId *string `json:"conversationId,omitempty"`
+
+	// Text Simulated inbound text
+	Text *string `json:"text,omitempty"`
+
+	// To Recipient phone (WhatsApp only)
+	To *string `json:"to,omitempty"`
+}
+
+// ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus defines parameters for ListWorkflowExecutionEvents.
+type ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus string
 
 // CreateAccountGroupJSONRequestBody defines body for CreateAccountGroup for application/json ContentType.
 type CreateAccountGroupJSONRequestBody CreateAccountGroupJSONBody
@@ -17218,6 +18944,15 @@ type CreateCustomFieldJSONRequestBody CreateCustomFieldJSONBody
 // UpdateCustomFieldJSONRequestBody defines body for UpdateCustomField for application/json ContentType.
 type UpdateCustomFieldJSONRequestBody UpdateCustomFieldJSONBody
 
+// SendDiscordDirectMessageJSONRequestBody defines body for SendDiscordDirectMessage for application/json ContentType.
+type SendDiscordDirectMessageJSONRequestBody SendDiscordDirectMessageJSONBody
+
+// CreateDiscordScheduledEventJSONRequestBody defines body for CreateDiscordScheduledEvent for application/json ContentType.
+type CreateDiscordScheduledEventJSONRequestBody CreateDiscordScheduledEventJSONBody
+
+// UpdateDiscordScheduledEventJSONRequestBody defines body for UpdateDiscordScheduledEvent for application/json ContentType.
+type UpdateDiscordScheduledEventJSONRequestBody UpdateDiscordScheduledEventJSONBody
+
 // ReplyToInboxPostJSONRequestBody defines body for ReplyToInboxPost for application/json ContentType.
 type ReplyToInboxPostJSONRequestBody ReplyToInboxPostJSONBody
 
@@ -17347,6 +19082,9 @@ type UpdateWhatsAppDisplayNameJSONRequestBody UpdateWhatsAppDisplayNameJSONBody
 // UploadWhatsAppProfilePhotoMultipartRequestBody defines body for UploadWhatsAppProfilePhoto for multipart/form-data ContentType.
 type UploadWhatsAppProfilePhotoMultipartRequestBody UploadWhatsAppProfilePhotoMultipartBody
 
+// InitiateWhatsAppCallJSONRequestBody defines body for InitiateWhatsAppCall for application/json ContentType.
+type InitiateWhatsAppCallJSONRequestBody InitiateWhatsAppCallJSONBody
+
 // SendWhatsAppConversionJSONRequestBody defines body for SendWhatsAppConversion for application/json ContentType.
 type SendWhatsAppConversionJSONRequestBody SendWhatsAppConversionJSONBody
 
@@ -17371,8 +19109,20 @@ type UploadWhatsAppFlowJsonJSONRequestBody UploadWhatsAppFlowJsonJSONBody
 // PublishWhatsAppFlowJSONRequestBody defines body for PublishWhatsAppFlow for application/json ContentType.
 type PublishWhatsAppFlowJSONRequestBody PublishWhatsAppFlowJSONBody
 
+// SubmitWhatsAppNumberKycJSONRequestBody defines body for SubmitWhatsAppNumberKyc for application/json ContentType.
+type SubmitWhatsAppNumberKycJSONRequestBody SubmitWhatsAppNumberKycJSONBody
+
 // PurchaseWhatsAppPhoneNumberJSONRequestBody defines body for PurchaseWhatsAppPhoneNumber for application/json ContentType.
 type PurchaseWhatsAppPhoneNumberJSONRequestBody PurchaseWhatsAppPhoneNumberJSONBody
+
+// UpdateWhatsAppCallingJSONRequestBody defines body for UpdateWhatsAppCalling for application/json ContentType.
+type UpdateWhatsAppCallingJSONRequestBody UpdateWhatsAppCallingJSONBody
+
+// EnableWhatsAppCallingJSONRequestBody defines body for EnableWhatsAppCalling for application/json ContentType.
+type EnableWhatsAppCallingJSONRequestBody EnableWhatsAppCallingJSONBody
+
+// CreateWhatsAppSandboxSessionJSONRequestBody defines body for CreateWhatsAppSandboxSession for application/json ContentType.
+type CreateWhatsAppSandboxSessionJSONRequestBody CreateWhatsAppSandboxSessionJSONBody
 
 // CreateWhatsAppTemplateJSONRequestBody defines body for CreateWhatsAppTemplate for application/json ContentType.
 type CreateWhatsAppTemplateJSONRequestBody CreateWhatsAppTemplateJSONBody
@@ -17397,6 +19147,15 @@ type RemoveWhatsAppGroupParticipantsJSONRequestBody RemoveWhatsAppGroupParticipa
 
 // AddWhatsAppGroupParticipantsJSONRequestBody defines body for AddWhatsAppGroupParticipants for application/json ContentType.
 type AddWhatsAppGroupParticipantsJSONRequestBody AddWhatsAppGroupParticipantsJSONBody
+
+// CreateWorkflowJSONRequestBody defines body for CreateWorkflow for application/json ContentType.
+type CreateWorkflowJSONRequestBody CreateWorkflowJSONBody
+
+// UpdateWorkflowJSONRequestBody defines body for UpdateWorkflow for application/json ContentType.
+type UpdateWorkflowJSONRequestBody UpdateWorkflowJSONBody
+
+// TriggerWorkflowJSONRequestBody defines body for TriggerWorkflow for application/json ContentType.
+type TriggerWorkflowJSONRequestBody TriggerWorkflowJSONBody
 
 // Getter for additional properties for PlatformTarget_PlatformSpecificData. Returns the specified
 // element and whether it was found
@@ -18911,6 +20670,94 @@ func (t ConnectAds200JSONResponseBody) MarshalJSON() ([]byte, error) {
 }
 
 func (t *ConnectAds200JSONResponseBody) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCreateDiscordScheduledEventJSONBodyEntity0 returns the union data inside the CreateDiscordScheduledEventJSONBody_Entity as a CreateDiscordScheduledEventJSONBodyEntity0
+func (t CreateDiscordScheduledEventJSONBody_Entity) AsCreateDiscordScheduledEventJSONBodyEntity0() (CreateDiscordScheduledEventJSONBodyEntity0, error) {
+	var body CreateDiscordScheduledEventJSONBodyEntity0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateDiscordScheduledEventJSONBodyEntity0 overwrites any union data inside the CreateDiscordScheduledEventJSONBody_Entity as the provided CreateDiscordScheduledEventJSONBodyEntity0
+func (t *CreateDiscordScheduledEventJSONBody_Entity) FromCreateDiscordScheduledEventJSONBodyEntity0(v CreateDiscordScheduledEventJSONBodyEntity0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateDiscordScheduledEventJSONBodyEntity0 performs a merge with any union data inside the CreateDiscordScheduledEventJSONBody_Entity, using the provided CreateDiscordScheduledEventJSONBodyEntity0
+func (t *CreateDiscordScheduledEventJSONBody_Entity) MergeCreateDiscordScheduledEventJSONBodyEntity0(v CreateDiscordScheduledEventJSONBodyEntity0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateDiscordScheduledEventJSONBodyEntity1 returns the union data inside the CreateDiscordScheduledEventJSONBody_Entity as a CreateDiscordScheduledEventJSONBodyEntity1
+func (t CreateDiscordScheduledEventJSONBody_Entity) AsCreateDiscordScheduledEventJSONBodyEntity1() (CreateDiscordScheduledEventJSONBodyEntity1, error) {
+	var body CreateDiscordScheduledEventJSONBodyEntity1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateDiscordScheduledEventJSONBodyEntity1 overwrites any union data inside the CreateDiscordScheduledEventJSONBody_Entity as the provided CreateDiscordScheduledEventJSONBodyEntity1
+func (t *CreateDiscordScheduledEventJSONBody_Entity) FromCreateDiscordScheduledEventJSONBodyEntity1(v CreateDiscordScheduledEventJSONBodyEntity1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateDiscordScheduledEventJSONBodyEntity1 performs a merge with any union data inside the CreateDiscordScheduledEventJSONBody_Entity, using the provided CreateDiscordScheduledEventJSONBodyEntity1
+func (t *CreateDiscordScheduledEventJSONBody_Entity) MergeCreateDiscordScheduledEventJSONBodyEntity1(v CreateDiscordScheduledEventJSONBodyEntity1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCreateDiscordScheduledEventJSONBodyEntity2 returns the union data inside the CreateDiscordScheduledEventJSONBody_Entity as a CreateDiscordScheduledEventJSONBodyEntity2
+func (t CreateDiscordScheduledEventJSONBody_Entity) AsCreateDiscordScheduledEventJSONBodyEntity2() (CreateDiscordScheduledEventJSONBodyEntity2, error) {
+	var body CreateDiscordScheduledEventJSONBodyEntity2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCreateDiscordScheduledEventJSONBodyEntity2 overwrites any union data inside the CreateDiscordScheduledEventJSONBody_Entity as the provided CreateDiscordScheduledEventJSONBodyEntity2
+func (t *CreateDiscordScheduledEventJSONBody_Entity) FromCreateDiscordScheduledEventJSONBodyEntity2(v CreateDiscordScheduledEventJSONBodyEntity2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCreateDiscordScheduledEventJSONBodyEntity2 performs a merge with any union data inside the CreateDiscordScheduledEventJSONBody_Entity, using the provided CreateDiscordScheduledEventJSONBodyEntity2
+func (t *CreateDiscordScheduledEventJSONBody_Entity) MergeCreateDiscordScheduledEventJSONBodyEntity2(v CreateDiscordScheduledEventJSONBodyEntity2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateDiscordScheduledEventJSONBody_Entity) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateDiscordScheduledEventJSONBody_Entity) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -20682,6 +22529,51 @@ type ClientInterface interface {
 
 	UpdateCustomField(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListDiscordPinnedMessages request
+	ListDiscordPinnedMessages(ctx context.Context, channelId string, params *ListDiscordPinnedMessagesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnpinDiscordMessage request
+	UnpinDiscordMessage(ctx context.Context, channelId string, messageId string, params *UnpinDiscordMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PinDiscordMessage request
+	PinDiscordMessage(ctx context.Context, channelId string, messageId string, params *PinDiscordMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendDiscordDirectMessageWithBody request with any body
+	SendDiscordDirectMessageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendDiscordDirectMessage(ctx context.Context, body SendDiscordDirectMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListDiscordScheduledEvents request
+	ListDiscordScheduledEvents(ctx context.Context, guildId string, params *ListDiscordScheduledEventsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateDiscordScheduledEventWithBody request with any body
+	CreateDiscordScheduledEventWithBody(ctx context.Context, guildId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateDiscordScheduledEvent(ctx context.Context, guildId string, body CreateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteDiscordScheduledEvent request
+	DeleteDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, params *DeleteDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetDiscordScheduledEvent request
+	GetDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, params *GetDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateDiscordScheduledEventWithBody request with any body
+	UpdateDiscordScheduledEventWithBody(ctx context.Context, guildId string, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, body UpdateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListDiscordGuildMembers request
+	ListDiscordGuildMembers(ctx context.Context, guildId string, params *ListDiscordGuildMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveDiscordMemberRole request
+	RemoveDiscordMemberRole(ctx context.Context, guildId string, userId string, roleId string, params *RemoveDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddDiscordMemberRole request
+	AddDiscordMemberRole(ctx context.Context, guildId string, userId string, roleId string, params *AddDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListDiscordGuildRoles request
+	ListDiscordGuildRoles(ctx context.Context, guildId string, params *ListDiscordGuildRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListInboxComments request
 	ListInboxComments(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -21010,6 +22902,26 @@ type ClientInterface interface {
 	// UploadWhatsAppProfilePhotoWithBody request with any body
 	UploadWhatsAppProfilePhotoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWhatsAppCallPermissions request
+	GetWhatsAppCallPermissions(ctx context.Context, params *GetWhatsAppCallPermissionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppCallingConfig request
+	GetWhatsAppCallingConfig(ctx context.Context, params *GetWhatsAppCallingConfigParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppCalls request
+	ListWhatsAppCalls(ctx context.Context, params *ListWhatsAppCallsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InitiateWhatsAppCallWithBody request with any body
+	InitiateWhatsAppCallWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	InitiateWhatsAppCall(ctx context.Context, body InitiateWhatsAppCallJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppCallEstimate request
+	GetWhatsAppCallEstimate(ctx context.Context, params *GetWhatsAppCallEstimateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppCall request
+	GetWhatsAppCall(ctx context.Context, callId string, params *GetWhatsAppCallParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListWhatsAppConversions request
 	ListWhatsAppConversions(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -21083,16 +22995,54 @@ type ClientInterface interface {
 	// GetWhatsAppPhoneNumbers request
 	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SearchAvailableWhatsAppNumbers request
+	SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppNumberCountries request
+	ListWhatsAppNumberCountries(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppNumberKycForm request
+	GetWhatsAppNumberKycForm(ctx context.Context, params *GetWhatsAppNumberKycFormParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SubmitWhatsAppNumberKycWithBody request with any body
+	SubmitWhatsAppNumberKycWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SubmitWhatsAppNumberKyc(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// PurchaseWhatsAppPhoneNumberWithBody request with any body
 	PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PurchaseWhatsAppPhoneNumber(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DisableWhatsAppCalling request
+	DisableWhatsAppCalling(ctx context.Context, id string, params *DisableWhatsAppCallingParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWhatsAppCallingWithBody request with any body
+	UpdateWhatsAppCallingWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWhatsAppCalling(ctx context.Context, id string, body UpdateWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EnableWhatsAppCallingWithBody request with any body
+	EnableWhatsAppCallingWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EnableWhatsAppCalling(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReleaseWhatsAppPhoneNumber request
 	ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppPhoneNumber request
 	GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWhatsAppSandboxSessions request
+	ListWhatsAppSandboxSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWhatsAppSandboxSessionWithBody request with any body
+	CreateWhatsAppSandboxSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWhatsAppSandboxSession(ctx context.Context, body CreateWhatsAppSandboxSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWhatsAppSandboxSession request
+	DeleteWhatsAppSandboxSession(ctx context.Context, sessionId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppLibraryTemplate request
 	GetWhatsAppLibraryTemplate(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -21160,6 +23110,54 @@ type ClientInterface interface {
 	AddWhatsAppGroupParticipantsWithBody(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	AddWhatsAppGroupParticipants(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkflows request
+	ListWorkflows(ctx context.Context, params *ListWorkflowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateWorkflowWithBody request with any body
+	CreateWorkflowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateWorkflow(ctx context.Context, body CreateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteWorkflow request
+	DeleteWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWorkflow request
+	GetWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateWorkflowWithBody request with any body
+	UpdateWorkflowWithBody(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateWorkflow(ctx context.Context, workflowId string, body UpdateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ActivateWorkflow request
+	ActivateWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DuplicateWorkflow request
+	DuplicateWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkflowExecutions request
+	ListWorkflowExecutions(ctx context.Context, workflowId string, params *ListWorkflowExecutionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// TriggerWorkflowWithBody request with any body
+	TriggerWorkflowWithBody(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	TriggerWorkflow(ctx context.Context, workflowId string, body TriggerWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkflowExecutionEvents request
+	ListWorkflowExecutionEvents(ctx context.Context, workflowId string, executionId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PauseWorkflow request
+	PauseWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListWorkflowVersions request
+	ListWorkflowVersions(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWorkflowVersion request
+	GetWorkflowVersion(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RestoreWorkflowVersion request
+	RestoreWorkflowVersion(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ListAccountGroups(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -24342,6 +26340,198 @@ func (c *Client) UpdateCustomField(ctx context.Context, fieldId string, body Upd
 	return c.Client.Do(req)
 }
 
+func (c *Client) ListDiscordPinnedMessages(ctx context.Context, channelId string, params *ListDiscordPinnedMessagesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDiscordPinnedMessagesRequest(c.Server, channelId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnpinDiscordMessage(ctx context.Context, channelId string, messageId string, params *UnpinDiscordMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnpinDiscordMessageRequest(c.Server, channelId, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PinDiscordMessage(ctx context.Context, channelId string, messageId string, params *PinDiscordMessageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPinDiscordMessageRequest(c.Server, channelId, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendDiscordDirectMessageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendDiscordDirectMessageRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendDiscordDirectMessage(ctx context.Context, body SendDiscordDirectMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendDiscordDirectMessageRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListDiscordScheduledEvents(ctx context.Context, guildId string, params *ListDiscordScheduledEventsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDiscordScheduledEventsRequest(c.Server, guildId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateDiscordScheduledEventWithBody(ctx context.Context, guildId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateDiscordScheduledEventRequestWithBody(c.Server, guildId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateDiscordScheduledEvent(ctx context.Context, guildId string, body CreateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateDiscordScheduledEventRequest(c.Server, guildId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, params *DeleteDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteDiscordScheduledEventRequest(c.Server, guildId, eventId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, params *GetDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDiscordScheduledEventRequest(c.Server, guildId, eventId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDiscordScheduledEventWithBody(ctx context.Context, guildId string, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDiscordScheduledEventRequestWithBody(c.Server, guildId, eventId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateDiscordScheduledEvent(ctx context.Context, guildId string, eventId string, body UpdateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateDiscordScheduledEventRequest(c.Server, guildId, eventId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListDiscordGuildMembers(ctx context.Context, guildId string, params *ListDiscordGuildMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDiscordGuildMembersRequest(c.Server, guildId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveDiscordMemberRole(ctx context.Context, guildId string, userId string, roleId string, params *RemoveDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveDiscordMemberRoleRequest(c.Server, guildId, userId, roleId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddDiscordMemberRole(ctx context.Context, guildId string, userId string, roleId string, params *AddDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddDiscordMemberRoleRequest(c.Server, guildId, userId, roleId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListDiscordGuildRoles(ctx context.Context, guildId string, params *ListDiscordGuildRolesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListDiscordGuildRolesRequest(c.Server, guildId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListInboxComments(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListInboxCommentsRequest(c.Server, params)
 	if err != nil {
@@ -25806,6 +27996,90 @@ func (c *Client) UploadWhatsAppProfilePhotoWithBody(ctx context.Context, content
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetWhatsAppCallPermissions(ctx context.Context, params *GetWhatsAppCallPermissionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppCallPermissionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppCallingConfig(ctx context.Context, params *GetWhatsAppCallingConfigParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppCallingConfigRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppCalls(ctx context.Context, params *ListWhatsAppCallsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppCallsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InitiateWhatsAppCallWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInitiateWhatsAppCallRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InitiateWhatsAppCall(ctx context.Context, body InitiateWhatsAppCallJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInitiateWhatsAppCallRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppCallEstimate(ctx context.Context, params *GetWhatsAppCallEstimateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppCallEstimateRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppCall(ctx context.Context, callId string, params *GetWhatsAppCallParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppCallRequest(c.Server, callId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListWhatsAppConversions(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListWhatsAppConversionsRequest(c.Server, params)
 	if err != nil {
@@ -26130,6 +28404,66 @@ func (c *Client) GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAp
 	return c.Client.Do(req)
 }
 
+func (c *Client) SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchAvailableWhatsAppNumbersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppNumberCountries(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppNumberCountriesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppNumberKycForm(ctx context.Context, params *GetWhatsAppNumberKycFormParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppNumberKycFormRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SubmitWhatsAppNumberKycWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSubmitWhatsAppNumberKycRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SubmitWhatsAppNumberKyc(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSubmitWhatsAppNumberKycRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPurchaseWhatsAppPhoneNumberRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -26154,6 +28488,66 @@ func (c *Client) PurchaseWhatsAppPhoneNumber(ctx context.Context, body PurchaseW
 	return c.Client.Do(req)
 }
 
+func (c *Client) DisableWhatsAppCalling(ctx context.Context, id string, params *DisableWhatsAppCallingParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisableWhatsAppCallingRequest(c.Server, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppCallingWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppCallingRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWhatsAppCalling(ctx context.Context, id string, body UpdateWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWhatsAppCallingRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EnableWhatsAppCallingWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnableWhatsAppCallingRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EnableWhatsAppCalling(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnableWhatsAppCallingRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReleaseWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
 	if err != nil {
@@ -26168,6 +28562,54 @@ func (c *Client) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId s
 
 func (c *Client) GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWhatsAppPhoneNumberRequest(c.Server, phoneNumberId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWhatsAppSandboxSessions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWhatsAppSandboxSessionsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppSandboxSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppSandboxSessionRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWhatsAppSandboxSession(ctx context.Context, body CreateWhatsAppSandboxSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWhatsAppSandboxSessionRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWhatsAppSandboxSession(ctx context.Context, sessionId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWhatsAppSandboxSessionRequest(c.Server, sessionId)
 	if err != nil {
 		return nil, err
 	}
@@ -26468,6 +28910,210 @@ func (c *Client) AddWhatsAppGroupParticipantsWithBody(ctx context.Context, group
 
 func (c *Client) AddWhatsAppGroupParticipants(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddWhatsAppGroupParticipantsRequest(c.Server, groupId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkflows(ctx context.Context, params *ListWorkflowsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkflowsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkflowWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkflowRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateWorkflow(ctx context.Context, body CreateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateWorkflowRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteWorkflowRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWorkflowRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkflowWithBody(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkflowRequestWithBody(c.Server, workflowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateWorkflow(ctx context.Context, workflowId string, body UpdateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateWorkflowRequest(c.Server, workflowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ActivateWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewActivateWorkflowRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DuplicateWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDuplicateWorkflowRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkflowExecutions(ctx context.Context, workflowId string, params *ListWorkflowExecutionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkflowExecutionsRequest(c.Server, workflowId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TriggerWorkflowWithBody(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerWorkflowRequestWithBody(c.Server, workflowId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TriggerWorkflow(ctx context.Context, workflowId string, body TriggerWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerWorkflowRequest(c.Server, workflowId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkflowExecutionEvents(ctx context.Context, workflowId string, executionId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkflowExecutionEventsRequest(c.Server, workflowId, executionId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PauseWorkflow(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPauseWorkflowRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListWorkflowVersions(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListWorkflowVersionsRequest(c.Server, workflowId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWorkflowVersion(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWorkflowVersionRequest(c.Server, workflowId, version)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RestoreWorkflowVersion(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRestoreWorkflowVersionRequest(c.Server, workflowId, version)
 	if err != nil {
 		return nil, err
 	}
@@ -38027,6 +40673,809 @@ func NewUpdateCustomFieldRequestWithBody(server string, fieldId string, contentT
 	return req, nil
 }
 
+// NewListDiscordPinnedMessagesRequest generates requests for ListDiscordPinnedMessages
+func NewListDiscordPinnedMessagesRequest(server string, channelId string, params *ListDiscordPinnedMessagesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "channelId", channelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/channels/%s/pins", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUnpinDiscordMessageRequest generates requests for UnpinDiscordMessage
+func NewUnpinDiscordMessageRequest(server string, channelId string, messageId string, params *UnpinDiscordMessageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "channelId", channelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/channels/%s/pins/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPinDiscordMessageRequest generates requests for PinDiscordMessage
+func NewPinDiscordMessageRequest(server string, channelId string, messageId string, params *PinDiscordMessageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "channelId", channelId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/channels/%s/pins/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSendDiscordDirectMessageRequest calls the generic SendDiscordDirectMessage builder with application/json body
+func NewSendDiscordDirectMessageRequest(server string, body SendDiscordDirectMessageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendDiscordDirectMessageRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendDiscordDirectMessageRequestWithBody generates requests for SendDiscordDirectMessage with any type of body
+func NewSendDiscordDirectMessageRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/dms")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListDiscordScheduledEventsRequest generates requests for ListDiscordScheduledEvents
+func NewListDiscordScheduledEventsRequest(server string, guildId string, params *ListDiscordScheduledEventsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/events", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.WithUserCount != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "withUserCount", *params.WithUserCount, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateDiscordScheduledEventRequest calls the generic CreateDiscordScheduledEvent builder with application/json body
+func NewCreateDiscordScheduledEventRequest(server string, guildId string, body CreateDiscordScheduledEventJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateDiscordScheduledEventRequestWithBody(server, guildId, "application/json", bodyReader)
+}
+
+// NewCreateDiscordScheduledEventRequestWithBody generates requests for CreateDiscordScheduledEvent with any type of body
+func NewCreateDiscordScheduledEventRequestWithBody(server string, guildId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/events", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteDiscordScheduledEventRequest generates requests for DeleteDiscordScheduledEvent
+func NewDeleteDiscordScheduledEventRequest(server string, guildId string, eventId string, params *DeleteDiscordScheduledEventParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "eventId", eventId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/events/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetDiscordScheduledEventRequest generates requests for GetDiscordScheduledEvent
+func NewGetDiscordScheduledEventRequest(server string, guildId string, eventId string, params *GetDiscordScheduledEventParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "eventId", eventId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/events/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateDiscordScheduledEventRequest calls the generic UpdateDiscordScheduledEvent builder with application/json body
+func NewUpdateDiscordScheduledEventRequest(server string, guildId string, eventId string, body UpdateDiscordScheduledEventJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateDiscordScheduledEventRequestWithBody(server, guildId, eventId, "application/json", bodyReader)
+}
+
+// NewUpdateDiscordScheduledEventRequestWithBody generates requests for UpdateDiscordScheduledEvent with any type of body
+func NewUpdateDiscordScheduledEventRequestWithBody(server string, guildId string, eventId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "eventId", eventId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/events/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListDiscordGuildMembersRequest generates requests for ListDiscordGuildMembers
+func NewListDiscordGuildMembersRequest(server string, guildId string, params *ListDiscordGuildMembersParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/members", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "after", *params.After, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRemoveDiscordMemberRoleRequest generates requests for RemoveDiscordMemberRole
+func NewRemoveDiscordMemberRoleRequest(server string, guildId string, userId string, roleId string, params *RemoveDiscordMemberRoleParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "userId", userId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "roleId", roleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/members/%s/roles/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddDiscordMemberRoleRequest generates requests for AddDiscordMemberRole
+func NewAddDiscordMemberRoleRequest(server string, guildId string, userId string, roleId string, params *AddDiscordMemberRoleParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "userId", userId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "roleId", roleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/members/%s/roles/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListDiscordGuildRolesRequest generates requests for ListDiscordGuildRoles
+func NewListDiscordGuildRolesRequest(server string, guildId string, params *ListDiscordGuildRolesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "guildId", guildId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discord/guilds/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListInboxCommentsRequest generates requests for ListInboxComments
 func NewListInboxCommentsRequest(server string, params *ListInboxCommentsParams) (*http.Request, error) {
 	var err error
@@ -42794,6 +46243,403 @@ func NewUploadWhatsAppProfilePhotoRequestWithBody(server string, contentType str
 	return req, nil
 }
 
+// NewGetWhatsAppCallPermissionsRequest generates requests for GetWhatsAppCallPermissions
+func NewGetWhatsAppCallPermissionsRequest(server string, params *GetWhatsAppCallPermissionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/call-permissions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "to", params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppCallingConfigRequest generates requests for GetWhatsAppCallingConfig
+func NewGetWhatsAppCallingConfigRequest(server string, params *GetWhatsAppCallingConfigParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/calling")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWhatsAppCallsRequest generates requests for ListWhatsAppCalls
+func NewListWhatsAppCallsRequest(server string, params *ListWhatsAppCallsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/calls")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Direction != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "direction", *params.Direction, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Since != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "since", *params.Since, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Until != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "until", *params.Until, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewInitiateWhatsAppCallRequest calls the generic InitiateWhatsAppCall builder with application/json body
+func NewInitiateWhatsAppCallRequest(server string, body InitiateWhatsAppCallJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewInitiateWhatsAppCallRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewInitiateWhatsAppCallRequestWithBody generates requests for InitiateWhatsAppCall with any type of body
+func NewInitiateWhatsAppCallRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/calls")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppCallEstimateRequest generates requests for GetWhatsAppCallEstimate
+func NewGetWhatsAppCallEstimateRequest(server string, params *GetWhatsAppCallEstimateParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/calls/estimate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "to", params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Minutes != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "minutes", *params.Minutes, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Recording != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "recording", *params.Recording, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppCallRequest generates requests for GetWhatsAppCall
+func NewGetWhatsAppCallRequest(server string, callId string, params *GetWhatsAppCallParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "callId", callId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/calls/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListWhatsAppConversionsRequest generates requests for ListWhatsAppConversions
 func NewListWhatsAppConversionsRequest(server string, params *ListWhatsAppConversionsParams) (*http.Request, error) {
 	var err error
@@ -43803,6 +47649,245 @@ func NewGetWhatsAppPhoneNumbersRequest(server string, params *GetWhatsAppPhoneNu
 	return req, nil
 }
 
+// NewSearchAvailableWhatsAppNumbersRequest generates requests for SearchAvailableWhatsAppNumbers
+func NewSearchAvailableWhatsAppNumbersRequest(server string, params *SearchAvailableWhatsAppNumbersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/available")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Country != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "country", *params.Country, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Prefix != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "prefix", *params.Prefix, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Locality != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locality", *params.Locality, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Contains != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "contains", *params.Contains, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWhatsAppNumberCountriesRequest generates requests for ListWhatsAppNumberCountries
+func NewListWhatsAppNumberCountriesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/countries")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWhatsAppNumberKycFormRequest generates requests for GetWhatsAppNumberKycForm
+func NewGetWhatsAppNumberKycFormRequest(server string, params *GetWhatsAppNumberKycFormParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/kyc")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "country", params.Country, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSubmitWhatsAppNumberKycRequest calls the generic SubmitWhatsAppNumberKyc builder with application/json body
+func NewSubmitWhatsAppNumberKycRequest(server string, body SubmitWhatsAppNumberKycJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSubmitWhatsAppNumberKycRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSubmitWhatsAppNumberKycRequestWithBody generates requests for SubmitWhatsAppNumberKyc with any type of body
+func NewSubmitWhatsAppNumberKycRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/kyc")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewPurchaseWhatsAppPhoneNumberRequest calls the generic PurchaseWhatsAppPhoneNumber builder with application/json body
 func NewPurchaseWhatsAppPhoneNumberRequest(server string, body PurchaseWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -43824,6 +47909,157 @@ func NewPurchaseWhatsAppPhoneNumberRequestWithBody(server string, contentType st
 	}
 
 	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/purchase")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDisableWhatsAppCallingRequest generates requests for DisableWhatsAppCalling
+func NewDisableWhatsAppCallingRequest(server string, id string, params *DisableWhatsAppCallingParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/calling", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWhatsAppCallingRequest calls the generic UpdateWhatsAppCalling builder with application/json body
+func NewUpdateWhatsAppCallingRequest(server string, id string, body UpdateWhatsAppCallingJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWhatsAppCallingRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewUpdateWhatsAppCallingRequestWithBody generates requests for UpdateWhatsAppCalling with any type of body
+func NewUpdateWhatsAppCallingRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/calling", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEnableWhatsAppCallingRequest calls the generic EnableWhatsAppCalling builder with application/json body
+func NewEnableWhatsAppCallingRequest(server string, id string, body EnableWhatsAppCallingJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEnableWhatsAppCallingRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewEnableWhatsAppCallingRequestWithBody generates requests for EnableWhatsAppCalling with any type of body
+func NewEnableWhatsAppCallingRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/calling", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -43904,6 +48140,107 @@ func NewGetWhatsAppPhoneNumberRequest(server string, phoneNumberId string) (*htt
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWhatsAppSandboxSessionsRequest generates requests for ListWhatsAppSandboxSessions
+func NewListWhatsAppSandboxSessionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/sandbox/sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWhatsAppSandboxSessionRequest calls the generic CreateWhatsAppSandboxSession builder with application/json body
+func NewCreateWhatsAppSandboxSessionRequest(server string, body CreateWhatsAppSandboxSessionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWhatsAppSandboxSessionRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWhatsAppSandboxSessionRequestWithBody generates requests for CreateWhatsAppSandboxSession with any type of body
+func NewCreateWhatsAppSandboxSessionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/sandbox/sessions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWhatsAppSandboxSessionRequest generates requests for DeleteWhatsAppSandboxSession
+func NewDeleteWhatsAppSandboxSessionRequest(server string, sessionId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sessionId", sessionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/sandbox/sessions/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -44912,6 +49249,642 @@ func NewAddWhatsAppGroupParticipantsRequestWithBody(server string, groupId strin
 	return req, nil
 }
 
+// NewListWorkflowsRequest generates requests for ListWorkflows
+func NewListWorkflowsRequest(server string, params *ListWorkflowsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateWorkflowRequest calls the generic CreateWorkflow builder with application/json body
+func NewCreateWorkflowRequest(server string, body CreateWorkflowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateWorkflowRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateWorkflowRequestWithBody generates requests for CreateWorkflow with any type of body
+func NewCreateWorkflowRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteWorkflowRequest generates requests for DeleteWorkflow
+func NewDeleteWorkflowRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWorkflowRequest generates requests for GetWorkflow
+func NewGetWorkflowRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateWorkflowRequest calls the generic UpdateWorkflow builder with application/json body
+func NewUpdateWorkflowRequest(server string, workflowId string, body UpdateWorkflowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateWorkflowRequestWithBody(server, workflowId, "application/json", bodyReader)
+}
+
+// NewUpdateWorkflowRequestWithBody generates requests for UpdateWorkflow with any type of body
+func NewUpdateWorkflowRequestWithBody(server string, workflowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewActivateWorkflowRequest generates requests for ActivateWorkflow
+func NewActivateWorkflowRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/activate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDuplicateWorkflowRequest generates requests for DuplicateWorkflow
+func NewDuplicateWorkflowRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/duplicate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWorkflowExecutionsRequest generates requests for ListWorkflowExecutions
+func NewListWorkflowExecutionsRequest(server string, workflowId string, params *ListWorkflowExecutionsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/executions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewTriggerWorkflowRequest calls the generic TriggerWorkflow builder with application/json body
+func NewTriggerWorkflowRequest(server string, workflowId string, body TriggerWorkflowJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewTriggerWorkflowRequestWithBody(server, workflowId, "application/json", bodyReader)
+}
+
+// NewTriggerWorkflowRequestWithBody generates requests for TriggerWorkflow with any type of body
+func NewTriggerWorkflowRequestWithBody(server string, workflowId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/executions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListWorkflowExecutionEventsRequest generates requests for ListWorkflowExecutionEvents
+func NewListWorkflowExecutionEventsRequest(server string, workflowId string, executionId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "executionId", executionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/executions/%s/events", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPauseWorkflowRequest generates requests for PauseWorkflow
+func NewPauseWorkflowRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/pause", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListWorkflowVersionsRequest generates requests for ListWorkflowVersions
+func NewListWorkflowVersionsRequest(server string, workflowId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/versions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWorkflowVersionRequest generates requests for GetWorkflowVersion
+func NewGetWorkflowVersionRequest(server string, workflowId string, version int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "version", version, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/versions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRestoreWorkflowVersionRequest generates requests for RestoreWorkflowVersion
+func NewRestoreWorkflowVersionRequest(server string, workflowId string, version int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workflowId", workflowId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "version", version, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/workflows/%s/versions/%s/restore", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -45677,6 +50650,51 @@ type ClientWithResponsesInterface interface {
 
 	UpdateCustomFieldWithResponse(ctx context.Context, fieldId string, body UpdateCustomFieldJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomFieldResponse, error)
 
+	// ListDiscordPinnedMessagesWithResponse request
+	ListDiscordPinnedMessagesWithResponse(ctx context.Context, channelId string, params *ListDiscordPinnedMessagesParams, reqEditors ...RequestEditorFn) (*ListDiscordPinnedMessagesResponse, error)
+
+	// UnpinDiscordMessageWithResponse request
+	UnpinDiscordMessageWithResponse(ctx context.Context, channelId string, messageId string, params *UnpinDiscordMessageParams, reqEditors ...RequestEditorFn) (*UnpinDiscordMessageResponse, error)
+
+	// PinDiscordMessageWithResponse request
+	PinDiscordMessageWithResponse(ctx context.Context, channelId string, messageId string, params *PinDiscordMessageParams, reqEditors ...RequestEditorFn) (*PinDiscordMessageResponse, error)
+
+	// SendDiscordDirectMessageWithBodyWithResponse request with any body
+	SendDiscordDirectMessageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendDiscordDirectMessageResponse, error)
+
+	SendDiscordDirectMessageWithResponse(ctx context.Context, body SendDiscordDirectMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendDiscordDirectMessageResponse, error)
+
+	// ListDiscordScheduledEventsWithResponse request
+	ListDiscordScheduledEventsWithResponse(ctx context.Context, guildId string, params *ListDiscordScheduledEventsParams, reqEditors ...RequestEditorFn) (*ListDiscordScheduledEventsResponse, error)
+
+	// CreateDiscordScheduledEventWithBodyWithResponse request with any body
+	CreateDiscordScheduledEventWithBodyWithResponse(ctx context.Context, guildId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDiscordScheduledEventResponse, error)
+
+	CreateDiscordScheduledEventWithResponse(ctx context.Context, guildId string, body CreateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDiscordScheduledEventResponse, error)
+
+	// DeleteDiscordScheduledEventWithResponse request
+	DeleteDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, params *DeleteDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*DeleteDiscordScheduledEventResponse, error)
+
+	// GetDiscordScheduledEventWithResponse request
+	GetDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, params *GetDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*GetDiscordScheduledEventResponse, error)
+
+	// UpdateDiscordScheduledEventWithBodyWithResponse request with any body
+	UpdateDiscordScheduledEventWithBodyWithResponse(ctx context.Context, guildId string, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDiscordScheduledEventResponse, error)
+
+	UpdateDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, body UpdateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDiscordScheduledEventResponse, error)
+
+	// ListDiscordGuildMembersWithResponse request
+	ListDiscordGuildMembersWithResponse(ctx context.Context, guildId string, params *ListDiscordGuildMembersParams, reqEditors ...RequestEditorFn) (*ListDiscordGuildMembersResponse, error)
+
+	// RemoveDiscordMemberRoleWithResponse request
+	RemoveDiscordMemberRoleWithResponse(ctx context.Context, guildId string, userId string, roleId string, params *RemoveDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*RemoveDiscordMemberRoleResponse, error)
+
+	// AddDiscordMemberRoleWithResponse request
+	AddDiscordMemberRoleWithResponse(ctx context.Context, guildId string, userId string, roleId string, params *AddDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*AddDiscordMemberRoleResponse, error)
+
+	// ListDiscordGuildRolesWithResponse request
+	ListDiscordGuildRolesWithResponse(ctx context.Context, guildId string, params *ListDiscordGuildRolesParams, reqEditors ...RequestEditorFn) (*ListDiscordGuildRolesResponse, error)
+
 	// ListInboxCommentsWithResponse request
 	ListInboxCommentsWithResponse(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*ListInboxCommentsResponse, error)
 
@@ -46005,6 +51023,26 @@ type ClientWithResponsesInterface interface {
 	// UploadWhatsAppProfilePhotoWithBodyWithResponse request with any body
 	UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppProfilePhotoResponse, error)
 
+	// GetWhatsAppCallPermissionsWithResponse request
+	GetWhatsAppCallPermissionsWithResponse(ctx context.Context, params *GetWhatsAppCallPermissionsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallPermissionsResponse, error)
+
+	// GetWhatsAppCallingConfigWithResponse request
+	GetWhatsAppCallingConfigWithResponse(ctx context.Context, params *GetWhatsAppCallingConfigParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallingConfigResponse, error)
+
+	// ListWhatsAppCallsWithResponse request
+	ListWhatsAppCallsWithResponse(ctx context.Context, params *ListWhatsAppCallsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppCallsResponse, error)
+
+	// InitiateWhatsAppCallWithBodyWithResponse request with any body
+	InitiateWhatsAppCallWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InitiateWhatsAppCallResponse, error)
+
+	InitiateWhatsAppCallWithResponse(ctx context.Context, body InitiateWhatsAppCallJSONRequestBody, reqEditors ...RequestEditorFn) (*InitiateWhatsAppCallResponse, error)
+
+	// GetWhatsAppCallEstimateWithResponse request
+	GetWhatsAppCallEstimateWithResponse(ctx context.Context, params *GetWhatsAppCallEstimateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallEstimateResponse, error)
+
+	// GetWhatsAppCallWithResponse request
+	GetWhatsAppCallWithResponse(ctx context.Context, callId string, params *GetWhatsAppCallParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallResponse, error)
+
 	// ListWhatsAppConversionsWithResponse request
 	ListWhatsAppConversionsWithResponse(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppConversionsResponse, error)
 
@@ -46078,16 +51116,54 @@ type ClientWithResponsesInterface interface {
 	// GetWhatsAppPhoneNumbersWithResponse request
 	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
 
+	// SearchAvailableWhatsAppNumbersWithResponse request
+	SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error)
+
+	// ListWhatsAppNumberCountriesWithResponse request
+	ListWhatsAppNumberCountriesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListWhatsAppNumberCountriesResponse, error)
+
+	// GetWhatsAppNumberKycFormWithResponse request
+	GetWhatsAppNumberKycFormWithResponse(ctx context.Context, params *GetWhatsAppNumberKycFormParams, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberKycFormResponse, error)
+
+	// SubmitWhatsAppNumberKycWithBodyWithResponse request with any body
+	SubmitWhatsAppNumberKycWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error)
+
+	SubmitWhatsAppNumberKycWithResponse(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error)
+
 	// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with any body
 	PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
 
 	PurchaseWhatsAppPhoneNumberWithResponse(ctx context.Context, body PurchaseWhatsAppPhoneNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
+
+	// DisableWhatsAppCallingWithResponse request
+	DisableWhatsAppCallingWithResponse(ctx context.Context, id string, params *DisableWhatsAppCallingParams, reqEditors ...RequestEditorFn) (*DisableWhatsAppCallingResponse, error)
+
+	// UpdateWhatsAppCallingWithBodyWithResponse request with any body
+	UpdateWhatsAppCallingWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppCallingResponse, error)
+
+	UpdateWhatsAppCallingWithResponse(ctx context.Context, id string, body UpdateWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppCallingResponse, error)
+
+	// EnableWhatsAppCallingWithBodyWithResponse request with any body
+	EnableWhatsAppCallingWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error)
+
+	EnableWhatsAppCallingWithResponse(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error)
 
 	// ReleaseWhatsAppPhoneNumberWithResponse request
 	ReleaseWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*ReleaseWhatsAppPhoneNumberResponse, error)
 
 	// GetWhatsAppPhoneNumberWithResponse request
 	GetWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumberResponse, error)
+
+	// ListWhatsAppSandboxSessionsWithResponse request
+	ListWhatsAppSandboxSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListWhatsAppSandboxSessionsResponse, error)
+
+	// CreateWhatsAppSandboxSessionWithBodyWithResponse request with any body
+	CreateWhatsAppSandboxSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppSandboxSessionResponse, error)
+
+	CreateWhatsAppSandboxSessionWithResponse(ctx context.Context, body CreateWhatsAppSandboxSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppSandboxSessionResponse, error)
+
+	// DeleteWhatsAppSandboxSessionWithResponse request
+	DeleteWhatsAppSandboxSessionWithResponse(ctx context.Context, sessionId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppSandboxSessionResponse, error)
 
 	// GetWhatsAppLibraryTemplateWithResponse request
 	GetWhatsAppLibraryTemplateWithResponse(ctx context.Context, params *GetWhatsAppLibraryTemplateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppLibraryTemplateResponse, error)
@@ -46155,6 +51231,54 @@ type ClientWithResponsesInterface interface {
 	AddWhatsAppGroupParticipantsWithBodyWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error)
 
 	AddWhatsAppGroupParticipantsWithResponse(ctx context.Context, groupId string, params *AddWhatsAppGroupParticipantsParams, body AddWhatsAppGroupParticipantsJSONRequestBody, reqEditors ...RequestEditorFn) (*AddWhatsAppGroupParticipantsResponse, error)
+
+	// ListWorkflowsWithResponse request
+	ListWorkflowsWithResponse(ctx context.Context, params *ListWorkflowsParams, reqEditors ...RequestEditorFn) (*ListWorkflowsResponse, error)
+
+	// CreateWorkflowWithBodyWithResponse request with any body
+	CreateWorkflowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkflowResponse, error)
+
+	CreateWorkflowWithResponse(ctx context.Context, body CreateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkflowResponse, error)
+
+	// DeleteWorkflowWithResponse request
+	DeleteWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*DeleteWorkflowResponse, error)
+
+	// GetWorkflowWithResponse request
+	GetWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*GetWorkflowResponse, error)
+
+	// UpdateWorkflowWithBodyWithResponse request with any body
+	UpdateWorkflowWithBodyWithResponse(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkflowResponse, error)
+
+	UpdateWorkflowWithResponse(ctx context.Context, workflowId string, body UpdateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkflowResponse, error)
+
+	// ActivateWorkflowWithResponse request
+	ActivateWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*ActivateWorkflowResponse, error)
+
+	// DuplicateWorkflowWithResponse request
+	DuplicateWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*DuplicateWorkflowResponse, error)
+
+	// ListWorkflowExecutionsWithResponse request
+	ListWorkflowExecutionsWithResponse(ctx context.Context, workflowId string, params *ListWorkflowExecutionsParams, reqEditors ...RequestEditorFn) (*ListWorkflowExecutionsResponse, error)
+
+	// TriggerWorkflowWithBodyWithResponse request with any body
+	TriggerWorkflowWithBodyWithResponse(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerWorkflowResponse, error)
+
+	TriggerWorkflowWithResponse(ctx context.Context, workflowId string, body TriggerWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerWorkflowResponse, error)
+
+	// ListWorkflowExecutionEventsWithResponse request
+	ListWorkflowExecutionEventsWithResponse(ctx context.Context, workflowId string, executionId string, reqEditors ...RequestEditorFn) (*ListWorkflowExecutionEventsResponse, error)
+
+	// PauseWorkflowWithResponse request
+	PauseWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*PauseWorkflowResponse, error)
+
+	// ListWorkflowVersionsWithResponse request
+	ListWorkflowVersionsWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*ListWorkflowVersionsResponse, error)
+
+	// GetWorkflowVersionWithResponse request
+	GetWorkflowVersionWithResponse(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*GetWorkflowVersionResponse, error)
+
+	// RestoreWorkflowVersionWithResponse request
+	RestoreWorkflowVersionWithResponse(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*RestoreWorkflowVersionResponse, error)
 }
 
 type ListAccountGroupsResponse struct {
@@ -51185,11 +56309,12 @@ type GetAdAnalyticsResponse struct {
 	JSON200      *struct {
 		Ad *struct {
 			// Currency ISO 4217 code of the ad account that owns this ad (e.g. USD, THB, INR). All money values in `summary` and `daily` are in this currency. Null only on legacy ads synced before currency was persisted.
-			Currency *string `json:"currency,omitempty"`
-			Id       *string `json:"id,omitempty"`
-			Name     *string `json:"name,omitempty"`
-			Platform *string `json:"platform,omitempty"`
-			Status   *string `json:"status,omitempty"`
+			Currency *string                                     `json:"currency,omitempty"`
+			Id       *string                                     `json:"id,omitempty"`
+			Name     *string                                     `json:"name,omitempty"`
+			Platform *string                                     `json:"platform,omitempty"`
+			Status   *string                                     `json:"status,omitempty"`
+			Trigger  *GetAdAnalytics200JSONResponseBodyAdTrigger `json:"trigger,omitempty"`
 		} `json:"ad,omitempty"`
 		Analytics *struct {
 			Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
@@ -52722,24 +57847,42 @@ type ListCommentAutomationsResponse struct {
 			AccountId *string `json:"accountId,omitempty"`
 
 			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
-			Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
-			CommentReply   *string                                                        `json:"commentReply,omitempty"`
-			CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
-			DmMessage      *string                                                        `json:"dmMessage,omitempty"`
-			Id             *string                                                        `json:"id,omitempty"`
-			IsActive       *bool                                                          `json:"isActive,omitempty"`
-			Keywords       *[]string                                                      `json:"keywords,omitempty"`
+			Buttons *[]DmButton `json:"buttons,omitempty"`
+
+			// ClickTag Tag applied to a contact when they click a tracked link.
+			ClickTag     *string    `json:"clickTag,omitempty"`
+			CommentReply *string    `json:"commentReply,omitempty"`
+			CreatedAt    *time.Time `json:"createdAt,omitempty"`
+			DmMessage    *string    `json:"dmMessage,omitempty"`
+			Id           *string    `json:"id,omitempty"`
+			IsActive     *bool      `json:"isActive,omitempty"`
+			Keywords     *[]string  `json:"keywords,omitempty"`
+
+			// LinkTracking Whether link buttons in the DM are wrapped in a tracked redirect to count clicks.
+			LinkTracking   *bool                                                          `json:"linkTracking,omitempty"`
 			MatchMode      *ListCommentAutomations200JSONResponseBodyAutomationsMatchMode `json:"matchMode,omitempty"`
 			Name           *string                                                        `json:"name,omitempty"`
 			Platform       *ListCommentAutomations200JSONResponseBodyAutomationsPlatform  `json:"platform,omitempty"`
 			PlatformPostId *string                                                        `json:"platformPostId,omitempty"`
 			PostTitle      *string                                                        `json:"postTitle,omitempty"`
 			Stats          *struct {
-				DmsFailed      *int `json:"dmsFailed,omitempty"`
-				DmsSent        *int `json:"dmsSent,omitempty"`
-				Triggered      *int `json:"triggered,omitempty"`
+				// Delivered DMs confirmed delivered (Messenger; IG emits no delivery receipt).
+				Delivered *int `json:"delivered,omitempty"`
+				DmsFailed *int `json:"dmsFailed,omitempty"`
+				DmsSent   *int `json:"dmsSent,omitempty"`
+
+				// LinkClicks Total clicks on tracked links (bots/prefetch excluded).
+				LinkClicks *int `json:"linkClicks,omitempty"`
+
+				// Read DMs confirmed read (IG messaging_seen / Messenger message_reads).
+				Read      *int `json:"read,omitempty"`
+				Triggered *int `json:"triggered,omitempty"`
+
+				// UniqueClicks Distinct people who clicked a tracked link.
+				UniqueClicks   *int `json:"uniqueClicks,omitempty"`
 				UniqueContacts *int `json:"uniqueContacts,omitempty"`
 			} `json:"stats,omitempty"`
+			Trigger *ListCommentAutomations200JSONResponseBodyAutomationsTrigger `json:"trigger,omitempty"`
 		} `json:"automations,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -52777,12 +57920,14 @@ type CreateCommentAutomationResponse struct {
 		Automation *struct {
 			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
 			Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
+			ClickTag       *string                                                        `json:"clickTag,omitempty"`
 			CommentReply   *string                                                        `json:"commentReply,omitempty"`
 			CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 			DmMessage      *string                                                        `json:"dmMessage,omitempty"`
 			Id             *string                                                        `json:"id,omitempty"`
 			IsActive       *bool                                                          `json:"isActive,omitempty"`
 			Keywords       *[]string                                                      `json:"keywords,omitempty"`
+			LinkTracking   *bool                                                          `json:"linkTracking,omitempty"`
 			MatchMode      *CreateCommentAutomation200JSONResponseBodyAutomationMatchMode `json:"matchMode,omitempty"`
 			Name           *string                                                        `json:"name,omitempty"`
 			Platform       *string                                                        `json:"platform,omitempty"`
@@ -52792,6 +57937,7 @@ type CreateCommentAutomationResponse struct {
 				TotalSent      *int `json:"totalSent,omitempty"`
 				TotalTriggered *int `json:"totalTriggered,omitempty"`
 			} `json:"stats,omitempty"`
+			Trigger *CreateCommentAutomation200JSONResponseBodyAutomationTrigger `json:"trigger,omitempty"`
 		} `json:"automation,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -52862,12 +58008,14 @@ type GetCommentAutomationResponse struct {
 
 			// Buttons Inline DM buttons (up to 3). Omitted when none are set.
 			Buttons        *[]DmButton                                                 `json:"buttons,omitempty"`
+			ClickTag       *string                                                     `json:"clickTag,omitempty"`
 			CommentReply   *string                                                     `json:"commentReply,omitempty"`
 			CreatedAt      *time.Time                                                  `json:"createdAt,omitempty"`
 			DmMessage      *string                                                     `json:"dmMessage,omitempty"`
 			Id             *string                                                     `json:"id,omitempty"`
 			IsActive       *bool                                                       `json:"isActive,omitempty"`
 			Keywords       *[]string                                                   `json:"keywords,omitempty"`
+			LinkTracking   *bool                                                       `json:"linkTracking,omitempty"`
 			MatchMode      *GetCommentAutomation200JSONResponseBodyAutomationMatchMode `json:"matchMode,omitempty"`
 			Name           *string                                                     `json:"name,omitempty"`
 			Platform       *string                                                     `json:"platform,omitempty"`
@@ -52879,7 +58027,8 @@ type GetCommentAutomationResponse struct {
 				TotalSent      *int `json:"totalSent,omitempty"`
 				TotalTriggered *int `json:"totalTriggered,omitempty"`
 			} `json:"stats,omitempty"`
-			UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+			Trigger   *GetCommentAutomation200JSONResponseBodyAutomationTrigger `json:"trigger,omitempty"`
+			UpdatedAt *time.Time                                                `json:"updatedAt,omitempty"`
 		} `json:"automation,omitempty"`
 		Logs *[]struct {
 			CommentId *string `json:"commentId,omitempty"`
@@ -54218,12 +59367,15 @@ type GetContactResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Channels *[]struct {
-			AccountId          *string    `json:"accountId,omitempty"`
-			ConversationId     *string    `json:"conversationId,omitempty"`
-			CreatedAt          *time.Time `json:"createdAt,omitempty"`
-			DisplayIdentifier  *string    `json:"displayIdentifier,omitempty"`
-			Id                 *string    `json:"id,omitempty"`
-			IsSubscribed       *bool      `json:"isSubscribed,omitempty"`
+			AccountId         *string    `json:"accountId,omitempty"`
+			ConversationId    *string    `json:"conversationId,omitempty"`
+			CreatedAt         *time.Time `json:"createdAt,omitempty"`
+			DisplayIdentifier *string    `json:"displayIdentifier,omitempty"`
+			Id                *string    `json:"id,omitempty"`
+			IsSubscribed      *bool      `json:"isSubscribed,omitempty"`
+
+			// LastActiveAt Most recent message (either direction) in this channel's conversation, or null if none.
+			LastActiveAt       *time.Time `json:"lastActiveAt,omitempty"`
 			Platform           *string    `json:"platform,omitempty"`
 			PlatformIdentifier *string    `json:"platformIdentifier,omitempty"`
 		} `json:"channels,omitempty"`
@@ -54237,10 +59389,22 @@ type GetContactResponse struct {
 			Id              *string                 `json:"id,omitempty"`
 			IsBlocked       *bool                   `json:"isBlocked,omitempty"`
 			IsSubscribed    *bool                   `json:"isSubscribed,omitempty"`
-			Name            *string                 `json:"name,omitempty"`
-			Notes           *string                 `json:"notes,omitempty"`
-			Tags            *[]string               `json:"tags,omitempty"`
-			UpdatedAt       *time.Time              `json:"updatedAt,omitempty"`
+
+			// LastMessageReceivedAt Timestamp of the most recent incoming message, or null if none.
+			LastMessageReceivedAt *time.Time `json:"lastMessageReceivedAt,omitempty"`
+
+			// LastMessageSentAt Timestamp of the most recent outgoing message, or null if none.
+			LastMessageSentAt *time.Time `json:"lastMessageSentAt,omitempty"`
+
+			// MessagesReceivedCount Messages received from the contact, derived live from message history across all linked conversations.
+			MessagesReceivedCount *int `json:"messagesReceivedCount,omitempty"`
+
+			// MessagesSentCount Messages sent to the contact, derived live from message history across all linked conversations.
+			MessagesSentCount *int       `json:"messagesSentCount,omitempty"`
+			Name              *string    `json:"name,omitempty"`
+			Notes             *string    `json:"notes,omitempty"`
+			Tags              *[]string  `json:"tags,omitempty"`
+			UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
 		} `json:"contact,omitempty"`
 		Success *bool `json:"success,omitempty"`
 	}
@@ -54573,6 +59737,534 @@ func (r UpdateCustomFieldResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateCustomFieldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListDiscordPinnedMessagesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]struct {
+			Attachments *[]map[string]interface{} `json:"attachments,omitempty"`
+			Author      *map[string]interface{}   `json:"author,omitempty"`
+			ChannelId   *string                   `json:"channel_id,omitempty"`
+			Content     *string                   `json:"content,omitempty"`
+			Embeds      *[]map[string]interface{} `json:"embeds,omitempty"`
+			Id          *string                   `json:"id,omitempty"`
+			Timestamp   *time.Time                `json:"timestamp,omitempty"`
+		} `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDiscordPinnedMessagesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDiscordPinnedMessagesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListDiscordPinnedMessagesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnpinDiscordMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ChannelId *string                                          `json:"channelId,omitempty"`
+		MessageId *string                                          `json:"messageId,omitempty"`
+		Operation *UnpinDiscordMessage200JSONResponseBodyOperation `json:"operation,omitempty"`
+		Success   *bool                                            `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UnpinDiscordMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnpinDiscordMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnpinDiscordMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PinDiscordMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ChannelId *string                                        `json:"channelId,omitempty"`
+		MessageId *string                                        `json:"messageId,omitempty"`
+		Operation *PinDiscordMessage200JSONResponseBodyOperation `json:"operation,omitempty"`
+		Success   *bool                                          `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r PinDiscordMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PinDiscordMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PinDiscordMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SendDiscordDirectMessageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Account *struct {
+			DisplayName *string `json:"displayName,omitempty"`
+			Id          *string `json:"id,omitempty"`
+			Username    *string `json:"username,omitempty"`
+		} `json:"account,omitempty"`
+
+		// ChannelId DM channel snowflake (Discord auto-creates one per recipient pair)
+		ChannelId *string `json:"channelId,omitempty"`
+
+		// MessageId Discord message snowflake ID
+		MessageId *string `json:"messageId,omitempty"`
+		Recipient *struct {
+			Platform *string `json:"platform,omitempty"`
+			UserId   *string `json:"userId,omitempty"`
+		} `json:"recipient,omitempty"`
+		Timestamp *time.Time `json:"timestamp,omitempty"`
+
+		// Url Direct link to the message — uses Discord's @me path for DMs
+		Url *string `json:"url,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SendDiscordDirectMessageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendDiscordDirectMessageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SendDiscordDirectMessageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListDiscordScheduledEventsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]DiscordScheduledEvent `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDiscordScheduledEventsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDiscordScheduledEventsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListDiscordScheduledEventsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateDiscordScheduledEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+		// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+		// image hash) which we pass through verbatim.
+		Data *DiscordScheduledEvent `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateDiscordScheduledEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateDiscordScheduledEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateDiscordScheduledEventResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteDiscordScheduledEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Deleted The deleted event's snowflake.
+		Deleted *string `json:"deleted,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteDiscordScheduledEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteDiscordScheduledEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteDiscordScheduledEventResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetDiscordScheduledEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+		// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+		// image hash) which we pass through verbatim.
+		Data *DiscordScheduledEvent `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDiscordScheduledEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDiscordScheduledEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetDiscordScheduledEventResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateDiscordScheduledEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+		// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+		// image hash) which we pass through verbatim.
+		Data *DiscordScheduledEvent `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateDiscordScheduledEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateDiscordScheduledEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateDiscordScheduledEventResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListDiscordGuildMembersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]struct {
+			JoinedAt *time.Time `json:"joined_at,omitempty"`
+
+			// Nick Guild-specific nickname
+			Nick *string `json:"nick,omitempty"`
+
+			// PremiumSince When the user started boosting the server
+			PremiumSince *time.Time `json:"premium_since,omitempty"`
+
+			// Roles Snowflake IDs of roles assigned to this member
+			Roles *[]string `json:"roles,omitempty"`
+			User  *struct {
+				Avatar        *string `json:"avatar,omitempty"`
+				Discriminator *string `json:"discriminator,omitempty"`
+
+				// GlobalName User's display name (post-2023 Discord rebrand)
+				GlobalName *string `json:"global_name,omitempty"`
+
+				// Id User snowflake
+				Id       *string `json:"id,omitempty"`
+				Username *string `json:"username,omitempty"`
+			} `json:"user,omitempty"`
+		} `json:"data,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+
+			// NextCursor Pass as `after` on the next call. Null when there are no more pages.
+			NextCursor *string `json:"nextCursor,omitempty"`
+		} `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDiscordGuildMembersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDiscordGuildMembersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListDiscordGuildMembersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveDiscordMemberRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		GuildId   *string                                              `json:"guildId,omitempty"`
+		Operation *RemoveDiscordMemberRole200JSONResponseBodyOperation `json:"operation,omitempty"`
+		RoleId    *string                                              `json:"roleId,omitempty"`
+		Success   *bool                                                `json:"success,omitempty"`
+		UserId    *string                                              `json:"userId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveDiscordMemberRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveDiscordMemberRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveDiscordMemberRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddDiscordMemberRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		GuildId   *string                                           `json:"guildId,omitempty"`
+		Operation *AddDiscordMemberRole200JSONResponseBodyOperation `json:"operation,omitempty"`
+		RoleId    *string                                           `json:"roleId,omitempty"`
+		Success   *bool                                             `json:"success,omitempty"`
+		UserId    *string                                           `json:"userId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AddDiscordMemberRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddDiscordMemberRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddDiscordMemberRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListDiscordGuildRolesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data *[]struct {
+			// Color Decimal color (0 = no color). Convert to hex via .toString(16).
+			Color *int `json:"color,omitempty"`
+
+			// Hoist True if role is displayed separately in member list
+			Hoist *bool `json:"hoist,omitempty"`
+
+			// Id Role snowflake ID
+			Id *string `json:"id,omitempty"`
+
+			// Managed True for integration-managed roles (bot roles)
+			Managed     *bool   `json:"managed,omitempty"`
+			Mentionable *bool   `json:"mentionable,omitempty"`
+			Name        *string `json:"name,omitempty"`
+
+			// Permissions Permissions bitfield as a stringified integer
+			Permissions *string `json:"permissions,omitempty"`
+
+			// Position Position in role hierarchy (higher = more authority)
+			Position *int `json:"position,omitempty"`
+		} `json:"data,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListDiscordGuildRolesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListDiscordGuildRolesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListDiscordGuildRolesResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -58174,6 +63866,273 @@ func (r UploadWhatsAppProfilePhotoResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppCallPermissionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Actions *[]struct {
+			ActionName       *GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName `json:"action_name,omitempty"`
+			CanPerformAction *bool                                                           `json:"can_perform_action,omitempty"`
+		} `json:"actions,omitempty"`
+		Permission *struct {
+			// ExpirationTime Unix seconds when temporary
+			ExpirationTime *int                                                           `json:"expiration_time,omitempty"`
+			Status         *GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus `json:"status,omitempty"`
+		} `json:"permission,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppCallPermissionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppCallPermissionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppCallPermissionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppCallingConfigResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		CallIconCountries *[]string `json:"callIconCountries,omitempty"`
+		CallingEnabled    *bool     `json:"callingEnabled,omitempty"`
+
+		// ForwardTo tel:+E164 / sip:... / wss://... destination
+		ForwardTo   *string `json:"forwardTo,omitempty"`
+		PhoneNumber *string `json:"phoneNumber,omitempty"`
+
+		// PhoneNumberDocId WhatsAppPhoneNumber Mongo ID (use on /v1/whatsapp/phone-numbers/{id}/calling)
+		PhoneNumberDocId *string `json:"phoneNumberDocId,omitempty"`
+		RecordingEnabled *bool   `json:"recordingEnabled,omitempty"`
+
+		// SipAuthPasswordConfigured True when a SIP digest password is stored. The plaintext is never returned.
+		SipAuthPasswordConfigured *bool   `json:"sipAuthPasswordConfigured,omitempty"`
+		SipAuthUsername           *string `json:"sipAuthUsername,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppCallingConfigResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppCallingConfigResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppCallingConfigResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWhatsAppCallsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Calls *[]struct {
+			UnderscoreId *string `json:"_id,omitempty"`
+			Billing      *struct {
+				// BillableCostUSD Amount Zernio bills you = Telnyx leg + recording (excludes Meta).
+				BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
+				Currency        *string  `json:"currency,omitempty"`
+
+				// MetaCostUSD Meta per-minute charge, billed by Meta directly to your WABA. Display only; not billed by Zernio.
+				MetaCostUSD      *float32 `json:"metaCostUSD,omitempty"`
+				RecordingCostUSD *float32 `json:"recordingCostUSD,omitempty"`
+				TelnyxCostUSD    *float32 `json:"telnyxCostUSD,omitempty"`
+
+				// TotalCostUSD Full cost incl. the Meta portion you pay directly. Display only.
+				TotalCostUSD *float32 `json:"totalCostUSD,omitempty"`
+			} `json:"billing,omitempty"`
+			Direction       *ListWhatsAppCalls200JSONResponseBodyCallsDirection `json:"direction,omitempty"`
+			DurationSeconds *int                                                `json:"durationSeconds,omitempty"`
+			EndReason       *ListWhatsAppCalls200JSONResponseBodyCallsEndReason `json:"endReason,omitempty"`
+			EndedAt         *time.Time                                          `json:"endedAt,omitempty"`
+			From            *string                                             `json:"from,omitempty"`
+			RecordingUrl    *string                                             `json:"recordingUrl,omitempty"`
+			StartedAt       *time.Time                                          `json:"startedAt,omitempty"`
+			Status          *ListWhatsAppCalls200JSONResponseBodyCallsStatus    `json:"status,omitempty"`
+			To              *string                                             `json:"to,omitempty"`
+		} `json:"calls,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppCallsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppCallsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppCallsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type InitiateWhatsAppCallResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// CallId Internal Call doc ID
+		CallId           *string                                           `json:"callId,omitempty"`
+		Direction        *InitiateWhatsAppCall200JSONResponseBodyDirection `json:"direction,omitempty"`
+		ForwardTo        *string                                           `json:"forwardTo,omitempty"`
+		RecordingEnabled *bool                                             `json:"recordingEnabled,omitempty"`
+		Status           *InitiateWhatsAppCall200JSONResponseBodyStatus    `json:"status,omitempty"`
+		Success          *bool                                             `json:"success,omitempty"`
+
+		// TelnyxCallControlId Telnyx call_control_id of the outbound leg
+		TelnyxCallControlId *string `json:"telnyxCallControlId,omitempty"`
+		To                  *string `json:"to,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r InitiateWhatsAppCallResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InitiateWhatsAppCallResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r InitiateWhatsAppCallResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppCallEstimateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Breakdown *struct {
+			// BillableCostUSD Estimated amount Zernio bills you = Telnyx leg + recording (excludes Meta).
+			BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
+
+			// MetaCostUSD Estimated Meta per-minute charge, billed by Meta directly to your WABA. Display only; not billed by Zernio.
+			MetaCostUSD      *float32 `json:"metaCostUSD,omitempty"`
+			MetaMinutes      *int     `json:"metaMinutes,omitempty"`
+			RecordingCostUSD *float32 `json:"recordingCostUSD,omitempty"`
+			TelnyxCostUSD    *float32 `json:"telnyxCostUSD,omitempty"`
+
+			// TotalCostUSD Estimated full cost incl. the Meta portion you pay directly. Display only.
+			TotalCostUSD *float32 `json:"totalCostUSD,omitempty"`
+		} `json:"breakdown,omitempty"`
+		DestinationCountry *string  `json:"destinationCountry,omitempty"`
+		PerMinuteUsd       *float32 `json:"perMinuteUsd,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppCallEstimateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppCallEstimateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppCallEstimateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppCallResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Call *map[string]interface{} `json:"call,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppCallResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppCallResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppCallResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListWhatsAppConversionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -58937,16 +64896,41 @@ type GetWhatsAppPhoneNumbersResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		Numbers *[]struct {
-			UnderscoreId           *string                                                  `json:"_id,omitempty"`
-			Country                *string                                                  `json:"country,omitempty"`
-			CreatedAt              *time.Time                                               `json:"createdAt,omitempty"`
-			MetaPreverifiedId      *string                                                  `json:"metaPreverifiedId,omitempty"`
-			MetaVerificationStatus *string                                                  `json:"metaVerificationStatus,omitempty"`
-			PhoneNumber            *string                                                  `json:"phoneNumber,omitempty"`
-			ProfileId              *map[string]interface{}                                  `json:"profileId,omitempty"`
-			ProvisionedAt          *time.Time                                               `json:"provisionedAt,omitempty"`
-			Status                 *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
+			UnderscoreId           *string    `json:"_id,omitempty"`
+			Country                *string    `json:"country,omitempty"`
+			CreatedAt              *time.Time `json:"createdAt,omitempty"`
+			EndUserFirstName       *string    `json:"endUserFirstName,omitempty"`
+			EndUserLastName        *string    `json:"endUserLastName,omitempty"`
+			MetaPreverifiedId      *string    `json:"metaPreverifiedId,omitempty"`
+			MetaVerificationStatus *string    `json:"metaVerificationStatus,omitempty"`
+
+			// MonthlyCents Per-country monthly price in cents ($2..$25).
+			MonthlyCents *int `json:"monthlyCents,omitempty"`
+
+			// OnfidoVerificationUrl For regulated (Tier 3/4) numbers with an Onfido ID-verification step — the link to forward to the end user. Set once the order is placed; null otherwise. Poll this field after submitting KYC.
+			OnfidoVerificationUrl *string                 `json:"onfidoVerificationUrl,omitempty"`
+			PhoneNumber           *string                 `json:"phoneNumber,omitempty"`
+			ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
+			ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
+
+			// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
+			RegulatoryDeclineReason *string                                                  `json:"regulatoryDeclineReason,omitempty"`
+			Status                  *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
 		} `json:"numbers,omitempty"`
+
+		// Sandbox The shared WhatsApp sandbox (one Zernio-owned number, all users test
+		// against it). Present when the sandbox is configured; null otherwise.
+		// The `accountId` lets you address the sandbox in compose endpoints.
+		// `template` is the only template a sandbox send is allowed to use.
+		Sandbox *struct {
+			AccountId   *string `json:"accountId,omitempty"`
+			IsSandbox   *bool   `json:"isSandbox,omitempty"`
+			PhoneNumber *string `json:"phoneNumber,omitempty"`
+			Template    *struct {
+				Language *string `json:"language,omitempty"`
+				Name     *string `json:"name,omitempty"`
+			} `json:"template,omitempty"`
+		} `json:"sandbox,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -58975,11 +64959,186 @@ func (r GetWhatsAppPhoneNumbersResponse) ContentType() string {
 	return ""
 }
 
+type SearchAvailableWhatsAppNumbersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Country    *string `json:"country,omitempty"`
+		NumberType *string `json:"numberType,omitempty"`
+		Numbers    *[]struct {
+			PhoneNumber *string `json:"phoneNumber,omitempty"`
+		} `json:"numbers,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchAvailableWhatsAppNumbersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchAvailableWhatsAppNumbersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SearchAvailableWhatsAppNumbersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWhatsAppNumberCountriesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Countries *[]struct {
+			// Code ISO 3166-1 alpha-2
+			Code                     *string                                                      `json:"code,omitempty"`
+			MonthlyCents             *int                                                         `json:"monthlyCents,omitempty"`
+			NeedsKyc                 *bool                                                        `json:"needsKyc,omitempty"`
+			OutboundCallingAvailable *bool                                                        `json:"outboundCallingAvailable,omitempty"`
+			Tier                     *ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier `json:"tier,omitempty"`
+		} `json:"countries,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppNumberCountriesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppNumberCountriesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppNumberCountriesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppNumberKycFormResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Country *string `json:"country,omitempty"`
+		Fields  *[]struct {
+			// Description Plain-English explanation of what to provide.
+			Description *string `json:"description,omitempty"`
+
+			// Example Concrete example value.
+			Example *string `json:"example,omitempty"`
+
+			// Kind "action" = an out-of-band verification (e.g. Onfido); not filled here, fulfilled after the order via a link.
+			Kind  *GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind `json:"kind,omitempty"`
+			Label *string                                                `json:"label,omitempty"`
+
+			// LocalTo ISO country the value must be local to
+			LocalTo       *string `json:"localTo,omitempty"`
+			RequirementId *string `json:"requirementId,omitempty"`
+		} `json:"fields,omitempty"`
+		NumberType *string `json:"numberType,omitempty"`
+
+		// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
+		Reusable *struct {
+			Available       *bool   `json:"available,omitempty"`
+			FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+		} `json:"reusable,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppNumberKycFormResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppNumberKycFormResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppNumberKycFormResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SubmitWhatsAppNumberKycResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		PhoneNumber *struct {
+			Country *string `json:"country,omitempty"`
+			Id      *string `json:"id,omitempty"`
+			Status  *string `json:"status,omitempty"`
+		} `json:"phoneNumber,omitempty"`
+		Status *SubmitWhatsAppNumberKyc200JSONResponseBodyStatus `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r SubmitWhatsAppNumberKycResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SubmitWhatsAppNumberKycResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SubmitWhatsAppNumberKycResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type PurchaseWhatsAppPhoneNumberResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *PurchaseWhatsAppPhoneNumber200JSONResponseBody
-	JSON401      *Unauthorized
+	JSON202      *struct {
+		Country *string                                               `json:"country,omitempty"`
+		KycUrl  *string                                               `json:"kycUrl,omitempty"`
+		Status  *PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
 }
 
 // Status returns HTTPResponse.Status
@@ -59000,6 +65159,102 @@ func (r PurchaseWhatsAppPhoneNumberResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r PurchaseWhatsAppPhoneNumberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DisableWhatsAppCallingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DisableWhatsAppCallingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisableWhatsAppCallingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DisableWhatsAppCallingResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateWhatsAppCallingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWhatsAppCallingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWhatsAppCallingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateWhatsAppCallingResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type EnableWhatsAppCallingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		CallingEnabled *bool   `json:"callingEnabled,omitempty"`
+		ForwardTo      *string `json:"forwardTo,omitempty"`
+		SipHostname    *string `json:"sipHostname,omitempty"`
+		Success        *bool   `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r EnableWhatsAppCallingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnableWhatsAppCallingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r EnableWhatsAppCallingResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -59053,13 +65308,21 @@ type GetWhatsAppPhoneNumberResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		PhoneNumber *struct {
-			Country                *string                                                     `json:"country,omitempty"`
-			Id                     *string                                                     `json:"id,omitempty"`
-			MetaPreverifiedId      *string                                                     `json:"metaPreverifiedId,omitempty"`
-			MetaVerificationStatus *string                                                     `json:"metaVerificationStatus,omitempty"`
-			PhoneNumber            *string                                                     `json:"phoneNumber,omitempty"`
-			ProvisionedAt          *time.Time                                                  `json:"provisionedAt,omitempty"`
-			Status                 *GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus `json:"status,omitempty"`
+			Country                *string `json:"country,omitempty"`
+			EndUserFirstName       *string `json:"endUserFirstName,omitempty"`
+			EndUserLastName        *string `json:"endUserLastName,omitempty"`
+			Id                     *string `json:"id,omitempty"`
+			MetaPreverifiedId      *string `json:"metaPreverifiedId,omitempty"`
+			MetaVerificationStatus *string `json:"metaVerificationStatus,omitempty"`
+
+			// OnfidoVerificationUrl For a regulated number with an Onfido ID step — the link to forward to the end user. Appears once the order is placed; null otherwise.
+			OnfidoVerificationUrl *string    `json:"onfidoVerificationUrl,omitempty"`
+			PhoneNumber           *string    `json:"phoneNumber,omitempty"`
+			ProvisionedAt         *time.Time `json:"provisionedAt,omitempty"`
+
+			// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
+			RegulatoryDeclineReason *string                                                     `json:"regulatoryDeclineReason,omitempty"`
+			Status                  *GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus `json:"status,omitempty"`
 		} `json:"phoneNumber,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -59084,6 +65347,112 @@ func (r GetWhatsAppPhoneNumberResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetWhatsAppPhoneNumberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWhatsAppSandboxSessionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// SandboxNumber The shared sandbox phone number in E.164 form.
+		SandboxNumber *string                   `json:"sandboxNumber,omitempty"`
+		Sessions      *[]WhatsAppSandboxSession `json:"sessions,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWhatsAppSandboxSessionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWhatsAppSandboxSessionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWhatsAppSandboxSessionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateWhatsAppSandboxSessionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		SandboxNumber *string `json:"sandboxNumber,omitempty"`
+
+		// Session A per-user activation session against the shared WhatsApp sandbox number.
+		// Transitions `pending → active` when the inbound webhook receives a reply
+		// from the matching phone (the reply itself proves ownership).
+		Session *WhatsAppSandboxSession `json:"session,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWhatsAppSandboxSessionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWhatsAppSandboxSessionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateWhatsAppSandboxSessionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteWhatsAppSandboxSessionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWhatsAppSandboxSessionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWhatsAppSandboxSessionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteWhatsAppSandboxSessionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -59745,6 +66114,638 @@ func (r AddWhatsAppGroupParticipantsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r AddWhatsAppGroupParticipantsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWorkflowsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success   *bool `json:"success,omitempty"`
+		Workflows *[]struct {
+			AccountId      *string                                          `json:"accountId,omitempty"`
+			AccountName    *string                                          `json:"accountName,omitempty"`
+			CreatedAt      *time.Time                                       `json:"createdAt,omitempty"`
+			Description    *string                                          `json:"description,omitempty"`
+			Id             *string                                          `json:"id,omitempty"`
+			Name           *string                                          `json:"name,omitempty"`
+			NodeCount      *int                                             `json:"nodeCount,omitempty"`
+			Platform       *string                                          `json:"platform,omitempty"`
+			Status         *ListWorkflows200JSONResponseBodyWorkflowsStatus `json:"status,omitempty"`
+			TotalCompleted *int                                             `json:"totalCompleted,omitempty"`
+			TotalExited    *int                                             `json:"totalExited,omitempty"`
+			TotalStarted   *int                                             `json:"totalStarted,omitempty"`
+		} `json:"workflows,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkflowsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkflowsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWorkflowsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			CreatedAt   *time.Time `json:"createdAt,omitempty"`
+			Description *string    `json:"description,omitempty"`
+			EntryNodeId *string    `json:"entryNodeId,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			NodeCount   *int       `json:"nodeCount,omitempty"`
+			Platform    *string    `json:"platform,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			AccountId      *string                                       `json:"accountId,omitempty"`
+			CreatedAt      *time.Time                                    `json:"createdAt,omitempty"`
+			Description    *string                                       `json:"description,omitempty"`
+			Edges          *[]WorkflowEdge                               `json:"edges,omitempty"`
+			EntryNodeId    *string                                       `json:"entryNodeId,omitempty"`
+			Id             *string                                       `json:"id,omitempty"`
+			Name           *string                                       `json:"name,omitempty"`
+			Nodes          *[]WorkflowNode                               `json:"nodes,omitempty"`
+			Platform       *string                                       `json:"platform,omitempty"`
+			ProfileId      *string                                       `json:"profileId,omitempty"`
+			Status         *GetWorkflow200JSONResponseBodyWorkflowStatus `json:"status,omitempty"`
+			TotalCompleted *int                                          `json:"totalCompleted,omitempty"`
+			TotalExited    *int                                          `json:"totalExited,omitempty"`
+			TotalStarted   *int                                          `json:"totalStarted,omitempty"`
+			UpdatedAt      *time.Time                                    `json:"updatedAt,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			Description *string    `json:"description,omitempty"`
+			EntryNodeId *string    `json:"entryNodeId,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			NodeCount   *int       `json:"nodeCount,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+			UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ActivateWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			EntryNodeId *string `json:"entryNodeId,omitempty"`
+			Id          *string `json:"id,omitempty"`
+			Status      *string `json:"status,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ActivateWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ActivateWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ActivateWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DuplicateWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			AccountId   *string                                             `json:"accountId,omitempty"`
+			CreatedAt   *time.Time                                          `json:"createdAt,omitempty"`
+			Description *string                                             `json:"description,omitempty"`
+			EntryNodeId *string                                             `json:"entryNodeId,omitempty"`
+			Id          *string                                             `json:"id,omitempty"`
+			Name        *string                                             `json:"name,omitempty"`
+			NodeCount   *int                                                `json:"nodeCount,omitempty"`
+			Platform    *string                                             `json:"platform,omitempty"`
+			ProfileId   *string                                             `json:"profileId,omitempty"`
+			Status      *DuplicateWorkflow201JSONResponseBodyWorkflowStatus `json:"status,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r DuplicateWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DuplicateWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DuplicateWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWorkflowExecutionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Executions *[]struct {
+			CompletedAt        *time.Time                                                 `json:"completedAt,omitempty"`
+			ConversationId     *string                                                    `json:"conversationId,omitempty"`
+			CreatedAt          *time.Time                                                 `json:"createdAt,omitempty"`
+			CurrentNodeId      *string                                                    `json:"currentNodeId,omitempty"`
+			Id                 *string                                                    `json:"id,omitempty"`
+			LastError          *string                                                    `json:"lastError,omitempty"`
+			PlatformIdentifier *string                                                    `json:"platformIdentifier,omitempty"`
+			ResumeAt           *time.Time                                                 `json:"resumeAt,omitempty"`
+			Status             *ListWorkflowExecutions200JSONResponseBodyExecutionsStatus `json:"status,omitempty"`
+			StepCount          *int                                                       `json:"stepCount,omitempty"`
+			UpdatedAt          *time.Time                                                 `json:"updatedAt,omitempty"`
+			Variables          *map[string]interface{}                                    `json:"variables,omitempty"`
+			WaitingFor         *struct {
+				Kind   *ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind `json:"kind,omitempty"`
+				NodeId *string                                                            `json:"nodeId,omitempty"`
+			} `json:"waitingFor,omitempty"`
+		} `json:"executions,omitempty"`
+		Pagination *struct {
+			HasMore *bool `json:"hasMore,omitempty"`
+			Limit   *int  `json:"limit,omitempty"`
+			Skip    *int  `json:"skip,omitempty"`
+			Total   *int  `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkflowExecutionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkflowExecutionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWorkflowExecutionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type TriggerWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Execution *struct {
+			ConversationId *string                 `json:"conversationId,omitempty"`
+			CurrentNodeId  *string                 `json:"currentNodeId,omitempty"`
+			Id             *string                 `json:"id,omitempty"`
+			Status         *string                 `json:"status,omitempty"`
+			Variables      *map[string]interface{} `json:"variables,omitempty"`
+			WaitingFor     *map[string]interface{} `json:"waitingFor,omitempty"`
+		} `json:"execution,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r TriggerWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r TriggerWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r TriggerWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWorkflowExecutionEventsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Events Events in chronological order (oldest first).
+		Events    *[]WorkflowExecutionEvent `json:"events,omitempty"`
+		Execution *struct {
+			CompletedAt *time.Time                                                     `json:"completedAt,omitempty"`
+			Id          *string                                                        `json:"id,omitempty"`
+			StartedAt   *time.Time                                                     `json:"startedAt,omitempty"`
+			Status      *ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus `json:"status,omitempty"`
+		} `json:"execution,omitempty"`
+		Success *bool `json:"success,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkflowExecutionEventsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkflowExecutionEventsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWorkflowExecutionEventsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PauseWorkflowResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success  *bool `json:"success,omitempty"`
+		Workflow *struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r PauseWorkflowResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PauseWorkflowResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PauseWorkflowResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListWorkflowVersionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+
+		// Versions Versions in reverse chronological order (newest first).
+		Versions *[]struct {
+			CreatedAt *time.Time `json:"createdAt,omitempty"`
+
+			// CreatedBy User id that authored this version
+			CreatedBy *string `json:"createdBy,omitempty"`
+
+			// CreatedByEmail Denormalized email so the history UI can render without a join
+			CreatedByEmail *string `json:"createdByEmail,omitempty"`
+			Description    *string `json:"description,omitempty"`
+			Name           *string `json:"name,omitempty"`
+
+			// RestoredFromVersion When non-null
+			RestoredFromVersion *int `json:"restoredFromVersion,omitempty"`
+
+			// Version Monotonically increasing version number
+			Version *int `json:"version,omitempty"`
+		} `json:"versions,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListWorkflowVersionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListWorkflowVersionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListWorkflowVersionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWorkflowVersionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Success *bool `json:"success,omitempty"`
+		Version *struct {
+			AccountId           *string         `json:"accountId,omitempty"`
+			CreatedAt           *time.Time      `json:"createdAt,omitempty"`
+			CreatedBy           *string         `json:"createdBy,omitempty"`
+			CreatedByEmail      *string         `json:"createdByEmail,omitempty"`
+			Description         *string         `json:"description,omitempty"`
+			Edges               *[]WorkflowEdge `json:"edges,omitempty"`
+			EntryNodeId         *string         `json:"entryNodeId,omitempty"`
+			Name                *string         `json:"name,omitempty"`
+			Nodes               *[]WorkflowNode `json:"nodes,omitempty"`
+			Platform            *string         `json:"platform,omitempty"`
+			ProfileId           *string         `json:"profileId,omitempty"`
+			RestoredFromVersion *int            `json:"restoredFromVersion,omitempty"`
+			Version             *int            `json:"version,omitempty"`
+		} `json:"version,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWorkflowVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWorkflowVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWorkflowVersionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RestoreWorkflowVersionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		RestoredFromVersion *int  `json:"restoredFromVersion,omitempty"`
+		Success             *bool `json:"success,omitempty"`
+		Workflow            *struct {
+			Description *string    `json:"description,omitempty"`
+			EntryNodeId *string    `json:"entryNodeId,omitempty"`
+			Id          *string    `json:"id,omitempty"`
+			Name        *string    `json:"name,omitempty"`
+			NodeCount   *int       `json:"nodeCount,omitempty"`
+			Status      *string    `json:"status,omitempty"`
+			UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+		} `json:"workflow,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r RestoreWorkflowVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RestoreWorkflowVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RestoreWorkflowVersionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -62063,6 +69064,147 @@ func (c *ClientWithResponses) UpdateCustomFieldWithResponse(ctx context.Context,
 	return ParseUpdateCustomFieldResponse(rsp)
 }
 
+// ListDiscordPinnedMessagesWithResponse request returning *ListDiscordPinnedMessagesResponse
+func (c *ClientWithResponses) ListDiscordPinnedMessagesWithResponse(ctx context.Context, channelId string, params *ListDiscordPinnedMessagesParams, reqEditors ...RequestEditorFn) (*ListDiscordPinnedMessagesResponse, error) {
+	rsp, err := c.ListDiscordPinnedMessages(ctx, channelId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDiscordPinnedMessagesResponse(rsp)
+}
+
+// UnpinDiscordMessageWithResponse request returning *UnpinDiscordMessageResponse
+func (c *ClientWithResponses) UnpinDiscordMessageWithResponse(ctx context.Context, channelId string, messageId string, params *UnpinDiscordMessageParams, reqEditors ...RequestEditorFn) (*UnpinDiscordMessageResponse, error) {
+	rsp, err := c.UnpinDiscordMessage(ctx, channelId, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnpinDiscordMessageResponse(rsp)
+}
+
+// PinDiscordMessageWithResponse request returning *PinDiscordMessageResponse
+func (c *ClientWithResponses) PinDiscordMessageWithResponse(ctx context.Context, channelId string, messageId string, params *PinDiscordMessageParams, reqEditors ...RequestEditorFn) (*PinDiscordMessageResponse, error) {
+	rsp, err := c.PinDiscordMessage(ctx, channelId, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePinDiscordMessageResponse(rsp)
+}
+
+// SendDiscordDirectMessageWithBodyWithResponse request with arbitrary body returning *SendDiscordDirectMessageResponse
+func (c *ClientWithResponses) SendDiscordDirectMessageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendDiscordDirectMessageResponse, error) {
+	rsp, err := c.SendDiscordDirectMessageWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendDiscordDirectMessageResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendDiscordDirectMessageWithResponse(ctx context.Context, body SendDiscordDirectMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*SendDiscordDirectMessageResponse, error) {
+	rsp, err := c.SendDiscordDirectMessage(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendDiscordDirectMessageResponse(rsp)
+}
+
+// ListDiscordScheduledEventsWithResponse request returning *ListDiscordScheduledEventsResponse
+func (c *ClientWithResponses) ListDiscordScheduledEventsWithResponse(ctx context.Context, guildId string, params *ListDiscordScheduledEventsParams, reqEditors ...RequestEditorFn) (*ListDiscordScheduledEventsResponse, error) {
+	rsp, err := c.ListDiscordScheduledEvents(ctx, guildId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDiscordScheduledEventsResponse(rsp)
+}
+
+// CreateDiscordScheduledEventWithBodyWithResponse request with arbitrary body returning *CreateDiscordScheduledEventResponse
+func (c *ClientWithResponses) CreateDiscordScheduledEventWithBodyWithResponse(ctx context.Context, guildId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDiscordScheduledEventResponse, error) {
+	rsp, err := c.CreateDiscordScheduledEventWithBody(ctx, guildId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateDiscordScheduledEventResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateDiscordScheduledEventWithResponse(ctx context.Context, guildId string, body CreateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDiscordScheduledEventResponse, error) {
+	rsp, err := c.CreateDiscordScheduledEvent(ctx, guildId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateDiscordScheduledEventResponse(rsp)
+}
+
+// DeleteDiscordScheduledEventWithResponse request returning *DeleteDiscordScheduledEventResponse
+func (c *ClientWithResponses) DeleteDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, params *DeleteDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*DeleteDiscordScheduledEventResponse, error) {
+	rsp, err := c.DeleteDiscordScheduledEvent(ctx, guildId, eventId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteDiscordScheduledEventResponse(rsp)
+}
+
+// GetDiscordScheduledEventWithResponse request returning *GetDiscordScheduledEventResponse
+func (c *ClientWithResponses) GetDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, params *GetDiscordScheduledEventParams, reqEditors ...RequestEditorFn) (*GetDiscordScheduledEventResponse, error) {
+	rsp, err := c.GetDiscordScheduledEvent(ctx, guildId, eventId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDiscordScheduledEventResponse(rsp)
+}
+
+// UpdateDiscordScheduledEventWithBodyWithResponse request with arbitrary body returning *UpdateDiscordScheduledEventResponse
+func (c *ClientWithResponses) UpdateDiscordScheduledEventWithBodyWithResponse(ctx context.Context, guildId string, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDiscordScheduledEventResponse, error) {
+	rsp, err := c.UpdateDiscordScheduledEventWithBody(ctx, guildId, eventId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDiscordScheduledEventResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateDiscordScheduledEventWithResponse(ctx context.Context, guildId string, eventId string, body UpdateDiscordScheduledEventJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDiscordScheduledEventResponse, error) {
+	rsp, err := c.UpdateDiscordScheduledEvent(ctx, guildId, eventId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateDiscordScheduledEventResponse(rsp)
+}
+
+// ListDiscordGuildMembersWithResponse request returning *ListDiscordGuildMembersResponse
+func (c *ClientWithResponses) ListDiscordGuildMembersWithResponse(ctx context.Context, guildId string, params *ListDiscordGuildMembersParams, reqEditors ...RequestEditorFn) (*ListDiscordGuildMembersResponse, error) {
+	rsp, err := c.ListDiscordGuildMembers(ctx, guildId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDiscordGuildMembersResponse(rsp)
+}
+
+// RemoveDiscordMemberRoleWithResponse request returning *RemoveDiscordMemberRoleResponse
+func (c *ClientWithResponses) RemoveDiscordMemberRoleWithResponse(ctx context.Context, guildId string, userId string, roleId string, params *RemoveDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*RemoveDiscordMemberRoleResponse, error) {
+	rsp, err := c.RemoveDiscordMemberRole(ctx, guildId, userId, roleId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveDiscordMemberRoleResponse(rsp)
+}
+
+// AddDiscordMemberRoleWithResponse request returning *AddDiscordMemberRoleResponse
+func (c *ClientWithResponses) AddDiscordMemberRoleWithResponse(ctx context.Context, guildId string, userId string, roleId string, params *AddDiscordMemberRoleParams, reqEditors ...RequestEditorFn) (*AddDiscordMemberRoleResponse, error) {
+	rsp, err := c.AddDiscordMemberRole(ctx, guildId, userId, roleId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddDiscordMemberRoleResponse(rsp)
+}
+
+// ListDiscordGuildRolesWithResponse request returning *ListDiscordGuildRolesResponse
+func (c *ClientWithResponses) ListDiscordGuildRolesWithResponse(ctx context.Context, guildId string, params *ListDiscordGuildRolesParams, reqEditors ...RequestEditorFn) (*ListDiscordGuildRolesResponse, error) {
+	rsp, err := c.ListDiscordGuildRoles(ctx, guildId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListDiscordGuildRolesResponse(rsp)
+}
+
 // ListInboxCommentsWithResponse request returning *ListInboxCommentsResponse
 func (c *ClientWithResponses) ListInboxCommentsWithResponse(ctx context.Context, params *ListInboxCommentsParams, reqEditors ...RequestEditorFn) (*ListInboxCommentsResponse, error) {
 	rsp, err := c.ListInboxComments(ctx, params, reqEditors...)
@@ -63123,6 +70265,68 @@ func (c *ClientWithResponses) UploadWhatsAppProfilePhotoWithBodyWithResponse(ctx
 	return ParseUploadWhatsAppProfilePhotoResponse(rsp)
 }
 
+// GetWhatsAppCallPermissionsWithResponse request returning *GetWhatsAppCallPermissionsResponse
+func (c *ClientWithResponses) GetWhatsAppCallPermissionsWithResponse(ctx context.Context, params *GetWhatsAppCallPermissionsParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallPermissionsResponse, error) {
+	rsp, err := c.GetWhatsAppCallPermissions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppCallPermissionsResponse(rsp)
+}
+
+// GetWhatsAppCallingConfigWithResponse request returning *GetWhatsAppCallingConfigResponse
+func (c *ClientWithResponses) GetWhatsAppCallingConfigWithResponse(ctx context.Context, params *GetWhatsAppCallingConfigParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallingConfigResponse, error) {
+	rsp, err := c.GetWhatsAppCallingConfig(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppCallingConfigResponse(rsp)
+}
+
+// ListWhatsAppCallsWithResponse request returning *ListWhatsAppCallsResponse
+func (c *ClientWithResponses) ListWhatsAppCallsWithResponse(ctx context.Context, params *ListWhatsAppCallsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppCallsResponse, error) {
+	rsp, err := c.ListWhatsAppCalls(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppCallsResponse(rsp)
+}
+
+// InitiateWhatsAppCallWithBodyWithResponse request with arbitrary body returning *InitiateWhatsAppCallResponse
+func (c *ClientWithResponses) InitiateWhatsAppCallWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InitiateWhatsAppCallResponse, error) {
+	rsp, err := c.InitiateWhatsAppCallWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInitiateWhatsAppCallResponse(rsp)
+}
+
+func (c *ClientWithResponses) InitiateWhatsAppCallWithResponse(ctx context.Context, body InitiateWhatsAppCallJSONRequestBody, reqEditors ...RequestEditorFn) (*InitiateWhatsAppCallResponse, error) {
+	rsp, err := c.InitiateWhatsAppCall(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInitiateWhatsAppCallResponse(rsp)
+}
+
+// GetWhatsAppCallEstimateWithResponse request returning *GetWhatsAppCallEstimateResponse
+func (c *ClientWithResponses) GetWhatsAppCallEstimateWithResponse(ctx context.Context, params *GetWhatsAppCallEstimateParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallEstimateResponse, error) {
+	rsp, err := c.GetWhatsAppCallEstimate(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppCallEstimateResponse(rsp)
+}
+
+// GetWhatsAppCallWithResponse request returning *GetWhatsAppCallResponse
+func (c *ClientWithResponses) GetWhatsAppCallWithResponse(ctx context.Context, callId string, params *GetWhatsAppCallParams, reqEditors ...RequestEditorFn) (*GetWhatsAppCallResponse, error) {
+	rsp, err := c.GetWhatsAppCall(ctx, callId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppCallResponse(rsp)
+}
+
 // ListWhatsAppConversionsWithResponse request returning *ListWhatsAppConversionsResponse
 func (c *ClientWithResponses) ListWhatsAppConversionsWithResponse(ctx context.Context, params *ListWhatsAppConversionsParams, reqEditors ...RequestEditorFn) (*ListWhatsAppConversionsResponse, error) {
 	rsp, err := c.ListWhatsAppConversions(ctx, params, reqEditors...)
@@ -63358,6 +70562,50 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumbersWithResponse(ctx context.Co
 	return ParseGetWhatsAppPhoneNumbersResponse(rsp)
 }
 
+// SearchAvailableWhatsAppNumbersWithResponse request returning *SearchAvailableWhatsAppNumbersResponse
+func (c *ClientWithResponses) SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error) {
+	rsp, err := c.SearchAvailableWhatsAppNumbers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchAvailableWhatsAppNumbersResponse(rsp)
+}
+
+// ListWhatsAppNumberCountriesWithResponse request returning *ListWhatsAppNumberCountriesResponse
+func (c *ClientWithResponses) ListWhatsAppNumberCountriesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListWhatsAppNumberCountriesResponse, error) {
+	rsp, err := c.ListWhatsAppNumberCountries(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppNumberCountriesResponse(rsp)
+}
+
+// GetWhatsAppNumberKycFormWithResponse request returning *GetWhatsAppNumberKycFormResponse
+func (c *ClientWithResponses) GetWhatsAppNumberKycFormWithResponse(ctx context.Context, params *GetWhatsAppNumberKycFormParams, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberKycFormResponse, error) {
+	rsp, err := c.GetWhatsAppNumberKycForm(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppNumberKycFormResponse(rsp)
+}
+
+// SubmitWhatsAppNumberKycWithBodyWithResponse request with arbitrary body returning *SubmitWhatsAppNumberKycResponse
+func (c *ClientWithResponses) SubmitWhatsAppNumberKycWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error) {
+	rsp, err := c.SubmitWhatsAppNumberKycWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSubmitWhatsAppNumberKycResponse(rsp)
+}
+
+func (c *ClientWithResponses) SubmitWhatsAppNumberKycWithResponse(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error) {
+	rsp, err := c.SubmitWhatsAppNumberKyc(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSubmitWhatsAppNumberKycResponse(rsp)
+}
+
 // PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *PurchaseWhatsAppPhoneNumberResponse
 func (c *ClientWithResponses) PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error) {
 	rsp, err := c.PurchaseWhatsAppPhoneNumberWithBody(ctx, contentType, body, reqEditors...)
@@ -63373,6 +70621,49 @@ func (c *ClientWithResponses) PurchaseWhatsAppPhoneNumberWithResponse(ctx contex
 		return nil, err
 	}
 	return ParsePurchaseWhatsAppPhoneNumberResponse(rsp)
+}
+
+// DisableWhatsAppCallingWithResponse request returning *DisableWhatsAppCallingResponse
+func (c *ClientWithResponses) DisableWhatsAppCallingWithResponse(ctx context.Context, id string, params *DisableWhatsAppCallingParams, reqEditors ...RequestEditorFn) (*DisableWhatsAppCallingResponse, error) {
+	rsp, err := c.DisableWhatsAppCalling(ctx, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisableWhatsAppCallingResponse(rsp)
+}
+
+// UpdateWhatsAppCallingWithBodyWithResponse request with arbitrary body returning *UpdateWhatsAppCallingResponse
+func (c *ClientWithResponses) UpdateWhatsAppCallingWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWhatsAppCallingResponse, error) {
+	rsp, err := c.UpdateWhatsAppCallingWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppCallingResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWhatsAppCallingWithResponse(ctx context.Context, id string, body UpdateWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWhatsAppCallingResponse, error) {
+	rsp, err := c.UpdateWhatsAppCalling(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWhatsAppCallingResponse(rsp)
+}
+
+// EnableWhatsAppCallingWithBodyWithResponse request with arbitrary body returning *EnableWhatsAppCallingResponse
+func (c *ClientWithResponses) EnableWhatsAppCallingWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error) {
+	rsp, err := c.EnableWhatsAppCallingWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableWhatsAppCallingResponse(rsp)
+}
+
+func (c *ClientWithResponses) EnableWhatsAppCallingWithResponse(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error) {
+	rsp, err := c.EnableWhatsAppCalling(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableWhatsAppCallingResponse(rsp)
 }
 
 // ReleaseWhatsAppPhoneNumberWithResponse request returning *ReleaseWhatsAppPhoneNumberResponse
@@ -63391,6 +70682,41 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumberWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseGetWhatsAppPhoneNumberResponse(rsp)
+}
+
+// ListWhatsAppSandboxSessionsWithResponse request returning *ListWhatsAppSandboxSessionsResponse
+func (c *ClientWithResponses) ListWhatsAppSandboxSessionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListWhatsAppSandboxSessionsResponse, error) {
+	rsp, err := c.ListWhatsAppSandboxSessions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWhatsAppSandboxSessionsResponse(rsp)
+}
+
+// CreateWhatsAppSandboxSessionWithBodyWithResponse request with arbitrary body returning *CreateWhatsAppSandboxSessionResponse
+func (c *ClientWithResponses) CreateWhatsAppSandboxSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWhatsAppSandboxSessionResponse, error) {
+	rsp, err := c.CreateWhatsAppSandboxSessionWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppSandboxSessionResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWhatsAppSandboxSessionWithResponse(ctx context.Context, body CreateWhatsAppSandboxSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWhatsAppSandboxSessionResponse, error) {
+	rsp, err := c.CreateWhatsAppSandboxSession(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWhatsAppSandboxSessionResponse(rsp)
+}
+
+// DeleteWhatsAppSandboxSessionWithResponse request returning *DeleteWhatsAppSandboxSessionResponse
+func (c *ClientWithResponses) DeleteWhatsAppSandboxSessionWithResponse(ctx context.Context, sessionId string, reqEditors ...RequestEditorFn) (*DeleteWhatsAppSandboxSessionResponse, error) {
+	rsp, err := c.DeleteWhatsAppSandboxSession(ctx, sessionId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWhatsAppSandboxSessionResponse(rsp)
 }
 
 // GetWhatsAppLibraryTemplateWithResponse request returning *GetWhatsAppLibraryTemplateResponse
@@ -63608,6 +70934,156 @@ func (c *ClientWithResponses) AddWhatsAppGroupParticipantsWithResponse(ctx conte
 		return nil, err
 	}
 	return ParseAddWhatsAppGroupParticipantsResponse(rsp)
+}
+
+// ListWorkflowsWithResponse request returning *ListWorkflowsResponse
+func (c *ClientWithResponses) ListWorkflowsWithResponse(ctx context.Context, params *ListWorkflowsParams, reqEditors ...RequestEditorFn) (*ListWorkflowsResponse, error) {
+	rsp, err := c.ListWorkflows(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkflowsResponse(rsp)
+}
+
+// CreateWorkflowWithBodyWithResponse request with arbitrary body returning *CreateWorkflowResponse
+func (c *ClientWithResponses) CreateWorkflowWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateWorkflowResponse, error) {
+	rsp, err := c.CreateWorkflowWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkflowResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateWorkflowWithResponse(ctx context.Context, body CreateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateWorkflowResponse, error) {
+	rsp, err := c.CreateWorkflow(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateWorkflowResponse(rsp)
+}
+
+// DeleteWorkflowWithResponse request returning *DeleteWorkflowResponse
+func (c *ClientWithResponses) DeleteWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*DeleteWorkflowResponse, error) {
+	rsp, err := c.DeleteWorkflow(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteWorkflowResponse(rsp)
+}
+
+// GetWorkflowWithResponse request returning *GetWorkflowResponse
+func (c *ClientWithResponses) GetWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*GetWorkflowResponse, error) {
+	rsp, err := c.GetWorkflow(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWorkflowResponse(rsp)
+}
+
+// UpdateWorkflowWithBodyWithResponse request with arbitrary body returning *UpdateWorkflowResponse
+func (c *ClientWithResponses) UpdateWorkflowWithBodyWithResponse(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWorkflowResponse, error) {
+	rsp, err := c.UpdateWorkflowWithBody(ctx, workflowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkflowResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateWorkflowWithResponse(ctx context.Context, workflowId string, body UpdateWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWorkflowResponse, error) {
+	rsp, err := c.UpdateWorkflow(ctx, workflowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateWorkflowResponse(rsp)
+}
+
+// ActivateWorkflowWithResponse request returning *ActivateWorkflowResponse
+func (c *ClientWithResponses) ActivateWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*ActivateWorkflowResponse, error) {
+	rsp, err := c.ActivateWorkflow(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseActivateWorkflowResponse(rsp)
+}
+
+// DuplicateWorkflowWithResponse request returning *DuplicateWorkflowResponse
+func (c *ClientWithResponses) DuplicateWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*DuplicateWorkflowResponse, error) {
+	rsp, err := c.DuplicateWorkflow(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDuplicateWorkflowResponse(rsp)
+}
+
+// ListWorkflowExecutionsWithResponse request returning *ListWorkflowExecutionsResponse
+func (c *ClientWithResponses) ListWorkflowExecutionsWithResponse(ctx context.Context, workflowId string, params *ListWorkflowExecutionsParams, reqEditors ...RequestEditorFn) (*ListWorkflowExecutionsResponse, error) {
+	rsp, err := c.ListWorkflowExecutions(ctx, workflowId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkflowExecutionsResponse(rsp)
+}
+
+// TriggerWorkflowWithBodyWithResponse request with arbitrary body returning *TriggerWorkflowResponse
+func (c *ClientWithResponses) TriggerWorkflowWithBodyWithResponse(ctx context.Context, workflowId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerWorkflowResponse, error) {
+	rsp, err := c.TriggerWorkflowWithBody(ctx, workflowId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTriggerWorkflowResponse(rsp)
+}
+
+func (c *ClientWithResponses) TriggerWorkflowWithResponse(ctx context.Context, workflowId string, body TriggerWorkflowJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerWorkflowResponse, error) {
+	rsp, err := c.TriggerWorkflow(ctx, workflowId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTriggerWorkflowResponse(rsp)
+}
+
+// ListWorkflowExecutionEventsWithResponse request returning *ListWorkflowExecutionEventsResponse
+func (c *ClientWithResponses) ListWorkflowExecutionEventsWithResponse(ctx context.Context, workflowId string, executionId string, reqEditors ...RequestEditorFn) (*ListWorkflowExecutionEventsResponse, error) {
+	rsp, err := c.ListWorkflowExecutionEvents(ctx, workflowId, executionId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkflowExecutionEventsResponse(rsp)
+}
+
+// PauseWorkflowWithResponse request returning *PauseWorkflowResponse
+func (c *ClientWithResponses) PauseWorkflowWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*PauseWorkflowResponse, error) {
+	rsp, err := c.PauseWorkflow(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePauseWorkflowResponse(rsp)
+}
+
+// ListWorkflowVersionsWithResponse request returning *ListWorkflowVersionsResponse
+func (c *ClientWithResponses) ListWorkflowVersionsWithResponse(ctx context.Context, workflowId string, reqEditors ...RequestEditorFn) (*ListWorkflowVersionsResponse, error) {
+	rsp, err := c.ListWorkflowVersions(ctx, workflowId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListWorkflowVersionsResponse(rsp)
+}
+
+// GetWorkflowVersionWithResponse request returning *GetWorkflowVersionResponse
+func (c *ClientWithResponses) GetWorkflowVersionWithResponse(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*GetWorkflowVersionResponse, error) {
+	rsp, err := c.GetWorkflowVersion(ctx, workflowId, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWorkflowVersionResponse(rsp)
+}
+
+// RestoreWorkflowVersionWithResponse request returning *RestoreWorkflowVersionResponse
+func (c *ClientWithResponses) RestoreWorkflowVersionWithResponse(ctx context.Context, workflowId string, version int, reqEditors ...RequestEditorFn) (*RestoreWorkflowVersionResponse, error) {
+	rsp, err := c.RestoreWorkflowVersion(ctx, workflowId, version, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRestoreWorkflowVersionResponse(rsp)
 }
 
 // ParseListAccountGroupsResponse parses an HTTP response from a ListAccountGroupsWithResponse call
@@ -69234,11 +76710,12 @@ func ParseGetAdAnalyticsResponse(rsp *http.Response) (*GetAdAnalyticsResponse, e
 		var dest struct {
 			Ad *struct {
 				// Currency ISO 4217 code of the ad account that owns this ad (e.g. USD, THB, INR). All money values in `summary` and `daily` are in this currency. Null only on legacy ads synced before currency was persisted.
-				Currency *string `json:"currency,omitempty"`
-				Id       *string `json:"id,omitempty"`
-				Name     *string `json:"name,omitempty"`
-				Platform *string `json:"platform,omitempty"`
-				Status   *string `json:"status,omitempty"`
+				Currency *string                                     `json:"currency,omitempty"`
+				Id       *string                                     `json:"id,omitempty"`
+				Name     *string                                     `json:"name,omitempty"`
+				Platform *string                                     `json:"platform,omitempty"`
+				Status   *string                                     `json:"status,omitempty"`
+				Trigger  *GetAdAnalytics200JSONResponseBodyAdTrigger `json:"trigger,omitempty"`
 			} `json:"ad,omitempty"`
 			Analytics *struct {
 				Breakdowns *map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
@@ -71131,24 +78608,42 @@ func ParseListCommentAutomationsResponse(rsp *http.Response) (*ListCommentAutoma
 				AccountId *string `json:"accountId,omitempty"`
 
 				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
-				Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
-				CommentReply   *string                                                        `json:"commentReply,omitempty"`
-				CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
-				DmMessage      *string                                                        `json:"dmMessage,omitempty"`
-				Id             *string                                                        `json:"id,omitempty"`
-				IsActive       *bool                                                          `json:"isActive,omitempty"`
-				Keywords       *[]string                                                      `json:"keywords,omitempty"`
+				Buttons *[]DmButton `json:"buttons,omitempty"`
+
+				// ClickTag Tag applied to a contact when they click a tracked link.
+				ClickTag     *string    `json:"clickTag,omitempty"`
+				CommentReply *string    `json:"commentReply,omitempty"`
+				CreatedAt    *time.Time `json:"createdAt,omitempty"`
+				DmMessage    *string    `json:"dmMessage,omitempty"`
+				Id           *string    `json:"id,omitempty"`
+				IsActive     *bool      `json:"isActive,omitempty"`
+				Keywords     *[]string  `json:"keywords,omitempty"`
+
+				// LinkTracking Whether link buttons in the DM are wrapped in a tracked redirect to count clicks.
+				LinkTracking   *bool                                                          `json:"linkTracking,omitempty"`
 				MatchMode      *ListCommentAutomations200JSONResponseBodyAutomationsMatchMode `json:"matchMode,omitempty"`
 				Name           *string                                                        `json:"name,omitempty"`
 				Platform       *ListCommentAutomations200JSONResponseBodyAutomationsPlatform  `json:"platform,omitempty"`
 				PlatformPostId *string                                                        `json:"platformPostId,omitempty"`
 				PostTitle      *string                                                        `json:"postTitle,omitempty"`
 				Stats          *struct {
-					DmsFailed      *int `json:"dmsFailed,omitempty"`
-					DmsSent        *int `json:"dmsSent,omitempty"`
-					Triggered      *int `json:"triggered,omitempty"`
+					// Delivered DMs confirmed delivered (Messenger; IG emits no delivery receipt).
+					Delivered *int `json:"delivered,omitempty"`
+					DmsFailed *int `json:"dmsFailed,omitempty"`
+					DmsSent   *int `json:"dmsSent,omitempty"`
+
+					// LinkClicks Total clicks on tracked links (bots/prefetch excluded).
+					LinkClicks *int `json:"linkClicks,omitempty"`
+
+					// Read DMs confirmed read (IG messaging_seen / Messenger message_reads).
+					Read      *int `json:"read,omitempty"`
+					Triggered *int `json:"triggered,omitempty"`
+
+					// UniqueClicks Distinct people who clicked a tracked link.
+					UniqueClicks   *int `json:"uniqueClicks,omitempty"`
 					UniqueContacts *int `json:"uniqueContacts,omitempty"`
 				} `json:"stats,omitempty"`
+				Trigger *ListCommentAutomations200JSONResponseBodyAutomationsTrigger `json:"trigger,omitempty"`
 			} `json:"automations,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -71188,12 +78683,14 @@ func ParseCreateCommentAutomationResponse(rsp *http.Response) (*CreateCommentAut
 			Automation *struct {
 				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
 				Buttons        *[]DmButton                                                    `json:"buttons,omitempty"`
+				ClickTag       *string                                                        `json:"clickTag,omitempty"`
 				CommentReply   *string                                                        `json:"commentReply,omitempty"`
 				CreatedAt      *time.Time                                                     `json:"createdAt,omitempty"`
 				DmMessage      *string                                                        `json:"dmMessage,omitempty"`
 				Id             *string                                                        `json:"id,omitempty"`
 				IsActive       *bool                                                          `json:"isActive,omitempty"`
 				Keywords       *[]string                                                      `json:"keywords,omitempty"`
+				LinkTracking   *bool                                                          `json:"linkTracking,omitempty"`
 				MatchMode      *CreateCommentAutomation200JSONResponseBodyAutomationMatchMode `json:"matchMode,omitempty"`
 				Name           *string                                                        `json:"name,omitempty"`
 				Platform       *string                                                        `json:"platform,omitempty"`
@@ -71203,6 +78700,7 @@ func ParseCreateCommentAutomationResponse(rsp *http.Response) (*CreateCommentAut
 					TotalSent      *int `json:"totalSent,omitempty"`
 					TotalTriggered *int `json:"totalTriggered,omitempty"`
 				} `json:"stats,omitempty"`
+				Trigger *CreateCommentAutomation200JSONResponseBodyAutomationTrigger `json:"trigger,omitempty"`
 			} `json:"automation,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -71277,12 +78775,14 @@ func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomatio
 
 				// Buttons Inline DM buttons (up to 3). Omitted when none are set.
 				Buttons        *[]DmButton                                                 `json:"buttons,omitempty"`
+				ClickTag       *string                                                     `json:"clickTag,omitempty"`
 				CommentReply   *string                                                     `json:"commentReply,omitempty"`
 				CreatedAt      *time.Time                                                  `json:"createdAt,omitempty"`
 				DmMessage      *string                                                     `json:"dmMessage,omitempty"`
 				Id             *string                                                     `json:"id,omitempty"`
 				IsActive       *bool                                                       `json:"isActive,omitempty"`
 				Keywords       *[]string                                                   `json:"keywords,omitempty"`
+				LinkTracking   *bool                                                       `json:"linkTracking,omitempty"`
 				MatchMode      *GetCommentAutomation200JSONResponseBodyAutomationMatchMode `json:"matchMode,omitempty"`
 				Name           *string                                                     `json:"name,omitempty"`
 				Platform       *string                                                     `json:"platform,omitempty"`
@@ -71294,7 +78794,8 @@ func ParseGetCommentAutomationResponse(rsp *http.Response) (*GetCommentAutomatio
 					TotalSent      *int `json:"totalSent,omitempty"`
 					TotalTriggered *int `json:"totalTriggered,omitempty"`
 				} `json:"stats,omitempty"`
-				UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+				Trigger   *GetCommentAutomation200JSONResponseBodyAutomationTrigger `json:"trigger,omitempty"`
+				UpdatedAt *time.Time                                                `json:"updatedAt,omitempty"`
 			} `json:"automation,omitempty"`
 			Logs *[]struct {
 				CommentId *string `json:"commentId,omitempty"`
@@ -72751,12 +80252,15 @@ func ParseGetContactResponse(rsp *http.Response) (*GetContactResponse, error) {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Channels *[]struct {
-				AccountId          *string    `json:"accountId,omitempty"`
-				ConversationId     *string    `json:"conversationId,omitempty"`
-				CreatedAt          *time.Time `json:"createdAt,omitempty"`
-				DisplayIdentifier  *string    `json:"displayIdentifier,omitempty"`
-				Id                 *string    `json:"id,omitempty"`
-				IsSubscribed       *bool      `json:"isSubscribed,omitempty"`
+				AccountId         *string    `json:"accountId,omitempty"`
+				ConversationId    *string    `json:"conversationId,omitempty"`
+				CreatedAt         *time.Time `json:"createdAt,omitempty"`
+				DisplayIdentifier *string    `json:"displayIdentifier,omitempty"`
+				Id                *string    `json:"id,omitempty"`
+				IsSubscribed      *bool      `json:"isSubscribed,omitempty"`
+
+				// LastActiveAt Most recent message (either direction) in this channel's conversation, or null if none.
+				LastActiveAt       *time.Time `json:"lastActiveAt,omitempty"`
 				Platform           *string    `json:"platform,omitempty"`
 				PlatformIdentifier *string    `json:"platformIdentifier,omitempty"`
 			} `json:"channels,omitempty"`
@@ -72770,10 +80274,22 @@ func ParseGetContactResponse(rsp *http.Response) (*GetContactResponse, error) {
 				Id              *string                 `json:"id,omitempty"`
 				IsBlocked       *bool                   `json:"isBlocked,omitempty"`
 				IsSubscribed    *bool                   `json:"isSubscribed,omitempty"`
-				Name            *string                 `json:"name,omitempty"`
-				Notes           *string                 `json:"notes,omitempty"`
-				Tags            *[]string               `json:"tags,omitempty"`
-				UpdatedAt       *time.Time              `json:"updatedAt,omitempty"`
+
+				// LastMessageReceivedAt Timestamp of the most recent incoming message, or null if none.
+				LastMessageReceivedAt *time.Time `json:"lastMessageReceivedAt,omitempty"`
+
+				// LastMessageSentAt Timestamp of the most recent outgoing message, or null if none.
+				LastMessageSentAt *time.Time `json:"lastMessageSentAt,omitempty"`
+
+				// MessagesReceivedCount Messages received from the contact, derived live from message history across all linked conversations.
+				MessagesReceivedCount *int `json:"messagesReceivedCount,omitempty"`
+
+				// MessagesSentCount Messages sent to the contact, derived live from message history across all linked conversations.
+				MessagesSentCount *int       `json:"messagesSentCount,omitempty"`
+				Name              *string    `json:"name,omitempty"`
+				Notes             *string    `json:"notes,omitempty"`
+				Tags              *[]string  `json:"tags,omitempty"`
+				UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
 			} `json:"contact,omitempty"`
 			Success *bool `json:"success,omitempty"`
 		}
@@ -73136,6 +80652,560 @@ func ParseUpdateCustomFieldResponse(rsp *http.Response) (*UpdateCustomFieldRespo
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListDiscordPinnedMessagesResponse parses an HTTP response from a ListDiscordPinnedMessagesWithResponse call
+func ParseListDiscordPinnedMessagesResponse(rsp *http.Response) (*ListDiscordPinnedMessagesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDiscordPinnedMessagesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]struct {
+				Attachments *[]map[string]interface{} `json:"attachments,omitempty"`
+				Author      *map[string]interface{}   `json:"author,omitempty"`
+				ChannelId   *string                   `json:"channel_id,omitempty"`
+				Content     *string                   `json:"content,omitempty"`
+				Embeds      *[]map[string]interface{} `json:"embeds,omitempty"`
+				Id          *string                   `json:"id,omitempty"`
+				Timestamp   *time.Time                `json:"timestamp,omitempty"`
+			} `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnpinDiscordMessageResponse parses an HTTP response from a UnpinDiscordMessageWithResponse call
+func ParseUnpinDiscordMessageResponse(rsp *http.Response) (*UnpinDiscordMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnpinDiscordMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ChannelId *string                                          `json:"channelId,omitempty"`
+			MessageId *string                                          `json:"messageId,omitempty"`
+			Operation *UnpinDiscordMessage200JSONResponseBodyOperation `json:"operation,omitempty"`
+			Success   *bool                                            `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePinDiscordMessageResponse parses an HTTP response from a PinDiscordMessageWithResponse call
+func ParsePinDiscordMessageResponse(rsp *http.Response) (*PinDiscordMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PinDiscordMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ChannelId *string                                        `json:"channelId,omitempty"`
+			MessageId *string                                        `json:"messageId,omitempty"`
+			Operation *PinDiscordMessage200JSONResponseBodyOperation `json:"operation,omitempty"`
+			Success   *bool                                          `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendDiscordDirectMessageResponse parses an HTTP response from a SendDiscordDirectMessageWithResponse call
+func ParseSendDiscordDirectMessageResponse(rsp *http.Response) (*SendDiscordDirectMessageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendDiscordDirectMessageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Account *struct {
+				DisplayName *string `json:"displayName,omitempty"`
+				Id          *string `json:"id,omitempty"`
+				Username    *string `json:"username,omitempty"`
+			} `json:"account,omitempty"`
+
+			// ChannelId DM channel snowflake (Discord auto-creates one per recipient pair)
+			ChannelId *string `json:"channelId,omitempty"`
+
+			// MessageId Discord message snowflake ID
+			MessageId *string `json:"messageId,omitempty"`
+			Recipient *struct {
+				Platform *string `json:"platform,omitempty"`
+				UserId   *string `json:"userId,omitempty"`
+			} `json:"recipient,omitempty"`
+			Timestamp *time.Time `json:"timestamp,omitempty"`
+
+			// Url Direct link to the message — uses Discord's @me path for DMs
+			Url *string `json:"url,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListDiscordScheduledEventsResponse parses an HTTP response from a ListDiscordScheduledEventsWithResponse call
+func ParseListDiscordScheduledEventsResponse(rsp *http.Response) (*ListDiscordScheduledEventsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDiscordScheduledEventsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]DiscordScheduledEvent `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateDiscordScheduledEventResponse parses an HTTP response from a CreateDiscordScheduledEventWithResponse call
+func ParseCreateDiscordScheduledEventResponse(rsp *http.Response) (*CreateDiscordScheduledEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateDiscordScheduledEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+			// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+			// image hash) which we pass through verbatim.
+			Data *DiscordScheduledEvent `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteDiscordScheduledEventResponse parses an HTTP response from a DeleteDiscordScheduledEventWithResponse call
+func ParseDeleteDiscordScheduledEventResponse(rsp *http.Response) (*DeleteDiscordScheduledEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteDiscordScheduledEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Deleted The deleted event's snowflake.
+			Deleted *string `json:"deleted,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetDiscordScheduledEventResponse parses an HTTP response from a GetDiscordScheduledEventWithResponse call
+func ParseGetDiscordScheduledEventResponse(rsp *http.Response) (*GetDiscordScheduledEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDiscordScheduledEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+			// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+			// image hash) which we pass through verbatim.
+			Data *DiscordScheduledEvent `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateDiscordScheduledEventResponse parses an HTTP response from a UpdateDiscordScheduledEventWithResponse call
+func ParseUpdateDiscordScheduledEventResponse(rsp *http.Response) (*UpdateDiscordScheduledEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateDiscordScheduledEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Data Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints.
+			// Fields below are the subset Zernio consumes — Discord may return more (e.g. creator,
+			// image hash) which we pass through verbatim.
+			Data *DiscordScheduledEvent `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListDiscordGuildMembersResponse parses an HTTP response from a ListDiscordGuildMembersWithResponse call
+func ParseListDiscordGuildMembersResponse(rsp *http.Response) (*ListDiscordGuildMembersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDiscordGuildMembersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]struct {
+				JoinedAt *time.Time `json:"joined_at,omitempty"`
+
+				// Nick Guild-specific nickname
+				Nick *string `json:"nick,omitempty"`
+
+				// PremiumSince When the user started boosting the server
+				PremiumSince *time.Time `json:"premium_since,omitempty"`
+
+				// Roles Snowflake IDs of roles assigned to this member
+				Roles *[]string `json:"roles,omitempty"`
+				User  *struct {
+					Avatar        *string `json:"avatar,omitempty"`
+					Discriminator *string `json:"discriminator,omitempty"`
+
+					// GlobalName User's display name (post-2023 Discord rebrand)
+					GlobalName *string `json:"global_name,omitempty"`
+
+					// Id User snowflake
+					Id       *string `json:"id,omitempty"`
+					Username *string `json:"username,omitempty"`
+				} `json:"user,omitempty"`
+			} `json:"data,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+
+				// NextCursor Pass as `after` on the next call. Null when there are no more pages.
+				NextCursor *string `json:"nextCursor,omitempty"`
+			} `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveDiscordMemberRoleResponse parses an HTTP response from a RemoveDiscordMemberRoleWithResponse call
+func ParseRemoveDiscordMemberRoleResponse(rsp *http.Response) (*RemoveDiscordMemberRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveDiscordMemberRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			GuildId   *string                                              `json:"guildId,omitempty"`
+			Operation *RemoveDiscordMemberRole200JSONResponseBodyOperation `json:"operation,omitempty"`
+			RoleId    *string                                              `json:"roleId,omitempty"`
+			Success   *bool                                                `json:"success,omitempty"`
+			UserId    *string                                              `json:"userId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddDiscordMemberRoleResponse parses an HTTP response from a AddDiscordMemberRoleWithResponse call
+func ParseAddDiscordMemberRoleResponse(rsp *http.Response) (*AddDiscordMemberRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddDiscordMemberRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			GuildId   *string                                           `json:"guildId,omitempty"`
+			Operation *AddDiscordMemberRole200JSONResponseBodyOperation `json:"operation,omitempty"`
+			RoleId    *string                                           `json:"roleId,omitempty"`
+			Success   *bool                                             `json:"success,omitempty"`
+			UserId    *string                                           `json:"userId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListDiscordGuildRolesResponse parses an HTTP response from a ListDiscordGuildRolesWithResponse call
+func ParseListDiscordGuildRolesResponse(rsp *http.Response) (*ListDiscordGuildRolesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListDiscordGuildRolesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data *[]struct {
+				// Color Decimal color (0 = no color). Convert to hex via .toString(16).
+				Color *int `json:"color,omitempty"`
+
+				// Hoist True if role is displayed separately in member list
+				Hoist *bool `json:"hoist,omitempty"`
+
+				// Id Role snowflake ID
+				Id *string `json:"id,omitempty"`
+
+				// Managed True for integration-managed roles (bot roles)
+				Managed     *bool   `json:"managed,omitempty"`
+				Mentionable *bool   `json:"mentionable,omitempty"`
+				Name        *string `json:"name,omitempty"`
+
+				// Permissions Permissions bitfield as a stringified integer
+				Permissions *string `json:"permissions,omitempty"`
+
+				// Position Position in role hierarchy (higher = more authority)
+				Position *int `json:"position,omitempty"`
+			} `json:"data,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
@@ -77079,6 +85149,285 @@ func ParseUploadWhatsAppProfilePhotoResponse(rsp *http.Response) (*UploadWhatsAp
 	return response, nil
 }
 
+// ParseGetWhatsAppCallPermissionsResponse parses an HTTP response from a GetWhatsAppCallPermissionsWithResponse call
+func ParseGetWhatsAppCallPermissionsResponse(rsp *http.Response) (*GetWhatsAppCallPermissionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppCallPermissionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Actions *[]struct {
+				ActionName       *GetWhatsAppCallPermissions200JSONResponseBodyActionsActionName `json:"action_name,omitempty"`
+				CanPerformAction *bool                                                           `json:"can_perform_action,omitempty"`
+			} `json:"actions,omitempty"`
+			Permission *struct {
+				// ExpirationTime Unix seconds when temporary
+				ExpirationTime *int                                                           `json:"expiration_time,omitempty"`
+				Status         *GetWhatsAppCallPermissions200JSONResponseBodyPermissionStatus `json:"status,omitempty"`
+			} `json:"permission,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppCallingConfigResponse parses an HTTP response from a GetWhatsAppCallingConfigWithResponse call
+func ParseGetWhatsAppCallingConfigResponse(rsp *http.Response) (*GetWhatsAppCallingConfigResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppCallingConfigResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			CallIconCountries *[]string `json:"callIconCountries,omitempty"`
+			CallingEnabled    *bool     `json:"callingEnabled,omitempty"`
+
+			// ForwardTo tel:+E164 / sip:... / wss://... destination
+			ForwardTo   *string `json:"forwardTo,omitempty"`
+			PhoneNumber *string `json:"phoneNumber,omitempty"`
+
+			// PhoneNumberDocId WhatsAppPhoneNumber Mongo ID (use on /v1/whatsapp/phone-numbers/{id}/calling)
+			PhoneNumberDocId *string `json:"phoneNumberDocId,omitempty"`
+			RecordingEnabled *bool   `json:"recordingEnabled,omitempty"`
+
+			// SipAuthPasswordConfigured True when a SIP digest password is stored. The plaintext is never returned.
+			SipAuthPasswordConfigured *bool   `json:"sipAuthPasswordConfigured,omitempty"`
+			SipAuthUsername           *string `json:"sipAuthUsername,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppCallsResponse parses an HTTP response from a ListWhatsAppCallsWithResponse call
+func ParseListWhatsAppCallsResponse(rsp *http.Response) (*ListWhatsAppCallsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppCallsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Calls *[]struct {
+				UnderscoreId *string `json:"_id,omitempty"`
+				Billing      *struct {
+					// BillableCostUSD Amount Zernio bills you = Telnyx leg + recording (excludes Meta).
+					BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
+					Currency        *string  `json:"currency,omitempty"`
+
+					// MetaCostUSD Meta per-minute charge, billed by Meta directly to your WABA. Display only; not billed by Zernio.
+					MetaCostUSD      *float32 `json:"metaCostUSD,omitempty"`
+					RecordingCostUSD *float32 `json:"recordingCostUSD,omitempty"`
+					TelnyxCostUSD    *float32 `json:"telnyxCostUSD,omitempty"`
+
+					// TotalCostUSD Full cost incl. the Meta portion you pay directly. Display only.
+					TotalCostUSD *float32 `json:"totalCostUSD,omitempty"`
+				} `json:"billing,omitempty"`
+				Direction       *ListWhatsAppCalls200JSONResponseBodyCallsDirection `json:"direction,omitempty"`
+				DurationSeconds *int                                                `json:"durationSeconds,omitempty"`
+				EndReason       *ListWhatsAppCalls200JSONResponseBodyCallsEndReason `json:"endReason,omitempty"`
+				EndedAt         *time.Time                                          `json:"endedAt,omitempty"`
+				From            *string                                             `json:"from,omitempty"`
+				RecordingUrl    *string                                             `json:"recordingUrl,omitempty"`
+				StartedAt       *time.Time                                          `json:"startedAt,omitempty"`
+				Status          *ListWhatsAppCalls200JSONResponseBodyCallsStatus    `json:"status,omitempty"`
+				To              *string                                             `json:"to,omitempty"`
+			} `json:"calls,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInitiateWhatsAppCallResponse parses an HTTP response from a InitiateWhatsAppCallWithResponse call
+func ParseInitiateWhatsAppCallResponse(rsp *http.Response) (*InitiateWhatsAppCallResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InitiateWhatsAppCallResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// CallId Internal Call doc ID
+			CallId           *string                                           `json:"callId,omitempty"`
+			Direction        *InitiateWhatsAppCall200JSONResponseBodyDirection `json:"direction,omitempty"`
+			ForwardTo        *string                                           `json:"forwardTo,omitempty"`
+			RecordingEnabled *bool                                             `json:"recordingEnabled,omitempty"`
+			Status           *InitiateWhatsAppCall200JSONResponseBodyStatus    `json:"status,omitempty"`
+			Success          *bool                                             `json:"success,omitempty"`
+
+			// TelnyxCallControlId Telnyx call_control_id of the outbound leg
+			TelnyxCallControlId *string `json:"telnyxCallControlId,omitempty"`
+			To                  *string `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppCallEstimateResponse parses an HTTP response from a GetWhatsAppCallEstimateWithResponse call
+func ParseGetWhatsAppCallEstimateResponse(rsp *http.Response) (*GetWhatsAppCallEstimateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppCallEstimateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Breakdown *struct {
+				// BillableCostUSD Estimated amount Zernio bills you = Telnyx leg + recording (excludes Meta).
+				BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
+
+				// MetaCostUSD Estimated Meta per-minute charge, billed by Meta directly to your WABA. Display only; not billed by Zernio.
+				MetaCostUSD      *float32 `json:"metaCostUSD,omitempty"`
+				MetaMinutes      *int     `json:"metaMinutes,omitempty"`
+				RecordingCostUSD *float32 `json:"recordingCostUSD,omitempty"`
+				TelnyxCostUSD    *float32 `json:"telnyxCostUSD,omitempty"`
+
+				// TotalCostUSD Estimated full cost incl. the Meta portion you pay directly. Display only.
+				TotalCostUSD *float32 `json:"totalCostUSD,omitempty"`
+			} `json:"breakdown,omitempty"`
+			DestinationCountry *string  `json:"destinationCountry,omitempty"`
+			PerMinuteUsd       *float32 `json:"perMinuteUsd,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppCallResponse parses an HTTP response from a GetWhatsAppCallWithResponse call
+func ParseGetWhatsAppCallResponse(rsp *http.Response) (*GetWhatsAppCallResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppCallResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Call *map[string]interface{} `json:"call,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListWhatsAppConversionsResponse parses an HTTP response from a ListWhatsAppConversionsWithResponse call
 func ParseListWhatsAppConversionsResponse(rsp *http.Response) (*ListWhatsAppConversionsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -77890,16 +86239,219 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Numbers *[]struct {
-				UnderscoreId           *string                                                  `json:"_id,omitempty"`
-				Country                *string                                                  `json:"country,omitempty"`
-				CreatedAt              *time.Time                                               `json:"createdAt,omitempty"`
-				MetaPreverifiedId      *string                                                  `json:"metaPreverifiedId,omitempty"`
-				MetaVerificationStatus *string                                                  `json:"metaVerificationStatus,omitempty"`
-				PhoneNumber            *string                                                  `json:"phoneNumber,omitempty"`
-				ProfileId              *map[string]interface{}                                  `json:"profileId,omitempty"`
-				ProvisionedAt          *time.Time                                               `json:"provisionedAt,omitempty"`
-				Status                 *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
+				UnderscoreId           *string    `json:"_id,omitempty"`
+				Country                *string    `json:"country,omitempty"`
+				CreatedAt              *time.Time `json:"createdAt,omitempty"`
+				EndUserFirstName       *string    `json:"endUserFirstName,omitempty"`
+				EndUserLastName        *string    `json:"endUserLastName,omitempty"`
+				MetaPreverifiedId      *string    `json:"metaPreverifiedId,omitempty"`
+				MetaVerificationStatus *string    `json:"metaVerificationStatus,omitempty"`
+
+				// MonthlyCents Per-country monthly price in cents ($2..$25).
+				MonthlyCents *int `json:"monthlyCents,omitempty"`
+
+				// OnfidoVerificationUrl For regulated (Tier 3/4) numbers with an Onfido ID-verification step — the link to forward to the end user. Set once the order is placed; null otherwise. Poll this field after submitting KYC.
+				OnfidoVerificationUrl *string                 `json:"onfidoVerificationUrl,omitempty"`
+				PhoneNumber           *string                 `json:"phoneNumber,omitempty"`
+				ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
+				ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
+
+				// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
+				RegulatoryDeclineReason *string                                                  `json:"regulatoryDeclineReason,omitempty"`
+				Status                  *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
 			} `json:"numbers,omitempty"`
+
+			// Sandbox The shared WhatsApp sandbox (one Zernio-owned number, all users test
+			// against it). Present when the sandbox is configured; null otherwise.
+			// The `accountId` lets you address the sandbox in compose endpoints.
+			// `template` is the only template a sandbox send is allowed to use.
+			Sandbox *struct {
+				AccountId   *string `json:"accountId,omitempty"`
+				IsSandbox   *bool   `json:"isSandbox,omitempty"`
+				PhoneNumber *string `json:"phoneNumber,omitempty"`
+				Template    *struct {
+					Language *string `json:"language,omitempty"`
+					Name     *string `json:"name,omitempty"`
+				} `json:"template,omitempty"`
+			} `json:"sandbox,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchAvailableWhatsAppNumbersResponse parses an HTTP response from a SearchAvailableWhatsAppNumbersWithResponse call
+func ParseSearchAvailableWhatsAppNumbersResponse(rsp *http.Response) (*SearchAvailableWhatsAppNumbersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchAvailableWhatsAppNumbersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Country    *string `json:"country,omitempty"`
+			NumberType *string `json:"numberType,omitempty"`
+			Numbers    *[]struct {
+				PhoneNumber *string `json:"phoneNumber,omitempty"`
+			} `json:"numbers,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppNumberCountriesResponse parses an HTTP response from a ListWhatsAppNumberCountriesWithResponse call
+func ParseListWhatsAppNumberCountriesResponse(rsp *http.Response) (*ListWhatsAppNumberCountriesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppNumberCountriesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Countries *[]struct {
+				// Code ISO 3166-1 alpha-2
+				Code                     *string                                                      `json:"code,omitempty"`
+				MonthlyCents             *int                                                         `json:"monthlyCents,omitempty"`
+				NeedsKyc                 *bool                                                        `json:"needsKyc,omitempty"`
+				OutboundCallingAvailable *bool                                                        `json:"outboundCallingAvailable,omitempty"`
+				Tier                     *ListWhatsAppNumberCountries200JSONResponseBodyCountriesTier `json:"tier,omitempty"`
+			} `json:"countries,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppNumberKycFormResponse parses an HTTP response from a GetWhatsAppNumberKycFormWithResponse call
+func ParseGetWhatsAppNumberKycFormResponse(rsp *http.Response) (*GetWhatsAppNumberKycFormResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppNumberKycFormResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Country *string `json:"country,omitempty"`
+			Fields  *[]struct {
+				// Description Plain-English explanation of what to provide.
+				Description *string `json:"description,omitempty"`
+
+				// Example Concrete example value.
+				Example *string `json:"example,omitempty"`
+
+				// Kind "action" = an out-of-band verification (e.g. Onfido); not filled here, fulfilled after the order via a link.
+				Kind  *GetWhatsAppNumberKycForm200JSONResponseBodyFieldsKind `json:"kind,omitempty"`
+				Label *string                                                `json:"label,omitempty"`
+
+				// LocalTo ISO country the value must be local to
+				LocalTo       *string `json:"localTo,omitempty"`
+				RequirementId *string `json:"requirementId,omitempty"`
+			} `json:"fields,omitempty"`
+			NumberType *string `json:"numberType,omitempty"`
+
+			// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
+			Reusable *struct {
+				Available       *bool   `json:"available,omitempty"`
+				FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+			} `json:"reusable,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSubmitWhatsAppNumberKycResponse parses an HTTP response from a SubmitWhatsAppNumberKycWithResponse call
+func ParseSubmitWhatsAppNumberKycResponse(rsp *http.Response) (*SubmitWhatsAppNumberKycResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SubmitWhatsAppNumberKycResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			PhoneNumber *struct {
+				Country *string `json:"country,omitempty"`
+				Id      *string `json:"id,omitempty"`
+				Status  *string `json:"status,omitempty"`
+			} `json:"phoneNumber,omitempty"`
+			Status *SubmitWhatsAppNumberKyc200JSONResponseBodyStatus `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -77934,6 +86486,107 @@ func ParsePurchaseWhatsAppPhoneNumberResponse(rsp *http.Response) (*PurchaseWhat
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest PurchaseWhatsAppPhoneNumber200JSONResponseBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest struct {
+			Country *string                                               `json:"country,omitempty"`
+			KycUrl  *string                                               `json:"kycUrl,omitempty"`
+			Status  *PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisableWhatsAppCallingResponse parses an HTTP response from a DisableWhatsAppCallingWithResponse call
+func ParseDisableWhatsAppCallingResponse(rsp *http.Response) (*DisableWhatsAppCallingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisableWhatsAppCallingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWhatsAppCallingResponse parses an HTTP response from a UpdateWhatsAppCallingWithResponse call
+func ParseUpdateWhatsAppCallingResponse(rsp *http.Response) (*UpdateWhatsAppCallingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWhatsAppCallingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEnableWhatsAppCallingResponse parses an HTTP response from a EnableWhatsAppCallingWithResponse call
+func ParseEnableWhatsAppCallingResponse(rsp *http.Response) (*EnableWhatsAppCallingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnableWhatsAppCallingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			CallingEnabled *bool   `json:"callingEnabled,omitempty"`
+			ForwardTo      *string `json:"forwardTo,omitempty"`
+			SipHostname    *string `json:"sipHostname,omitempty"`
+			Success        *bool   `json:"success,omitempty"`
+		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -78018,13 +86671,21 @@ func ParseGetWhatsAppPhoneNumberResponse(rsp *http.Response) (*GetWhatsAppPhoneN
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			PhoneNumber *struct {
-				Country                *string                                                     `json:"country,omitempty"`
-				Id                     *string                                                     `json:"id,omitempty"`
-				MetaPreverifiedId      *string                                                     `json:"metaPreverifiedId,omitempty"`
-				MetaVerificationStatus *string                                                     `json:"metaVerificationStatus,omitempty"`
-				PhoneNumber            *string                                                     `json:"phoneNumber,omitempty"`
-				ProvisionedAt          *time.Time                                                  `json:"provisionedAt,omitempty"`
-				Status                 *GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus `json:"status,omitempty"`
+				Country                *string `json:"country,omitempty"`
+				EndUserFirstName       *string `json:"endUserFirstName,omitempty"`
+				EndUserLastName        *string `json:"endUserLastName,omitempty"`
+				Id                     *string `json:"id,omitempty"`
+				MetaPreverifiedId      *string `json:"metaPreverifiedId,omitempty"`
+				MetaVerificationStatus *string `json:"metaVerificationStatus,omitempty"`
+
+				// OnfidoVerificationUrl For a regulated number with an Onfido ID step — the link to forward to the end user. Appears once the order is placed; null otherwise.
+				OnfidoVerificationUrl *string    `json:"onfidoVerificationUrl,omitempty"`
+				PhoneNumber           *string    `json:"phoneNumber,omitempty"`
+				ProvisionedAt         *time.Time `json:"provisionedAt,omitempty"`
+
+				// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
+				RegulatoryDeclineReason *string                                                     `json:"regulatoryDeclineReason,omitempty"`
+				Status                  *GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus `json:"status,omitempty"`
 			} `json:"phoneNumber,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -78045,6 +86706,118 @@ func ParseGetWhatsAppPhoneNumberResponse(rsp *http.Response) (*GetWhatsAppPhoneN
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWhatsAppSandboxSessionsResponse parses an HTTP response from a ListWhatsAppSandboxSessionsWithResponse call
+func ParseListWhatsAppSandboxSessionsResponse(rsp *http.Response) (*ListWhatsAppSandboxSessionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWhatsAppSandboxSessionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// SandboxNumber The shared sandbox phone number in E.164 form.
+			SandboxNumber *string                   `json:"sandboxNumber,omitempty"`
+			Sessions      *[]WhatsAppSandboxSession `json:"sessions,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWhatsAppSandboxSessionResponse parses an HTTP response from a CreateWhatsAppSandboxSessionWithResponse call
+func ParseCreateWhatsAppSandboxSessionResponse(rsp *http.Response) (*CreateWhatsAppSandboxSessionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWhatsAppSandboxSessionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			SandboxNumber *string `json:"sandboxNumber,omitempty"`
+
+			// Session A per-user activation session against the shared WhatsApp sandbox number.
+			// Transitions `pending → active` when the inbound webhook receives a reply
+			// from the matching phone (the reply itself proves ownership).
+			Session *WhatsAppSandboxSession `json:"session,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWhatsAppSandboxSessionResponse parses an HTTP response from a DeleteWhatsAppSandboxSessionWithResponse call
+func ParseDeleteWhatsAppSandboxSessionResponse(rsp *http.Response) (*DeleteWhatsAppSandboxSessionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWhatsAppSandboxSessionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
@@ -78776,6 +87549,732 @@ func ParseAddWhatsAppGroupParticipantsResponse(rsp *http.Response) (*AddWhatsApp
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkflowsResponse parses an HTTP response from a ListWorkflowsWithResponse call
+func ParseListWorkflowsResponse(rsp *http.Response) (*ListWorkflowsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkflowsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success   *bool `json:"success,omitempty"`
+			Workflows *[]struct {
+				AccountId      *string                                          `json:"accountId,omitempty"`
+				AccountName    *string                                          `json:"accountName,omitempty"`
+				CreatedAt      *time.Time                                       `json:"createdAt,omitempty"`
+				Description    *string                                          `json:"description,omitempty"`
+				Id             *string                                          `json:"id,omitempty"`
+				Name           *string                                          `json:"name,omitempty"`
+				NodeCount      *int                                             `json:"nodeCount,omitempty"`
+				Platform       *string                                          `json:"platform,omitempty"`
+				Status         *ListWorkflows200JSONResponseBodyWorkflowsStatus `json:"status,omitempty"`
+				TotalCompleted *int                                             `json:"totalCompleted,omitempty"`
+				TotalExited    *int                                             `json:"totalExited,omitempty"`
+				TotalStarted   *int                                             `json:"totalStarted,omitempty"`
+			} `json:"workflows,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateWorkflowResponse parses an HTTP response from a CreateWorkflowWithResponse call
+func ParseCreateWorkflowResponse(rsp *http.Response) (*CreateWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				CreatedAt   *time.Time `json:"createdAt,omitempty"`
+				Description *string    `json:"description,omitempty"`
+				EntryNodeId *string    `json:"entryNodeId,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				NodeCount   *int       `json:"nodeCount,omitempty"`
+				Platform    *string    `json:"platform,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteWorkflowResponse parses an HTTP response from a DeleteWorkflowWithResponse call
+func ParseDeleteWorkflowResponse(rsp *http.Response) (*DeleteWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWorkflowResponse parses an HTTP response from a GetWorkflowWithResponse call
+func ParseGetWorkflowResponse(rsp *http.Response) (*GetWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				AccountId      *string                                       `json:"accountId,omitempty"`
+				CreatedAt      *time.Time                                    `json:"createdAt,omitempty"`
+				Description    *string                                       `json:"description,omitempty"`
+				Edges          *[]WorkflowEdge                               `json:"edges,omitempty"`
+				EntryNodeId    *string                                       `json:"entryNodeId,omitempty"`
+				Id             *string                                       `json:"id,omitempty"`
+				Name           *string                                       `json:"name,omitempty"`
+				Nodes          *[]WorkflowNode                               `json:"nodes,omitempty"`
+				Platform       *string                                       `json:"platform,omitempty"`
+				ProfileId      *string                                       `json:"profileId,omitempty"`
+				Status         *GetWorkflow200JSONResponseBodyWorkflowStatus `json:"status,omitempty"`
+				TotalCompleted *int                                          `json:"totalCompleted,omitempty"`
+				TotalExited    *int                                          `json:"totalExited,omitempty"`
+				TotalStarted   *int                                          `json:"totalStarted,omitempty"`
+				UpdatedAt      *time.Time                                    `json:"updatedAt,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateWorkflowResponse parses an HTTP response from a UpdateWorkflowWithResponse call
+func ParseUpdateWorkflowResponse(rsp *http.Response) (*UpdateWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				Description *string    `json:"description,omitempty"`
+				EntryNodeId *string    `json:"entryNodeId,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				NodeCount   *int       `json:"nodeCount,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+				UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseActivateWorkflowResponse parses an HTTP response from a ActivateWorkflowWithResponse call
+func ParseActivateWorkflowResponse(rsp *http.Response) (*ActivateWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ActivateWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				EntryNodeId *string `json:"entryNodeId,omitempty"`
+				Id          *string `json:"id,omitempty"`
+				Status      *string `json:"status,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDuplicateWorkflowResponse parses an HTTP response from a DuplicateWorkflowWithResponse call
+func ParseDuplicateWorkflowResponse(rsp *http.Response) (*DuplicateWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DuplicateWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				AccountId   *string                                             `json:"accountId,omitempty"`
+				CreatedAt   *time.Time                                          `json:"createdAt,omitempty"`
+				Description *string                                             `json:"description,omitempty"`
+				EntryNodeId *string                                             `json:"entryNodeId,omitempty"`
+				Id          *string                                             `json:"id,omitempty"`
+				Name        *string                                             `json:"name,omitempty"`
+				NodeCount   *int                                                `json:"nodeCount,omitempty"`
+				Platform    *string                                             `json:"platform,omitempty"`
+				ProfileId   *string                                             `json:"profileId,omitempty"`
+				Status      *DuplicateWorkflow201JSONResponseBodyWorkflowStatus `json:"status,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkflowExecutionsResponse parses an HTTP response from a ListWorkflowExecutionsWithResponse call
+func ParseListWorkflowExecutionsResponse(rsp *http.Response) (*ListWorkflowExecutionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkflowExecutionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Executions *[]struct {
+				CompletedAt        *time.Time                                                 `json:"completedAt,omitempty"`
+				ConversationId     *string                                                    `json:"conversationId,omitempty"`
+				CreatedAt          *time.Time                                                 `json:"createdAt,omitempty"`
+				CurrentNodeId      *string                                                    `json:"currentNodeId,omitempty"`
+				Id                 *string                                                    `json:"id,omitempty"`
+				LastError          *string                                                    `json:"lastError,omitempty"`
+				PlatformIdentifier *string                                                    `json:"platformIdentifier,omitempty"`
+				ResumeAt           *time.Time                                                 `json:"resumeAt,omitempty"`
+				Status             *ListWorkflowExecutions200JSONResponseBodyExecutionsStatus `json:"status,omitempty"`
+				StepCount          *int                                                       `json:"stepCount,omitempty"`
+				UpdatedAt          *time.Time                                                 `json:"updatedAt,omitempty"`
+				Variables          *map[string]interface{}                                    `json:"variables,omitempty"`
+				WaitingFor         *struct {
+					Kind   *ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind `json:"kind,omitempty"`
+					NodeId *string                                                            `json:"nodeId,omitempty"`
+				} `json:"waitingFor,omitempty"`
+			} `json:"executions,omitempty"`
+			Pagination *struct {
+				HasMore *bool `json:"hasMore,omitempty"`
+				Limit   *int  `json:"limit,omitempty"`
+				Skip    *int  `json:"skip,omitempty"`
+				Total   *int  `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseTriggerWorkflowResponse parses an HTTP response from a TriggerWorkflowWithResponse call
+func ParseTriggerWorkflowResponse(rsp *http.Response) (*TriggerWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &TriggerWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Execution *struct {
+				ConversationId *string                 `json:"conversationId,omitempty"`
+				CurrentNodeId  *string                 `json:"currentNodeId,omitempty"`
+				Id             *string                 `json:"id,omitempty"`
+				Status         *string                 `json:"status,omitempty"`
+				Variables      *map[string]interface{} `json:"variables,omitempty"`
+				WaitingFor     *map[string]interface{} `json:"waitingFor,omitempty"`
+			} `json:"execution,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkflowExecutionEventsResponse parses an HTTP response from a ListWorkflowExecutionEventsWithResponse call
+func ParseListWorkflowExecutionEventsResponse(rsp *http.Response) (*ListWorkflowExecutionEventsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkflowExecutionEventsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Events Events in chronological order (oldest first).
+			Events    *[]WorkflowExecutionEvent `json:"events,omitempty"`
+			Execution *struct {
+				CompletedAt *time.Time                                                     `json:"completedAt,omitempty"`
+				Id          *string                                                        `json:"id,omitempty"`
+				StartedAt   *time.Time                                                     `json:"startedAt,omitempty"`
+				Status      *ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus `json:"status,omitempty"`
+			} `json:"execution,omitempty"`
+			Success *bool `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePauseWorkflowResponse parses an HTTP response from a PauseWorkflowWithResponse call
+func ParsePauseWorkflowResponse(rsp *http.Response) (*PauseWorkflowResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PauseWorkflowResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success  *bool `json:"success,omitempty"`
+			Workflow *struct {
+				Id     *string `json:"id,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListWorkflowVersionsResponse parses an HTTP response from a ListWorkflowVersionsWithResponse call
+func ParseListWorkflowVersionsResponse(rsp *http.Response) (*ListWorkflowVersionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListWorkflowVersionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+
+			// Versions Versions in reverse chronological order (newest first).
+			Versions *[]struct {
+				CreatedAt *time.Time `json:"createdAt,omitempty"`
+
+				// CreatedBy User id that authored this version
+				CreatedBy *string `json:"createdBy,omitempty"`
+
+				// CreatedByEmail Denormalized email so the history UI can render without a join
+				CreatedByEmail *string `json:"createdByEmail,omitempty"`
+				Description    *string `json:"description,omitempty"`
+				Name           *string `json:"name,omitempty"`
+
+				// RestoredFromVersion When non-null
+				RestoredFromVersion *int `json:"restoredFromVersion,omitempty"`
+
+				// Version Monotonically increasing version number
+				Version *int `json:"version,omitempty"`
+			} `json:"versions,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWorkflowVersionResponse parses an HTTP response from a GetWorkflowVersionWithResponse call
+func ParseGetWorkflowVersionResponse(rsp *http.Response) (*GetWorkflowVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWorkflowVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Success *bool `json:"success,omitempty"`
+			Version *struct {
+				AccountId           *string         `json:"accountId,omitempty"`
+				CreatedAt           *time.Time      `json:"createdAt,omitempty"`
+				CreatedBy           *string         `json:"createdBy,omitempty"`
+				CreatedByEmail      *string         `json:"createdByEmail,omitempty"`
+				Description         *string         `json:"description,omitempty"`
+				Edges               *[]WorkflowEdge `json:"edges,omitempty"`
+				EntryNodeId         *string         `json:"entryNodeId,omitempty"`
+				Name                *string         `json:"name,omitempty"`
+				Nodes               *[]WorkflowNode `json:"nodes,omitempty"`
+				Platform            *string         `json:"platform,omitempty"`
+				ProfileId           *string         `json:"profileId,omitempty"`
+				RestoredFromVersion *int            `json:"restoredFromVersion,omitempty"`
+				Version             *int            `json:"version,omitempty"`
+			} `json:"version,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRestoreWorkflowVersionResponse parses an HTTP response from a RestoreWorkflowVersionWithResponse call
+func ParseRestoreWorkflowVersionResponse(rsp *http.Response) (*RestoreWorkflowVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RestoreWorkflowVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			RestoredFromVersion *int  `json:"restoredFromVersion,omitempty"`
+			Success             *bool `json:"success,omitempty"`
+			Workflow            *struct {
+				Description *string    `json:"description,omitempty"`
+				EntryNodeId *string    `json:"entryNodeId,omitempty"`
+				Id          *string    `json:"id,omitempty"`
+				Name        *string    `json:"name,omitempty"`
+				NodeCount   *int       `json:"nodeCount,omitempty"`
+				Status      *string    `json:"status,omitempty"`
+				UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+			} `json:"workflow,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 

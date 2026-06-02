@@ -340,9 +340,22 @@ func main() {
 ### Discord
 | Method | Description |
 |--------|-------------|
+| `client.ListDiscordGuildMembersWithResponse()` | List Discord guild members |
+| `client.ListDiscordGuildRolesWithResponse()` | List Discord guild roles |
+| `client.ListDiscordPinnedMessagesWithResponse()` | List pinned messages in a Discord channel |
+| `client.ListDiscordScheduledEventsWithResponse()` | List Discord scheduled events |
+| `client.CreateDiscordScheduledEventWithResponse()` | Create a Discord scheduled event |
 | `client.GetDiscordChannelsWithResponse()` | List Discord guild channels |
+| `client.GetDiscordScheduledEventWithResponse()` | Get a Discord scheduled event |
 | `client.GetDiscordSettingsWithResponse()` | Get Discord account settings |
+| `client.UpdateDiscordScheduledEventWithResponse()` | Update a Discord scheduled event |
 | `client.UpdateDiscordSettingsWithResponse()` | Update Discord settings |
+| `client.DeleteDiscordScheduledEventWithResponse()` | Delete a Discord scheduled event |
+| `client.AddDiscordMemberRoleWithResponse()` | Assign a role to a guild member |
+| `client.PinDiscordMessageWithResponse()` | Pin a Discord message |
+| `client.RemoveDiscordMemberRoleWithResponse()` | Remove a role from a guild member |
+| `client.SendDiscordDirectMessageWithResponse()` | Send a Discord Direct Message |
+| `client.UnpinDiscordMessageWithResponse()` | Unpin a Discord message |
 
 ### GMB Attributes
 | Method | Description |
@@ -494,6 +507,19 @@ func main() {
 | `client.SendWhatsAppConversionWithResponse()` | Send WhatsApp conversion event |
 | `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
 
+### WhatsApp Calling
+| Method | Description |
+|--------|-------------|
+| `client.ListWhatsAppCallsWithResponse()` | List call history for an account |
+| `client.GetWhatsAppCallWithResponse()` | Get a single call |
+| `client.GetWhatsAppCallEstimateWithResponse()` | Estimate per-minute cost for a destination |
+| `client.GetWhatsAppCallPermissionsWithResponse()` | Check call permission for a consumer |
+| `client.GetWhatsAppCallingConfigWithResponse()` | Get calling config for an account |
+| `client.UpdateWhatsAppCallingWithResponse()` | Update calling config |
+| `client.DisableWhatsAppCallingWithResponse()` | Disable calling on a number |
+| `client.EnableWhatsAppCallingWithResponse()` | Enable calling on a number |
+| `client.InitiateWhatsAppCallWithResponse()` | Initiate outbound call |
+
 ### WhatsApp Flows
 | Method | Description |
 |--------|-------------|
@@ -514,16 +540,45 @@ func main() {
 ### WhatsApp Phone Numbers
 | Method | Description |
 |--------|-------------|
+| `client.ListWhatsAppNumberCountriesWithResponse()` | List offerable number countries |
 | `client.GetWhatsAppNumberInfoWithResponse()` | Get number status |
+| `client.GetWhatsAppNumberKycFormWithResponse()` | Get regulated-number KYC form spec |
 | `client.GetWhatsAppPhoneNumberWithResponse()` | Get phone number |
 | `client.GetWhatsAppPhoneNumbersWithResponse()` | List phone numbers |
 | `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |
 | `client.ReleaseWhatsAppPhoneNumberWithResponse()` | Release phone number |
+| `client.SearchAvailableWhatsAppNumbersWithResponse()` | Search available numbers to purchase |
+| `client.SubmitWhatsAppNumberKycWithResponse()` | Submit regulated-number KYC |
+
+### WhatsApp Sandbox
+| Method | Description |
+|--------|-------------|
+| `client.ListWhatsAppSandboxSessionsWithResponse()` | List your sandbox sessions |
+| `client.CreateWhatsAppSandboxSessionWithResponse()` | Start a sandbox activation for a phone |
+| `client.DeleteWhatsAppSandboxSessionWithResponse()` | Revoke a sandbox session |
 
 ### WhatsApp Templates
 | Method | Description |
 |--------|-------------|
 | `client.GetWhatsAppLibraryTemplateWithResponse()` | Look up a library template |
+
+### Workflows
+| Method | Description |
+|--------|-------------|
+| `client.ListWorkflowExecutionEventsWithResponse()` | Get an execution's timeline |
+| `client.ListWorkflowExecutionsWithResponse()` | List workflow runs |
+| `client.ListWorkflowVersionsWithResponse()` | List a workflow's version history |
+| `client.ListWorkflowsWithResponse()` | List workflows |
+| `client.CreateWorkflowWithResponse()` | Create workflow |
+| `client.GetWorkflowWithResponse()` | Get workflow with graph |
+| `client.GetWorkflowVersionWithResponse()` | Get a specific workflow version |
+| `client.UpdateWorkflowWithResponse()` | Update workflow |
+| `client.DeleteWorkflowWithResponse()` | Delete workflow |
+| `client.ActivateWorkflowWithResponse()` | Activate workflow |
+| `client.DuplicateWorkflowWithResponse()` | Duplicate a workflow |
+| `client.PauseWorkflowWithResponse()` | Pause workflow |
+| `client.RestoreWorkflowVersionWithResponse()` | Restore a previous workflow version |
+| `client.TriggerWorkflowWithResponse()` | Manually start a workflow run |
 
 ### Invites
 | Method | Description |
