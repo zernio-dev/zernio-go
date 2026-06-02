@@ -1310,19 +1310,19 @@ func (e RecyclingStateGapFreq) Valid() bool {
 
 // Defines values for SnapchatPlatformDataContentType.
 const (
-	SavedStory SnapchatPlatformDataContentType = "saved_story"
-	Spotlight  SnapchatPlatformDataContentType = "spotlight"
-	Story      SnapchatPlatformDataContentType = "story"
+	SnapchatPlatformDataContentTypeSavedStory SnapchatPlatformDataContentType = "saved_story"
+	SnapchatPlatformDataContentTypeSpotlight  SnapchatPlatformDataContentType = "spotlight"
+	SnapchatPlatformDataContentTypeStory      SnapchatPlatformDataContentType = "story"
 )
 
 // Valid indicates whether the value is a known member of the SnapchatPlatformDataContentType enum.
 func (e SnapchatPlatformDataContentType) Valid() bool {
 	switch e {
-	case SavedStory:
+	case SnapchatPlatformDataContentTypeSavedStory:
 		return true
-	case Spotlight:
+	case SnapchatPlatformDataContentTypeSpotlight:
 		return true
-	case Story:
+	case SnapchatPlatformDataContentTypeStory:
 		return true
 	default:
 		return false
@@ -3623,13 +3623,13 @@ func (e UpdateAdSetJSONBodyStatus) Valid() bool {
 
 // Defines values for UpdateAdSet200JSONResponseBodyBudgetLevel.
 const (
-	Adset UpdateAdSet200JSONResponseBodyBudgetLevel = "adset"
+	UpdateAdSet200JSONResponseBodyBudgetLevelAdset UpdateAdSet200JSONResponseBodyBudgetLevel = "adset"
 )
 
 // Valid indicates whether the value is a known member of the UpdateAdSet200JSONResponseBodyBudgetLevel enum.
 func (e UpdateAdSet200JSONResponseBodyBudgetLevel) Valid() bool {
 	switch e {
-	case Adset:
+	case UpdateAdSet200JSONResponseBodyBudgetLevelAdset:
 		return true
 	default:
 		return false
@@ -4365,6 +4365,24 @@ func (e CreateStandaloneAdJSONBodyAttributionSpecWindowDays) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyBudgetLevel.
+const (
+	CreateStandaloneAdJSONBodyBudgetLevelAdset    CreateStandaloneAdJSONBodyBudgetLevel = "adset"
+	CreateStandaloneAdJSONBodyBudgetLevelCampaign CreateStandaloneAdJSONBodyBudgetLevel = "campaign"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyBudgetLevel enum.
+func (e CreateStandaloneAdJSONBodyBudgetLevel) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyBudgetLevelAdset:
+		return true
+	case CreateStandaloneAdJSONBodyBudgetLevelCampaign:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyBudgetType.
 const (
 	CreateStandaloneAdJSONBodyBudgetTypeDaily    CreateStandaloneAdJSONBodyBudgetType = "daily"
@@ -4545,6 +4563,90 @@ func (e CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyDynamicCreativeAdFormat.
+const (
+	CAROUSELIMAGE CreateStandaloneAdJSONBodyDynamicCreativeAdFormat = "CAROUSEL_IMAGE"
+	SINGLEIMAGE   CreateStandaloneAdJSONBodyDynamicCreativeAdFormat = "SINGLE_IMAGE"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyDynamicCreativeAdFormat enum.
+func (e CreateStandaloneAdJSONBodyDynamicCreativeAdFormat) Valid() bool {
+	switch e {
+	case CAROUSELIMAGE:
+		return true
+	case SINGLEIMAGE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes.
+const (
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesAPPLY       CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "APPLY"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesATTEND      CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "ATTEND"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesBOOKTRAVEL  CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "BOOK_TRAVEL"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesBUYNOW      CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "BUY_NOW"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesCONTACTUS   CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "CONTACT_US"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesDOWNLOAD    CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "DOWNLOAD"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesGETOFFER    CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "GET_OFFER"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesGETQUOTE    CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "GET_QUOTE"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesJOIN        CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "JOIN"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesLEARNMORE   CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "LEARN_MORE"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesREGISTER    CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "REGISTER"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesREQUESTDEMO CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "REQUEST_DEMO"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSEEMORE     CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "SEE_MORE"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSHOPNOW     CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "SHOP_NOW"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSIGNUP      CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "SIGN_UP"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSUBSCRIBE   CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "SUBSCRIBE"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesVIEWQUOTE   CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "VIEW_QUOTE"
+	CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesWATCHMORE   CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes = "WATCH_MORE"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes enum.
+func (e CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesAPPLY:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesATTEND:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesBOOKTRAVEL:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesBUYNOW:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesCONTACTUS:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesDOWNLOAD:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesGETOFFER:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesGETQUOTE:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesJOIN:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesLEARNMORE:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesREGISTER:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesREQUESTDEMO:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSEEMORE:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSHOPNOW:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSIGNUP:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesSUBSCRIBE:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesVIEWQUOTE:
+		return true
+	case CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypesWATCHMORE:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyGender.
 const (
 	CreateStandaloneAdJSONBodyGenderAll    CreateStandaloneAdJSONBodyGender = "all"
@@ -4635,6 +4737,201 @@ func (e CreateStandaloneAdJSONBodyIncomeTier) Valid() bool {
 	case CreateStandaloneAdJSONBodyIncomeTierTop2550:
 		return true
 	case CreateStandaloneAdJSONBodyIncomeTierTop5:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions.
+const (
+	Classic       CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions = "classic"
+	RewardedVideo CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions = "rewarded_video"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions) Valid() bool {
+	switch e {
+	case Classic:
+		return true
+	case RewardedVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsDevicePlatforms.
+const (
+	Desktop CreateStandaloneAdJSONBodyPlacementsDevicePlatforms = "desktop"
+	Mobile  CreateStandaloneAdJSONBodyPlacementsDevicePlatforms = "mobile"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsDevicePlatforms enum.
+func (e CreateStandaloneAdJSONBodyPlacementsDevicePlatforms) Valid() bool {
+	switch e {
+	case Desktop:
+		return true
+	case Mobile:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsFacebookPositions.
+const (
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFacebookReels        CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "facebook_reels"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFacebookReelsOverlay CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "facebook_reels_overlay"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFeed                 CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "feed"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsInstreamVideo        CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "instream_video"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsMarketplace          CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "marketplace"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsNotification         CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "notification"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsProfileFeed          CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "profile_feed"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsRightHandColumn      CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "right_hand_column"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsSearch               CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "search"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsStory                CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "story"
+	CreateStandaloneAdJSONBodyPlacementsFacebookPositionsVideoFeeds           CreateStandaloneAdJSONBodyPlacementsFacebookPositions = "video_feeds"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsFacebookPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsFacebookPositions) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFacebookReels:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFacebookReelsOverlay:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsFeed:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsInstreamVideo:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsMarketplace:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsNotification:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsProfileFeed:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsRightHandColumn:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsSearch:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsStory:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsFacebookPositionsVideoFeeds:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsInstagramPositions.
+const (
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsExplore      CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "explore"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsExploreHome  CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "explore_home"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsIgSearch     CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "ig_search"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsProfileFeed  CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "profile_feed"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsProfileReels CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "profile_reels"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsReels        CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "reels"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsStory        CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "story"
+	CreateStandaloneAdJSONBodyPlacementsInstagramPositionsStream       CreateStandaloneAdJSONBodyPlacementsInstagramPositions = "stream"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsInstagramPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsInstagramPositions) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsExplore:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsExploreHome:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsIgSearch:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsProfileFeed:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsProfileReels:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsReels:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsStory:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsInstagramPositionsStream:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsMessengerPositions.
+const (
+	CreateStandaloneAdJSONBodyPlacementsMessengerPositionsMessengerHome     CreateStandaloneAdJSONBodyPlacementsMessengerPositions = "messenger_home"
+	CreateStandaloneAdJSONBodyPlacementsMessengerPositionsSponsoredMessages CreateStandaloneAdJSONBodyPlacementsMessengerPositions = "sponsored_messages"
+	CreateStandaloneAdJSONBodyPlacementsMessengerPositionsStory             CreateStandaloneAdJSONBodyPlacementsMessengerPositions = "story"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsMessengerPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsMessengerPositions) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyPlacementsMessengerPositionsMessengerHome:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsMessengerPositionsSponsoredMessages:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsMessengerPositionsStory:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms.
+const (
+	CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsAudienceNetwork CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms = "audience_network"
+	CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsFacebook        CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms = "facebook"
+	CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsInstagram       CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms = "instagram"
+	CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsMessenger       CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms = "messenger"
+	CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsThreads         CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms = "threads"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms enum.
+func (e CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsAudienceNetwork:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsFacebook:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsInstagram:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsMessenger:
+		return true
+	case CreateStandaloneAdJSONBodyPlacementsPublisherPlatformsThreads:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsThreadsPositions.
+const (
+	ThreadsStream CreateStandaloneAdJSONBodyPlacementsThreadsPositions = "threads_stream"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsThreadsPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsThreadsPositions) Valid() bool {
+	switch e {
+	case ThreadsStream:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyPlacementsWhatsappPositions.
+const (
+	Status CreateStandaloneAdJSONBodyPlacementsWhatsappPositions = "status"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyPlacementsWhatsappPositions enum.
+func (e CreateStandaloneAdJSONBodyPlacementsWhatsappPositions) Valid() bool {
+	switch e {
+	case Status:
 		return true
 	default:
 		return false
@@ -8948,34 +9245,34 @@ func (e SendWhatsAppFlowMessageJSONBodyHeaderType) Valid() bool {
 
 // Defines values for UpdateWhatsAppFlowJSONBodyCategories.
 const (
-	APPOINTMENTBOOKING UpdateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
-	CONTACTUS          UpdateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
-	CUSTOMERSUPPORT    UpdateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
-	LEADGENERATION     UpdateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
-	OTHER              UpdateWhatsAppFlowJSONBodyCategories = "OTHER"
-	SIGNIN             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
-	SIGNUP             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
-	SURVEY             UpdateWhatsAppFlowJSONBodyCategories = "SURVEY"
+	UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING UpdateWhatsAppFlowJSONBodyCategories = "APPOINTMENT_BOOKING"
+	UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS          UpdateWhatsAppFlowJSONBodyCategories = "CONTACT_US"
+	UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT    UpdateWhatsAppFlowJSONBodyCategories = "CUSTOMER_SUPPORT"
+	UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION     UpdateWhatsAppFlowJSONBodyCategories = "LEAD_GENERATION"
+	UpdateWhatsAppFlowJSONBodyCategoriesOTHER              UpdateWhatsAppFlowJSONBodyCategories = "OTHER"
+	UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_IN"
+	UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP             UpdateWhatsAppFlowJSONBodyCategories = "SIGN_UP"
+	UpdateWhatsAppFlowJSONBodyCategoriesSURVEY             UpdateWhatsAppFlowJSONBodyCategories = "SURVEY"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWhatsAppFlowJSONBodyCategories enum.
 func (e UpdateWhatsAppFlowJSONBodyCategories) Valid() bool {
 	switch e {
-	case APPOINTMENTBOOKING:
+	case UpdateWhatsAppFlowJSONBodyCategoriesAPPOINTMENTBOOKING:
 		return true
-	case CONTACTUS:
+	case UpdateWhatsAppFlowJSONBodyCategoriesCONTACTUS:
 		return true
-	case CUSTOMERSUPPORT:
+	case UpdateWhatsAppFlowJSONBodyCategoriesCUSTOMERSUPPORT:
 		return true
-	case LEADGENERATION:
+	case UpdateWhatsAppFlowJSONBodyCategoriesLEADGENERATION:
 		return true
-	case OTHER:
+	case UpdateWhatsAppFlowJSONBodyCategoriesOTHER:
 		return true
-	case SIGNIN:
+	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNIN:
 		return true
-	case SIGNUP:
+	case UpdateWhatsAppFlowJSONBodyCategoriesSIGNUP:
 		return true
-	case SURVEY:
+	case UpdateWhatsAppFlowJSONBodyCategoriesSURVEY:
 		return true
 	default:
 		return false
@@ -9341,31 +9638,31 @@ func (e ListWorkflows200JSONResponseBodyWorkflowsStatus) Valid() bool {
 
 // Defines values for CreateWorkflowJSONBodyPlatform.
 const (
-	Bluesky   CreateWorkflowJSONBodyPlatform = "bluesky"
-	Facebook  CreateWorkflowJSONBodyPlatform = "facebook"
-	Instagram CreateWorkflowJSONBodyPlatform = "instagram"
-	Reddit    CreateWorkflowJSONBodyPlatform = "reddit"
-	Telegram  CreateWorkflowJSONBodyPlatform = "telegram"
-	Twitter   CreateWorkflowJSONBodyPlatform = "twitter"
-	Whatsapp  CreateWorkflowJSONBodyPlatform = "whatsapp"
+	CreateWorkflowJSONBodyPlatformBluesky   CreateWorkflowJSONBodyPlatform = "bluesky"
+	CreateWorkflowJSONBodyPlatformFacebook  CreateWorkflowJSONBodyPlatform = "facebook"
+	CreateWorkflowJSONBodyPlatformInstagram CreateWorkflowJSONBodyPlatform = "instagram"
+	CreateWorkflowJSONBodyPlatformReddit    CreateWorkflowJSONBodyPlatform = "reddit"
+	CreateWorkflowJSONBodyPlatformTelegram  CreateWorkflowJSONBodyPlatform = "telegram"
+	CreateWorkflowJSONBodyPlatformTwitter   CreateWorkflowJSONBodyPlatform = "twitter"
+	CreateWorkflowJSONBodyPlatformWhatsapp  CreateWorkflowJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateWorkflowJSONBodyPlatform enum.
 func (e CreateWorkflowJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateWorkflowJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateWorkflowJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateWorkflowJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateWorkflowJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateWorkflowJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateWorkflowJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateWorkflowJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -14080,6 +14377,16 @@ type CreateStandaloneAdJSONBody struct {
 	// BudgetAmount Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 
+	// BudgetLevel Meta only. Where the budget lives, which selects the Meta budget model:
+	//   - `adset` (default): ABO (Ad-set Budget Optimization). The budget is set on the
+	//     ad set. This is the back-compatible behaviour — omit this field to keep it.
+	//   - `campaign`: CBO (Campaign Budget Optimization / Advantage Campaign Budget). The
+	//     budget AND `bidStrategy` are set on the CAMPAIGN, and Meta distributes spend
+	//     across ad sets automatically.
+	// Meta requires the budget at exactly one level, never both. Non-Meta platforms ignore
+	// this field. Ignored on the attach shape (`adSetId`), which inherits the existing budget.
+	BudgetLevel *CreateStandaloneAdJSONBodyBudgetLevel `json:"budgetLevel,omitempty"`
+
 	// BudgetType Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetType *CreateStandaloneAdJSONBodyBudgetType `json:"budgetType,omitempty"`
 
@@ -14150,6 +14457,35 @@ type CreateStandaloneAdJSONBody struct {
 	// Note Meta API spelling: dsa_payor (not dsa_payer).
 	DsaPayor *string `json:"dsaPayor,omitempty"`
 
+	// DynamicCreative Meta only. Dynamic Creative: supply a POOL of assets and Meta auto-combines and
+	// optimises them into the best-performing variations within a single ad (mapped to the
+	// creative's `asset_feed_spec`). When set, the top-level single-creative fields
+	// (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored. Mutually
+	// exclusive with the `creatives[]` multi-creative shape. Meta limits: ≤10 images,
+	// ≤5 bodies / titles / descriptions.
+	DynamicCreative *struct {
+		// AdFormat Asset-feed ad format. Defaults to SINGLE_IMAGE.
+		AdFormat *CreateStandaloneAdJSONBodyDynamicCreativeAdFormat `json:"adFormat,omitempty"`
+
+		// Bodies Primary-text variations (the body copy).
+		Bodies *[]string `json:"bodies,omitempty"`
+
+		// CallToActionTypes CTA-button variations. Required.
+		CallToActionTypes *[]CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes `json:"callToActionTypes,omitempty"`
+
+		// Descriptions Description (link caption) variations.
+		Descriptions *[]string `json:"descriptions,omitempty"`
+
+		// ImageUrls Pool of image URLs (1-10). Uploaded to the ad account and referenced by hash in the asset feed.
+		ImageUrls []string `json:"imageUrls"`
+
+		// LinkUrls Destination URL variations. At least one is required unless `goal` is `lead_generation`.
+		LinkUrls *[]string `json:"linkUrls,omitempty"`
+
+		// Titles Headline variations.
+		Titles *[]string `json:"titles,omitempty"`
+	} `json:"dynamicCreative,omitempty"`
+
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
@@ -14197,6 +14533,12 @@ type CreateStandaloneAdJSONBody struct {
 	// with housing/employment/credit `specialAdCategories`.
 	IncomeTier *CreateStandaloneAdJSONBodyIncomeTier `json:"incomeTier,omitempty"`
 
+	// InstagramAccountId Meta only. Override the Instagram account the ad is delivered as — pass an Instagram
+	// Business Account ID (e.g. 17841...), mapped to the creative's `instagram_user_id`.
+	// When omitted we auto-resolve the IG account linked to the connected Facebook Page
+	// (the existing default). Useful when a Page has more than one eligible IG account.
+	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
+
 	// Interests Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests *[]struct {
 		Id   string `json:"id"`
@@ -14227,6 +14569,30 @@ type CreateStandaloneAdJSONBody struct {
 
 	// OrganizationId LinkedIn only. The Company Page that authors the Direct Sponsored Content ("dark") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
+
+	// Placements Meta only. Manual ad placements. Omit for automatic placements (Meta's default,
+	// recommended for most cases — Meta optimises delivery across all eligible surfaces).
+	// When set, restricts delivery to the chosen surfaces, mapped onto the ad set's
+	// `targeting.{publisher_platforms, facebook_positions, instagram_positions,
+	// messenger_positions, audience_network_positions, threads_positions,
+	// whatsapp_positions, device_platforms}`. Enum membership is validated here; Meta
+	// additionally enforces co-selection rules (e.g. some positions require their parent
+	// publisher platform) and returns an actionable error which we surface. Non-Meta
+	// platforms reject this field.
+	Placements *struct {
+		AudienceNetworkPositions *[]CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions `json:"audienceNetworkPositions,omitempty"`
+
+		// DevicePlatforms Restrict by device. Omit to deliver on both mobile and desktop.
+		DevicePlatforms    *[]CreateStandaloneAdJSONBodyPlacementsDevicePlatforms    `json:"devicePlatforms,omitempty"`
+		FacebookPositions  *[]CreateStandaloneAdJSONBodyPlacementsFacebookPositions  `json:"facebookPositions,omitempty"`
+		InstagramPositions *[]CreateStandaloneAdJSONBodyPlacementsInstagramPositions `json:"instagramPositions,omitempty"`
+		MessengerPositions *[]CreateStandaloneAdJSONBodyPlacementsMessengerPositions `json:"messengerPositions,omitempty"`
+
+		// PublisherPlatforms Top-level platforms to deliver on. A position field below is only honoured when its parent platform is included here.
+		PublisherPlatforms *[]CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms `json:"publisherPlatforms,omitempty"`
+		ThreadsPositions   *[]CreateStandaloneAdJSONBodyPlacementsThreadsPositions   `json:"threadsPositions,omitempty"`
+		WhatsappPositions  *[]CreateStandaloneAdJSONBodyPlacementsWhatsappPositions  `json:"whatsappPositions,omitempty"`
+	} `json:"placements,omitempty"`
 
 	// PromotedObject What the ad optimises against. Behaviour depends on the platform.
 	//
@@ -14309,6 +14675,12 @@ type CreateStandaloneAdJSONBody struct {
 	// category disables income/zip targeting on Meta.
 	SpecialAdCategories *[]CreateStandaloneAdJSONBodySpecialAdCategories `json:"specialAdCategories,omitempty"`
 
+	// StartDate Meta only. Ad-set start time (ISO 8601, e.g. "2026-06-10T09:00:00Z"), mapped to the
+	// ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime
+	// budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already
+	// available on `POST /v1/ads/boost`.)
+	StartDate *time.Time `json:"startDate,omitempty"`
+
 	// Video Meta (facebook, instagram) and LinkedIn. When set, creates a VIDEO ad on the legacy (or, for Meta, attach) shape. Mutually exclusive with `imageUrl`. For Meta multi-creative, set `video` per entry inside `creatives[]` instead. For LinkedIn the video is uploaded to LinkedIn under the authoring Company Page (see `organizationId`) and the campaign format is set to SINGLE_VIDEO; LinkedIn ignores `thumbnailUrl` (it auto-generates the poster frame) — supply MP4 H.264/AAC, 3s-30min, 75KB-500MB.
 	Video *struct {
 		// ThumbnailUrl Public URL of a still-image thumbnail for the video. Required by Meta on every video creative (uploaded as an ad image and referenced in object_story_spec.video_data). Ignored by LinkedIn (auto-generated poster frame).
@@ -14334,6 +14706,9 @@ type CreateStandaloneAdJSONBodyAttributionSpecEventType string
 // CreateStandaloneAdJSONBodyAttributionSpecWindowDays defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyAttributionSpecWindowDays int
 
+// CreateStandaloneAdJSONBodyBudgetLevel defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyBudgetLevel string
+
 // CreateStandaloneAdJSONBodyBudgetType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyBudgetType string
 
@@ -14352,6 +14727,12 @@ type CreateStandaloneAdJSONBodyCreativesCallToAction string
 // CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCustomLocationsDistanceUnit string
 
+// CreateStandaloneAdJSONBodyDynamicCreativeAdFormat defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyDynamicCreativeAdFormat string
+
+// CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyDynamicCreativeCallToActionTypes string
+
 // CreateStandaloneAdJSONBodyGender defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyGender string
 
@@ -14363,6 +14744,30 @@ type CreateStandaloneAdJSONBodyIdentityType string
 
 // CreateStandaloneAdJSONBodyIncomeTier defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyIncomeTier string
+
+// CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsAudienceNetworkPositions string
+
+// CreateStandaloneAdJSONBodyPlacementsDevicePlatforms defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsDevicePlatforms string
+
+// CreateStandaloneAdJSONBodyPlacementsFacebookPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsFacebookPositions string
+
+// CreateStandaloneAdJSONBodyPlacementsInstagramPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsInstagramPositions string
+
+// CreateStandaloneAdJSONBodyPlacementsMessengerPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsMessengerPositions string
+
+// CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsPublisherPlatforms string
+
+// CreateStandaloneAdJSONBodyPlacementsThreadsPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsThreadsPositions string
+
+// CreateStandaloneAdJSONBodyPlacementsWhatsappPositions defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyPlacementsWhatsappPositions string
 
 // CreateStandaloneAdJSONBodySpecialAdCategories defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodySpecialAdCategories string
