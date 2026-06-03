@@ -15401,8 +15401,11 @@ type ListLeadsParams struct {
 
 // EstimateAdReachJSONBody defines parameters for EstimateAdReach.
 type EstimateAdReachJSONBody struct {
-	// AccountId Social account ID on the target ad platform.
+	// AccountId Zernio social account ID on the target ad platform (the estimate runs against its platform).
 	AccountId string `json:"accountId"`
+
+	// AdAccountId Required. The platform ad-account ID the reach call runs against (Meta act_..., LinkedIn numeric sponsoredAccount ID, Pinterest ad-account ID, X account ID) - every backing reach API is scoped to one ad account. Get it from GET /v1/ads/accounts.
+	AdAccountId string `json:"adAccountId"`
 
 	// OptimizationGoal Optional. The optimization goal the estimate should assume (platform's
 	// own vocabulary, e.g. Meta `REACH`, `LINK_CLICKS`, `OFFSITE_CONVERSIONS`).
