@@ -8361,6 +8361,27 @@ func (e ListPostsParamsSortBy) Valid() bool {
 	}
 }
 
+// Defines values for UpdatePostJSONBodyVisibility.
+const (
+	UpdatePostJSONBodyVisibilityPrivate  UpdatePostJSONBodyVisibility = "private"
+	UpdatePostJSONBodyVisibilityPublic   UpdatePostJSONBodyVisibility = "public"
+	UpdatePostJSONBodyVisibilityUnlisted UpdatePostJSONBodyVisibility = "unlisted"
+)
+
+// Valid indicates whether the value is a known member of the UpdatePostJSONBodyVisibility enum.
+func (e UpdatePostJSONBodyVisibility) Valid() bool {
+	switch e {
+	case UpdatePostJSONBodyVisibilityPrivate:
+		return true
+	case UpdatePostJSONBodyVisibilityPublic:
+		return true
+	case UpdatePostJSONBodyVisibilityUnlisted:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for EditPostJSONBodyPlatform.
 const (
 	EditPostJSONBodyPlatformTwitter EditPostJSONBodyPlatform = "twitter"
@@ -8879,19 +8900,19 @@ func (e ValidatePostJSONBodyPlatformsPlatform) Valid() bool {
 
 // Defines values for ValidateSubreddit200JSONResponseBody0SubredditType.
 const (
-	ValidateSubreddit200JSONResponseBody0SubredditTypePrivate    ValidateSubreddit200JSONResponseBody0SubredditType = "private"
-	ValidateSubreddit200JSONResponseBody0SubredditTypePublic     ValidateSubreddit200JSONResponseBody0SubredditType = "public"
-	ValidateSubreddit200JSONResponseBody0SubredditTypeRestricted ValidateSubreddit200JSONResponseBody0SubredditType = "restricted"
+	Private    ValidateSubreddit200JSONResponseBody0SubredditType = "private"
+	Public     ValidateSubreddit200JSONResponseBody0SubredditType = "public"
+	Restricted ValidateSubreddit200JSONResponseBody0SubredditType = "restricted"
 )
 
 // Valid indicates whether the value is a known member of the ValidateSubreddit200JSONResponseBody0SubredditType enum.
 func (e ValidateSubreddit200JSONResponseBody0SubredditType) Valid() bool {
 	switch e {
-	case ValidateSubreddit200JSONResponseBody0SubredditTypePrivate:
+	case Private:
 		return true
-	case ValidateSubreddit200JSONResponseBody0SubredditTypePublic:
+	case Public:
 		return true
-	case ValidateSubreddit200JSONResponseBody0SubredditTypeRestricted:
+	case Restricted:
 		return true
 	default:
 		return false
@@ -11887,10 +11908,10 @@ type RecyclingConfig struct {
 	// Enabled Set to false to disable recycling on this post
 	Enabled *bool `json:"enabled,omitempty"`
 
-	// ExpireCount Stop recycling after this many copies have been created
+	// ExpireCount Stop recycling after this many copies have been created. Send null on update to clear this limit.
 	ExpireCount *int `json:"expireCount,omitempty"`
 
-	// ExpireDate Stop recycling after this date, regardless of count
+	// ExpireDate Stop recycling after this date, regardless of count. Send null on update to clear this limit.
 	ExpireDate *time.Time `json:"expireDate,omitempty"`
 
 	// Gap Number of interval units between each repost. Required when enabling recycling.
@@ -17869,12 +17890,12 @@ type CreatePostJSONBody struct {
 
 	// Platforms Target platforms and accounts for this post. Required for non-draft posts (returns 400 if empty). Drafts can omit platforms.
 	Platforms *[]struct {
-		AccountId *string `json:"accountId,omitempty"`
+		AccountId string `json:"accountId"`
 
 		// CustomContent Platform-specific text override. When set, this content is used instead of the top-level post content for this platform. Useful for tailoring captions per platform (e.g. keeping tweets under 280 characters).
 		CustomContent        *string                                            `json:"customContent,omitempty"`
 		CustomMedia          *[]MediaItem                                       `json:"customMedia,omitempty"`
-		Platform             *string                                            `json:"platform,omitempty"`
+		Platform             string                                             `json:"platform"`
 		PlatformSpecificData *CreatePostJSONBody_Platforms_PlatformSpecificData `json:"platformSpecificData,omitempty"`
 
 		// ScheduledFor Optional per-platform scheduled time override. When omitted, the top-level scheduledFor is used.
@@ -17945,10 +17966,37 @@ type BulkUploadPostsParams struct {
 
 // UpdatePostJSONBody defines parameters for UpdatePost.
 type UpdatePostJSONBody struct {
-	Content *string `json:"content,omitempty"`
+	Content             *string `json:"content,omitempty"`
+	CrosspostingEnabled *bool   `json:"crosspostingEnabled,omitempty"`
 
 	// FacebookSettings Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
-	FacebookSettings *FacebookPlatformData `json:"facebookSettings,omitempty"`
+	FacebookSettings *FacebookPlatformData   `json:"facebookSettings,omitempty"`
+	Hashtags         *[]string               `json:"hashtags,omitempty"`
+	IsDraft          *bool                   `json:"isDraft,omitempty"`
+	MediaItems       *[]MediaItem            `json:"mediaItems,omitempty"`
+	Mentions         *[]string               `json:"mentions,omitempty"`
+	Metadata         *map[string]interface{} `json:"metadata,omitempty"`
+
+	// Platforms Target platforms and accounts for this post. Each item must include platform and accountId.
+	Platforms *[]struct {
+		AccountId string `json:"accountId"`
+
+		// CustomContent Platform-specific text override.
+		CustomContent        *string                 `json:"customContent,omitempty"`
+		CustomMedia          *[]MediaItem            `json:"customMedia,omitempty"`
+		Platform             string                  `json:"platform"`
+		PlatformSpecificData *map[string]interface{} `json:"platformSpecificData,omitempty"`
+
+		// ScheduledFor Optional per-platform scheduled time override.
+		ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	} `json:"platforms,omitempty"`
+	PublishNow *bool `json:"publishNow,omitempty"`
+
+	// QueueId Specific queue ID to use when scheduling via queue.
+	QueueId *string `json:"queueId,omitempty"`
+
+	// QueuedFromProfile Profile ID to schedule via queue.
+	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
 
 	// Recycling Configure automatic post recycling (reposting at regular intervals).
 	// After the post is published, the system creates new scheduled copies at the
@@ -17958,6 +18006,7 @@ type UpdatePostJSONBody struct {
 	// Content variations are recommended for Twitter and Pinterest to avoid duplicate flags.
 	Recycling    *RecyclingConfig `json:"recycling,omitempty"`
 	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
+	Tags         *[]string        `json:"tags,omitempty"`
 
 	// TiktokSettings Photo carousels up to 35 images. Video titles up to 2200 chars, photo titles truncated to 90 chars.
 	// privacyLevel must match creator_info options. Both camelCase and snake_case accepted.
@@ -17974,9 +18023,15 @@ type UpdatePostJSONBody struct {
 	// When draft: true, the video.upload scope is required. When draft is false or omitted
 	// (direct post), the video.publish scope is required. For Creator Inbox, TikTok app version
 	// must be 31.8 or higher.
-	TiktokSettings       *TikTokPlatformData    `json:"tiktokSettings,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	TiktokSettings       *TikTokPlatformData           `json:"tiktokSettings,omitempty"`
+	Timezone             *string                       `json:"timezone,omitempty"`
+	Title                *string                       `json:"title,omitempty"`
+	Visibility           *UpdatePostJSONBodyVisibility `json:"visibility,omitempty"`
+	AdditionalProperties map[string]interface{}        `json:"-"`
 }
+
+// UpdatePostJSONBodyVisibility defines parameters for UpdatePost.
+type UpdatePostJSONBodyVisibility string
 
 // EditPostJSONBody defines parameters for EditPost.
 type EditPostJSONBody struct {
@@ -19866,12 +19921,92 @@ func (a *UpdatePostJSONBody) UnmarshalJSON(b []byte) error {
 		delete(object, "content")
 	}
 
+	if raw, found := object["crosspostingEnabled"]; found {
+		err = json.Unmarshal(raw, &a.CrosspostingEnabled)
+		if err != nil {
+			return fmt.Errorf("error reading 'crosspostingEnabled': %w", err)
+		}
+		delete(object, "crosspostingEnabled")
+	}
+
 	if raw, found := object["facebookSettings"]; found {
 		err = json.Unmarshal(raw, &a.FacebookSettings)
 		if err != nil {
 			return fmt.Errorf("error reading 'facebookSettings': %w", err)
 		}
 		delete(object, "facebookSettings")
+	}
+
+	if raw, found := object["hashtags"]; found {
+		err = json.Unmarshal(raw, &a.Hashtags)
+		if err != nil {
+			return fmt.Errorf("error reading 'hashtags': %w", err)
+		}
+		delete(object, "hashtags")
+	}
+
+	if raw, found := object["isDraft"]; found {
+		err = json.Unmarshal(raw, &a.IsDraft)
+		if err != nil {
+			return fmt.Errorf("error reading 'isDraft': %w", err)
+		}
+		delete(object, "isDraft")
+	}
+
+	if raw, found := object["mediaItems"]; found {
+		err = json.Unmarshal(raw, &a.MediaItems)
+		if err != nil {
+			return fmt.Errorf("error reading 'mediaItems': %w", err)
+		}
+		delete(object, "mediaItems")
+	}
+
+	if raw, found := object["mentions"]; found {
+		err = json.Unmarshal(raw, &a.Mentions)
+		if err != nil {
+			return fmt.Errorf("error reading 'mentions': %w", err)
+		}
+		delete(object, "mentions")
+	}
+
+	if raw, found := object["metadata"]; found {
+		err = json.Unmarshal(raw, &a.Metadata)
+		if err != nil {
+			return fmt.Errorf("error reading 'metadata': %w", err)
+		}
+		delete(object, "metadata")
+	}
+
+	if raw, found := object["platforms"]; found {
+		err = json.Unmarshal(raw, &a.Platforms)
+		if err != nil {
+			return fmt.Errorf("error reading 'platforms': %w", err)
+		}
+		delete(object, "platforms")
+	}
+
+	if raw, found := object["publishNow"]; found {
+		err = json.Unmarshal(raw, &a.PublishNow)
+		if err != nil {
+			return fmt.Errorf("error reading 'publishNow': %w", err)
+		}
+		delete(object, "publishNow")
+	}
+
+	if raw, found := object["queueId"]; found {
+		err = json.Unmarshal(raw, &a.QueueId)
+		if err != nil {
+			return fmt.Errorf("error reading 'queueId': %w", err)
+		}
+		delete(object, "queueId")
+	}
+
+	if raw, found := object["queuedFromProfile"]; found {
+		err = json.Unmarshal(raw, &a.QueuedFromProfile)
+		if err != nil {
+			return fmt.Errorf("error reading 'queuedFromProfile': %w", err)
+		}
+		delete(object, "queuedFromProfile")
 	}
 
 	if raw, found := object["recycling"]; found {
@@ -19890,12 +20025,44 @@ func (a *UpdatePostJSONBody) UnmarshalJSON(b []byte) error {
 		delete(object, "scheduledFor")
 	}
 
+	if raw, found := object["tags"]; found {
+		err = json.Unmarshal(raw, &a.Tags)
+		if err != nil {
+			return fmt.Errorf("error reading 'tags': %w", err)
+		}
+		delete(object, "tags")
+	}
+
 	if raw, found := object["tiktokSettings"]; found {
 		err = json.Unmarshal(raw, &a.TiktokSettings)
 		if err != nil {
 			return fmt.Errorf("error reading 'tiktokSettings': %w", err)
 		}
 		delete(object, "tiktokSettings")
+	}
+
+	if raw, found := object["timezone"]; found {
+		err = json.Unmarshal(raw, &a.Timezone)
+		if err != nil {
+			return fmt.Errorf("error reading 'timezone': %w", err)
+		}
+		delete(object, "timezone")
+	}
+
+	if raw, found := object["title"]; found {
+		err = json.Unmarshal(raw, &a.Title)
+		if err != nil {
+			return fmt.Errorf("error reading 'title': %w", err)
+		}
+		delete(object, "title")
+	}
+
+	if raw, found := object["visibility"]; found {
+		err = json.Unmarshal(raw, &a.Visibility)
+		if err != nil {
+			return fmt.Errorf("error reading 'visibility': %w", err)
+		}
+		delete(object, "visibility")
 	}
 
 	if len(object) != 0 {
@@ -19924,10 +20091,80 @@ func (a UpdatePostJSONBody) MarshalJSON() ([]byte, error) {
 		}
 	}
 
+	if a.CrosspostingEnabled != nil {
+		object["crosspostingEnabled"], err = json.Marshal(a.CrosspostingEnabled)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'crosspostingEnabled': %w", err)
+		}
+	}
+
 	if a.FacebookSettings != nil {
 		object["facebookSettings"], err = json.Marshal(a.FacebookSettings)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'facebookSettings': %w", err)
+		}
+	}
+
+	if a.Hashtags != nil {
+		object["hashtags"], err = json.Marshal(a.Hashtags)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'hashtags': %w", err)
+		}
+	}
+
+	if a.IsDraft != nil {
+		object["isDraft"], err = json.Marshal(a.IsDraft)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'isDraft': %w", err)
+		}
+	}
+
+	if a.MediaItems != nil {
+		object["mediaItems"], err = json.Marshal(a.MediaItems)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'mediaItems': %w", err)
+		}
+	}
+
+	if a.Mentions != nil {
+		object["mentions"], err = json.Marshal(a.Mentions)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'mentions': %w", err)
+		}
+	}
+
+	if a.Metadata != nil {
+		object["metadata"], err = json.Marshal(a.Metadata)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'metadata': %w", err)
+		}
+	}
+
+	if a.Platforms != nil {
+		object["platforms"], err = json.Marshal(a.Platforms)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'platforms': %w", err)
+		}
+	}
+
+	if a.PublishNow != nil {
+		object["publishNow"], err = json.Marshal(a.PublishNow)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'publishNow': %w", err)
+		}
+	}
+
+	if a.QueueId != nil {
+		object["queueId"], err = json.Marshal(a.QueueId)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'queueId': %w", err)
+		}
+	}
+
+	if a.QueuedFromProfile != nil {
+		object["queuedFromProfile"], err = json.Marshal(a.QueuedFromProfile)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'queuedFromProfile': %w", err)
 		}
 	}
 
@@ -19945,10 +20182,38 @@ func (a UpdatePostJSONBody) MarshalJSON() ([]byte, error) {
 		}
 	}
 
+	if a.Tags != nil {
+		object["tags"], err = json.Marshal(a.Tags)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'tags': %w", err)
+		}
+	}
+
 	if a.TiktokSettings != nil {
 		object["tiktokSettings"], err = json.Marshal(a.TiktokSettings)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'tiktokSettings': %w", err)
+		}
+	}
+
+	if a.Timezone != nil {
+		object["timezone"], err = json.Marshal(a.Timezone)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'timezone': %w", err)
+		}
+	}
+
+	if a.Title != nil {
+		object["title"], err = json.Marshal(a.Title)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'title': %w", err)
+		}
+	}
+
+	if a.Visibility != nil {
+		object["visibility"], err = json.Marshal(a.Visibility)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'visibility': %w", err)
 		}
 	}
 
