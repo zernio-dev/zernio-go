@@ -14828,28 +14828,36 @@ type CreateStandaloneAdJSONBody struct {
 	// OrganizationId LinkedIn only. The Company Page that authors the Direct Sponsored Content ("dark") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
 
-	// PlacementAssets Meta only. Placement asset customization: pin a SPECIFIC image to each placement
-	// group on a SINGLE ad (e.g. a 9:16 image on Stories/Reels and a 4:5 on Feed). This
-	// is the same thing Meta Ads Manager produces with "different creative per placement",
-	// mapped to the creative's `asset_feed_spec` + `asset_customization_rules`. It is
-	// deterministic pinning, NOT the auto-optimizing pool of `dynamicCreative` (the two are
-	// mutually exclusive, and it cannot be combined with `creatives[]` or `adSetId`). The
-	// shared copy (headline, body, link, CTA) comes from the top-level single-creative
-	// fields (`headline`, `body`, `linkUrl`, `callToAction`) since only the image varies by
+	// PlacementAssets Meta only. Placement asset customization: pin a SPECIFIC asset (image OR video) to
+	// each placement group on a SINGLE ad (e.g. a 9:16 on Stories/Reels and a 4:5 on Feed).
+	// The same thing Meta Ads Manager produces with "different creative per placement",
+	// mapped to the creative's `asset_feed_spec` + `asset_customization_rules`. Deterministic
+	// pinning, NOT the auto-optimizing pool of `dynamicCreative` (mutually exclusive, and it
+	// cannot be combined with `creatives[]` or `adSetId`). Shared copy (headline, body, link,
+	// CTA) comes from the top-level single-creative fields since only the asset varies by
 	// placement. Each rule's `placements` accepts the same fields as the top-level
 	// `placements` object; Meta enforces co-selection rules and returns an actionable error.
+	//
+	// A block is all-image OR all-video, never mixed (Meta's asset_feed_spec carries one ad
+	// format). Image mode: `defaultImageUrl` + `rules[].imageUrl`. Video mode:
+	// `defaultVideoUrl` + `rules[].videoUrl` (optional `thumbnailUrl`/`defaultThumbnailUrl`
+	// posters; Meta auto-generates when omitted). Exactly one catch-all default is required.
 	PlacementAssets *struct {
-		// DefaultImageUrl Catch-all image for any placement not matched by a rule. REQUIRED — Meta mandates
-		// a default asset customization rule (empty placement spec, lowest priority) on every
-		// placement-customized creative.
-		DefaultImageUrl string `json:"defaultImageUrl"`
+		// DefaultImageUrl Image mode. Catch-all image for any placement no rule matches. Required in image mode (Meta mandates a default rule).
+		DefaultImageUrl *string `json:"defaultImageUrl,omitempty"`
 
-		// Rules One entry per placement group you want to pin a specific image to.
+		// DefaultThumbnailUrl Video mode (optional). Poster image for the default video; Meta auto-generates one when omitted.
+		DefaultThumbnailUrl *string `json:"defaultThumbnailUrl,omitempty"`
+
+		// DefaultVideoUrl Video mode. Catch-all video for any placement no rule matches. Required in video mode.
+		DefaultVideoUrl *string `json:"defaultVideoUrl,omitempty"`
+
+		// Rules One entry per placement group you want to pin a specific asset to.
 		Rules []struct {
-			// ImageUrl The image to deliver for this rule's placements.
-			ImageUrl string `json:"imageUrl"`
+			// ImageUrl Image mode. The image to deliver for this rule's placements.
+			ImageUrl *string `json:"imageUrl,omitempty"`
 
-			// Placements Placements this image is pinned to. At least one field must be set (an empty rule is invalid — that role is served by defaultImageUrl). Same enums as the top-level `placements` object.
+			// Placements Placements this asset is pinned to. At least one field must be set (an empty rule is invalid — that role is served by the default asset). Same enums as the top-level `placements` object.
 			Placements struct {
 				AudienceNetworkPositions *[]CreateStandaloneAdJSONBodyPlacementAssetsRulesPlacementsAudienceNetworkPositions `json:"audienceNetworkPositions,omitempty"`
 				DevicePlatforms          *[]CreateStandaloneAdJSONBodyPlacementAssetsRulesPlacementsDevicePlatforms          `json:"devicePlatforms,omitempty"`
@@ -14860,6 +14868,12 @@ type CreateStandaloneAdJSONBody struct {
 				ThreadsPositions         *[]CreateStandaloneAdJSONBodyPlacementAssetsRulesPlacementsThreadsPositions         `json:"threadsPositions,omitempty"`
 				WhatsappPositions        *[]CreateStandaloneAdJSONBodyPlacementAssetsRulesPlacementsWhatsappPositions        `json:"whatsappPositions,omitempty"`
 			} `json:"placements"`
+
+			// ThumbnailUrl Video mode (optional). Poster image for this rule's video; auto-generated when omitted.
+			ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+
+			// VideoUrl Video mode. The video to deliver for this rule's placements.
+			VideoUrl *string `json:"videoUrl,omitempty"`
 		} `json:"rules"`
 	} `json:"placementAssets,omitempty"`
 
