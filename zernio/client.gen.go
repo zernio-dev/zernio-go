@@ -13578,9 +13578,20 @@ type UpdateGoogleBusinessLocationDetailsParams struct {
 	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
 }
 
+// GetGmbLocationsParams defines parameters for GetGmbLocations.
+type GetGmbLocationsParams struct {
+	// Search Free-text search on the business name, applied server-side by Google. Use for accounts with many locations.
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Filter Raw Google Business Information API filter expression (advanced; takes precedence over search), e.g. storeCode="LH279411".
+	Filter *string `form:"filter,omitempty" json:"filter,omitempty"`
+}
+
 // UpdateGmbLocationJSONBody defines parameters for UpdateGmbLocation.
 type UpdateGmbLocationJSONBody struct {
-	SelectedLocationId string `json:"selectedLocationId"`
+	// AccountId Optional but recommended. The Google Business Account resource name ("accounts/123") that owns the new location (from GET gmb-locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations.
+	AccountId          *string `json:"accountId,omitempty"`
+	SelectedLocationId string  `json:"selectedLocationId"`
 }
 
 // DeleteGoogleBusinessMediaParams defines parameters for DeleteGoogleBusinessMedia.
@@ -16400,10 +16411,19 @@ type ListGoogleBusinessLocationsParams struct {
 
 	// TempToken Legacy. Direct Google access token. Use pendingDataToken instead when available.
 	TempToken *string `form:"tempToken,omitempty" json:"tempToken,omitempty"`
+
+	// Search Free-text search on the business name, applied server-side by Google. Use this for accounts that own many locations (the response is bounded, see hasMore) so the user can find a specific location without loading the full list.
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Filter Raw Google Business Information API filter expression (advanced; takes precedence over search). Supports fields such as title, storeCode, storefront_address.postal_code, labels and categories, e.g. storeCode="LH279411". See Google's "Work with location data" guide.
+	Filter *string `form:"filter,omitempty" json:"filter,omitempty"`
 }
 
 // SelectGoogleBusinessLocationJSONBody defines parameters for SelectGoogleBusinessLocation.
 type SelectGoogleBusinessLocationJSONBody struct {
+	// AccountId Optional but recommended. The Google Business Account resource name ("accounts/123") that owns the selected location (returned per-location by GET /v1/connect/googlebusiness/locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts that own many locations. Omit only for small accounts.
+	AccountId *string `json:"accountId,omitempty"`
+
 	// LocationId The Google Business location ID selected by the user
 	LocationId string `json:"locationId"`
 
@@ -22942,7 +22962,7 @@ type ClientInterface interface {
 	UpdateGoogleBusinessLocationDetails(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGmbLocations request
-	GetGmbLocations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetGmbLocations(ctx context.Context, accountId string, params *GetGmbLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateGmbLocationWithBody request with any body
 	UpdateGmbLocationWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -24695,8 +24715,8 @@ func (c *Client) UpdateGoogleBusinessLocationDetails(ctx context.Context, accoun
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetGmbLocations(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetGmbLocationsRequest(c.Server, accountId)
+func (c *Client) GetGmbLocations(ctx context.Context, accountId string, params *GetGmbLocationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGmbLocationsRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -31955,7 +31975,7 @@ func NewUpdateGoogleBusinessLocationDetailsRequestWithBody(server string, accoun
 }
 
 // NewGetGmbLocationsRequest generates requests for GetGmbLocations
-func NewGetGmbLocationsRequest(server string, accountId string) (*http.Request, error) {
+func NewGetGmbLocationsRequest(server string, accountId string, params *GetGmbLocationsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -31978,6 +31998,45 @@ func NewGetGmbLocationsRequest(server string, accountId string) (*http.Request, 
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Filter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "filter", *params.Filter, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -40225,6 +40284,30 @@ func NewListGoogleBusinessLocationsRequest(server string, params *ListGoogleBusi
 		if params.TempToken != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "tempToken", *params.TempToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Filter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "filter", *params.Filter, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -51261,7 +51344,7 @@ type ClientWithResponsesInterface interface {
 	UpdateGoogleBusinessLocationDetailsWithResponse(ctx context.Context, accountId string, params *UpdateGoogleBusinessLocationDetailsParams, body UpdateGoogleBusinessLocationDetailsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGoogleBusinessLocationDetailsResponse, error)
 
 	// GetGmbLocationsWithResponse request
-	GetGmbLocationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error)
+	GetGmbLocationsWithResponse(ctx context.Context, accountId string, params *GetGmbLocationsParams, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error)
 
 	// UpdateGmbLocationWithBodyWithResponse request with any body
 	UpdateGmbLocationWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGmbLocationResponse, error)
@@ -53844,7 +53927,10 @@ type GetGmbLocationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Cached    *bool `json:"cached,omitempty"`
+		Cached *bool `json:"cached,omitempty"`
+
+		// HasMore True when more locations exist than were returned (use search to narrow down).
+		HasMore   *bool `json:"hasMore,omitempty"`
 		Locations *[]struct {
 			AccountId   *string `json:"accountId,omitempty"`
 			AccountName *string `json:"accountName,omitempty"`
@@ -53852,6 +53938,7 @@ type GetGmbLocationsResponse struct {
 			Category    *string `json:"category,omitempty"`
 			Id          *string `json:"id,omitempty"`
 			Name        *string `json:"name,omitempty"`
+			StoreCode   *string `json:"storeCode,omitempty"`
 			WebsiteUrl  *string `json:"websiteUrl,omitempty"`
 		} `json:"locations,omitempty"`
 		SelectedLocationId *string `json:"selectedLocationId,omitempty"`
@@ -59679,6 +59766,8 @@ type ListGoogleBusinessLocationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// HasMore True when more locations exist than were returned (the list is bounded). Prompt the user to narrow the result set with search.
+		HasMore   *bool `json:"hasMore,omitempty"`
 		Locations *[]struct {
 			// AccountId Google Business Account ID
 			AccountId *string `json:"accountId,omitempty"`
@@ -59697,6 +59786,9 @@ type ListGoogleBusinessLocationsResponse struct {
 
 			// Name Business name
 			Name *string `json:"name,omitempty"`
+
+			// StoreCode Store code set on the location in Google Business Profile (if any)
+			StoreCode *string `json:"storeCode,omitempty"`
 		} `json:"locations,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -68474,8 +68566,8 @@ func (c *ClientWithResponses) UpdateGoogleBusinessLocationDetailsWithResponse(ct
 }
 
 // GetGmbLocationsWithResponse request returning *GetGmbLocationsResponse
-func (c *ClientWithResponses) GetGmbLocationsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error) {
-	rsp, err := c.GetGmbLocations(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) GetGmbLocationsWithResponse(ctx context.Context, accountId string, params *GetGmbLocationsParams, reqEditors ...RequestEditorFn) (*GetGmbLocationsResponse, error) {
+	rsp, err := c.GetGmbLocations(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -73990,7 +74082,10 @@ func ParseGetGmbLocationsResponse(rsp *http.Response) (*GetGmbLocationsResponse,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Cached    *bool `json:"cached,omitempty"`
+			Cached *bool `json:"cached,omitempty"`
+
+			// HasMore True when more locations exist than were returned (use search to narrow down).
+			HasMore   *bool `json:"hasMore,omitempty"`
 			Locations *[]struct {
 				AccountId   *string `json:"accountId,omitempty"`
 				AccountName *string `json:"accountName,omitempty"`
@@ -73998,6 +74093,7 @@ func ParseGetGmbLocationsResponse(rsp *http.Response) (*GetGmbLocationsResponse,
 				Category    *string `json:"category,omitempty"`
 				Id          *string `json:"id,omitempty"`
 				Name        *string `json:"name,omitempty"`
+				StoreCode   *string `json:"storeCode,omitempty"`
 				WebsiteUrl  *string `json:"websiteUrl,omitempty"`
 			} `json:"locations,omitempty"`
 			SelectedLocationId *string `json:"selectedLocationId,omitempty"`
@@ -80643,6 +80739,8 @@ func ParseListGoogleBusinessLocationsResponse(rsp *http.Response) (*ListGoogleBu
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// HasMore True when more locations exist than were returned (the list is bounded). Prompt the user to narrow the result set with search.
+			HasMore   *bool `json:"hasMore,omitempty"`
 			Locations *[]struct {
 				// AccountId Google Business Account ID
 				AccountId *string `json:"accountId,omitempty"`
@@ -80661,6 +80759,9 @@ func ParseListGoogleBusinessLocationsResponse(rsp *http.Response) (*ListGoogleBu
 
 				// Name Business name
 				Name *string `json:"name,omitempty"`
+
+				// StoreCode Store code set on the location in Google Business Profile (if any)
+				StoreCode *string `json:"storeCode,omitempty"`
 			} `json:"locations,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
