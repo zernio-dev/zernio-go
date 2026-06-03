@@ -4100,13 +4100,13 @@ func (e UpdateAdCampaignJSONBodyPlatform) Valid() bool {
 
 // Defines values for UpdateAdCampaign200JSONResponseBodyBudgetLevel.
 const (
-	Campaign UpdateAdCampaign200JSONResponseBodyBudgetLevel = "campaign"
+	UpdateAdCampaign200JSONResponseBodyBudgetLevelCampaign UpdateAdCampaign200JSONResponseBodyBudgetLevel = "campaign"
 )
 
 // Valid indicates whether the value is a known member of the UpdateAdCampaign200JSONResponseBodyBudgetLevel enum.
 func (e UpdateAdCampaign200JSONResponseBodyBudgetLevel) Valid() bool {
 	switch e {
-	case Campaign:
+	case UpdateAdCampaign200JSONResponseBodyBudgetLevelCampaign:
 		return true
 	default:
 		return false
@@ -5568,6 +5568,24 @@ const (
 func (e GetAdComments200JSONResponseBodyStatus) Valid() bool {
 	switch e {
 	case GetAdComments200JSONResponseBodyStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAdTrackingTags200JSONResponseBodyLevel.
+const (
+	GetAdTrackingTags200JSONResponseBodyLevelCampaign GetAdTrackingTags200JSONResponseBodyLevel = "campaign"
+	GetAdTrackingTags200JSONResponseBodyLevelCreative GetAdTrackingTags200JSONResponseBodyLevel = "creative"
+)
+
+// Valid indicates whether the value is a known member of the GetAdTrackingTags200JSONResponseBodyLevel enum.
+func (e GetAdTrackingTags200JSONResponseBodyLevel) Valid() bool {
+	switch e {
+	case GetAdTrackingTags200JSONResponseBodyLevelCampaign:
+		return true
+	case GetAdTrackingTags200JSONResponseBodyLevelCreative:
 		return true
 	default:
 		return false
@@ -10865,6 +10883,9 @@ type ConversionEvent struct {
 
 	// User User identity fields. More signals mean higher match rates.
 	User struct {
+		// City Meta advanced matching (ct). Plaintext city; normalized + SHA-256 hashed server-side. Meta only.
+		City *string `json:"city,omitempty"`
+
 		// ClickIds Platform click identifiers captured from the originating ad click.
 		ClickIds *struct {
 			// Fbc Meta click ID (from fbclid URL param).
@@ -10894,6 +10915,9 @@ type ConversionEvent struct {
 		// Country ISO 3166-1 alpha-2 country code, e.g. 'us'.
 		Country *string `json:"country,omitempty"`
 
+		// Dob Meta advanced matching (db). YYYYMMDD; hashed server-side. Meta only.
+		Dob *string `json:"dob,omitempty"`
+
 		// Email Plaintext email. Hashed server-side.
 		Email *string `json:"email,omitempty"`
 
@@ -10906,6 +10930,9 @@ type ConversionEvent struct {
 		// FirstName Plaintext first name. Hashed server-side.
 		FirstName *string `json:"firstName,omitempty"`
 
+		// Gender Meta advanced matching (ge). 'f' or 'm'; hashed server-side. Meta only.
+		Gender *string `json:"gender,omitempty"`
+
 		// IpAddress Client IP address. Sent plaintext.
 		IpAddress *string `json:"ipAddress,omitempty"`
 
@@ -10915,8 +10942,14 @@ type ConversionEvent struct {
 		// Phone Phone number, ideally E.164. Hashed server-side.
 		Phone *string `json:"phone,omitempty"`
 
+		// State Meta advanced matching (st). 2-letter ANSI for US; hashed server-side. Meta only.
+		State *string `json:"state,omitempty"`
+
 		// UserAgent Client user-agent string. Sent plaintext.
 		UserAgent *string `json:"userAgent,omitempty"`
+
+		// Zip Meta advanced matching (zp). US uses first 5 digits; hashed server-side. Meta only.
+		Zip *string `json:"zip,omitempty"`
 	} `json:"user"`
 
 	// Value Conversion value in the specified currency.
@@ -14508,6 +14541,15 @@ type SendConversions200JSONResponseBody_Failures_Code struct {
 // SendConversions200JSONResponseBodyPlatform defines parameters for SendConversions.
 type SendConversions200JSONResponseBodyPlatform string
 
+// GetConversionsQualityParams defines parameters for GetConversionsQuality.
+type GetConversionsQualityParams struct {
+	// AccountId SocialAccount _id (must be a metaads account).
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// DestinationId Meta pixel/dataset ID.
+	DestinationId string `form:"destinationId" json:"destinationId"`
+}
+
 // CreateStandaloneAdJSONBody defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBody struct {
 	AccountId   string `json:"accountId"`
@@ -15552,6 +15594,40 @@ type GetAdComments200JSONResponseBodyMetaPlatform string
 
 // GetAdComments200JSONResponseBodyStatus defines parameters for GetAdComments.
 type GetAdComments200JSONResponseBodyStatus string
+
+// GetAdTrackingTags200JSONResponseBodyLevel defines parameters for GetAdTrackingTags.
+type GetAdTrackingTags200JSONResponseBodyLevel string
+
+// UpdateAdTrackingTagsJSONBody defines parameters for UpdateAdTrackingTags.
+type UpdateAdTrackingTagsJSONBody struct {
+	// Creative Meta only. Required to rebuild the immutable creative when setting urlTags.
+	Creative *struct {
+		Body         string  `json:"body"`
+		CallToAction string  `json:"callToAction"`
+		Headline     string  `json:"headline"`
+		ImageUrl     string  `json:"imageUrl"`
+		LinkUrl      string  `json:"linkUrl"`
+		VideoUrl     *string `json:"videoUrl,omitempty"`
+	} `json:"creative,omitempty"`
+
+	// CustomValueParameters LinkedIn only. key -> static value.
+	CustomValueParameters *map[string]string `json:"customValueParameters,omitempty"`
+
+	// DynamicValueParameters LinkedIn only. key -> dynamic value enum (CAMPAIGN_ID, CAMPAIGN_NAME, CREATIVE_ID, ...).
+	DynamicValueParameters *map[string]string `json:"dynamicValueParameters,omitempty"`
+
+	// FinalUrlSuffix Google only. Parse-only key=value params.
+	FinalUrlSuffix *string `json:"finalUrlSuffix,omitempty"`
+
+	// TrackingUrlTemplate Google only. Full tracking template (must contain {lpurl}).
+	TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
+
+	// UrlTags Meta only. Click-URL params appended to a freshly-rebuilt creative.
+	UrlTags *[]struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	} `json:"urlTags,omitempty"`
+}
 
 // GetAnalyticsParams defines parameters for GetAnalytics.
 type GetAnalyticsParams struct {
@@ -19586,6 +19662,9 @@ type EstimateAdReachJSONRequestBody EstimateAdReachJSONBody
 // UpdateAdJSONRequestBody defines body for UpdateAd for application/json ContentType.
 type UpdateAdJSONRequestBody UpdateAdJSONBody
 
+// UpdateAdTrackingTagsJSONRequestBody defines body for UpdateAdTrackingTags for application/json ContentType.
+type UpdateAdTrackingTagsJSONRequestBody UpdateAdTrackingTagsJSONBody
+
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody CreateApiKeyJSONBody
 
@@ -23120,6 +23199,9 @@ type ClientInterface interface {
 
 	SendConversions(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetConversionsQuality request
+	GetConversionsQuality(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateStandaloneAdWithBody request with any body
 	CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -23188,6 +23270,14 @@ type ClientInterface interface {
 
 	// GetAdComments request
 	GetAdComments(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAdTrackingTags request
+	GetAdTrackingTags(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAdTrackingTagsWithBody request with any body
+	UpdateAdTrackingTagsWithBody(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAdTrackingTags(ctx context.Context, adId string, body UpdateAdTrackingTagsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAnalytics request
 	GetAnalytics(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25812,6 +25902,18 @@ func (c *Client) SendConversions(ctx context.Context, body SendConversionsJSONRe
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetConversionsQuality(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConversionsQualityRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateStandaloneAdRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -26102,6 +26204,42 @@ func (c *Client) GetAdAnalytics(ctx context.Context, adId string, params *GetAdA
 
 func (c *Client) GetAdComments(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAdCommentsRequest(c.Server, adId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAdTrackingTags(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAdTrackingTagsRequest(c.Server, adId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdTrackingTagsWithBody(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdTrackingTagsRequestWithBody(c.Server, adId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateAdTrackingTags(ctx context.Context, adId string, body UpdateAdTrackingTagsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAdTrackingTagsRequest(c.Server, adId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -35855,6 +35993,64 @@ func NewSendConversionsRequestWithBody(server string, contentType string, body i
 	return req, nil
 }
 
+// NewGetConversionsQualityRequest generates requests for GetConversionsQuality
+func NewGetConversionsQualityRequest(server string, params *GetConversionsQualityParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/conversions/quality")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "destinationId", params.DestinationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateStandaloneAdRequest calls the generic CreateStandaloneAd builder with application/json body
 func NewCreateStandaloneAdRequest(server string, body CreateStandaloneAdJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -37162,6 +37358,87 @@ func NewGetAdCommentsRequest(server string, adId string, params *GetAdCommentsPa
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetAdTrackingTagsRequest generates requests for GetAdTrackingTags
+func NewGetAdTrackingTagsRequest(server string, adId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s/tracking-tags", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAdTrackingTagsRequest calls the generic UpdateAdTrackingTags builder with application/json body
+func NewUpdateAdTrackingTagsRequest(server string, adId string, body UpdateAdTrackingTagsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAdTrackingTagsRequestWithBody(server, adId, "application/json", bodyReader)
+}
+
+// NewUpdateAdTrackingTagsRequestWithBody generates requests for UpdateAdTrackingTags with any type of body
+func NewUpdateAdTrackingTagsRequestWithBody(server string, adId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "adId", adId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/%s/tracking-tags", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -51241,6 +51518,9 @@ type ClientWithResponsesInterface interface {
 
 	SendConversionsWithResponse(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error)
 
+	// GetConversionsQualityWithResponse request
+	GetConversionsQualityWithResponse(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*GetConversionsQualityResponse, error)
+
 	// CreateStandaloneAdWithBodyWithResponse request with any body
 	CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
 
@@ -51309,6 +51589,14 @@ type ClientWithResponsesInterface interface {
 
 	// GetAdCommentsWithResponse request
 	GetAdCommentsWithResponse(ctx context.Context, adId string, params *GetAdCommentsParams, reqEditors ...RequestEditorFn) (*GetAdCommentsResponse, error)
+
+	// GetAdTrackingTagsWithResponse request
+	GetAdTrackingTagsWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*GetAdTrackingTagsResponse, error)
+
+	// UpdateAdTrackingTagsWithBodyWithResponse request with any body
+	UpdateAdTrackingTagsWithBodyWithResponse(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdTrackingTagsResponse, error)
+
+	UpdateAdTrackingTagsWithResponse(ctx context.Context, adId string, body UpdateAdTrackingTagsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdTrackingTagsResponse, error)
 
 	// GetAnalyticsWithResponse request
 	GetAnalyticsWithResponse(ctx context.Context, params *GetAnalyticsParams, reqEditors ...RequestEditorFn) (*GetAnalyticsResponse, error)
@@ -56541,6 +56829,51 @@ func (r SendConversionsResponse) ContentType() string {
 	return ""
 }
 
+type GetConversionsQualityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Platform *string `json:"platform,omitempty"`
+		Rows     *[]struct {
+			// CompositeScore Composite EMQ score, 0-10.
+			CompositeScore *float32 `json:"compositeScore,omitempty"`
+
+			// EventCoveragePercentage Pixel↔CAPI coverage rate for this event.
+			EventCoveragePercentage *float32 `json:"eventCoveragePercentage,omitempty"`
+			EventName               *string  `json:"eventName,omitempty"`
+			MatchKeys               *[]struct {
+				CoveragePercentage *float32 `json:"coveragePercentage,omitempty"`
+				Identifier         *string  `json:"identifier,omitempty"`
+			} `json:"matchKeys,omitempty"`
+		} `json:"rows,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConversionsQualityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConversionsQualityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetConversionsQualityResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type CreateStandaloneAdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -57375,6 +57708,87 @@ func (r GetAdCommentsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetAdCommentsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetAdTrackingTagsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// CustomValueParameters LinkedIn.
+		CustomValueParameters *map[string]interface{} `json:"customValueParameters,omitempty"`
+
+		// DynamicValueParameters LinkedIn.
+		DynamicValueParameters *map[string]interface{} `json:"dynamicValueParameters,omitempty"`
+
+		// FinalUrlSuffix Google.
+		FinalUrlSuffix *string                                    `json:"finalUrlSuffix,omitempty"`
+		Level          *GetAdTrackingTags200JSONResponseBodyLevel `json:"level,omitempty"`
+		Platform       *string                                    `json:"platform,omitempty"`
+
+		// TemplateUrlSpec Meta: third-party click-tracking template (Dynamic Ads).
+		TemplateUrlSpec *map[string]interface{} `json:"templateUrlSpec,omitempty"`
+
+		// TrackingUrlTemplate Google.
+		TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
+
+		// UrlTags Meta: &-joined click-URL params.
+		UrlTags *string `json:"urlTags,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAdTrackingTagsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAdTrackingTagsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetAdTrackingTagsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateAdTrackingTagsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAdTrackingTagsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAdTrackingTagsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateAdTrackingTagsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -68929,6 +69343,15 @@ func (c *ClientWithResponses) SendConversionsWithResponse(ctx context.Context, b
 	return ParseSendConversionsResponse(rsp)
 }
 
+// GetConversionsQualityWithResponse request returning *GetConversionsQualityResponse
+func (c *ClientWithResponses) GetConversionsQualityWithResponse(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*GetConversionsQualityResponse, error) {
+	rsp, err := c.GetConversionsQuality(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConversionsQualityResponse(rsp)
+}
+
 // CreateStandaloneAdWithBodyWithResponse request with arbitrary body returning *CreateStandaloneAdResponse
 func (c *ClientWithResponses) CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
 	rsp, err := c.CreateStandaloneAdWithBody(ctx, contentType, body, reqEditors...)
@@ -69146,6 +69569,32 @@ func (c *ClientWithResponses) GetAdCommentsWithResponse(ctx context.Context, adI
 		return nil, err
 	}
 	return ParseGetAdCommentsResponse(rsp)
+}
+
+// GetAdTrackingTagsWithResponse request returning *GetAdTrackingTagsResponse
+func (c *ClientWithResponses) GetAdTrackingTagsWithResponse(ctx context.Context, adId string, reqEditors ...RequestEditorFn) (*GetAdTrackingTagsResponse, error) {
+	rsp, err := c.GetAdTrackingTags(ctx, adId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAdTrackingTagsResponse(rsp)
+}
+
+// UpdateAdTrackingTagsWithBodyWithResponse request with arbitrary body returning *UpdateAdTrackingTagsResponse
+func (c *ClientWithResponses) UpdateAdTrackingTagsWithBodyWithResponse(ctx context.Context, adId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAdTrackingTagsResponse, error) {
+	rsp, err := c.UpdateAdTrackingTagsWithBody(ctx, adId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdTrackingTagsResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAdTrackingTagsWithResponse(ctx context.Context, adId string, body UpdateAdTrackingTagsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdTrackingTagsResponse, error) {
+	rsp, err := c.UpdateAdTrackingTags(ctx, adId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAdTrackingTagsResponse(rsp)
 }
 
 // GetAnalyticsWithResponse request returning *GetAnalyticsResponse
@@ -76872,6 +77321,53 @@ func ParseSendConversionsResponse(rsp *http.Response) (*SendConversionsResponse,
 	return response, nil
 }
 
+// ParseGetConversionsQualityResponse parses an HTTP response from a GetConversionsQualityWithResponse call
+func ParseGetConversionsQualityResponse(rsp *http.Response) (*GetConversionsQualityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConversionsQualityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Platform *string `json:"platform,omitempty"`
+			Rows     *[]struct {
+				// CompositeScore Composite EMQ score, 0-10.
+				CompositeScore *float32 `json:"compositeScore,omitempty"`
+
+				// EventCoveragePercentage Pixel↔CAPI coverage rate for this event.
+				EventCoveragePercentage *float32 `json:"eventCoveragePercentage,omitempty"`
+				EventName               *string  `json:"eventName,omitempty"`
+				MatchKeys               *[]struct {
+					CoveragePercentage *float32 `json:"coveragePercentage,omitempty"`
+					Identifier         *string  `json:"identifier,omitempty"`
+				} `json:"matchKeys,omitempty"`
+			} `json:"rows,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateStandaloneAdResponse parses an HTTP response from a CreateStandaloneAdWithResponse call
 func ParseCreateStandaloneAdResponse(rsp *http.Response) (*CreateStandaloneAdResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -77780,6 +78276,85 @@ func ParseGetAdCommentsResponse(rsp *http.Response) (*GetAdCommentsResponse, err
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAdTrackingTagsResponse parses an HTTP response from a GetAdTrackingTagsWithResponse call
+func ParseGetAdTrackingTagsResponse(rsp *http.Response) (*GetAdTrackingTagsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAdTrackingTagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// CustomValueParameters LinkedIn.
+			CustomValueParameters *map[string]interface{} `json:"customValueParameters,omitempty"`
+
+			// DynamicValueParameters LinkedIn.
+			DynamicValueParameters *map[string]interface{} `json:"dynamicValueParameters,omitempty"`
+
+			// FinalUrlSuffix Google.
+			FinalUrlSuffix *string                                    `json:"finalUrlSuffix,omitempty"`
+			Level          *GetAdTrackingTags200JSONResponseBodyLevel `json:"level,omitempty"`
+			Platform       *string                                    `json:"platform,omitempty"`
+
+			// TemplateUrlSpec Meta: third-party click-tracking template (Dynamic Ads).
+			TemplateUrlSpec *map[string]interface{} `json:"templateUrlSpec,omitempty"`
+
+			// TrackingUrlTemplate Google.
+			TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
+
+			// UrlTags Meta: &-joined click-URL params.
+			UrlTags *string `json:"urlTags,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAdTrackingTagsResponse parses an HTTP response from a UpdateAdTrackingTagsWithResponse call
+func ParseUpdateAdTrackingTagsResponse(rsp *http.Response) (*UpdateAdTrackingTagsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAdTrackingTagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
