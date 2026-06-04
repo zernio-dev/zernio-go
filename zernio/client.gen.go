@@ -14172,6 +14172,9 @@ type UpdateAdSetJSONBody struct {
 		Amount *float32                       `json:"amount,omitempty"`
 		Type   *UpdateAdSetJSONBodyBudgetType `json:"type,omitempty"`
 	} `json:"budget,omitempty"`
+
+	// Name Rename the ad set (Meta only; other platforms return 501). At least one of budget/status/bidStrategy/name is required.
+	Name     *string                     `json:"name,omitempty"`
 	Platform UpdateAdSetJSONBodyPlatform `json:"platform"`
 
 	// RoasAverageFloor Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is
@@ -14482,6 +14485,9 @@ type UpdateAdCampaignJSONBody struct {
 		Amount float32                            `json:"amount"`
 		Type   UpdateAdCampaignJSONBodyBudgetType `json:"type"`
 	} `json:"budget,omitempty"`
+
+	// Name Rename the campaign (Meta only; other platforms return 501). At least one of budget/bidStrategy/name is required.
+	Name     *string                          `json:"name,omitempty"`
 	Platform UpdateAdCampaignJSONBodyPlatform `json:"platform"`
 }
 
@@ -14607,6 +14613,9 @@ type CreateStandaloneAdJSONBody struct {
 	// ad group's bid + budget + targeting.
 	AdSetId *string `json:"adSetId,omitempty"`
 
+	// AdSetName Meta only. Exact ad set name. Overrides the default `<name> - Ad Set`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry.)
+	AdSetName *string `json:"adSetName,omitempty"`
+
 	// AdditionalDescriptions Google Search RSA only. Extra descriptions.
 	AdditionalDescriptions *[]string `json:"additionalDescriptions,omitempty"`
 
@@ -14693,6 +14702,9 @@ type CreateStandaloneAdJSONBody struct {
 	// CallToAction Required on legacy + attach shapes for Meta. Honoured on TikTok (passes through to the Spark Ad creative's `call_to_action`) and on LinkedIn (the CTA button on the ad; defaults to LEARN_MORE when `linkUrl` is set). LinkedIn accepts: LEARN_MORE, SIGN_UP, DOWNLOAD, SUBSCRIBE, REGISTER, JOIN, ATTEND, REQUEST_DEMO, VIEW_QUOTE, APPLY, SEE_MORE, SHOP_NOW, BUY_NOW. Ignored by Google, Pinterest, and X/Twitter.
 	CallToAction *CreateStandaloneAdJSONBodyCallToAction `json:"callToAction,omitempty"`
 
+	// CampaignName Meta only. Exact campaign name. Overrides the default `<name> - Campaign`.
+	CampaignName *string `json:"campaignName,omitempty"`
+
 	// CampaignType Google only
 	CampaignType *CreateStandaloneAdJSONBodyCampaignType `json:"campaignType,omitempty"`
 
@@ -14725,6 +14737,9 @@ type CreateStandaloneAdJSONBody struct {
 		// ImageUrl Image creative. Mutually exclusive with `video`.
 		ImageUrl *string `json:"imageUrl,omitempty"`
 		LinkUrl  string  `json:"linkUrl"`
+
+		// Name Exact name for this ad. Falls back to `<name> #N` (N = 1-based position).
+		Name *string `json:"name,omitempty"`
 
 		// Video Video creative for this entry. Mutually exclusive with `imageUrl`.
 		Video *struct {
@@ -15602,6 +15617,8 @@ type UpdateAdJSONBody struct {
 		LinkUrl  *string `json:"linkUrl,omitempty"`
 		VideoUrl *string `json:"videoUrl,omitempty"`
 	} `json:"creative,omitempty"`
+
+	// Name Rename the ad. Now propagated to Meta (POST /{ad-id}); non-Meta platforms return 501.
 	Name   *string                 `json:"name,omitempty"`
 	Status *UpdateAdJSONBodyStatus `json:"status,omitempty"`
 
