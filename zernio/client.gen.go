@@ -19182,12 +19182,10 @@ type SubmitWhatsAppNumberKycJSONBody struct {
 		RequirementId      *string `json:"requirementId,omitempty"`
 		StreetAddress      *string `json:"street_address,omitempty"`
 	} `json:"address,omitempty"`
-	Country   string `json:"country"`
-	Documents *[]struct {
-		Base64        *string `json:"base64,omitempty"`
-		Filename      *string `json:"filename,omitempty"`
-		RequirementId *string `json:"requirementId,omitempty"`
-	} `json:"documents,omitempty"`
+	Country string `json:"country"`
+
+	// Documents One per document requirement. Each is EITHER inline base64 OR a `documentId` returned by POST /v1/whatsapp/phone-numbers/kyc/upload-document (use the upload endpoint for large files to stay under the request-size limit).
+	Documents *[]SubmitWhatsAppNumberKycJSONBody_Documents_Item `json:"documents,omitempty"`
 
 	// EndUserFirstName End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
@@ -19199,12 +19197,40 @@ type SubmitWhatsAppNumberKycJSONBody struct {
 	// Reuse Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
 
+	// SubmissionId Idempotency token for this submission attempt. A retry/double-submit with the same token returns the same number; omit and each call creates a new number.
+	SubmissionId *string `json:"submissionId,omitempty"`
+
 	// Values requirementId → textual value
 	Values *map[string]string `json:"values,omitempty"`
 }
 
+// SubmitWhatsAppNumberKycJSONBodyDocuments0 defines parameters for SubmitWhatsAppNumberKyc.
+type SubmitWhatsAppNumberKycJSONBodyDocuments0 struct {
+	Base64        string `json:"base64"`
+	Filename      string `json:"filename"`
+	RequirementId string `json:"requirementId"`
+}
+
+// SubmitWhatsAppNumberKycJSONBodyDocuments1 defines parameters for SubmitWhatsAppNumberKyc.
+type SubmitWhatsAppNumberKycJSONBodyDocuments1 struct {
+	// DocumentId Id from POST /v1/whatsapp/phone-numbers/kyc/upload-document.
+	DocumentId    string `json:"documentId"`
+	RequirementId string `json:"requirementId"`
+}
+
+// SubmitWhatsAppNumberKycJSONBody_Documents_Item defines parameters for SubmitWhatsAppNumberKyc.
+type SubmitWhatsAppNumberKycJSONBody_Documents_Item struct {
+	union json.RawMessage
+}
+
 // SubmitWhatsAppNumberKyc200JSONResponseBodyStatus defines parameters for SubmitWhatsAppNumberKyc.
 type SubmitWhatsAppNumberKyc200JSONResponseBodyStatus string
+
+// UploadWhatsAppNumberKycDocumentParams defines parameters for UploadWhatsAppNumberKycDocument.
+type UploadWhatsAppNumberKycDocumentParams struct {
+	// XFilename URL-encoded original filename.
+	XFilename string `json:"X-Filename"`
+}
 
 // PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumberJSONBody struct {
@@ -22675,6 +22701,68 @@ func (t *UploadWhatsAppFlowJsonJSONBody_FlowJson) UnmarshalJSON(b []byte) error 
 	return err
 }
 
+// AsSubmitWhatsAppNumberKycJSONBodyDocuments0 returns the union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item as a SubmitWhatsAppNumberKycJSONBodyDocuments0
+func (t SubmitWhatsAppNumberKycJSONBody_Documents_Item) AsSubmitWhatsAppNumberKycJSONBodyDocuments0() (SubmitWhatsAppNumberKycJSONBodyDocuments0, error) {
+	var body SubmitWhatsAppNumberKycJSONBodyDocuments0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSubmitWhatsAppNumberKycJSONBodyDocuments0 overwrites any union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item as the provided SubmitWhatsAppNumberKycJSONBodyDocuments0
+func (t *SubmitWhatsAppNumberKycJSONBody_Documents_Item) FromSubmitWhatsAppNumberKycJSONBodyDocuments0(v SubmitWhatsAppNumberKycJSONBodyDocuments0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSubmitWhatsAppNumberKycJSONBodyDocuments0 performs a merge with any union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item, using the provided SubmitWhatsAppNumberKycJSONBodyDocuments0
+func (t *SubmitWhatsAppNumberKycJSONBody_Documents_Item) MergeSubmitWhatsAppNumberKycJSONBodyDocuments0(v SubmitWhatsAppNumberKycJSONBodyDocuments0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSubmitWhatsAppNumberKycJSONBodyDocuments1 returns the union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item as a SubmitWhatsAppNumberKycJSONBodyDocuments1
+func (t SubmitWhatsAppNumberKycJSONBody_Documents_Item) AsSubmitWhatsAppNumberKycJSONBodyDocuments1() (SubmitWhatsAppNumberKycJSONBodyDocuments1, error) {
+	var body SubmitWhatsAppNumberKycJSONBodyDocuments1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSubmitWhatsAppNumberKycJSONBodyDocuments1 overwrites any union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item as the provided SubmitWhatsAppNumberKycJSONBodyDocuments1
+func (t *SubmitWhatsAppNumberKycJSONBody_Documents_Item) FromSubmitWhatsAppNumberKycJSONBodyDocuments1(v SubmitWhatsAppNumberKycJSONBodyDocuments1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSubmitWhatsAppNumberKycJSONBodyDocuments1 performs a merge with any union data inside the SubmitWhatsAppNumberKycJSONBody_Documents_Item, using the provided SubmitWhatsAppNumberKycJSONBodyDocuments1
+func (t *SubmitWhatsAppNumberKycJSONBody_Documents_Item) MergeSubmitWhatsAppNumberKycJSONBodyDocuments1(v SubmitWhatsAppNumberKycJSONBodyDocuments1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t SubmitWhatsAppNumberKycJSONBody_Documents_Item) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *SubmitWhatsAppNumberKycJSONBody_Documents_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsPurchaseWhatsAppPhoneNumber200JSONResponseBody0 returns the union data inside the PurchaseWhatsAppPhoneNumber200JSONResponseBody as a PurchaseWhatsAppPhoneNumber200JSONResponseBody0
 func (t PurchaseWhatsAppPhoneNumber200JSONResponseBody) AsPurchaseWhatsAppPhoneNumber200JSONResponseBody0() (PurchaseWhatsAppPhoneNumber200JSONResponseBody0, error) {
 	var body PurchaseWhatsAppPhoneNumber200JSONResponseBody0
@@ -24072,6 +24160,9 @@ type ClientInterface interface {
 	SubmitWhatsAppNumberKycWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	SubmitWhatsAppNumberKyc(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UploadWhatsAppNumberKycDocumentWithBody request with any body
+	UploadWhatsAppNumberKycDocumentWithBody(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PurchaseWhatsAppPhoneNumberWithBody request with any body
 	PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -29566,6 +29657,18 @@ func (c *Client) SubmitWhatsAppNumberKycWithBody(ctx context.Context, contentTyp
 
 func (c *Client) SubmitWhatsAppNumberKyc(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSubmitWhatsAppNumberKycRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadWhatsAppNumberKycDocumentWithBody(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadWhatsAppNumberKycDocumentRequestWithBody(c.Server, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -49217,6 +49320,48 @@ func NewSubmitWhatsAppNumberKycRequestWithBody(server string, contentType string
 	return req, nil
 }
 
+// NewUploadWhatsAppNumberKycDocumentRequestWithBody generates requests for UploadWhatsAppNumberKycDocument with any type of body
+func NewUploadWhatsAppNumberKycDocumentRequestWithBody(server string, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/kyc/upload-document")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Filename", params.XFilename, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("X-Filename", headerParam0)
+
+	}
+
+	return req, nil
+}
+
 // NewPurchaseWhatsAppPhoneNumberRequest calls the generic PurchaseWhatsAppPhoneNumber builder with application/json body
 func NewPurchaseWhatsAppPhoneNumberRequest(server string, body PurchaseWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -52469,6 +52614,9 @@ type ClientWithResponsesInterface interface {
 	SubmitWhatsAppNumberKycWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error)
 
 	SubmitWhatsAppNumberKycWithResponse(ctx context.Context, body SubmitWhatsAppNumberKycJSONRequestBody, reqEditors ...RequestEditorFn) (*SubmitWhatsAppNumberKycResponse, error)
+
+	// UploadWhatsAppNumberKycDocumentWithBodyWithResponse request with any body
+	UploadWhatsAppNumberKycDocumentWithBodyWithResponse(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppNumberKycDocumentResponse, error)
 
 	// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with any body
 	PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
@@ -66604,6 +66752,40 @@ func (r SubmitWhatsAppNumberKycResponse) ContentType() string {
 	return ""
 }
 
+type UploadWhatsAppNumberKycDocumentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// DocumentId Reference this id in the KYC submit's documents[].documentId.
+		DocumentId *string `json:"documentId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadWhatsAppNumberKycDocumentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadWhatsAppNumberKycDocumentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UploadWhatsAppNumberKycDocumentResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type PurchaseWhatsAppPhoneNumberResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -72114,6 +72296,15 @@ func (c *ClientWithResponses) SubmitWhatsAppNumberKycWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseSubmitWhatsAppNumberKycResponse(rsp)
+}
+
+// UploadWhatsAppNumberKycDocumentWithBodyWithResponse request with arbitrary body returning *UploadWhatsAppNumberKycDocumentResponse
+func (c *ClientWithResponses) UploadWhatsAppNumberKycDocumentWithBodyWithResponse(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppNumberKycDocumentResponse, error) {
+	rsp, err := c.UploadWhatsAppNumberKycDocumentWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadWhatsAppNumberKycDocumentResponse(rsp)
 }
 
 // PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *PurchaseWhatsAppPhoneNumberResponse
@@ -88097,6 +88288,42 @@ func ParseSubmitWhatsAppNumberKycResponse(rsp *http.Response) (*SubmitWhatsAppNu
 				Status  *string `json:"status,omitempty"`
 			} `json:"phoneNumber,omitempty"`
 			Status *SubmitWhatsAppNumberKyc200JSONResponseBodyStatus `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadWhatsAppNumberKycDocumentResponse parses an HTTP response from a UploadWhatsAppNumberKycDocumentWithResponse call
+func ParseUploadWhatsAppNumberKycDocumentResponse(rsp *http.Response) (*UploadWhatsAppNumberKycDocumentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadWhatsAppNumberKycDocumentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// DocumentId Reference this id in the KYC submit's documents[].documentId.
+			DocumentId *string `json:"documentId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
