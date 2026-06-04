@@ -15022,6 +15022,12 @@ type CreateStandaloneAdJSONBody struct {
 	} `json:"zips,omitempty"`
 }
 
+// CreateStandaloneAdParams defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdParams struct {
+	// IdempotencyKey Optional client-generated unique key (e.g. a UUID) that makes create retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+	IdempotencyKey *string `json:"Idempotency-Key,omitempty"`
+}
+
 // CreateStandaloneAdJSONBodyAdvantageAudience defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyAdvantageAudience int
 
@@ -23247,9 +23253,9 @@ type ClientInterface interface {
 	GetConversionsQuality(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateStandaloneAdWithBody request with any body
-	CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateStandaloneAdWithBody(ctx context.Context, params *CreateStandaloneAdParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateStandaloneAd(ctx context.Context, params *CreateStandaloneAdParams, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateCtwaAdWithBody request with any body
 	CreateCtwaAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -25958,8 +25964,8 @@ func (c *Client) GetConversionsQuality(ctx context.Context, params *GetConversio
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateStandaloneAdRequestWithBody(c.Server, contentType, body)
+func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, params *CreateStandaloneAdParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateStandaloneAdRequestWithBody(c.Server, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -25970,8 +25976,8 @@ func (c *Client) CreateStandaloneAdWithBody(ctx context.Context, contentType str
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateStandaloneAd(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateStandaloneAdRequest(c.Server, body)
+func (c *Client) CreateStandaloneAd(ctx context.Context, params *CreateStandaloneAdParams, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateStandaloneAdRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -36135,18 +36141,18 @@ func NewGetConversionsQualityRequest(server string, params *GetConversionsQualit
 }
 
 // NewCreateStandaloneAdRequest calls the generic CreateStandaloneAd builder with application/json body
-func NewCreateStandaloneAdRequest(server string, body CreateStandaloneAdJSONRequestBody) (*http.Request, error) {
+func NewCreateStandaloneAdRequest(server string, params *CreateStandaloneAdParams, body CreateStandaloneAdJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreateStandaloneAdRequestWithBody(server, "application/json", bodyReader)
+	return NewCreateStandaloneAdRequestWithBody(server, params, "application/json", bodyReader)
 }
 
 // NewCreateStandaloneAdRequestWithBody generates requests for CreateStandaloneAd with any type of body
-func NewCreateStandaloneAdRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreateStandaloneAdRequestWithBody(server string, params *CreateStandaloneAdParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -36170,6 +36176,21 @@ func NewCreateStandaloneAdRequestWithBody(server string, contentType string, bod
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+	}
 
 	return req, nil
 }
@@ -51629,9 +51650,9 @@ type ClientWithResponsesInterface interface {
 	GetConversionsQualityWithResponse(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*GetConversionsQualityResponse, error)
 
 	// CreateStandaloneAdWithBodyWithResponse request with any body
-	CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
+	CreateStandaloneAdWithBodyWithResponse(ctx context.Context, params *CreateStandaloneAdParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
 
-	CreateStandaloneAdWithResponse(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
+	CreateStandaloneAdWithResponse(ctx context.Context, params *CreateStandaloneAdParams, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error)
 
 	// CreateCtwaAdWithBodyWithResponse request with any body
 	CreateCtwaAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCtwaAdResponse, error)
@@ -69469,16 +69490,16 @@ func (c *ClientWithResponses) GetConversionsQualityWithResponse(ctx context.Cont
 }
 
 // CreateStandaloneAdWithBodyWithResponse request with arbitrary body returning *CreateStandaloneAdResponse
-func (c *ClientWithResponses) CreateStandaloneAdWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
-	rsp, err := c.CreateStandaloneAdWithBody(ctx, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreateStandaloneAdWithBodyWithResponse(ctx context.Context, params *CreateStandaloneAdParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
+	rsp, err := c.CreateStandaloneAdWithBody(ctx, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreateStandaloneAdResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateStandaloneAdWithResponse(ctx context.Context, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
-	rsp, err := c.CreateStandaloneAd(ctx, body, reqEditors...)
+func (c *ClientWithResponses) CreateStandaloneAdWithResponse(ctx context.Context, params *CreateStandaloneAdParams, body CreateStandaloneAdJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateStandaloneAdResponse, error) {
+	rsp, err := c.CreateStandaloneAd(ctx, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
