@@ -14979,6 +14979,16 @@ type CreateStandaloneAdJSONBody struct {
 		ProductSetId *string `json:"productSetId,omitempty"`
 	} `json:"promotedObject,omitempty"`
 
+	// RawTargeting Meta only. A raw Meta-native targeting spec passed to the ad set VERBATIM (snake_case:
+	// `geo_locations`, `age_min`, `excluded_custom_audiences`, `flexible_spec`, `targeting_automation`,
+	// business places, etc.) — exactly the shape `GET /v1/ads/{adId}` returns for external ads. Use it to
+	// clone a campaign's targeting EXACTLY, preserving advanced fields the camelCase targeting fields can't
+	// model. Mutually exclusive with the camelCase targeting fields (countries/regions/cities/interests/
+	// ageMin/...), `audienceId`, and `savedTargetingId` (sending both → 422). Sent as-is; Meta validates and
+	// surfaces any errors. If cloning an EU campaign, also pass `dsaBeneficiary` / `dsaPayor` (those are
+	// separate fields, not part of targeting).
+	RawTargeting *map[string]interface{} `json:"rawTargeting,omitempty"`
+
 	// Regions Meta-only. Region-level (state/province) geo targeting. Each region is targeted by Meta's opaque `key` (the region ID) which can be looked up via `GET /v1/ads/targeting/search?type=region&q=<name>&country_code=<ISO>`.
 	Regions *[]struct {
 		// Key Meta region ID, from /v1/ads/targeting/search results.
