@@ -5276,22 +5276,22 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 
 // Defines values for SearchAdTargetingParamsDimension.
 const (
-	Behavior SearchAdTargetingParamsDimension = "behavior"
-	Geo      SearchAdTargetingParamsDimension = "geo"
-	Income   SearchAdTargetingParamsDimension = "income"
-	Interest SearchAdTargetingParamsDimension = "interest"
+	SearchAdTargetingParamsDimensionBehavior SearchAdTargetingParamsDimension = "behavior"
+	SearchAdTargetingParamsDimensionGeo      SearchAdTargetingParamsDimension = "geo"
+	SearchAdTargetingParamsDimensionIncome   SearchAdTargetingParamsDimension = "income"
+	SearchAdTargetingParamsDimensionInterest SearchAdTargetingParamsDimension = "interest"
 )
 
 // Valid indicates whether the value is a known member of the SearchAdTargetingParamsDimension enum.
 func (e SearchAdTargetingParamsDimension) Valid() bool {
 	switch e {
-	case Behavior:
+	case SearchAdTargetingParamsDimensionBehavior:
 		return true
-	case Geo:
+	case SearchAdTargetingParamsDimensionGeo:
 		return true
-	case Income:
+	case SearchAdTargetingParamsDimensionIncome:
 		return true
-	case Interest:
+	case SearchAdTargetingParamsDimensionInterest:
 		return true
 	default:
 		return false
@@ -9579,6 +9579,27 @@ func (e GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus) Valid() bool {
 	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusReleasing:
 		return true
 	case GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatusSuspended:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint.
+const (
+	CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintCountry CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint = "country"
+	CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintGeo     CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint = "geo"
+	CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintNone    CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint = "none"
+)
+
+// Valid indicates whether the value is a known member of the CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint enum.
+func (e CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint) Valid() bool {
+	switch e {
+	case CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintCountry:
+		return true
+	case CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintGeo:
+		return true
+	case CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraintNone:
 		return true
 	default:
 		return false
@@ -19136,7 +19157,12 @@ type GetWhatsAppNumberInfoParams struct {
 
 // GetWhatsAppPhoneNumbersParams defines parameters for GetWhatsAppPhoneNumbers.
 type GetWhatsAppPhoneNumbersParams struct {
-	// Status Filter by status (by default excludes released numbers)
+	// Status Filter by status (by default excludes released numbers). NOTE:
+	// `status=pending_regulatory` returns the "provisioning" view — numbers
+	// still in review PLUS recently-declined (last 30 days) ones, so a
+	// failed registration surfaces (with `regulatoryDeclineReason`) instead
+	// of silently disappearing. Declined numbers can be re-submitted via
+	// POST /v1/whatsapp/phone-numbers/{id}/remediate.
 	Status *GetWhatsAppPhoneNumbersParamsStatus `form:"status,omitempty" json:"status,omitempty"`
 
 	// ProfileId Filter by profile
@@ -19148,6 +19174,15 @@ type GetWhatsAppPhoneNumbersParamsStatus string
 
 // GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus defines parameters for GetWhatsAppPhoneNumbers.
 type GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus string
+
+// CheckWhatsAppNumberAvailabilityParams defines parameters for CheckWhatsAppNumberAvailability.
+type CheckWhatsAppNumberAvailabilityParams struct {
+	// Country ISO-2 country code.
+	Country string `form:"country" json:"country"`
+}
+
+// CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint defines parameters for CheckWhatsAppNumberAvailability.
+type CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint string
 
 // SearchAvailableWhatsAppNumbersParams defines parameters for SearchAvailableWhatsAppNumbers.
 type SearchAvailableWhatsAppNumbersParams struct {
@@ -19306,6 +19341,32 @@ type EnableWhatsAppCallingJSONBody struct {
 	// SipAuthPassword Stored encrypted
 	SipAuthPassword *string `json:"sipAuthPassword,omitempty"`
 	SipAuthUsername *string `json:"sipAuthUsername,omitempty"`
+}
+
+// RemediateWhatsAppNumberJSONBody defines parameters for RemediateWhatsAppNumber.
+type RemediateWhatsAppNumberJSONBody struct {
+	// Address Same shape as the KYC submit address.
+	Address   *map[string]interface{}                           `json:"address,omitempty"`
+	Documents *[]RemediateWhatsAppNumberJSONBody_Documents_Item `json:"documents,omitempty"`
+	Values    *map[string]string                                `json:"values,omitempty"`
+}
+
+// RemediateWhatsAppNumberJSONBodyDocuments0 defines parameters for RemediateWhatsAppNumber.
+type RemediateWhatsAppNumberJSONBodyDocuments0 struct {
+	Base64        string `json:"base64"`
+	Filename      string `json:"filename"`
+	RequirementId string `json:"requirementId"`
+}
+
+// RemediateWhatsAppNumberJSONBodyDocuments1 defines parameters for RemediateWhatsAppNumber.
+type RemediateWhatsAppNumberJSONBodyDocuments1 struct {
+	DocumentId    string `json:"documentId"`
+	RequirementId string `json:"requirementId"`
+}
+
+// RemediateWhatsAppNumberJSONBody_Documents_Item defines parameters for RemediateWhatsAppNumber.
+type RemediateWhatsAppNumberJSONBody_Documents_Item struct {
+	union json.RawMessage
 }
 
 // GetWhatsAppPhoneNumber200JSONResponseBodyPhoneNumberStatus defines parameters for GetWhatsAppPhoneNumber.
@@ -19999,6 +20060,9 @@ type UpdateWhatsAppCallingJSONRequestBody UpdateWhatsAppCallingJSONBody
 
 // EnableWhatsAppCallingJSONRequestBody defines body for EnableWhatsAppCalling for application/json ContentType.
 type EnableWhatsAppCallingJSONRequestBody EnableWhatsAppCallingJSONBody
+
+// RemediateWhatsAppNumberJSONRequestBody defines body for RemediateWhatsAppNumber for application/json ContentType.
+type RemediateWhatsAppNumberJSONRequestBody RemediateWhatsAppNumberJSONBody
 
 // CreateWhatsAppSandboxSessionJSONRequestBody defines body for CreateWhatsAppSandboxSession for application/json ContentType.
 type CreateWhatsAppSandboxSessionJSONRequestBody CreateWhatsAppSandboxSessionJSONBody
@@ -22835,6 +22899,68 @@ func (t *PurchaseWhatsAppPhoneNumber200JSONResponseBody) UnmarshalJSON(b []byte)
 	return err
 }
 
+// AsRemediateWhatsAppNumberJSONBodyDocuments0 returns the union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item as a RemediateWhatsAppNumberJSONBodyDocuments0
+func (t RemediateWhatsAppNumberJSONBody_Documents_Item) AsRemediateWhatsAppNumberJSONBodyDocuments0() (RemediateWhatsAppNumberJSONBodyDocuments0, error) {
+	var body RemediateWhatsAppNumberJSONBodyDocuments0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRemediateWhatsAppNumberJSONBodyDocuments0 overwrites any union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item as the provided RemediateWhatsAppNumberJSONBodyDocuments0
+func (t *RemediateWhatsAppNumberJSONBody_Documents_Item) FromRemediateWhatsAppNumberJSONBodyDocuments0(v RemediateWhatsAppNumberJSONBodyDocuments0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRemediateWhatsAppNumberJSONBodyDocuments0 performs a merge with any union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item, using the provided RemediateWhatsAppNumberJSONBodyDocuments0
+func (t *RemediateWhatsAppNumberJSONBody_Documents_Item) MergeRemediateWhatsAppNumberJSONBodyDocuments0(v RemediateWhatsAppNumberJSONBodyDocuments0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRemediateWhatsAppNumberJSONBodyDocuments1 returns the union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item as a RemediateWhatsAppNumberJSONBodyDocuments1
+func (t RemediateWhatsAppNumberJSONBody_Documents_Item) AsRemediateWhatsAppNumberJSONBodyDocuments1() (RemediateWhatsAppNumberJSONBodyDocuments1, error) {
+	var body RemediateWhatsAppNumberJSONBodyDocuments1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRemediateWhatsAppNumberJSONBodyDocuments1 overwrites any union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item as the provided RemediateWhatsAppNumberJSONBodyDocuments1
+func (t *RemediateWhatsAppNumberJSONBody_Documents_Item) FromRemediateWhatsAppNumberJSONBodyDocuments1(v RemediateWhatsAppNumberJSONBodyDocuments1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRemediateWhatsAppNumberJSONBodyDocuments1 performs a merge with any union data inside the RemediateWhatsAppNumberJSONBody_Documents_Item, using the provided RemediateWhatsAppNumberJSONBodyDocuments1
+func (t *RemediateWhatsAppNumberJSONBody_Documents_Item) MergeRemediateWhatsAppNumberJSONBodyDocuments1(v RemediateWhatsAppNumberJSONBodyDocuments1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RemediateWhatsAppNumberJSONBody_Documents_Item) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RemediateWhatsAppNumberJSONBody_Documents_Item) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // Override default JSON handling for PlatformTarget_PlatformSpecificData to handle AdditionalProperties and union
 func (a *PlatformTarget_PlatformSpecificData) UnmarshalJSON(b []byte) error {
 	err := a.union.UnmarshalJSON(b)
@@ -24157,6 +24283,9 @@ type ClientInterface interface {
 	// GetWhatsAppPhoneNumbers request
 	GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CheckWhatsAppNumberAvailability request
+	CheckWhatsAppNumberAvailability(ctx context.Context, params *CheckWhatsAppNumberAvailabilityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SearchAvailableWhatsAppNumbers request
 	SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -24191,6 +24320,14 @@ type ClientInterface interface {
 	EnableWhatsAppCallingWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	EnableWhatsAppCalling(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppNumberRemediation request
+	GetWhatsAppNumberRemediation(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemediateWhatsAppNumberWithBody request with any body
+	RemediateWhatsAppNumberWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RemediateWhatsAppNumber(ctx context.Context, id string, body RemediateWhatsAppNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReleaseWhatsAppPhoneNumber request
 	ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -29617,6 +29754,18 @@ func (c *Client) GetWhatsAppPhoneNumbers(ctx context.Context, params *GetWhatsAp
 	return c.Client.Do(req)
 }
 
+func (c *Client) CheckWhatsAppNumberAvailability(ctx context.Context, params *CheckWhatsAppNumberAvailabilityParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCheckWhatsAppNumberAvailabilityRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) SearchAvailableWhatsAppNumbers(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchAvailableWhatsAppNumbersRequest(c.Server, params)
 	if err != nil {
@@ -29763,6 +29912,42 @@ func (c *Client) EnableWhatsAppCallingWithBody(ctx context.Context, id string, c
 
 func (c *Client) EnableWhatsAppCalling(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEnableWhatsAppCallingRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppNumberRemediation(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppNumberRemediationRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemediateWhatsAppNumberWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemediateWhatsAppNumberRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemediateWhatsAppNumber(ctx context.Context, id string, body RemediateWhatsAppNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemediateWhatsAppNumberRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -49091,6 +49276,56 @@ func NewGetWhatsAppPhoneNumbersRequest(server string, params *GetWhatsAppPhoneNu
 	return req, nil
 }
 
+// NewCheckWhatsAppNumberAvailabilityRequest generates requests for CheckWhatsAppNumberAvailability
+func NewCheckWhatsAppNumberAvailabilityRequest(server string, params *CheckWhatsAppNumberAvailabilityParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/availability")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "country", params.Country, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewSearchAvailableWhatsAppNumbersRequest generates requests for SearchAvailableWhatsAppNumbers
 func NewSearchAvailableWhatsAppNumbersRequest(server string, params *SearchAvailableWhatsAppNumbersParams) (*http.Request, error) {
 	var err error
@@ -49544,6 +49779,87 @@ func NewEnableWhatsAppCallingRequestWithBody(server string, id string, contentTy
 	}
 
 	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/calling", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppNumberRemediationRequest generates requests for GetWhatsAppNumberRemediation
+func NewGetWhatsAppNumberRemediationRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/remediate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRemediateWhatsAppNumberRequest calls the generic RemediateWhatsAppNumber builder with application/json body
+func NewRemediateWhatsAppNumberRequest(server string, id string, body RemediateWhatsAppNumberJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRemediateWhatsAppNumberRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewRemediateWhatsAppNumberRequestWithBody generates requests for RemediateWhatsAppNumber with any type of body
+func NewRemediateWhatsAppNumberRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/%s/remediate", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -52611,6 +52927,9 @@ type ClientWithResponsesInterface interface {
 	// GetWhatsAppPhoneNumbersWithResponse request
 	GetWhatsAppPhoneNumbersWithResponse(ctx context.Context, params *GetWhatsAppPhoneNumbersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppPhoneNumbersResponse, error)
 
+	// CheckWhatsAppNumberAvailabilityWithResponse request
+	CheckWhatsAppNumberAvailabilityWithResponse(ctx context.Context, params *CheckWhatsAppNumberAvailabilityParams, reqEditors ...RequestEditorFn) (*CheckWhatsAppNumberAvailabilityResponse, error)
+
 	// SearchAvailableWhatsAppNumbersWithResponse request
 	SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error)
 
@@ -52645,6 +52964,14 @@ type ClientWithResponsesInterface interface {
 	EnableWhatsAppCallingWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error)
 
 	EnableWhatsAppCallingWithResponse(ctx context.Context, id string, body EnableWhatsAppCallingJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableWhatsAppCallingResponse, error)
+
+	// GetWhatsAppNumberRemediationWithResponse request
+	GetWhatsAppNumberRemediationWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberRemediationResponse, error)
+
+	// RemediateWhatsAppNumberWithBodyWithResponse request with any body
+	RemediateWhatsAppNumberWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemediateWhatsAppNumberResponse, error)
+
+	RemediateWhatsAppNumberWithResponse(ctx context.Context, id string, body RemediateWhatsAppNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*RemediateWhatsAppNumberResponse, error)
 
 	// ReleaseWhatsAppPhoneNumberWithResponse request
 	ReleaseWhatsAppPhoneNumberWithResponse(ctx context.Context, phoneNumberId string, reqEditors ...RequestEditorFn) (*ReleaseWhatsAppPhoneNumberResponse, error)
@@ -66546,9 +66873,15 @@ type GetWhatsAppPhoneNumbersResponse struct {
 			ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
 			ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
 
+			// RegistrantName For regulated numbers
+			RegistrantName *string `json:"registrantName,omitempty"`
+
 			// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
 			RegulatoryDeclineReason *string                                                  `json:"regulatoryDeclineReason,omitempty"`
 			Status                  *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
+
+			// TelnyxOrderId Present once the number order has been placed (i.e. the requirement group was approved). Absent while still in identity review.
+			TelnyxOrderId *string `json:"telnyxOrderId,omitempty"`
 		} `json:"numbers,omitempty"`
 
 		// Sandbox The shared WhatsApp sandbox (one Zernio-owned number, all users test
@@ -66586,6 +66919,47 @@ func (r GetWhatsAppPhoneNumbersResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetWhatsAppPhoneNumbersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CheckWhatsAppNumberAvailabilityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AddressConstraint *CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint `json:"addressConstraint,omitempty"`
+
+		// Areas For `geo` only — the area(s) the registered address must be in.
+		Areas *[]string `json:"areas,omitempty"`
+
+		// Available Whether deliverable voice inventory exists right now.
+		Available  *bool   `json:"available,omitempty"`
+		Country    *string `json:"country,omitempty"`
+		NumberType *string `json:"numberType,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r CheckWhatsAppNumberAvailabilityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CheckWhatsAppNumberAvailabilityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CheckWhatsAppNumberAvailabilityResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -66922,6 +67296,81 @@ func (r EnableWhatsAppCallingResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r EnableWhatsAppCallingResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppNumberRemediationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Country       *string `json:"country,omitempty"`
+		DeclineReason *string `json:"declineReason,omitempty"`
+
+		// Fields Same field shape as GET /v1/whatsapp/phone-numbers/kyc.
+		Fields     *[]map[string]interface{} `json:"fields,omitempty"`
+		NumberType *string                   `json:"numberType,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppNumberRemediationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppNumberRemediationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppNumberRemediationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemediateWhatsAppNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		PhoneNumber *struct {
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		} `json:"phoneNumber,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r RemediateWhatsAppNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemediateWhatsAppNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemediateWhatsAppNumberResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -72264,6 +72713,15 @@ func (c *ClientWithResponses) GetWhatsAppPhoneNumbersWithResponse(ctx context.Co
 	return ParseGetWhatsAppPhoneNumbersResponse(rsp)
 }
 
+// CheckWhatsAppNumberAvailabilityWithResponse request returning *CheckWhatsAppNumberAvailabilityResponse
+func (c *ClientWithResponses) CheckWhatsAppNumberAvailabilityWithResponse(ctx context.Context, params *CheckWhatsAppNumberAvailabilityParams, reqEditors ...RequestEditorFn) (*CheckWhatsAppNumberAvailabilityResponse, error) {
+	rsp, err := c.CheckWhatsAppNumberAvailability(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCheckWhatsAppNumberAvailabilityResponse(rsp)
+}
+
 // SearchAvailableWhatsAppNumbersWithResponse request returning *SearchAvailableWhatsAppNumbersResponse
 func (c *ClientWithResponses) SearchAvailableWhatsAppNumbersWithResponse(ctx context.Context, params *SearchAvailableWhatsAppNumbersParams, reqEditors ...RequestEditorFn) (*SearchAvailableWhatsAppNumbersResponse, error) {
 	rsp, err := c.SearchAvailableWhatsAppNumbers(ctx, params, reqEditors...)
@@ -72375,6 +72833,32 @@ func (c *ClientWithResponses) EnableWhatsAppCallingWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseEnableWhatsAppCallingResponse(rsp)
+}
+
+// GetWhatsAppNumberRemediationWithResponse request returning *GetWhatsAppNumberRemediationResponse
+func (c *ClientWithResponses) GetWhatsAppNumberRemediationWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetWhatsAppNumberRemediationResponse, error) {
+	rsp, err := c.GetWhatsAppNumberRemediation(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppNumberRemediationResponse(rsp)
+}
+
+// RemediateWhatsAppNumberWithBodyWithResponse request with arbitrary body returning *RemediateWhatsAppNumberResponse
+func (c *ClientWithResponses) RemediateWhatsAppNumberWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemediateWhatsAppNumberResponse, error) {
+	rsp, err := c.RemediateWhatsAppNumberWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemediateWhatsAppNumberResponse(rsp)
+}
+
+func (c *ClientWithResponses) RemediateWhatsAppNumberWithResponse(ctx context.Context, id string, body RemediateWhatsAppNumberJSONRequestBody, reqEditors ...RequestEditorFn) (*RemediateWhatsAppNumberResponse, error) {
+	rsp, err := c.RemediateWhatsAppNumber(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemediateWhatsAppNumberResponse(rsp)
 }
 
 // ReleaseWhatsAppPhoneNumberWithResponse request returning *ReleaseWhatsAppPhoneNumberResponse
@@ -88102,9 +88586,15 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 				ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
 				ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
 
+				// RegistrantName For regulated numbers
+				RegistrantName *string `json:"registrantName,omitempty"`
+
 				// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
 				RegulatoryDeclineReason *string                                                  `json:"regulatoryDeclineReason,omitempty"`
 				Status                  *GetWhatsAppPhoneNumbers200JSONResponseBodyNumbersStatus `json:"status,omitempty"`
+
+				// TelnyxOrderId Present once the number order has been placed (i.e. the requirement group was approved). Absent while still in identity review.
+				TelnyxOrderId *string `json:"telnyxOrderId,omitempty"`
 			} `json:"numbers,omitempty"`
 
 			// Sandbox The shared WhatsApp sandbox (one Zernio-owned number, all users test
@@ -88120,6 +88610,49 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 					Name     *string `json:"name,omitempty"`
 				} `json:"template,omitempty"`
 			} `json:"sandbox,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCheckWhatsAppNumberAvailabilityResponse parses an HTTP response from a CheckWhatsAppNumberAvailabilityWithResponse call
+func ParseCheckWhatsAppNumberAvailabilityResponse(rsp *http.Response) (*CheckWhatsAppNumberAvailabilityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CheckWhatsAppNumberAvailabilityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AddressConstraint *CheckWhatsAppNumberAvailability200JSONResponseBodyAddressConstraint `json:"addressConstraint,omitempty"`
+
+			// Areas For `geo` only — the area(s) the registered address must be in.
+			Areas *[]string `json:"areas,omitempty"`
+
+			// Available Whether deliverable voice inventory exists right now.
+			Available  *bool   `json:"available,omitempty"`
+			Country    *string `json:"country,omitempty"`
+			NumberType *string `json:"numberType,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -88468,6 +89001,85 @@ func ParseEnableWhatsAppCallingResponse(rsp *http.Response) (*EnableWhatsAppCall
 			ForwardTo      *string `json:"forwardTo,omitempty"`
 			SipHostname    *string `json:"sipHostname,omitempty"`
 			Success        *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppNumberRemediationResponse parses an HTTP response from a GetWhatsAppNumberRemediationWithResponse call
+func ParseGetWhatsAppNumberRemediationResponse(rsp *http.Response) (*GetWhatsAppNumberRemediationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppNumberRemediationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Country       *string `json:"country,omitempty"`
+			DeclineReason *string `json:"declineReason,omitempty"`
+
+			// Fields Same field shape as GET /v1/whatsapp/phone-numbers/kyc.
+			Fields     *[]map[string]interface{} `json:"fields,omitempty"`
+			NumberType *string                   `json:"numberType,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemediateWhatsAppNumberResponse parses an HTTP response from a RemediateWhatsAppNumberWithResponse call
+func ParseRemediateWhatsAppNumberResponse(rsp *http.Response) (*RemediateWhatsAppNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemediateWhatsAppNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			PhoneNumber *struct {
+				Id     *string `json:"id,omitempty"`
+				Status *string `json:"status,omitempty"`
+			} `json:"phoneNumber,omitempty"`
+			Status *string `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
