@@ -61387,8 +61387,11 @@ type ListCommentAutomationsResponse struct {
 				LinkClicks *int `json:"linkClicks,omitempty"`
 
 				// Read DMs confirmed read (IG messaging_seen / Messenger message_reads).
-				Read      *int `json:"read,omitempty"`
-				Triggered *int `json:"triggered,omitempty"`
+				Read *int `json:"read,omitempty"`
+
+				// TrackedSends DMs sent with a trackable (wrapped) link. CTR denominator: divide clicks by this, not dmsSent. Lags dmsSent for campaigns that predate click tracking.
+				TrackedSends *int `json:"trackedSends,omitempty"`
+				Triggered    *int `json:"triggered,omitempty"`
 
 				// UniqueClicks Distinct people who clicked a tracked link.
 				UniqueClicks   *int `json:"uniqueClicks,omitempty"`
@@ -83101,8 +83104,11 @@ func ParseListCommentAutomationsResponse(rsp *http.Response) (*ListCommentAutoma
 					LinkClicks *int `json:"linkClicks,omitempty"`
 
 					// Read DMs confirmed read (IG messaging_seen / Messenger message_reads).
-					Read      *int `json:"read,omitempty"`
-					Triggered *int `json:"triggered,omitempty"`
+					Read *int `json:"read,omitempty"`
+
+					// TrackedSends DMs sent with a trackable (wrapped) link. CTR denominator: divide clicks by this, not dmsSent. Lags dmsSent for campaigns that predate click tracking.
+					TrackedSends *int `json:"trackedSends,omitempty"`
+					Triggered    *int `json:"triggered,omitempty"`
 
 					// UniqueClicks Distinct people who clicked a tracked link.
 					UniqueClicks   *int `json:"uniqueClicks,omitempty"`
