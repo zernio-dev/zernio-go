@@ -14702,6 +14702,9 @@ type CreateStandaloneAdJSONBody struct {
 	AccountId   string `json:"accountId"`
 	AdAccountId string `json:"adAccountId"`
 
+	// AdName Meta only. Exact ad name (the single-creative ad object's name). Overrides the default, which is `name`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry instead.)
+	AdName *string `json:"adName,omitempty"`
+
 	// AdSetId Meta-only. When present, switches to the attach shape: adds
 	// one new ad to this existing ad set without creating a new
 	// campaign. Budget, targeting, goal, schedule, AND bid strategy
@@ -15153,6 +15156,18 @@ type CreateStandaloneAdJSONBody struct {
 	// budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already
 	// available on `POST /v1/ads/boost`.)
 	StartDate *time.Time `json:"startDate,omitempty"`
+
+	// Tracking Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied to every ad on the legacy single-creative and multi-creative shapes.
+	Tracking *struct {
+		// PixelId Meta Pixel ID to attach for offsite-conversion measurement.
+		PixelId *string `json:"pixelId,omitempty"`
+
+		// UrlTags Click-URL params appended to the ad's destination as `url_tags` (e.g. utm_source).
+		UrlTags *[]struct {
+			Key   string `json:"key"`
+			Value string `json:"value"`
+		} `json:"urlTags,omitempty"`
+	} `json:"tracking,omitempty"`
 
 	// Video Meta (facebook, instagram) and LinkedIn. When set, creates a VIDEO ad on the legacy (or, for Meta, attach) shape. Mutually exclusive with `imageUrl`. For Meta multi-creative, set `video` per entry inside `creatives[]` instead. For LinkedIn the video is uploaded to LinkedIn under the authoring Company Page (see `organizationId`) and the campaign format is set to SINGLE_VIDEO; LinkedIn ignores `thumbnailUrl` (it auto-generates the poster frame) — supply MP4 H.264/AAC, 3s-30min, 75KB-500MB.
 	Video *struct {
