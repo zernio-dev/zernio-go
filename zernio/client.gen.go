@@ -1686,6 +1686,9 @@ const (
 	WebhookEventsReviewUpdated                      WebhookEvents = "review.updated"
 	WebhookEventsWhatsappNumberActivated            WebhookEvents = "whatsapp.number.activated"
 	WebhookEventsWhatsappNumberDeclined             WebhookEvents = "whatsapp.number.declined"
+	WebhookEventsWhatsappNumberReactivated          WebhookEvents = "whatsapp.number.reactivated"
+	WebhookEventsWhatsappNumberReleased             WebhookEvents = "whatsapp.number.released"
+	WebhookEventsWhatsappNumberSuspended            WebhookEvents = "whatsapp.number.suspended"
 	WebhookEventsWhatsappNumberVerificationRequired WebhookEvents = "whatsapp.number.verification_required"
 	WebhookEventsWhatsappTemplateStatusUpdated      WebhookEvents = "whatsapp.template.status_updated"
 )
@@ -1742,6 +1745,12 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsWhatsappNumberActivated:
 		return true
 	case WebhookEventsWhatsappNumberDeclined:
+		return true
+	case WebhookEventsWhatsappNumberReactivated:
+		return true
+	case WebhookEventsWhatsappNumberReleased:
+		return true
+	case WebhookEventsWhatsappNumberSuspended:
 		return true
 	case WebhookEventsWhatsappNumberVerificationRequired:
 		return true
@@ -5754,6 +5763,81 @@ func (e GetFacebookPageInsightsParamsMetricType) Valid() bool {
 	}
 }
 
+// Defines values for ListInboxConversationAnalyticsParamsSortBy.
+const (
+	ListInboxConversationAnalyticsParamsSortByFailed         ListInboxConversationAnalyticsParamsSortBy = "failed"
+	ListInboxConversationAnalyticsParamsSortByFirstMessageAt ListInboxConversationAnalyticsParamsSortBy = "firstMessageAt"
+	ListInboxConversationAnalyticsParamsSortByLastMessageAt  ListInboxConversationAnalyticsParamsSortBy = "lastMessageAt"
+	ListInboxConversationAnalyticsParamsSortByRead           ListInboxConversationAnalyticsParamsSortBy = "read"
+	ListInboxConversationAnalyticsParamsSortByReceived       ListInboxConversationAnalyticsParamsSortBy = "received"
+	ListInboxConversationAnalyticsParamsSortBySent           ListInboxConversationAnalyticsParamsSortBy = "sent"
+	ListInboxConversationAnalyticsParamsSortByTotalMessages  ListInboxConversationAnalyticsParamsSortBy = "totalMessages"
+)
+
+// Valid indicates whether the value is a known member of the ListInboxConversationAnalyticsParamsSortBy enum.
+func (e ListInboxConversationAnalyticsParamsSortBy) Valid() bool {
+	switch e {
+	case ListInboxConversationAnalyticsParamsSortByFailed:
+		return true
+	case ListInboxConversationAnalyticsParamsSortByFirstMessageAt:
+		return true
+	case ListInboxConversationAnalyticsParamsSortByLastMessageAt:
+		return true
+	case ListInboxConversationAnalyticsParamsSortByRead:
+		return true
+	case ListInboxConversationAnalyticsParamsSortByReceived:
+		return true
+	case ListInboxConversationAnalyticsParamsSortBySent:
+		return true
+	case ListInboxConversationAnalyticsParamsSortByTotalMessages:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListInboxConversationAnalyticsParamsOrder.
+const (
+	ListInboxConversationAnalyticsParamsOrderAsc  ListInboxConversationAnalyticsParamsOrder = "asc"
+	ListInboxConversationAnalyticsParamsOrderDesc ListInboxConversationAnalyticsParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the ListInboxConversationAnalyticsParamsOrder enum.
+func (e ListInboxConversationAnalyticsParamsOrder) Valid() bool {
+	switch e {
+	case ListInboxConversationAnalyticsParamsOrderAsc:
+		return true
+	case ListInboxConversationAnalyticsParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetInboxHeatmapParamsAction.
+const (
+	GetInboxHeatmapParamsActionAll             GetInboxHeatmapParamsAction = "all"
+	GetInboxHeatmapParamsActionMessageRead     GetInboxHeatmapParamsAction = "message.read"
+	GetInboxHeatmapParamsActionMessageReceived GetInboxHeatmapParamsAction = "message.received"
+	GetInboxHeatmapParamsActionMessageSent     GetInboxHeatmapParamsAction = "message.sent"
+)
+
+// Valid indicates whether the value is a known member of the GetInboxHeatmapParamsAction enum.
+func (e GetInboxHeatmapParamsAction) Valid() bool {
+	switch e {
+	case GetInboxHeatmapParamsActionAll:
+		return true
+	case GetInboxHeatmapParamsActionMessageRead:
+		return true
+	case GetInboxHeatmapParamsActionMessageReceived:
+		return true
+	case GetInboxHeatmapParamsActionMessageSent:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetInstagramAccountInsightsParamsMetricType.
 const (
 	GetInstagramAccountInsightsParamsMetricTypeTimeSeries GetInstagramAccountInsightsParamsMetricType = "time_series"
@@ -8087,16 +8171,16 @@ func (e ListInboxReviewsParamsSortBy) Valid() bool {
 
 // Defines values for ListInboxReviewsParamsSortOrder.
 const (
-	ListInboxReviewsParamsSortOrderAsc  ListInboxReviewsParamsSortOrder = "asc"
-	ListInboxReviewsParamsSortOrderDesc ListInboxReviewsParamsSortOrder = "desc"
+	Asc  ListInboxReviewsParamsSortOrder = "asc"
+	Desc ListInboxReviewsParamsSortOrder = "desc"
 )
 
 // Valid indicates whether the value is a known member of the ListInboxReviewsParamsSortOrder enum.
 func (e ListInboxReviewsParamsSortOrder) Valid() bool {
 	switch e {
-	case ListInboxReviewsParamsSortOrderAsc:
+	case Asc:
 		return true
-	case ListInboxReviewsParamsSortOrderDesc:
+	case Desc:
 		return true
 	default:
 		return false
@@ -8964,6 +9048,9 @@ const (
 	CreateWebhookSettingsJSONBodyEventsReviewUpdated                      CreateWebhookSettingsJSONBodyEvents = "review.updated"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberActivated            CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined             CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated          CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.reactivated"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberReleased             CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.released"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberSuspended            CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.suspended"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.verification_required"
 	CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated      CreateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
@@ -9021,6 +9108,12 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberReleased:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberSuspended:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated:
@@ -9032,91 +9125,100 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 
 // Defines values for UpdateWebhookSettingsJSONBodyEvents.
 const (
-	AccountAdsInitialSyncCompleted     UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
-	AccountConnected                   UpdateWebhookSettingsJSONBodyEvents = "account.connected"
-	AccountDisconnected                UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
-	AdStatusChanged                    UpdateWebhookSettingsJSONBodyEvents = "ad.status_changed"
-	CommentReceived                    UpdateWebhookSettingsJSONBodyEvents = "comment.received"
-	MessageDeleted                     UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
-	MessageDelivered                   UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
-	MessageEdited                      UpdateWebhookSettingsJSONBodyEvents = "message.edited"
-	MessageFailed                      UpdateWebhookSettingsJSONBodyEvents = "message.failed"
-	MessageRead                        UpdateWebhookSettingsJSONBodyEvents = "message.read"
-	MessageReceived                    UpdateWebhookSettingsJSONBodyEvents = "message.received"
-	MessageSent                        UpdateWebhookSettingsJSONBodyEvents = "message.sent"
-	PostCancelled                      UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
-	PostFailed                         UpdateWebhookSettingsJSONBodyEvents = "post.failed"
-	PostPartial                        UpdateWebhookSettingsJSONBodyEvents = "post.partial"
-	PostPlatformFailed                 UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
-	PostPlatformPublished              UpdateWebhookSettingsJSONBodyEvents = "post.platform.published"
-	PostPublished                      UpdateWebhookSettingsJSONBodyEvents = "post.published"
-	PostRecycled                       UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
-	PostScheduled                      UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
-	ReactionReceived                   UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
-	ReviewNew                          UpdateWebhookSettingsJSONBodyEvents = "review.new"
-	ReviewUpdated                      UpdateWebhookSettingsJSONBodyEvents = "review.updated"
-	WhatsappNumberActivated            UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
-	WhatsappNumberDeclined             UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
-	WhatsappNumberVerificationRequired UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.verification_required"
-	WhatsappTemplateStatusUpdated      UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
+	UpdateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted     UpdateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
+	UpdateWebhookSettingsJSONBodyEventsAccountConnected                   UpdateWebhookSettingsJSONBodyEvents = "account.connected"
+	UpdateWebhookSettingsJSONBodyEventsAccountDisconnected                UpdateWebhookSettingsJSONBodyEvents = "account.disconnected"
+	UpdateWebhookSettingsJSONBodyEventsAdStatusChanged                    UpdateWebhookSettingsJSONBodyEvents = "ad.status_changed"
+	UpdateWebhookSettingsJSONBodyEventsCommentReceived                    UpdateWebhookSettingsJSONBodyEvents = "comment.received"
+	UpdateWebhookSettingsJSONBodyEventsMessageDeleted                     UpdateWebhookSettingsJSONBodyEvents = "message.deleted"
+	UpdateWebhookSettingsJSONBodyEventsMessageDelivered                   UpdateWebhookSettingsJSONBodyEvents = "message.delivered"
+	UpdateWebhookSettingsJSONBodyEventsMessageEdited                      UpdateWebhookSettingsJSONBodyEvents = "message.edited"
+	UpdateWebhookSettingsJSONBodyEventsMessageFailed                      UpdateWebhookSettingsJSONBodyEvents = "message.failed"
+	UpdateWebhookSettingsJSONBodyEventsMessageRead                        UpdateWebhookSettingsJSONBodyEvents = "message.read"
+	UpdateWebhookSettingsJSONBodyEventsMessageReceived                    UpdateWebhookSettingsJSONBodyEvents = "message.received"
+	UpdateWebhookSettingsJSONBodyEventsMessageSent                        UpdateWebhookSettingsJSONBodyEvents = "message.sent"
+	UpdateWebhookSettingsJSONBodyEventsPostCancelled                      UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	UpdateWebhookSettingsJSONBodyEventsPostFailed                         UpdateWebhookSettingsJSONBodyEvents = "post.failed"
+	UpdateWebhookSettingsJSONBodyEventsPostPartial                        UpdateWebhookSettingsJSONBodyEvents = "post.partial"
+	UpdateWebhookSettingsJSONBodyEventsPostPlatformFailed                 UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
+	UpdateWebhookSettingsJSONBodyEventsPostPlatformPublished              UpdateWebhookSettingsJSONBodyEvents = "post.platform.published"
+	UpdateWebhookSettingsJSONBodyEventsPostPublished                      UpdateWebhookSettingsJSONBodyEvents = "post.published"
+	UpdateWebhookSettingsJSONBodyEventsPostRecycled                       UpdateWebhookSettingsJSONBodyEvents = "post.recycled"
+	UpdateWebhookSettingsJSONBodyEventsPostScheduled                      UpdateWebhookSettingsJSONBodyEvents = "post.scheduled"
+	UpdateWebhookSettingsJSONBodyEventsReactionReceived                   UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
+	UpdateWebhookSettingsJSONBodyEventsReviewNew                          UpdateWebhookSettingsJSONBodyEvents = "review.new"
+	UpdateWebhookSettingsJSONBodyEventsReviewUpdated                      UpdateWebhookSettingsJSONBodyEvents = "review.updated"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActivated            UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined             UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated          UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.reactivated"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberReleased             UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.released"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberSuspended            UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.suspended"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.verification_required"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated      UpdateWebhookSettingsJSONBodyEvents = "whatsapp.template.status_updated"
 )
 
 // Valid indicates whether the value is a known member of the UpdateWebhookSettingsJSONBodyEvents enum.
 func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	switch e {
-	case AccountAdsInitialSyncCompleted:
+	case UpdateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted:
 		return true
-	case AccountConnected:
+	case UpdateWebhookSettingsJSONBodyEventsAccountConnected:
 		return true
-	case AccountDisconnected:
+	case UpdateWebhookSettingsJSONBodyEventsAccountDisconnected:
 		return true
-	case AdStatusChanged:
+	case UpdateWebhookSettingsJSONBodyEventsAdStatusChanged:
 		return true
-	case CommentReceived:
+	case UpdateWebhookSettingsJSONBodyEventsCommentReceived:
 		return true
-	case MessageDeleted:
+	case UpdateWebhookSettingsJSONBodyEventsMessageDeleted:
 		return true
-	case MessageDelivered:
+	case UpdateWebhookSettingsJSONBodyEventsMessageDelivered:
 		return true
-	case MessageEdited:
+	case UpdateWebhookSettingsJSONBodyEventsMessageEdited:
 		return true
-	case MessageFailed:
+	case UpdateWebhookSettingsJSONBodyEventsMessageFailed:
 		return true
-	case MessageRead:
+	case UpdateWebhookSettingsJSONBodyEventsMessageRead:
 		return true
-	case MessageReceived:
+	case UpdateWebhookSettingsJSONBodyEventsMessageReceived:
 		return true
-	case MessageSent:
+	case UpdateWebhookSettingsJSONBodyEventsMessageSent:
 		return true
-	case PostCancelled:
+	case UpdateWebhookSettingsJSONBodyEventsPostCancelled:
 		return true
-	case PostFailed:
+	case UpdateWebhookSettingsJSONBodyEventsPostFailed:
 		return true
-	case PostPartial:
+	case UpdateWebhookSettingsJSONBodyEventsPostPartial:
 		return true
-	case PostPlatformFailed:
+	case UpdateWebhookSettingsJSONBodyEventsPostPlatformFailed:
 		return true
-	case PostPlatformPublished:
+	case UpdateWebhookSettingsJSONBodyEventsPostPlatformPublished:
 		return true
-	case PostPublished:
+	case UpdateWebhookSettingsJSONBodyEventsPostPublished:
 		return true
-	case PostRecycled:
+	case UpdateWebhookSettingsJSONBodyEventsPostRecycled:
 		return true
-	case PostScheduled:
+	case UpdateWebhookSettingsJSONBodyEventsPostScheduled:
 		return true
-	case ReactionReceived:
+	case UpdateWebhookSettingsJSONBodyEventsReactionReceived:
 		return true
-	case ReviewNew:
+	case UpdateWebhookSettingsJSONBodyEventsReviewNew:
 		return true
-	case ReviewUpdated:
+	case UpdateWebhookSettingsJSONBodyEventsReviewUpdated:
 		return true
-	case WhatsappNumberActivated:
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActivated:
 		return true
-	case WhatsappNumberDeclined:
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined:
 		return true
-	case WhatsappNumberVerificationRequired:
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated:
 		return true
-	case WhatsappTemplateStatusUpdated:
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberReleased:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberSuspended:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberVerificationRequired:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappTemplateStatusUpdated:
 		return true
 	default:
 		return false
@@ -9947,13 +10049,13 @@ func (e GetWorkflow200JSONResponseBodyWorkflowStatus) Valid() bool {
 
 // Defines values for DuplicateWorkflow201JSONResponseBodyWorkflowStatus.
 const (
-	DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft DuplicateWorkflow201JSONResponseBodyWorkflowStatus = "draft"
+	Draft DuplicateWorkflow201JSONResponseBodyWorkflowStatus = "draft"
 )
 
 // Valid indicates whether the value is a known member of the DuplicateWorkflow201JSONResponseBodyWorkflowStatus enum.
 func (e DuplicateWorkflow201JSONResponseBodyWorkflowStatus) Valid() bool {
 	switch e {
-	case DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft:
+	case Draft:
 		return true
 	default:
 		return false
@@ -15893,6 +15995,95 @@ type GetGoogleBusinessSearchKeywordsParams struct {
 
 	// EndMonth End month (YYYY-MM). Defaults to current month.
 	EndMonth *string `form:"endMonth,omitempty" json:"endMonth,omitempty"`
+}
+
+// ListInboxConversationAnalyticsParams defines parameters for ListInboxConversationAnalytics.
+type ListInboxConversationAnalyticsParams struct {
+	FromDate  openapi_types.Date                          `form:"fromDate" json:"fromDate"`
+	ToDate    *openapi_types.Date                         `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string                                     `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Platform  *string                                     `form:"platform,omitempty" json:"platform,omitempty"`
+	AccountId *string                                     `form:"accountId,omitempty" json:"accountId,omitempty"`
+	Source    *string                                     `form:"source,omitempty" json:"source,omitempty"`
+	Limit     *int                                        `form:"limit,omitempty" json:"limit,omitempty"`
+	Page      *int                                        `form:"page,omitempty" json:"page,omitempty"`
+	SortBy    *ListInboxConversationAnalyticsParamsSortBy `form:"sortBy,omitempty" json:"sortBy,omitempty"`
+	Order     *ListInboxConversationAnalyticsParamsOrder  `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// ListInboxConversationAnalyticsParamsSortBy defines parameters for ListInboxConversationAnalytics.
+type ListInboxConversationAnalyticsParamsSortBy string
+
+// ListInboxConversationAnalyticsParamsOrder defines parameters for ListInboxConversationAnalytics.
+type ListInboxConversationAnalyticsParamsOrder string
+
+// GetInboxConversationAnalyticsParams defines parameters for GetInboxConversationAnalytics.
+type GetInboxConversationAnalyticsParams struct {
+	FromDate openapi_types.Date  `form:"fromDate" json:"fromDate"`
+	ToDate   *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+}
+
+// GetInboxHeatmapParams defines parameters for GetInboxHeatmap.
+type GetInboxHeatmapParams struct {
+	FromDate  openapi_types.Date  `form:"fromDate" json:"fromDate"`
+	ToDate    *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string             `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Platform  *string             `form:"platform,omitempty" json:"platform,omitempty"`
+	AccountId *string             `form:"accountId,omitempty" json:"accountId,omitempty"`
+	Source    *string             `form:"source,omitempty" json:"source,omitempty"`
+
+	// Action Narrow to a single event type. "all" or omitted means no filter.
+	Action *GetInboxHeatmapParamsAction `form:"action,omitempty" json:"action,omitempty"`
+}
+
+// GetInboxHeatmapParamsAction defines parameters for GetInboxHeatmap.
+type GetInboxHeatmapParamsAction string
+
+// GetInboxResponseTimeParams defines parameters for GetInboxResponseTime.
+type GetInboxResponseTimeParams struct {
+	FromDate  openapi_types.Date  `form:"fromDate" json:"fromDate"`
+	ToDate    *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string             `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Platform  *string             `form:"platform,omitempty" json:"platform,omitempty"`
+	AccountId *string             `form:"accountId,omitempty" json:"accountId,omitempty"`
+}
+
+// GetInboxSourceBreakdownParams defines parameters for GetInboxSourceBreakdown.
+type GetInboxSourceBreakdownParams struct {
+	FromDate  openapi_types.Date  `form:"fromDate" json:"fromDate"`
+	ToDate    *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string             `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Platform  *string             `form:"platform,omitempty" json:"platform,omitempty"`
+	AccountId *string             `form:"accountId,omitempty" json:"accountId,omitempty"`
+}
+
+// GetInboxTopAccountsParams defines parameters for GetInboxTopAccounts.
+type GetInboxTopAccountsParams struct {
+	FromDate  openapi_types.Date  `form:"fromDate" json:"fromDate"`
+	ToDate    *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string             `form:"profileId,omitempty" json:"profileId,omitempty"`
+	Platform  *string             `form:"platform,omitempty" json:"platform,omitempty"`
+	Source    *string             `form:"source,omitempty" json:"source,omitempty"`
+
+	// Limit Cap on returned rows. Lower than the posting listing's 100 because each row triggers a SocialAccount Mongo lookup.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// GetInboxVolumeParams defines parameters for GetInboxVolume.
+type GetInboxVolumeParams struct {
+	// FromDate Inclusive lower bound (YYYY-MM-DD). Required.
+	FromDate openapi_types.Date `form:"fromDate" json:"fromDate"`
+
+	// ToDate Inclusive upper bound (YYYY-MM-DD). Defaults to today.
+	ToDate    *openapi_types.Date `form:"toDate,omitempty" json:"toDate,omitempty"`
+	ProfileId *string             `form:"profileId,omitempty" json:"profileId,omitempty"`
+
+	// Platform Filter by single platform (facebook, instagram, twitter, etc.).
+	Platform  *string `form:"platform,omitempty" json:"platform,omitempty"`
+	AccountId *string `form:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// Source Filter by metadata.source lineage (human, workflow, sequence, broadcast, comment_automation, api, contact, platform).
+	Source *string `form:"source,omitempty" json:"source,omitempty"`
 }
 
 // GetInstagramAccountInsightsParams defines parameters for GetInstagramAccountInsights.
@@ -23591,6 +23782,27 @@ type ClientInterface interface {
 	// GetGoogleBusinessSearchKeywords request
 	GetGoogleBusinessSearchKeywords(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListInboxConversationAnalytics request
+	ListInboxConversationAnalytics(ctx context.Context, params *ListInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxConversationAnalytics request
+	GetInboxConversationAnalytics(ctx context.Context, conversationId string, params *GetInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxHeatmap request
+	GetInboxHeatmap(ctx context.Context, params *GetInboxHeatmapParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxResponseTime request
+	GetInboxResponseTime(ctx context.Context, params *GetInboxResponseTimeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxSourceBreakdown request
+	GetInboxSourceBreakdown(ctx context.Context, params *GetInboxSourceBreakdownParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxTopAccounts request
+	GetInboxTopAccounts(ctx context.Context, params *GetInboxTopAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInboxVolume request
+	GetInboxVolume(ctx context.Context, params *GetInboxVolumeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetInstagramAccountInsights request
 	GetInstagramAccountInsights(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -26629,6 +26841,90 @@ func (c *Client) GetGoogleBusinessPerformance(ctx context.Context, params *GetGo
 
 func (c *Client) GetGoogleBusinessSearchKeywords(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetGoogleBusinessSearchKeywordsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListInboxConversationAnalytics(ctx context.Context, params *ListInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListInboxConversationAnalyticsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxConversationAnalytics(ctx context.Context, conversationId string, params *GetInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxConversationAnalyticsRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxHeatmap(ctx context.Context, params *GetInboxHeatmapParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxHeatmapRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxResponseTime(ctx context.Context, params *GetInboxResponseTimeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxResponseTimeRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxSourceBreakdown(ctx context.Context, params *GetInboxSourceBreakdownParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxSourceBreakdownRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxTopAccounts(ctx context.Context, params *GetInboxTopAccountsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxTopAccountsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInboxVolume(ctx context.Context, params *GetInboxVolumeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInboxVolumeRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -38565,6 +38861,771 @@ func NewGetGoogleBusinessSearchKeywordsRequest(server string, params *GetGoogleB
 		if params.EndMonth != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endMonth", *params.EndMonth, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListInboxConversationAnalyticsRequest generates requests for ListInboxConversationAnalytics
+func NewListInboxConversationAnalyticsRequest(server string, params *ListInboxConversationAnalyticsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/conversations")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.SortBy != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sortBy", *params.SortBy, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Order != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "order", *params.Order, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxConversationAnalyticsRequest generates requests for GetInboxConversationAnalytics
+func NewGetInboxConversationAnalyticsRequest(server string, conversationId string, params *GetInboxConversationAnalyticsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/conversations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxHeatmapRequest generates requests for GetInboxHeatmap
+func NewGetInboxHeatmapRequest(server string, params *GetInboxHeatmapParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/heatmap")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxResponseTimeRequest generates requests for GetInboxResponseTime
+func NewGetInboxResponseTimeRequest(server string, params *GetInboxResponseTimeParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/response-time")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxSourceBreakdownRequest generates requests for GetInboxSourceBreakdown
+func NewGetInboxSourceBreakdownRequest(server string, params *GetInboxSourceBreakdownParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/source-breakdown")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxTopAccountsRequest generates requests for GetInboxTopAccounts
+func NewGetInboxTopAccountsRequest(server string, params *GetInboxTopAccountsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/top-accounts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInboxVolumeRequest generates requests for GetInboxVolume
+func NewGetInboxVolumeRequest(server string, params *GetInboxVolumeParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/inbox/volume")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "fromDate", params.FromDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.ToDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "toDate", *params.ToDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Platform != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.AccountId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", *params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -52235,6 +53296,27 @@ type ClientWithResponsesInterface interface {
 	// GetGoogleBusinessSearchKeywordsWithResponse request
 	GetGoogleBusinessSearchKeywordsWithResponse(ctx context.Context, params *GetGoogleBusinessSearchKeywordsParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessSearchKeywordsResponse, error)
 
+	// ListInboxConversationAnalyticsWithResponse request
+	ListInboxConversationAnalyticsWithResponse(ctx context.Context, params *ListInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*ListInboxConversationAnalyticsResponse, error)
+
+	// GetInboxConversationAnalyticsWithResponse request
+	GetInboxConversationAnalyticsWithResponse(ctx context.Context, conversationId string, params *GetInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*GetInboxConversationAnalyticsResponse, error)
+
+	// GetInboxHeatmapWithResponse request
+	GetInboxHeatmapWithResponse(ctx context.Context, params *GetInboxHeatmapParams, reqEditors ...RequestEditorFn) (*GetInboxHeatmapResponse, error)
+
+	// GetInboxResponseTimeWithResponse request
+	GetInboxResponseTimeWithResponse(ctx context.Context, params *GetInboxResponseTimeParams, reqEditors ...RequestEditorFn) (*GetInboxResponseTimeResponse, error)
+
+	// GetInboxSourceBreakdownWithResponse request
+	GetInboxSourceBreakdownWithResponse(ctx context.Context, params *GetInboxSourceBreakdownParams, reqEditors ...RequestEditorFn) (*GetInboxSourceBreakdownResponse, error)
+
+	// GetInboxTopAccountsWithResponse request
+	GetInboxTopAccountsWithResponse(ctx context.Context, params *GetInboxTopAccountsParams, reqEditors ...RequestEditorFn) (*GetInboxTopAccountsResponse, error)
+
+	// GetInboxVolumeWithResponse request
+	GetInboxVolumeWithResponse(ctx context.Context, params *GetInboxVolumeParams, reqEditors ...RequestEditorFn) (*GetInboxVolumeResponse, error)
+
 	// GetInstagramAccountInsightsWithResponse request
 	GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error)
 
@@ -58774,6 +59856,422 @@ func (r GetGoogleBusinessSearchKeywordsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetGoogleBusinessSearchKeywordsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListInboxConversationAnalyticsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		From  *openapi_types.Date `json:"from,omitempty"`
+		Items *[]struct {
+			AccountId *string `json:"accountId,omitempty"`
+
+			// ConversationId The platformConversationId (the same identity used by metadata.conversationId)
+			ConversationId *string    `json:"conversationId,omitempty"`
+			Failed         *int       `json:"failed,omitempty"`
+			FirstMessageAt *time.Time `json:"firstMessageAt,omitempty"`
+
+			// LastMessage Cached preview from the Conversation doc
+			LastMessage   *string    `json:"lastMessage,omitempty"`
+			LastMessageAt *time.Time `json:"lastMessageAt,omitempty"`
+
+			// MongoId The Conversation document _id, when a matching doc exists
+			MongoId             *string `json:"mongoId,omitempty"`
+			ParticipantName     *string `json:"participantName,omitempty"`
+			ParticipantPicture  *string `json:"participantPicture,omitempty"`
+			ParticipantUsername *string `json:"participantUsername,omitempty"`
+			Platform            *string `json:"platform,omitempty"`
+			Read                *int    `json:"read,omitempty"`
+			Received            *int    `json:"received,omitempty"`
+			Sent                *int    `json:"sent,omitempty"`
+			TotalMessages       *int    `json:"totalMessages,omitempty"`
+		} `json:"items,omitempty"`
+		Pagination *struct {
+			HasMore    *bool `json:"hasMore,omitempty"`
+			Limit      *int  `json:"limit,omitempty"`
+			Page       *int  `json:"page,omitempty"`
+			Total      *int  `json:"total,omitempty"`
+			TotalPages *int  `json:"totalPages,omitempty"`
+		} `json:"pagination,omitempty"`
+		Success *bool               `json:"success,omitempty"`
+		To      *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListInboxConversationAnalyticsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListInboxConversationAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListInboxConversationAnalyticsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxConversationAnalyticsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		BySource *[]struct {
+			Count *int `json:"count,omitempty"`
+
+			// Source (unspecified) for legacy rows with no metadata.source
+			Source *string `json:"source,omitempty"`
+		} `json:"bySource,omitempty"`
+
+		// ConversationId The platformConversationId
+		ConversationId *string             `json:"conversationId,omitempty"`
+		From           *openapi_types.Date `json:"from,omitempty"`
+		MongoId        *string             `json:"mongoId,omitempty"`
+		Platform       *string             `json:"platform,omitempty"`
+		Success        *bool               `json:"success,omitempty"`
+		Summary        *struct {
+			Failed         *int       `json:"failed,omitempty"`
+			FirstMessageAt *time.Time `json:"firstMessageAt,omitempty"`
+			LastMessageAt  *time.Time `json:"lastMessageAt,omitempty"`
+			Read           *int       `json:"read,omitempty"`
+			Received       *int       `json:"received,omitempty"`
+			Sent           *int       `json:"sent,omitempty"`
+			TotalMessages  *int       `json:"totalMessages,omitempty"`
+		} `json:"summary,omitempty"`
+		Timeseries *[]struct {
+			Date     *openapi_types.Date `json:"date,omitempty"`
+			Failed   *int                `json:"failed,omitempty"`
+			Read     *int                `json:"read,omitempty"`
+			Received *int                `json:"received,omitempty"`
+			Sent     *int                `json:"sent,omitempty"`
+		} `json:"timeseries,omitempty"`
+		To *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON404 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxConversationAnalyticsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxConversationAnalyticsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxConversationAnalyticsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxHeatmapResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Buckets *[]struct {
+			// Dow 1 = Monday, 7 = Sunday
+			Dow      *int `json:"dow,omitempty"`
+			Hour     *int `json:"hour,omitempty"`
+			Read     *int `json:"read,omitempty"`
+			Received *int `json:"received,omitempty"`
+			Sent     *int `json:"sent,omitempty"`
+		} `json:"buckets,omitempty"`
+		From    *openapi_types.Date `json:"from,omitempty"`
+		Success *bool               `json:"success,omitempty"`
+		To      *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxHeatmapResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxHeatmapResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxHeatmapResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxResponseTimeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		From      *openapi_types.Date `json:"from,omitempty"`
+		Histogram *[]struct {
+			// Bucket Human label (0-1m, 1-5m, 5-15m, 15-60m, 1-4h, 4-24h, 1d+)
+			Bucket       *string `json:"bucket,omitempty"`
+			Count        *int    `json:"count,omitempty"`
+			LowerSeconds *int    `json:"lowerSeconds,omitempty"`
+
+			// UpperSeconds null on the open-ended last bucket
+			UpperSeconds *int `json:"upperSeconds,omitempty"`
+		} `json:"histogram,omitempty"`
+		Success *bool `json:"success,omitempty"`
+		Summary *struct {
+			FastestSeconds *int `json:"fastestSeconds,omitempty"`
+			MeanSeconds    *int `json:"meanSeconds,omitempty"`
+			MedianSeconds  *int `json:"medianSeconds,omitempty"`
+			P90Seconds     *int `json:"p90Seconds,omitempty"`
+			P99Seconds     *int `json:"p99Seconds,omitempty"`
+			SampleSize     *int `json:"sampleSize,omitempty"`
+			SlowestSeconds *int `json:"slowestSeconds,omitempty"`
+		} `json:"summary,omitempty"`
+		To *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxResponseTimeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxResponseTimeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxResponseTimeResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxSourceBreakdownResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		From    *openapi_types.Date `json:"from,omitempty"`
+		Sources *[]struct {
+			ByPlatform *[]struct {
+				Platform *string `json:"platform,omitempty"`
+				Read     *int    `json:"read,omitempty"`
+				Received *int    `json:"received,omitempty"`
+				Sent     *int    `json:"sent,omitempty"`
+			} `json:"byPlatform,omitempty"`
+			Read     *int    `json:"read,omitempty"`
+			Received *int    `json:"received,omitempty"`
+			Sent     *int    `json:"sent,omitempty"`
+			Source   *string `json:"source,omitempty"`
+		} `json:"sources,omitempty"`
+		Success *bool               `json:"success,omitempty"`
+		To      *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxSourceBreakdownResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxSourceBreakdownResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxSourceBreakdownResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxTopAccountsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Accounts *[]struct {
+			AccountId     *string `json:"accountId,omitempty"`
+			Conversations *int    `json:"conversations,omitempty"`
+
+			// DisplayName (disconnected) when the SocialAccount no longer exists
+			DisplayName           *string `json:"displayName,omitempty"`
+			MedianResponseSeconds *int    `json:"medianResponseSeconds,omitempty"`
+			Platform              *string `json:"platform,omitempty"`
+			Received              *int    `json:"received,omitempty"`
+
+			// RepliedCount Distinguishes 'instant replies' from 'no replies at all' so a zero medianResponseSeconds with repliedCount=0 renders as '—' instead of '0s'
+			RepliedCount *int    `json:"repliedCount,omitempty"`
+			Sent         *int    `json:"sent,omitempty"`
+			Total        *int    `json:"total,omitempty"`
+			Username     *string `json:"username,omitempty"`
+		} `json:"accounts,omitempty"`
+		From    *openapi_types.Date `json:"from,omitempty"`
+		Success *bool               `json:"success,omitempty"`
+		To      *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxTopAccountsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxTopAccountsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxTopAccountsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInboxVolumeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ByPlatform *[]struct {
+			Failed   *int    `json:"failed,omitempty"`
+			Platform *string `json:"platform,omitempty"`
+			Read     *int    `json:"read,omitempty"`
+			Received *int    `json:"received,omitempty"`
+			Sent     *int    `json:"sent,omitempty"`
+		} `json:"byPlatform,omitempty"`
+		From    *openapi_types.Date `json:"from,omitempty"`
+		Success *bool               `json:"success,omitempty"`
+		Summary *struct {
+			Failed              *int `json:"failed,omitempty"`
+			Read                *int `json:"read,omitempty"`
+			Received            *int `json:"received,omitempty"`
+			Sent                *int `json:"sent,omitempty"`
+			UniqueConversations *int `json:"uniqueConversations,omitempty"`
+		} `json:"summary,omitempty"`
+		Timeseries *[]struct {
+			Date     *openapi_types.Date `json:"date,omitempty"`
+			Failed   *int                `json:"failed,omitempty"`
+			Read     *int                `json:"read,omitempty"`
+			Received *int                `json:"received,omitempty"`
+			Sent     *int                `json:"sent,omitempty"`
+		} `json:"timeseries,omitempty"`
+		To *openapi_types.Date `json:"to,omitempty"`
+	}
+	JSON400 *struct {
+		Details *map[string]interface{} `json:"details,omitempty"`
+		Error   *string                 `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON500 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInboxVolumeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInboxVolumeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInboxVolumeResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -70455,6 +71953,69 @@ func (c *ClientWithResponses) GetGoogleBusinessSearchKeywordsWithResponse(ctx co
 	return ParseGetGoogleBusinessSearchKeywordsResponse(rsp)
 }
 
+// ListInboxConversationAnalyticsWithResponse request returning *ListInboxConversationAnalyticsResponse
+func (c *ClientWithResponses) ListInboxConversationAnalyticsWithResponse(ctx context.Context, params *ListInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*ListInboxConversationAnalyticsResponse, error) {
+	rsp, err := c.ListInboxConversationAnalytics(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListInboxConversationAnalyticsResponse(rsp)
+}
+
+// GetInboxConversationAnalyticsWithResponse request returning *GetInboxConversationAnalyticsResponse
+func (c *ClientWithResponses) GetInboxConversationAnalyticsWithResponse(ctx context.Context, conversationId string, params *GetInboxConversationAnalyticsParams, reqEditors ...RequestEditorFn) (*GetInboxConversationAnalyticsResponse, error) {
+	rsp, err := c.GetInboxConversationAnalytics(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxConversationAnalyticsResponse(rsp)
+}
+
+// GetInboxHeatmapWithResponse request returning *GetInboxHeatmapResponse
+func (c *ClientWithResponses) GetInboxHeatmapWithResponse(ctx context.Context, params *GetInboxHeatmapParams, reqEditors ...RequestEditorFn) (*GetInboxHeatmapResponse, error) {
+	rsp, err := c.GetInboxHeatmap(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxHeatmapResponse(rsp)
+}
+
+// GetInboxResponseTimeWithResponse request returning *GetInboxResponseTimeResponse
+func (c *ClientWithResponses) GetInboxResponseTimeWithResponse(ctx context.Context, params *GetInboxResponseTimeParams, reqEditors ...RequestEditorFn) (*GetInboxResponseTimeResponse, error) {
+	rsp, err := c.GetInboxResponseTime(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxResponseTimeResponse(rsp)
+}
+
+// GetInboxSourceBreakdownWithResponse request returning *GetInboxSourceBreakdownResponse
+func (c *ClientWithResponses) GetInboxSourceBreakdownWithResponse(ctx context.Context, params *GetInboxSourceBreakdownParams, reqEditors ...RequestEditorFn) (*GetInboxSourceBreakdownResponse, error) {
+	rsp, err := c.GetInboxSourceBreakdown(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxSourceBreakdownResponse(rsp)
+}
+
+// GetInboxTopAccountsWithResponse request returning *GetInboxTopAccountsResponse
+func (c *ClientWithResponses) GetInboxTopAccountsWithResponse(ctx context.Context, params *GetInboxTopAccountsParams, reqEditors ...RequestEditorFn) (*GetInboxTopAccountsResponse, error) {
+	rsp, err := c.GetInboxTopAccounts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxTopAccountsResponse(rsp)
+}
+
+// GetInboxVolumeWithResponse request returning *GetInboxVolumeResponse
+func (c *ClientWithResponses) GetInboxVolumeWithResponse(ctx context.Context, params *GetInboxVolumeParams, reqEditors ...RequestEditorFn) (*GetInboxVolumeResponse, error) {
+	rsp, err := c.GetInboxVolume(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInboxVolumeResponse(rsp)
+}
+
 // GetInstagramAccountInsightsWithResponse request returning *GetInstagramAccountInsightsResponse
 func (c *ClientWithResponses) GetInstagramAccountInsightsWithResponse(ctx context.Context, params *GetInstagramAccountInsightsParams, reqEditors ...RequestEditorFn) (*GetInstagramAccountInsightsResponse, error) {
 	rsp, err := c.GetInstagramAccountInsights(ctx, params, reqEditors...)
@@ -79653,6 +81214,526 @@ func ParseGetGoogleBusinessSearchKeywordsResponse(rsp *http.Response) (*GetGoogl
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListInboxConversationAnalyticsResponse parses an HTTP response from a ListInboxConversationAnalyticsWithResponse call
+func ParseListInboxConversationAnalyticsResponse(rsp *http.Response) (*ListInboxConversationAnalyticsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListInboxConversationAnalyticsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			From  *openapi_types.Date `json:"from,omitempty"`
+			Items *[]struct {
+				AccountId *string `json:"accountId,omitempty"`
+
+				// ConversationId The platformConversationId (the same identity used by metadata.conversationId)
+				ConversationId *string    `json:"conversationId,omitempty"`
+				Failed         *int       `json:"failed,omitempty"`
+				FirstMessageAt *time.Time `json:"firstMessageAt,omitempty"`
+
+				// LastMessage Cached preview from the Conversation doc
+				LastMessage   *string    `json:"lastMessage,omitempty"`
+				LastMessageAt *time.Time `json:"lastMessageAt,omitempty"`
+
+				// MongoId The Conversation document _id, when a matching doc exists
+				MongoId             *string `json:"mongoId,omitempty"`
+				ParticipantName     *string `json:"participantName,omitempty"`
+				ParticipantPicture  *string `json:"participantPicture,omitempty"`
+				ParticipantUsername *string `json:"participantUsername,omitempty"`
+				Platform            *string `json:"platform,omitempty"`
+				Read                *int    `json:"read,omitempty"`
+				Received            *int    `json:"received,omitempty"`
+				Sent                *int    `json:"sent,omitempty"`
+				TotalMessages       *int    `json:"totalMessages,omitempty"`
+			} `json:"items,omitempty"`
+			Pagination *struct {
+				HasMore    *bool `json:"hasMore,omitempty"`
+				Limit      *int  `json:"limit,omitempty"`
+				Page       *int  `json:"page,omitempty"`
+				Total      *int  `json:"total,omitempty"`
+				TotalPages *int  `json:"totalPages,omitempty"`
+			} `json:"pagination,omitempty"`
+			Success *bool               `json:"success,omitempty"`
+			To      *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxConversationAnalyticsResponse parses an HTTP response from a GetInboxConversationAnalyticsWithResponse call
+func ParseGetInboxConversationAnalyticsResponse(rsp *http.Response) (*GetInboxConversationAnalyticsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxConversationAnalyticsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			BySource *[]struct {
+				Count *int `json:"count,omitempty"`
+
+				// Source (unspecified) for legacy rows with no metadata.source
+				Source *string `json:"source,omitempty"`
+			} `json:"bySource,omitempty"`
+
+			// ConversationId The platformConversationId
+			ConversationId *string             `json:"conversationId,omitempty"`
+			From           *openapi_types.Date `json:"from,omitempty"`
+			MongoId        *string             `json:"mongoId,omitempty"`
+			Platform       *string             `json:"platform,omitempty"`
+			Success        *bool               `json:"success,omitempty"`
+			Summary        *struct {
+				Failed         *int       `json:"failed,omitempty"`
+				FirstMessageAt *time.Time `json:"firstMessageAt,omitempty"`
+				LastMessageAt  *time.Time `json:"lastMessageAt,omitempty"`
+				Read           *int       `json:"read,omitempty"`
+				Received       *int       `json:"received,omitempty"`
+				Sent           *int       `json:"sent,omitempty"`
+				TotalMessages  *int       `json:"totalMessages,omitempty"`
+			} `json:"summary,omitempty"`
+			Timeseries *[]struct {
+				Date     *openapi_types.Date `json:"date,omitempty"`
+				Failed   *int                `json:"failed,omitempty"`
+				Read     *int                `json:"read,omitempty"`
+				Received *int                `json:"received,omitempty"`
+				Sent     *int                `json:"sent,omitempty"`
+			} `json:"timeseries,omitempty"`
+			To *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxHeatmapResponse parses an HTTP response from a GetInboxHeatmapWithResponse call
+func ParseGetInboxHeatmapResponse(rsp *http.Response) (*GetInboxHeatmapResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxHeatmapResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Buckets *[]struct {
+				// Dow 1 = Monday, 7 = Sunday
+				Dow      *int `json:"dow,omitempty"`
+				Hour     *int `json:"hour,omitempty"`
+				Read     *int `json:"read,omitempty"`
+				Received *int `json:"received,omitempty"`
+				Sent     *int `json:"sent,omitempty"`
+			} `json:"buckets,omitempty"`
+			From    *openapi_types.Date `json:"from,omitempty"`
+			Success *bool               `json:"success,omitempty"`
+			To      *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxResponseTimeResponse parses an HTTP response from a GetInboxResponseTimeWithResponse call
+func ParseGetInboxResponseTimeResponse(rsp *http.Response) (*GetInboxResponseTimeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxResponseTimeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			From      *openapi_types.Date `json:"from,omitempty"`
+			Histogram *[]struct {
+				// Bucket Human label (0-1m, 1-5m, 5-15m, 15-60m, 1-4h, 4-24h, 1d+)
+				Bucket       *string `json:"bucket,omitempty"`
+				Count        *int    `json:"count,omitempty"`
+				LowerSeconds *int    `json:"lowerSeconds,omitempty"`
+
+				// UpperSeconds null on the open-ended last bucket
+				UpperSeconds *int `json:"upperSeconds,omitempty"`
+			} `json:"histogram,omitempty"`
+			Success *bool `json:"success,omitempty"`
+			Summary *struct {
+				FastestSeconds *int `json:"fastestSeconds,omitempty"`
+				MeanSeconds    *int `json:"meanSeconds,omitempty"`
+				MedianSeconds  *int `json:"medianSeconds,omitempty"`
+				P90Seconds     *int `json:"p90Seconds,omitempty"`
+				P99Seconds     *int `json:"p99Seconds,omitempty"`
+				SampleSize     *int `json:"sampleSize,omitempty"`
+				SlowestSeconds *int `json:"slowestSeconds,omitempty"`
+			} `json:"summary,omitempty"`
+			To *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxSourceBreakdownResponse parses an HTTP response from a GetInboxSourceBreakdownWithResponse call
+func ParseGetInboxSourceBreakdownResponse(rsp *http.Response) (*GetInboxSourceBreakdownResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxSourceBreakdownResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			From    *openapi_types.Date `json:"from,omitempty"`
+			Sources *[]struct {
+				ByPlatform *[]struct {
+					Platform *string `json:"platform,omitempty"`
+					Read     *int    `json:"read,omitempty"`
+					Received *int    `json:"received,omitempty"`
+					Sent     *int    `json:"sent,omitempty"`
+				} `json:"byPlatform,omitempty"`
+				Read     *int    `json:"read,omitempty"`
+				Received *int    `json:"received,omitempty"`
+				Sent     *int    `json:"sent,omitempty"`
+				Source   *string `json:"source,omitempty"`
+			} `json:"sources,omitempty"`
+			Success *bool               `json:"success,omitempty"`
+			To      *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxTopAccountsResponse parses an HTTP response from a GetInboxTopAccountsWithResponse call
+func ParseGetInboxTopAccountsResponse(rsp *http.Response) (*GetInboxTopAccountsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxTopAccountsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Accounts *[]struct {
+				AccountId     *string `json:"accountId,omitempty"`
+				Conversations *int    `json:"conversations,omitempty"`
+
+				// DisplayName (disconnected) when the SocialAccount no longer exists
+				DisplayName           *string `json:"displayName,omitempty"`
+				MedianResponseSeconds *int    `json:"medianResponseSeconds,omitempty"`
+				Platform              *string `json:"platform,omitempty"`
+				Received              *int    `json:"received,omitempty"`
+
+				// RepliedCount Distinguishes 'instant replies' from 'no replies at all' so a zero medianResponseSeconds with repliedCount=0 renders as '—' instead of '0s'
+				RepliedCount *int    `json:"repliedCount,omitempty"`
+				Sent         *int    `json:"sent,omitempty"`
+				Total        *int    `json:"total,omitempty"`
+				Username     *string `json:"username,omitempty"`
+			} `json:"accounts,omitempty"`
+			From    *openapi_types.Date `json:"from,omitempty"`
+			Success *bool               `json:"success,omitempty"`
+			To      *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInboxVolumeResponse parses an HTTP response from a GetInboxVolumeWithResponse call
+func ParseGetInboxVolumeResponse(rsp *http.Response) (*GetInboxVolumeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInboxVolumeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ByPlatform *[]struct {
+				Failed   *int    `json:"failed,omitempty"`
+				Platform *string `json:"platform,omitempty"`
+				Read     *int    `json:"read,omitempty"`
+				Received *int    `json:"received,omitempty"`
+				Sent     *int    `json:"sent,omitempty"`
+			} `json:"byPlatform,omitempty"`
+			From    *openapi_types.Date `json:"from,omitempty"`
+			Success *bool               `json:"success,omitempty"`
+			Summary *struct {
+				Failed              *int `json:"failed,omitempty"`
+				Read                *int `json:"read,omitempty"`
+				Received            *int `json:"received,omitempty"`
+				Sent                *int `json:"sent,omitempty"`
+				UniqueConversations *int `json:"uniqueConversations,omitempty"`
+			} `json:"summary,omitempty"`
+			Timeseries *[]struct {
+				Date     *openapi_types.Date `json:"date,omitempty"`
+				Failed   *int                `json:"failed,omitempty"`
+				Read     *int                `json:"read,omitempty"`
+				Received *int                `json:"received,omitempty"`
+				Sent     *int                `json:"sent,omitempty"`
+			} `json:"timeseries,omitempty"`
+			To *openapi_types.Date `json:"to,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Details *map[string]interface{} `json:"details,omitempty"`
+			Error   *string                 `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
