@@ -56265,10 +56265,11 @@ type BatchGetGoogleBusinessReviewsResponse struct {
 	JSON200      *struct {
 		AccountId       *string `json:"accountId,omitempty"`
 		LocationReviews *[]struct {
-			AverageRating    *float32                  `json:"averageRating,omitempty"`
-			LocationName     *string                   `json:"locationName,omitempty"`
-			Reviews          *[]map[string]interface{} `json:"reviews,omitempty"`
-			TotalReviewCount *int                      `json:"totalReviewCount,omitempty"`
+			// Name Full review resource name (accounts/*/locations/*/reviews/*)
+			Name *string `json:"name,omitempty"`
+
+			// Review The review object (reviewId
+			Review *map[string]interface{} `json:"review,omitempty"`
 		} `json:"locationReviews,omitempty"`
 		NextPageToken *string `json:"nextPageToken,omitempty"`
 		Success       *bool   `json:"success,omitempty"`
@@ -77250,10 +77251,11 @@ func ParseBatchGetGoogleBusinessReviewsResponse(rsp *http.Response) (*BatchGetGo
 		var dest struct {
 			AccountId       *string `json:"accountId,omitempty"`
 			LocationReviews *[]struct {
-				AverageRating    *float32                  `json:"averageRating,omitempty"`
-				LocationName     *string                   `json:"locationName,omitempty"`
-				Reviews          *[]map[string]interface{} `json:"reviews,omitempty"`
-				TotalReviewCount *int                      `json:"totalReviewCount,omitempty"`
+				// Name Full review resource name (accounts/*/locations/*/reviews/*)
+				Name *string `json:"name,omitempty"`
+
+				// Review The review object (reviewId
+				Review *map[string]interface{} `json:"review,omitempty"`
 			} `json:"locationReviews,omitempty"`
 			NextPageToken *string `json:"nextPageToken,omitempty"`
 			Success       *bool   `json:"success,omitempty"`
