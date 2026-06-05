@@ -1674,6 +1674,9 @@ const (
 	WebhookEventsMessageReceived                    WebhookEvents = "message.received"
 	WebhookEventsMessageSent                        WebhookEvents = "message.sent"
 	WebhookEventsPostCancelled                      WebhookEvents = "post.cancelled"
+	WebhookEventsPostExternalCreated                WebhookEvents = "post.external.created"
+	WebhookEventsPostExternalDeleted                WebhookEvents = "post.external.deleted"
+	WebhookEventsPostExternalUpdated                WebhookEvents = "post.external.updated"
 	WebhookEventsPostFailed                         WebhookEvents = "post.failed"
 	WebhookEventsPostPartial                        WebhookEvents = "post.partial"
 	WebhookEventsPostPlatformFailed                 WebhookEvents = "post.platform.failed"
@@ -1721,6 +1724,12 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsMessageSent:
 		return true
 	case WebhookEventsPostCancelled:
+		return true
+	case WebhookEventsPostExternalCreated:
+		return true
+	case WebhookEventsPostExternalDeleted:
+		return true
+	case WebhookEventsPostExternalUpdated:
 		return true
 	case WebhookEventsPostFailed:
 		return true
@@ -9036,6 +9045,9 @@ const (
 	CreateWebhookSettingsJSONBodyEventsMessageReceived                    CreateWebhookSettingsJSONBodyEvents = "message.received"
 	CreateWebhookSettingsJSONBodyEventsMessageSent                        CreateWebhookSettingsJSONBodyEvents = "message.sent"
 	CreateWebhookSettingsJSONBodyEventsPostCancelled                      CreateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	CreateWebhookSettingsJSONBodyEventsPostExternalCreated                CreateWebhookSettingsJSONBodyEvents = "post.external.created"
+	CreateWebhookSettingsJSONBodyEventsPostExternalDeleted                CreateWebhookSettingsJSONBodyEvents = "post.external.deleted"
+	CreateWebhookSettingsJSONBodyEventsPostExternalUpdated                CreateWebhookSettingsJSONBodyEvents = "post.external.updated"
 	CreateWebhookSettingsJSONBodyEventsPostFailed                         CreateWebhookSettingsJSONBodyEvents = "post.failed"
 	CreateWebhookSettingsJSONBodyEventsPostPartial                        CreateWebhookSettingsJSONBodyEvents = "post.partial"
 	CreateWebhookSettingsJSONBodyEventsPostPlatformFailed                 CreateWebhookSettingsJSONBodyEvents = "post.platform.failed"
@@ -9083,6 +9095,12 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case CreateWebhookSettingsJSONBodyEventsMessageSent:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostCancelled:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsPostExternalCreated:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsPostExternalDeleted:
+		return true
+	case CreateWebhookSettingsJSONBodyEventsPostExternalUpdated:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsPostFailed:
 		return true
@@ -9138,6 +9156,9 @@ const (
 	UpdateWebhookSettingsJSONBodyEventsMessageReceived                    UpdateWebhookSettingsJSONBodyEvents = "message.received"
 	UpdateWebhookSettingsJSONBodyEventsMessageSent                        UpdateWebhookSettingsJSONBodyEvents = "message.sent"
 	UpdateWebhookSettingsJSONBodyEventsPostCancelled                      UpdateWebhookSettingsJSONBodyEvents = "post.cancelled"
+	UpdateWebhookSettingsJSONBodyEventsPostExternalCreated                UpdateWebhookSettingsJSONBodyEvents = "post.external.created"
+	UpdateWebhookSettingsJSONBodyEventsPostExternalDeleted                UpdateWebhookSettingsJSONBodyEvents = "post.external.deleted"
+	UpdateWebhookSettingsJSONBodyEventsPostExternalUpdated                UpdateWebhookSettingsJSONBodyEvents = "post.external.updated"
 	UpdateWebhookSettingsJSONBodyEventsPostFailed                         UpdateWebhookSettingsJSONBodyEvents = "post.failed"
 	UpdateWebhookSettingsJSONBodyEventsPostPartial                        UpdateWebhookSettingsJSONBodyEvents = "post.partial"
 	UpdateWebhookSettingsJSONBodyEventsPostPlatformFailed                 UpdateWebhookSettingsJSONBodyEvents = "post.platform.failed"
@@ -9185,6 +9206,12 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case UpdateWebhookSettingsJSONBodyEventsMessageSent:
 		return true
 	case UpdateWebhookSettingsJSONBodyEventsPostCancelled:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsPostExternalCreated:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsPostExternalDeleted:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsPostExternalUpdated:
 		return true
 	case UpdateWebhookSettingsJSONBodyEventsPostFailed:
 		return true
