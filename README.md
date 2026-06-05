@@ -274,6 +274,7 @@ func main() {
 | `client.DeleteAdWithResponse()` | Cancel an ad |
 | `client.DeleteConversionDestinationWithResponse()` | Soft-delete a conversion destination |
 | `client.AddConversionAssociationsWithResponse()` | Associate campaigns with a conversion destination |
+| `client.AdjustConversionsWithResponse()` | Adjust already-uploaded conversions (Google only) |
 | `client.ArchiveLeadFormWithResponse()` | Archive a Lead Gen form |
 | `client.BoostPostWithResponse()` | Boost post as ad |
 | `client.EstimateAdReachWithResponse()` | Estimate audience reach |

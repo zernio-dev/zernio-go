@@ -141,6 +141,7 @@ const (
 	AdGoalAwareness      AdGoal = "awareness"
 	AdGoalConversions    AdGoal = "conversions"
 	AdGoalEngagement     AdGoal = "engagement"
+	AdGoalLeadConversion AdGoal = "lead_conversion"
 	AdGoalLeadGeneration AdGoal = "lead_generation"
 	AdGoalTraffic        AdGoal = "traffic"
 	AdGoalVideoViews     AdGoal = "video_views"
@@ -156,6 +157,8 @@ func (e AdGoal) Valid() bool {
 	case AdGoalConversions:
 		return true
 	case AdGoalEngagement:
+		return true
+	case AdGoalLeadConversion:
 		return true
 	case AdGoalLeadGeneration:
 		return true
@@ -4323,6 +4326,42 @@ func (e SendConversions200JSONResponseBodyPlatform) Valid() bool {
 	}
 }
 
+// Defines values for AdjustConversionsJSONBodyAdjustmentsAdjustmentType.
+const (
+	ENHANCEMENT AdjustConversionsJSONBodyAdjustmentsAdjustmentType = "ENHANCEMENT"
+	RESTATEMENT AdjustConversionsJSONBodyAdjustmentsAdjustmentType = "RESTATEMENT"
+	RETRACTION  AdjustConversionsJSONBodyAdjustmentsAdjustmentType = "RETRACTION"
+)
+
+// Valid indicates whether the value is a known member of the AdjustConversionsJSONBodyAdjustmentsAdjustmentType enum.
+func (e AdjustConversionsJSONBodyAdjustmentsAdjustmentType) Valid() bool {
+	switch e {
+	case ENHANCEMENT:
+		return true
+	case RESTATEMENT:
+		return true
+	case RETRACTION:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdjustConversions200JSONResponseBodyPlatform.
+const (
+	AdjustConversions200JSONResponseBodyPlatformGoogleads AdjustConversions200JSONResponseBodyPlatform = "googleads"
+)
+
+// Valid indicates whether the value is a known member of the AdjustConversions200JSONResponseBodyPlatform enum.
+func (e AdjustConversions200JSONResponseBodyPlatform) Valid() bool {
+	switch e {
+	case AdjustConversions200JSONResponseBodyPlatformGoogleads:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyAdvantageAudience.
 const (
 	CreateStandaloneAdJSONBodyAdvantageAudienceN0 CreateStandaloneAdJSONBodyAdvantageAudience = 0
@@ -4692,6 +4731,7 @@ const (
 	CreateStandaloneAdJSONBodyGoalAwareness      CreateStandaloneAdJSONBodyGoal = "awareness"
 	CreateStandaloneAdJSONBodyGoalConversions    CreateStandaloneAdJSONBodyGoal = "conversions"
 	CreateStandaloneAdJSONBodyGoalEngagement     CreateStandaloneAdJSONBodyGoal = "engagement"
+	CreateStandaloneAdJSONBodyGoalLeadConversion CreateStandaloneAdJSONBodyGoal = "lead_conversion"
 	CreateStandaloneAdJSONBodyGoalLeadGeneration CreateStandaloneAdJSONBodyGoal = "lead_generation"
 	CreateStandaloneAdJSONBodyGoalTraffic        CreateStandaloneAdJSONBodyGoal = "traffic"
 	CreateStandaloneAdJSONBodyGoalVideoViews     CreateStandaloneAdJSONBodyGoal = "video_views"
@@ -4707,6 +4747,8 @@ func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	case CreateStandaloneAdJSONBodyGoalConversions:
 		return true
 	case CreateStandaloneAdJSONBodyGoalEngagement:
+		return true
+	case CreateStandaloneAdJSONBodyGoalLeadConversion:
 		return true
 	case CreateStandaloneAdJSONBodyGoalLeadGeneration:
 		return true
@@ -10022,31 +10064,31 @@ func (e ListWorkflows200JSONResponseBodyWorkflowsStatus) Valid() bool {
 
 // Defines values for CreateWorkflowJSONBodyPlatform.
 const (
-	Bluesky   CreateWorkflowJSONBodyPlatform = "bluesky"
-	Facebook  CreateWorkflowJSONBodyPlatform = "facebook"
-	Instagram CreateWorkflowJSONBodyPlatform = "instagram"
-	Reddit    CreateWorkflowJSONBodyPlatform = "reddit"
-	Telegram  CreateWorkflowJSONBodyPlatform = "telegram"
-	Twitter   CreateWorkflowJSONBodyPlatform = "twitter"
-	Whatsapp  CreateWorkflowJSONBodyPlatform = "whatsapp"
+	CreateWorkflowJSONBodyPlatformBluesky   CreateWorkflowJSONBodyPlatform = "bluesky"
+	CreateWorkflowJSONBodyPlatformFacebook  CreateWorkflowJSONBodyPlatform = "facebook"
+	CreateWorkflowJSONBodyPlatformInstagram CreateWorkflowJSONBodyPlatform = "instagram"
+	CreateWorkflowJSONBodyPlatformReddit    CreateWorkflowJSONBodyPlatform = "reddit"
+	CreateWorkflowJSONBodyPlatformTelegram  CreateWorkflowJSONBodyPlatform = "telegram"
+	CreateWorkflowJSONBodyPlatformTwitter   CreateWorkflowJSONBodyPlatform = "twitter"
+	CreateWorkflowJSONBodyPlatformWhatsapp  CreateWorkflowJSONBodyPlatform = "whatsapp"
 )
 
 // Valid indicates whether the value is a known member of the CreateWorkflowJSONBodyPlatform enum.
 func (e CreateWorkflowJSONBodyPlatform) Valid() bool {
 	switch e {
-	case Bluesky:
+	case CreateWorkflowJSONBodyPlatformBluesky:
 		return true
-	case Facebook:
+	case CreateWorkflowJSONBodyPlatformFacebook:
 		return true
-	case Instagram:
+	case CreateWorkflowJSONBodyPlatformInstagram:
 		return true
-	case Reddit:
+	case CreateWorkflowJSONBodyPlatformReddit:
 		return true
-	case Telegram:
+	case CreateWorkflowJSONBodyPlatformTelegram:
 		return true
-	case Twitter:
+	case CreateWorkflowJSONBodyPlatformTwitter:
 		return true
-	case Whatsapp:
+	case CreateWorkflowJSONBodyPlatformWhatsapp:
 		return true
 	default:
 		return false
@@ -10372,7 +10414,7 @@ type Ad struct {
 		VideoUrl *string `json:"videoUrl,omitempty"`
 	} `json:"creative,omitempty"`
 
-	// Goal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+	// Goal Available goals vary by platform. Meta (Facebook/Instagram) supports all 8 (incl. `lead_conversion` = website pixel lead optimization). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *AdGoal `json:"goal,omitempty"`
 
 	// IsExternal True for ads synced from platform ad managers
@@ -10454,7 +10496,7 @@ type AdAdType string
 // AdBudgetType defines model for Ad.Budget.Type.
 type AdBudgetType string
 
-// AdGoal Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+// AdGoal Available goals vary by platform. Meta (Facebook/Instagram) supports all 8 (incl. `lead_conversion` = website pixel lead optimization). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 type AdGoal string
 
 // AdPlatform defines model for Ad.Platform.
@@ -14715,6 +14757,61 @@ type SendConversions200JSONResponseBody_Failures_Code struct {
 // SendConversions200JSONResponseBodyPlatform defines parameters for SendConversions.
 type SendConversions200JSONResponseBodyPlatform string
 
+// AdjustConversionsJSONBody defines parameters for AdjustConversions.
+type AdjustConversionsJSONBody struct {
+	// AccountId SocialAccount ID. Must be a `googleads` account.
+	AccountId   string `json:"accountId"`
+	Adjustments []struct {
+		// AdjustmentTime When the adjustment occurred, unix seconds.
+		AdjustmentTime float32                                            `json:"adjustmentTime"`
+		AdjustmentType AdjustConversionsJSONBodyAdjustmentsAdjustmentType `json:"adjustmentType"`
+
+		// ConversionTime The original conversion's time, unix seconds. Required when identifying by `gclid`.
+		ConversionTime *float32 `json:"conversionTime,omitempty"`
+
+		// Currency RESTATEMENT only — ISO 4217 currency for `restatementValue`.
+		Currency *string `json:"currency,omitempty"`
+
+		// Gclid Alternative key — the original click ID. Pair with `conversionTime`. Not valid for ENHANCEMENT.
+		Gclid *string `json:"gclid,omitempty"`
+
+		// OrderId Transaction ID of the original conversion (the `eventId` you sent). Recommended; required for ENHANCEMENT.
+		OrderId *string `json:"orderId,omitempty"`
+
+		// RestatementValue RESTATEMENT only — the corrected TOTAL conversion value.
+		RestatementValue *float32 `json:"restatementValue,omitempty"`
+
+		// User ENHANCEMENT only — first-party identifiers (hashed server-side). At least one of email/phone required.
+		User *struct {
+			Email *string `json:"email,omitempty"`
+			Phone *string `json:"phone,omitempty"`
+		} `json:"user,omitempty"`
+
+		// UserAgent ENHANCEMENT only — the original conversion's user agent (improves match quality).
+		UserAgent *string `json:"userAgent,omitempty"`
+	} `json:"adjustments"`
+
+	// DestinationId Conversion action resource name, e.g. `customers/1234567890/conversionActions/987654321`.
+	DestinationId string `json:"destinationId"`
+}
+
+// AdjustConversionsJSONBodyAdjustmentsAdjustmentType defines parameters for AdjustConversions.
+type AdjustConversionsJSONBodyAdjustmentsAdjustmentType string
+
+// AdjustConversions200JSONResponseBodyFailuresCode0 defines parameters for AdjustConversions.
+type AdjustConversions200JSONResponseBodyFailuresCode0 = string
+
+// AdjustConversions200JSONResponseBodyFailuresCode1 defines parameters for AdjustConversions.
+type AdjustConversions200JSONResponseBodyFailuresCode1 = int
+
+// AdjustConversions200JSONResponseBody_Failures_Code defines parameters for AdjustConversions.
+type AdjustConversions200JSONResponseBody_Failures_Code struct {
+	union json.RawMessage
+}
+
+// AdjustConversions200JSONResponseBodyPlatform defines parameters for AdjustConversions.
+type AdjustConversions200JSONResponseBodyPlatform string
+
 // GetConversionsQualityParams defines parameters for GetConversionsQuality.
 type GetConversionsQualityParams struct {
 	// AccountId SocialAccount _id (must be a metaads account).
@@ -14936,7 +15033,7 @@ type CreateStandaloneAdJSONBody struct {
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
-	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` requires `promotedObject.pixelId` + `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). TikTok-specific: `conversions` (website-conversion ad group) requires `promotedObject.pixelId` (your TikTok Pixel ID) and accepts an optional `promotedObject.customEventType` (a TikTok `optimization_event` code like `ON_WEB_ORDER`, `INITIATE_ORDER`, `ON_WEB_REGISTER`, `FORM`); to inherit a pixel + event from an existing ad group, pass `adSetId` instead. LinkedIn-specific: `engagement`, `traffic`, `awareness`, and `video_views` are supported for standalone ads (creates a Direct Sponsored Content single image or single video ad). `traffic` requires `linkUrl`; `video_views` requires the `video` field. For `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` (OUTCOME_SALES) requires `promotedObject.pixelId` + `promotedObject.customEventType` (use a commerce event, e.g. PURCHASE, START_TRIAL); `lead_conversion` (OUTCOME_LEADS, website pixel leads) requires the same pixel + event but with a leads-class event (e.g. LEAD, SUBMIT_APPLICATION, SCHEDULE, CONTACT) — these are rejected under `conversions` because Meta gates conversion events by objective; `lead_generation` is OUTCOME_LEADS with instant forms (`leadGenFormId`), distinct from `lead_conversion`'s website pixel optimization; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). TikTok-specific: `conversions` (website-conversion ad group) requires `promotedObject.pixelId` (your TikTok Pixel ID) and accepts an optional `promotedObject.customEventType` (a TikTok `optimization_event` code like `ON_WEB_ORDER`, `INITIATE_ORDER`, `ON_WEB_REGISTER`, `FORM`); to inherit a pixel + event from an existing ad group, pass `adSetId` instead. LinkedIn-specific: `engagement`, `traffic`, `awareness`, and `video_views` are supported for standalone ads (creates a Direct Sponsored Content single image or single video ad). `traffic` requires `linkUrl`; `video_views` requires the `video` field. For `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
 	// Headline Required for Meta, Google, Pinterest, and LinkedIn on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100, LinkedIn=400. On LinkedIn this is the ad's headline (the bold text on the creative); for traffic ads it's the link card title.
@@ -20041,6 +20138,9 @@ type UpdateAdCampaignStatusJSONRequestBody UpdateAdCampaignStatusJSONBody
 // SendConversionsJSONRequestBody defines body for SendConversions for application/json ContentType.
 type SendConversionsJSONRequestBody SendConversionsJSONBody
 
+// AdjustConversionsJSONRequestBody defines body for AdjustConversions for application/json ContentType.
+type AdjustConversionsJSONRequestBody AdjustConversionsJSONBody
+
 // CreateStandaloneAdJSONRequestBody defines body for CreateStandaloneAd for application/json ContentType.
 type CreateStandaloneAdJSONRequestBody CreateStandaloneAdJSONBody
 
@@ -21710,6 +21810,68 @@ func (t SendConversions200JSONResponseBody_Failures_Code) MarshalJSON() ([]byte,
 }
 
 func (t *SendConversions200JSONResponseBody_Failures_Code) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAdjustConversions200JSONResponseBodyFailuresCode0 returns the union data inside the AdjustConversions200JSONResponseBody_Failures_Code as a AdjustConversions200JSONResponseBodyFailuresCode0
+func (t AdjustConversions200JSONResponseBody_Failures_Code) AsAdjustConversions200JSONResponseBodyFailuresCode0() (AdjustConversions200JSONResponseBodyFailuresCode0, error) {
+	var body AdjustConversions200JSONResponseBodyFailuresCode0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdjustConversions200JSONResponseBodyFailuresCode0 overwrites any union data inside the AdjustConversions200JSONResponseBody_Failures_Code as the provided AdjustConversions200JSONResponseBodyFailuresCode0
+func (t *AdjustConversions200JSONResponseBody_Failures_Code) FromAdjustConversions200JSONResponseBodyFailuresCode0(v AdjustConversions200JSONResponseBodyFailuresCode0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdjustConversions200JSONResponseBodyFailuresCode0 performs a merge with any union data inside the AdjustConversions200JSONResponseBody_Failures_Code, using the provided AdjustConversions200JSONResponseBodyFailuresCode0
+func (t *AdjustConversions200JSONResponseBody_Failures_Code) MergeAdjustConversions200JSONResponseBodyFailuresCode0(v AdjustConversions200JSONResponseBodyFailuresCode0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAdjustConversions200JSONResponseBodyFailuresCode1 returns the union data inside the AdjustConversions200JSONResponseBody_Failures_Code as a AdjustConversions200JSONResponseBodyFailuresCode1
+func (t AdjustConversions200JSONResponseBody_Failures_Code) AsAdjustConversions200JSONResponseBodyFailuresCode1() (AdjustConversions200JSONResponseBodyFailuresCode1, error) {
+	var body AdjustConversions200JSONResponseBodyFailuresCode1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAdjustConversions200JSONResponseBodyFailuresCode1 overwrites any union data inside the AdjustConversions200JSONResponseBody_Failures_Code as the provided AdjustConversions200JSONResponseBodyFailuresCode1
+func (t *AdjustConversions200JSONResponseBody_Failures_Code) FromAdjustConversions200JSONResponseBodyFailuresCode1(v AdjustConversions200JSONResponseBodyFailuresCode1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAdjustConversions200JSONResponseBodyFailuresCode1 performs a merge with any union data inside the AdjustConversions200JSONResponseBody_Failures_Code, using the provided AdjustConversions200JSONResponseBodyFailuresCode1
+func (t *AdjustConversions200JSONResponseBody_Failures_Code) MergeAdjustConversions200JSONResponseBodyFailuresCode1(v AdjustConversions200JSONResponseBodyFailuresCode1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AdjustConversions200JSONResponseBody_Failures_Code) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AdjustConversions200JSONResponseBody_Failures_Code) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
@@ -23722,6 +23884,11 @@ type ClientInterface interface {
 	SendConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	SendConversions(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdjustConversionsWithBody request with any body
+	AdjustConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AdjustConversions(ctx context.Context, body AdjustConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetConversionsQuality request
 	GetConversionsQuality(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -26451,6 +26618,30 @@ func (c *Client) SendConversionsWithBody(ctx context.Context, contentType string
 
 func (c *Client) SendConversions(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSendConversionsRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdjustConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdjustConversionsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AdjustConversions(ctx context.Context, body AdjustConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdjustConversionsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -36716,6 +36907,46 @@ func NewSendConversionsRequestWithBody(server string, contentType string, body i
 	}
 
 	operationPath := fmt.Sprintf("/v1/ads/conversions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAdjustConversionsRequest calls the generic AdjustConversions builder with application/json body
+func NewAdjustConversionsRequest(server string, body AdjustConversionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAdjustConversionsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewAdjustConversionsRequestWithBody generates requests for AdjustConversions with any type of body
+func NewAdjustConversionsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/conversions/adjustments")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -53237,6 +53468,11 @@ type ClientWithResponsesInterface interface {
 
 	SendConversionsWithResponse(ctx context.Context, body SendConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error)
 
+	// AdjustConversionsWithBodyWithResponse request with any body
+	AdjustConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdjustConversionsResponse, error)
+
+	AdjustConversionsWithResponse(ctx context.Context, body AdjustConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*AdjustConversionsResponse, error)
+
 	// GetConversionsQualityWithResponse request
 	GetConversionsQualityWithResponse(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*GetConversionsQualityResponse, error)
 
@@ -58581,6 +58817,51 @@ func (r SendConversionsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SendConversionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AdjustConversionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// AdjustmentsFailed Adjustments rejected (see failures).
+		AdjustmentsFailed *int `json:"adjustmentsFailed,omitempty"`
+
+		// AdjustmentsReceived Adjustments accepted by Google.
+		AdjustmentsReceived *int `json:"adjustmentsReceived,omitempty"`
+		Failures            *[]struct {
+			// AdjustmentIndex Index into the submitted adjustments array.
+			AdjustmentIndex *int                                                `json:"adjustmentIndex,omitempty"`
+			Code            *AdjustConversions200JSONResponseBody_Failures_Code `json:"code,omitempty"`
+			Message         *string                                             `json:"message,omitempty"`
+		} `json:"failures,omitempty"`
+		Platform *AdjustConversions200JSONResponseBodyPlatform `json:"platform,omitempty"`
+		TraceId  *string                                       `json:"traceId,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r AdjustConversionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdjustConversionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AdjustConversionsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -71681,6 +71962,23 @@ func (c *ClientWithResponses) SendConversionsWithResponse(ctx context.Context, b
 	return ParseSendConversionsResponse(rsp)
 }
 
+// AdjustConversionsWithBodyWithResponse request with arbitrary body returning *AdjustConversionsResponse
+func (c *ClientWithResponses) AdjustConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdjustConversionsResponse, error) {
+	rsp, err := c.AdjustConversionsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdjustConversionsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AdjustConversionsWithResponse(ctx context.Context, body AdjustConversionsJSONRequestBody, reqEditors ...RequestEditorFn) (*AdjustConversionsResponse, error) {
+	rsp, err := c.AdjustConversions(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdjustConversionsResponse(rsp)
+}
+
 // GetConversionsQualityWithResponse request returning *GetConversionsQualityResponse
 func (c *ClientWithResponses) GetConversionsQualityWithResponse(ctx context.Context, params *GetConversionsQualityParams, reqEditors ...RequestEditorFn) (*GetConversionsQualityResponse, error) {
 	rsp, err := c.GetConversionsQuality(ctx, params, reqEditors...)
@@ -79752,6 +80050,53 @@ func ParseSendConversionsResponse(rsp *http.Response) (*SendConversionsResponse,
 			// requestId for Google. Absent for LinkedIn (LinkedIn's
 			// conversionEvents endpoint does not surface a trace ID).
 			TraceId *string `json:"traceId,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdjustConversionsResponse parses an HTTP response from a AdjustConversionsWithResponse call
+func ParseAdjustConversionsResponse(rsp *http.Response) (*AdjustConversionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdjustConversionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// AdjustmentsFailed Adjustments rejected (see failures).
+			AdjustmentsFailed *int `json:"adjustmentsFailed,omitempty"`
+
+			// AdjustmentsReceived Adjustments accepted by Google.
+			AdjustmentsReceived *int `json:"adjustmentsReceived,omitempty"`
+			Failures            *[]struct {
+				// AdjustmentIndex Index into the submitted adjustments array.
+				AdjustmentIndex *int                                                `json:"adjustmentIndex,omitempty"`
+				Code            *AdjustConversions200JSONResponseBody_Failures_Code `json:"code,omitempty"`
+				Message         *string                                             `json:"message,omitempty"`
+			} `json:"failures,omitempty"`
+			Platform *AdjustConversions200JSONResponseBodyPlatform `json:"platform,omitempty"`
+			TraceId  *string                                       `json:"traceId,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
