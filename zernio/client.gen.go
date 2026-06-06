@@ -19636,6 +19636,20 @@ type UploadWhatsAppNumberKycDocumentParams struct {
 	XFilename string `json:"X-Filename"`
 }
 
+// ValidateWhatsAppNumberKycAddressJSONBody defines parameters for ValidateWhatsAppNumberKycAddress.
+type ValidateWhatsAppNumberKycAddressJSONBody struct {
+	// AdministrativeArea State / province / region. When omitted
+	AdministrativeArea *string `json:"administrative_area,omitempty"`
+
+	// Country ISO 3166-1 alpha-2 country code.
+	Country string `json:"country"`
+
+	// Locality City / town.
+	Locality      string `json:"locality"`
+	PostalCode    string `json:"postal_code"`
+	StreetAddress string `json:"street_address"`
+}
+
 // PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumberJSONBody struct {
 	// Country ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: "kyc_required", kycUrl } — the customer must complete KYC at that URL before the number is ordered. See GET /v1/whatsapp/phone-numbers/countries.
@@ -20413,6 +20427,9 @@ type PublishWhatsAppFlowJSONRequestBody PublishWhatsAppFlowJSONBody
 
 // SubmitWhatsAppNumberKycJSONRequestBody defines body for SubmitWhatsAppNumberKyc for application/json ContentType.
 type SubmitWhatsAppNumberKycJSONRequestBody SubmitWhatsAppNumberKycJSONBody
+
+// ValidateWhatsAppNumberKycAddressJSONRequestBody defines body for ValidateWhatsAppNumberKycAddress for application/json ContentType.
+type ValidateWhatsAppNumberKycAddressJSONRequestBody ValidateWhatsAppNumberKycAddressJSONBody
 
 // PurchaseWhatsAppPhoneNumberJSONRequestBody defines body for PurchaseWhatsAppPhoneNumber for application/json ContentType.
 type PurchaseWhatsAppPhoneNumberJSONRequestBody PurchaseWhatsAppPhoneNumberJSONBody
@@ -24752,6 +24769,11 @@ type ClientInterface interface {
 
 	// UploadWhatsAppNumberKycDocumentWithBody request with any body
 	UploadWhatsAppNumberKycDocumentWithBody(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateWhatsAppNumberKycAddressWithBody request with any body
+	ValidateWhatsAppNumberKycAddressWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ValidateWhatsAppNumberKycAddress(ctx context.Context, body ValidateWhatsAppNumberKycAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PurchaseWhatsAppPhoneNumberWithBody request with any body
 	PurchaseWhatsAppPhoneNumberWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -30386,6 +30408,30 @@ func (c *Client) SubmitWhatsAppNumberKyc(ctx context.Context, body SubmitWhatsAp
 
 func (c *Client) UploadWhatsAppNumberKycDocumentWithBody(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadWhatsAppNumberKycDocumentRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateWhatsAppNumberKycAddressWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateWhatsAppNumberKycAddressRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateWhatsAppNumberKycAddress(ctx context.Context, body ValidateWhatsAppNumberKycAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateWhatsAppNumberKycAddressRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -50970,6 +51016,46 @@ func NewUploadWhatsAppNumberKycDocumentRequestWithBody(server string, params *Up
 	return req, nil
 }
 
+// NewValidateWhatsAppNumberKycAddressRequest calls the generic ValidateWhatsAppNumberKycAddress builder with application/json body
+func NewValidateWhatsAppNumberKycAddressRequest(server string, body ValidateWhatsAppNumberKycAddressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewValidateWhatsAppNumberKycAddressRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewValidateWhatsAppNumberKycAddressRequestWithBody generates requests for ValidateWhatsAppNumberKycAddress with any type of body
+func NewValidateWhatsAppNumberKycAddressRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/phone-numbers/kyc/validate-address")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewPurchaseWhatsAppPhoneNumberRequest calls the generic PurchaseWhatsAppPhoneNumber builder with application/json body
 func NewPurchaseWhatsAppPhoneNumberRequest(server string, body PurchaseWhatsAppPhoneNumberJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -54335,6 +54421,11 @@ type ClientWithResponsesInterface interface {
 
 	// UploadWhatsAppNumberKycDocumentWithBodyWithResponse request with any body
 	UploadWhatsAppNumberKycDocumentWithBodyWithResponse(ctx context.Context, params *UploadWhatsAppNumberKycDocumentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadWhatsAppNumberKycDocumentResponse, error)
+
+	// ValidateWhatsAppNumberKycAddressWithBodyWithResponse request with any body
+	ValidateWhatsAppNumberKycAddressWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateWhatsAppNumberKycAddressResponse, error)
+
+	ValidateWhatsAppNumberKycAddressWithResponse(ctx context.Context, body ValidateWhatsAppNumberKycAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateWhatsAppNumberKycAddressResponse, error)
 
 	// PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with any body
 	PurchaseWhatsAppPhoneNumberWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PurchaseWhatsAppPhoneNumberResponse, error)
@@ -69024,6 +69115,57 @@ func (r UploadWhatsAppNumberKycDocumentResponse) ContentType() string {
 	return ""
 }
 
+type ValidateWhatsAppNumberKycAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Ok *bool `json:"ok,omitempty"`
+
+		// Skipped true when no `administrative_area` was supplied, so no pre-check ran.
+		Skipped *bool `json:"skipped,omitempty"`
+	}
+	JSON400 *struct {
+		Code    *string `json:"code,omitempty"`
+		Details *struct {
+			AddressSuggestions *[]struct {
+				Field *string `json:"field,omitempty"`
+				Label *string `json:"label,omitempty"`
+				Value *string `json:"value,omitempty"`
+			} `json:"addressSuggestions,omitempty"`
+		} `json:"details,omitempty"`
+
+		// Error Human-readable message.
+		Error *string `json:"error,omitempty"`
+		Param *string `json:"param,omitempty"`
+		Type  *string `json:"type,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidateWhatsAppNumberKycAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateWhatsAppNumberKycAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ValidateWhatsAppNumberKycAddressResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type PurchaseWhatsAppPhoneNumberResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -74707,6 +74849,23 @@ func (c *ClientWithResponses) UploadWhatsAppNumberKycDocumentWithBodyWithRespons
 		return nil, err
 	}
 	return ParseUploadWhatsAppNumberKycDocumentResponse(rsp)
+}
+
+// ValidateWhatsAppNumberKycAddressWithBodyWithResponse request with arbitrary body returning *ValidateWhatsAppNumberKycAddressResponse
+func (c *ClientWithResponses) ValidateWhatsAppNumberKycAddressWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateWhatsAppNumberKycAddressResponse, error) {
+	rsp, err := c.ValidateWhatsAppNumberKycAddressWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateWhatsAppNumberKycAddressResponse(rsp)
+}
+
+func (c *ClientWithResponses) ValidateWhatsAppNumberKycAddressWithResponse(ctx context.Context, body ValidateWhatsAppNumberKycAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateWhatsAppNumberKycAddressResponse, error) {
+	rsp, err := c.ValidateWhatsAppNumberKycAddress(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateWhatsAppNumberKycAddressResponse(rsp)
 }
 
 // PurchaseWhatsAppPhoneNumberWithBodyWithResponse request with arbitrary body returning *PurchaseWhatsAppPhoneNumberResponse
@@ -91377,6 +91536,65 @@ func ParseUploadWhatsAppNumberKycDocumentResponse(rsp *http.Response) (*UploadWh
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateWhatsAppNumberKycAddressResponse parses an HTTP response from a ValidateWhatsAppNumberKycAddressWithResponse call
+func ParseValidateWhatsAppNumberKycAddressResponse(rsp *http.Response) (*ValidateWhatsAppNumberKycAddressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateWhatsAppNumberKycAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Ok *bool `json:"ok,omitempty"`
+
+			// Skipped true when no `administrative_area` was supplied, so no pre-check ran.
+			Skipped *bool `json:"skipped,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Code    *string `json:"code,omitempty"`
+			Details *struct {
+				AddressSuggestions *[]struct {
+					Field *string `json:"field,omitempty"`
+					Label *string `json:"label,omitempty"`
+					Value *string `json:"value,omitempty"`
+				} `json:"addressSuggestions,omitempty"`
+			} `json:"details,omitempty"`
+
+			// Error Human-readable message.
+			Error *string `json:"error,omitempty"`
+			Param *string `json:"param,omitempty"`
+			Type  *string `json:"type,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Unauthorized
