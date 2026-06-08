@@ -2136,6 +2136,24 @@ func (e PaymentRequiredReason) Valid() bool {
 	}
 }
 
+// Defines values for ListAccountsParamsStatus.
+const (
+	ListAccountsParamsStatusConnected    ListAccountsParamsStatus = "connected"
+	ListAccountsParamsStatusDisconnected ListAccountsParamsStatus = "disconnected"
+)
+
+// Valid indicates whether the value is a known member of the ListAccountsParamsStatus enum.
+func (e ListAccountsParamsStatus) Valid() bool {
+	switch e {
+	case ListAccountsParamsStatusConnected:
+		return true
+	case ListAccountsParamsStatusDisconnected:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetFollowerStatsParamsGranularity.
 const (
 	GetFollowerStatsParamsGranularityDaily   GetFollowerStatsParamsGranularity = "daily"
@@ -6803,13 +6821,13 @@ func (e CompleteTelegramConnect200JSONResponseBody1ChatType) Valid() bool {
 
 // Defines values for CompleteTelegramConnect200JSONResponseBody1Status.
 const (
-	Connected CompleteTelegramConnect200JSONResponseBody1Status = "connected"
+	CompleteTelegramConnect200JSONResponseBody1StatusConnected CompleteTelegramConnect200JSONResponseBody1Status = "connected"
 )
 
 // Valid indicates whether the value is a known member of the CompleteTelegramConnect200JSONResponseBody1Status enum.
 func (e CompleteTelegramConnect200JSONResponseBody1Status) Valid() bool {
 	switch e {
-	case Connected:
+	case CompleteTelegramConnect200JSONResponseBody1StatusConnected:
 		return true
 	default:
 		return false
@@ -13335,6 +13353,9 @@ type ListAccountsParams struct {
 	// Platform Filter accounts by platform (e.g. "instagram", "twitter").
 	Platform *string `form:"platform,omitempty" json:"platform,omitempty"`
 
+	// Status Filter accounts by connection status. `connected` returns healthy accounts; `disconnected` returns accounts that need reconnection (per the same reconnection check surfaced in the dashboard). Omit to return accounts in any status. When combined with page/limit, pagination totals reflect the filtered result set.
+	Status *ListAccountsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
 	// IncludeOverLimit When true, includes accounts from over-limit profiles.
 	IncludeOverLimit *bool `form:"includeOverLimit,omitempty" json:"includeOverLimit,omitempty"`
 
@@ -13344,6 +13365,9 @@ type ListAccountsParams struct {
 	// Limit Page size. Required alongside page for pagination.
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 }
+
+// ListAccountsParamsStatus defines parameters for ListAccounts.
+type ListAccountsParamsStatus string
 
 // GetFollowerStatsParams defines parameters for GetFollowerStats.
 type GetFollowerStatsParams struct {
@@ -31332,6 +31356,18 @@ func NewListAccountsRequest(server string, params *ListAccountsParams) (*http.Re
 		if params.Platform != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "platform", *params.Platform, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
