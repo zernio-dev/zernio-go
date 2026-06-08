@@ -15942,7 +15942,7 @@ type GetAdTrackingTags200JSONResponseBodyLevel string
 
 // UpdateAdTrackingTagsJSONBody defines parameters for UpdateAdTrackingTags.
 type UpdateAdTrackingTagsJSONBody struct {
-	// Creative Meta only. Required to rebuild the immutable creative when setting urlTags.
+	// Creative Meta only. OPTIONAL — omit to preserve the existing creative verbatim (default). Provide it only to rebuild the creative explicitly, or for creatives whose object_story_spec Meta strips.
 	Creative *struct {
 		Body         string  `json:"body"`
 		CallToAction string  `json:"callToAction"`
