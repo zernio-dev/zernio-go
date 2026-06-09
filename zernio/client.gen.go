@@ -12224,11 +12224,23 @@ type RedditPlatformData struct {
 	// FlairId Flair ID for the post. Required by some subreddits. Use GET /v1/accounts/{id}/reddit-flairs?subreddit=name to list flairs.
 	FlairId *string `json:"flairId,omitempty"`
 
+	// FlairText Custom flair text, for subreddits that allow free-text flair. Ignored when flairId is provided (flairId wins).
+	FlairText *string `json:"flairText,omitempty"`
+
 	// ForceSelf When true, creates a text/self post even when a URL or media is provided.
 	ForceSelf *bool `json:"forceSelf,omitempty"`
 
 	// NativeVideo Controls Reddit's native video upload flow. When true (default for video mediaItems), the video is uploaded to Reddit's CDN and submitted with kind=video so it renders as an embedded Reddit video player. Reddit transcodes server-side (1080p/30fps cap). Set to false to fall back to a legacy link post. If the subreddit blocks video posts, the upload falls back to a link post automatically.
 	NativeVideo *bool `json:"nativeVideo,omitempty"`
+
+	// Nsfw Mark the post as NSFW (Not Safe For Work / over 18).
+	Nsfw *bool `json:"nsfw,omitempty"`
+
+	// Sendreplies Whether to receive inbox replies for comments on this post. Set to false to opt out.
+	Sendreplies *bool `json:"sendreplies,omitempty"`
+
+	// Spoiler Mark the post as a spoiler. The subreddit must have spoiler tagging enabled for this to take effect.
+	Spoiler *bool `json:"spoiler,omitempty"`
 
 	// Subreddit Target subreddit name (without "r/" prefix). Overrides the default. Use GET /v1/accounts/{id}/reddit-subreddits to list options.
 	Subreddit *string `json:"subreddit,omitempty"`
@@ -12666,6 +12678,12 @@ type TwitterPlatformData struct {
 	// LongVideo Enable long video uploads (over 140 seconds) using amplify_video media category. Requires the connected X account to have an active X Premium subscription. When true, videos are uploaded with the amplify_video category which supports longer durations (up to 10 minutes via API). When false or omitted, the standard tweet_video category is used (140 second limit). Note that not all Premium accounts have API long-video access, as X may require separate allowlisting.
 	LongVideo *bool `json:"longVideo,omitempty"`
 
+	// MadeWithAi When true, the post is labeled by X as containing AI-generated media. Per X, this label is for AI-generated media, not AI-written text. For threads, applies to the root tweet only.
+	MadeWithAi *bool `json:"madeWithAi,omitempty"`
+
+	// PaidPartnership When true, the post is labeled by X as a paid partnership / paid promotion. For threads, applies to the root tweet only. Field availability may depend on your X API access tier.
+	PaidPartnership *bool `json:"paidPartnership,omitempty"`
+
 	// Poll Create a poll with this tweet. Mutually exclusive with media attachments and threads.
 	Poll *struct {
 		// DurationMinutes Poll duration in minutes (5 min to 7 days)
@@ -12683,6 +12701,18 @@ type TwitterPlatformData struct {
 
 	// ReplyToTweetId ID of an existing tweet to reply to. The published tweet will appear as a reply in that tweet's thread. For threads, only the first tweet replies to the target; subsequent tweets chain normally.
 	ReplyToTweetId *string `json:"replyToTweetId,omitempty"`
+
+	// SensitiveMedia Marks attached media with a sensitive-content warning. Applied to every media item in the post (requires media; ignored for text-only tweets). At least one flag must be true for the warning to be sent.
+	SensitiveMedia *struct {
+		// AdultContent Content contains adult material.
+		AdultContent *bool `json:"adultContent,omitempty"`
+
+		// GraphicViolence Content depicts graphic violence.
+		GraphicViolence *bool `json:"graphicViolence,omitempty"`
+
+		// Other Content has other sensitive characteristics.
+		Other *bool `json:"other,omitempty"`
+	} `json:"sensitiveMedia,omitempty"`
 
 	// ThreadItems Complete sequence of tweets in a thread. The first item becomes the root tweet, subsequent items are chained as replies. When threadItems is provided, the top-level content field is used only for display and search purposes, it is NOT published. You must include your first tweet as threadItems[0].
 	ThreadItems *[]struct {
