@@ -8277,6 +8277,24 @@ func (e ListInboxReviewsParamsSortOrder) Valid() bool {
 	}
 }
 
+// Defines values for CreateInviteTokenJSONBodyRole.
+const (
+	BillingAdmin CreateInviteTokenJSONBodyRole = "billing_admin"
+	Member       CreateInviteTokenJSONBodyRole = "member"
+)
+
+// Valid indicates whether the value is a known member of the CreateInviteTokenJSONBodyRole enum.
+func (e CreateInviteTokenJSONBodyRole) Valid() bool {
+	switch e {
+	case BillingAdmin:
+		return true
+	case Member:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateInviteTokenJSONBodyScope.
 const (
 	CreateInviteTokenJSONBodyScopeAll      CreateInviteTokenJSONBodyScope = "all"
@@ -18436,9 +18454,18 @@ type CreateInviteTokenJSONBody struct {
 	// ProfileIds Required if scope is 'profiles'. Array of profile IDs to grant access to.
 	ProfileIds *[]string `json:"profileIds,omitempty"`
 
+	// ReadOnly When true, the invitee can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
+	ReadOnly *bool `json:"readOnly,omitempty"`
+
+	// Role Org role granted to the invitee. Defaults to 'member'.
+	Role *CreateInviteTokenJSONBodyRole `json:"role,omitempty"`
+
 	// Scope 'all' grants access to all profiles, 'profiles' restricts to specific profiles
 	Scope CreateInviteTokenJSONBodyScope `json:"scope"`
 }
+
+// CreateInviteTokenJSONBodyRole defines parameters for CreateInviteToken.
+type CreateInviteTokenJSONBodyRole string
 
 // CreateInviteTokenJSONBodyScope defines parameters for CreateInviteToken.
 type CreateInviteTokenJSONBodyScope string
