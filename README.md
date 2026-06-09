@@ -129,6 +129,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.CreateWebhookSettingsWithResponse()` | Create webhook |
+| `client.GetWebhookLogsWithResponse()` | List webhook delivery logs |
 | `client.GetWebhookSettingsWithResponse()` | List webhooks |
 | `client.UpdateWebhookSettingsWithResponse()` | Update webhook |
 | `client.DeleteWebhookSettingsWithResponse()` | Delete webhook |

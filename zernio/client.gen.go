@@ -1773,6 +1773,24 @@ func (e WebhookEvents) Valid() bool {
 	}
 }
 
+// Defines values for WebhookLogStatus.
+const (
+	WebhookLogStatusFailed  WebhookLogStatus = "failed"
+	WebhookLogStatusSuccess WebhookLogStatus = "success"
+)
+
+// Valid indicates whether the value is a known member of the WebhookLogStatus enum.
+func (e WebhookLogStatus) Valid() bool {
+	switch e {
+	case WebhookLogStatusFailed:
+		return true
+	case WebhookLogStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WhatsAppBodyComponentType.
 const (
 	Body WhatsAppBodyComponentType = "body"
@@ -9090,6 +9108,24 @@ func (e ValidateSubreddit200JSONResponseBody0SubredditType) Valid() bool {
 	}
 }
 
+// Defines values for GetWebhookLogsParamsStatus.
+const (
+	GetWebhookLogsParamsStatusFailed  GetWebhookLogsParamsStatus = "failed"
+	GetWebhookLogsParamsStatusSuccess GetWebhookLogsParamsStatus = "success"
+)
+
+// Valid indicates whether the value is a known member of the GetWebhookLogsParamsStatus enum.
+func (e GetWebhookLogsParamsStatus) Valid() bool {
+	switch e {
+	case GetWebhookLogsParamsStatusFailed:
+		return true
+	case GetWebhookLogsParamsStatusSuccess:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateWebhookSettingsJSONBodyEvents.
 const (
 	CreateWebhookSettingsJSONBodyEventsAccountAdsInitialSyncCompleted     CreateWebhookSettingsJSONBodyEvents = "account.ads.initial_sync_completed"
@@ -10145,13 +10181,13 @@ func (e GetWorkflow200JSONResponseBodyWorkflowStatus) Valid() bool {
 
 // Defines values for DuplicateWorkflow201JSONResponseBodyWorkflowStatus.
 const (
-	Draft DuplicateWorkflow201JSONResponseBodyWorkflowStatus = "draft"
+	DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft DuplicateWorkflow201JSONResponseBodyWorkflowStatus = "draft"
 )
 
 // Valid indicates whether the value is a known member of the DuplicateWorkflow201JSONResponseBodyWorkflowStatus enum.
 func (e DuplicateWorkflow201JSONResponseBodyWorkflowStatus) Valid() bool {
 	switch e {
-	case Draft:
+	case DuplicateWorkflow201JSONResponseBodyWorkflowStatusDraft:
 		return true
 	default:
 		return false
@@ -10232,25 +10268,25 @@ func (e ListWorkflowExecutions200JSONResponseBodyExecutionsWaitingForKind) Valid
 
 // Defines values for ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus.
 const (
-	Completed ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "completed"
-	Exited    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "exited"
-	Failed    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "failed"
-	Running   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "running"
-	Waiting   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "waiting"
+	ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusCompleted ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "completed"
+	ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusExited    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "exited"
+	ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusFailed    ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "failed"
+	ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusRunning   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "running"
+	ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusWaiting   ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus = "waiting"
 )
 
 // Valid indicates whether the value is a known member of the ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus enum.
 func (e ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatus) Valid() bool {
 	switch e {
-	case Completed:
+	case ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusCompleted:
 		return true
-	case Exited:
+	case ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusExited:
 		return true
-	case Failed:
+	case ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusFailed:
 		return true
-	case Running:
+	case ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusRunning:
 		return true
-	case Waiting:
+	case ListWorkflowExecutionEvents200JSONResponseBodyExecutionStatusWaiting:
 		return true
 	default:
 		return false
@@ -12869,6 +12905,54 @@ type Webhook struct {
 
 // WebhookEvents defines model for Webhook.Events.
 type WebhookEvents string
+
+// WebhookLog A single webhook delivery attempt recorded by Zernio (30-day retention).
+type WebhookLog struct {
+	// AttemptNumber Delivery attempt number (increments on retries)
+	AttemptNumber *int `json:"attemptNumber,omitempty"`
+
+	// CreatedAt Timestamp the delivery was attempted
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+
+	// ErrorMessage Error message when delivery failed
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+
+	// Event Event type that triggered the delivery (e.g. post.published)
+	Event *string `json:"event,omitempty"`
+
+	// EventId Stable webhook event ID (correlates to the delivered payload)
+	EventId *string `json:"eventId,omitempty"`
+
+	// RequestPayload The JSON payload sent to the destination endpoint
+	RequestPayload *map[string]interface{} `json:"requestPayload,omitempty"`
+
+	// ResponseBody Response body returned by the destination endpoint
+	ResponseBody *string `json:"responseBody,omitempty"`
+
+	// ResponseTime Time taken by the destination endpoint to respond, in milliseconds
+	ResponseTime *int `json:"responseTime,omitempty"`
+
+	// Status Delivery outcome
+	Status *WebhookLogStatus `json:"status,omitempty"`
+
+	// StatusCode HTTP status code returned by the destination endpoint
+	StatusCode *int `json:"statusCode,omitempty"`
+
+	// Url Destination URL the webhook was delivered to
+	Url *string `json:"url,omitempty"`
+
+	// UserId ID of the account owner the webhook belongs to
+	UserId *string `json:"userId,omitempty"`
+
+	// WebhookId ID of the webhook configuration that produced this delivery
+	WebhookId *string `json:"webhookId,omitempty"`
+
+	// WebhookName Name of the webhook configuration at delivery time
+	WebhookName *string `json:"webhookName,omitempty"`
+}
+
+// WebhookLogStatus Delivery outcome
+type WebhookLogStatus string
 
 // WhatsAppBodyComponent defines model for WhatsAppBodyComponent.
 type WhatsAppBodyComponent struct {
@@ -19085,6 +19169,30 @@ type GetUsageStatsParams struct {
 	Reconcile *bool `form:"reconcile,omitempty" json:"reconcile,omitempty"`
 }
 
+// GetWebhookLogsParams defines parameters for GetWebhookLogs.
+type GetWebhookLogsParams struct {
+	// Limit Maximum number of logs to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Skip Number of logs to skip (offset-based pagination)
+	Skip *int `form:"skip,omitempty" json:"skip,omitempty"`
+
+	// Status Filter by delivery outcome
+	Status *GetWebhookLogsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// Event Filter by event type (e.g. post.published)
+	Event *string `form:"event,omitempty" json:"event,omitempty"`
+
+	// WebhookId Filter by webhook configuration ID
+	WebhookId *string `form:"webhookId,omitempty" json:"webhookId,omitempty"`
+
+	// EventId Filter by stable webhook event ID
+	EventId *string `form:"eventId,omitempty" json:"eventId,omitempty"`
+}
+
+// GetWebhookLogsParamsStatus defines parameters for GetWebhookLogs.
+type GetWebhookLogsParamsStatus string
+
 // DeleteWebhookSettingsParams defines parameters for DeleteWebhookSettings.
 type DeleteWebhookSettingsParams struct {
 	// Id Webhook ID to delete
@@ -24674,6 +24782,9 @@ type ClientInterface interface {
 	// GetUser request
 	GetUser(ctx context.Context, userId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWebhookLogs request
+	GetWebhookLogs(ctx context.Context, params *GetWebhookLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteWebhookSettings request
 	DeleteWebhookSettings(ctx context.Context, params *DeleteWebhookSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -29793,6 +29904,18 @@ func (c *Client) ListUsers(ctx context.Context, reqEditors ...RequestEditorFn) (
 
 func (c *Client) GetUser(ctx context.Context, userId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetUserRequest(c.Server, userId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWebhookLogs(ctx context.Context, params *GetWebhookLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWebhookLogsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -48942,6 +49065,120 @@ func NewGetUserRequest(server string, userId string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewGetWebhookLogsRequest generates requests for GetWebhookLogs
+func NewGetWebhookLogsRequest(server string, params *GetWebhookLogsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/webhooks/logs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Skip != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "skip", *params.Skip, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Event != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "event", *params.Event, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.WebhookId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "webhookId", *params.WebhookId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.EventId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "eventId", *params.EventId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeleteWebhookSettingsRequest generates requests for DeleteWebhookSettings
 func NewDeleteWebhookSettingsRequest(server string, params *DeleteWebhookSettingsParams) (*http.Request, error) {
 	var err error
@@ -54337,6 +54574,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetUserWithResponse request
 	GetUserWithResponse(ctx context.Context, userId string, reqEditors ...RequestEditorFn) (*GetUserResponse, error)
+
+	// GetWebhookLogsWithResponse request
+	GetWebhookLogsWithResponse(ctx context.Context, params *GetWebhookLogsParams, reqEditors ...RequestEditorFn) (*GetWebhookLogsResponse, error)
 
 	// DeleteWebhookSettingsWithResponse request
 	DeleteWebhookSettingsWithResponse(ctx context.Context, params *DeleteWebhookSettingsParams, reqEditors ...RequestEditorFn) (*DeleteWebhookSettingsResponse, error)
@@ -67468,6 +67708,55 @@ func (r GetUserResponse) ContentType() string {
 	return ""
 }
 
+type GetWebhookLogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Logs       *[]WebhookLog `json:"logs,omitempty"`
+		Pagination *struct {
+			// HasMore Whether more logs are available beyond this page
+			HasMore *bool `json:"hasMore,omitempty"`
+
+			// Limit Maximum number of logs returned per page
+			Limit *int `json:"limit,omitempty"`
+
+			// Pages Total number of pages
+			Pages *int `json:"pages,omitempty"`
+
+			// Skip Number of logs skipped
+			Skip *int `json:"skip,omitempty"`
+
+			// Total Total number of matching logs
+			Total *int `json:"total,omitempty"`
+		} `json:"pagination,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWebhookLogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWebhookLogsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWebhookLogsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type DeleteWebhookSettingsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -74429,6 +74718,15 @@ func (c *ClientWithResponses) GetUserWithResponse(ctx context.Context, userId st
 		return nil, err
 	}
 	return ParseGetUserResponse(rsp)
+}
+
+// GetWebhookLogsWithResponse request returning *GetWebhookLogsResponse
+func (c *ClientWithResponses) GetWebhookLogsWithResponse(ctx context.Context, params *GetWebhookLogsParams, reqEditors ...RequestEditorFn) (*GetWebhookLogsResponse, error) {
+	rsp, err := c.GetWebhookLogs(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWebhookLogsResponse(rsp)
 }
 
 // DeleteWebhookSettingsWithResponse request returning *DeleteWebhookSettingsResponse
@@ -89808,6 +90106,57 @@ func ParseGetUserResponse(rsp *http.Response) (*GetUserResponse, error) {
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWebhookLogsResponse parses an HTTP response from a GetWebhookLogsWithResponse call
+func ParseGetWebhookLogsResponse(rsp *http.Response) (*GetWebhookLogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWebhookLogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Logs       *[]WebhookLog `json:"logs,omitempty"`
+			Pagination *struct {
+				// HasMore Whether more logs are available beyond this page
+				HasMore *bool `json:"hasMore,omitempty"`
+
+				// Limit Maximum number of logs returned per page
+				Limit *int `json:"limit,omitempty"`
+
+				// Pages Total number of pages
+				Pages *int `json:"pages,omitempty"`
+
+				// Skip Number of logs skipped
+				Skip *int `json:"skip,omitempty"`
+
+				// Total Total number of matching logs
+				Total *int `json:"total,omitempty"`
+			} `json:"pagination,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
