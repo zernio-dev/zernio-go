@@ -1923,6 +1923,7 @@ func (e WhatsAppTemplateButtonOtpType) Valid() bool {
 // Defines values for WhatsAppTemplateButtonType.
 const (
 	WhatsAppTemplateButtonTypeCatalog     WhatsAppTemplateButtonType = "catalog"
+	WhatsAppTemplateButtonTypeCopyCode    WhatsAppTemplateButtonType = "copy_code"
 	WhatsAppTemplateButtonTypeFlow        WhatsAppTemplateButtonType = "flow"
 	WhatsAppTemplateButtonTypeMpm         WhatsAppTemplateButtonType = "mpm"
 	WhatsAppTemplateButtonTypeOtp         WhatsAppTemplateButtonType = "otp"
@@ -1935,6 +1936,8 @@ const (
 func (e WhatsAppTemplateButtonType) Valid() bool {
 	switch e {
 	case WhatsAppTemplateButtonTypeCatalog:
+		return true
+	case WhatsAppTemplateButtonTypeCopyCode:
 		return true
 	case WhatsAppTemplateButtonTypeFlow:
 		return true
@@ -13048,26 +13051,39 @@ type WhatsAppSandboxSessionStatus string
 type WhatsAppTemplateButton struct {
 	AutofillText *string `json:"autofill_text,omitempty"`
 
-	// Example Example values for URL suffix variables
-	Example        *[]string `json:"example,omitempty"`
-	FlowAction     *string   `json:"flow_action,omitempty"`
-	FlowId         *string   `json:"flow_id,omitempty"`
-	FlowJson       *string   `json:"flow_json,omitempty"`
-	FlowName       *string   `json:"flow_name,omitempty"`
-	NavigateScreen *string   `json:"navigate_screen,omitempty"`
+	// Example Example value(s). For URL buttons, an array of URL-suffix samples. For copy_code (marketing) buttons, the coupon code as a string.
+	Example        *WhatsAppTemplateButton_Example `json:"example,omitempty"`
+	FlowAction     *string                         `json:"flow_action,omitempty"`
+	FlowId         *string                         `json:"flow_id,omitempty"`
+	FlowJson       *string                         `json:"flow_json,omitempty"`
+	FlowName       *string                         `json:"flow_name,omitempty"`
+	NavigateScreen *string                         `json:"navigate_screen,omitempty"`
 
 	// OtpType Required when type is otp
 	OtpType     *WhatsAppTemplateButtonOtpType `json:"otp_type,omitempty"`
 	PackageName *string                        `json:"package_name,omitempty"`
 
 	// PhoneNumber Required when type is phone_number
-	PhoneNumber   *string                    `json:"phone_number,omitempty"`
-	SignatureHash *string                    `json:"signature_hash,omitempty"`
-	Text          string                     `json:"text"`
-	Type          WhatsAppTemplateButtonType `json:"type"`
+	PhoneNumber   *string `json:"phone_number,omitempty"`
+	SignatureHash *string `json:"signature_hash,omitempty"`
+
+	// Text Visible button label. Required for all types except copy_code (whose label is fixed by WhatsApp).
+	Text *string                    `json:"text,omitempty"`
+	Type WhatsAppTemplateButtonType `json:"type"`
 
 	// Url Required when type is URL
 	Url *string `json:"url,omitempty"`
+}
+
+// WhatsAppTemplateButtonExample0 defines model for .
+type WhatsAppTemplateButtonExample0 = string
+
+// WhatsAppTemplateButtonExample1 defines model for .
+type WhatsAppTemplateButtonExample1 = []string
+
+// WhatsAppTemplateButton_Example Example value(s). For URL buttons, an array of URL-suffix samples. For copy_code (marketing) buttons, the coupon code as a string.
+type WhatsAppTemplateButton_Example struct {
+	union json.RawMessage
 }
 
 // WhatsAppTemplateButtonOtpType Required when type is otp
@@ -21607,6 +21623,68 @@ func (t SocialAccount_ProfileId) MarshalJSON() ([]byte, error) {
 }
 
 func (t *SocialAccount_ProfileId) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsWhatsAppTemplateButtonExample0 returns the union data inside the WhatsAppTemplateButton_Example as a WhatsAppTemplateButtonExample0
+func (t WhatsAppTemplateButton_Example) AsWhatsAppTemplateButtonExample0() (WhatsAppTemplateButtonExample0, error) {
+	var body WhatsAppTemplateButtonExample0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppTemplateButtonExample0 overwrites any union data inside the WhatsAppTemplateButton_Example as the provided WhatsAppTemplateButtonExample0
+func (t *WhatsAppTemplateButton_Example) FromWhatsAppTemplateButtonExample0(v WhatsAppTemplateButtonExample0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppTemplateButtonExample0 performs a merge with any union data inside the WhatsAppTemplateButton_Example, using the provided WhatsAppTemplateButtonExample0
+func (t *WhatsAppTemplateButton_Example) MergeWhatsAppTemplateButtonExample0(v WhatsAppTemplateButtonExample0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsWhatsAppTemplateButtonExample1 returns the union data inside the WhatsAppTemplateButton_Example as a WhatsAppTemplateButtonExample1
+func (t WhatsAppTemplateButton_Example) AsWhatsAppTemplateButtonExample1() (WhatsAppTemplateButtonExample1, error) {
+	var body WhatsAppTemplateButtonExample1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromWhatsAppTemplateButtonExample1 overwrites any union data inside the WhatsAppTemplateButton_Example as the provided WhatsAppTemplateButtonExample1
+func (t *WhatsAppTemplateButton_Example) FromWhatsAppTemplateButtonExample1(v WhatsAppTemplateButtonExample1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeWhatsAppTemplateButtonExample1 performs a merge with any union data inside the WhatsAppTemplateButton_Example, using the provided WhatsAppTemplateButtonExample1
+func (t *WhatsAppTemplateButton_Example) MergeWhatsAppTemplateButtonExample1(v WhatsAppTemplateButtonExample1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t WhatsAppTemplateButton_Example) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *WhatsAppTemplateButton_Example) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }
