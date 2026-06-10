@@ -17935,7 +17935,7 @@ type CreateInboxConversationJSONBody struct {
 	// TemplateName WhatsApp only. Name of the approved template to start the conversation with (required for WhatsApp).
 	TemplateName *string `json:"templateName,omitempty"`
 
-	// TemplateParams WhatsApp only. Body variable values, in order, substituted into the template body ({{1}}, {{2}}, ...).
+	// TemplateParams WhatsApp only. Body variable values, in order. Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance.
 	TemplateParams *[]string `json:"templateParams,omitempty"`
 }
 
