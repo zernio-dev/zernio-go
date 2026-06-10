@@ -15176,10 +15176,10 @@ type CreateStandaloneAdJSONBody struct {
 		// Name Exact name for this ad. Falls back to `<name> #N` (N = 1-based position).
 		Name *string `json:"name,omitempty"`
 
-		// Video Video creative for this entry. Mutually exclusive with `imageUrl`.
+		// Video Video creative for this entry. Mutually exclusive with `imageUrl`. thumbnailUrl is optional — when omitted, the poster is auto-generated from Meta's preferred video thumbnail.
 		Video *struct {
-			ThumbnailUrl string `json:"thumbnailUrl"`
-			Url          string `json:"url"`
+			ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+			Url          string  `json:"url"`
 		} `json:"video,omitempty"`
 	} `json:"creatives,omitempty"`
 	Currency *string `json:"currency,omitempty"`
@@ -15510,7 +15510,7 @@ type CreateStandaloneAdJSONBody struct {
 
 	// Video Meta (facebook, instagram) and LinkedIn. When set, creates a VIDEO ad on the legacy (or, for Meta, attach) shape. Mutually exclusive with `imageUrl`. For Meta multi-creative, set `video` per entry inside `creatives[]` instead. For LinkedIn the video is uploaded to LinkedIn under the authoring Company Page (see `organizationId`) and the campaign format is set to SINGLE_VIDEO; LinkedIn ignores `thumbnailUrl` (it auto-generates the poster frame) — supply MP4 H.264/AAC, 3s-30min, 75KB-500MB.
 	Video *struct {
-		// ThumbnailUrl Public URL of a still-image thumbnail for the video. Required by Meta on every video creative (uploaded as an ad image and referenced in object_story_spec.video_data). Ignored by LinkedIn (auto-generated poster frame).
+		// ThumbnailUrl Public URL of a still-image thumbnail for the video. OPTIONAL: when omitted on Meta, the poster is auto-generated from Meta's own preferred video thumbnail (the same candidates Ads Manager shows), so video ads publish without supplying one. Provide it to control the poster frame exactly (uploaded as an ad image and referenced in object_story_spec.video_data). Ignored by LinkedIn (auto-generated poster frame).
 		ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 
 		// Url Public URL of the video. Meta: uploaded via chunked transfer on /act_X/advideos, then the request blocks on Meta's transcoding until status.video_status === 'ready'. LinkedIn: uploaded via the Videos API (multipart), then the request blocks until LinkedIn finishes transcoding (status AVAILABLE) — short clips take ~10-30s.
