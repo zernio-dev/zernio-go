@@ -8284,6 +8284,7 @@ func (e ListInboxReviewsParamsSortOrder) Valid() bool {
 const (
 	BillingAdmin CreateInviteTokenJSONBodyRole = "billing_admin"
 	Member       CreateInviteTokenJSONBodyRole = "member"
+	Viewer       CreateInviteTokenJSONBodyRole = "viewer"
 )
 
 // Valid indicates whether the value is a known member of the CreateInviteTokenJSONBodyRole enum.
@@ -8292,6 +8293,8 @@ func (e CreateInviteTokenJSONBodyRole) Valid() bool {
 	case BillingAdmin:
 		return true
 	case Member:
+		return true
+	case Viewer:
 		return true
 	default:
 		return false
@@ -18463,10 +18466,11 @@ type CreateInviteTokenJSONBody struct {
 	// ProfileIds Required if scope is 'profiles'. Array of profile IDs to grant access to.
 	ProfileIds *[]string `json:"profileIds,omitempty"`
 
-	// ReadOnly When true, the invitee can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
+	// ReadOnly Deprecated. Use role 'viewer' instead. When true, the invite is created with role 'viewer'. Cannot be combined with role 'billing_admin'.
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
 	ReadOnly *bool `json:"readOnly,omitempty"`
 
-	// Role Org role granted to the invitee. Defaults to 'member'.
+	// Role Org role granted to the invitee. Defaults to 'member'. 'viewer' creates a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
 	Role *CreateInviteTokenJSONBodyRole `json:"role,omitempty"`
 
 	// Scope 'all' grants access to all profiles, 'profiles' restricts to specific profiles
