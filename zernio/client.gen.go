@@ -15485,7 +15485,7 @@ type CreateStandaloneAdJSONBody struct {
 	// available on `POST /v1/ads/boost`.)
 	StartDate *time.Time `json:"startDate,omitempty"`
 
-	// Tracking Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied to every ad on the legacy single-creative and multi-creative shapes.
+	// Tracking Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied on the legacy single-creative shape, every ad of the multi-creative shape, and the attach shape. NOTE: tracking lives on the AD object and is not inherited from the ad set, so pass it on EVERY attach call that should carry the pixel.
 	Tracking *struct {
 		// PixelId Meta Pixel ID to attach for offsite-conversion measurement.
 		PixelId *string `json:"pixelId,omitempty"`
