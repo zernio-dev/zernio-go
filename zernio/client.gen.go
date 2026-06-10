@@ -9942,6 +9942,21 @@ func (e SubmitWhatsAppNumberKyc200JSONResponseBodyStatus) Valid() bool {
 	}
 }
 
+// Defines values for PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status.
+const (
+	AlreadyPurchased PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status = "already_purchased"
+)
+
+// Valid indicates whether the value is a known member of the PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status enum.
+func (e PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status) Valid() bool {
+	switch e {
+	case AlreadyPurchased:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus.
 const (
 	KycRequired PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus = "kyc_required"
@@ -9951,6 +9966,21 @@ const (
 func (e PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus) Valid() bool {
 	switch e {
 	case KycRequired:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode.
+const (
+	PURCHASEVELOCITY PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode = "PURCHASE_VELOCITY"
+)
+
+// Valid indicates whether the value is a known member of the PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode enum.
+func (e PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode) Valid() bool {
+	switch e {
+	case PURCHASEVELOCITY:
 		return true
 	default:
 		return false
@@ -19902,11 +19932,17 @@ type ValidateWhatsAppNumberKycAddressJSONBody struct {
 
 // PurchaseWhatsAppPhoneNumberJSONBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumberJSONBody struct {
+	// AllowMultiple Any second purchase within 10 minutes of a previous one is rejected with 409 code PURCHASE_VELOCITY as duplicate protection. Pass true to confirm the additional purchase is intentional (e.g. bulk provisioning).
+	AllowMultiple *bool `json:"allowMultiple,omitempty"`
+
 	// Country ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: "kyc_required", kycUrl } — the customer must complete KYC at that URL before the number is ordered. See GET /v1/whatsapp/phone-numbers/countries.
 	Country *string `json:"country,omitempty"`
 
 	// ProfileId Profile to associate the number with
 	ProfileId string `json:"profileId"`
+
+	// PurchaseIntentId Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: "already_purchased", numberId, phoneNumber } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
+	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 }
 
 // PurchaseWhatsAppPhoneNumber200JSONResponseBody0 defines parameters for PurchaseWhatsAppPhoneNumber.
@@ -19929,6 +19965,16 @@ type PurchaseWhatsAppPhoneNumber200JSONResponseBody1 struct {
 	} `json:"phoneNumber,omitempty"`
 }
 
+// PurchaseWhatsAppPhoneNumber200JSONResponseBody2 defines parameters for PurchaseWhatsAppPhoneNumber.
+type PurchaseWhatsAppPhoneNumber200JSONResponseBody2 struct {
+	NumberId    *string                                                `json:"numberId,omitempty"`
+	PhoneNumber *string                                                `json:"phoneNumber,omitempty"`
+	Status      *PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status `json:"status,omitempty"`
+}
+
+// PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status defines parameters for PurchaseWhatsAppPhoneNumber.
+type PurchaseWhatsAppPhoneNumber200JSONResponseBody2Status string
+
 // PurchaseWhatsAppPhoneNumber200JSONResponseBody defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumber200JSONResponseBody struct {
 	union json.RawMessage
@@ -19936,6 +19982,9 @@ type PurchaseWhatsAppPhoneNumber200JSONResponseBody struct {
 
 // PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus defines parameters for PurchaseWhatsAppPhoneNumber.
 type PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus string
+
+// PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode defines parameters for PurchaseWhatsAppPhoneNumber.
+type PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode string
 
 // DisableWhatsAppCallingParams defines parameters for DisableWhatsAppCalling.
 type DisableWhatsAppCallingParams struct {
@@ -23570,6 +23619,32 @@ func (t *PurchaseWhatsAppPhoneNumber200JSONResponseBody) FromPurchaseWhatsAppPho
 
 // MergePurchaseWhatsAppPhoneNumber200JSONResponseBody1 performs a merge with any union data inside the PurchaseWhatsAppPhoneNumber200JSONResponseBody, using the provided PurchaseWhatsAppPhoneNumber200JSONResponseBody1
 func (t *PurchaseWhatsAppPhoneNumber200JSONResponseBody) MergePurchaseWhatsAppPhoneNumber200JSONResponseBody1(v PurchaseWhatsAppPhoneNumber200JSONResponseBody1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPurchaseWhatsAppPhoneNumber200JSONResponseBody2 returns the union data inside the PurchaseWhatsAppPhoneNumber200JSONResponseBody as a PurchaseWhatsAppPhoneNumber200JSONResponseBody2
+func (t PurchaseWhatsAppPhoneNumber200JSONResponseBody) AsPurchaseWhatsAppPhoneNumber200JSONResponseBody2() (PurchaseWhatsAppPhoneNumber200JSONResponseBody2, error) {
+	var body PurchaseWhatsAppPhoneNumber200JSONResponseBody2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPurchaseWhatsAppPhoneNumber200JSONResponseBody2 overwrites any union data inside the PurchaseWhatsAppPhoneNumber200JSONResponseBody as the provided PurchaseWhatsAppPhoneNumber200JSONResponseBody2
+func (t *PurchaseWhatsAppPhoneNumber200JSONResponseBody) FromPurchaseWhatsAppPhoneNumber200JSONResponseBody2(v PurchaseWhatsAppPhoneNumber200JSONResponseBody2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePurchaseWhatsAppPhoneNumber200JSONResponseBody2 performs a merge with any union data inside the PurchaseWhatsAppPhoneNumber200JSONResponseBody, using the provided PurchaseWhatsAppPhoneNumber200JSONResponseBody2
+func (t *PurchaseWhatsAppPhoneNumber200JSONResponseBody) MergePurchaseWhatsAppPhoneNumber200JSONResponseBody2(v PurchaseWhatsAppPhoneNumber200JSONResponseBody2) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -69825,6 +69900,10 @@ type PurchaseWhatsAppPhoneNumberResponse struct {
 		Status  *PurchaseWhatsAppPhoneNumber202JSONResponseBodyStatus `json:"status,omitempty"`
 	}
 	JSON401 *Unauthorized
+	JSON409 *struct {
+		Code  *PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode `json:"code,omitempty"`
+		Error *string                                             `json:"error,omitempty"`
+	}
 }
 
 // Status returns HTTPResponse.Status
@@ -92445,6 +92524,16 @@ func ParsePurchaseWhatsAppPhoneNumberResponse(rsp *http.Response) (*PurchaseWhat
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest struct {
+			Code  *PurchaseWhatsAppPhoneNumber409JSONResponseBodyCode `json:"code,omitempty"`
+			Error *string                                             `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
 
 	}
 
