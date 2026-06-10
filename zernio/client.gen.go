@@ -1690,6 +1690,7 @@ const (
 	WebhookEventsReactionReceived                   WebhookEvents = "reaction.received"
 	WebhookEventsReviewNew                          WebhookEvents = "review.new"
 	WebhookEventsReviewUpdated                      WebhookEvents = "review.updated"
+	WebhookEventsWhatsappNumberActionRequired       WebhookEvents = "whatsapp.number.action_required"
 	WebhookEventsWhatsappNumberActivated            WebhookEvents = "whatsapp.number.activated"
 	WebhookEventsWhatsappNumberDeclined             WebhookEvents = "whatsapp.number.declined"
 	WebhookEventsWhatsappNumberReactivated          WebhookEvents = "whatsapp.number.reactivated"
@@ -1753,6 +1754,8 @@ func (e WebhookEvents) Valid() bool {
 	case WebhookEventsReviewNew:
 		return true
 	case WebhookEventsReviewUpdated:
+		return true
+	case WebhookEventsWhatsappNumberActionRequired:
 		return true
 	case WebhookEventsWhatsappNumberActivated:
 		return true
@@ -9175,6 +9178,7 @@ const (
 	CreateWebhookSettingsJSONBodyEventsReactionReceived                   CreateWebhookSettingsJSONBodyEvents = "reaction.received"
 	CreateWebhookSettingsJSONBodyEventsReviewNew                          CreateWebhookSettingsJSONBodyEvents = "review.new"
 	CreateWebhookSettingsJSONBodyEventsReviewUpdated                      CreateWebhookSettingsJSONBodyEvents = "review.updated"
+	CreateWebhookSettingsJSONBodyEventsWhatsappNumberActionRequired       CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.action_required"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberActivated            CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined             CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
 	CreateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated          CreateWebhookSettingsJSONBodyEvents = "whatsapp.number.reactivated"
@@ -9239,6 +9243,8 @@ func (e CreateWebhookSettingsJSONBodyEvents) Valid() bool {
 		return true
 	case CreateWebhookSettingsJSONBodyEventsReviewUpdated:
 		return true
+	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberActionRequired:
+		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberActivated:
 		return true
 	case CreateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined:
@@ -9286,6 +9292,7 @@ const (
 	UpdateWebhookSettingsJSONBodyEventsReactionReceived                   UpdateWebhookSettingsJSONBodyEvents = "reaction.received"
 	UpdateWebhookSettingsJSONBodyEventsReviewNew                          UpdateWebhookSettingsJSONBodyEvents = "review.new"
 	UpdateWebhookSettingsJSONBodyEventsReviewUpdated                      UpdateWebhookSettingsJSONBodyEvents = "review.updated"
+	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActionRequired       UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.action_required"
 	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActivated            UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.activated"
 	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberDeclined             UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.declined"
 	UpdateWebhookSettingsJSONBodyEventsWhatsappNumberReactivated          UpdateWebhookSettingsJSONBodyEvents = "whatsapp.number.reactivated"
@@ -9349,6 +9356,8 @@ func (e UpdateWebhookSettingsJSONBodyEvents) Valid() bool {
 	case UpdateWebhookSettingsJSONBodyEventsReviewNew:
 		return true
 	case UpdateWebhookSettingsJSONBodyEventsReviewUpdated:
+		return true
+	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActionRequired:
 		return true
 	case UpdateWebhookSettingsJSONBodyEventsWhatsappNumberActivated:
 		return true
