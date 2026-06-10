@@ -13804,6 +13804,27 @@ type UpdateFacebookPageJSONBody struct {
 	SelectedPageId string `json:"selectedPageId"`
 }
 
+// GetGmbAttributeMetadataParams defines parameters for GetGmbAttributeMetadata.
+type GetGmbAttributeMetadataParams struct {
+	// LocationId GBP location ID (e.g. "6257659026299438786"). If omitted, uses the account's stored selectedLocationId. Mutually exclusive with categoryName.
+	LocationId *string `form:"locationId,omitempty" json:"locationId,omitempty"`
+
+	// CategoryName Category resource name, must start with "categories/" (e.g. "categories/gcid:plumber"). Required together with regionCode. Mutually exclusive with locationId.
+	CategoryName *string `form:"categoryName,omitempty" json:"categoryName,omitempty"`
+
+	// RegionCode BCP-47 region code (e.g. "US", "ES"). Required when categoryName is provided.
+	RegionCode *string `form:"regionCode,omitempty" json:"regionCode,omitempty"`
+
+	// LanguageCode BCP-47 language code for display names (e.g. "en", "es"). Optional when categoryName is provided. Omitted from the Google call when not supplied.
+	LanguageCode *string `form:"languageCode,omitempty" json:"languageCode,omitempty"`
+
+	// PageSize Maximum number of attribute metadata items to return. Google defaults to 200.
+	PageSize *int `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+
+	// PageToken Pagination token from a previous response's nextPageToken field.
+	PageToken *string `form:"pageToken,omitempty" json:"pageToken,omitempty"`
+}
+
 // GetGoogleBusinessAttributesParams defines parameters for GetGoogleBusinessAttributes.
 type GetGoogleBusinessAttributesParams struct {
 	// LocationId Override which location to query. If omitted, uses the account's selected location. Use GET /gmb-locations to list valid IDs.
@@ -23844,6 +23865,9 @@ type ClientInterface interface {
 
 	UpdateFacebookPage(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetGmbAttributeMetadata request
+	GetGmbAttributeMetadata(ctx context.Context, accountId string, params *GetGmbAttributeMetadataParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetGoogleBusinessAttributes request
 	GetGoogleBusinessAttributes(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -25552,6 +25576,18 @@ func (c *Client) UpdateFacebookPageWithBody(ctx context.Context, accountId strin
 
 func (c *Client) UpdateFacebookPage(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateFacebookPageRequest(c.Server, accountId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGmbAttributeMetadata(ctx context.Context, accountId string, params *GetGmbAttributeMetadataParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGmbAttributeMetadataRequest(c.Server, accountId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -32724,6 +32760,127 @@ func NewUpdateFacebookPageRequestWithBody(server string, accountId string, conte
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetGmbAttributeMetadataRequest generates requests for GetGmbAttributeMetadata
+func NewGetGmbAttributeMetadataRequest(server string, accountId string, params *GetGmbAttributeMetadataParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountId", accountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/accounts/%s/gmb-attribute-metadata", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.LocationId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "locationId", *params.LocationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.CategoryName != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "categoryName", *params.CategoryName, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.RegionCode != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "regionCode", *params.RegionCode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.LanguageCode != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "languageCode", *params.LanguageCode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.PageSize != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pageSize", *params.PageSize, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.PageToken != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "pageToken", *params.PageToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -53637,6 +53794,9 @@ type ClientWithResponsesInterface interface {
 
 	UpdateFacebookPageWithResponse(ctx context.Context, accountId string, body UpdateFacebookPageJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateFacebookPageResponse, error)
 
+	// GetGmbAttributeMetadataWithResponse request
+	GetGmbAttributeMetadataWithResponse(ctx context.Context, accountId string, params *GetGmbAttributeMetadataParams, reqEditors ...RequestEditorFn) (*GetGmbAttributeMetadataResponse, error)
+
 	// GetGoogleBusinessAttributesWithResponse request
 	GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error)
 
@@ -55944,6 +56104,73 @@ func (r UpdateFacebookPageResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateFacebookPageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGmbAttributeMetadataResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AccountId         *string `json:"accountId,omitempty"`
+		AttributeMetadata *[]struct {
+			// Deprecated True if this attribute should no longer be used.
+			Deprecated *bool `json:"deprecated,omitempty"`
+
+			// DisplayName Localized human-readable attribute name.
+			DisplayName *string `json:"displayName,omitempty"`
+
+			// GroupDisplayName Display name of the attribute group.
+			GroupDisplayName *string `json:"groupDisplayName,omitempty"`
+
+			// Parent Resource name of the attribute (e.g. "attributes/has_delivery").
+			Parent *string `json:"parent,omitempty"`
+
+			// Repeatable True if multiple values can be set simultaneously.
+			Repeatable *bool `json:"repeatable,omitempty"`
+
+			// ValueMetadata Possible enum values (for ENUM / REPEATED_ENUM types).
+			ValueMetadata *[]struct {
+				DisplayName *string `json:"displayName,omitempty"`
+				Value       *string `json:"value,omitempty"`
+			} `json:"valueMetadata,omitempty"`
+
+			// ValueType Value type (e.g. BOOL, ENUM, URL, REPEATED_ENUM).
+			ValueType *string `json:"valueType,omitempty"`
+		} `json:"attributeMetadata,omitempty"`
+
+		// LocationId Only present in location mode.
+		LocationId *string `json:"locationId,omitempty"`
+
+		// NextPageToken Present when additional pages of results are available.
+		NextPageToken *string `json:"nextPageToken,omitempty"`
+		Success       *bool   `json:"success,omitempty"`
+	}
+	JSON400 *ErrorResponse
+	JSON401 *ErrorResponse
+	JSON404 *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGmbAttributeMetadataResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGmbAttributeMetadataResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGmbAttributeMetadataResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -71574,6 +71801,15 @@ func (c *ClientWithResponses) UpdateFacebookPageWithResponse(ctx context.Context
 	return ParseUpdateFacebookPageResponse(rsp)
 }
 
+// GetGmbAttributeMetadataWithResponse request returning *GetGmbAttributeMetadataResponse
+func (c *ClientWithResponses) GetGmbAttributeMetadataWithResponse(ctx context.Context, accountId string, params *GetGmbAttributeMetadataParams, reqEditors ...RequestEditorFn) (*GetGmbAttributeMetadataResponse, error) {
+	rsp, err := c.GetGmbAttributeMetadata(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGmbAttributeMetadataResponse(rsp)
+}
+
 // GetGoogleBusinessAttributesWithResponse request returning *GetGoogleBusinessAttributesResponse
 func (c *ClientWithResponses) GetGoogleBusinessAttributesWithResponse(ctx context.Context, accountId string, params *GetGoogleBusinessAttributesParams, reqEditors ...RequestEditorFn) (*GetGoogleBusinessAttributesResponse, error) {
 	rsp, err := c.GetGoogleBusinessAttributes(ctx, accountId, params, reqEditors...)
@@ -76862,6 +77098,87 @@ func ParseUpdateFacebookPageResponse(rsp *http.Response) (*UpdateFacebookPageRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGmbAttributeMetadataResponse parses an HTTP response from a GetGmbAttributeMetadataWithResponse call
+func ParseGetGmbAttributeMetadataResponse(rsp *http.Response) (*GetGmbAttributeMetadataResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGmbAttributeMetadataResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AccountId         *string `json:"accountId,omitempty"`
+			AttributeMetadata *[]struct {
+				// Deprecated True if this attribute should no longer be used.
+				Deprecated *bool `json:"deprecated,omitempty"`
+
+				// DisplayName Localized human-readable attribute name.
+				DisplayName *string `json:"displayName,omitempty"`
+
+				// GroupDisplayName Display name of the attribute group.
+				GroupDisplayName *string `json:"groupDisplayName,omitempty"`
+
+				// Parent Resource name of the attribute (e.g. "attributes/has_delivery").
+				Parent *string `json:"parent,omitempty"`
+
+				// Repeatable True if multiple values can be set simultaneously.
+				Repeatable *bool `json:"repeatable,omitempty"`
+
+				// ValueMetadata Possible enum values (for ENUM / REPEATED_ENUM types).
+				ValueMetadata *[]struct {
+					DisplayName *string `json:"displayName,omitempty"`
+					Value       *string `json:"value,omitempty"`
+				} `json:"valueMetadata,omitempty"`
+
+				// ValueType Value type (e.g. BOOL, ENUM, URL, REPEATED_ENUM).
+				ValueType *string `json:"valueType,omitempty"`
+			} `json:"attributeMetadata,omitempty"`
+
+			// LocationId Only present in location mode.
+			LocationId *string `json:"locationId,omitempty"`
+
+			// NextPageToken Present when additional pages of results are available.
+			NextPageToken *string `json:"nextPageToken,omitempty"`
+			Success       *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
