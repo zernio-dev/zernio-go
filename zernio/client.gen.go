@@ -15030,6 +15030,16 @@ type CreateStandaloneAdJSONBody struct {
 	// bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive
 	// with `creatives[]`.
 	//
+	// The attached ad takes the full single-creative surface:
+	// `headline`/`body`/`description`/`callToAction` plus either
+	// `imageUrl`/`video` OR `placementAssets` (its own per-placement
+	// Feed/Story assets), and `leadGenFormId` when the target is a
+	// lead ad set (the parent must be ON_AD — true for ad sets
+	// created via goal `lead_generation`; Meta rejects a formless ad
+	// there, so pass the form on EVERY attached ad). This is the way
+	// to build N full ads sharing one ad set: create the first ad
+	// via the normal shape, then attach the rest one call each.
+	//
 	// Supported on Meta (facebook, instagram) and TikTok. On TikTok
 	// the `adSetId` is the ad group ID; the new ad inherits the
 	// ad group's bid + budget + targeting.
@@ -15154,7 +15164,10 @@ type CreateStandaloneAdJSONBody struct {
 	Creatives *[]struct {
 		Body         string                                          `json:"body"`
 		CallToAction CreateStandaloneAdJSONBodyCreativesCallToAction `json:"callToAction"`
-		Headline     string                                          `json:"headline"`
+
+		// Description Link description for this ad (link_data.description; video creatives: video_data.link_description). Falls back to the top-level `description`; when both are omitted Meta scrapes the destination URL's OG description.
+		Description *string `json:"description,omitempty"`
+		Headline    string  `json:"headline"`
 
 		// ImageUrl Image creative. Mutually exclusive with `video`.
 		ImageUrl *string `json:"imageUrl,omitempty"`
@@ -15180,6 +15193,9 @@ type CreateStandaloneAdJSONBody struct {
 		Name         *string                                               `json:"name,omitempty"`
 		Radius       float32                                               `json:"radius"`
 	} `json:"customLocations,omitempty"`
+
+	// Description Meta only (facebook/instagram). Link description — the secondary text shown below the headline (Meta's link_data.description; on video creatives mapped to video_data.link_description). When omitted, Meta auto-pulls the destination URL's OpenGraph description. Applies on legacy, attach, and placementAssets shapes; for multi-creative use creatives[].description (this field is the shared fallback). For multi-text variations use dynamicCreative.descriptions instead.
+	Description *string `json:"description,omitempty"`
 
 	// DsaBeneficiary Name of the legal entity benefiting from the ad.
 	// Required by Meta when targeting EU users (DSA Article 26).
@@ -15285,7 +15301,7 @@ type CreateStandaloneAdJSONBody struct {
 	// Languages Language codes (e.g. ['en']). Restricts the audience by language.
 	Languages *[]string `json:"languages,omitempty"`
 
-	// LeadGenFormId Meta Lead Gen forms only (facebook/instagram). The leadgen_forms ID to attach to the ad's creative — create one via POST /v1/ads/lead-forms. REQUIRED when `goal` is `lead_generation`; ignored otherwise. The ad set's promoted_object.page_id + LEAD_GENERATION optimization + destination_type ON_AD are derived automatically from the goal. Both `placementAssets` (per-placement creative) and `dynamicCreative` (multi-text / multi-asset pool, e.g. multiple headlines and primary texts) ARE supported on instant-form lead ads — the form is attached for you, and for `dynamicCreative` the ad set is created as a Dynamic Creative ad set automatically (Meta requires that for any multi-text feed; there is no non-DCO multi-text path). Send a single `imageUrls` entry plus your text variations to get Meta's "Multiple Text Options" behavior on a lead ad.
+	// LeadGenFormId Meta Lead Gen forms only (facebook/instagram). The leadgen_forms ID to attach to the ad's creative — create one via POST /v1/ads/lead-forms. REQUIRED when `goal` is `lead_generation`, and on every ATTACH (`adSetId`) call that targets a lead ad set (the form attaches per-ad; Meta rejects a formless ad in a lead ad set). Ignored otherwise. The ad set's promoted_object.page_id + LEAD_GENERATION optimization + destination_type ON_AD are derived automatically from the goal. Both `placementAssets` (per-placement creative) and `dynamicCreative` (multi-text / multi-asset pool, e.g. multiple headlines and primary texts) ARE supported on instant-form lead ads — the form is attached for you, and for `dynamicCreative` the ad set is created as a Dynamic Creative ad set automatically (Meta requires that for any multi-text feed; there is no non-DCO multi-text path). Send a single `imageUrls` entry plus your text variations to get Meta's "Multiple Text Options" behavior on a lead ad.
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 
 	// LinkUrl Required on legacy + attach shapes (skip for multi-creative). On LinkedIn it's the ad's destination URL; required for `traffic` ads, optional for `engagement` / `awareness`. NOT required when `goal` is `lead_generation` (the ad opens a Lead Gen form instead of a destination).
@@ -15311,8 +15327,11 @@ type CreateStandaloneAdJSONBody struct {
 	// each placement group on a SINGLE ad (e.g. a 9:16 on Stories/Reels and a 4:5 on Feed).
 	// The same thing Meta Ads Manager produces with "different creative per placement",
 	// mapped to the creative's `asset_feed_spec` + `asset_customization_rules`. Deterministic
-	// pinning, NOT the auto-optimizing pool of `dynamicCreative` (mutually exclusive, and it
-	// cannot be combined with `creatives[]` or `adSetId`). Shared copy (headline, body, link,
+	// pinning, NOT the auto-optimizing pool of `dynamicCreative` (mutually exclusive). Works
+	// on the legacy single shape AND the attach shape (`adSetId` + placementAssets adds one
+	// placement-customized ad to an existing ad set — the way to build N per-placement ads
+	// sharing one ad set: create the first normally, attach the rest). Cannot be combined
+	// with `creatives[]`. Shared copy (headline, body, link,
 	// CTA) comes from the top-level single-creative fields since only the asset varies by
 	// placement. Each rule's `placements` accepts the same fields as the top-level
 	// `placements` object; Meta enforces co-selection rules and returns an actionable error.
