@@ -507,6 +507,7 @@ func main() {
 | `client.CreateWhatsAppGroupChatWithResponse()` | Create group |
 | `client.CreateWhatsAppGroupInviteLinkWithResponse()` | Create invite link |
 | `client.CreateWhatsAppTemplateWithResponse()` | Create template |
+| `client.GetWhatsAppBlockedUsersWithResponse()` | List blocked users |
 | `client.GetWhatsAppBusinessProfileWithResponse()` | Get business profile |
 | `client.GetWhatsAppDatasetWithResponse()` | Get CTWA conversions dataset |
 | `client.GetWhatsAppDisplayNameWithResponse()` | Get display name status |
@@ -521,9 +522,11 @@ func main() {
 | `client.DeleteWhatsAppTemplateWithResponse()` | Delete template |
 | `client.AddWhatsAppGroupParticipantsWithResponse()` | Add participants |
 | `client.ApproveWhatsAppGroupJoinRequestsWithResponse()` | Approve join requests |
+| `client.BlockWhatsAppUsersWithResponse()` | Block users |
 | `client.RejectWhatsAppGroupJoinRequestsWithResponse()` | Reject join requests |
 | `client.RemoveWhatsAppGroupParticipantsWithResponse()` | Remove participants |
 | `client.SendWhatsAppConversionWithResponse()` | Send WhatsApp conversion event |
+| `client.UnblockWhatsAppUsersWithResponse()` | Unblock users |
 | `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
 
 ### WhatsApp Calling

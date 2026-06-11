@@ -8046,6 +8046,21 @@ func (e SendInboxMessageJSONBodyInteractiveAction2ParametersMode) Valid() bool {
 	}
 }
 
+// Defines values for SendInboxMessageJSONBodyInteractiveAction3Name.
+const (
+	SendLocation SendInboxMessageJSONBodyInteractiveAction3Name = "send_location"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction3Name enum.
+func (e SendInboxMessageJSONBodyInteractiveAction3Name) Valid() bool {
+	switch e {
+	case SendLocation:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SendInboxMessageJSONBodyInteractiveHeaderType.
 const (
 	SendInboxMessageJSONBodyInteractiveHeaderTypeDocument SendInboxMessageJSONBodyInteractiveHeaderType = "document"
@@ -8072,9 +8087,10 @@ func (e SendInboxMessageJSONBodyInteractiveHeaderType) Valid() bool {
 
 // Defines values for SendInboxMessageJSONBodyInteractiveType.
 const (
-	SendInboxMessageJSONBodyInteractiveTypeCtaUrl SendInboxMessageJSONBodyInteractiveType = "cta_url"
-	SendInboxMessageJSONBodyInteractiveTypeFlow   SendInboxMessageJSONBodyInteractiveType = "flow"
-	SendInboxMessageJSONBodyInteractiveTypeList   SendInboxMessageJSONBodyInteractiveType = "list"
+	SendInboxMessageJSONBodyInteractiveTypeCtaUrl                 SendInboxMessageJSONBodyInteractiveType = "cta_url"
+	SendInboxMessageJSONBodyInteractiveTypeFlow                   SendInboxMessageJSONBodyInteractiveType = "flow"
+	SendInboxMessageJSONBodyInteractiveTypeList                   SendInboxMessageJSONBodyInteractiveType = "list"
+	SendInboxMessageJSONBodyInteractiveTypeLocationRequestMessage SendInboxMessageJSONBodyInteractiveType = "location_request_message"
 )
 
 // Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveType enum.
@@ -8085,6 +8101,8 @@ func (e SendInboxMessageJSONBodyInteractiveType) Valid() bool {
 	case SendInboxMessageJSONBodyInteractiveTypeFlow:
 		return true
 	case SendInboxMessageJSONBodyInteractiveTypeList:
+		return true
+	case SendInboxMessageJSONBodyInteractiveTypeLocationRequestMessage:
 		return true
 	default:
 		return false
@@ -18154,20 +18172,26 @@ type SendInboxMessageJSONBody struct {
 	} `json:"contacts,omitempty"`
 
 	// Interactive WhatsApp-only. Rich interactive payload for list messages, CTA URL
-	// buttons, and Flow prompts. When set, takes priority over `buttons`
-	// and `quickReplies`. The shape mirrors Meta's Cloud API `interactive`
-	// object verbatim, so any payload that works against Meta directly
-	// will also work here.
+	// buttons, Flow prompts, and location requests. When set, takes
+	// priority over `buttons` and `quickReplies`. The shape mirrors
+	// Meta's Cloud API `interactive` object verbatim, so any payload
+	// that works against Meta directly will also work here.
 	//
 	// Use `buttons` / `quickReplies` for simple button replies
 	// (WhatsApp's `interactive.type: "button"`) — the abstraction caps at
 	// 3 buttons and handles the auto-conversion for you. Use this field
-	// only for `list`, `cta_url`, or `flow` messages.
+	// only for `list`, `cta_url`, `flow`, or `location_request_message`
+	// messages.
+	//
+	// For `location_request_message`, `action` may be omitted (we default
+	// it to `{ "name": "send_location" }`). WhatsApp renders a localized
+	// "Send location" button; the user's reply arrives as a regular
+	// location message in the conversation.
 	//
 	// Tap events come back via the `message.received` webhook with
 	// `metadata.interactiveType` set to `list_reply` or `nfm_reply`.
 	Interactive *struct {
-		Action SendInboxMessageJSONBody_Interactive_Action `json:"action"`
+		Action *SendInboxMessageJSONBody_Interactive_Action `json:"action,omitempty"`
 		Body   struct {
 			// Text Main body text.
 			Text string `json:"text"`
@@ -18443,6 +18467,14 @@ type SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion stri
 
 // SendInboxMessageJSONBodyInteractiveAction2ParametersMode defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyInteractiveAction2ParametersMode string
+
+// SendInboxMessageJSONBodyInteractiveAction3 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3 struct {
+	Name SendInboxMessageJSONBodyInteractiveAction3Name `json:"name"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction3Name defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3Name string
 
 // SendInboxMessageJSONBody_Interactive_Action defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBody_Interactive_Action struct {
@@ -19418,6 +19450,36 @@ type UpdateWebhookSettingsJSONBodyEvents string
 type TestWebhookJSONBody struct {
 	// WebhookId ID of the webhook to test
 	WebhookId string `json:"webhookId"`
+}
+
+// UnblockWhatsAppUsersJSONBody defines parameters for UnblockWhatsAppUsers.
+type UnblockWhatsAppUsersJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Users Phone numbers (E.164) or WhatsApp user IDs to unblock.
+	Users []string `json:"users"`
+}
+
+// GetWhatsAppBlockedUsersParams defines parameters for GetWhatsAppBlockedUsers.
+type GetWhatsAppBlockedUsersParams struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// Limit Page size.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// After Cursor from a previous response's `nextCursor`.
+	After *string `form:"after,omitempty" json:"after,omitempty"`
+}
+
+// BlockWhatsAppUsersJSONBody defines parameters for BlockWhatsAppUsers.
+type BlockWhatsAppUsersJSONBody struct {
+	// AccountId WhatsApp social account ID
+	AccountId string `json:"accountId"`
+
+	// Users Phone numbers (E.164, e.g. "+16505551234") or WhatsApp user IDs to block.
+	Users []string `json:"users"`
 }
 
 // GetWhatsAppBusinessProfileParams defines parameters for GetWhatsAppBusinessProfile.
@@ -20736,6 +20798,12 @@ type UpdateWebhookSettingsJSONRequestBody UpdateWebhookSettingsJSONBody
 
 // TestWebhookJSONRequestBody defines body for TestWebhook for application/json ContentType.
 type TestWebhookJSONRequestBody TestWebhookJSONBody
+
+// UnblockWhatsAppUsersJSONRequestBody defines body for UnblockWhatsAppUsers for application/json ContentType.
+type UnblockWhatsAppUsersJSONRequestBody UnblockWhatsAppUsersJSONBody
+
+// BlockWhatsAppUsersJSONRequestBody defines body for BlockWhatsAppUsers for application/json ContentType.
+type BlockWhatsAppUsersJSONRequestBody BlockWhatsAppUsersJSONBody
 
 // UpdateWhatsAppBusinessProfileJSONRequestBody defines body for UpdateWhatsAppBusinessProfile for application/json ContentType.
 type UpdateWhatsAppBusinessProfileJSONRequestBody UpdateWhatsAppBusinessProfileJSONBody
@@ -22860,6 +22928,32 @@ func (t *SendInboxMessageJSONBody_Interactive_Action) FromSendInboxMessageJSONBo
 
 // MergeSendInboxMessageJSONBodyInteractiveAction2 performs a merge with any union data inside the SendInboxMessageJSONBody_Interactive_Action, using the provided SendInboxMessageJSONBodyInteractiveAction2
 func (t *SendInboxMessageJSONBody_Interactive_Action) MergeSendInboxMessageJSONBodyInteractiveAction2(v SendInboxMessageJSONBodyInteractiveAction2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSendInboxMessageJSONBodyInteractiveAction3 returns the union data inside the SendInboxMessageJSONBody_Interactive_Action as a SendInboxMessageJSONBodyInteractiveAction3
+func (t SendInboxMessageJSONBody_Interactive_Action) AsSendInboxMessageJSONBodyInteractiveAction3() (SendInboxMessageJSONBodyInteractiveAction3, error) {
+	var body SendInboxMessageJSONBodyInteractiveAction3
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSendInboxMessageJSONBodyInteractiveAction3 overwrites any union data inside the SendInboxMessageJSONBody_Interactive_Action as the provided SendInboxMessageJSONBodyInteractiveAction3
+func (t *SendInboxMessageJSONBody_Interactive_Action) FromSendInboxMessageJSONBodyInteractiveAction3(v SendInboxMessageJSONBodyInteractiveAction3) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSendInboxMessageJSONBodyInteractiveAction3 performs a merge with any union data inside the SendInboxMessageJSONBody_Interactive_Action, using the provided SendInboxMessageJSONBodyInteractiveAction3
+func (t *SendInboxMessageJSONBody_Interactive_Action) MergeSendInboxMessageJSONBodyInteractiveAction3(v SendInboxMessageJSONBodyInteractiveAction3) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -25023,6 +25117,19 @@ type ClientInterface interface {
 	TestWebhookWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	TestWebhook(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnblockWhatsAppUsersWithBody request with any body
+	UnblockWhatsAppUsersWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UnblockWhatsAppUsers(ctx context.Context, body UnblockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetWhatsAppBlockedUsers request
+	GetWhatsAppBlockedUsers(ctx context.Context, params *GetWhatsAppBlockedUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BlockWhatsAppUsersWithBody request with any body
+	BlockWhatsAppUsersWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	BlockWhatsAppUsers(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWhatsAppBusinessProfile request
 	GetWhatsAppBusinessProfile(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -30266,6 +30373,66 @@ func (c *Client) TestWebhookWithBody(ctx context.Context, contentType string, bo
 
 func (c *Client) TestWebhook(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewTestWebhookRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnblockWhatsAppUsersWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnblockWhatsAppUsersRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnblockWhatsAppUsers(ctx context.Context, body UnblockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnblockWhatsAppUsersRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBlockedUsers(ctx context.Context, params *GetWhatsAppBlockedUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBlockedUsersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BlockWhatsAppUsersWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBlockWhatsAppUsersRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) BlockWhatsAppUsers(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBlockWhatsAppUsersRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -49866,6 +50033,160 @@ func NewTestWebhookRequestWithBody(server string, contentType string, body io.Re
 	return req, nil
 }
 
+// NewUnblockWhatsAppUsersRequest calls the generic UnblockWhatsAppUsers builder with application/json body
+func NewUnblockWhatsAppUsersRequest(server string, body UnblockWhatsAppUsersJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUnblockWhatsAppUsersRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUnblockWhatsAppUsersRequestWithBody generates requests for UnblockWhatsAppUsers with any type of body
+func NewUnblockWhatsAppUsersRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/block-users")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetWhatsAppBlockedUsersRequest generates requests for GetWhatsAppBlockedUsers
+func NewGetWhatsAppBlockedUsersRequest(server string, params *GetWhatsAppBlockedUsersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/block-users")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.After != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "after", *params.After, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewBlockWhatsAppUsersRequest calls the generic BlockWhatsAppUsers builder with application/json body
+func NewBlockWhatsAppUsersRequest(server string, body BlockWhatsAppUsersJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBlockWhatsAppUsersRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewBlockWhatsAppUsersRequestWithBody generates requests for BlockWhatsAppUsers with any type of body
+func NewBlockWhatsAppUsersRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/block-users")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetWhatsAppBusinessProfileRequest generates requests for GetWhatsAppBusinessProfile
 func NewGetWhatsAppBusinessProfileRequest(server string, params *GetWhatsAppBusinessProfileParams) (*http.Request, error) {
 	var err error
@@ -55097,6 +55418,19 @@ type ClientWithResponsesInterface interface {
 	TestWebhookWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestWebhookResponse, error)
 
 	TestWebhookWithResponse(ctx context.Context, body TestWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*TestWebhookResponse, error)
+
+	// UnblockWhatsAppUsersWithBodyWithResponse request with any body
+	UnblockWhatsAppUsersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UnblockWhatsAppUsersResponse, error)
+
+	UnblockWhatsAppUsersWithResponse(ctx context.Context, body UnblockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*UnblockWhatsAppUsersResponse, error)
+
+	// GetWhatsAppBlockedUsersWithResponse request
+	GetWhatsAppBlockedUsersWithResponse(ctx context.Context, params *GetWhatsAppBlockedUsersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBlockedUsersResponse, error)
+
+	// BlockWhatsAppUsersWithBodyWithResponse request with any body
+	BlockWhatsAppUsersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error)
+
+	BlockWhatsAppUsersWithResponse(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error)
 
 	// GetWhatsAppBusinessProfileWithResponse request
 	GetWhatsAppBusinessProfileWithResponse(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBusinessProfileResponse, error)
@@ -65944,8 +66278,8 @@ type GetInboxConversationMessagesResponse struct {
 			// Metadata Platform-specific extras. Free-form, but commonly includes:
 			// `quotedMessageId` (platformMessageId this message replies to),
 			// `waInteractive` (a compact descriptor of WhatsApp interactive
-			// content sent: buttons / list / cta_url / flow), and for inbound
-			// interactive taps `interactiveType` / `interactiveId`.
+			// content sent: buttons / list / cta_url / flow / location_request),
+			// and for inbound interactive taps `interactiveType` / `interactiveId`.
 			Metadata *map[string]interface{} `json:"metadata,omitempty"`
 			Platform *string                 `json:"platform,omitempty"`
 
@@ -68568,6 +68902,137 @@ func (r TestWebhookResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r TestWebhookResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnblockWhatsAppUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Failed Users that could not be unblocked, with reasons.
+		Failed *[]struct {
+			Errors *[]string `json:"errors,omitempty"`
+			Input  *string   `json:"input,omitempty"`
+		} `json:"failed,omitempty"`
+
+		// Unblocked Users successfully unblocked.
+		Unblocked *[]struct {
+			// Input The value you sent.
+			Input *string `json:"input,omitempty"`
+
+			// WaId Resolved WhatsApp user ID.
+			WaId *string `json:"waId,omitempty"`
+		} `json:"unblocked,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r UnblockWhatsAppUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnblockWhatsAppUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnblockWhatsAppUsersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetWhatsAppBlockedUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		BlockedUsers *[]struct {
+			// WaId WhatsApp user ID (usually the phone number without `+`).
+			WaId *string `json:"waId,omitempty"`
+		} `json:"blockedUsers,omitempty"`
+
+		// NextCursor Pass as `after` to fetch the next page. Null when there are no more pages.
+		NextCursor *string `json:"nextCursor,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBlockedUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBlockedUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppBlockedUsersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BlockWhatsAppUsersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Blocked Users successfully blocked.
+		Blocked *[]struct {
+			// Input The value you sent.
+			Input *string `json:"input,omitempty"`
+
+			// WaId Resolved WhatsApp user ID.
+			WaId *string `json:"waId,omitempty"`
+		} `json:"blocked,omitempty"`
+
+		// Failed Users that could not be blocked, with reasons.
+		Failed *[]struct {
+			Errors *[]string `json:"errors,omitempty"`
+			Input  *string   `json:"input,omitempty"`
+		} `json:"failed,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r BlockWhatsAppUsersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BlockWhatsAppUsersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BlockWhatsAppUsersResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -75480,6 +75945,49 @@ func (c *ClientWithResponses) TestWebhookWithResponse(ctx context.Context, body 
 		return nil, err
 	}
 	return ParseTestWebhookResponse(rsp)
+}
+
+// UnblockWhatsAppUsersWithBodyWithResponse request with arbitrary body returning *UnblockWhatsAppUsersResponse
+func (c *ClientWithResponses) UnblockWhatsAppUsersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UnblockWhatsAppUsersResponse, error) {
+	rsp, err := c.UnblockWhatsAppUsersWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnblockWhatsAppUsersResponse(rsp)
+}
+
+func (c *ClientWithResponses) UnblockWhatsAppUsersWithResponse(ctx context.Context, body UnblockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*UnblockWhatsAppUsersResponse, error) {
+	rsp, err := c.UnblockWhatsAppUsers(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnblockWhatsAppUsersResponse(rsp)
+}
+
+// GetWhatsAppBlockedUsersWithResponse request returning *GetWhatsAppBlockedUsersResponse
+func (c *ClientWithResponses) GetWhatsAppBlockedUsersWithResponse(ctx context.Context, params *GetWhatsAppBlockedUsersParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBlockedUsersResponse, error) {
+	rsp, err := c.GetWhatsAppBlockedUsers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBlockedUsersResponse(rsp)
+}
+
+// BlockWhatsAppUsersWithBodyWithResponse request with arbitrary body returning *BlockWhatsAppUsersResponse
+func (c *ClientWithResponses) BlockWhatsAppUsersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error) {
+	rsp, err := c.BlockWhatsAppUsersWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBlockWhatsAppUsersResponse(rsp)
+}
+
+func (c *ClientWithResponses) BlockWhatsAppUsersWithResponse(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error) {
+	rsp, err := c.BlockWhatsAppUsers(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBlockWhatsAppUsersResponse(rsp)
 }
 
 // GetWhatsAppBusinessProfileWithResponse request returning *GetWhatsAppBusinessProfileResponse
@@ -88285,8 +88793,8 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				// Metadata Platform-specific extras. Free-form, but commonly includes:
 				// `quotedMessageId` (platformMessageId this message replies to),
 				// `waInteractive` (a compact descriptor of WhatsApp interactive
-				// content sent: buttons / list / cta_url / flow), and for inbound
-				// interactive taps `interactiveType` / `interactiveId`.
+				// content sent: buttons / list / cta_url / flow / location_request),
+				// and for inbound interactive taps `interactiveType` / `interactiveId`.
 				Metadata *map[string]interface{} `json:"metadata,omitempty"`
 				Platform *string                 `json:"platform,omitempty"`
 
@@ -91181,6 +91689,143 @@ func ParseTestWebhookResponse(rsp *http.Response) (*TestWebhookResponse, error) 
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnblockWhatsAppUsersResponse parses an HTTP response from a UnblockWhatsAppUsersWithResponse call
+func ParseUnblockWhatsAppUsersResponse(rsp *http.Response) (*UnblockWhatsAppUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnblockWhatsAppUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Failed Users that could not be unblocked, with reasons.
+			Failed *[]struct {
+				Errors *[]string `json:"errors,omitempty"`
+				Input  *string   `json:"input,omitempty"`
+			} `json:"failed,omitempty"`
+
+			// Unblocked Users successfully unblocked.
+			Unblocked *[]struct {
+				// Input The value you sent.
+				Input *string `json:"input,omitempty"`
+
+				// WaId Resolved WhatsApp user ID.
+				WaId *string `json:"waId,omitempty"`
+			} `json:"unblocked,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBlockedUsersResponse parses an HTTP response from a GetWhatsAppBlockedUsersWithResponse call
+func ParseGetWhatsAppBlockedUsersResponse(rsp *http.Response) (*GetWhatsAppBlockedUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBlockedUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			BlockedUsers *[]struct {
+				// WaId WhatsApp user ID (usually the phone number without `+`).
+				WaId *string `json:"waId,omitempty"`
+			} `json:"blockedUsers,omitempty"`
+
+			// NextCursor Pass as `after` to fetch the next page. Null when there are no more pages.
+			NextCursor *string `json:"nextCursor,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBlockWhatsAppUsersResponse parses an HTTP response from a BlockWhatsAppUsersWithResponse call
+func ParseBlockWhatsAppUsersResponse(rsp *http.Response) (*BlockWhatsAppUsersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BlockWhatsAppUsersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Blocked Users successfully blocked.
+			Blocked *[]struct {
+				// Input The value you sent.
+				Input *string `json:"input,omitempty"`
+
+				// WaId Resolved WhatsApp user ID.
+				WaId *string `json:"waId,omitempty"`
+			} `json:"blocked,omitempty"`
+
+			// Failed Users that could not be blocked, with reasons.
+			Failed *[]struct {
+				Errors *[]string `json:"errors,omitempty"`
+				Input  *string   `json:"input,omitempty"`
+			} `json:"failed,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	}
 
