@@ -69552,6 +69552,18 @@ type GetWhatsAppPhoneNumbersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// Connected Connected (bring-your-own) WhatsApp numbers — your own WABA
+		// numbers linked via Embedded Signup. Not provisioned or billed
+		// by Zernio, so they are not in `numbers`; `accountId` is the
+		// social-account id used by the messaging and inbox endpoints.
+		// Included only on the default and `status=active` views.
+		Connected *[]struct {
+			AccountId   *string    `json:"accountId,omitempty"`
+			ConnectedAt *time.Time `json:"connectedAt,omitempty"`
+			DisplayName *string    `json:"displayName,omitempty"`
+			PhoneNumber *string    `json:"phoneNumber,omitempty"`
+			ProfileId   *string    `json:"profileId,omitempty"`
+		} `json:"connected,omitempty"`
 		Numbers *[]struct {
 			UnderscoreId           *string    `json:"_id,omitempty"`
 			Country                *string    `json:"country,omitempty"`
@@ -92138,6 +92150,18 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// Connected Connected (bring-your-own) WhatsApp numbers — your own WABA
+			// numbers linked via Embedded Signup. Not provisioned or billed
+			// by Zernio, so they are not in `numbers`; `accountId` is the
+			// social-account id used by the messaging and inbox endpoints.
+			// Included only on the default and `status=active` views.
+			Connected *[]struct {
+				AccountId   *string    `json:"accountId,omitempty"`
+				ConnectedAt *time.Time `json:"connectedAt,omitempty"`
+				DisplayName *string    `json:"displayName,omitempty"`
+				PhoneNumber *string    `json:"phoneNumber,omitempty"`
+				ProfileId   *string    `json:"profileId,omitempty"`
+			} `json:"connected,omitempty"`
 			Numbers *[]struct {
 				UnderscoreId           *string    `json:"_id,omitempty"`
 				Country                *string    `json:"country,omitempty"`
