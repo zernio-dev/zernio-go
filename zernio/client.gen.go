@@ -139,6 +139,7 @@ func (e AdBudgetType) Valid() bool {
 const (
 	AdGoalAppPromotion   AdGoal = "app_promotion"
 	AdGoalAwareness      AdGoal = "awareness"
+	AdGoalCatalogSales   AdGoal = "catalog_sales"
 	AdGoalConversions    AdGoal = "conversions"
 	AdGoalEngagement     AdGoal = "engagement"
 	AdGoalLeadConversion AdGoal = "lead_conversion"
@@ -153,6 +154,8 @@ func (e AdGoal) Valid() bool {
 	case AdGoalAppPromotion:
 		return true
 	case AdGoalAwareness:
+		return true
+	case AdGoalCatalogSales:
 		return true
 	case AdGoalConversions:
 		return true
@@ -4771,6 +4774,7 @@ func (e CreateStandaloneAdJSONBodyGender) Valid() bool {
 const (
 	CreateStandaloneAdJSONBodyGoalAppPromotion   CreateStandaloneAdJSONBodyGoal = "app_promotion"
 	CreateStandaloneAdJSONBodyGoalAwareness      CreateStandaloneAdJSONBodyGoal = "awareness"
+	CreateStandaloneAdJSONBodyGoalCatalogSales   CreateStandaloneAdJSONBodyGoal = "catalog_sales"
 	CreateStandaloneAdJSONBodyGoalConversions    CreateStandaloneAdJSONBodyGoal = "conversions"
 	CreateStandaloneAdJSONBodyGoalEngagement     CreateStandaloneAdJSONBodyGoal = "engagement"
 	CreateStandaloneAdJSONBodyGoalLeadConversion CreateStandaloneAdJSONBodyGoal = "lead_conversion"
@@ -4785,6 +4789,8 @@ func (e CreateStandaloneAdJSONBodyGoal) Valid() bool {
 	case CreateStandaloneAdJSONBodyGoalAppPromotion:
 		return true
 	case CreateStandaloneAdJSONBodyGoalAwareness:
+		return true
+	case CreateStandaloneAdJSONBodyGoalCatalogSales:
 		return true
 	case CreateStandaloneAdJSONBodyGoalConversions:
 		return true
@@ -10540,7 +10546,7 @@ type Ad struct {
 		VideoUrl *string `json:"videoUrl,omitempty"`
 	} `json:"creative,omitempty"`
 
-	// Goal Available goals vary by platform. Meta (Facebook/Instagram) supports all 8 (incl. `lead_conversion` = website pixel lead optimization). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+	// Goal Available goals vary by platform. Meta (Facebook/Instagram) supports all 9 (incl. `lead_conversion` = website pixel lead optimization and `catalog_sales` = Advantage+ catalog ads). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal *AdGoal `json:"goal,omitempty"`
 
 	// IsExternal True for ads synced from platform ad managers
@@ -10622,7 +10628,7 @@ type AdAdType string
 // AdBudgetType defines model for Ad.Budget.Type.
 type AdBudgetType string
 
-// AdGoal Available goals vary by platform. Meta (Facebook/Instagram) supports all 8 (incl. `lead_conversion` = website pixel lead optimization). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
+// AdGoal Available goals vary by platform. Meta (Facebook/Instagram) supports all 9 (incl. `lead_conversion` = website pixel lead optimization and `catalog_sales` = Advantage+ catalog ads). TikTok supports the 7 non-`lead_conversion` goals. LinkedIn supports all except app_promotion / lead_conversion. Twitter/X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 type AdGoal string
 
 // AdPlatform defines model for Ad.Platform.
@@ -14946,6 +14952,21 @@ type UpdateAdCampaignStatusJSONBodyPlatform string
 // UpdateAdCampaignStatusJSONBodyStatus defines parameters for UpdateAdCampaignStatus.
 type UpdateAdCampaignStatusJSONBodyStatus string
 
+// ListAdCatalogsParams defines parameters for ListAdCatalogs.
+type ListAdCatalogsParams struct {
+	// AccountId A facebook, instagram, or metaads social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// AdAccountId Meta ad account ID (act_...)
+	AdAccountId string `form:"adAccountId" json:"adAccountId"`
+}
+
+// ListAdCatalogProductSetsParams defines parameters for ListAdCatalogProductSets.
+type ListAdCatalogProductSetsParams struct {
+	// AccountId A facebook, instagram, or metaads social account ID
+	AccountId string `form:"accountId" json:"accountId"`
+}
+
 // SendConversionsJSONBody defines parameters for SendConversions.
 type SendConversionsJSONBody struct {
 	// AccountId SocialAccount ID (metaads, googleads, or linkedinads).
@@ -15282,7 +15303,7 @@ type CreateStandaloneAdJSONBody struct {
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
-	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` (OUTCOME_SALES) requires `promotedObject.pixelId` + `promotedObject.customEventType` (use a commerce event, e.g. PURCHASE, START_TRIAL); `lead_conversion` (OUTCOME_LEADS, website pixel leads) requires the same pixel + event but with a leads-class event (e.g. LEAD, SUBMIT_APPLICATION, SCHEDULE, CONTACT) — these are rejected under `conversions` because Meta gates conversion events by objective; `lead_generation` is OUTCOME_LEADS with instant forms (`leadGenFormId`), distinct from `lead_conversion`'s website pixel optimization; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). TikTok-specific: `conversions` (website-conversion ad group) requires `promotedObject.pixelId` (your TikTok Pixel ID) and accepts an optional `promotedObject.customEventType` (a TikTok `optimization_event` code like `ON_WEB_ORDER`, `INITIATE_ORDER`, `ON_WEB_REGISTER`, `FORM`); to inherit a pixel + event from an existing ad group, pass `adSetId` instead. LinkedIn-specific: `engagement`, `traffic`, `awareness`, and `video_views` are supported for standalone ads (creates a Direct Sponsored Content single image or single video ad). `traffic` requires `linkUrl`; `video_views` requires the `video` field. For `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
+	// Goal Required on legacy + multi-creative shapes. Inherited from the ad set on the attach shape. Available goals vary by platform. Meta-specific: `conversions` (OUTCOME_SALES) requires `promotedObject.pixelId` + `promotedObject.customEventType` (use a commerce event, e.g. PURCHASE, START_TRIAL); `lead_conversion` (OUTCOME_LEADS, website pixel leads) requires the same pixel + event but with a leads-class event (e.g. LEAD, SUBMIT_APPLICATION, SCHEDULE, CONTACT) — these are rejected under `conversions` because Meta gates conversion events by objective; `lead_generation` is OUTCOME_LEADS with instant forms (`leadGenFormId`), distinct from `lead_conversion`'s website pixel optimization; `app_promotion` requires `promotedObject.applicationId` + `promotedObject.objectStoreUrl`; `catalog_sales` (Advantage+ catalog ads, e.g. vehicle inventory) requires `promotedObject.productSetId` + `promotedObject.pixelId` + `promotedObject.customEventType` and builds a catalog TEMPLATE creative from the copy fields (headline/body/description/linkUrl/callToAction, which may carry catalog template tags like {{product.name}} or {{vehicle.make}}) — no imageUrl/video is sent, Meta renders the visuals per catalog item; discover catalogs via GET /v1/ads/catalogs and product sets via GET /v1/ads/catalogs/{catalogId}/product-sets; single shape only (no creatives[]/adSetId/dynamicCreative/placementAssets); `lead_generation` accepts an optional `promotedObject.pageId` (auto-filled from the connected Page when omitted). TikTok-specific: `conversions` (website-conversion ad group) requires `promotedObject.pixelId` (your TikTok Pixel ID) and accepts an optional `promotedObject.customEventType` (a TikTok `optimization_event` code like `ON_WEB_ORDER`, `INITIATE_ORDER`, `ON_WEB_REGISTER`, `FORM`); to inherit a pixel + event from an existing ad group, pass `adSetId` instead. LinkedIn-specific: `engagement`, `traffic`, `awareness`, and `video_views` are supported for standalone ads (creates a Direct Sponsored Content single image or single video ad). `traffic` requires `linkUrl`; `video_views` requires the `video` field. For `lead_generation` / `conversions` on LinkedIn — or to promote an existing post — use `POST /v1/ads/boost`.
 	Goal *CreateStandaloneAdJSONBodyGoal `json:"goal,omitempty"`
 
 	// Headline Required for Meta, Google, Pinterest, and LinkedIn on legacy + attach shapes (skip for multi-creative — use `creatives[].headline`). Ignored for TikTok and X/Twitter. Max: Meta=255, Google=30, Pinterest=100, LinkedIn=400. On LinkedIn this is the ad's headline (the bold text on the creative); for traffic ads it's the link card title.
@@ -24265,6 +24286,12 @@ type ClientInterface interface {
 
 	UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListAdCatalogs request
+	ListAdCatalogs(ctx context.Context, params *ListAdCatalogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAdCatalogProductSets request
+	ListAdCatalogProductSets(ctx context.Context, catalogId string, params *ListAdCatalogProductSetsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SendConversionsWithBody request with any body
 	SendConversionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -26999,6 +27026,30 @@ func (c *Client) UpdateAdCampaignStatusWithBody(ctx context.Context, campaignId 
 
 func (c *Client) UpdateAdCampaignStatus(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateAdCampaignStatusRequest(c.Server, campaignId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAdCatalogs(ctx context.Context, params *ListAdCatalogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdCatalogsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAdCatalogProductSets(ctx context.Context, catalogId string, params *ListAdCatalogProductSetsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAdCatalogProductSetsRequest(c.Server, catalogId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -37456,6 +37507,121 @@ func NewUpdateAdCampaignStatusRequestWithBody(server string, campaignId string, 
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListAdCatalogsRequest generates requests for ListAdCatalogs
+func NewListAdCatalogsRequest(server string, params *ListAdCatalogsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/catalogs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "adAccountId", params.AdAccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAdCatalogProductSetsRequest generates requests for ListAdCatalogProductSets
+func NewListAdCatalogProductSetsRequest(server string, catalogId string, params *ListAdCatalogProductSetsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "catalogId", catalogId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/ads/catalogs/%s/product-sets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -54194,6 +54360,12 @@ type ClientWithResponsesInterface interface {
 
 	UpdateAdCampaignStatusWithResponse(ctx context.Context, campaignId string, body UpdateAdCampaignStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAdCampaignStatusResponse, error)
 
+	// ListAdCatalogsWithResponse request
+	ListAdCatalogsWithResponse(ctx context.Context, params *ListAdCatalogsParams, reqEditors ...RequestEditorFn) (*ListAdCatalogsResponse, error)
+
+	// ListAdCatalogProductSetsWithResponse request
+	ListAdCatalogProductSetsWithResponse(ctx context.Context, catalogId string, params *ListAdCatalogProductSetsParams, reqEditors ...RequestEditorFn) (*ListAdCatalogProductSetsResponse, error)
+
 	// SendConversionsWithBodyWithResponse request with any body
 	SendConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error)
 
@@ -59571,6 +59743,81 @@ func (r UpdateAdCampaignStatusResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateAdCampaignStatusResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAdCatalogsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Catalogs *[]struct {
+			Id           *string `json:"id,omitempty"`
+			Name         *string `json:"name,omitempty"`
+			ProductCount *int    `json:"productCount,omitempty"`
+
+			// Vertical Catalog vertical (e.g. commerce, vehicles, hotels)
+			Vertical *string `json:"vertical,omitempty"`
+		} `json:"catalogs,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdCatalogsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdCatalogsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAdCatalogsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAdCatalogProductSetsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ProductSets *[]struct {
+			Id           *string `json:"id,omitempty"`
+			Name         *string `json:"name,omitempty"`
+			ProductCount *int    `json:"productCount,omitempty"`
+		} `json:"productSets,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAdCatalogProductSetsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAdCatalogProductSetsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAdCatalogProductSetsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -72877,6 +73124,24 @@ func (c *ClientWithResponses) UpdateAdCampaignStatusWithResponse(ctx context.Con
 	return ParseUpdateAdCampaignStatusResponse(rsp)
 }
 
+// ListAdCatalogsWithResponse request returning *ListAdCatalogsResponse
+func (c *ClientWithResponses) ListAdCatalogsWithResponse(ctx context.Context, params *ListAdCatalogsParams, reqEditors ...RequestEditorFn) (*ListAdCatalogsResponse, error) {
+	rsp, err := c.ListAdCatalogs(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdCatalogsResponse(rsp)
+}
+
+// ListAdCatalogProductSetsWithResponse request returning *ListAdCatalogProductSetsResponse
+func (c *ClientWithResponses) ListAdCatalogProductSetsWithResponse(ctx context.Context, catalogId string, params *ListAdCatalogProductSetsParams, reqEditors ...RequestEditorFn) (*ListAdCatalogProductSetsResponse, error) {
+	rsp, err := c.ListAdCatalogProductSets(ctx, catalogId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAdCatalogProductSetsResponse(rsp)
+}
+
 // SendConversionsWithBodyWithResponse request with arbitrary body returning *SendConversionsResponse
 func (c *ClientWithResponses) SendConversionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendConversionsResponse, error) {
 	rsp, err := c.SendConversionsWithBody(ctx, contentType, body, reqEditors...)
@@ -81047,6 +81312,73 @@ func ParseUpdateAdCampaignStatusResponse(rsp *http.Response) (*UpdateAdCampaignS
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdCatalogsResponse parses an HTTP response from a ListAdCatalogsWithResponse call
+func ParseListAdCatalogsResponse(rsp *http.Response) (*ListAdCatalogsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdCatalogsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Catalogs *[]struct {
+				Id           *string `json:"id,omitempty"`
+				Name         *string `json:"name,omitempty"`
+				ProductCount *int    `json:"productCount,omitempty"`
+
+				// Vertical Catalog vertical (e.g. commerce, vehicles, hotels)
+				Vertical *string `json:"vertical,omitempty"`
+			} `json:"catalogs,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAdCatalogProductSetsResponse parses an HTTP response from a ListAdCatalogProductSetsWithResponse call
+func ParseListAdCatalogProductSetsResponse(rsp *http.Response) (*ListAdCatalogProductSetsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAdCatalogProductSetsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ProductSets *[]struct {
+				Id           *string `json:"id,omitempty"`
+				Name         *string `json:"name,omitempty"`
+				ProductCount *int    `json:"productCount,omitempty"`
+			} `json:"productSets,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 
