@@ -8562,27 +8562,6 @@ func (e GetMediaPresignedUrlJSONBodyContentType) Valid() bool {
 	}
 }
 
-// Defines values for GetMediaPresignedUrl200JSONResponseBodyType.
-const (
-	Document GetMediaPresignedUrl200JSONResponseBodyType = "document"
-	Image    GetMediaPresignedUrl200JSONResponseBodyType = "image"
-	Video    GetMediaPresignedUrl200JSONResponseBodyType = "video"
-)
-
-// Valid indicates whether the value is a known member of the GetMediaPresignedUrl200JSONResponseBodyType enum.
-func (e GetMediaPresignedUrl200JSONResponseBodyType) Valid() bool {
-	switch e {
-	case Document:
-		return true
-	case Image:
-		return true
-	case Video:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for ListPostsParamsStatus.
 const (
 	ListPostsParamsStatusDraft     ListPostsParamsStatus = "draft"
@@ -18844,9 +18823,6 @@ type GetMediaPresignedUrlJSONBody struct {
 
 // GetMediaPresignedUrlJSONBodyContentType defines parameters for GetMediaPresignedUrl.
 type GetMediaPresignedUrlJSONBodyContentType string
-
-// GetMediaPresignedUrl200JSONResponseBodyType defines parameters for GetMediaPresignedUrl.
-type GetMediaPresignedUrl200JSONResponseBodyType string
 
 // UploadMediaDirectMultipartBody defines parameters for UploadMediaDirect.
 type UploadMediaDirectMultipartBody struct {
@@ -67317,14 +67293,14 @@ type GetMediaPresignedUrlResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// ExpiresIn Seconds until the presigned uploadUrl expires (always 3600)
+		ExpiresIn *int `json:"expiresIn,omitempty"`
+
 		// Key Storage key/path of the file
 		Key *string `json:"key,omitempty"`
 
 		// PublicUrl Public URL where the file will be accessible after upload
 		PublicUrl *string `json:"publicUrl,omitempty"`
-
-		// Type Detected file type based on content type
-		Type *GetMediaPresignedUrl200JSONResponseBodyType `json:"type,omitempty"`
 
 		// UploadUrl Presigned URL to PUT your file to (expires in 1 hour)
 		UploadUrl *string `json:"uploadUrl,omitempty"`
@@ -90010,14 +89986,14 @@ func ParseGetMediaPresignedUrlResponse(rsp *http.Response) (*GetMediaPresignedUr
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// ExpiresIn Seconds until the presigned uploadUrl expires (always 3600)
+			ExpiresIn *int `json:"expiresIn,omitempty"`
+
 			// Key Storage key/path of the file
 			Key *string `json:"key,omitempty"`
 
 			// PublicUrl Public URL where the file will be accessible after upload
 			PublicUrl *string `json:"publicUrl,omitempty"`
-
-			// Type Detected file type based on content type
-			Type *GetMediaPresignedUrl200JSONResponseBodyType `json:"type,omitempty"`
 
 			// UploadUrl Presigned URL to PUT your file to (expires in 1 hour)
 			UploadUrl *string `json:"uploadUrl,omitempty"`
