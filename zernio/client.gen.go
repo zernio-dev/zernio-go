@@ -5844,6 +5844,24 @@ func (e GetDailyMetricsParamsSource) Valid() bool {
 	}
 }
 
+// Defines values for GetDailyMetricsParamsAttribution.
+const (
+	Publish  GetDailyMetricsParamsAttribution = "publish"
+	Received GetDailyMetricsParamsAttribution = "received"
+)
+
+// Valid indicates whether the value is a known member of the GetDailyMetricsParamsAttribution enum.
+func (e GetDailyMetricsParamsAttribution) Valid() bool {
+	switch e {
+	case Publish:
+		return true
+	case Received:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetFacebookPageInsightsParamsMetricType.
 const (
 	GetFacebookPageInsightsParamsMetricTypeTimeSeries GetFacebookPageInsightsParamsMetricType = "time_series"
@@ -16373,10 +16391,18 @@ type GetDailyMetricsParams struct {
 
 	// Source Filter by post origin. "late" for posts published via Zernio, "external" for posts imported from platforms.
 	Source *GetDailyMetricsParamsSource `form:"source,omitempty" json:"source,omitempty"`
+
+	// Attribution How each post's engagement is attributed to a day.
+	// "publish" (default) sums each post's lifetime total on its publish date.
+	// "received" buckets the per-day increase in engagement by the day it actually arrived (engagement-over-time), so engagement on older posts appears on the day it was gained rather than the post's publish date.
+	Attribution *GetDailyMetricsParamsAttribution `form:"attribution,omitempty" json:"attribution,omitempty"`
 }
 
 // GetDailyMetricsParamsSource defines parameters for GetDailyMetrics.
 type GetDailyMetricsParamsSource string
+
+// GetDailyMetricsParamsAttribution defines parameters for GetDailyMetrics.
+type GetDailyMetricsParamsAttribution string
 
 // GetFacebookPageInsightsParams defines parameters for GetFacebookPageInsights.
 type GetFacebookPageInsightsParams struct {
@@ -39830,6 +39856,18 @@ func NewGetDailyMetricsRequest(server string, params *GetDailyMetricsParams) (*h
 		if params.Source != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Attribution != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "attribution", *params.Attribution, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
