@@ -13401,7 +13401,10 @@ type XApiPricing struct {
 type YouTubeDailyViewsResponse struct {
 	DailyViews *[]struct {
 		// AverageViewDuration Average view duration in seconds
-		AverageViewDuration     *float32            `json:"averageViewDuration,omitempty"`
+		AverageViewDuration *float32 `json:"averageViewDuration,omitempty"`
+
+		// AverageViewPercentage Average percentage of the video watched per view. Can exceed 100 on Shorts (looping rewatches), so do not clamp it client-side.
+		AverageViewPercentage   *float32            `json:"averageViewPercentage,omitempty"`
 		Comments                *int                `json:"comments,omitempty"`
 		Date                    *openapi_types.Date `json:"date,omitempty"`
 		EstimatedMinutesWatched *float32            `json:"estimatedMinutesWatched,omitempty"`
@@ -13415,6 +13418,9 @@ type YouTubeDailyViewsResponse struct {
 		EndDate   *openapi_types.Date `json:"endDate,omitempty"`
 		StartDate *openapi_types.Date `json:"startDate,omitempty"`
 	} `json:"dateRange,omitempty"`
+
+	// DurationSeconds Video length in seconds (from YouTube contentDetails.duration)
+	DurationSeconds *int `json:"durationSeconds,omitempty"`
 
 	// LastSyncedAt When the data was last synced from YouTube
 	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
@@ -13491,6 +13497,56 @@ type YouTubeScopeMissingResponse struct {
 		RequiresReauthorization *bool   `json:"requiresReauthorization,omitempty"`
 	} `json:"scopeStatus,omitempty"`
 	Success *bool `json:"success,omitempty"`
+}
+
+// YouTubeVideoRetentionResponse defines model for YouTubeVideoRetentionResponse.
+type YouTubeVideoRetentionResponse struct {
+	// AccountId The Zernio account ID for the YouTube account
+	AccountId *string `json:"accountId,omitempty"`
+	DateRange *struct {
+		EndDate   *openapi_types.Date `json:"endDate,omitempty"`
+		StartDate *openapi_types.Date `json:"startDate,omitempty"`
+	} `json:"dateRange,omitempty"`
+
+	// DurationSeconds Video length in seconds (from YouTube contentDetails.duration)
+	DurationSeconds *int `json:"durationSeconds,omitempty"`
+
+	// Note Present only when the curve is empty, explaining why
+	Note *string `json:"note,omitempty"`
+
+	// PublishedAt When the video was published on YouTube
+	PublishedAt *time.Time `json:"publishedAt,omitempty"`
+
+	// RetentionCurve Up to 100 points covering the video timeline, aggregated over the date range. Empty for videos with very few views.
+	RetentionCurve *[]struct {
+		// AudienceWatchRatio Absolute share of viewers watching at this point. Can exceed 1 (rewinds/looping, common on Shorts).
+		AudienceWatchRatio *float32 `json:"audienceWatchRatio,omitempty"`
+
+		// ElapsedVideoTimeRatio Position in the video as a ratio (0.01-1.0, exclusive end of each interval)
+		ElapsedVideoTimeRatio *float32 `json:"elapsedVideoTimeRatio,omitempty"`
+
+		// RelativeRetentionPerformance Retention vs videos of similar length (0 = worst, 0.5 = median, 1 = best)
+		RelativeRetentionPerformance *float32 `json:"relativeRetentionPerformance,omitempty"`
+
+		// StartedWatching Viewers who started watching in this segment
+		StartedWatching *int `json:"startedWatching,omitempty"`
+
+		// StoppedWatching Viewers who stopped watching in this segment
+		StoppedWatching *int `json:"stoppedWatching,omitempty"`
+
+		// TotalSegmentImpressions Total views of this segment, including rewatches
+		TotalSegmentImpressions *int `json:"totalSegmentImpressions,omitempty"`
+	} `json:"retentionCurve,omitempty"`
+	ScopeStatus *struct {
+		HasAnalyticsScope *bool `json:"hasAnalyticsScope,omitempty"`
+	} `json:"scopeStatus,omitempty"`
+	Success *bool `json:"success,omitempty"`
+
+	// Title Video title
+	Title *string `json:"title,omitempty"`
+
+	// VideoId The YouTube video ID
+	VideoId *string `json:"videoId,omitempty"`
 }
 
 // LimitParam defines model for LimitParam.
@@ -16810,6 +16866,21 @@ type GetYouTubeDemographicsParams struct {
 	StartDate *openapi_types.Date `form:"startDate,omitempty" json:"startDate,omitempty"`
 
 	// EndDate End date in YYYY-MM-DD format. Defaults to 3 days ago (YouTube data latency).
+	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
+}
+
+// GetYouTubeVideoRetentionParams defines parameters for GetYouTubeVideoRetention.
+type GetYouTubeVideoRetentionParams struct {
+	// VideoId The YouTube video ID (e.g., "dQw4w9WgXcQ")
+	VideoId string `form:"videoId" json:"videoId"`
+
+	// AccountId The Zernio account ID for the YouTube account
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// StartDate Start date (YYYY-MM-DD). Defaults to the video's publish date (lifetime curve).
+	StartDate *openapi_types.Date `form:"startDate,omitempty" json:"startDate,omitempty"`
+
+	// EndDate End date (YYYY-MM-DD). Defaults to 3 days ago (YouTube data latency).
 	EndDate *openapi_types.Date `form:"endDate,omitempty" json:"endDate,omitempty"`
 }
 
@@ -24606,6 +24677,9 @@ type ClientInterface interface {
 	// GetYouTubeDemographics request
 	GetYouTubeDemographics(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetYouTubeVideoRetention request
+	GetYouTubeVideoRetention(ctx context.Context, params *GetYouTubeVideoRetentionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListApiKeys request
 	ListApiKeys(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -27902,6 +27976,18 @@ func (c *Client) GetYouTubeDailyViews(ctx context.Context, params *GetYouTubeDai
 
 func (c *Client) GetYouTubeDemographics(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetYouTubeDemographicsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetYouTubeVideoRetention(ctx context.Context, params *GetYouTubeVideoRetentionParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetYouTubeVideoRetentionRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -41834,6 +41920,88 @@ func NewGetYouTubeDemographicsRequest(server string, params *GetYouTubeDemograph
 	return req, nil
 }
 
+// NewGetYouTubeVideoRetentionRequest generates requests for GetYouTubeVideoRetention
+func NewGetYouTubeVideoRetentionRequest(server string, params *GetYouTubeVideoRetentionParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/analytics/youtube/video-retention")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "videoId", params.VideoId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if params.StartDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "startDate", *params.StartDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.EndDate != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "endDate", *params.EndDate, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListApiKeysRequest generates requests for ListApiKeys
 func NewListApiKeysRequest(server string) (*http.Request, error) {
 	var err error
@@ -54992,6 +55160,9 @@ type ClientWithResponsesInterface interface {
 	// GetYouTubeDemographicsWithResponse request
 	GetYouTubeDemographicsWithResponse(ctx context.Context, params *GetYouTubeDemographicsParams, reqEditors ...RequestEditorFn) (*GetYouTubeDemographicsResponse, error)
 
+	// GetYouTubeVideoRetentionWithResponse request
+	GetYouTubeVideoRetentionWithResponse(ctx context.Context, params *GetYouTubeVideoRetentionParams, reqEditors ...RequestEditorFn) (*GetYouTubeVideoRetentionResponse, error)
+
 	// ListApiKeysWithResponse request
 	ListApiKeysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListApiKeysResponse, error)
 
@@ -62573,6 +62744,58 @@ func (r GetYouTubeDemographicsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetYouTubeDemographicsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetYouTubeVideoRetentionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *YouTubeVideoRetentionResponse
+	JSON400      *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON401 *Unauthorized
+	JSON402 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+	}
+	JSON403 *struct {
+		Error *string `json:"error,omitempty"`
+	}
+	JSON404 *struct {
+		Code  *string `json:"code,omitempty"`
+		Error *string `json:"error,omitempty"`
+		Param *string `json:"param,omitempty"`
+		Type  *string `json:"type,omitempty"`
+	}
+	JSON412 *YouTubeScopeMissingResponse
+	JSON500 *struct {
+		Error   *string `json:"error,omitempty"`
+		Success *bool   `json:"success,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetYouTubeVideoRetentionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetYouTubeVideoRetentionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetYouTubeVideoRetentionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -74290,6 +74513,15 @@ func (c *ClientWithResponses) GetYouTubeDemographicsWithResponse(ctx context.Con
 	return ParseGetYouTubeDemographicsResponse(rsp)
 }
 
+// GetYouTubeVideoRetentionWithResponse request returning *GetYouTubeVideoRetentionResponse
+func (c *ClientWithResponses) GetYouTubeVideoRetentionWithResponse(ctx context.Context, params *GetYouTubeVideoRetentionParams, reqEditors ...RequestEditorFn) (*GetYouTubeVideoRetentionResponse, error) {
+	rsp, err := c.GetYouTubeVideoRetention(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetYouTubeVideoRetentionResponse(rsp)
+}
+
 // ListApiKeysWithResponse request returning *ListApiKeysResponse
 func (c *ClientWithResponses) ListApiKeysWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListApiKeysResponse, error) {
 	rsp, err := c.ListApiKeys(ctx, reqEditors...)
@@ -84800,6 +85032,96 @@ func ParseGetYouTubeDemographicsResponse(rsp *http.Response) (*GetYouTubeDemogra
 			return nil, err
 		}
 		response.JSON412 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetYouTubeVideoRetentionResponse parses an HTTP response from a GetYouTubeVideoRetentionWithResponse call
+func ParseGetYouTubeVideoRetentionResponse(rsp *http.Response) (*GetYouTubeVideoRetentionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetYouTubeVideoRetentionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest YouTubeVideoRetentionResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 402:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON402 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest struct {
+			Error *string `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest struct {
+			Code  *string `json:"code,omitempty"`
+			Error *string `json:"error,omitempty"`
+			Param *string `json:"param,omitempty"`
+			Type  *string `json:"type,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 412:
+		var dest YouTubeScopeMissingResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON412 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest struct {
+			Error   *string `json:"error,omitempty"`
+			Success *bool   `json:"success,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
