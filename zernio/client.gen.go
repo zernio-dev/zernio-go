@@ -10714,6 +10714,9 @@ type AdCampaign struct {
 	AccountId *string `json:"accountId,omitempty"`
 	AdCount   *int    `json:"adCount,omitempty"`
 
+	// AdvertisingChannelType Google-only. Raw campaign.advertising_channel_type. See AdTreeCampaign.advertisingChannelType.
+	AdvertisingChannelType *string `json:"advertisingChannelType,omitempty"`
+
 	// BidAmount Representative bid cap from the top-spending ad set (whole currency units). Populated when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 
@@ -10896,6 +10899,9 @@ type AdTreeCampaign struct {
 	AdCount    *int           `json:"adCount,omitempty"`
 	AdSetCount *int           `json:"adSetCount,omitempty"`
 	AdSets     *[]AdTreeAdSet `json:"adSets,omitempty"`
+
+	// AdvertisingChannelType Google-only. Raw campaign.advertising_channel_type (SEARCH, PERFORMANCE_MAX, VIDEO, DEMAND_GEN, DISPLAY, SHOPPING, ...). Serving surface, distinct from platformObjective (advertiser intent). Null/absent for non-Google platforms.
+	AdvertisingChannelType *string `json:"advertisingChannelType,omitempty"`
 
 	// BidAmount Representative bid cap for the campaign — bubbled up from the top-spending ad set's `bid_amount` (whole currency units). Populated when the ad-set bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
