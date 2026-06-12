@@ -9591,6 +9591,21 @@ func (e ListWhatsAppCalls200JSONResponseBodyCallsStatus) Valid() bool {
 	}
 }
 
+// Defines values for InitiateWhatsAppCallJSONBodyAction.
+const (
+	SendCallPermissionRequest InitiateWhatsAppCallJSONBodyAction = "send_call_permission_request"
+)
+
+// Valid indicates whether the value is a known member of the InitiateWhatsAppCallJSONBodyAction enum.
+func (e InitiateWhatsAppCallJSONBodyAction) Valid() bool {
+	switch e {
+	case SendCallPermissionRequest:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for InitiateWhatsAppCall200JSONResponseBodyDirection.
 const (
 	Outbound InitiateWhatsAppCall200JSONResponseBodyDirection = "outbound"
@@ -19594,10 +19609,16 @@ type ListWhatsAppCalls200JSONResponseBodyCallsStatus string
 type InitiateWhatsAppCallJSONBody struct {
 	AccountId string `json:"accountId"`
 
+	// Action Omit to place a call. Set to send the consent prompt instead.
+	Action *InitiateWhatsAppCallJSONBodyAction `json:"action,omitempty"`
+
 	// BizOpaqueCallbackData Accepted for forward compatibility. Not currently echoed
 	// back in webhook payloads (SIP-first flow does not pass
 	// through Meta's Graph API where Meta would echo this).
 	BizOpaqueCallbackData *string `json:"biz_opaque_callback_data,omitempty"`
+
+	// BodyText Body text shown with the consent prompt (send_call_permission_request only).
+	BodyText *string `json:"bodyText,omitempty"`
 
 	// ForwardTo Per-call destination override. Same accepted shape as the
 	// number's stored forwardTo (tel:+E164, sip:..., wss://...).
@@ -19607,6 +19628,9 @@ type InitiateWhatsAppCallJSONBody struct {
 	// To Consumer wa_id (E.164
 	To string `json:"to"`
 }
+
+// InitiateWhatsAppCallJSONBodyAction defines parameters for InitiateWhatsAppCall.
+type InitiateWhatsAppCallJSONBodyAction string
 
 // InitiateWhatsAppCall200JSONResponseBodyDirection defines parameters for InitiateWhatsAppCall.
 type InitiateWhatsAppCall200JSONResponseBodyDirection string
