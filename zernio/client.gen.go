@@ -63304,7 +63304,10 @@ type ListBroadcastRecipientsResponse struct {
 			Error       *string    `json:"error,omitempty"`
 
 			// ErrorCode Meta WhatsApp error code (e.g. 131049 for antispam, 131021 for invalid phone, 131026 for re-engagement required). Only populated for status=failed.
-			ErrorCode          *int                                                        `json:"errorCode,omitempty"`
+			ErrorCode *int `json:"errorCode,omitempty"`
+
+			// ErrorExplanation Plain-language translation of errorCode (e.g. for 131026, that the recipient has likely opted out of marketing messages). Null for unmapped codes; fall back to error.
+			ErrorExplanation   *string                                                     `json:"errorExplanation,omitempty"`
 			Id                 *string                                                     `json:"id,omitempty"`
 			MessageId          *string                                                     `json:"messageId,omitempty"`
 			PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
@@ -85688,7 +85691,10 @@ func ParseListBroadcastRecipientsResponse(rsp *http.Response) (*ListBroadcastRec
 				Error       *string    `json:"error,omitempty"`
 
 				// ErrorCode Meta WhatsApp error code (e.g. 131049 for antispam, 131021 for invalid phone, 131026 for re-engagement required). Only populated for status=failed.
-				ErrorCode          *int                                                        `json:"errorCode,omitempty"`
+				ErrorCode *int `json:"errorCode,omitempty"`
+
+				// ErrorExplanation Plain-language translation of errorCode (e.g. for 131026, that the recipient has likely opted out of marketing messages). Null for unmapped codes; fall back to error.
+				ErrorExplanation   *string                                                     `json:"errorExplanation,omitempty"`
 				Id                 *string                                                     `json:"id,omitempty"`
 				MessageId          *string                                                     `json:"messageId,omitempty"`
 				PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
