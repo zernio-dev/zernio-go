@@ -20153,6 +20153,9 @@ type SubmitWhatsAppNumberKycJSONBody struct {
 	// Reuse Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
 
+	// ReuseFrom Which approved verification to reuse when several exist: the phone number it was originally approved for (GET reusable.options[].fromPhoneNumber). Omitted = newest. No match = 409.
+	ReuseFrom *string `json:"reuseFrom,omitempty"`
+
 	// SubmissionId Idempotency token for this submission attempt. A retry/double-submit with the same token returns the same number; omit and each call creates a new number.
 	SubmissionId *string `json:"submissionId,omitempty"`
 
@@ -70951,7 +70954,7 @@ type GetWhatsAppNumberKycFormResponse struct {
 		} `json:"fields,omitempty"`
 		NumberType *string `json:"numberType,omitempty"`
 
-		// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
+		// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form). `fromPhoneNumber`/`details` mirror the newest option; `options` lists ALL approved verifications (agencies hold one per end client) — pass the chosen option's `fromPhoneNumber` as `reuseFrom` on POST.
 		Reusable *struct {
 			Available *bool `json:"available,omitempty"`
 
@@ -70961,6 +70964,15 @@ type GetWhatsAppNumberKycFormResponse struct {
 				Value *string `json:"value,omitempty"`
 			} `json:"details,omitempty"`
 			FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+
+			// Options One entry per distinct approved verification, newest first.
+			Options *[]struct {
+				Details *[]struct {
+					Label *string `json:"label,omitempty"`
+					Value *string `json:"value,omitempty"`
+				} `json:"details,omitempty"`
+				FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+			} `json:"options,omitempty"`
 		} `json:"reusable,omitempty"`
 	}
 	JSON401 *Unauthorized
@@ -93976,7 +93988,7 @@ func ParseGetWhatsAppNumberKycFormResponse(rsp *http.Response) (*GetWhatsAppNumb
 			} `json:"fields,omitempty"`
 			NumberType *string `json:"numberType,omitempty"`
 
-			// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
+			// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form). `fromPhoneNumber`/`details` mirror the newest option; `options` lists ALL approved verifications (agencies hold one per end client) — pass the chosen option's `fromPhoneNumber` as `reuseFrom` on POST.
 			Reusable *struct {
 				Available *bool `json:"available,omitempty"`
 
@@ -93986,6 +93998,15 @@ func ParseGetWhatsAppNumberKycFormResponse(rsp *http.Response) (*GetWhatsAppNumb
 					Value *string `json:"value,omitempty"`
 				} `json:"details,omitempty"`
 				FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+
+				// Options One entry per distinct approved verification, newest first.
+				Options *[]struct {
+					Details *[]struct {
+						Label *string `json:"label,omitempty"`
+						Value *string `json:"value,omitempty"`
+					} `json:"details,omitempty"`
+					FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+				} `json:"options,omitempty"`
 			} `json:"reusable,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
