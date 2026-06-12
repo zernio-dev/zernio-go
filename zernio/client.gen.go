@@ -17590,19 +17590,25 @@ type ConnectAdsParams struct {
 	// Headless Enable headless mode (same-token platforms only)
 	Headless *bool `form:"headless,omitempty" json:"headless,omitempty"`
 
-	// AdAccountId (metaads only) Scope ad sync to a single Meta ad account. Without this
-	// param, sync covers every `act_*` the connected token can see. Pass this
-	// to limit `sync.totalAds` / `synced` and the resulting ads to one ad
-	// account. Format: `act_<digits>` (matches what `/me/adaccounts` returns).
-	// Validated against the connected token; unreachable IDs return 400.
-	// For multiple accounts use `adAccountIds` instead.
+	// AdAccountId Scope ad sync to a single platform ad account. Without this param,
+	// sync covers every ad account the connected token can see. Supported
+	// on `facebook`/`instagram` (Meta, `act_<digits>`), `linkedin` (bare
+	// numeric sponsored-account id), `googleads` (bare customer id digits)
+	// and `twitter` (X Ads, base36 account id). `tiktok` scopes advertisers
+	// at OAuth and `pinterest` has no ads discovery, so both ignore it.
+	// Meta ids are additionally validated against the connected token;
+	// unreachable IDs return 400. Setting a scope also removes already
+	// synced ads from de-scoped ad accounts. For multiple accounts use
+	// `adAccountIds` instead.
 	AdAccountId *string `form:"adAccountId,omitempty" json:"adAccountId,omitempty"`
 
-	// AdAccountIds (metaads only) Scope ad sync to multiple Meta ad accounts. Repeat the
-	// param (`?adAccountIds=act_1&adAccountIds=act_2`) or comma-separate
-	// (`?adAccountIds=act_1,act_2`). Validated against the connected token.
-	// Persisted server-side; latest call wins. Omitting both `adAccountId`
-	// and `adAccountIds` keeps any previously persisted scope unchanged.
+	// AdAccountIds Scope ad sync to multiple platform ad accounts (same platform
+	// support and id shapes as `adAccountId`). Repeat the param
+	// (`?adAccountIds=act_1&adAccountIds=act_2`) or comma-separate
+	// (`?adAccountIds=act_1,act_2`). Persisted server-side; latest call
+	// wins, and de-scoped ad accounts have their synced ads removed.
+	// Omitting both `adAccountId` and `adAccountIds` keeps any previously
+	// persisted scope unchanged.
 	AdAccountIds *[]string `form:"adAccountIds,omitempty" json:"adAccountIds,omitempty"`
 }
 
