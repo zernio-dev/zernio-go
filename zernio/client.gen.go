@@ -70953,7 +70953,13 @@ type GetWhatsAppNumberKycFormResponse struct {
 
 		// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
 		Reusable *struct {
-			Available       *bool   `json:"available,omitempty"`
+			Available *bool `json:"available,omitempty"`
+
+			// Details Human-readable summary of the verification on file (field labels + values, plus the address as one line). Best-effort — may be empty if the provider lookup fails.
+			Details *[]struct {
+				Label *string `json:"label,omitempty"`
+				Value *string `json:"value,omitempty"`
+			} `json:"details,omitempty"`
 			FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
 		} `json:"reusable,omitempty"`
 	}
@@ -93972,7 +93978,13 @@ func ParseGetWhatsAppNumberKycFormResponse(rsp *http.Response) (*GetWhatsAppNumb
 
 			// Reusable Present when this account already has an approved verification for the country that can be reused (skip the form).
 			Reusable *struct {
-				Available       *bool   `json:"available,omitempty"`
+				Available *bool `json:"available,omitempty"`
+
+				// Details Human-readable summary of the verification on file (field labels + values, plus the address as one line). Best-effort — may be empty if the provider lookup fails.
+				Details *[]struct {
+					Label *string `json:"label,omitempty"`
+					Value *string `json:"value,omitempty"`
+				} `json:"details,omitempty"`
 				FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
 			} `json:"reusable,omitempty"`
 		}
