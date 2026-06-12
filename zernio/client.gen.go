@@ -19497,6 +19497,14 @@ type BlockWhatsAppUsersJSONBody struct {
 	Users []string `json:"users"`
 }
 
+// GetWhatsAppBlockStatusParams defines parameters for GetWhatsAppBlockStatus.
+type GetWhatsAppBlockStatusParams struct {
+	AccountId string `form:"accountId" json:"accountId"`
+
+	// User Consumer wa_id or E.164 phone (leading + optional)
+	User string `form:"user" json:"user"`
+}
+
 // GetWhatsAppBusinessProfileParams defines parameters for GetWhatsAppBusinessProfile.
 type GetWhatsAppBusinessProfileParams struct {
 	// AccountId WhatsApp social account ID
@@ -25155,6 +25163,9 @@ type ClientInterface interface {
 
 	BlockWhatsAppUsers(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWhatsAppBlockStatus request
+	GetWhatsAppBlockStatus(ctx context.Context, params *GetWhatsAppBlockStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetWhatsAppBusinessProfile request
 	GetWhatsAppBusinessProfile(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -30457,6 +30468,18 @@ func (c *Client) BlockWhatsAppUsersWithBody(ctx context.Context, contentType str
 
 func (c *Client) BlockWhatsAppUsers(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewBlockWhatsAppUsersRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWhatsAppBlockStatus(ctx context.Context, params *GetWhatsAppBlockStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWhatsAppBlockStatusRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -50211,6 +50234,64 @@ func NewBlockWhatsAppUsersRequestWithBody(server string, contentType string, bod
 	return req, nil
 }
 
+// NewGetWhatsAppBlockStatusRequest generates requests for GetWhatsAppBlockStatus
+func NewGetWhatsAppBlockStatusRequest(server string, params *GetWhatsAppBlockStatusParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/whatsapp/block-users/status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "accountId", params.AccountId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "user", params.User, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetWhatsAppBusinessProfileRequest generates requests for GetWhatsAppBusinessProfile
 func NewGetWhatsAppBusinessProfileRequest(server string, params *GetWhatsAppBusinessProfileParams) (*http.Request, error) {
 	var err error
@@ -55455,6 +55536,9 @@ type ClientWithResponsesInterface interface {
 	BlockWhatsAppUsersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error)
 
 	BlockWhatsAppUsersWithResponse(ctx context.Context, body BlockWhatsAppUsersJSONRequestBody, reqEditors ...RequestEditorFn) (*BlockWhatsAppUsersResponse, error)
+
+	// GetWhatsAppBlockStatusWithResponse request
+	GetWhatsAppBlockStatusWithResponse(ctx context.Context, params *GetWhatsAppBlockStatusParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBlockStatusResponse, error)
 
 	// GetWhatsAppBusinessProfileWithResponse request
 	GetWhatsAppBusinessProfileWithResponse(ctx context.Context, params *GetWhatsAppBusinessProfileParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBusinessProfileResponse, error)
@@ -69063,6 +69147,39 @@ func (r BlockWhatsAppUsersResponse) ContentType() string {
 	return ""
 }
 
+type GetWhatsAppBlockStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Blocked *bool `json:"blocked,omitempty"`
+	}
+	JSON401 *Unauthorized
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWhatsAppBlockStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWhatsAppBlockStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetWhatsAppBlockStatusResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetWhatsAppBusinessProfileResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -76012,6 +76129,15 @@ func (c *ClientWithResponses) BlockWhatsAppUsersWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseBlockWhatsAppUsersResponse(rsp)
+}
+
+// GetWhatsAppBlockStatusWithResponse request returning *GetWhatsAppBlockStatusResponse
+func (c *ClientWithResponses) GetWhatsAppBlockStatusWithResponse(ctx context.Context, params *GetWhatsAppBlockStatusParams, reqEditors ...RequestEditorFn) (*GetWhatsAppBlockStatusResponse, error) {
+	rsp, err := c.GetWhatsAppBlockStatus(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWhatsAppBlockStatusResponse(rsp)
 }
 
 // GetWhatsAppBusinessProfileWithResponse request returning *GetWhatsAppBusinessProfileResponse
@@ -91838,6 +91964,41 @@ func ParseBlockWhatsAppUsersResponse(rsp *http.Response) (*BlockWhatsAppUsersRes
 				Errors *[]string `json:"errors,omitempty"`
 				Input  *string   `json:"input,omitempty"`
 			} `json:"failed,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWhatsAppBlockStatusResponse parses an HTTP response from a GetWhatsAppBlockStatusWithResponse call
+func ParseGetWhatsAppBlockStatusResponse(rsp *http.Response) (*GetWhatsAppBlockStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWhatsAppBlockStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Blocked *bool `json:"blocked,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
