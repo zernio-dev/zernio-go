@@ -8003,61 +8003,13 @@ func (e SendInboxMessageJSONBodyInteractiveAction1Name) Valid() bool {
 
 // Defines values for SendInboxMessageJSONBodyInteractiveAction2Name.
 const (
-	Flow SendInboxMessageJSONBodyInteractiveAction2Name = "flow"
+	VoiceCall SendInboxMessageJSONBodyInteractiveAction2Name = "voice_call"
 )
 
 // Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2Name enum.
 func (e SendInboxMessageJSONBodyInteractiveAction2Name) Valid() bool {
 	switch e {
-	case Flow:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction.
-const (
-	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionDataExchange SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction = "data_exchange"
-	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionNavigate     SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction = "navigate"
-)
-
-// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction enum.
-func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction) Valid() bool {
-	switch e {
-	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionDataExchange:
-		return true
-	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowActionNavigate:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion.
-const (
-	SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersionN3 SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion = "3"
-)
-
-// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion enum.
-func (e SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion) Valid() bool {
-	switch e {
-	case SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersionN3:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SendInboxMessageJSONBodyInteractiveAction2ParametersMode.
-const (
-	SendInboxMessageJSONBodyInteractiveAction2ParametersModeDraft SendInboxMessageJSONBodyInteractiveAction2ParametersMode = "draft"
-)
-
-// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction2ParametersMode enum.
-func (e SendInboxMessageJSONBodyInteractiveAction2ParametersMode) Valid() bool {
-	switch e {
-	case SendInboxMessageJSONBodyInteractiveAction2ParametersModeDraft:
+	case VoiceCall:
 		return true
 	default:
 		return false
@@ -8066,11 +8018,74 @@ func (e SendInboxMessageJSONBodyInteractiveAction2ParametersMode) Valid() bool {
 
 // Defines values for SendInboxMessageJSONBodyInteractiveAction3Name.
 const (
-	SendLocation SendInboxMessageJSONBodyInteractiveAction3Name = "send_location"
+	Flow SendInboxMessageJSONBodyInteractiveAction3Name = "flow"
 )
 
 // Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction3Name enum.
 func (e SendInboxMessageJSONBodyInteractiveAction3Name) Valid() bool {
+	switch e {
+	case Flow:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction.
+const (
+	SendInboxMessageJSONBodyInteractiveAction3ParametersFlowActionDataExchange SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction = "data_exchange"
+	SendInboxMessageJSONBodyInteractiveAction3ParametersFlowActionNavigate     SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction = "navigate"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction enum.
+func (e SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction3ParametersFlowActionDataExchange:
+		return true
+	case SendInboxMessageJSONBodyInteractiveAction3ParametersFlowActionNavigate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion.
+const (
+	SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersionN3 SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion = "3"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion enum.
+func (e SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersionN3:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction3ParametersMode.
+const (
+	SendInboxMessageJSONBodyInteractiveAction3ParametersModeDraft SendInboxMessageJSONBodyInteractiveAction3ParametersMode = "draft"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction3ParametersMode enum.
+func (e SendInboxMessageJSONBodyInteractiveAction3ParametersMode) Valid() bool {
+	switch e {
+	case SendInboxMessageJSONBodyInteractiveAction3ParametersModeDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SendInboxMessageJSONBodyInteractiveAction4Name.
+const (
+	SendLocation SendInboxMessageJSONBodyInteractiveAction4Name = "send_location"
+)
+
+// Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveAction4Name enum.
+func (e SendInboxMessageJSONBodyInteractiveAction4Name) Valid() bool {
 	switch e {
 	case SendLocation:
 		return true
@@ -8109,6 +8124,7 @@ const (
 	SendInboxMessageJSONBodyInteractiveTypeFlow                   SendInboxMessageJSONBodyInteractiveType = "flow"
 	SendInboxMessageJSONBodyInteractiveTypeList                   SendInboxMessageJSONBodyInteractiveType = "list"
 	SendInboxMessageJSONBodyInteractiveTypeLocationRequestMessage SendInboxMessageJSONBodyInteractiveType = "location_request_message"
+	SendInboxMessageJSONBodyInteractiveTypeVoiceCall              SendInboxMessageJSONBodyInteractiveType = "voice_call"
 )
 
 // Valid indicates whether the value is a known member of the SendInboxMessageJSONBodyInteractiveType enum.
@@ -8121,6 +8137,8 @@ func (e SendInboxMessageJSONBodyInteractiveType) Valid() bool {
 	case SendInboxMessageJSONBodyInteractiveTypeList:
 		return true
 	case SendInboxMessageJSONBodyInteractiveTypeLocationRequestMessage:
+		return true
+	case SendInboxMessageJSONBodyInteractiveTypeVoiceCall:
 		return true
 	default:
 		return false
@@ -18292,8 +18310,14 @@ type SendInboxMessageJSONBody struct {
 	// Use `buttons` / `quickReplies` for simple button replies
 	// (WhatsApp's `interactive.type: "button"`) — the abstraction caps at
 	// 3 buttons and handles the auto-conversion for you. Use this field
-	// only for `list`, `cta_url`, `flow`, or `location_request_message`
-	// messages.
+	// only for `list`, `cta_url`, `flow`, `location_request_message`, or
+	// `voice_call` messages.
+	//
+	// For `voice_call`, the message renders WhatsApp's native call
+	// button; tapping it starts a voice call to your business number.
+	// Requires WhatsApp Business Calling to be enabled on the sending
+	// number. The optional `parameters.payload` string is echoed back on
+	// the `calls` webhook (as `cta_payload`) for attribution.
 	//
 	// For `location_request_message`, `action` may be omitted (we default
 	// it to `{ "name": "send_location" }`). WhatsApp renders a localized
@@ -18537,10 +18561,30 @@ type SendInboxMessageJSONBodyInteractiveAction1Name string
 
 // SendInboxMessageJSONBodyInteractiveAction2 defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyInteractiveAction2 struct {
-	Name       SendInboxMessageJSONBodyInteractiveAction2Name `json:"name"`
+	Name SendInboxMessageJSONBodyInteractiveAction2Name `json:"name"`
+
+	// Parameters All optional.
+	Parameters *struct {
+		// DisplayText Button label. Defaults to "Call Now".
+		DisplayText *string `json:"display_text,omitempty"`
+
+		// Payload Arbitrary string echoed back as `cta_payload` on the `calls` webhook (connect/terminate) for attribution.
+		Payload *string `json:"payload,omitempty"`
+
+		// TtlMinutes How long the button stays tappable. Defaults to 10080 (7 days).
+		TtlMinutes *int `json:"ttl_minutes,omitempty"`
+	} `json:"parameters,omitempty"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction2Name defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction2Name string
+
+// SendInboxMessageJSONBodyInteractiveAction3 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3 struct {
+	Name       SendInboxMessageJSONBodyInteractiveAction3Name `json:"name"`
 	Parameters struct {
 		// FlowAction `navigate` sends the user to `flow_action_payload.screen`; `data_exchange` posts data to your Flow endpoint.
-		FlowAction SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction `json:"flow_action"`
+		FlowAction SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction `json:"flow_action"`
 
 		// FlowActionPayload Required when flow_action is `navigate`.
 		FlowActionPayload *struct {
@@ -18558,35 +18602,35 @@ type SendInboxMessageJSONBodyInteractiveAction2 struct {
 		FlowId string `json:"flow_id"`
 
 		// FlowMessageVersion Defaults to "3" when omitted.
-		FlowMessageVersion *SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion `json:"flow_message_version,omitempty"`
+		FlowMessageVersion *SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion `json:"flow_message_version,omitempty"`
 
 		// FlowToken Opaque token you choose to correlate Flow responses with your own state (max 200 chars).
 		FlowToken string `json:"flow_token"`
 
 		// Mode Set to `draft` to test an unpublished Flow.
-		Mode *SendInboxMessageJSONBodyInteractiveAction2ParametersMode `json:"mode,omitempty"`
+		Mode *SendInboxMessageJSONBodyInteractiveAction3ParametersMode `json:"mode,omitempty"`
 	} `json:"parameters"`
-}
-
-// SendInboxMessageJSONBodyInteractiveAction2Name defines parameters for SendInboxMessage.
-type SendInboxMessageJSONBodyInteractiveAction2Name string
-
-// SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction defines parameters for SendInboxMessage.
-type SendInboxMessageJSONBodyInteractiveAction2ParametersFlowAction string
-
-// SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion defines parameters for SendInboxMessage.
-type SendInboxMessageJSONBodyInteractiveAction2ParametersFlowMessageVersion string
-
-// SendInboxMessageJSONBodyInteractiveAction2ParametersMode defines parameters for SendInboxMessage.
-type SendInboxMessageJSONBodyInteractiveAction2ParametersMode string
-
-// SendInboxMessageJSONBodyInteractiveAction3 defines parameters for SendInboxMessage.
-type SendInboxMessageJSONBodyInteractiveAction3 struct {
-	Name SendInboxMessageJSONBodyInteractiveAction3Name `json:"name"`
 }
 
 // SendInboxMessageJSONBodyInteractiveAction3Name defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBodyInteractiveAction3Name string
+
+// SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3ParametersFlowAction string
+
+// SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3ParametersFlowMessageVersion string
+
+// SendInboxMessageJSONBodyInteractiveAction3ParametersMode defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction3ParametersMode string
+
+// SendInboxMessageJSONBodyInteractiveAction4 defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction4 struct {
+	Name SendInboxMessageJSONBodyInteractiveAction4Name `json:"name"`
+}
+
+// SendInboxMessageJSONBodyInteractiveAction4Name defines parameters for SendInboxMessage.
+type SendInboxMessageJSONBodyInteractiveAction4Name string
 
 // SendInboxMessageJSONBody_Interactive_Action defines parameters for SendInboxMessage.
 type SendInboxMessageJSONBody_Interactive_Action struct {
@@ -23083,6 +23127,32 @@ func (t *SendInboxMessageJSONBody_Interactive_Action) FromSendInboxMessageJSONBo
 
 // MergeSendInboxMessageJSONBodyInteractiveAction3 performs a merge with any union data inside the SendInboxMessageJSONBody_Interactive_Action, using the provided SendInboxMessageJSONBodyInteractiveAction3
 func (t *SendInboxMessageJSONBody_Interactive_Action) MergeSendInboxMessageJSONBodyInteractiveAction3(v SendInboxMessageJSONBodyInteractiveAction3) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSendInboxMessageJSONBodyInteractiveAction4 returns the union data inside the SendInboxMessageJSONBody_Interactive_Action as a SendInboxMessageJSONBodyInteractiveAction4
+func (t SendInboxMessageJSONBody_Interactive_Action) AsSendInboxMessageJSONBodyInteractiveAction4() (SendInboxMessageJSONBodyInteractiveAction4, error) {
+	var body SendInboxMessageJSONBodyInteractiveAction4
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSendInboxMessageJSONBodyInteractiveAction4 overwrites any union data inside the SendInboxMessageJSONBody_Interactive_Action as the provided SendInboxMessageJSONBodyInteractiveAction4
+func (t *SendInboxMessageJSONBody_Interactive_Action) FromSendInboxMessageJSONBodyInteractiveAction4(v SendInboxMessageJSONBodyInteractiveAction4) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeSendInboxMessageJSONBodyInteractiveAction4 performs a merge with any union data inside the SendInboxMessageJSONBody_Interactive_Action, using the provided SendInboxMessageJSONBodyInteractiveAction4
+func (t *SendInboxMessageJSONBody_Interactive_Action) MergeSendInboxMessageJSONBodyInteractiveAction4(v SendInboxMessageJSONBodyInteractiveAction4) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -69682,6 +69752,8 @@ type GetWhatsAppCallingConfigResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
+		// CallDeepLink Public calling deep link (https://wa.me/call/<number>). Tapping it on a phone starts a WhatsApp voice call to this number. Embed it on websites, emails, or QR codes. Null while calling is disabled; not supported by WhatsApp desktop clients.
+		CallDeepLink      *string   `json:"callDeepLink,omitempty"`
 		CallIconCountries *[]string `json:"callIconCountries,omitempty"`
 		CallingEnabled    *bool     `json:"callingEnabled,omitempty"`
 
@@ -92642,6 +92714,8 @@ func ParseGetWhatsAppCallingConfigResponse(rsp *http.Response) (*GetWhatsAppCall
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
+			// CallDeepLink Public calling deep link (https://wa.me/call/<number>). Tapping it on a phone starts a WhatsApp voice call to this number. Embed it on websites, emails, or QR codes. Null while calling is disabled; not supported by WhatsApp desktop clients.
+			CallDeepLink      *string   `json:"callDeepLink,omitempty"`
 			CallIconCountries *[]string `json:"callIconCountries,omitempty"`
 			CallingEnabled    *bool     `json:"callingEnabled,omitempty"`
 
