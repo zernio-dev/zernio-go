@@ -259,7 +259,7 @@ func main() {
 | `client.ListFormLeadsWithResponse()` | List leads for a single form |
 | `client.ListLeadFormsWithResponse()` | List Lead Gen (Instant) forms |
 | `client.ListLeadsWithResponse()` | List submitted leads (cross-form CRM view) |
-| `client.CreateConversionDestinationWithResponse()` | Create a conversion destination (LinkedIn) |
+| `client.CreateConversionDestinationWithResponse()` | Create a conversion destination (LinkedIn, Google Ads) |
 | `client.CreateCtwaAdWithResponse()` | Create Click-to-WhatsApp ad(s) |
 | `client.CreateLeadFormWithResponse()` | Create a Lead Gen (Instant) form |
 | `client.CreateStandaloneAdWithResponse()` | Create standalone ad |

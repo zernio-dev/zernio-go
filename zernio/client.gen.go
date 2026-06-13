@@ -2379,6 +2379,24 @@ func (e CreateConversionDestinationJSONBodyAutoAssociationType) Valid() bool {
 	}
 }
 
+// Defines values for CreateConversionDestinationJSONBodyCountingType.
+const (
+	MANYPERCLICK CreateConversionDestinationJSONBodyCountingType = "MANY_PER_CLICK"
+	ONEPERCLICK  CreateConversionDestinationJSONBodyCountingType = "ONE_PER_CLICK"
+)
+
+// Valid indicates whether the value is a known member of the CreateConversionDestinationJSONBodyCountingType enum.
+func (e CreateConversionDestinationJSONBodyCountingType) Valid() bool {
+	switch e {
+	case MANYPERCLICK:
+		return true
+	case ONEPERCLICK:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateConversionDestinationJSONBodyPostClickAttributionWindowSize.
 const (
 	CreateConversionDestinationJSONBodyPostClickAttributionWindowSizeN1   CreateConversionDestinationJSONBodyPostClickAttributionWindowSize = 1
@@ -2456,12 +2474,15 @@ func (e CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize) Val
 
 // Defines values for CreateConversionDestination201JSONResponseBodyPlatform.
 const (
+	CreateConversionDestination201JSONResponseBodyPlatformGoogleads   CreateConversionDestination201JSONResponseBodyPlatform = "googleads"
 	CreateConversionDestination201JSONResponseBodyPlatformLinkedinads CreateConversionDestination201JSONResponseBodyPlatform = "linkedinads"
 )
 
 // Valid indicates whether the value is a known member of the CreateConversionDestination201JSONResponseBodyPlatform enum.
 func (e CreateConversionDestination201JSONResponseBodyPlatform) Valid() bool {
 	switch e {
+	case CreateConversionDestination201JSONResponseBodyPlatformGoogleads:
+		return true
 	case CreateConversionDestination201JSONResponseBodyPlatformLinkedinads:
 		return true
 	default:
@@ -13745,12 +13766,16 @@ type ListConversionDestinations200JSONResponseBodyPlatform string
 
 // CreateConversionDestinationJSONBody defines parameters for CreateConversionDestination.
 type CreateConversionDestinationJSONBody struct {
-	// AdAccountId Sponsored ad account ID. Numeric (e.g. "5123456") or
-	// full `urn:li:sponsoredAccount:{id}` URN.
-	AdAccountId     string                                              `json:"adAccountId"`
+	// AdAccountId Ad account ID. For LinkedIn: numeric (e.g. "5123456") or
+	// full `urn:li:sponsoredAccount:{id}` URN. For Google: numeric
+	// customer ID (e.g. "1234567890") or `customers/{id}` form.
+	AdAccountId string `json:"adAccountId"`
+
+	// AttributionType LinkedIn only.
 	AttributionType *CreateConversionDestinationJSONBodyAttributionType `json:"attributionType,omitempty"`
 
-	// AutoAssociationType Controls campaign association at rule-creation time:
+	// AutoAssociationType LinkedIn only. Controls campaign association at rule-creation
+	// time:
 	// - ALL_CAMPAIGNS: associate the rule with every active,
 	//   paused, and draft campaign in the ad account
 	// - OBJECTIVE_BASED: associate only campaigns whose
@@ -13761,21 +13786,38 @@ type CreateConversionDestinationJSONBody struct {
 	// campaigns added after the rule still need explicit
 	// association.
 	AutoAssociationType *CreateConversionDestinationJSONBodyAutoAssociationType `json:"autoAssociationType,omitempty"`
-	Name                string                                                  `json:"name"`
 
-	// PostClickAttributionWindowSize Default 30. 365 only allowed for LEAD, PURCHASE,
-	// ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION rule
-	// types — the API rejects other combinations locally.
+	// CountingType Google Ads only. Whether to count multiple conversions from
+	// the same click (MANY_PER_CLICK) or at most one
+	// (ONE_PER_CLICK). Defaults to MANY_PER_CLICK if omitted.
+	CountingType *CreateConversionDestinationJSONBodyCountingType `json:"countingType,omitempty"`
+	Name         string                                           `json:"name"`
+
+	// PostClickAttributionWindowSize LinkedIn only. Default 30. 365 only allowed for LEAD,
+	// PURCHASE, ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION
+	// rule types; the API rejects other combinations locally.
 	PostClickAttributionWindowSize *CreateConversionDestinationJSONBodyPostClickAttributionWindowSize `json:"postClickAttributionWindowSize,omitempty"`
 
-	// Type Either a unified standard event name (e.g. "Purchase",
-	// "Lead", "AddToCart") or a LinkedIn rule type enum value
-	// (e.g. "PURCHASE", "QUALIFIED_LEAD"). The API maps
-	// standard names to LinkedIn enum values automatically.
+	// PrimaryForGoal Google Ads only. When true, the conversion action is marked
+	// as primary and immediately influences Smart Bidding. Defaults
+	// to false (secondary, record-only) to avoid unintentionally
+	// steering the customer's campaigns on creation.
+	PrimaryForGoal *bool `json:"primaryForGoal,omitempty"`
+
+	// Type Conversion type. For LinkedIn: a unified standard event name
+	// (e.g. "Purchase", "Lead", "AddToCart") or a LinkedIn rule
+	// type enum (e.g. "PURCHASE", "QUALIFIED_LEAD"). For Google:
+	// a unified standard event name (Purchase, Subscribe,
+	// CompleteRegistration, Lead, Schedule) or a Google
+	// ConversionActionCategory enum value directly (e.g.
+	// "PURCHASE", "SUBSCRIBE_PAID", "SIGNUP", "IMPORTED_LEAD",
+	// "BOOK_APPOINTMENT"). Unknown values pass through to the
+	// platform.
 	Type string `json:"type"`
 
-	// Value Static conversion value. Used when `valueType=FIXED`.
-	// The currency should match the ad account's currency.
+	// Value LinkedIn only. Static conversion value. Used when
+	// `valueType=FIXED`. The currency should match the ad
+	// account's currency.
 	Value *struct {
 		// Amount Decimal string (e.g. "49.99").
 		Amount string `json:"amount"`
@@ -13784,13 +13826,13 @@ type CreateConversionDestinationJSONBody struct {
 		CurrencyCode string `json:"currencyCode"`
 	} `json:"value,omitempty"`
 
-	// ValueType DYNAMIC (default) uses the per-event `value` from
-	// `sendConversions`. FIXED uses the rule's `value` field.
+	// ValueType LinkedIn only. DYNAMIC (default) uses the per-event `value`
+	// from `sendConversions`. FIXED uses the rule's `value` field.
 	// NO_VALUE drops monetary value entirely.
 	ValueType *CreateConversionDestinationJSONBodyValueType `json:"valueType,omitempty"`
 
-	// ViewThroughAttributionWindowSize Default 7. Same 365-day-window type restriction applies
-	// as `postClickAttributionWindowSize`.
+	// ViewThroughAttributionWindowSize LinkedIn only. Default 7. Same 365-day-window type
+	// restriction applies as `postClickAttributionWindowSize`.
 	ViewThroughAttributionWindowSize *CreateConversionDestinationJSONBodyViewThroughAttributionWindowSize `json:"viewThroughAttributionWindowSize,omitempty"`
 }
 
@@ -13799,6 +13841,9 @@ type CreateConversionDestinationJSONBodyAttributionType string
 
 // CreateConversionDestinationJSONBodyAutoAssociationType defines parameters for CreateConversionDestination.
 type CreateConversionDestinationJSONBodyAutoAssociationType string
+
+// CreateConversionDestinationJSONBodyCountingType defines parameters for CreateConversionDestination.
+type CreateConversionDestinationJSONBodyCountingType string
 
 // CreateConversionDestinationJSONBodyPostClickAttributionWindowSize defines parameters for CreateConversionDestination.
 type CreateConversionDestinationJSONBodyPostClickAttributionWindowSize int
