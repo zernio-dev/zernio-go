@@ -2324,6 +2324,7 @@ const (
 	ListConversionDestinations200JSONResponseBodyPlatformGoogleads   ListConversionDestinations200JSONResponseBodyPlatform = "googleads"
 	ListConversionDestinations200JSONResponseBodyPlatformLinkedinads ListConversionDestinations200JSONResponseBodyPlatform = "linkedinads"
 	ListConversionDestinations200JSONResponseBodyPlatformMetaads     ListConversionDestinations200JSONResponseBodyPlatform = "metaads"
+	ListConversionDestinations200JSONResponseBodyPlatformTiktokads   ListConversionDestinations200JSONResponseBodyPlatform = "tiktokads"
 )
 
 // Valid indicates whether the value is a known member of the ListConversionDestinations200JSONResponseBodyPlatform enum.
@@ -2334,6 +2335,8 @@ func (e ListConversionDestinations200JSONResponseBodyPlatform) Valid() bool {
 	case ListConversionDestinations200JSONResponseBodyPlatformLinkedinads:
 		return true
 	case ListConversionDestinations200JSONResponseBodyPlatformMetaads:
+		return true
+	case ListConversionDestinations200JSONResponseBodyPlatformTiktokads:
 		return true
 	default:
 		return false
@@ -4376,6 +4379,7 @@ const (
 	SendConversions200JSONResponseBodyPlatformGoogleads   SendConversions200JSONResponseBodyPlatform = "googleads"
 	SendConversions200JSONResponseBodyPlatformLinkedinads SendConversions200JSONResponseBodyPlatform = "linkedinads"
 	SendConversions200JSONResponseBodyPlatformMetaads     SendConversions200JSONResponseBodyPlatform = "metaads"
+	SendConversions200JSONResponseBodyPlatformTiktokads   SendConversions200JSONResponseBodyPlatform = "tiktokads"
 )
 
 // Valid indicates whether the value is a known member of the SendConversions200JSONResponseBodyPlatform enum.
@@ -4386,6 +4390,8 @@ func (e SendConversions200JSONResponseBodyPlatform) Valid() bool {
 	case SendConversions200JSONResponseBodyPlatformLinkedinads:
 		return true
 	case SendConversions200JSONResponseBodyPlatformMetaads:
+		return true
+	case SendConversions200JSONResponseBodyPlatformTiktokads:
 		return true
 	default:
 		return false
@@ -15124,7 +15130,7 @@ type ListAdCatalogProductSetsParams struct {
 
 // SendConversionsJSONBody defines parameters for SendConversions.
 type SendConversionsJSONBody struct {
-	// AccountId SocialAccount ID (metaads, googleads, or linkedinads).
+	// AccountId SocialAccount ID (metaads, googleads, linkedinads, or tiktokads).
 	AccountId string `json:"accountId"`
 
 	// Consent Batch-level user consent. Required by Google for EEA/UK
@@ -16244,7 +16250,10 @@ type GetAdTreeParams struct {
 	// ProfileId Profile ID
 	ProfileId *string `form:"profileId,omitempty" json:"profileId,omitempty"`
 
-	// FromDate Start of metrics date range (YYYY-MM-DD). Defaults to 90 days ago.
+	// CampaignId Restrict the tree to a single campaign by its platform campaign id (the id the platform assigns, e.g. Meta's numeric campaign id). Filters the campaign set itself, so it works regardless of account size and pagination — pass this when you already hold a campaign id instead of paging the tree to find it. Mirrors the `campaignId` filter on GET /v1/ads.
+	CampaignId *string `form:"campaignId,omitempty" json:"campaignId,omitempty"`
+
+	// FromDate Start of the METRICS date range (YYYY-MM-DD). Affects only the spend/impression numbers overlaid on each node, NOT which campaigns are returned. Defaults to 90 days ago.
 	FromDate *openapi_types.Date `form:"fromDate,omitempty" json:"fromDate,omitempty"`
 
 	// ToDate End of metrics date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
@@ -39178,6 +39187,18 @@ func NewGetAdTreeRequest(server string, params *GetAdTreeParams) (*http.Request,
 		if params.ProfileId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "profileId", *params.ProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.CampaignId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "campaignId", *params.CampaignId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
