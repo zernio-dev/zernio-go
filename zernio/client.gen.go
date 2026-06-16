@@ -12015,6 +12015,9 @@ type LinkedInPlatformData struct {
 
 	// OrganizationUrn Target LinkedIn Organization URN (e.g. "urn:li:organization:123456789"). If omitted, uses the default org. Use GET /v1/accounts/{id}/linkedin-organizations to list orgs.
 	OrganizationUrn *string `json:"organizationUrn,omitempty"`
+
+	// ReshareUrl LinkedIn post link to repost (use the post's "Copy link to post" action), or a urn:li:share / urn:li:ugcPost / urn:li:groupPost URN. The published post becomes a quote-reshare: your content is shown as the commentary and the original post is embedded underneath (LinkedIn's "repost with your thoughts"). Mutually exclusive with media. Works on personal profiles and organization pages.
+	ReshareUrl *string `json:"reshareUrl,omitempty"`
 }
 
 // MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Zernio auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
