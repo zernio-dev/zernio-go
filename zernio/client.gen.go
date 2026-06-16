@@ -10474,7 +10474,7 @@ type AccountWithFollowerStats struct {
 		// TweetCount Total tweets (X/Twitter)
 		TweetCount *float32 `json:"tweetCount,omitempty"`
 
-		// VideoCount Total videos (YouTube
+		// VideoCount Total videos (YouTube, TikTok)
 		VideoCount *float32 `json:"videoCount,omitempty"`
 	} `json:"accountStats,omitempty"`
 
@@ -11434,13 +11434,13 @@ type DiscordPlatformData struct {
 			// Name Field name (max 256 chars)
 			Name string `json:"name"`
 
-			// Value Field value (max 1
+			// Value Field value (max 1,024 chars)
 			Value string `json:"value"`
 		} `json:"fields,omitempty"`
 		Footer *struct {
 			IconUrl *string `json:"icon_url,omitempty"`
 
-			// Text Footer text (max 2
+			// Text Footer text (max 2,048 chars)
 			Text *string `json:"text,omitempty"`
 		} `json:"footer,omitempty"`
 		Image *struct {
@@ -12480,13 +12480,13 @@ type RedditPost struct {
 	Subreddit *string `json:"subreddit,omitempty"`
 	Title     *string `json:"title,omitempty"`
 
-	// Url Post URL (may be a gallery URL
+	// Url Post URL (may be a gallery URL, external link, or self-post URL)
 	Url *string `json:"url,omitempty"`
 }
 
 // SharedAdAccount An ad account a tracking tag is shared with (Meta `shared_accounts` edge).
 type SharedAdAccount struct {
-	// BusinessId Business Manager id that owns the ad account
+	// BusinessId Business Manager id that owns the ad account, when reported.
 	BusinessId *string `json:"businessId,omitempty"`
 
 	// Id Ad account id, in `act_<digits>` form.
@@ -18444,7 +18444,7 @@ type SendInboxMessageJSONBody struct {
 	ReplyMarkup *struct {
 		// Keyboard Array of rows, each row is an array of buttons
 		Keyboard *[][]struct {
-			// CallbackData Callback data (inline_keyboard only
+			// CallbackData Callback data (inline_keyboard only, max 64 bytes)
 			CallbackData *string `json:"callbackData,omitempty"`
 
 			// Text Button text
@@ -19755,7 +19755,7 @@ type UploadWhatsAppProfilePhotoMultipartBody struct {
 type GetWhatsAppCallPermissionsParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 
-	// To Consumer wa_id (E.164
+	// To Consumer wa_id (E.164, leading + optional)
 	To string `form:"to" json:"to"`
 }
 
@@ -19816,7 +19816,7 @@ type InitiateWhatsAppCallJSONBody struct {
 	ForwardTo      *string `json:"forwardTo,omitempty"`
 	RecordOverride *bool   `json:"recordOverride,omitempty"`
 
-	// To Consumer wa_id (E.164
+	// To Consumer wa_id (E.164, leading + optional)
 	To string `json:"to"`
 }
 
@@ -20247,7 +20247,7 @@ type UploadWhatsAppNumberKycDocumentParams struct {
 
 // ValidateWhatsAppNumberKycAddressJSONBody defines parameters for ValidateWhatsAppNumberKycAddress.
 type ValidateWhatsAppNumberKycAddressJSONBody struct {
-	// AdministrativeArea State / province / region. When omitted
+	// AdministrativeArea State / province / region. When omitted, the pre-check is skipped (the final submit still validates).
 	AdministrativeArea *string `json:"administrative_area,omitempty"`
 
 	// Country ISO 3166-1 alpha-2 country code.
@@ -20339,7 +20339,7 @@ type EnableWhatsAppCallingJSONBody struct {
 	ForwardTo        string `json:"forwardTo"`
 	RecordingEnabled *bool  `json:"recordingEnabled,omitempty"`
 
-	// SipAuthPassword Stored encrypted
+	// SipAuthPassword Stored encrypted, never returned by any endpoint.
 	SipAuthPassword *string `json:"sipAuthPassword,omitempty"`
 	SipAuthUsername *string `json:"sipAuthUsername,omitempty"`
 }
@@ -20653,7 +20653,7 @@ type TriggerWorkflowJSONBody struct {
 	// ConversationId An existing conversation to run in (required for non-WhatsApp workflows)
 	ConversationId *string `json:"conversationId,omitempty"`
 
-	// Text Simulated inbound text
+	// Text Simulated inbound text, seeded as the run's lastMessage variable
 	Text *string `json:"text,omitempty"`
 
 	// To Recipient phone (WhatsApp only)
@@ -58024,7 +58024,7 @@ type BatchGetGoogleBusinessReviewsResponse struct {
 			// Name Full review resource name (accounts/*/locations/*/reviews/*)
 			Name *string `json:"name,omitempty"`
 
-			// Review The review object (reviewId
+			// Review The review object (reviewId, starRating, comment, reviewer, createTime, updateTime, reviewReply)
 			Review *map[string]interface{} `json:"review,omitempty"`
 		} `json:"locationReviews,omitempty"`
 		NextPageToken *string `json:"nextPageToken,omitempty"`
@@ -58247,7 +58247,7 @@ type GetGoogleBusinessVerificationsResponse struct {
 			// HasBusinessAuthority True when the authenticated user has owner/manager authority over the listing.
 			HasBusinessAuthority *bool `json:"hasBusinessAuthority,omitempty"`
 
-			// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews
+			// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews, edits, etc.).
 			HasVoiceOfMerchant *bool `json:"hasVoiceOfMerchant,omitempty"`
 
 			// Verify Present when verification is the path to Voice of Merchant.
@@ -64581,7 +64581,7 @@ type ConfigureTikTokAdsBrandIdentityResponse struct {
 	JSON200      *struct {
 		DisplayName *string `json:"displayName,omitempty"`
 
-		// IdentityId The TikTok-assigned identity_id
+		// IdentityId The TikTok-assigned identity_id, cached on the account.
 		IdentityId *string `json:"identityId,omitempty"`
 		Success    *bool   `json:"success,omitempty"`
 	}
@@ -66085,10 +66085,10 @@ type GetInboxPostCommentsResponse struct {
 		Comments *[]struct {
 			CanDelete *bool `json:"canDelete,omitempty"`
 
-			// CanHide Whether this comment can be hidden (Facebook
+			// CanHide Whether this comment can be hidden (Facebook, Instagram, Threads)
 			CanHide *bool `json:"canHide,omitempty"`
 
-			// CanLike Whether this comment can be liked (Facebook
+			// CanLike Whether this comment can be liked (Facebook, Twitter/X, Bluesky, Reddit)
 			CanLike  *bool `json:"canLike,omitempty"`
 			CanReply *bool `json:"canReply,omitempty"`
 
@@ -66163,7 +66163,7 @@ type GetInboxPostCommentsResponse struct {
 		// without an additional request. Absent for non-Reddit platforms and when the upstream
 		// response is missing the post listing (deleted post, malformed response).
 		Post *struct {
-			// Author Reddit username
+			// Author Reddit username, without the u/ prefix
 			Author *string `json:"author,omitempty"`
 
 			// CreatedUtc Unix timestamp in seconds
@@ -66193,11 +66193,11 @@ type GetInboxPostCommentsResponse struct {
 			Selftext *string `json:"selftext,omitempty"`
 			Stickied *bool   `json:"stickied,omitempty"`
 
-			// Subreddit Subreddit name
+			// Subreddit Subreddit name, without the r/ prefix
 			Subreddit *string `json:"subreddit,omitempty"`
 			Title     *string `json:"title,omitempty"`
 
-			// Url For link posts
+			// Url For link posts, the external URL; for self-posts, the Reddit permalink
 			Url *string `json:"url,omitempty"`
 		} `json:"post,omitempty"`
 		Status *string `json:"status,omitempty"`
@@ -66786,7 +66786,7 @@ type GetInboxConversationMessagesResponse struct {
 			Reactions *[]struct {
 				Emoji *string `json:"emoji,omitempty"`
 
-				// FromMe true if the connected account reacted
+				// FromMe true if the connected account reacted, false if the contact did.
 				FromMe    *bool      `json:"fromMe,omitempty"`
 				ReactedAt *time.Time `json:"reactedAt,omitempty"`
 			} `json:"reactions,omitempty"`
@@ -70828,7 +70828,7 @@ type GetWhatsAppPhoneNumbersResponse struct {
 			ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
 			ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
 
-			// RegistrantName For regulated numbers
+			// RegistrantName For regulated numbers, who it's registered for (company or person) — set from the submitted KYC.
 			RegistrantName *string `json:"registrantName,omitempty"`
 
 			// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
@@ -72765,7 +72765,7 @@ type ListWorkflowVersionsResponse struct {
 			Description    *string `json:"description,omitempty"`
 			Name           *string `json:"name,omitempty"`
 
-			// RestoredFromVersion When non-null
+			// RestoredFromVersion When non-null, this snapshot was created by restoring that version
 			RestoredFromVersion *int `json:"restoredFromVersion,omitempty"`
 
 			// Version Monotonically increasing version number
@@ -79632,7 +79632,7 @@ func ParseBatchGetGoogleBusinessReviewsResponse(rsp *http.Response) (*BatchGetGo
 				// Name Full review resource name (accounts/*/locations/*/reviews/*)
 				Name *string `json:"name,omitempty"`
 
-				// Review The review object (reviewId
+				// Review The review object (reviewId, starRating, comment, reviewer, createTime, updateTime, reviewReply)
 				Review *map[string]interface{} `json:"review,omitempty"`
 			} `json:"locationReviews,omitempty"`
 			NextPageToken *string `json:"nextPageToken,omitempty"`
@@ -79913,7 +79913,7 @@ func ParseGetGoogleBusinessVerificationsResponse(rsp *http.Response) (*GetGoogle
 				// HasBusinessAuthority True when the authenticated user has owner/manager authority over the listing.
 				HasBusinessAuthority *bool `json:"hasBusinessAuthority,omitempty"`
 
-				// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews
+				// HasVoiceOfMerchant True when the listing is verified and published (eligible to surface reviews, edits, etc.).
 				HasVoiceOfMerchant *bool `json:"hasVoiceOfMerchant,omitempty"`
 
 				// Verify Present when verification is the path to Voice of Merchant.
@@ -87093,7 +87093,7 @@ func ParseConfigureTikTokAdsBrandIdentityResponse(rsp *http.Response) (*Configur
 		var dest struct {
 			DisplayName *string `json:"displayName,omitempty"`
 
-			// IdentityId The TikTok-assigned identity_id
+			// IdentityId The TikTok-assigned identity_id, cached on the account.
 			IdentityId *string `json:"identityId,omitempty"`
 			Success    *bool   `json:"success,omitempty"`
 		}
@@ -88721,10 +88721,10 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 			Comments *[]struct {
 				CanDelete *bool `json:"canDelete,omitempty"`
 
-				// CanHide Whether this comment can be hidden (Facebook
+				// CanHide Whether this comment can be hidden (Facebook, Instagram, Threads)
 				CanHide *bool `json:"canHide,omitempty"`
 
-				// CanLike Whether this comment can be liked (Facebook
+				// CanLike Whether this comment can be liked (Facebook, Twitter/X, Bluesky, Reddit)
 				CanLike  *bool `json:"canLike,omitempty"`
 				CanReply *bool `json:"canReply,omitempty"`
 
@@ -88799,7 +88799,7 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 			// without an additional request. Absent for non-Reddit platforms and when the upstream
 			// response is missing the post listing (deleted post, malformed response).
 			Post *struct {
-				// Author Reddit username
+				// Author Reddit username, without the u/ prefix
 				Author *string `json:"author,omitempty"`
 
 				// CreatedUtc Unix timestamp in seconds
@@ -88829,11 +88829,11 @@ func ParseGetInboxPostCommentsResponse(rsp *http.Response) (*GetInboxPostComment
 				Selftext *string `json:"selftext,omitempty"`
 				Stickied *bool   `json:"stickied,omitempty"`
 
-				// Subreddit Subreddit name
+				// Subreddit Subreddit name, without the r/ prefix
 				Subreddit *string `json:"subreddit,omitempty"`
 				Title     *string `json:"title,omitempty"`
 
-				// Url For link posts
+				// Url For link posts, the external URL; for self-posts, the Reddit permalink
 				Url *string `json:"url,omitempty"`
 			} `json:"post,omitempty"`
 			Status *string `json:"status,omitempty"`
@@ -89462,7 +89462,7 @@ func ParseGetInboxConversationMessagesResponse(rsp *http.Response) (*GetInboxCon
 				Reactions *[]struct {
 					Emoji *string `json:"emoji,omitempty"`
 
-					// FromMe true if the connected account reacted
+					// FromMe true if the connected account reacted, false if the contact did.
 					FromMe    *bool      `json:"fromMe,omitempty"`
 					ReactedAt *time.Time `json:"reactedAt,omitempty"`
 				} `json:"reactions,omitempty"`
@@ -93854,7 +93854,7 @@ func ParseGetWhatsAppPhoneNumbersResponse(rsp *http.Response) (*GetWhatsAppPhone
 				ProfileId             *map[string]interface{} `json:"profileId,omitempty"`
 				ProvisionedAt         *time.Time              `json:"provisionedAt,omitempty"`
 
-				// RegistrantName For regulated numbers
+				// RegistrantName For regulated numbers, who it's registered for (company or person) — set from the submitted KYC.
 				RegistrantName *string `json:"registrantName,omitempty"`
 
 				// RegulatoryDeclineReason Reviewer rejection reason when status is regulatory_declined.
@@ -95987,7 +95987,7 @@ func ParseListWorkflowVersionsResponse(rsp *http.Response) (*ListWorkflowVersion
 				Description    *string `json:"description,omitempty"`
 				Name           *string `json:"name,omitempty"`
 
-				// RestoredFromVersion When non-null
+				// RestoredFromVersion When non-null, this snapshot was created by restoring that version
 				RestoredFromVersion *int `json:"restoredFromVersion,omitempty"`
 
 				// Version Monotonically increasing version number
