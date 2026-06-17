@@ -4280,19 +4280,19 @@ func (e DuplicateAdCampaignJSONBodyRenameStrategy) Valid() bool {
 
 // Defines values for DuplicateAdCampaignJSONBodyStatusOption.
 const (
-	ACTIVE              DuplicateAdCampaignJSONBodyStatusOption = "ACTIVE"
-	INHERITEDFROMSOURCE DuplicateAdCampaignJSONBodyStatusOption = "INHERITED_FROM_SOURCE"
-	PAUSED              DuplicateAdCampaignJSONBodyStatusOption = "PAUSED"
+	DuplicateAdCampaignJSONBodyStatusOptionACTIVE              DuplicateAdCampaignJSONBodyStatusOption = "ACTIVE"
+	DuplicateAdCampaignJSONBodyStatusOptionINHERITEDFROMSOURCE DuplicateAdCampaignJSONBodyStatusOption = "INHERITED_FROM_SOURCE"
+	DuplicateAdCampaignJSONBodyStatusOptionPAUSED              DuplicateAdCampaignJSONBodyStatusOption = "PAUSED"
 )
 
 // Valid indicates whether the value is a known member of the DuplicateAdCampaignJSONBodyStatusOption enum.
 func (e DuplicateAdCampaignJSONBodyStatusOption) Valid() bool {
 	switch e {
-	case ACTIVE:
+	case DuplicateAdCampaignJSONBodyStatusOptionACTIVE:
 		return true
-	case INHERITEDFROMSOURCE:
+	case DuplicateAdCampaignJSONBodyStatusOptionINHERITEDFROMSOURCE:
 		return true
-	case PAUSED:
+	case DuplicateAdCampaignJSONBodyStatusOptionPAUSED:
 		return true
 	default:
 		return false
@@ -5319,6 +5319,24 @@ func (e CreateStandaloneAdJSONBodySpecialAdCategories) Valid() bool {
 	case CreateStandaloneAdJSONBodySpecialAdCategoriesHOUSING:
 		return true
 	case CreateStandaloneAdJSONBodySpecialAdCategoriesISSUESELECTIONSPOLITICS:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateStandaloneAdJSONBodyStatus.
+const (
+	CreateStandaloneAdJSONBodyStatusACTIVE CreateStandaloneAdJSONBodyStatus = "ACTIVE"
+	CreateStandaloneAdJSONBodyStatusPAUSED CreateStandaloneAdJSONBodyStatus = "PAUSED"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyStatus enum.
+func (e CreateStandaloneAdJSONBodyStatus) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyStatusACTIVE:
+		return true
+	case CreateStandaloneAdJSONBodyStatusPAUSED:
 		return true
 	default:
 		return false
@@ -15524,6 +15542,26 @@ type CreateStandaloneAdJSONBody struct {
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
+	// ExistingCampaignId Meta only. Add the new ad set under this EXISTING campaign
+	// instead of creating a new one (multi-ad-set audience testing).
+	// The new ad set's budget is matched to the campaign's mode
+	// automatically: for a CBO campaign (campaign-level budget) omit
+	// `budgetAmount`/`budgetType` — the campaign owns the budget; for
+	// an ABO campaign pass them (they go on the new ad set). On
+	// failure only the new ad set is cleaned up; the existing campaign
+	// is left untouched and is never (re)activated. Mutually exclusive
+	// with `adSetId` and `creatives[]`.
+	ExistingCampaignId *string `json:"existingCampaignId,omitempty"`
+
+	// ExistingCreativeId Meta only. Reuse an EXISTING ad creative by id instead of
+	// building a new one from the copy/media fields (which are then
+	// ignored). Combine with `existingCampaignId` to build a
+	// multi-ad-set campaign that shares one creative. Mutually
+	// exclusive with `creatives[]`, `dynamicCreative`, and
+	// `placementAssets`. The creative id used is returned as
+	// `creativeId` on the create response.
+	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
+
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
 	Gender *CreateStandaloneAdJSONBodyGender `json:"gender,omitempty"`
 
@@ -15781,6 +15819,9 @@ type CreateStandaloneAdJSONBody struct {
 	// available on `POST /v1/ads/boost`.)
 	StartDate *time.Time `json:"startDate,omitempty"`
 
+	// Status Meta only. Publish state of the created ad set + ad. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused and skips activation, so you can review before they spend.
+	Status *CreateStandaloneAdJSONBodyStatus `json:"status,omitempty"`
+
 	// Tracking Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied on the legacy single-creative shape, every ad of the multi-creative shape, and the attach shape. NOTE: tracking lives on the AD object and is not inherited from the ad set, so pass it on EVERY attach call that should carry the pixel.
 	Tracking *struct {
 		// PixelId Meta Pixel ID to attach for offsite-conversion measurement.
@@ -15913,6 +15954,9 @@ type CreateStandaloneAdJSONBodyPlacementsWhatsappPositions string
 
 // CreateStandaloneAdJSONBodySpecialAdCategories defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodySpecialAdCategories string
+
+// CreateStandaloneAdJSONBodyStatus defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyStatus string
 
 // CreateStandaloneAd201JSONResponseBody0 defines parameters for CreateStandaloneAd.
 type CreateStandaloneAd201JSONResponseBody0 struct {
