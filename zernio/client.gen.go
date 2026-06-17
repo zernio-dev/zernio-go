@@ -876,6 +876,39 @@ func (e DmButtonType) Valid() bool {
 	}
 }
 
+// Defines values for ErrorResponseType.
+const (
+	ErrorResponseTypeApiError            ErrorResponseType = "api_error"
+	ErrorResponseTypeAuthenticationError ErrorResponseType = "authentication_error"
+	ErrorResponseTypeInvalidRequestError ErrorResponseType = "invalid_request_error"
+	ErrorResponseTypeNotFound            ErrorResponseType = "not_found"
+	ErrorResponseTypePermissionError     ErrorResponseType = "permission_error"
+	ErrorResponseTypePlatformError       ErrorResponseType = "platform_error"
+	ErrorResponseTypeRateLimitError      ErrorResponseType = "rate_limit_error"
+)
+
+// Valid indicates whether the value is a known member of the ErrorResponseType enum.
+func (e ErrorResponseType) Valid() bool {
+	switch e {
+	case ErrorResponseTypeApiError:
+		return true
+	case ErrorResponseTypeAuthenticationError:
+		return true
+	case ErrorResponseTypeInvalidRequestError:
+		return true
+	case ErrorResponseTypeNotFound:
+		return true
+	case ErrorResponseTypePermissionError:
+		return true
+	case ErrorResponseTypePlatformError:
+		return true
+	case ErrorResponseTypeRateLimitError:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for FacebookPlatformDataContentType.
 const (
 	FacebookPlatformDataContentTypeReel  FacebookPlatformDataContentType = "reel"
@@ -9107,19 +9140,19 @@ func (e ListSequenceEnrollments200JSONResponseBodyEnrollmentsStatus) Valid() boo
 
 // Defines values for ValidateMedia200JSONResponseBodyType.
 const (
-	ValidateMedia200JSONResponseBodyTypeImage   ValidateMedia200JSONResponseBodyType = "image"
-	ValidateMedia200JSONResponseBodyTypeUnknown ValidateMedia200JSONResponseBodyType = "unknown"
-	ValidateMedia200JSONResponseBodyTypeVideo   ValidateMedia200JSONResponseBodyType = "video"
+	Image   ValidateMedia200JSONResponseBodyType = "image"
+	Unknown ValidateMedia200JSONResponseBodyType = "unknown"
+	Video   ValidateMedia200JSONResponseBodyType = "video"
 )
 
 // Valid indicates whether the value is a known member of the ValidateMedia200JSONResponseBodyType enum.
 func (e ValidateMedia200JSONResponseBodyType) Valid() bool {
 	switch e {
-	case ValidateMedia200JSONResponseBodyTypeImage:
+	case Image:
 		return true
-	case ValidateMedia200JSONResponseBodyTypeUnknown:
+	case Unknown:
 		return true
-	case ValidateMedia200JSONResponseBodyTypeVideo:
+	case Video:
 		return true
 	default:
 		return false
@@ -11579,11 +11612,38 @@ type DmButton struct {
 // DmButtonType defines model for DmButton.Type.
 type DmButtonType string
 
-// ErrorResponse defines model for ErrorResponse.
+// ErrorResponse Canonical error envelope. `error` is the human-readable message; `type`,
+// `code`, `param`, `platform`, and `platformError` are top-level siblings
+// for programmatic handling. For upstream platform failures (`type:
+// platform_error`), `platformError` carries the provider's raw payload
+// verbatim (for Meta: `error_subcode`, `error_user_title`, `error_user_msg`).
 type ErrorResponse struct {
+	// Code Stable machine-readable error code.
+	Code *string `json:"code,omitempty"`
+
+	// Details Additional structured context (e.g. field-level validation errors).
 	Details *map[string]interface{} `json:"details,omitempty"`
-	Error   *string                 `json:"error,omitempty"`
+
+	// Error Human-readable error message.
+	Error *string `json:"error,omitempty"`
+
+	// Param The request field that caused the error, when applicable.
+	Param *string `json:"param,omitempty"`
+
+	// Platform Upstream platform (e.g. meta, google, tiktok) — present when type is platform_error.
+	Platform *string `json:"platform,omitempty"`
+
+	// PlatformError Raw error payload from the upstream platform, passed through verbatim so
+	// integrators can read provider-specific codes. For Meta this includes
+	// error_subcode, error_user_title, and error_user_msg.
+	PlatformError *map[string]interface{} `json:"platformError,omitempty"`
+
+	// Type Error class for programmatic handling.
+	Type *ErrorResponseType `json:"type,omitempty"`
 }
+
+// ErrorResponseType Error class for programmatic handling.
+type ErrorResponseType string
 
 // FacebookPlatformData Feed posts support up to 10 images (no mixed video+image). Stories require single media (24h, no captions). Reels require single vertical video (9:16, 3-60s). Carousel posts (carouselCards) render a 2-5 card multi-link post, images only, mutually exclusive with story/reel. Geo-restriction is a hard visibility restriction: users outside the specified countries cannot see the post. Not supported for stories.
 type FacebookPlatformData struct {
