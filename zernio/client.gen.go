@@ -4629,6 +4629,24 @@ func (e CreateStandaloneAdJSONBodyCallToAction) Valid() bool {
 	}
 }
 
+// Defines values for CreateStandaloneAdJSONBodyCampaignStatus.
+const (
+	CreateStandaloneAdJSONBodyCampaignStatusACTIVE CreateStandaloneAdJSONBodyCampaignStatus = "ACTIVE"
+	CreateStandaloneAdJSONBodyCampaignStatusPAUSED CreateStandaloneAdJSONBodyCampaignStatus = "PAUSED"
+)
+
+// Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyCampaignStatus enum.
+func (e CreateStandaloneAdJSONBodyCampaignStatus) Valid() bool {
+	switch e {
+	case CreateStandaloneAdJSONBodyCampaignStatusACTIVE:
+		return true
+	case CreateStandaloneAdJSONBodyCampaignStatusPAUSED:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CreateStandaloneAdJSONBodyCampaignType.
 const (
 	CreateStandaloneAdJSONBodyCampaignTypeDisplay CreateStandaloneAdJSONBodyCampaignType = "display"
@@ -5327,16 +5345,16 @@ func (e CreateStandaloneAdJSONBodySpecialAdCategories) Valid() bool {
 
 // Defines values for CreateStandaloneAdJSONBodyStatus.
 const (
-	CreateStandaloneAdJSONBodyStatusACTIVE CreateStandaloneAdJSONBodyStatus = "ACTIVE"
-	CreateStandaloneAdJSONBodyStatusPAUSED CreateStandaloneAdJSONBodyStatus = "PAUSED"
+	ACTIVE CreateStandaloneAdJSONBodyStatus = "ACTIVE"
+	PAUSED CreateStandaloneAdJSONBodyStatus = "PAUSED"
 )
 
 // Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyStatus enum.
 func (e CreateStandaloneAdJSONBodyStatus) Valid() bool {
 	switch e {
-	case CreateStandaloneAdJSONBodyStatusACTIVE:
+	case ACTIVE:
 		return true
-	case CreateStandaloneAdJSONBodyStatusPAUSED:
+	case PAUSED:
 		return true
 	default:
 		return false
@@ -15440,6 +15458,13 @@ type CreateStandaloneAdJSONBody struct {
 	// CampaignName Meta only. Exact campaign name. Overrides the default `<name> - Campaign`.
 	CampaignName *string `json:"campaignName,omitempty"`
 
+	// CampaignStatus Meta only. Independent publish state for the CAMPAIGN when the create makes both a new campaign and a
+	// new ad set (legacy shape). When omitted, the campaign follows `status`. Use this to stage a paused
+	// campaign with an active ad set (`status: ACTIVE, campaignStatus: PAUSED`) — the ad set will start
+	// delivering as soon as the campaign is activated later. Ignored when `existingCampaignId` is set (the
+	// campaign is already live and its status is not changed).
+	CampaignStatus *CreateStandaloneAdJSONBodyCampaignStatus `json:"campaignStatus,omitempty"`
+
 	// CampaignType Google only
 	CampaignType *CreateStandaloneAdJSONBodyCampaignType `json:"campaignType,omitempty"`
 
@@ -15555,11 +15580,16 @@ type CreateStandaloneAdJSONBody struct {
 
 	// ExistingCreativeId Meta only. Reuse an EXISTING ad creative by id instead of
 	// building a new one from the copy/media fields (which are then
-	// ignored). Combine with `existingCampaignId` to build a
-	// multi-ad-set campaign that shares one creative. Mutually
-	// exclusive with `creatives[]`, `dynamicCreative`, and
-	// `placementAssets`. The creative id used is returned as
-	// `creativeId` on the create response.
+	// ignored). Works on both shapes:
+	// - Legacy/multi-ad-set (`existingCampaignId`): combine with
+	//   `existingCampaignId` to build a multi-ad-set campaign that
+	//   shares one creative across audiences.
+	// - Attach (`adSetId`): combine with `adSetId` to add a second
+	//   (or Nth) ad to an existing ad set reusing the same creative —
+	//   no `headline`/`body`/`imageUrl` required on the body.
+	// Mutually exclusive with `creatives[]`, `dynamicCreative`, and
+	// `placementAssets`. The creative id is returned as `creativeId`
+	// on the create response.
 	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
 
 	// Gender Meta only. Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Ignored by non-Meta platforms.
@@ -15824,7 +15854,10 @@ type CreateStandaloneAdJSONBody struct {
 	// available on `POST /v1/ads/boost`.)
 	StartDate *time.Time `json:"startDate,omitempty"`
 
-	// Status Meta only. Publish state of the created ad set + ad. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused and skips activation, so you can review before they spend.
+	// Status Meta only. Desired publish state of the ad (and, on the legacy/multi-ad-set shapes, the ad set too).
+	// Omitted or `ACTIVE` publishes live immediately (default). `PAUSED` creates the objects paused and skips
+	// activation — useful to stage ads before they spend. On the attach shape (`adSetId`), only the new ad is
+	// affected; the existing ad set and campaign are already live and are not touched.
 	Status *CreateStandaloneAdJSONBodyStatus `json:"status,omitempty"`
 
 	// Tracking Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied on the legacy single-creative shape, every ad of the multi-creative shape, and the attach shape. NOTE: tracking lives on the AD object and is not inherited from the ad set, so pass it on EVERY attach call that should carry the pixel.
@@ -15878,6 +15911,9 @@ type CreateStandaloneAdJSONBodyBudgetType string
 
 // CreateStandaloneAdJSONBodyCallToAction defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCallToAction string
+
+// CreateStandaloneAdJSONBodyCampaignStatus defines parameters for CreateStandaloneAd.
+type CreateStandaloneAdJSONBodyCampaignStatus string
 
 // CreateStandaloneAdJSONBodyCampaignType defines parameters for CreateStandaloneAd.
 type CreateStandaloneAdJSONBodyCampaignType string
