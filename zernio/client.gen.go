@@ -66730,10 +66730,26 @@ type ListInboxConversationsResponse struct {
 				// IsVerified Whether the participant is a verified Instagram user
 				IsVerified *bool `json:"isVerified,omitempty"`
 			} `json:"instagramProfile,omitempty"`
-			LastMessage        *string `json:"lastMessage,omitempty"`
-			ParticipantId      *string `json:"participantId,omitempty"`
-			ParticipantName    *string `json:"participantName,omitempty"`
-			ParticipantPicture *string `json:"participantPicture,omitempty"`
+			LastMessage *string `json:"lastMessage,omitempty"`
+
+			// Metadata Ad-click attribution captured on the first inbound message of the
+			// conversation. Only present when the conversation originated from a
+			// click-to-message ad. Absent on organic conversations.
+			//
+			// Two sources populate this field:
+			//   - WhatsApp CTWA (Click-to-WhatsApp): `ctwa_clid`, `ctwa_source_id`,
+			//     `ctwa_source_url`, `ctwa_headline`, `ctwa_source_type`, `ctwa_captured_at`.
+			//   - Facebook Messenger CTM / Instagram CTD: `meta_ad_id`, `meta_ad_title`,
+			//     `meta_ad_source`, `meta_ad_type`, `meta_ad_ref`, `meta_ad_captured_at`,
+			//     `meta_ad_photo_url`, `meta_ad_video_url`, `meta_ad_post_id`,
+			//     `meta_ad_product_id`, `meta_ad_flow_id`.
+			//
+			// Note: `meta_ad_photo_url` and `meta_ad_video_url` are Facebook CDN URLs
+			// that may expire. Use `meta_ad_id` for a permanent reference to the ad.
+			Metadata           *map[string]string `json:"metadata,omitempty"`
+			ParticipantId      *string            `json:"participantId,omitempty"`
+			ParticipantName    *string            `json:"participantName,omitempty"`
+			ParticipantPicture *string            `json:"participantPicture,omitempty"`
 
 			// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
 			ParticipantVerifiedType *ListInboxConversations200JSONResponseBodyDataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
@@ -66879,10 +66895,27 @@ type GetInboxConversationResponse struct {
 				// IsVerified Whether the participant is a verified Instagram user
 				IsVerified *bool `json:"isVerified,omitempty"`
 			} `json:"instagramProfile,omitempty"`
-			LastMessage     *string    `json:"lastMessage,omitempty"`
-			LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
-			ParticipantId   *string    `json:"participantId,omitempty"`
-			ParticipantName *string    `json:"participantName,omitempty"`
+			LastMessage   *string    `json:"lastMessage,omitempty"`
+			LastMessageAt *time.Time `json:"lastMessageAt,omitempty"`
+
+			// Metadata Ad-click attribution captured on the first inbound message of the
+			// conversation. Only present when the conversation originated from a
+			// click-to-message ad. Absent on organic conversations.
+			//
+			// Two sources populate this field:
+			//   - WhatsApp CTWA (Click-to-WhatsApp): `ctwa_clid`, `ctwa_source_id`,
+			//     `ctwa_source_url`, `ctwa_headline`, `ctwa_source_type`, `ctwa_captured_at`.
+			//   - Facebook Messenger CTM / Instagram CTD: `meta_ad_id`, `meta_ad_title`,
+			//     `meta_ad_source`, `meta_ad_type`, `meta_ad_ref`, `meta_ad_captured_at`,
+			//     `meta_ad_photo_url`, `meta_ad_video_url`, `meta_ad_post_id`,
+			//     `meta_ad_product_id`, `meta_ad_flow_id`.
+			//
+			// Note: `meta_ad_photo_url` and `meta_ad_video_url` are Facebook CDN URLs
+			// that may expire. Use `meta_ad_id` for a permanent reference to the ad
+			// (e.g. to link to Meta Ads Manager).
+			Metadata        *map[string]string `json:"metadata,omitempty"`
+			ParticipantId   *string            `json:"participantId,omitempty"`
+			ParticipantName *string            `json:"participantName,omitempty"`
 
 			// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
 			ParticipantVerifiedType *GetInboxConversation200JSONResponseBodyDataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
@@ -89439,10 +89472,26 @@ func ParseListInboxConversationsResponse(rsp *http.Response) (*ListInboxConversa
 					// IsVerified Whether the participant is a verified Instagram user
 					IsVerified *bool `json:"isVerified,omitempty"`
 				} `json:"instagramProfile,omitempty"`
-				LastMessage        *string `json:"lastMessage,omitempty"`
-				ParticipantId      *string `json:"participantId,omitempty"`
-				ParticipantName    *string `json:"participantName,omitempty"`
-				ParticipantPicture *string `json:"participantPicture,omitempty"`
+				LastMessage *string `json:"lastMessage,omitempty"`
+
+				// Metadata Ad-click attribution captured on the first inbound message of the
+				// conversation. Only present when the conversation originated from a
+				// click-to-message ad. Absent on organic conversations.
+				//
+				// Two sources populate this field:
+				//   - WhatsApp CTWA (Click-to-WhatsApp): `ctwa_clid`, `ctwa_source_id`,
+				//     `ctwa_source_url`, `ctwa_headline`, `ctwa_source_type`, `ctwa_captured_at`.
+				//   - Facebook Messenger CTM / Instagram CTD: `meta_ad_id`, `meta_ad_title`,
+				//     `meta_ad_source`, `meta_ad_type`, `meta_ad_ref`, `meta_ad_captured_at`,
+				//     `meta_ad_photo_url`, `meta_ad_video_url`, `meta_ad_post_id`,
+				//     `meta_ad_product_id`, `meta_ad_flow_id`.
+				//
+				// Note: `meta_ad_photo_url` and `meta_ad_video_url` are Facebook CDN URLs
+				// that may expire. Use `meta_ad_id` for a permanent reference to the ad.
+				Metadata           *map[string]string `json:"metadata,omitempty"`
+				ParticipantId      *string            `json:"participantId,omitempty"`
+				ParticipantName    *string            `json:"participantName,omitempty"`
+				ParticipantPicture *string            `json:"participantPicture,omitempty"`
 
 				// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
 				ParticipantVerifiedType *ListInboxConversations200JSONResponseBodyDataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
@@ -89604,10 +89653,27 @@ func ParseGetInboxConversationResponse(rsp *http.Response) (*GetInboxConversatio
 					// IsVerified Whether the participant is a verified Instagram user
 					IsVerified *bool `json:"isVerified,omitempty"`
 				} `json:"instagramProfile,omitempty"`
-				LastMessage     *string    `json:"lastMessage,omitempty"`
-				LastMessageAt   *time.Time `json:"lastMessageAt,omitempty"`
-				ParticipantId   *string    `json:"participantId,omitempty"`
-				ParticipantName *string    `json:"participantName,omitempty"`
+				LastMessage   *string    `json:"lastMessage,omitempty"`
+				LastMessageAt *time.Time `json:"lastMessageAt,omitempty"`
+
+				// Metadata Ad-click attribution captured on the first inbound message of the
+				// conversation. Only present when the conversation originated from a
+				// click-to-message ad. Absent on organic conversations.
+				//
+				// Two sources populate this field:
+				//   - WhatsApp CTWA (Click-to-WhatsApp): `ctwa_clid`, `ctwa_source_id`,
+				//     `ctwa_source_url`, `ctwa_headline`, `ctwa_source_type`, `ctwa_captured_at`.
+				//   - Facebook Messenger CTM / Instagram CTD: `meta_ad_id`, `meta_ad_title`,
+				//     `meta_ad_source`, `meta_ad_type`, `meta_ad_ref`, `meta_ad_captured_at`,
+				//     `meta_ad_photo_url`, `meta_ad_video_url`, `meta_ad_post_id`,
+				//     `meta_ad_product_id`, `meta_ad_flow_id`.
+				//
+				// Note: `meta_ad_photo_url` and `meta_ad_video_url` are Facebook CDN URLs
+				// that may expire. Use `meta_ad_id` for a permanent reference to the ad
+				// (e.g. to link to Meta Ads Manager).
+				Metadata        *map[string]string `json:"metadata,omitempty"`
+				ParticipantId   *string            `json:"participantId,omitempty"`
+				ParticipantName *string            `json:"participantName,omitempty"`
 
 				// ParticipantVerifiedType X/Twitter verified badge type. Only present for Twitter/X conversations.
 				ParticipantVerifiedType *GetInboxConversation200JSONResponseBodyDataParticipantVerifiedType `json:"participantVerifiedType,omitempty"`
