@@ -11081,7 +11081,10 @@ type AnalyticsListResponse struct {
 		UnderscoreId *string        `json:"_id,omitempty"`
 		Analytics    *PostAnalytics `json:"analytics,omitempty"`
 		Content      *string        `json:"content,omitempty"`
-		IsExternal   *bool          `json:"isExternal,omitempty"`
+
+		// IsAd True when the post is an ad creative. False for organic posts or platforms where the signal is unavailable. For now is only available for LinkedIn posts.
+		IsAd       *bool `json:"isAd,omitempty"`
+		IsExternal *bool `json:"isExternal,omitempty"`
 
 		// LatePostId Original Zernio post ID if scheduled via Zernio
 		LatePostId *string `json:"latePostId,omitempty"`
