@@ -5345,16 +5345,16 @@ func (e CreateStandaloneAdJSONBodySpecialAdCategories) Valid() bool {
 
 // Defines values for CreateStandaloneAdJSONBodyStatus.
 const (
-	ACTIVE CreateStandaloneAdJSONBodyStatus = "ACTIVE"
-	PAUSED CreateStandaloneAdJSONBodyStatus = "PAUSED"
+	CreateStandaloneAdJSONBodyStatusACTIVE CreateStandaloneAdJSONBodyStatus = "ACTIVE"
+	CreateStandaloneAdJSONBodyStatusPAUSED CreateStandaloneAdJSONBodyStatus = "PAUSED"
 )
 
 // Valid indicates whether the value is a known member of the CreateStandaloneAdJSONBodyStatus enum.
 func (e CreateStandaloneAdJSONBodyStatus) Valid() bool {
 	switch e {
-	case ACTIVE:
+	case CreateStandaloneAdJSONBodyStatusACTIVE:
 		return true
-	case PAUSED:
+	case CreateStandaloneAdJSONBodyStatusPAUSED:
 		return true
 	default:
 		return false
@@ -5478,6 +5478,24 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 	}
 }
 
+// Defines values for GetLeadForm200JSONResponseBodyFormStatus.
+const (
+	GetLeadForm200JSONResponseBodyFormStatusACTIVE   GetLeadForm200JSONResponseBodyFormStatus = "ACTIVE"
+	GetLeadForm200JSONResponseBodyFormStatusARCHIVED GetLeadForm200JSONResponseBodyFormStatus = "ARCHIVED"
+)
+
+// Valid indicates whether the value is a known member of the GetLeadForm200JSONResponseBodyFormStatus enum.
+func (e GetLeadForm200JSONResponseBodyFormStatus) Valid() bool {
+	switch e {
+	case GetLeadForm200JSONResponseBodyFormStatusACTIVE:
+		return true
+	case GetLeadForm200JSONResponseBodyFormStatusARCHIVED:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SearchAdTargetingParamsDimension.
 const (
 	SearchAdTargetingParamsDimensionBehavior SearchAdTargetingParamsDimension = "behavior"
@@ -5504,11 +5522,15 @@ func (e SearchAdTargetingParamsDimension) Valid() bool {
 
 // Defines values for SearchAdTargetingParamsGeoType.
 const (
-	SearchAdTargetingParamsGeoTypeCity    SearchAdTargetingParamsGeoType = "city"
-	SearchAdTargetingParamsGeoTypeCountry SearchAdTargetingParamsGeoType = "country"
-	SearchAdTargetingParamsGeoTypeMetro   SearchAdTargetingParamsGeoType = "metro"
-	SearchAdTargetingParamsGeoTypeRegion  SearchAdTargetingParamsGeoType = "region"
-	SearchAdTargetingParamsGeoTypeZip     SearchAdTargetingParamsGeoType = "zip"
+	SearchAdTargetingParamsGeoTypeCity         SearchAdTargetingParamsGeoType = "city"
+	SearchAdTargetingParamsGeoTypeCountry      SearchAdTargetingParamsGeoType = "country"
+	SearchAdTargetingParamsGeoTypeGeoMarket    SearchAdTargetingParamsGeoType = "geo_market"
+	SearchAdTargetingParamsGeoTypeMetroArea    SearchAdTargetingParamsGeoType = "metro_area"
+	SearchAdTargetingParamsGeoTypeNeighborhood SearchAdTargetingParamsGeoType = "neighborhood"
+	SearchAdTargetingParamsGeoTypePlace        SearchAdTargetingParamsGeoType = "place"
+	SearchAdTargetingParamsGeoTypeRegion       SearchAdTargetingParamsGeoType = "region"
+	SearchAdTargetingParamsGeoTypeSubcity      SearchAdTargetingParamsGeoType = "subcity"
+	SearchAdTargetingParamsGeoTypeZip          SearchAdTargetingParamsGeoType = "zip"
 )
 
 // Valid indicates whether the value is a known member of the SearchAdTargetingParamsGeoType enum.
@@ -5518,9 +5540,17 @@ func (e SearchAdTargetingParamsGeoType) Valid() bool {
 		return true
 	case SearchAdTargetingParamsGeoTypeCountry:
 		return true
-	case SearchAdTargetingParamsGeoTypeMetro:
+	case SearchAdTargetingParamsGeoTypeGeoMarket:
+		return true
+	case SearchAdTargetingParamsGeoTypeMetroArea:
+		return true
+	case SearchAdTargetingParamsGeoTypeNeighborhood:
+		return true
+	case SearchAdTargetingParamsGeoTypePlace:
 		return true
 	case SearchAdTargetingParamsGeoTypeRegion:
+		return true
+	case SearchAdTargetingParamsGeoTypeSubcity:
 		return true
 	case SearchAdTargetingParamsGeoTypeZip:
 		return true
@@ -16282,6 +16312,9 @@ type GetLeadFormParams struct {
 	AccountId string `form:"accountId" json:"accountId"`
 }
 
+// GetLeadForm200JSONResponseBodyFormStatus defines parameters for GetLeadForm.
+type GetLeadForm200JSONResponseBodyFormStatus string
+
 // ListFormLeadsParams defines parameters for ListFormLeads.
 type ListFormLeadsParams struct {
 	AccountId string  `form:"accountId" json:"accountId"`
@@ -16345,7 +16378,7 @@ type SearchAdTargetingParams struct {
 	// Dimension What to search. `geo` resolves locations (scope further with `geoType`), `interest`/`behavior` resolve audience entities, `income` resolves income-tier options. Defaults to `interest` for backward compatibility with the deprecated /v1/ads/interests alias.
 	Dimension *SearchAdTargetingParamsDimension `form:"dimension,omitempty" json:"dimension,omitempty"`
 
-	// GeoType Only used when `dimension=geo`. The kind of location to resolve. Defaults to `city`.
+	// GeoType Only used when `dimension=geo`. The kind of location to resolve. `place` resolves named points of interest (businesses, landmarks) by proximity. `neighborhood` resolves named neighbourhood areas. Defaults to `city`.
 	GeoType *SearchAdTargetingParamsGeoType `form:"geoType,omitempty" json:"geoType,omitempty"`
 
 	// CountryCode ISO 3166-1 alpha-2 country code (e.g. NL) to scope a geo search.
@@ -61204,8 +61237,41 @@ type GetLeadFormResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Form   *map[string]interface{} `json:"form,omitempty"`
-		Status *string                 `json:"status,omitempty"`
+		// Form Full form config — sufficient to duplicate the form via POST /v1/ads/lead-forms.
+		Form *struct {
+			// ContextCard Intro card shown before the form questions (title, content, button label).
+			ContextCard       *map[string]interface{} `json:"context_card,omitempty"`
+			CreatedTime       *time.Time              `json:"created_time,omitempty"`
+			FollowUpActionUrl *string                 `json:"follow_up_action_url,omitempty"`
+			Id                *string                 `json:"id,omitempty"`
+			LeadsCount        *int                    `json:"leads_count,omitempty"`
+			Locale            *string                 `json:"locale,omitempty"`
+			Name              *string                 `json:"name,omitempty"`
+			PrivacyPolicyUrl  *string                 `json:"privacy_policy_url,omitempty"`
+			Questions         *[]struct {
+				InlineContext *string `json:"inline_context,omitempty"`
+				Key           *string `json:"key,omitempty"`
+				Label         *string `json:"label,omitempty"`
+				Options       *[]struct {
+					Key   *string `json:"key,omitempty"`
+					Value *string `json:"value,omitempty"`
+				} `json:"options,omitempty"`
+
+				// Type EMAIL, PHONE, FULL_NAME, FIRST_NAME, LAST_NAME, CUSTOM, …
+				Type *string `json:"type,omitempty"`
+			} `json:"questions,omitempty"`
+
+			// Status ARCHIVED forms can't receive new leads.
+			Status       *GetLeadForm200JSONResponseBodyFormStatus `json:"status,omitempty"`
+			ThankYouPage *struct {
+				Body       *string `json:"body,omitempty"`
+				ButtonText *string `json:"button_text,omitempty"`
+				ButtonType *string `json:"button_type,omitempty"`
+				Title      *string `json:"title,omitempty"`
+				WebsiteUrl *string `json:"website_url,omitempty"`
+			} `json:"thank_you_page,omitempty"`
+		} `json:"form,omitempty"`
+		Status *string `json:"status,omitempty"`
 	}
 	JSON401 *Unauthorized
 }
@@ -83178,8 +83244,41 @@ func ParseGetLeadFormResponse(rsp *http.Response) (*GetLeadFormResponse, error) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Form   *map[string]interface{} `json:"form,omitempty"`
-			Status *string                 `json:"status,omitempty"`
+			// Form Full form config — sufficient to duplicate the form via POST /v1/ads/lead-forms.
+			Form *struct {
+				// ContextCard Intro card shown before the form questions (title, content, button label).
+				ContextCard       *map[string]interface{} `json:"context_card,omitempty"`
+				CreatedTime       *time.Time              `json:"created_time,omitempty"`
+				FollowUpActionUrl *string                 `json:"follow_up_action_url,omitempty"`
+				Id                *string                 `json:"id,omitempty"`
+				LeadsCount        *int                    `json:"leads_count,omitempty"`
+				Locale            *string                 `json:"locale,omitempty"`
+				Name              *string                 `json:"name,omitempty"`
+				PrivacyPolicyUrl  *string                 `json:"privacy_policy_url,omitempty"`
+				Questions         *[]struct {
+					InlineContext *string `json:"inline_context,omitempty"`
+					Key           *string `json:"key,omitempty"`
+					Label         *string `json:"label,omitempty"`
+					Options       *[]struct {
+						Key   *string `json:"key,omitempty"`
+						Value *string `json:"value,omitempty"`
+					} `json:"options,omitempty"`
+
+					// Type EMAIL, PHONE, FULL_NAME, FIRST_NAME, LAST_NAME, CUSTOM, …
+					Type *string `json:"type,omitempty"`
+				} `json:"questions,omitempty"`
+
+				// Status ARCHIVED forms can't receive new leads.
+				Status       *GetLeadForm200JSONResponseBodyFormStatus `json:"status,omitempty"`
+				ThankYouPage *struct {
+					Body       *string `json:"body,omitempty"`
+					ButtonText *string `json:"button_text,omitempty"`
+					ButtonType *string `json:"button_type,omitempty"`
+					Title      *string `json:"title,omitempty"`
+					WebsiteUrl *string `json:"website_url,omitempty"`
+				} `json:"thank_you_page,omitempty"`
+			} `json:"form,omitempty"`
+			Status *string `json:"status,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
