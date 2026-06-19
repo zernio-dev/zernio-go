@@ -19554,6 +19554,19 @@ type ListSequenceEnrollmentsParamsStatus string
 // ListSequenceEnrollments200JSONResponseBodyEnrollmentsStatus defines parameters for ListSequenceEnrollments.
 type ListSequenceEnrollments200JSONResponseBodyEnrollmentsStatus string
 
+// SendSmsJSONBody defines parameters for SendSms.
+type SendSmsJSONBody struct {
+	// From One of your SMS-enabled numbers (E.164).
+	From string `json:"from"`
+
+	// MediaUrls Publicly reachable media URLs for MMS (max 10, total < 1MB).
+	MediaUrls *[]string `json:"mediaUrls,omitempty"`
+	Text      *string   `json:"text,omitempty"`
+
+	// To Recipient number (E.164).
+	To string `json:"to"`
+}
+
 // ValidateMediaJSONBody defines parameters for ValidateMedia.
 type ValidateMediaJSONBody struct {
 	// Url Public media URL to validate
@@ -21142,6 +21155,9 @@ type UpdateSequenceJSONRequestBody UpdateSequenceJSONBody
 
 // EnrollContactsJSONRequestBody defines body for EnrollContacts for application/json ContentType.
 type EnrollContactsJSONRequestBody EnrollContactsJSONBody
+
+// SendSmsJSONRequestBody defines body for SendSms for application/json ContentType.
+type SendSmsJSONRequestBody SendSmsJSONBody
 
 // ValidateMediaJSONRequestBody defines body for ValidateMedia for application/json ContentType.
 type ValidateMediaJSONRequestBody ValidateMediaJSONBody
@@ -25442,6 +25458,11 @@ type ClientInterface interface {
 
 	// PauseSequence request
 	PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendSmsWithBody request with any body
+	SendSmsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendSms(ctx context.Context, body SendSmsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ValidateMediaWithBody request with any body
 	ValidateMediaWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -30452,6 +30473,30 @@ func (c *Client) ListSequenceEnrollments(ctx context.Context, sequenceId string,
 
 func (c *Client) PauseSequence(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPauseSequenceRequest(c.Server, sequenceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendSmsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendSmsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendSms(ctx context.Context, body SendSmsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendSmsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -49664,6 +49709,46 @@ func NewPauseSequenceRequest(server string, sequenceId string) (*http.Request, e
 	return req, nil
 }
 
+// NewSendSmsRequest calls the generic SendSms builder with application/json body
+func NewSendSmsRequest(server string, body SendSmsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendSmsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendSmsRequestWithBody generates requests for SendSms with any type of body
+func NewSendSmsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/sms/messages")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewValidateMediaRequest calls the generic ValidateMedia builder with application/json body
 func NewValidateMediaRequest(server string, body ValidateMediaJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -55937,6 +56022,11 @@ type ClientWithResponsesInterface interface {
 
 	// PauseSequenceWithResponse request
 	PauseSequenceWithResponse(ctx context.Context, sequenceId string, reqEditors ...RequestEditorFn) (*PauseSequenceResponse, error)
+
+	// SendSmsWithBodyWithResponse request with any body
+	SendSmsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendSmsResponse, error)
+
+	SendSmsWithResponse(ctx context.Context, body SendSmsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendSmsResponse, error)
 
 	// ValidateMediaWithBodyWithResponse request with any body
 	ValidateMediaWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateMediaResponse, error)
@@ -68849,6 +68939,42 @@ func (r PauseSequenceResponse) ContentType() string {
 	return ""
 }
 
+type SendSmsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		ConversationId *string `json:"conversationId,omitempty"`
+
+		// Id Telnyx message id
+		Id     *string `json:"id,omitempty"`
+		Status *string `json:"status,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r SendSmsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendSmsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SendSmsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ValidateMediaResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -76413,6 +76539,23 @@ func (c *ClientWithResponses) PauseSequenceWithResponse(ctx context.Context, seq
 		return nil, err
 	}
 	return ParsePauseSequenceResponse(rsp)
+}
+
+// SendSmsWithBodyWithResponse request with arbitrary body returning *SendSmsResponse
+func (c *ClientWithResponses) SendSmsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendSmsResponse, error) {
+	rsp, err := c.SendSmsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendSmsResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendSmsWithResponse(ctx context.Context, body SendSmsJSONRequestBody, reqEditors ...RequestEditorFn) (*SendSmsResponse, error) {
+	rsp, err := c.SendSms(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendSmsResponse(rsp)
 }
 
 // ValidateMediaWithBodyWithResponse request with arbitrary body returning *ValidateMediaResponse
@@ -91759,6 +91902,38 @@ func ParsePauseSequenceResponse(rsp *http.Response) (*PauseSequenceResponse, err
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendSmsResponse parses an HTTP response from a SendSmsWithResponse call
+func ParseSendSmsResponse(rsp *http.Response) (*SendSmsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendSmsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			ConversationId *string `json:"conversationId,omitempty"`
+
+			// Id Telnyx message id
+			Id     *string `json:"id,omitempty"`
+			Status *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 
