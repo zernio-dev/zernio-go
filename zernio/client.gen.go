@@ -15099,6 +15099,13 @@ type BoostPostJSONBody struct {
 	// PostId Zernio post ID (provide this or platformPostId)
 	PostId *string `json:"postId,omitempty"`
 
+	// RawTargeting Meta only. A raw Meta-native targeting spec passed to the ad set VERBATIM (snake_case:
+	// `geo_locations`, `custom_audiences`, `excluded_custom_audiences`, `flexible_spec`,
+	// `targeting_automation`, etc.). Use it to target specific custom or lookalike audiences,
+	// or to clone a campaign's targeting exactly. Mutually exclusive with `targeting` (sending
+	// both → 422). Sent as-is; Meta validates and surfaces any errors.
+	RawTargeting *map[string]interface{} `json:"rawTargeting,omitempty"`
+
 	// RoasAverageFloor Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when
 	// `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as
 	// `bid_constraints.roas_average_floor` × 10000 (Meta uses fixed-point integers).
