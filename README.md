@@ -8,6 +8,11 @@ Official Go client library for the [Zernio API](https://docs.zernio.com) - Sched
 go get github.com/zernio-dev/zernio-go
 ```
 
+> **Upgrading from `v0.0.x`?** `v0.1.0` regenerates the SDK with
+> openapi-generator (to support the OpenAPI 3.1 spec) and is a breaking change.
+> The import path is unchanged, but client construction and method calls
+> differ — see [MIGRATION.md](./MIGRATION.md).
+
 ## Quick Start
 
 ```go
