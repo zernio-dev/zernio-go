@@ -5478,6 +5478,45 @@ func (e CreateCtwaAdJSONBodyObjective) Valid() bool {
 	}
 }
 
+// Defines values for CreateLeadFormJSONBodyContextCardStyle.
+const (
+	LISTSTYLE      CreateLeadFormJSONBodyContextCardStyle = "LIST_STYLE"
+	PARAGRAPHSTYLE CreateLeadFormJSONBodyContextCardStyle = "PARAGRAPH_STYLE"
+)
+
+// Valid indicates whether the value is a known member of the CreateLeadFormJSONBodyContextCardStyle enum.
+func (e CreateLeadFormJSONBodyContextCardStyle) Valid() bool {
+	switch e {
+	case LISTSTYLE:
+		return true
+	case PARAGRAPHSTYLE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateLeadFormJSONBodyFormType.
+const (
+	HIGHERINTENT CreateLeadFormJSONBodyFormType = "HIGHER_INTENT"
+	MOREVOLUME   CreateLeadFormJSONBodyFormType = "MORE_VOLUME"
+	RICHCREATIVE CreateLeadFormJSONBodyFormType = "RICH_CREATIVE"
+)
+
+// Valid indicates whether the value is a known member of the CreateLeadFormJSONBodyFormType enum.
+func (e CreateLeadFormJSONBodyFormType) Valid() bool {
+	switch e {
+	case HIGHERINTENT:
+		return true
+	case MOREVOLUME:
+		return true
+	case RICHCREATIVE:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetLeadForm200JSONResponseBodyFormStatus.
 const (
 	GetLeadForm200JSONResponseBodyFormStatusACTIVE   GetLeadForm200JSONResponseBodyFormStatus = "ACTIVE"
@@ -5522,6 +5561,7 @@ func (e SearchAdTargetingParamsDimension) Valid() bool {
 
 // Defines values for SearchAdTargetingParamsGeoType.
 const (
+	SearchAdTargetingParamsGeoTypeAll          SearchAdTargetingParamsGeoType = "all"
 	SearchAdTargetingParamsGeoTypeCity         SearchAdTargetingParamsGeoType = "city"
 	SearchAdTargetingParamsGeoTypeCountry      SearchAdTargetingParamsGeoType = "country"
 	SearchAdTargetingParamsGeoTypeGeoMarket    SearchAdTargetingParamsGeoType = "geo_market"
@@ -5536,6 +5576,8 @@ const (
 // Valid indicates whether the value is a known member of the SearchAdTargetingParamsGeoType enum.
 func (e SearchAdTargetingParamsGeoType) Valid() bool {
 	switch e {
+	case SearchAdTargetingParamsGeoTypeAll:
+		return true
 	case SearchAdTargetingParamsGeoTypeCity:
 		return true
 	case SearchAdTargetingParamsGeoTypeCountry:
@@ -15600,6 +15642,22 @@ type CreateStandaloneAdJSONBody struct {
 	// EndDate Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 
+	// ExcludedLocations Geo exclusions. Meta only. Maps to excluded_geo_locations. Supports countries, regions, cities, and zips.
+	ExcludedLocations *struct {
+		Cities *[]struct {
+			Key string `json:"key"`
+		} `json:"cities,omitempty"`
+
+		// Countries ISO-3166 alpha-2 country codes to exclude.
+		Countries *[]string `json:"countries,omitempty"`
+		Regions   *[]struct {
+			Key string `json:"key"`
+		} `json:"regions,omitempty"`
+		Zips *[]struct {
+			Key string `json:"key"`
+		} `json:"zips,omitempty"`
+	} `json:"excludedLocations,omitempty"`
+
 	// ExistingCampaignId Meta only. Add the new ad set under this EXISTING campaign
 	// instead of creating a new one (multi-ad-set audience testing).
 	// The new ad set's budget is matched to the campaign's mode
@@ -15703,6 +15761,11 @@ type CreateStandaloneAdJSONBody struct {
 	} `json:"metros,omitempty"`
 	Name string `json:"name"`
 
+	// Neighborhoods Named neighbourhood areas. Meta only. `key` from /v1/ads/targeting/search?dimension=geo&geoType=neighborhood. Maps to geo_locations.neighborhoods.
+	Neighborhoods *[]struct {
+		Key string `json:"key"`
+	} `json:"neighborhoods,omitempty"`
+
 	// OptimizationGoal Meta only. Explicit ad-set `optimization_goal` (e.g. `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `REACH`, `IMPRESSIONS`, `OFFSITE_CONVERSIONS`, `THRUPLAY`, `LEAD_GENERATION`). Overrides the default derived from `goal` (e.g. `traffic` defaults to `LINK_CLICKS`). Forwarded verbatim to Meta, which validates compatibility with the campaign objective and rejects incompatible combinations.
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 
@@ -15792,6 +15855,11 @@ type CreateStandaloneAdJSONBody struct {
 		ThreadsPositions   *[]CreateStandaloneAdJSONBodyPlacementsThreadsPositions   `json:"threadsPositions,omitempty"`
 		WhatsappPositions  *[]CreateStandaloneAdJSONBodyPlacementsWhatsappPositions  `json:"whatsappPositions,omitempty"`
 	} `json:"placements,omitempty"`
+
+	// Places Named points of interest (businesses, landmarks). Meta only. `key` from /v1/ads/targeting/search?dimension=geo&geoType=place. Maps to geo_locations.places.
+	Places *[]struct {
+		Key string `json:"key"`
+	} `json:"places,omitempty"`
 
 	// PromotedObject What the ad optimises against. Behaviour depends on the platform.
 	//
@@ -16272,14 +16340,46 @@ type ListLeadFormsParams struct {
 
 // CreateLeadFormJSONBody defines parameters for CreateLeadForm.
 type CreateLeadFormJSONBody struct {
-	AccountId             string  `json:"accountId"`
-	FollowUpActionUrl     *string `json:"followUpActionUrl,omitempty"`
+	AccountId string `json:"accountId"`
+
+	// AllowOrganicLeadGen Flexible form delivery. true = the form can surface organically on the Page (not just as a paid ad). Defaults to false.
+	AllowOrganicLeadGen *bool `json:"allowOrganicLeadGen,omitempty"`
+
+	// BlockDisplayForNonTargetedViewer Sharing setting. true = Restricted (only people targeted by the ad can open the form link). false = Open (shareable link, default).
+	BlockDisplayForNonTargetedViewer *bool `json:"blockDisplayForNonTargetedViewer,omitempty"`
+
+	// ContextCard Intro card shown before the questions page. Omit to skip the intro screen.
+	ContextCard *struct {
+		// ButtonText CTA button label on the intro card.
+		ButtonText *string `json:"buttonText,omitempty"`
+
+		// Content Body text lines shown on the intro card.
+		Content *[]string `json:"content,omitempty"`
+
+		// CoverPhoto Image hash of the cover photo (obtain from the Meta Ad Images API). Omit to show no image.
+		CoverPhoto *string `json:"coverPhoto,omitempty"`
+
+		// Style Visual layout of the intro card.
+		Style *CreateLeadFormJSONBodyContextCardStyle `json:"style,omitempty"`
+
+		// Title Headline / title of the intro card.
+		Title *string `json:"title,omitempty"`
+	} `json:"contextCard,omitempty"`
+	FollowUpActionUrl *string `json:"followUpActionUrl,omitempty"`
+
+	// FormType Form type. MORE_VOLUME = optimized for lead quantity (default). HIGHER_INTENT = adds a review/confirmation step before submit. RICH_CREATIVE = includes context card and custom headline to educate users before they submit. Supersedes isOptimizedForQuality.
+	FormType *CreateLeadFormJSONBodyFormType `json:"formType,omitempty"`
+
+	// IsOptimizedForQuality Legacy form type toggle. Prefer formType instead. false = More Volume, true = Higher Intent.
 	IsOptimizedForQuality *bool   `json:"isOptimizedForQuality,omitempty"`
 	Locale                *string `json:"locale,omitempty"`
 	Name                  string  `json:"name"`
 	PrivacyPolicyLinkText *string `json:"privacyPolicyLinkText,omitempty"`
 	PrivacyPolicyUrl      string  `json:"privacyPolicyUrl"`
-	Questions             []struct {
+
+	// QuestionPageCustomHeadline Custom subheadline shown above the form fields on the questions page (the contact-information section description). Defaults to Meta's generic copy when omitted.
+	QuestionPageCustomHeadline *string `json:"questionPageCustomHeadline,omitempty"`
+	Questions                  []struct {
 		InlineContext *string `json:"inline_context,omitempty"`
 
 		// Key CUSTOM questions only.
@@ -16301,6 +16401,12 @@ type CreateLeadFormJSONBody struct {
 	ThankYouTitle      *string `json:"thankYouTitle,omitempty"`
 	ThankYouWebsiteUrl *string `json:"thankYouWebsiteUrl,omitempty"`
 }
+
+// CreateLeadFormJSONBodyContextCardStyle defines parameters for CreateLeadForm.
+type CreateLeadFormJSONBodyContextCardStyle string
+
+// CreateLeadFormJSONBodyFormType defines parameters for CreateLeadForm.
+type CreateLeadFormJSONBodyFormType string
 
 // ArchiveLeadFormParams defines parameters for ArchiveLeadForm.
 type ArchiveLeadFormParams struct {
@@ -16378,7 +16484,7 @@ type SearchAdTargetingParams struct {
 	// Dimension What to search. `geo` resolves locations (scope further with `geoType`), `interest`/`behavior` resolve audience entities, `income` resolves income-tier options. Defaults to `interest` for backward compatibility with the deprecated /v1/ads/interests alias.
 	Dimension *SearchAdTargetingParamsDimension `form:"dimension,omitempty" json:"dimension,omitempty"`
 
-	// GeoType Only used when `dimension=geo`. The kind of location to resolve. `place` resolves named points of interest (businesses, landmarks) by proximity. `neighborhood` resolves named neighbourhood areas. Defaults to `city`.
+	// GeoType Only used when `dimension=geo`. The kind of location to resolve. `place` resolves named points of interest (businesses, landmarks). `neighborhood` resolves named neighbourhood areas. Use `all` to search every geo type in a single relevance-ranked call — mirrors Meta's own unified search box. Defaults to `city`.
 	GeoType *SearchAdTargetingParamsGeoType `form:"geoType,omitempty" json:"geoType,omitempty"`
 
 	// CountryCode ISO 3166-1 alpha-2 country code (e.g. NL) to scope a geo search.
@@ -61503,6 +61609,12 @@ type SearchAdTargetingResponse struct {
 			// Id The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec.
 			Id string `json:"id"`
 
+			// Latitude Centre latitude of the location. Populated on Meta geo results (city, neighborhood, place, etc.). Useful for map views.
+			Latitude *float32 `json:"latitude,omitempty"`
+
+			// Longitude Centre longitude of the location.
+			Longitude *float32 `json:"longitude,omitempty"`
+
 			// Name Human-readable label.
 			Name string `json:"name"`
 
@@ -83525,6 +83637,12 @@ func ParseSearchAdTargetingResponse(rsp *http.Response) (*SearchAdTargetingRespo
 
 				// Id The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec.
 				Id string `json:"id"`
+
+				// Latitude Centre latitude of the location. Populated on Meta geo results (city, neighborhood, place, etc.). Useful for map views.
+				Latitude *float32 `json:"latitude,omitempty"`
+
+				// Longitude Centre longitude of the location.
+				Longitude *float32 `json:"longitude,omitempty"`
 
 				// Name Human-readable label.
 				Name string `json:"name"`
