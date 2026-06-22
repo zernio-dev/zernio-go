@@ -2,10 +2,9 @@
 
 ## v0.0.x → v0.1.0 (oapi-codegen → openapi-generator)
 
-`v0.1.0` regenerates the SDK with [openapi-generator](https://openapi-generator.tech)
-instead of oapi-codegen, so the Zernio OpenAPI **3.1.0** spec can be consumed
-(oapi-codegen does not support 3.1). This is a **breaking** release: the
-generated API surface is completely different.
+`v0.1.0` switches the SDK to a new code generator
+([openapi-generator](https://openapi-generator.tech)). This is a **breaking**
+release: the generated API surface is completely different.
 
 **The import path is unchanged** — you still import:
 
@@ -15,10 +14,10 @@ import zernio "github.com/zernio-dev/zernio-go/zernio"
 
 Only the way you build the client and call endpoints changes.
 
-> **Staying on the old client:** `v0.0.285` is the last oapi-codegen release and
-> remains published. Pin it (`go get github.com/zernio-dev/zernio-go@v0.0.285`)
-> to keep your current code working — but note it can no longer receive spec
-> updates, since the 3.1 spec can't be built with the old generator.
+> **Staying on the old client:** `v0.0.285` is the last release on the previous
+> generator and remains published. Pin it
+> (`go get github.com/zernio-dev/zernio-go@v0.0.285`) to keep your current code
+> working until you're ready to migrate.
 
 ---
 
