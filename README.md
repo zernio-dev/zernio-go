@@ -22,22 +22,18 @@ import (
 )
 
 func main() {
-    client, err := zernio.NewClientWithResponses("https://api.zernio.com",
-        zernio.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-            req.Header.Set("Authorization", "Bearer YOUR_API_KEY")
-            return nil
-        }),
-    )
-    if err != nil {
-        log.Fatal(err)
-    }
+    // Defaults to the https://zernio.com/api base URL from the spec.
+    client := zernio.NewAPIClient(zernio.NewConfiguration())
+
+    // Authenticate with your Bearer API key via the request context.
+    ctx := context.WithValue(context.Background(), zernio.ContextAccessToken, "YOUR_API_KEY")
 
     // List accounts
-    resp, err := client.ListAccountsWithResponse(context.Background(), nil)
+    accounts, _, err := client.AccountsAPI.ListAccounts(ctx).Execute()
     if err != nil {
         log.Fatal(err)
     }
-    fmt.Printf("Accounts: %+v\n", resp.JSON200)
+    fmt.Printf("Accounts: %+v\n", accounts)
 }
 ```
 
@@ -46,477 +42,573 @@ func main() {
 ### Posts
 | Method | Description |
 |--------|-------------|
-| `client.ListPostsWithResponse()` | List posts |
-| `client.BulkUploadPostsWithResponse()` | Bulk upload from CSV |
-| `client.CreatePostWithResponse()` | Create post |
-| `client.GetPostWithResponse()` | Get post |
-| `client.UpdatePostWithResponse()` | Update post |
-| `client.UpdatePostMetadataWithResponse()` | Update post metadata |
-| `client.DeletePostWithResponse()` | Delete post |
-| `client.EditPostWithResponse()` | Edit published post |
-| `client.RetryPostWithResponse()` | Retry failed post |
-| `client.UnpublishPostWithResponse()` | Unpublish post |
+| `client.PostsAPI.ListPosts(ctx)` | List posts |
+| `client.PostsAPI.BulkUploadPosts(ctx)` | Bulk upload from CSV |
+| `client.PostsAPI.CreatePost(ctx)` | Create post |
+| `client.PostsAPI.GetPost(ctx)` | Get post |
+| `client.PostsAPI.UpdatePost(ctx)` | Update post |
+| `client.PostsAPI.UpdatePostMetadata(ctx)` | Update post metadata |
+| `client.PostsAPI.DeletePost(ctx)` | Delete post |
+| `client.PostsAPI.EditPost(ctx)` | Edit published post |
+| `client.PostsAPI.RetryPost(ctx)` | Retry failed post |
+| `client.PostsAPI.UnpublishPost(ctx)` | Unpublish post |
 
 ### Accounts
 | Method | Description |
 |--------|-------------|
-| `client.GetAllAccountsHealthWithResponse()` | Check accounts health |
-| `client.ListAccountsWithResponse()` | List accounts |
-| `client.GetAccountHealthWithResponse()` | Check account health |
-| `client.GetFollowerStatsWithResponse()` | Get follower stats |
-| `client.GetGoogleBusinessReviewsWithResponse()` | Get reviews |
-| `client.GetLinkedInMentionsWithResponse()` | Resolve LinkedIn mention |
-| `client.GetTikTokCreatorInfoWithResponse()` | Get TikTok creator info |
-| `client.UpdateAccountWithResponse()` | Update account |
-| `client.DeleteAccountWithResponse()` | Disconnect account |
-| `client.DeleteGoogleBusinessReviewReplyWithResponse()` | Delete a review reply |
-| `client.BatchGetGoogleBusinessReviewsWithResponse()` | Batch get reviews |
-| `client.MoveAccountToProfileWithResponse()` | Move account to a different profile |
-| `client.ReplyToGoogleBusinessReviewWithResponse()` | Reply to a review |
+| `client.AccountsAPI.GetAllAccountsHealth(ctx)` | Check accounts health |
+| `client.AccountsAPI.ListAccounts(ctx)` | List accounts |
+| `client.AccountsAPI.GetAccountHealth(ctx)` | Check account health |
+| `client.AccountsAPI.GetFollowerStats(ctx)` | Get follower stats |
+| `client.GMBReviewsAPI.GetGoogleBusinessReviews(ctx)` | Get reviews |
+| `client.LinkedInMentionsAPI.GetLinkedInMentions(ctx)` | Resolve LinkedIn mention |
+| `client.AccountsAPI.GetTikTokCreatorInfo(ctx)` | Get TikTok creator info |
+| `client.AccountsAPI.UpdateAccount(ctx)` | Update account |
+| `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
+| `client.GMBReviewsAPI.DeleteGoogleBusinessReviewReply(ctx)` | Delete a review reply |
+| `client.GMBReviewsAPI.BatchGetGoogleBusinessReviews(ctx)` | Batch get reviews |
+| `client.AccountsAPI.MoveAccountToProfile(ctx)` | Move account to a different profile |
+| `client.GMBReviewsAPI.ReplyToGoogleBusinessReview(ctx)` | Reply to a review |
 
 ### Profiles
 | Method | Description |
 |--------|-------------|
-| `client.ListProfilesWithResponse()` | List profiles |
-| `client.CreateProfileWithResponse()` | Create profile |
-| `client.GetProfileWithResponse()` | Get profile |
-| `client.UpdateProfileWithResponse()` | Update profile |
-| `client.DeleteProfileWithResponse()` | Delete profile |
+| `client.ProfilesAPI.ListProfiles(ctx)` | List profiles |
+| `client.ProfilesAPI.CreateProfile(ctx)` | Create profile |
+| `client.ProfilesAPI.GetProfile(ctx)` | Get profile |
+| `client.ProfilesAPI.UpdateProfile(ctx)` | Update profile |
+| `client.ProfilesAPI.DeleteProfile(ctx)` | Delete profile |
 
 ### Analytics
 | Method | Description |
 |--------|-------------|
-| `client.GetAnalyticsWithResponse()` | Get post analytics |
-| `client.GetBestTimeToPostWithResponse()` | Get best times to post |
-| `client.GetContentDecayWithResponse()` | Get content performance decay |
-| `client.GetDailyMetricsWithResponse()` | Get daily aggregated metrics |
-| `client.GetFacebookPageInsightsWithResponse()` | Get Facebook Page insights |
-| `client.GetGoogleBusinessPerformanceWithResponse()` | Get GBP performance metrics |
-| `client.GetGoogleBusinessSearchKeywordsWithResponse()` | Get GBP search keywords |
-| `client.GetInstagramAccountInsightsWithResponse()` | Get Instagram insights |
-| `client.GetInstagramDemographicsWithResponse()` | Get Instagram demographics |
-| `client.GetInstagramFollowerHistoryWithResponse()` | Get Instagram follower history |
-| `client.GetLinkedInAggregateAnalyticsWithResponse()` | Get LinkedIn aggregate stats |
-| `client.GetLinkedInOrgAggregateAnalyticsWithResponse()` | Get LinkedIn organization page aggregate analytics |
-| `client.GetLinkedInPostAnalyticsWithResponse()` | Get LinkedIn post stats |
-| `client.GetLinkedInPostReactionsWithResponse()` | Get LinkedIn post reactions |
-| `client.GetPostTimelineWithResponse()` | Get post analytics timeline |
-| `client.GetPostingFrequencyWithResponse()` | Get frequency vs engagement |
-| `client.GetTikTokAccountInsightsWithResponse()` | Get TikTok account-level insights |
-| `client.GetYouTubeChannelInsightsWithResponse()` | Get YouTube channel-level insights |
-| `client.GetYouTubeDailyViewsWithResponse()` | Get YouTube daily views |
-| `client.GetYouTubeDemographicsWithResponse()` | Get YouTube demographics |
+| `client.AnalyticsAPI.GetAnalytics(ctx)` | Get post analytics |
+| `client.AnalyticsAPI.GetBestTimeToPost(ctx)` | Get best times to post |
+| `client.AnalyticsAPI.GetContentDecay(ctx)` | Get content performance decay |
+| `client.AnalyticsAPI.GetDailyMetrics(ctx)` | Get daily aggregated metrics |
+| `client.AnalyticsAPI.GetFacebookPageInsights(ctx)` | Get Facebook Page insights |
+| `client.AnalyticsAPI.GetGoogleBusinessPerformance(ctx)` | Get GBP performance metrics |
+| `client.AnalyticsAPI.GetGoogleBusinessSearchKeywords(ctx)` | Get GBP search keywords |
+| `client.AnalyticsAPI.GetInstagramAccountInsights(ctx)` | Get Instagram insights |
+| `client.AnalyticsAPI.GetInstagramDemographics(ctx)` | Get Instagram demographics |
+| `client.AnalyticsAPI.GetInstagramFollowerHistory(ctx)` | Get Instagram follower history |
+| `client.AnalyticsAPI.GetLinkedInAggregateAnalytics(ctx)` | Get LinkedIn aggregate stats |
+| `client.AnalyticsAPI.GetLinkedInOrgAggregateAnalytics(ctx)` | Get LinkedIn organization page aggregate analytics |
+| `client.AnalyticsAPI.GetLinkedInPostAnalytics(ctx)` | Get LinkedIn post stats |
+| `client.AnalyticsAPI.GetLinkedInPostReactions(ctx)` | Get LinkedIn post reactions |
+| `client.AnalyticsAPI.GetPostTimeline(ctx)` | Get post analytics timeline |
+| `client.AnalyticsAPI.GetPostingFrequency(ctx)` | Get frequency vs engagement |
+| `client.AnalyticsAPI.GetTikTokAccountInsights(ctx)` | Get TikTok account-level insights |
+| `client.AnalyticsAPI.GetYouTubeChannelInsights(ctx)` | Get YouTube channel-level insights |
+| `client.AnalyticsAPI.GetYouTubeDailyViews(ctx)` | Get YouTube daily views |
+| `client.AnalyticsAPI.GetYouTubeDemographics(ctx)` | Get YouTube demographics |
+| `client.AnalyticsAPI.GetYouTubeVideoRetention(ctx)` | Get YouTube video retention curve |
 
 ### Account Groups
 | Method | Description |
 |--------|-------------|
-| `client.ListAccountGroupsWithResponse()` | List groups |
-| `client.CreateAccountGroupWithResponse()` | Create group |
-| `client.UpdateAccountGroupWithResponse()` | Update group |
-| `client.DeleteAccountGroupWithResponse()` | Delete group |
+| `client.AccountGroupsAPI.ListAccountGroups(ctx)` | List groups |
+| `client.AccountGroupsAPI.CreateAccountGroup(ctx)` | Create group |
+| `client.AccountGroupsAPI.UpdateAccountGroup(ctx)` | Update group |
+| `client.AccountGroupsAPI.DeleteAccountGroup(ctx)` | Delete group |
 
 ### Queue
 | Method | Description |
 |--------|-------------|
-| `client.ListQueueSlotsWithResponse()` | List schedules |
-| `client.CreateQueueSlotWithResponse()` | Create schedule |
-| `client.GetNextQueueSlotWithResponse()` | Get next available slot |
-| `client.UpdateQueueSlotWithResponse()` | Update schedule |
-| `client.DeleteQueueSlotWithResponse()` | Delete schedule |
-| `client.PreviewQueueWithResponse()` | Preview upcoming slots |
+| `client.QueueAPI.ListQueueSlots(ctx)` | List schedules |
+| `client.QueueAPI.CreateQueueSlot(ctx)` | Create schedule |
+| `client.QueueAPI.GetNextQueueSlot(ctx)` | Get next available slot |
+| `client.QueueAPI.UpdateQueueSlot(ctx)` | Update schedule |
+| `client.QueueAPI.DeleteQueueSlot(ctx)` | Delete schedule |
+| `client.QueueAPI.PreviewQueue(ctx)` | Preview upcoming slots |
 
 ### Webhooks
 | Method | Description |
 |--------|-------------|
-| `client.CreateWebhookSettingsWithResponse()` | Create webhook |
-| `client.GetWebhookSettingsWithResponse()` | List webhooks |
-| `client.UpdateWebhookSettingsWithResponse()` | Update webhook |
-| `client.DeleteWebhookSettingsWithResponse()` | Delete webhook |
-| `client.TestWebhookWithResponse()` | Send test webhook |
+| `client.WebhooksAPI.CreateWebhookSettings(ctx)` | Create webhook |
+| `client.WebhooksAPI.GetWebhookLogs(ctx)` | List webhook delivery logs |
+| `client.WebhooksAPI.GetWebhookSettings(ctx)` | List webhooks |
+| `client.WebhooksAPI.UpdateWebhookSettings(ctx)` | Update webhook |
+| `client.WebhooksAPI.DeleteWebhookSettings(ctx)` | Delete webhook |
+| `client.WebhooksAPI.TestWebhook(ctx)` | Send test webhook |
 
 ### API Keys
 | Method | Description |
 |--------|-------------|
-| `client.ListApiKeysWithResponse()` | List keys |
-| `client.CreateApiKeyWithResponse()` | Create key |
-| `client.DeleteApiKeyWithResponse()` | Delete key |
+| `client.APIKeysAPI.ListApiKeys(ctx)` | List keys |
+| `client.APIKeysAPI.CreateApiKey(ctx)` | Create key |
+| `client.APIKeysAPI.DeleteApiKey(ctx)` | Delete key |
 
 ### Media
 | Method | Description |
 |--------|-------------|
-| `client.GetMediaPresignedUrlWithResponse()` | Get upload URL |
+| `client.MediaAPI.GetMediaPresignedUrl(ctx)` | Get upload URL |
 
 ### Users
 | Method | Description |
 |--------|-------------|
-| `client.ListUsersWithResponse()` | List users |
-| `client.GetUserWithResponse()` | Get user |
+| `client.UsersAPI.ListUsers(ctx)` | List users |
+| `client.UsersAPI.GetUser(ctx)` | Get user |
 
 ### Usage
 | Method | Description |
 |--------|-------------|
-| `client.GetUsageStatsWithResponse()` | Get plan and usage stats |
-| `client.GetXApiPricingWithResponse()` | Get X/Twitter API pricing table |
+| `client.UsageAPI.GetUsageStats(ctx)` | Get plan and usage stats |
+| `client.UsageAPI.GetXApiPricing(ctx)` | Get X/Twitter API pricing table |
 
 ### Logs
 | Method | Description |
 |--------|-------------|
-| `client.ListLogsWithResponse()` | List activity logs |
+| `client.LogsAPI.ListLogs(ctx)` | List activity logs |
 
 ### Connect (OAuth)
 | Method | Description |
 |--------|-------------|
-| `client.ListFacebookPagesWithResponse()` | List Facebook pages |
-| `client.ListGoogleBusinessLocationsWithResponse()` | List GBP locations |
-| `client.ListLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
-| `client.ListPinterestBoardsForSelectionWithResponse()` | List Pinterest boards |
-| `client.ListSnapchatProfilesWithResponse()` | List Snapchat profiles |
-| `client.ListWhatsAppPhoneNumbersWithResponse()` | List WhatsApp phone numbers for selection |
-| `client.GetConnectUrlWithResponse()` | Get OAuth connect URL |
-| `client.GetFacebookPagesWithResponse()` | List Facebook pages |
-| `client.GetGmbLocationsWithResponse()` | List GBP locations |
-| `client.GetLinkedInOrganizationsWithResponse()` | List LinkedIn orgs |
-| `client.GetPendingOAuthDataWithResponse()` | Get pending OAuth data |
-| `client.GetPinterestBoardsWithResponse()` | List Pinterest boards |
-| `client.GetRedditFlairsWithResponse()` | List subreddit flairs |
-| `client.GetRedditSubredditsWithResponse()` | List Reddit subreddits |
-| `client.GetTelegramConnectStatusWithResponse()` | Generate Telegram code |
-| `client.GetYoutubePlaylistsWithResponse()` | List YouTube playlists |
-| `client.UpdateFacebookPageWithResponse()` | Update Facebook page |
-| `client.UpdateGmbLocationWithResponse()` | Update GBP location |
-| `client.UpdateLinkedInOrganizationWithResponse()` | Switch LinkedIn account type |
-| `client.UpdatePinterestBoardsWithResponse()` | Set default Pinterest board |
-| `client.UpdateRedditSubredditsWithResponse()` | Set default subreddit |
-| `client.UpdateYoutubeDefaultPlaylistWithResponse()` | Set default YouTube playlist |
-| `client.CompleteTelegramConnectWithResponse()` | Check Telegram status |
-| `client.CompleteWhatsAppPhoneSelectionWithResponse()` | Complete WhatsApp phone number selection |
-| `client.ConfigureTikTokAdsBrandIdentityWithResponse()` | Configure TikTok Ads Brand Identity |
-| `client.ConnectAdsWithResponse()` | Connect ads for a platform |
-| `client.ConnectBlueskyCredentialsWithResponse()` | Connect Bluesky account |
-| `client.ConnectWhatsAppCredentialsWithResponse()` | Connect WhatsApp via credentials |
-| `client.HandleOAuthCallbackWithResponse()` | Complete OAuth callback |
-| `client.InitiateTelegramConnectWithResponse()` | Connect Telegram directly |
-| `client.SelectFacebookPageWithResponse()` | Select Facebook page |
-| `client.SelectGoogleBusinessLocationWithResponse()` | Select GBP location |
-| `client.SelectLinkedInOrganizationWithResponse()` | Select LinkedIn org |
-| `client.SelectPinterestBoardWithResponse()` | Select Pinterest board |
-| `client.SelectSnapchatProfileWithResponse()` | Select Snapchat profile |
+| `client.ConnectAPI.ListFacebookPages(ctx)` | List Facebook pages |
+| `client.ConnectAPI.ListGoogleBusinessLocations(ctx)` | List GBP locations |
+| `client.ConnectAPI.ListLinkedInOrganizations(ctx)` | List LinkedIn orgs |
+| `client.ConnectAPI.ListPinterestBoardsForSelection(ctx)` | List Pinterest boards |
+| `client.ConnectAPI.ListSnapchatProfiles(ctx)` | List Snapchat profiles |
+| `client.ConnectAPI.ListWhatsAppPhoneNumbers(ctx)` | List WhatsApp phone numbers for selection |
+| `client.ConnectAPI.GetConnectUrl(ctx)` | Get OAuth connect URL |
+| `client.ConnectAPI.GetFacebookPages(ctx)` | List Facebook pages |
+| `client.ConnectAPI.GetGmbLocations(ctx)` | List GBP locations |
+| `client.ConnectAPI.GetLinkedInOrganizations(ctx)` | List LinkedIn orgs |
+| `client.ConnectAPI.GetPendingOAuthData(ctx)` | Get pending OAuth data |
+| `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
+| `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
+| `client.ConnectAPI.GetRedditSubreddits(ctx)` | List Reddit subreddits |
+| `client.ConnectAPI.GetTelegramConnectStatus(ctx)` | Generate Telegram code |
+| `client.ConnectAPI.GetYoutubePlaylists(ctx)` | List YouTube playlists |
+| `client.ConnectAPI.UpdateFacebookPage(ctx)` | Update Facebook page |
+| `client.ConnectAPI.UpdateGmbLocation(ctx)` | Update GBP location |
+| `client.ConnectAPI.UpdateLinkedInOrganization(ctx)` | Switch LinkedIn account type |
+| `client.ConnectAPI.UpdatePinterestBoards(ctx)` | Set default Pinterest board |
+| `client.ConnectAPI.UpdateRedditSubreddits(ctx)` | Set default subreddit |
+| `client.ConnectAPI.UpdateYoutubeDefaultPlaylist(ctx)` | Set default YouTube playlist |
+| `client.ConnectAPI.CompleteTelegramConnect(ctx)` | Check Telegram status |
+| `client.ConnectAPI.CompleteWhatsAppPhoneSelection(ctx)` | Complete WhatsApp phone number selection |
+| `client.ConnectAPI.ConfigureTikTokAdsBrandIdentity(ctx)` | Configure TikTok Ads Brand Identity |
+| `client.ConnectAPI.ConnectAds(ctx)` | Connect ads for a platform |
+| `client.ConnectAPI.ConnectBlueskyCredentials(ctx)` | Connect Bluesky account |
+| `client.ConnectAPI.ConnectWhatsAppCredentials(ctx)` | Connect WhatsApp via credentials |
+| `client.ConnectAPI.HandleOAuthCallback(ctx)` | Complete OAuth callback |
+| `client.ConnectAPI.InitiateTelegramConnect(ctx)` | Connect Telegram directly |
+| `client.ConnectAPI.SelectFacebookPage(ctx)` | Select Facebook page |
+| `client.ConnectAPI.SelectGoogleBusinessLocation(ctx)` | Select GBP location |
+| `client.ConnectAPI.SelectLinkedInOrganization(ctx)` | Select LinkedIn org |
+| `client.ConnectAPI.SelectPinterestBoard(ctx)` | Select Pinterest board |
+| `client.ConnectAPI.SelectSnapchatProfile(ctx)` | Select Snapchat profile |
 
 ### Reddit
 | Method | Description |
 |--------|-------------|
-| `client.GetRedditFeedWithResponse()` | Get subreddit feed |
-| `client.SearchRedditWithResponse()` | Search posts |
+| `client.RedditSearchAPI.GetRedditFeed(ctx)` | Get subreddit feed |
+| `client.RedditSearchAPI.SearchReddit(ctx)` | Search posts |
 
 ### Account Settings
 | Method | Description |
 |--------|-------------|
-| `client.GetInstagramIceBreakersWithResponse()` | Get IG ice breakers |
-| `client.GetMessengerMenuWithResponse()` | Get FB persistent menu |
-| `client.GetTelegramCommandsWithResponse()` | Get TG bot commands |
-| `client.DeleteInstagramIceBreakersWithResponse()` | Delete IG ice breakers |
-| `client.DeleteMessengerMenuWithResponse()` | Delete FB persistent menu |
-| `client.DeleteTelegramCommandsWithResponse()` | Delete TG bot commands |
-| `client.SetInstagramIceBreakersWithResponse()` | Set IG ice breakers |
-| `client.SetMessengerMenuWithResponse()` | Set FB persistent menu |
-| `client.SetTelegramCommandsWithResponse()` | Set TG bot commands |
+| `client.AccountSettingsAPI.GetInstagramIceBreakers(ctx)` | Get IG ice breakers |
+| `client.AccountSettingsAPI.GetMessengerMenu(ctx)` | Get FB persistent menu |
+| `client.AccountSettingsAPI.GetTelegramCommands(ctx)` | Get TG bot commands |
+| `client.AccountSettingsAPI.DeleteInstagramIceBreakers(ctx)` | Delete IG ice breakers |
+| `client.AccountSettingsAPI.DeleteMessengerMenu(ctx)` | Delete FB persistent menu |
+| `client.AccountSettingsAPI.DeleteTelegramCommands(ctx)` | Delete TG bot commands |
+| `client.AccountSettingsAPI.SetInstagramIceBreakers(ctx)` | Set IG ice breakers |
+| `client.AccountSettingsAPI.SetMessengerMenu(ctx)` | Set FB persistent menu |
+| `client.AccountSettingsAPI.SetTelegramCommands(ctx)` | Set TG bot commands |
 
 ### Ad Audiences
 | Method | Description |
 |--------|-------------|
-| `client.ListAdAudiencesWithResponse()` | List custom audiences |
-| `client.CreateAdAudienceWithResponse()` | Create custom audience |
-| `client.GetAdAudienceWithResponse()` | Get audience details |
-| `client.DeleteAdAudienceWithResponse()` | Delete custom audience |
-| `client.AddUsersToAdAudienceWithResponse()` | Add users to audience |
+| `client.AdAudiencesAPI.ListAdAudiences(ctx)` | List custom audiences |
+| `client.AdAudiencesAPI.CreateAdAudience(ctx)` | Create custom audience |
+| `client.AdAudiencesAPI.GetAdAudience(ctx)` | Get audience details |
+| `client.AdAudiencesAPI.DeleteAdAudience(ctx)` | Delete custom audience |
+| `client.AdAudiencesAPI.AddUsersToAdAudience(ctx)` | Add users to audience |
 
 ### Ad Campaigns
 | Method | Description |
 |--------|-------------|
-| `client.ListAdCampaignsWithResponse()` | List campaigns |
-| `client.BulkUpdateAdCampaignStatusWithResponse()` | Pause or resume many campaigns |
-| `client.GetAdTreeWithResponse()` | Get campaign tree |
-| `client.GetAdsTimelineWithResponse()` | Get daily aggregate ad metrics for an account |
-| `client.UpdateAdCampaignWithResponse()` | Update a campaign (budget and/or bid strategy) |
-| `client.UpdateAdCampaignStatusWithResponse()` | Pause or resume a campaign |
-| `client.UpdateAdSetWithResponse()` | Update an ad set (budget, status, and/or bid strategy) |
-| `client.UpdateAdSetStatusWithResponse()` | Pause or resume a single ad set |
-| `client.DeleteAdCampaignWithResponse()` | Delete a campaign |
-| `client.DuplicateAdCampaignWithResponse()` | Duplicate a campaign |
+| `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
+| `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
+| `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
+| `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily aggregate ad metrics for an account |
+| `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign (budget and/or bid strategy) |
+| `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
+| `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set (budget, status, and/or bid strategy) |
+| `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
+| `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
+| `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 
 ### Ads
 | Method | Description |
 |--------|-------------|
-| `client.ListAdAccountsWithResponse()` | List ad accounts |
-| `client.ListAdsWithResponse()` | List ads |
-| `client.ListAdsBusinessCentersWithResponse()` | List TikTok Business Centers |
-| `client.ListConversionAssociationsWithResponse()` | List campaigns associated with a conversion destination |
-| `client.ListConversionDestinationsWithResponse()` | List destinations for the Conversions API |
-| `client.ListFormLeadsWithResponse()` | List leads for a single form |
-| `client.ListLeadFormsWithResponse()` | List Lead Gen (Instant) forms |
-| `client.ListLeadsWithResponse()` | List submitted leads (cross-form CRM view) |
-| `client.CreateConversionDestinationWithResponse()` | Create a conversion destination (LinkedIn) |
-| `client.CreateCtwaAdWithResponse()` | Create Click-to-WhatsApp ad(s) |
-| `client.CreateLeadFormWithResponse()` | Create a Lead Gen (Instant) form |
-| `client.CreateStandaloneAdWithResponse()` | Create standalone ad |
-| `client.CreateTestLeadWithResponse()` | Create a synthetic test lead |
-| `client.GetAdWithResponse()` | Get ad details |
-| `client.GetAdAnalyticsWithResponse()` | Get ad analytics |
-| `client.GetAdCommentsWithResponse()` | List comments on an ad |
-| `client.GetConversionDestinationWithResponse()` | Fetch a single conversion destination |
-| `client.GetConversionMetricsWithResponse()` | Fetch attribution metrics for a conversion destination |
-| `client.GetLeadFormWithResponse()` | Get a single Lead Gen form |
-| `client.UpdateAdWithResponse()` | Update ad |
-| `client.UpdateConversionDestinationWithResponse()` | Update a conversion destination |
-| `client.DeleteAdWithResponse()` | Cancel an ad |
-| `client.DeleteConversionDestinationWithResponse()` | Soft-delete a conversion destination |
-| `client.AddConversionAssociationsWithResponse()` | Associate campaigns with a conversion destination |
-| `client.ArchiveLeadFormWithResponse()` | Archive a Lead Gen form |
-| `client.BoostPostWithResponse()` | Boost post as ad |
-| `client.EstimateAdReachWithResponse()` | Estimate audience reach |
-| `client.RemoveConversionAssociationsWithResponse()` | Remove campaign↔conversion associations |
-| `client.SearchAdInterestsWithResponse()` | Search targeting interests (deprecated) |
-| `client.SearchAdTargetingWithResponse()` | Search targeting options |
-| `client.SendConversionsWithResponse()` | Send conversion events to an ad platform |
+| `client.AdsAPI.ListAdAccounts(ctx)` | List ad accounts |
+| `client.AdsAPI.ListAdCatalogProductSets(ctx)` | List a catalog's product sets |
+| `client.AdsAPI.ListAdCatalogs(ctx)` | List Meta product catalogs |
+| `client.AdsAPI.ListAds(ctx)` | List ads |
+| `client.AdsAPI.ListAdsBusinessCenters(ctx)` | List TikTok Business Centers |
+| `client.AdsAPI.ListConversionAssociations(ctx)` | List campaigns associated with a conversion destination |
+| `client.AdsAPI.ListConversionDestinations(ctx)` | List destinations for the Conversions API |
+| `client.AdsAPI.ListFormLeads(ctx)` | List leads for a single form |
+| `client.AdsAPI.ListLeadForms(ctx)` | List Lead Gen (Instant) forms |
+| `client.AdsAPI.ListLeads(ctx)` | List submitted leads (cross-form CRM view) |
+| `client.AdsAPI.CreateConversionDestination(ctx)` | Create a conversion destination (LinkedIn, Google Ads) |
+| `client.AdsAPI.CreateCtwaAd(ctx)` | Create Click-to-WhatsApp ad(s) |
+| `client.AdsAPI.CreateLeadForm(ctx)` | Create a Lead Gen (Instant) form |
+| `client.AdsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
+| `client.AdsAPI.CreateTestLead(ctx)` | Create a synthetic test lead |
+| `client.AdsAPI.GetAd(ctx)` | Get ad details |
+| `client.AdsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
+| `client.AdsAPI.GetAdComments(ctx)` | List comments on an ad |
+| `client.AdsAPI.GetAdTrackingTags(ctx)` | Read an ad's click-URL tracking tags |
+| `client.AdsAPI.GetConversionDestination(ctx)` | Fetch a single conversion destination |
+| `client.AdsAPI.GetConversionMetrics(ctx)` | Fetch attribution metrics for a conversion destination |
+| `client.AdsAPI.GetConversionsQuality(ctx)` | Read Event Match Quality + coverage for a Meta pixel |
+| `client.AdsAPI.GetLeadForm(ctx)` | Get a single Lead Gen form |
+| `client.AdsAPI.UpdateAd(ctx)` | Update ad |
+| `client.AdsAPI.UpdateAdTrackingTags(ctx)` | Set/update an ad's click-URL tracking tags |
+| `client.AdsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
+| `client.AdsAPI.DeleteAd(ctx)` | Cancel an ad |
+| `client.AdsAPI.DeleteConversionDestination(ctx)` | Soft-delete a conversion destination |
+| `client.AdsAPI.AddConversionAssociations(ctx)` | Associate campaigns with a conversion destination |
+| `client.AdsAPI.AdjustConversions(ctx)` | Adjust already-uploaded conversions (Google only) |
+| `client.AdsAPI.ArchiveLeadForm(ctx)` | Archive a Lead Gen form |
+| `client.AdsAPI.BoostPost(ctx)` | Boost post as ad |
+| `client.AdsAPI.EstimateAdReach(ctx)` | Estimate audience reach |
+| `client.AdsAPI.RemoveConversionAssociations(ctx)` | Remove campaign↔conversion associations |
+| `client.AdsAPI.SearchAdInterests(ctx)` | Search targeting interests (deprecated) |
+| `client.AdsAPI.SearchAdTargeting(ctx)` | Search targeting options |
+| `client.AdsAPI.SendConversions(ctx)` | Send conversion events to an ad platform |
 
 ### Broadcasts
 | Method | Description |
 |--------|-------------|
-| `client.ListBroadcastRecipientsWithResponse()` | List broadcast recipients |
-| `client.ListBroadcastsWithResponse()` | List broadcasts |
-| `client.CreateBroadcastWithResponse()` | Create broadcast draft |
-| `client.GetBroadcastWithResponse()` | Get broadcast details |
-| `client.UpdateBroadcastWithResponse()` | Update broadcast |
-| `client.DeleteBroadcastWithResponse()` | Delete broadcast |
-| `client.AddBroadcastRecipientsWithResponse()` | Add recipients to a broadcast |
-| `client.CancelBroadcastWithResponse()` | Cancel broadcast |
-| `client.ScheduleBroadcastWithResponse()` | Schedule broadcast for later |
-| `client.SendBroadcastWithResponse()` | Send broadcast now |
+| `client.BroadcastsAPI.ListBroadcastRecipients(ctx)` | List broadcast recipients |
+| `client.BroadcastsAPI.ListBroadcasts(ctx)` | List broadcasts |
+| `client.BroadcastsAPI.CreateBroadcast(ctx)` | Create broadcast draft |
+| `client.BroadcastsAPI.GetBroadcast(ctx)` | Get broadcast details |
+| `client.BroadcastsAPI.UpdateBroadcast(ctx)` | Update broadcast |
+| `client.BroadcastsAPI.DeleteBroadcast(ctx)` | Delete broadcast |
+| `client.BroadcastsAPI.AddBroadcastRecipients(ctx)` | Add recipients to a broadcast |
+| `client.BroadcastsAPI.CancelBroadcast(ctx)` | Cancel broadcast |
+| `client.BroadcastsAPI.ScheduleBroadcast(ctx)` | Schedule broadcast for later |
+| `client.BroadcastsAPI.SendBroadcast(ctx)` | Send broadcast now |
 
 ### Comment Automations
 | Method | Description |
 |--------|-------------|
-| `client.ListCommentAutomationLogsWithResponse()` | List automation logs |
-| `client.ListCommentAutomationsWithResponse()` | List comment-to-DM automations |
-| `client.CreateCommentAutomationWithResponse()` | Create comment-to-DM automation |
-| `client.GetCommentAutomationWithResponse()` | Get automation details |
-| `client.UpdateCommentAutomationWithResponse()` | Update automation settings |
-| `client.DeleteCommentAutomationWithResponse()` | Delete automation |
+| `client.CommentAutomationsAPI.ListCommentAutomationLogs(ctx)` | List automation logs |
+| `client.CommentAutomationsAPI.ListCommentAutomations(ctx)` | List comment-to-DM automations |
+| `client.CommentAutomationsAPI.CreateCommentAutomation(ctx)` | Create comment-to-DM automation |
+| `client.CommentAutomationsAPI.GetCommentAutomation(ctx)` | Get automation details |
+| `client.CommentAutomationsAPI.UpdateCommentAutomation(ctx)` | Update automation settings |
+| `client.CommentAutomationsAPI.DeleteCommentAutomation(ctx)` | Delete automation |
 
 ### Comments (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxCommentsWithResponse()` | List commented posts |
-| `client.GetInboxPostCommentsWithResponse()` | Get post comments |
-| `client.DeleteInboxCommentWithResponse()` | Delete comment |
-| `client.HideInboxCommentWithResponse()` | Hide comment |
-| `client.LikeInboxCommentWithResponse()` | Like comment |
-| `client.ReplyToInboxPostWithResponse()` | Reply to comment |
-| `client.SendPrivateReplyToCommentWithResponse()` | Send private reply |
-| `client.UnhideInboxCommentWithResponse()` | Unhide comment |
-| `client.UnlikeInboxCommentWithResponse()` | Unlike comment |
+| `client.CommentsAPI.ListInboxComments(ctx)` | List commented posts |
+| `client.CommentsAPI.GetInboxPostComments(ctx)` | Get post comments |
+| `client.CommentsAPI.DeleteInboxComment(ctx)` | Delete comment |
+| `client.CommentsAPI.HideInboxComment(ctx)` | Hide comment |
+| `client.CommentsAPI.LikeInboxComment(ctx)` | Like comment |
+| `client.CommentsAPI.ReplyToInboxPost(ctx)` | Reply to comment |
+| `client.CommentsAPI.SendPrivateReplyToComment(ctx)` | Send private reply |
+| `client.CommentsAPI.UnhideInboxComment(ctx)` | Unhide comment |
+| `client.CommentsAPI.UnlikeInboxComment(ctx)` | Unlike comment |
 
 ### Contacts
 | Method | Description |
 |--------|-------------|
-| `client.ListContactsWithResponse()` | List contacts |
-| `client.BulkCreateContactsWithResponse()` | Bulk create contacts |
-| `client.CreateContactWithResponse()` | Create contact |
-| `client.GetContactWithResponse()` | Get contact |
-| `client.GetContactChannelsWithResponse()` | List channels for a contact |
-| `client.UpdateContactWithResponse()` | Update contact |
-| `client.DeleteContactWithResponse()` | Delete contact |
+| `client.ContactsAPI.ListContacts(ctx)` | List contacts |
+| `client.ContactsAPI.BulkCreateContacts(ctx)` | Bulk create contacts |
+| `client.ContactsAPI.CreateContact(ctx)` | Create contact |
+| `client.ContactsAPI.GetContact(ctx)` | Get contact |
+| `client.ContactsAPI.GetContactChannels(ctx)` | List channels for a contact |
+| `client.ContactsAPI.UpdateContact(ctx)` | Update contact |
+| `client.ContactsAPI.DeleteContact(ctx)` | Delete contact |
 
 ### Custom Fields
 | Method | Description |
 |--------|-------------|
-| `client.ListCustomFieldsWithResponse()` | List custom field definitions |
-| `client.CreateCustomFieldWithResponse()` | Create custom field |
-| `client.UpdateCustomFieldWithResponse()` | Update custom field |
-| `client.DeleteCustomFieldWithResponse()` | Delete custom field |
-| `client.ClearContactFieldValueWithResponse()` | Clear custom field value |
-| `client.SetContactFieldValueWithResponse()` | Set custom field value |
+| `client.CustomFieldsAPI.ListCustomFields(ctx)` | List custom field definitions |
+| `client.CustomFieldsAPI.CreateCustomField(ctx)` | Create custom field |
+| `client.CustomFieldsAPI.UpdateCustomField(ctx)` | Update custom field |
+| `client.CustomFieldsAPI.DeleteCustomField(ctx)` | Delete custom field |
+| `client.CustomFieldsAPI.ClearContactFieldValue(ctx)` | Clear custom field value |
+| `client.CustomFieldsAPI.SetContactFieldValue(ctx)` | Set custom field value |
 
 ### Discord
 | Method | Description |
 |--------|-------------|
-| `client.GetDiscordChannelsWithResponse()` | List Discord guild channels |
-| `client.GetDiscordSettingsWithResponse()` | Get Discord account settings |
-| `client.UpdateDiscordSettingsWithResponse()` | Update Discord settings |
+| `client.DiscordAPI.ListDiscordGuildMembers(ctx)` | List Discord guild members |
+| `client.DiscordAPI.ListDiscordGuildRoles(ctx)` | List Discord guild roles |
+| `client.DiscordAPI.ListDiscordPinnedMessages(ctx)` | List pinned messages in a Discord channel |
+| `client.DiscordAPI.ListDiscordScheduledEvents(ctx)` | List Discord scheduled events |
+| `client.DiscordAPI.CreateDiscordScheduledEvent(ctx)` | Create a Discord scheduled event |
+| `client.DiscordAPI.GetDiscordChannels(ctx)` | List Discord guild channels |
+| `client.DiscordAPI.GetDiscordScheduledEvent(ctx)` | Get a Discord scheduled event |
+| `client.DiscordAPI.GetDiscordSettings(ctx)` | Get Discord account settings |
+| `client.DiscordAPI.UpdateDiscordScheduledEvent(ctx)` | Update a Discord scheduled event |
+| `client.DiscordAPI.UpdateDiscordSettings(ctx)` | Update Discord settings |
+| `client.DiscordAPI.DeleteDiscordScheduledEvent(ctx)` | Delete a Discord scheduled event |
+| `client.DiscordAPI.AddDiscordMemberRole(ctx)` | Assign a role to a guild member |
+| `client.DiscordAPI.PinDiscordMessage(ctx)` | Pin a Discord message |
+| `client.DiscordAPI.RemoveDiscordMemberRole(ctx)` | Remove a role from a guild member |
+| `client.DiscordAPI.SendDiscordDirectMessage(ctx)` | Send a Discord Direct Message |
+| `client.DiscordAPI.UnpinDiscordMessage(ctx)` | Unpin a Discord message |
 
 ### GMB Attributes
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessAttributesWithResponse()` | Get attributes |
-| `client.UpdateGoogleBusinessAttributesWithResponse()` | Update attributes |
+| `client.GMBAttributesAPI.GetGmbAttributeMetadata(ctx)` | Get attribute metadata |
+| `client.GMBAttributesAPI.GetGoogleBusinessAttributes(ctx)` | Get attributes |
+| `client.GMBAttributesAPI.UpdateGoogleBusinessAttributes(ctx)` | Update attributes |
 
 ### GMB Food Menus
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessFoodMenusWithResponse()` | Get food menus |
-| `client.UpdateGoogleBusinessFoodMenusWithResponse()` | Update food menus |
+| `client.GMBFoodMenusAPI.GetGoogleBusinessFoodMenus(ctx)` | Get food menus |
+| `client.GMBFoodMenusAPI.UpdateGoogleBusinessFoodMenus(ctx)` | Update food menus |
 
 ### GMB Location Details
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessLocationDetailsWithResponse()` | Get location details |
-| `client.UpdateGoogleBusinessLocationDetailsWithResponse()` | Update location details |
+| `client.GMBLocationDetailsAPI.GetGoogleBusinessLocationDetails(ctx)` | Get location details |
+| `client.GMBLocationDetailsAPI.UpdateGoogleBusinessLocationDetails(ctx)` | Update location details |
 
 ### GMB Media
 | Method | Description |
 |--------|-------------|
-| `client.ListGoogleBusinessMediaWithResponse()` | List media |
-| `client.CreateGoogleBusinessMediaWithResponse()` | Upload photo |
-| `client.DeleteGoogleBusinessMediaWithResponse()` | Delete photo |
+| `client.GMBMediaAPI.ListGoogleBusinessMedia(ctx)` | List media |
+| `client.GMBMediaAPI.CreateGoogleBusinessMedia(ctx)` | Upload photo |
+| `client.GMBMediaAPI.DeleteGoogleBusinessMedia(ctx)` | Delete photo |
 
 ### GMB Place Actions
 | Method | Description |
 |--------|-------------|
-| `client.ListGoogleBusinessPlaceActionsWithResponse()` | List action links |
-| `client.CreateGoogleBusinessPlaceActionWithResponse()` | Create action link |
-| `client.UpdateGoogleBusinessPlaceActionWithResponse()` | Update action link |
-| `client.DeleteGoogleBusinessPlaceActionWithResponse()` | Delete action link |
+| `client.GMBPlaceActionsAPI.ListGoogleBusinessPlaceActions(ctx)` | List action links |
+| `client.GMBPlaceActionsAPI.CreateGoogleBusinessPlaceAction(ctx)` | Create action link |
+| `client.GMBPlaceActionsAPI.UpdateGoogleBusinessPlaceAction(ctx)` | Update action link |
+| `client.GMBPlaceActionsAPI.DeleteGoogleBusinessPlaceAction(ctx)` | Delete action link |
 
 ### GMB Services
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessServicesWithResponse()` | Get services |
-| `client.UpdateGoogleBusinessServicesWithResponse()` | Replace services |
+| `client.GMBServicesAPI.GetGoogleBusinessServices(ctx)` | Get services |
+| `client.GMBServicesAPI.UpdateGoogleBusinessServices(ctx)` | Replace services |
 
 ### GMB Verifications
 | Method | Description |
 |--------|-------------|
-| `client.GetGoogleBusinessVerificationsWithResponse()` | Get verification state |
-| `client.CompleteGoogleBusinessVerificationWithResponse()` | Complete a verification |
-| `client.FetchGoogleBusinessVerificationOptionsWithResponse()` | Fetch verification options |
-| `client.StartGoogleBusinessVerificationWithResponse()` | Start a verification |
+| `client.GMBVerificationsAPI.GetGoogleBusinessVerifications(ctx)` | Get verification state |
+| `client.GMBVerificationsAPI.CompleteGoogleBusinessVerification(ctx)` | Complete a verification |
+| `client.GMBVerificationsAPI.FetchGoogleBusinessVerificationOptions(ctx)` | Fetch verification options |
+| `client.GMBVerificationsAPI.StartGoogleBusinessVerification(ctx)` | Start a verification |
+
+### Inbox Analytics
+| Method | Description |
+|--------|-------------|
+| `client.InboxAnalyticsAPI.ListInboxConversationAnalytics(ctx)` | List conversations with inbox analytics |
+| `client.InboxAnalyticsAPI.GetInboxConversationAnalytics(ctx)` | Get analytics for a single conversation |
+| `client.InboxAnalyticsAPI.GetInboxHeatmap(ctx)` | Get inbox day-of-week × hour-of-day heatmap |
+| `client.InboxAnalyticsAPI.GetInboxResponseTime(ctx)` | Get inbox response-time stats |
+| `client.InboxAnalyticsAPI.GetInboxSourceBreakdown(ctx)` | Get inbox source breakdown |
+| `client.InboxAnalyticsAPI.GetInboxTopAccounts(ctx)` | Get top accounts by inbox volume |
+| `client.InboxAnalyticsAPI.GetInboxVolume(ctx)` | Get inbox messaging volume |
 
 ### Instagram
 | Method | Description |
 |--------|-------------|
-| `client.ListInstagramStoriesWithResponse()` | List active Instagram stories |
-| `client.GetInstagramStoryInsightsWithResponse()` | Get Instagram story insights |
+| `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
+| `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
 
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxConversationsWithResponse()` | List conversations |
-| `client.CreateInboxConversationWithResponse()` | Create conversation |
-| `client.GetInboxConversationWithResponse()` | Get conversation |
-| `client.GetInboxConversationMessagesWithResponse()` | List messages |
-| `client.UpdateInboxConversationWithResponse()` | Update conversation status |
-| `client.DeleteInboxMessageWithResponse()` | Delete message |
-| `client.AddMessageReactionWithResponse()` | Add reaction |
-| `client.EditInboxMessageWithResponse()` | Edit message |
-| `client.MarkConversationReadWithResponse()` | Mark a conversation as read |
-| `client.RemoveMessageReactionWithResponse()` | Remove reaction |
-| `client.SendInboxMessageWithResponse()` | Send message |
-| `client.SendTypingIndicatorWithResponse()` | Send typing indicator |
-| `client.UploadMediaDirectWithResponse()` | Upload media file |
+| `client.MessagesAPI.ListInboxConversations(ctx)` | List conversations |
+| `client.MessagesAPI.CreateInboxConversation(ctx)` | Create conversation (send a WhatsApp template) |
+| `client.MessagesAPI.GetInboxConversation(ctx)` | Get conversation |
+| `client.MessagesAPI.GetInboxConversationMessages(ctx)` | List messages |
+| `client.MessagesAPI.UpdateInboxConversation(ctx)` | Update conversation status |
+| `client.MessagesAPI.DeleteInboxMessage(ctx)` | Delete message |
+| `client.MessagesAPI.AddMessageReaction(ctx)` | Add reaction |
+| `client.MessagesAPI.EditInboxMessage(ctx)` | Edit message |
+| `client.MessagesAPI.MarkConversationRead(ctx)` | Mark a conversation as read |
+| `client.MessagesAPI.RemoveMessageReaction(ctx)` | Remove reaction |
+| `client.MessagesAPI.SendInboxMessage(ctx)` | Send message |
+| `client.MessagesAPI.SendTypingIndicator(ctx)` | Send typing indicator |
+| `client.MessagesAPI.UploadMediaDirect(ctx)` | Upload media file |
 
 ### Reviews (Inbox)
 | Method | Description |
 |--------|-------------|
-| `client.ListInboxReviewsWithResponse()` | List reviews |
-| `client.DeleteInboxReviewReplyWithResponse()` | Delete review reply |
-| `client.ReplyToInboxReviewWithResponse()` | Reply to review |
+| `client.ReviewsAPI.ListInboxReviews(ctx)` | List reviews |
+| `client.ReviewsAPI.DeleteInboxReviewReply(ctx)` | Delete review reply |
+| `client.ReviewsAPI.ReplyToInboxReview(ctx)` | Reply to review |
 
 ### Sequences
 | Method | Description |
 |--------|-------------|
-| `client.ListSequenceEnrollmentsWithResponse()` | List enrollments for a sequence |
-| `client.ListSequencesWithResponse()` | List sequences |
-| `client.CreateSequenceWithResponse()` | Create sequence |
-| `client.GetSequenceWithResponse()` | Get sequence with steps |
-| `client.UpdateSequenceWithResponse()` | Update sequence |
-| `client.DeleteSequenceWithResponse()` | Delete sequence |
-| `client.ActivateSequenceWithResponse()` | Activate sequence |
-| `client.EnrollContactsWithResponse()` | Enroll contacts in a sequence |
-| `client.PauseSequenceWithResponse()` | Pause sequence |
-| `client.UnenrollContactWithResponse()` | Unenroll contact |
+| `client.SequencesAPI.ListSequenceEnrollments(ctx)` | List enrollments for a sequence |
+| `client.SequencesAPI.ListSequences(ctx)` | List sequences |
+| `client.SequencesAPI.CreateSequence(ctx)` | Create sequence |
+| `client.SequencesAPI.GetSequence(ctx)` | Get sequence with steps |
+| `client.SequencesAPI.UpdateSequence(ctx)` | Update sequence |
+| `client.SequencesAPI.DeleteSequence(ctx)` | Delete sequence |
+| `client.SequencesAPI.ActivateSequence(ctx)` | Activate sequence |
+| `client.SequencesAPI.EnrollContacts(ctx)` | Enroll contacts in a sequence |
+| `client.SequencesAPI.PauseSequence(ctx)` | Pause sequence |
+| `client.SequencesAPI.UnenrollContact(ctx)` | Unenroll contact |
 
 ### Tracking Tags
 | Method | Description |
 |--------|-------------|
-| `client.ListTrackingTagSharedAccountsWithResponse()` | List ad accounts a tracking tag is shared with |
-| `client.ListTrackingTagsWithResponse()` | List tracking tags (Meta Pixels) |
-| `client.CreateTrackingTagWithResponse()` | Create a tracking tag (Meta Pixel) |
-| `client.GetTrackingTagWithResponse()` | Fetch a single tracking tag (Meta Pixel) |
-| `client.GetTrackingTagStatsWithResponse()` | Aggregated event stats for a tracking tag (Meta Pixel) |
-| `client.UpdateTrackingTagWithResponse()` | Update a tracking tag (Meta Pixel) |
-| `client.AddTrackingTagSharedAccountWithResponse()` | Share a tracking tag with an ad account |
-| `client.RemoveTrackingTagSharedAccountWithResponse()` | Stop sharing a tracking tag with an ad account |
+| `client.TrackingTagsAPI.ListTrackingTagSharedAccounts(ctx)` | List ad accounts a tracking tag is shared with |
+| `client.TrackingTagsAPI.ListTrackingTags(ctx)` | List tracking tags (Meta Pixels) |
+| `client.TrackingTagsAPI.CreateTrackingTag(ctx)` | Create a tracking tag (Meta Pixel) |
+| `client.TrackingTagsAPI.GetTrackingTag(ctx)` | Fetch a single tracking tag (Meta Pixel) |
+| `client.TrackingTagsAPI.GetTrackingTagStats(ctx)` | Aggregated event stats for a tracking tag (Meta Pixel) |
+| `client.TrackingTagsAPI.UpdateTrackingTag(ctx)` | Update a tracking tag (Meta Pixel) |
+| `client.TrackingTagsAPI.AddTrackingTagSharedAccount(ctx)` | Share a tracking tag with an ad account |
+| `client.TrackingTagsAPI.RemoveTrackingTagSharedAccount(ctx)` | Stop sharing a tracking tag with an ad account |
 
 ### Twitter Engagement
 | Method | Description |
 |--------|-------------|
-| `client.BookmarkPostWithResponse()` | Bookmark a tweet |
-| `client.FollowUserWithResponse()` | Follow a user |
-| `client.RemoveBookmarkWithResponse()` | Remove bookmark |
-| `client.RetweetPostWithResponse()` | Retweet a post |
-| `client.UndoRetweetWithResponse()` | Undo retweet |
-| `client.UnfollowUserWithResponse()` | Unfollow a user |
+| `client.TwitterEngagementAPI.BookmarkPost(ctx)` | Bookmark a tweet |
+| `client.TwitterEngagementAPI.FollowUser(ctx)` | Follow a user |
+| `client.TwitterEngagementAPI.RemoveBookmark(ctx)` | Remove bookmark |
+| `client.TwitterEngagementAPI.RetweetPost(ctx)` | Retweet a post |
+| `client.TwitterEngagementAPI.UndoRetweet(ctx)` | Undo retweet |
+| `client.TwitterEngagementAPI.UnfollowUser(ctx)` | Unfollow a user |
 
 ### Validate
 | Method | Description |
 |--------|-------------|
-| `client.ValidateMediaWithResponse()` | Validate media URL |
-| `client.ValidatePostWithResponse()` | Validate post content |
-| `client.ValidatePostLengthWithResponse()` | Validate character count |
-| `client.ValidateSubredditWithResponse()` | Check subreddit existence |
+| `client.ValidateAPI.ValidateMedia(ctx)` | Validate media URL |
+| `client.ValidateAPI.ValidatePost(ctx)` | Validate post content |
+| `client.ValidateAPI.ValidatePostLength(ctx)` | Validate character count |
+| `client.ValidateAPI.ValidateSubreddit(ctx)` | Check subreddit existence |
 
 ### WhatsApp
 | Method | Description |
 |--------|-------------|
-| `client.ListWhatsAppGroupChatsWithResponse()` | List active groups |
-| `client.ListWhatsAppGroupJoinRequestsWithResponse()` | List join requests |
-| `client.CreateWhatsAppGroupChatWithResponse()` | Create group |
-| `client.CreateWhatsAppGroupInviteLinkWithResponse()` | Create invite link |
-| `client.CreateWhatsAppTemplateWithResponse()` | Create template |
-| `client.GetWhatsAppBusinessProfileWithResponse()` | Get business profile |
-| `client.GetWhatsAppDisplayNameWithResponse()` | Get display name status |
-| `client.GetWhatsAppGroupChatWithResponse()` | Get group info |
-| `client.GetWhatsAppTemplateWithResponse()` | Get template |
-| `client.GetWhatsAppTemplatesWithResponse()` | List templates |
-| `client.UpdateWhatsAppBusinessProfileWithResponse()` | Update business profile |
-| `client.UpdateWhatsAppDisplayNameWithResponse()` | Request display name change |
-| `client.UpdateWhatsAppGroupChatWithResponse()` | Update group settings |
-| `client.UpdateWhatsAppTemplateWithResponse()` | Update template |
-| `client.DeleteWhatsAppGroupChatWithResponse()` | Delete group |
-| `client.DeleteWhatsAppTemplateWithResponse()` | Delete template |
-| `client.AddWhatsAppGroupParticipantsWithResponse()` | Add participants |
-| `client.ApproveWhatsAppGroupJoinRequestsWithResponse()` | Approve join requests |
-| `client.RejectWhatsAppGroupJoinRequestsWithResponse()` | Reject join requests |
-| `client.RemoveWhatsAppGroupParticipantsWithResponse()` | Remove participants |
-| `client.SendWhatsAppConversionWithResponse()` | Send WhatsApp conversion event |
-| `client.UploadWhatsAppProfilePhotoWithResponse()` | Upload profile picture |
+| `client.WhatsAppAPI.ListWhatsAppConversions(ctx)` | List recent WhatsApp conversion events |
+| `client.WhatsAppAPI.ListWhatsAppGroupChats(ctx)` | List active groups |
+| `client.WhatsAppAPI.ListWhatsAppGroupJoinRequests(ctx)` | List join requests |
+| `client.WhatsAppAPI.CreateWhatsAppDataset(ctx)` | Provision CTWA conversions dataset |
+| `client.WhatsAppAPI.CreateWhatsAppGroupChat(ctx)` | Create group |
+| `client.WhatsAppAPI.CreateWhatsAppGroupInviteLink(ctx)` | Create invite link |
+| `client.WhatsAppAPI.CreateWhatsAppTemplate(ctx)` | Create template |
+| `client.WhatsAppAPI.GetWhatsAppBlockStatus(ctx)` | Check if a user is blocked |
+| `client.WhatsAppAPI.GetWhatsAppBlockedUsers(ctx)` | List blocked users |
+| `client.WhatsAppAPI.GetWhatsAppBusinessProfile(ctx)` | Get business profile |
+| `client.WhatsAppAPI.GetWhatsAppDataset(ctx)` | Get CTWA conversions dataset |
+| `client.WhatsAppAPI.GetWhatsAppDisplayName(ctx)` | Get display name status |
+| `client.WhatsAppAPI.GetWhatsAppGroupChat(ctx)` | Get group info |
+| `client.WhatsAppAPI.GetWhatsAppTemplate(ctx)` | Get template |
+| `client.WhatsAppAPI.GetWhatsAppTemplates(ctx)` | List templates |
+| `client.WhatsAppAPI.UpdateWhatsAppBusinessProfile(ctx)` | Update business profile |
+| `client.WhatsAppAPI.UpdateWhatsAppDisplayName(ctx)` | Request display name change |
+| `client.WhatsAppAPI.UpdateWhatsAppGroupChat(ctx)` | Update group settings |
+| `client.WhatsAppAPI.UpdateWhatsAppTemplate(ctx)` | Update template |
+| `client.WhatsAppAPI.DeleteWhatsAppGroupChat(ctx)` | Delete group |
+| `client.WhatsAppAPI.DeleteWhatsAppTemplate(ctx)` | Delete template |
+| `client.WhatsAppAPI.AddWhatsAppGroupParticipants(ctx)` | Add participants |
+| `client.WhatsAppAPI.ApproveWhatsAppGroupJoinRequests(ctx)` | Approve join requests |
+| `client.WhatsAppAPI.BlockWhatsAppUsers(ctx)` | Block users |
+| `client.WhatsAppAPI.RejectWhatsAppGroupJoinRequests(ctx)` | Reject join requests |
+| `client.WhatsAppAPI.RemoveWhatsAppGroupParticipants(ctx)` | Remove participants |
+| `client.WhatsAppAPI.SendWhatsAppConversion(ctx)` | Send WhatsApp conversion event |
+| `client.WhatsAppAPI.UnblockWhatsAppUsers(ctx)` | Unblock users |
+| `client.WhatsAppAPI.UploadWhatsAppProfilePhoto(ctx)` | Upload profile picture |
+
+### WhatsApp Calling
+| Method | Description |
+|--------|-------------|
+| `client.WhatsAppCallingAPI.ListWhatsAppCalls(ctx)` | List call history for an account |
+| `client.WhatsAppCallingAPI.GetWhatsAppCall(ctx)` | Get a single call |
+| `client.WhatsAppCallingAPI.GetWhatsAppCallEstimate(ctx)` | Estimate per-minute cost for a destination |
+| `client.WhatsAppCallingAPI.GetWhatsAppCallPermissions(ctx)` | Check call permission for a consumer |
+| `client.WhatsAppCallingAPI.GetWhatsAppCallingConfig(ctx)` | Get calling config for an account |
+| `client.WhatsAppCallingAPI.UpdateWhatsAppCalling(ctx)` | Update calling config |
+| `client.WhatsAppCallingAPI.DisableWhatsAppCalling(ctx)` | Disable calling on a number |
+| `client.WhatsAppCallingAPI.EnableWhatsAppCalling(ctx)` | Enable calling on a number |
+| `client.WhatsAppCallingAPI.InitiateWhatsAppCall(ctx)` | Initiate outbound call |
 
 ### WhatsApp Flows
 | Method | Description |
 |--------|-------------|
-| `client.ListWhatsAppFlowsWithResponse()` | List flows |
-| `client.CreateWhatsAppFlowWithResponse()` | Create flow |
-| `client.GetWhatsAppFlowWithResponse()` | Get flow |
-| `client.GetWhatsAppFlowJsonWithResponse()` | Get flow JSON asset |
-| `client.UpdateWhatsAppFlowWithResponse()` | Update flow |
-| `client.DeleteWhatsAppFlowWithResponse()` | Delete flow |
-| `client.DeprecateWhatsAppFlowWithResponse()` | Deprecate flow |
-| `client.PublishWhatsAppFlowWithResponse()` | Publish flow |
-| `client.SendWhatsAppFlowMessageWithResponse()` | Send flow message |
-| `client.UploadWhatsAppFlowJsonWithResponse()` | Upload flow JSON |
+| `client.WhatsAppFlowsAPI.ListWhatsAppFlowResponses(ctx)` | List flow responses |
+| `client.WhatsAppFlowsAPI.ListWhatsAppFlowVersions(ctx)` | List flow versions |
+| `client.WhatsAppFlowsAPI.ListWhatsAppFlows(ctx)` | List flows |
+| `client.WhatsAppFlowsAPI.CreateWhatsAppFlow(ctx)` | Create flow |
+| `client.WhatsAppFlowsAPI.GetWhatsAppFlow(ctx)` | Get flow |
+| `client.WhatsAppFlowsAPI.GetWhatsAppFlowJson(ctx)` | Get flow JSON asset |
+| `client.WhatsAppFlowsAPI.GetWhatsAppFlowPreview(ctx)` | Get flow preview URL |
+| `client.WhatsAppFlowsAPI.UpdateWhatsAppFlow(ctx)` | Update flow |
+| `client.WhatsAppFlowsAPI.DeleteWhatsAppFlow(ctx)` | Delete flow |
+| `client.WhatsAppFlowsAPI.DeprecateWhatsAppFlow(ctx)` | Deprecate flow |
+| `client.WhatsAppFlowsAPI.PublishWhatsAppFlow(ctx)` | Publish flow |
+| `client.WhatsAppFlowsAPI.SendWhatsAppFlowMessage(ctx)` | Send flow message |
+| `client.WhatsAppFlowsAPI.UploadWhatsAppFlowJson(ctx)` | Upload flow JSON |
 
 ### WhatsApp Phone Numbers
 | Method | Description |
 |--------|-------------|
-| `client.GetWhatsAppPhoneNumberWithResponse()` | Get phone number |
-| `client.GetWhatsAppPhoneNumbersWithResponse()` | List phone numbers |
-| `client.PurchaseWhatsAppPhoneNumberWithResponse()` | Purchase phone number |
-| `client.ReleaseWhatsAppPhoneNumberWithResponse()` | Release phone number |
+| `client.WhatsAppPhoneNumbersAPI.ListWhatsAppNumberCountries(ctx)` | List offerable number countries |
+| `client.WhatsAppPhoneNumbersAPI.GetWhatsAppNumberInfo(ctx)` | Get number status |
+| `client.WhatsAppPhoneNumbersAPI.GetWhatsAppNumberKycForm(ctx)` | Get regulated-number KYC form spec |
+| `client.WhatsAppPhoneNumbersAPI.GetWhatsAppNumberRemediation(ctx)` | Get the declined requirements to fix |
+| `client.WhatsAppPhoneNumbersAPI.GetWhatsAppPhoneNumber(ctx)` | Get phone number |
+| `client.WhatsAppPhoneNumbersAPI.GetWhatsAppPhoneNumbers(ctx)` | List phone numbers |
+| `client.WhatsAppPhoneNumbersAPI.CheckWhatsAppNumberAvailability(ctx)` | Check a country's availability + address constraint |
+| `client.WhatsAppPhoneNumbersAPI.PurchaseWhatsAppPhoneNumber(ctx)` | Purchase phone number |
+| `client.WhatsAppPhoneNumbersAPI.ReleaseWhatsAppPhoneNumber(ctx)` | Release phone number |
+| `client.WhatsAppPhoneNumbersAPI.RemediateWhatsAppNumber(ctx)` | Fix a declined number and re-submit |
+| `client.WhatsAppPhoneNumbersAPI.SearchAvailableWhatsAppNumbers(ctx)` | Search available numbers to purchase |
+| `client.WhatsAppPhoneNumbersAPI.SubmitWhatsAppNumberKyc(ctx)` | Submit regulated-number KYC |
+| `client.WhatsAppPhoneNumbersAPI.UploadWhatsAppNumberKycDocument(ctx)` | Upload a single regulated-number KYC document |
+| `client.WhatsAppPhoneNumbersAPI.ValidateWhatsAppNumberKycAddress(ctx)` | Pre-validate a regulated-number KYC address (Tier 4) |
+
+### WhatsApp Sandbox
+| Method | Description |
+|--------|-------------|
+| `client.WhatsAppSandboxAPI.ListWhatsAppSandboxSessions(ctx)` | List your sandbox sessions |
+| `client.WhatsAppSandboxAPI.CreateWhatsAppSandboxSession(ctx)` | Start a sandbox activation for a phone |
+| `client.WhatsAppSandboxAPI.DeleteWhatsAppSandboxSession(ctx)` | Revoke a sandbox session |
+
+### WhatsApp Templates
+| Method | Description |
+|--------|-------------|
+| `client.WhatsAppTemplatesAPI.GetWhatsAppLibraryTemplate(ctx)` | Look up a library template |
+
+### Workflows
+| Method | Description |
+|--------|-------------|
+| `client.WorkflowsAPI.ListWorkflowExecutionEvents(ctx)` | Get an execution's timeline |
+| `client.WorkflowsAPI.ListWorkflowExecutions(ctx)` | List workflow runs |
+| `client.WorkflowsAPI.ListWorkflowVersions(ctx)` | List a workflow's version history |
+| `client.WorkflowsAPI.ListWorkflows(ctx)` | List workflows |
+| `client.WorkflowsAPI.CreateWorkflow(ctx)` | Create workflow |
+| `client.WorkflowsAPI.GetWorkflow(ctx)` | Get workflow with graph |
+| `client.WorkflowsAPI.GetWorkflowVersion(ctx)` | Get a specific workflow version |
+| `client.WorkflowsAPI.UpdateWorkflow(ctx)` | Update workflow |
+| `client.WorkflowsAPI.DeleteWorkflow(ctx)` | Delete workflow |
+| `client.WorkflowsAPI.ActivateWorkflow(ctx)` | Activate workflow |
+| `client.WorkflowsAPI.DuplicateWorkflow(ctx)` | Duplicate a workflow |
+| `client.WorkflowsAPI.PauseWorkflow(ctx)` | Pause workflow |
+| `client.WorkflowsAPI.RestoreWorkflowVersion(ctx)` | Restore a previous workflow version |
+| `client.WorkflowsAPI.TriggerWorkflow(ctx)` | Manually start a workflow run |
 
 ### Invites
 | Method | Description |
 |--------|-------------|
-| `client.CreateInviteTokenWithResponse()` | Create invite token |
+| `client.InvitesAPI.CreateInviteToken(ctx)` | Create invite token |
 
 ## Documentation
 

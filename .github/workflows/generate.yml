@@ -24,8 +24,14 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Install oapi-codegen
-        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+      - name: Setup Java (for openapi-generator)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install OpenAPI Generator
+        run: npm install -g @openapitools/openapi-generator-cli
 
       - name: Fetch latest OpenAPI spec
         run: |
@@ -34,12 +40,34 @@ jobs:
 
       - name: Generate SDK
         run: |
-          mkdir -p zernio
-          oapi-codegen -generate types,client -package zernio openapi.yaml > zernio/client.gen.go
+          # Version is pinned in openapitools.json.
+          # - structPrefix=true prefixes request structs by service, avoiding
+          #   collisions where an operationId is reused across tags.
+          # - name-mappings renames the hasReply property (Go field "Replied")
+          #   so it doesn't collide with the Has-helper for the "reply" field;
+          #   the JSON tag stays "hasReply".
+          # Output into zernio/ so the import path stays
+          # github.com/zernio-dev/zernio-go/zernio.
+          openapi-generator-cli generate \
+            -i openapi.yaml \
+            -g go \
+            -o zernio \
+            --skip-validate-spec \
+            --name-mappings hasReply=Replied \
+            --additional-properties=packageName=zernio,structPrefix=true \
+            --git-user-id=zernio-dev \
+            --git-repo-id=zernio-go
+          # Generated test stubs are skip-only and the OAS 3.1 webhooks section
+          # emits a WebhookEventsAPI test referencing an unwired service that
+          # won't compile, so they are not shipped (see zernio/.openapi-generator-ignore).
+          rm -rf zernio/test
           echo "Generated SDK"
 
       - name: Tidy modules
         run: go mod tidy
+
+      - name: Format
+        run: gofmt -w .
 
       - name: Build
         run: go build ./...
