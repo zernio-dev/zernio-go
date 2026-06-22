@@ -14,6 +14,11 @@ README.md
 .travis.yml
 git_push.sh
 
+# Per-model / per-endpoint reference markdown (~1100 files). Not used by the
+# Go code; the curated root README + scripts/generate_readme_reference.py are
+# the reference. Keeping these out avoids ~200k lines of churn per regen.
+docs/**
+
 # Generated test stubs are skip-only skeletons, and the OAS 3.1 webhooks:
 # section makes the generator emit a WebhookEventsAPI test that references a
 # service it never wires into APIClient (won't compile). Don't ship them.

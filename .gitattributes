@@ -1,0 +1,6 @@
+# The zernio/ package is produced by openapi-generator (see generate.yml).
+# Mark it generated so GitHub collapses it in diffs/PRs and excludes it from
+# repository language statistics. Reviewers then see only hand-written files.
+zernio/*.go linguist-generated=true
+zernio/**/*.go linguist-generated=true
+zernio/.openapi-generator/** linguist-generated=true
