@@ -37,8 +37,9 @@ type WebhookPayloadCommentComment struct {
 	// Whether this is a reply to another comment
 	IsReply bool `json:"isReply"`
 	// Parent comment ID if this is a reply
-	ParentCommentId NullableString                  `json:"parentCommentId"`
-	Ad              *WebhookPayloadCommentCommentAd `json:"ad,omitempty"`
+	ParentCommentId NullableString                          `json:"parentCommentId"`
+	Ad              *WebhookPayloadCommentCommentAd         `json:"ad,omitempty"`
+	Attachment      *WebhookPayloadCommentCommentAttachment `json:"attachment,omitempty"`
 }
 
 type _WebhookPayloadCommentComment WebhookPayloadCommentComment
@@ -321,6 +322,38 @@ func (o *WebhookPayloadCommentComment) SetAd(v WebhookPayloadCommentCommentAd) {
 	o.Ad = &v
 }
 
+// GetAttachment returns the Attachment field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentComment) GetAttachment() WebhookPayloadCommentCommentAttachment {
+	if o == nil || IsNil(o.Attachment) {
+		var ret WebhookPayloadCommentCommentAttachment
+		return ret
+	}
+	return *o.Attachment
+}
+
+// GetAttachmentOk returns a tuple with the Attachment field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentComment) GetAttachmentOk() (*WebhookPayloadCommentCommentAttachment, bool) {
+	if o == nil || IsNil(o.Attachment) {
+		return nil, false
+	}
+	return o.Attachment, true
+}
+
+// HasAttachment returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentComment) HasAttachment() bool {
+	if o != nil && !IsNil(o.Attachment) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachment gets a reference to the given WebhookPayloadCommentCommentAttachment and assigns it to the Attachment field.
+func (o *WebhookPayloadCommentComment) SetAttachment(v WebhookPayloadCommentCommentAttachment) {
+	o.Attachment = &v
+}
+
 func (o WebhookPayloadCommentComment) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -342,6 +375,9 @@ func (o WebhookPayloadCommentComment) ToMap() (map[string]interface{}, error) {
 	toSerialize["parentCommentId"] = o.ParentCommentId.Get()
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if !IsNil(o.Attachment) {
+		toSerialize["attachment"] = o.Attachment
 	}
 	return toSerialize, nil
 }
