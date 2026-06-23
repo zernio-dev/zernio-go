@@ -20,9 +20,9 @@ var _ MappedNullable = &CreateBroadcastRequestTemplate{}
 
 // CreateBroadcastRequestTemplate WhatsApp template (required when platform is whatsapp)
 type CreateBroadcastRequestTemplate struct {
-	Name       *string       `json:"name,omitempty"`
-	Language   *string       `json:"language,omitempty"`
-	Components []interface{} `json:"components,omitempty"`
+	Name       *string                  `json:"name,omitempty"`
+	Language   *string                  `json:"language,omitempty"`
+	Components []map[string]interface{} `json:"components,omitempty"`
 	// Maps template variable positions (\"1\", \"2\") to contact fields or static values. Resolved per recipient at send time.
 	VariableMapping map[string]CreateBroadcastRequestTemplateVariableMappingValue `json:"variableMapping,omitempty"`
 }
@@ -109,9 +109,9 @@ func (o *CreateBroadcastRequestTemplate) SetLanguage(v string) {
 }
 
 // GetComponents returns the Components field value if set, zero value otherwise.
-func (o *CreateBroadcastRequestTemplate) GetComponents() []interface{} {
+func (o *CreateBroadcastRequestTemplate) GetComponents() []map[string]interface{} {
 	if o == nil || IsNil(o.Components) {
-		var ret []interface{}
+		var ret []map[string]interface{}
 		return ret
 	}
 	return o.Components
@@ -119,7 +119,7 @@ func (o *CreateBroadcastRequestTemplate) GetComponents() []interface{} {
 
 // GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateBroadcastRequestTemplate) GetComponentsOk() ([]interface{}, bool) {
+func (o *CreateBroadcastRequestTemplate) GetComponentsOk() ([]map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Components) {
 		return nil, false
 	}
@@ -135,8 +135,8 @@ func (o *CreateBroadcastRequestTemplate) HasComponents() bool {
 	return false
 }
 
-// SetComponents gets a reference to the given []interface{} and assigns it to the Components field.
-func (o *CreateBroadcastRequestTemplate) SetComponents(v []interface{}) {
+// SetComponents gets a reference to the given []map[string]interface{} and assigns it to the Components field.
+func (o *CreateBroadcastRequestTemplate) SetComponents(v []map[string]interface{}) {
 	o.Components = v
 }
 
