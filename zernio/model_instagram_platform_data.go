@@ -39,6 +39,8 @@ type InstagramPlatformData struct {
 	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
 	// Alias for instagramThumbnail. If both are provided, instagramThumbnail takes priority.
 	ReelCover *string `json:"reelCover,omitempty"`
+	// When true, the post is labeled by Instagram as containing AI-generated media. Per Meta, this self-disclosure label is for AI-generated media, not AI-written captions. Applies to feed posts, Reels, Stories, and carousels.
+	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 }
 
 // NewInstagramPlatformData instantiates a new InstagramPlatformData object
@@ -49,6 +51,8 @@ func NewInstagramPlatformData() *InstagramPlatformData {
 	this := InstagramPlatformData{}
 	var shareToFeed bool = true
 	this.ShareToFeed = &shareToFeed
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -59,6 +63,8 @@ func NewInstagramPlatformDataWithDefaults() *InstagramPlatformData {
 	this := InstagramPlatformData{}
 	var shareToFeed bool = true
 	this.ShareToFeed = &shareToFeed
+	var isAiGenerated bool = false
+	this.IsAiGenerated = &isAiGenerated
 	return &this
 }
 
@@ -382,6 +388,38 @@ func (o *InstagramPlatformData) SetReelCover(v string) {
 	o.ReelCover = &v
 }
 
+// GetIsAiGenerated returns the IsAiGenerated field value if set, zero value otherwise.
+func (o *InstagramPlatformData) GetIsAiGenerated() bool {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAiGenerated
+}
+
+// GetIsAiGeneratedOk returns a tuple with the IsAiGenerated field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstagramPlatformData) GetIsAiGeneratedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAiGenerated) {
+		return nil, false
+	}
+	return o.IsAiGenerated, true
+}
+
+// HasIsAiGenerated returns a boolean if a field has been set.
+func (o *InstagramPlatformData) HasIsAiGenerated() bool {
+	if o != nil && !IsNil(o.IsAiGenerated) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAiGenerated gets a reference to the given bool and assigns it to the IsAiGenerated field.
+func (o *InstagramPlatformData) SetIsAiGenerated(v bool) {
+	o.IsAiGenerated = &v
+}
+
 func (o InstagramPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -421,6 +459,9 @@ func (o InstagramPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ReelCover) {
 		toSerialize["reelCover"] = o.ReelCover
+	}
+	if !IsNil(o.IsAiGenerated) {
+		toSerialize["isAiGenerated"] = o.IsAiGenerated
 	}
 	return toSerialize, nil
 }
