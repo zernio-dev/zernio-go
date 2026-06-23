@@ -8,7 +8,8 @@ documenting all available methods with descriptions from the spec.
 New tags added to the OpenAPI spec are auto-discovered and included
 in the README. Only special cases need explicit configuration below.
 
-Method names use Go PascalCase convention matching oapi-codegen output.
+Method names use Go PascalCase convention matching openapi-generator output:
+methods are grouped by service (e.g. client.AccountsAPI.ListAccounts(ctx)).
 """
 
 import re
@@ -69,6 +70,17 @@ def to_pascal_case(name: str) -> str:
     return name[0].upper() + name[1:]
 
 
+def to_service_name(tag: str) -> str:
+    """Convert an OpenAPI tag to its openapi-generator Go service field name.
+
+    Mirrors the generator: each word is capitalised (preserving existing
+    acronym casing like "API"/"GMB") and an "API" suffix is appended, e.g.
+    "Account Groups" -> "AccountGroupsAPI", "GMB Reviews" -> "GMBReviewsAPI".
+    Validated to reproduce every APIClient field name in client.go.
+    """
+    return "".join(w[0].upper() + w[1:] for w in tag.split()) + "API"
+
+
 def get_method_sort_key(method_name: str) -> tuple:
     """Generate a sort key for consistent method ordering (CRUD-style)."""
     name_lower = method_name.lower()
@@ -95,14 +107,14 @@ def load_openapi_spec(spec_path: Path) -> dict:
 
 def extract_methods_from_spec(
     spec: dict,
-) -> tuple[dict[str, list[tuple[str, str]]], list[str], dict[str, str]]:
+) -> tuple[dict[str, list[tuple[str, str, str]]], list[str], dict[str, str]]:
     """
     Extract methods and descriptions from OpenAPI spec.
 
     Returns (resources, resource_order, display_names).
     Uses tag names as resource keys (preserving original casing).
     """
-    resources: dict[str, list[tuple[str, str]]] = {}
+    resources: dict[str, list[tuple[str, str, str]]] = {}
     display_names: dict[str, str] = {}
     discovered: set[str] = set()
 
@@ -140,7 +152,12 @@ def extract_methods_from_spec(
             summary = operation.get("summary", "")
             description = summary if summary else method_name
 
-            resources[resource_key].append((method_name, description))
+            # Service field is derived from the operation's own tag, even when
+            # the row is displayed under a merged resource section, so the
+            # rendered call (client.<Service>.<Method>) stays accurate.
+            service_name = to_service_name(tag)
+
+            resources[resource_key].append((method_name, description, service_name))
 
     # Build final order: preferred first, then auto-discovered, then last resources
     preferred_set = set(PREFERRED_ORDER)
@@ -166,7 +183,7 @@ def extract_methods_from_spec(
 
 
 def generate_reference_section(
-    resources: dict[str, list[tuple[str, str]]],
+    resources: dict[str, list[tuple[str, str, str]]],
     resource_order: list[str],
     display_names: dict[str, str],
 ) -> str:
@@ -184,8 +201,10 @@ def generate_reference_section(
         lines.append("| Method | Description |")
         lines.append("|--------|-------------|")
 
-        for method_name, description in methods:
-            lines.append(f"| `client.{method_name}WithResponse()` | {description} |")
+        for method_name, description, service_name in methods:
+            lines.append(
+                f"| `client.{service_name}.{method_name}(ctx)` | {description} |"
+            )
 
         lines.append("")
 
