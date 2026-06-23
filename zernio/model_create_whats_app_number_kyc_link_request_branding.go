@@ -20,11 +20,11 @@ var _ MappedNullable = &CreateWhatsAppNumberKycLinkRequestBranding{}
 
 // CreateWhatsAppNumberKycLinkRequestBranding Optional white-label of the hosted page the end customer sees.
 type CreateWhatsAppNumberKycLinkRequestBranding struct {
-	// Your company name
+	// Your company name, shown on the hosted page.
 	CompanyName *string `json:"companyName,omitempty"`
 	// Logo shown above the form.
 	LogoUrl *string `json:"logoUrl,omitempty"`
-	// Hex color (e.g. \"#1a73e8\") applied to the primary action.
+	// Hex color (e.g. #1a73e8) used as a brand accent on the page.
 	BrandColor *string `json:"brandColor,omitempty" validate:"regexp=^#[0-9a-fA-F]{6}$"`
 }
 
