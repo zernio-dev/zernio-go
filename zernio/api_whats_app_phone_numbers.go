@@ -154,6 +154,138 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest struct {
+	ctx                                context.Context
+	ApiService                         *WhatsAppPhoneNumbersAPIService
+	createWhatsAppNumberKycLinkRequest *CreateWhatsAppNumberKycLinkRequest
+}
+
+func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) CreateWhatsAppNumberKycLinkRequest(createWhatsAppNumberKycLinkRequest CreateWhatsAppNumberKycLinkRequest) WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest {
+	r.createWhatsAppNumberKycLinkRequest = &createWhatsAppNumberKycLinkRequest
+	return r
+}
+
+func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) Execute() (*CreateWhatsAppNumberKycLink200Response, *http.Response, error) {
+	return r.ApiService.CreateWhatsAppNumberKycLinkExecute(r)
+}
+
+/*
+CreateWhatsAppNumberKycLink Create a hosted KYC link
+
+Create a single-use, 7-day hosted KYC link that your end customer
+completes WITHOUT a Zernio login — useful when the person who holds the
+ID and address is not your team. They fill the regulated verification on
+a Zernio-hosted page; the number provisions under YOUR account once they
+submit. Only regulated (KYC) countries are valid: a country that does not
+require KYC returns 400.
+
+White-label the page with `branding` (your company name, logo, brand
+color). Supply `redirect_url` to send the end customer back to your own
+site after a successful submit (completion params are appended — see
+below). Listen for the `whatsapp.number.kyc_submitted` webhook to react
+when the form is completed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest
+*/
+func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLink(ctx context.Context) WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest {
+	return WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateWhatsAppNumberKycLink200Response
+func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLinkExecute(r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) (*CreateWhatsAppNumberKycLink200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateWhatsAppNumberKycLink200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.CreateWhatsAppNumberKycLink")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/kyc/share"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createWhatsAppNumberKycLinkRequest == nil {
+		return localVarReturnValue, nil, reportError("createWhatsAppNumberKycLinkRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createWhatsAppNumberKycLinkRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppPhoneNumbersAPIGetWhatsAppNumberInfoRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppPhoneNumbersAPIService
