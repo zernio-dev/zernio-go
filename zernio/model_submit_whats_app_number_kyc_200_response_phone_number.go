@@ -18,7 +18,7 @@ import (
 // checks if the SubmitWhatsAppNumberKyc200ResponsePhoneNumber type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SubmitWhatsAppNumberKyc200ResponsePhoneNumber{}
 
-// SubmitWhatsAppNumberKyc200ResponsePhoneNumber struct for SubmitWhatsAppNumberKyc200ResponsePhoneNumber
+// SubmitWhatsAppNumberKyc200ResponsePhoneNumber The first/primary number, kept at the top level for backward compatibility. See `numbers` for the full set when `quantity` > 1.
 type SubmitWhatsAppNumberKyc200ResponsePhoneNumber struct {
 	Id      *string `json:"id,omitempty"`
 	Status  *string `json:"status,omitempty"`

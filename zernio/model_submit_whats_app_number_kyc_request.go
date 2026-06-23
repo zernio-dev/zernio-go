@@ -26,6 +26,8 @@ type SubmitWhatsAppNumberKycRequest struct {
 	Country   string `json:"country"`
 	// Idempotency token for this submission attempt. A retry/double-submit with the same token returns the same number; omit and each call creates a new number.
 	SubmissionId *string `json:"submissionId,omitempty"`
+	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort).
+	Quantity *int32 `json:"quantity,omitempty"`
 	// Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
 	// Which approved verification to reuse when several exist: the phone number it was originally approved for (GET reusable.options[].fromPhoneNumber). Omitted = newest. No match = 409.
@@ -51,6 +53,8 @@ func NewSubmitWhatsAppNumberKycRequest(profileId string, country string) *Submit
 	this := SubmitWhatsAppNumberKycRequest{}
 	this.ProfileId = profileId
 	this.Country = country
+	var quantity int32 = 1
+	this.Quantity = &quantity
 	return &this
 }
 
@@ -59,6 +63,8 @@ func NewSubmitWhatsAppNumberKycRequest(profileId string, country string) *Submit
 // but it doesn't guarantee that properties required by API are set
 func NewSubmitWhatsAppNumberKycRequestWithDefaults() *SubmitWhatsAppNumberKycRequest {
 	this := SubmitWhatsAppNumberKycRequest{}
+	var quantity int32 = 1
+	this.Quantity = &quantity
 	return &this
 }
 
@@ -140,6 +146,38 @@ func (o *SubmitWhatsAppNumberKycRequest) HasSubmissionId() bool {
 // SetSubmissionId gets a reference to the given string and assigns it to the SubmissionId field.
 func (o *SubmitWhatsAppNumberKycRequest) SetSubmissionId(v string) {
 	o.SubmissionId = &v
+}
+
+// GetQuantity returns the Quantity field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetQuantity() int32 {
+	if o == nil || IsNil(o.Quantity) {
+		var ret int32
+		return ret
+	}
+	return *o.Quantity
+}
+
+// GetQuantityOk returns a tuple with the Quantity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetQuantityOk() (*int32, bool) {
+	if o == nil || IsNil(o.Quantity) {
+		return nil, false
+	}
+	return o.Quantity, true
+}
+
+// HasQuantity returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasQuantity() bool {
+	if o != nil && !IsNil(o.Quantity) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuantity gets a reference to the given int32 and assigns it to the Quantity field.
+func (o *SubmitWhatsAppNumberKycRequest) SetQuantity(v int32) {
+	o.Quantity = &v
 }
 
 // GetReuse returns the Reuse field value if set, zero value otherwise.
@@ -380,6 +418,9 @@ func (o SubmitWhatsAppNumberKycRequest) ToMap() (map[string]interface{}, error) 
 	toSerialize["country"] = o.Country
 	if !IsNil(o.SubmissionId) {
 		toSerialize["submissionId"] = o.SubmissionId
+	}
+	if !IsNil(o.Quantity) {
+		toSerialize["quantity"] = o.Quantity
 	}
 	if !IsNil(o.Reuse) {
 		toSerialize["reuse"] = o.Reuse

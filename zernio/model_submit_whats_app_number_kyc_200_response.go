@@ -22,6 +22,8 @@ var _ MappedNullable = &SubmitWhatsAppNumberKyc200Response{}
 type SubmitWhatsAppNumberKyc200Response struct {
 	Status      *string                                        `json:"status,omitempty"`
 	PhoneNumber *SubmitWhatsAppNumberKyc200ResponsePhoneNumber `json:"phoneNumber,omitempty"`
+	// Every number provisioned from this submission. Length equals the requested `quantity` on full success (fewer if some orders failed; best-effort). The first element mirrors `phoneNumber`.
+	Numbers []SubmitWhatsAppNumberKyc200ResponseNumbersInner `json:"numbers,omitempty"`
 }
 
 // NewSubmitWhatsAppNumberKyc200Response instantiates a new SubmitWhatsAppNumberKyc200Response object
@@ -105,6 +107,38 @@ func (o *SubmitWhatsAppNumberKyc200Response) SetPhoneNumber(v SubmitWhatsAppNumb
 	o.PhoneNumber = &v
 }
 
+// GetNumbers returns the Numbers field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKyc200Response) GetNumbers() []SubmitWhatsAppNumberKyc200ResponseNumbersInner {
+	if o == nil || IsNil(o.Numbers) {
+		var ret []SubmitWhatsAppNumberKyc200ResponseNumbersInner
+		return ret
+	}
+	return o.Numbers
+}
+
+// GetNumbersOk returns a tuple with the Numbers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKyc200Response) GetNumbersOk() ([]SubmitWhatsAppNumberKyc200ResponseNumbersInner, bool) {
+	if o == nil || IsNil(o.Numbers) {
+		return nil, false
+	}
+	return o.Numbers, true
+}
+
+// HasNumbers returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKyc200Response) HasNumbers() bool {
+	if o != nil && !IsNil(o.Numbers) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumbers gets a reference to the given []SubmitWhatsAppNumberKyc200ResponseNumbersInner and assigns it to the Numbers field.
+func (o *SubmitWhatsAppNumberKyc200Response) SetNumbers(v []SubmitWhatsAppNumberKyc200ResponseNumbersInner) {
+	o.Numbers = v
+}
+
 func (o SubmitWhatsAppNumberKyc200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o SubmitWhatsAppNumberKyc200Response) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber
+	}
+	if !IsNil(o.Numbers) {
+		toSerialize["numbers"] = o.Numbers
 	}
 	return toSerialize, nil
 }
