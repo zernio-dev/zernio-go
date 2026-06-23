@@ -19,8 +19,8 @@ import (
 
 // ListQueueSlots200Response - struct for ListQueueSlots200Response
 type ListQueueSlots200Response struct {
-	ListQueueSlots200ResponseOneOf  *ListQueueSlots200ResponseOneOf
-	ListQueueSlots200ResponseOneOf1 *ListQueueSlots200ResponseOneOf1
+	ListQueueSlots200ResponseOneOf *ListQueueSlots200ResponseOneOf
+	QueueSlotsResponse             *QueueSlotsResponse
 }
 
 // ListQueueSlots200ResponseOneOfAsListQueueSlots200Response is a convenience function that returns ListQueueSlots200ResponseOneOf wrapped in ListQueueSlots200Response
@@ -30,10 +30,10 @@ func ListQueueSlots200ResponseOneOfAsListQueueSlots200Response(v *ListQueueSlots
 	}
 }
 
-// ListQueueSlots200ResponseOneOf1AsListQueueSlots200Response is a convenience function that returns ListQueueSlots200ResponseOneOf1 wrapped in ListQueueSlots200Response
-func ListQueueSlots200ResponseOneOf1AsListQueueSlots200Response(v *ListQueueSlots200ResponseOneOf1) ListQueueSlots200Response {
+// QueueSlotsResponseAsListQueueSlots200Response is a convenience function that returns QueueSlotsResponse wrapped in ListQueueSlots200Response
+func QueueSlotsResponseAsListQueueSlots200Response(v *QueueSlotsResponse) ListQueueSlots200Response {
 	return ListQueueSlots200Response{
-		ListQueueSlots200ResponseOneOf1: v,
+		QueueSlotsResponse: v,
 	}
 }
 
@@ -58,27 +58,27 @@ func (dst *ListQueueSlots200Response) UnmarshalJSON(data []byte) error {
 		dst.ListQueueSlots200ResponseOneOf = nil
 	}
 
-	// try to unmarshal data into ListQueueSlots200ResponseOneOf1
-	err = newStrictDecoder(data).Decode(&dst.ListQueueSlots200ResponseOneOf1)
+	// try to unmarshal data into QueueSlotsResponse
+	err = newStrictDecoder(data).Decode(&dst.QueueSlotsResponse)
 	if err == nil {
-		jsonListQueueSlots200ResponseOneOf1, _ := json.Marshal(dst.ListQueueSlots200ResponseOneOf1)
-		if string(jsonListQueueSlots200ResponseOneOf1) == "{}" { // empty struct
-			dst.ListQueueSlots200ResponseOneOf1 = nil
+		jsonQueueSlotsResponse, _ := json.Marshal(dst.QueueSlotsResponse)
+		if string(jsonQueueSlotsResponse) == "{}" { // empty struct
+			dst.QueueSlotsResponse = nil
 		} else {
-			if err = validator.Validate(dst.ListQueueSlots200ResponseOneOf1); err != nil {
-				dst.ListQueueSlots200ResponseOneOf1 = nil
+			if err = validator.Validate(dst.QueueSlotsResponse); err != nil {
+				dst.QueueSlotsResponse = nil
 			} else {
 				match++
 			}
 		}
 	} else {
-		dst.ListQueueSlots200ResponseOneOf1 = nil
+		dst.QueueSlotsResponse = nil
 	}
 
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.ListQueueSlots200ResponseOneOf = nil
-		dst.ListQueueSlots200ResponseOneOf1 = nil
+		dst.QueueSlotsResponse = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(ListQueueSlots200Response)")
 	} else if match == 1 {
@@ -94,8 +94,8 @@ func (src ListQueueSlots200Response) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.ListQueueSlots200ResponseOneOf)
 	}
 
-	if src.ListQueueSlots200ResponseOneOf1 != nil {
-		return json.Marshal(&src.ListQueueSlots200ResponseOneOf1)
+	if src.QueueSlotsResponse != nil {
+		return json.Marshal(&src.QueueSlotsResponse)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -110,8 +110,8 @@ func (obj *ListQueueSlots200Response) GetActualInstance() interface{} {
 		return obj.ListQueueSlots200ResponseOneOf
 	}
 
-	if obj.ListQueueSlots200ResponseOneOf1 != nil {
-		return obj.ListQueueSlots200ResponseOneOf1
+	if obj.QueueSlotsResponse != nil {
+		return obj.QueueSlotsResponse
 	}
 
 	// all schemas are nil
@@ -124,8 +124,8 @@ func (obj ListQueueSlots200Response) GetActualInstanceValue() interface{} {
 		return *obj.ListQueueSlots200ResponseOneOf
 	}
 
-	if obj.ListQueueSlots200ResponseOneOf1 != nil {
-		return *obj.ListQueueSlots200ResponseOneOf1
+	if obj.QueueSlotsResponse != nil {
+		return *obj.QueueSlotsResponse
 	}
 
 	// all schemas are nil

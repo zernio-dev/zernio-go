@@ -163,7 +163,7 @@ func (r QueueAPIDeleteQueueSlotRequest) QueueId(queueId string) QueueAPIDeleteQu
 	return r
 }
 
-func (r QueueAPIDeleteQueueSlotRequest) Execute() (*DeleteQueueSlot200Response, *http.Response, error) {
+func (r QueueAPIDeleteQueueSlotRequest) Execute() (*QueueDeleteResponse, *http.Response, error) {
 	return r.ApiService.DeleteQueueSlotExecute(r)
 }
 
@@ -185,13 +185,13 @@ func (a *QueueAPIService) DeleteQueueSlot(ctx context.Context) QueueAPIDeleteQue
 
 // Execute executes the request
 //
-//	@return DeleteQueueSlot200Response
-func (a *QueueAPIService) DeleteQueueSlotExecute(r QueueAPIDeleteQueueSlotRequest) (*DeleteQueueSlot200Response, *http.Response, error) {
+//	@return QueueDeleteResponse
+func (a *QueueAPIService) DeleteQueueSlotExecute(r QueueAPIDeleteQueueSlotRequest) (*QueueDeleteResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *DeleteQueueSlot200Response
+		localVarReturnValue *QueueDeleteResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "QueueAPIService.DeleteQueueSlot")
@@ -295,7 +295,7 @@ func (r QueueAPIGetNextQueueSlotRequest) QueueId(queueId string) QueueAPIGetNext
 	return r
 }
 
-func (r QueueAPIGetNextQueueSlotRequest) Execute() (*GetNextQueueSlot200Response, *http.Response, error) {
+func (r QueueAPIGetNextQueueSlotRequest) Execute() (*QueueNextSlotResponse, *http.Response, error) {
 	return r.ApiService.GetNextQueueSlotExecute(r)
 }
 
@@ -316,13 +316,13 @@ func (a *QueueAPIService) GetNextQueueSlot(ctx context.Context) QueueAPIGetNextQ
 
 // Execute executes the request
 //
-//	@return GetNextQueueSlot200Response
-func (a *QueueAPIService) GetNextQueueSlotExecute(r QueueAPIGetNextQueueSlotRequest) (*GetNextQueueSlot200Response, *http.Response, error) {
+//	@return QueueNextSlotResponse
+func (a *QueueAPIService) GetNextQueueSlotExecute(r QueueAPIGetNextQueueSlotRequest) (*QueueNextSlotResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetNextQueueSlot200Response
+		localVarReturnValue *QueueNextSlotResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "QueueAPIService.GetNextQueueSlot")
@@ -574,7 +574,7 @@ func (r QueueAPIPreviewQueueRequest) Count(count int32) QueueAPIPreviewQueueRequ
 	return r
 }
 
-func (r QueueAPIPreviewQueueRequest) Execute() (*PreviewQueue200Response, *http.Response, error) {
+func (r QueueAPIPreviewQueueRequest) Execute() (*QueuePreviewResponse, *http.Response, error) {
 	return r.ApiService.PreviewQueueExecute(r)
 }
 
@@ -595,13 +595,13 @@ func (a *QueueAPIService) PreviewQueue(ctx context.Context) QueueAPIPreviewQueue
 
 // Execute executes the request
 //
-//	@return PreviewQueue200Response
-func (a *QueueAPIService) PreviewQueueExecute(r QueueAPIPreviewQueueRequest) (*PreviewQueue200Response, *http.Response, error) {
+//	@return QueuePreviewResponse
+func (a *QueueAPIService) PreviewQueueExecute(r QueueAPIPreviewQueueRequest) (*QueuePreviewResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *PreviewQueue200Response
+		localVarReturnValue *QueuePreviewResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "QueueAPIService.PreviewQueue")
@@ -705,7 +705,7 @@ func (r QueueAPIUpdateQueueSlotRequest) UpdateQueueSlotRequest(updateQueueSlotRe
 	return r
 }
 
-func (r QueueAPIUpdateQueueSlotRequest) Execute() (*UpdateQueueSlot200Response, *http.Response, error) {
+func (r QueueAPIUpdateQueueSlotRequest) Execute() (*QueueUpdateResponse, *http.Response, error) {
 	return r.ApiService.UpdateQueueSlotExecute(r)
 }
 
@@ -726,13 +726,13 @@ func (a *QueueAPIService) UpdateQueueSlot(ctx context.Context) QueueAPIUpdateQue
 
 // Execute executes the request
 //
-//	@return UpdateQueueSlot200Response
-func (a *QueueAPIService) UpdateQueueSlotExecute(r QueueAPIUpdateQueueSlotRequest) (*UpdateQueueSlot200Response, *http.Response, error) {
+//	@return QueueUpdateResponse
+func (a *QueueAPIService) UpdateQueueSlotExecute(r QueueAPIUpdateQueueSlotRequest) (*QueueUpdateResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UpdateQueueSlot200Response
+		localVarReturnValue *QueueUpdateResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "QueueAPIService.UpdateQueueSlot")

@@ -453,7 +453,7 @@ func (r AccountsAPIGetFollowerStatsRequest) Granularity(granularity string) Acco
 	return r
 }
 
-func (r AccountsAPIGetFollowerStatsRequest) Execute() (*GetFollowerStats200Response, *http.Response, error) {
+func (r AccountsAPIGetFollowerStatsRequest) Execute() (*FollowerStatsResponse, *http.Response, error) {
 	return r.ApiService.GetFollowerStatsExecute(r)
 }
 
@@ -475,13 +475,13 @@ func (a *AccountsAPIService) GetFollowerStats(ctx context.Context) AccountsAPIGe
 
 // Execute executes the request
 //
-//	@return GetFollowerStats200Response
-func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerStatsRequest) (*GetFollowerStats200Response, *http.Response, error) {
+//	@return FollowerStatsResponse
+func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerStatsRequest) (*FollowerStatsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetFollowerStats200Response
+		localVarReturnValue *FollowerStatsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GetFollowerStats")
@@ -797,7 +797,7 @@ func (r AccountsAPIListAccountsRequest) Limit(limit int32) AccountsAPIListAccoun
 	return r
 }
 
-func (r AccountsAPIListAccountsRequest) Execute() (*ListAccounts200Response, *http.Response, error) {
+func (r AccountsAPIListAccountsRequest) Execute() (*AccountsListResponse, *http.Response, error) {
 	return r.ApiService.ListAccountsExecute(r)
 }
 
@@ -819,13 +819,13 @@ func (a *AccountsAPIService) ListAccounts(ctx context.Context) AccountsAPIListAc
 
 // Execute executes the request
 //
-//	@return ListAccounts200Response
-func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsRequest) (*ListAccounts200Response, *http.Response, error) {
+//	@return AccountsListResponse
+func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsRequest) (*AccountsListResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListAccounts200Response
+		localVarReturnValue *AccountsListResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.ListAccounts")

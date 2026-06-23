@@ -1075,7 +1075,7 @@ func (r AnalyticsAPIGetFollowerStatsRequest) Granularity(granularity string) Ana
 	return r
 }
 
-func (r AnalyticsAPIGetFollowerStatsRequest) Execute() (*GetFollowerStats200Response, *http.Response, error) {
+func (r AnalyticsAPIGetFollowerStatsRequest) Execute() (*FollowerStatsResponse, *http.Response, error) {
 	return r.ApiService.GetFollowerStatsExecute(r)
 }
 
@@ -1097,13 +1097,13 @@ func (a *AnalyticsAPIService) GetFollowerStats(ctx context.Context) AnalyticsAPI
 
 // Execute executes the request
 //
-//	@return GetFollowerStats200Response
-func (a *AnalyticsAPIService) GetFollowerStatsExecute(r AnalyticsAPIGetFollowerStatsRequest) (*GetFollowerStats200Response, *http.Response, error) {
+//	@return FollowerStatsResponse
+func (a *AnalyticsAPIService) GetFollowerStatsExecute(r AnalyticsAPIGetFollowerStatsRequest) (*FollowerStatsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetFollowerStats200Response
+		localVarReturnValue *FollowerStatsResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetFollowerStats")

@@ -162,7 +162,7 @@ type ProfilesAPIDeleteProfileRequest struct {
 	profileId  string
 }
 
-func (r ProfilesAPIDeleteProfileRequest) Execute() (*DeleteAccountGroup200Response, *http.Response, error) {
+func (r ProfilesAPIDeleteProfileRequest) Execute() (*ProfileDeleteResponse, *http.Response, error) {
 	return r.ApiService.DeleteProfileExecute(r)
 }
 
@@ -185,13 +185,13 @@ func (a *ProfilesAPIService) DeleteProfile(ctx context.Context, profileId string
 
 // Execute executes the request
 //
-//	@return DeleteAccountGroup200Response
-func (a *ProfilesAPIService) DeleteProfileExecute(r ProfilesAPIDeleteProfileRequest) (*DeleteAccountGroup200Response, *http.Response, error) {
+//	@return ProfileDeleteResponse
+func (a *ProfilesAPIService) DeleteProfileExecute(r ProfilesAPIDeleteProfileRequest) (*ProfileDeleteResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *DeleteAccountGroup200Response
+		localVarReturnValue *ProfileDeleteResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProfilesAPIService.DeleteProfile")
@@ -287,7 +287,7 @@ type ProfilesAPIGetProfileRequest struct {
 	profileId  string
 }
 
-func (r ProfilesAPIGetProfileRequest) Execute() (*GetProfile200Response, *http.Response, error) {
+func (r ProfilesAPIGetProfileRequest) Execute() (*ProfileGetResponse, *http.Response, error) {
 	return r.ApiService.GetProfileExecute(r)
 }
 
@@ -310,13 +310,13 @@ func (a *ProfilesAPIService) GetProfile(ctx context.Context, profileId string) P
 
 // Execute executes the request
 //
-//	@return GetProfile200Response
-func (a *ProfilesAPIService) GetProfileExecute(r ProfilesAPIGetProfileRequest) (*GetProfile200Response, *http.Response, error) {
+//	@return ProfileGetResponse
+func (a *ProfilesAPIService) GetProfileExecute(r ProfilesAPIGetProfileRequest) (*ProfileGetResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetProfile200Response
+		localVarReturnValue *ProfileGetResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProfilesAPIService.GetProfile")
@@ -542,7 +542,7 @@ func (r ProfilesAPIUpdateProfileRequest) UpdateProfileRequest(updateProfileReque
 	return r
 }
 
-func (r ProfilesAPIUpdateProfileRequest) Execute() (*UpdateProfile200Response, *http.Response, error) {
+func (r ProfilesAPIUpdateProfileRequest) Execute() (*ProfileUpdateResponse, *http.Response, error) {
 	return r.ApiService.UpdateProfileExecute(r)
 }
 
@@ -565,13 +565,13 @@ func (a *ProfilesAPIService) UpdateProfile(ctx context.Context, profileId string
 
 // Execute executes the request
 //
-//	@return UpdateProfile200Response
-func (a *ProfilesAPIService) UpdateProfileExecute(r ProfilesAPIUpdateProfileRequest) (*UpdateProfile200Response, *http.Response, error) {
+//	@return ProfileUpdateResponse
+func (a *ProfilesAPIService) UpdateProfileExecute(r ProfilesAPIUpdateProfileRequest) (*ProfileUpdateResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UpdateProfile200Response
+		localVarReturnValue *ProfileUpdateResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProfilesAPIService.UpdateProfile")

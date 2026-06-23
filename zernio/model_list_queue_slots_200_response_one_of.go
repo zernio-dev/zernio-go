@@ -13,17 +13,15 @@ package zernio
 
 import (
 	"encoding/json"
-	"time"
 )
 
 // checks if the ListQueueSlots200ResponseOneOf type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListQueueSlots200ResponseOneOf{}
 
-// ListQueueSlots200ResponseOneOf Single queue response (default behavior)
+// ListQueueSlots200ResponseOneOf All queues response (when all=true)
 type ListQueueSlots200ResponseOneOf struct {
-	Exists    *bool          `json:"exists,omitempty"`
-	Schedule  *QueueSchedule `json:"schedule,omitempty"`
-	NextSlots []time.Time    `json:"nextSlots,omitempty"`
+	Queues []QueueSchedule `json:"queues,omitempty"`
+	Count  *int32          `json:"count,omitempty"`
 }
 
 // NewListQueueSlots200ResponseOneOf instantiates a new ListQueueSlots200ResponseOneOf object
@@ -43,100 +41,68 @@ func NewListQueueSlots200ResponseOneOfWithDefaults() *ListQueueSlots200ResponseO
 	return &this
 }
 
-// GetExists returns the Exists field value if set, zero value otherwise.
-func (o *ListQueueSlots200ResponseOneOf) GetExists() bool {
-	if o == nil || IsNil(o.Exists) {
-		var ret bool
+// GetQueues returns the Queues field value if set, zero value otherwise.
+func (o *ListQueueSlots200ResponseOneOf) GetQueues() []QueueSchedule {
+	if o == nil || IsNil(o.Queues) {
+		var ret []QueueSchedule
 		return ret
 	}
-	return *o.Exists
+	return o.Queues
 }
 
-// GetExistsOk returns a tuple with the Exists field value if set, nil otherwise
+// GetQueuesOk returns a tuple with the Queues field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListQueueSlots200ResponseOneOf) GetExistsOk() (*bool, bool) {
-	if o == nil || IsNil(o.Exists) {
+func (o *ListQueueSlots200ResponseOneOf) GetQueuesOk() ([]QueueSchedule, bool) {
+	if o == nil || IsNil(o.Queues) {
 		return nil, false
 	}
-	return o.Exists, true
+	return o.Queues, true
 }
 
-// HasExists returns a boolean if a field has been set.
-func (o *ListQueueSlots200ResponseOneOf) HasExists() bool {
-	if o != nil && !IsNil(o.Exists) {
+// HasQueues returns a boolean if a field has been set.
+func (o *ListQueueSlots200ResponseOneOf) HasQueues() bool {
+	if o != nil && !IsNil(o.Queues) {
 		return true
 	}
 
 	return false
 }
 
-// SetExists gets a reference to the given bool and assigns it to the Exists field.
-func (o *ListQueueSlots200ResponseOneOf) SetExists(v bool) {
-	o.Exists = &v
+// SetQueues gets a reference to the given []QueueSchedule and assigns it to the Queues field.
+func (o *ListQueueSlots200ResponseOneOf) SetQueues(v []QueueSchedule) {
+	o.Queues = v
 }
 
-// GetSchedule returns the Schedule field value if set, zero value otherwise.
-func (o *ListQueueSlots200ResponseOneOf) GetSchedule() QueueSchedule {
-	if o == nil || IsNil(o.Schedule) {
-		var ret QueueSchedule
+// GetCount returns the Count field value if set, zero value otherwise.
+func (o *ListQueueSlots200ResponseOneOf) GetCount() int32 {
+	if o == nil || IsNil(o.Count) {
+		var ret int32
 		return ret
 	}
-	return *o.Schedule
+	return *o.Count
 }
 
-// GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListQueueSlots200ResponseOneOf) GetScheduleOk() (*QueueSchedule, bool) {
-	if o == nil || IsNil(o.Schedule) {
+func (o *ListQueueSlots200ResponseOneOf) GetCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
-	return o.Schedule, true
+	return o.Count, true
 }
 
-// HasSchedule returns a boolean if a field has been set.
-func (o *ListQueueSlots200ResponseOneOf) HasSchedule() bool {
-	if o != nil && !IsNil(o.Schedule) {
+// HasCount returns a boolean if a field has been set.
+func (o *ListQueueSlots200ResponseOneOf) HasCount() bool {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
 	return false
 }
 
-// SetSchedule gets a reference to the given QueueSchedule and assigns it to the Schedule field.
-func (o *ListQueueSlots200ResponseOneOf) SetSchedule(v QueueSchedule) {
-	o.Schedule = &v
-}
-
-// GetNextSlots returns the NextSlots field value if set, zero value otherwise.
-func (o *ListQueueSlots200ResponseOneOf) GetNextSlots() []time.Time {
-	if o == nil || IsNil(o.NextSlots) {
-		var ret []time.Time
-		return ret
-	}
-	return o.NextSlots
-}
-
-// GetNextSlotsOk returns a tuple with the NextSlots field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ListQueueSlots200ResponseOneOf) GetNextSlotsOk() ([]time.Time, bool) {
-	if o == nil || IsNil(o.NextSlots) {
-		return nil, false
-	}
-	return o.NextSlots, true
-}
-
-// HasNextSlots returns a boolean if a field has been set.
-func (o *ListQueueSlots200ResponseOneOf) HasNextSlots() bool {
-	if o != nil && !IsNil(o.NextSlots) {
-		return true
-	}
-
-	return false
-}
-
-// SetNextSlots gets a reference to the given []time.Time and assigns it to the NextSlots field.
-func (o *ListQueueSlots200ResponseOneOf) SetNextSlots(v []time.Time) {
-	o.NextSlots = v
+// SetCount gets a reference to the given int32 and assigns it to the Count field.
+func (o *ListQueueSlots200ResponseOneOf) SetCount(v int32) {
+	o.Count = &v
 }
 
 func (o ListQueueSlots200ResponseOneOf) MarshalJSON() ([]byte, error) {
@@ -149,14 +115,11 @@ func (o ListQueueSlots200ResponseOneOf) MarshalJSON() ([]byte, error) {
 
 func (o ListQueueSlots200ResponseOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Exists) {
-		toSerialize["exists"] = o.Exists
+	if !IsNil(o.Queues) {
+		toSerialize["queues"] = o.Queues
 	}
-	if !IsNil(o.Schedule) {
-		toSerialize["schedule"] = o.Schedule
-	}
-	if !IsNil(o.NextSlots) {
-		toSerialize["nextSlots"] = o.NextSlots
+	if !IsNil(o.Count) {
+		toSerialize["count"] = o.Count
 	}
 	return toSerialize, nil
 }
