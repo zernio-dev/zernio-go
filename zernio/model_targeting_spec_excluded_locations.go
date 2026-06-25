@@ -18,12 +18,19 @@ import (
 // checks if the TargetingSpecExcludedLocations type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TargetingSpecExcludedLocations{}
 
-// TargetingSpecExcludedLocations Geo to exclude from the audience. A subset of the inclusion geo shape.
+// TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape: excluded cities can carry a radius catchment and excluded custom (lat/lng) pins are supported, both on Meta (excluded_geo_locations).
 type TargetingSpecExcludedLocations struct {
 	Countries []string                             `json:"countries,omitempty"`
 	Regions   []CreateStandaloneAdRequestZipsInner `json:"regions,omitempty"`
-	Cities    []CreateStandaloneAdRequestZipsInner `json:"cities,omitempty"`
-	Zips      []CreateStandaloneAdRequestZipsInner `json:"zips,omitempty"`
+	// Cities to exclude. Optional `radius` + `distance_unit` exclude a catchment around the city (both must be set together or both omitted); Meta honours the radius on excluded cities.
+	Cities []CreateStandaloneAdRequestCitiesInner `json:"cities,omitempty"`
+	Zips   []CreateStandaloneAdRequestZipsInner   `json:"zips,omitempty"`
+	// Named points of interest to exclude. `key` from /v1/ads/targeting/search.
+	Places []CreateStandaloneAdRequestRegionsInner `json:"places,omitempty"`
+	// Named neighbourhood areas to exclude. `key` from /v1/ads/targeting/search.
+	Neighborhoods []CreateStandaloneAdRequestRegionsInner `json:"neighborhoods,omitempty"`
+	// Point-radius (lat/lng) pins to exclude (Meta excluded_geo_locations.custom_locations). Mirrors the inclusion customLocations shape.
+	CustomLocations []CreateStandaloneAdRequestCustomLocationsInner `json:"customLocations,omitempty"`
 }
 
 // NewTargetingSpecExcludedLocations instantiates a new TargetingSpecExcludedLocations object
@@ -108,9 +115,9 @@ func (o *TargetingSpecExcludedLocations) SetRegions(v []CreateStandaloneAdReques
 }
 
 // GetCities returns the Cities field value if set, zero value otherwise.
-func (o *TargetingSpecExcludedLocations) GetCities() []CreateStandaloneAdRequestZipsInner {
+func (o *TargetingSpecExcludedLocations) GetCities() []CreateStandaloneAdRequestCitiesInner {
 	if o == nil || IsNil(o.Cities) {
-		var ret []CreateStandaloneAdRequestZipsInner
+		var ret []CreateStandaloneAdRequestCitiesInner
 		return ret
 	}
 	return o.Cities
@@ -118,7 +125,7 @@ func (o *TargetingSpecExcludedLocations) GetCities() []CreateStandaloneAdRequest
 
 // GetCitiesOk returns a tuple with the Cities field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpecExcludedLocations) GetCitiesOk() ([]CreateStandaloneAdRequestZipsInner, bool) {
+func (o *TargetingSpecExcludedLocations) GetCitiesOk() ([]CreateStandaloneAdRequestCitiesInner, bool) {
 	if o == nil || IsNil(o.Cities) {
 		return nil, false
 	}
@@ -134,8 +141,8 @@ func (o *TargetingSpecExcludedLocations) HasCities() bool {
 	return false
 }
 
-// SetCities gets a reference to the given []CreateStandaloneAdRequestZipsInner and assigns it to the Cities field.
-func (o *TargetingSpecExcludedLocations) SetCities(v []CreateStandaloneAdRequestZipsInner) {
+// SetCities gets a reference to the given []CreateStandaloneAdRequestCitiesInner and assigns it to the Cities field.
+func (o *TargetingSpecExcludedLocations) SetCities(v []CreateStandaloneAdRequestCitiesInner) {
 	o.Cities = v
 }
 
@@ -171,6 +178,102 @@ func (o *TargetingSpecExcludedLocations) SetZips(v []CreateStandaloneAdRequestZi
 	o.Zips = v
 }
 
+// GetPlaces returns the Places field value if set, zero value otherwise.
+func (o *TargetingSpecExcludedLocations) GetPlaces() []CreateStandaloneAdRequestRegionsInner {
+	if o == nil || IsNil(o.Places) {
+		var ret []CreateStandaloneAdRequestRegionsInner
+		return ret
+	}
+	return o.Places
+}
+
+// GetPlacesOk returns a tuple with the Places field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpecExcludedLocations) GetPlacesOk() ([]CreateStandaloneAdRequestRegionsInner, bool) {
+	if o == nil || IsNil(o.Places) {
+		return nil, false
+	}
+	return o.Places, true
+}
+
+// HasPlaces returns a boolean if a field has been set.
+func (o *TargetingSpecExcludedLocations) HasPlaces() bool {
+	if o != nil && !IsNil(o.Places) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlaces gets a reference to the given []CreateStandaloneAdRequestRegionsInner and assigns it to the Places field.
+func (o *TargetingSpecExcludedLocations) SetPlaces(v []CreateStandaloneAdRequestRegionsInner) {
+	o.Places = v
+}
+
+// GetNeighborhoods returns the Neighborhoods field value if set, zero value otherwise.
+func (o *TargetingSpecExcludedLocations) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInner {
+	if o == nil || IsNil(o.Neighborhoods) {
+		var ret []CreateStandaloneAdRequestRegionsInner
+		return ret
+	}
+	return o.Neighborhoods
+}
+
+// GetNeighborhoodsOk returns a tuple with the Neighborhoods field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpecExcludedLocations) GetNeighborhoodsOk() ([]CreateStandaloneAdRequestRegionsInner, bool) {
+	if o == nil || IsNil(o.Neighborhoods) {
+		return nil, false
+	}
+	return o.Neighborhoods, true
+}
+
+// HasNeighborhoods returns a boolean if a field has been set.
+func (o *TargetingSpecExcludedLocations) HasNeighborhoods() bool {
+	if o != nil && !IsNil(o.Neighborhoods) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeighborhoods gets a reference to the given []CreateStandaloneAdRequestRegionsInner and assigns it to the Neighborhoods field.
+func (o *TargetingSpecExcludedLocations) SetNeighborhoods(v []CreateStandaloneAdRequestRegionsInner) {
+	o.Neighborhoods = v
+}
+
+// GetCustomLocations returns the CustomLocations field value if set, zero value otherwise.
+func (o *TargetingSpecExcludedLocations) GetCustomLocations() []CreateStandaloneAdRequestCustomLocationsInner {
+	if o == nil || IsNil(o.CustomLocations) {
+		var ret []CreateStandaloneAdRequestCustomLocationsInner
+		return ret
+	}
+	return o.CustomLocations
+}
+
+// GetCustomLocationsOk returns a tuple with the CustomLocations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpecExcludedLocations) GetCustomLocationsOk() ([]CreateStandaloneAdRequestCustomLocationsInner, bool) {
+	if o == nil || IsNil(o.CustomLocations) {
+		return nil, false
+	}
+	return o.CustomLocations, true
+}
+
+// HasCustomLocations returns a boolean if a field has been set.
+func (o *TargetingSpecExcludedLocations) HasCustomLocations() bool {
+	if o != nil && !IsNil(o.CustomLocations) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLocations gets a reference to the given []CreateStandaloneAdRequestCustomLocationsInner and assigns it to the CustomLocations field.
+func (o *TargetingSpecExcludedLocations) SetCustomLocations(v []CreateStandaloneAdRequestCustomLocationsInner) {
+	o.CustomLocations = v
+}
+
 func (o TargetingSpecExcludedLocations) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +295,15 @@ func (o TargetingSpecExcludedLocations) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Zips) {
 		toSerialize["zips"] = o.Zips
+	}
+	if !IsNil(o.Places) {
+		toSerialize["places"] = o.Places
+	}
+	if !IsNil(o.Neighborhoods) {
+		toSerialize["neighborhoods"] = o.Neighborhoods
+	}
+	if !IsNil(o.CustomLocations) {
+		toSerialize["customLocations"] = o.CustomLocations
 	}
 	return toSerialize, nil
 }

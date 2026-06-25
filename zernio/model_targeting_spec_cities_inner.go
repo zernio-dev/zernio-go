@@ -24,10 +24,10 @@ var _ MappedNullable = &TargetingSpecCitiesInner{}
 type TargetingSpecCitiesInner struct {
 	Key  string  `json:"key"`
 	Name *string `json:"name,omitempty"`
-	// Radius around the city. Requires distanceUnit.
+	// Radius around the city. Requires distance_unit.
 	Radius *float32 `json:"radius,omitempty"`
 	// Required if radius is set.
-	DistanceUnit *string `json:"distanceUnit,omitempty"`
+	DistanceUnit *string `json:"distance_unit,omitempty"`
 }
 
 type _TargetingSpecCitiesInner TargetingSpecCitiesInner
@@ -188,7 +188,7 @@ func (o TargetingSpecCitiesInner) ToMap() (map[string]interface{}, error) {
 		toSerialize["radius"] = o.Radius
 	}
 	if !IsNil(o.DistanceUnit) {
-		toSerialize["distanceUnit"] = o.DistanceUnit
+		toSerialize["distance_unit"] = o.DistanceUnit
 	}
 	return toSerialize, nil
 }
