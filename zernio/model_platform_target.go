@@ -38,6 +38,10 @@ type PlatformTarget struct {
 	PlatformPostUrl *string `json:"platformPostUrl,omitempty"`
 	// Timestamp when the post was published to this platform
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
+	// Present and true only when this Instagram reel was launched as a Trial through Zernio (created with platformSpecificData.trialParams). Use it to segment trial reels in analytics. Note: Instagram's Graph API exposes no readable trial field, so this reflects creation-time intent only. It indicates the reel STARTED as a trial, not whether or when it graduated.
+	IsTrialReel *bool `json:"isTrialReel,omitempty"`
+	// Graduation strategy the trial reel was launched with. Present only when isTrialReel is true.
+	TrialGraduationStrategy *string `json:"trialGraduationStrategy,omitempty"`
 	// Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), system_error (Zernio infra), unknown
@@ -383,6 +387,70 @@ func (o *PlatformTarget) SetPublishedAt(v time.Time) {
 	o.PublishedAt = &v
 }
 
+// GetIsTrialReel returns the IsTrialReel field value if set, zero value otherwise.
+func (o *PlatformTarget) GetIsTrialReel() bool {
+	if o == nil || IsNil(o.IsTrialReel) {
+		var ret bool
+		return ret
+	}
+	return *o.IsTrialReel
+}
+
+// GetIsTrialReelOk returns a tuple with the IsTrialReel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PlatformTarget) GetIsTrialReelOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsTrialReel) {
+		return nil, false
+	}
+	return o.IsTrialReel, true
+}
+
+// HasIsTrialReel returns a boolean if a field has been set.
+func (o *PlatformTarget) HasIsTrialReel() bool {
+	if o != nil && !IsNil(o.IsTrialReel) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsTrialReel gets a reference to the given bool and assigns it to the IsTrialReel field.
+func (o *PlatformTarget) SetIsTrialReel(v bool) {
+	o.IsTrialReel = &v
+}
+
+// GetTrialGraduationStrategy returns the TrialGraduationStrategy field value if set, zero value otherwise.
+func (o *PlatformTarget) GetTrialGraduationStrategy() string {
+	if o == nil || IsNil(o.TrialGraduationStrategy) {
+		var ret string
+		return ret
+	}
+	return *o.TrialGraduationStrategy
+}
+
+// GetTrialGraduationStrategyOk returns a tuple with the TrialGraduationStrategy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PlatformTarget) GetTrialGraduationStrategyOk() (*string, bool) {
+	if o == nil || IsNil(o.TrialGraduationStrategy) {
+		return nil, false
+	}
+	return o.TrialGraduationStrategy, true
+}
+
+// HasTrialGraduationStrategy returns a boolean if a field has been set.
+func (o *PlatformTarget) HasTrialGraduationStrategy() bool {
+	if o != nil && !IsNil(o.TrialGraduationStrategy) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrialGraduationStrategy gets a reference to the given string and assigns it to the TrialGraduationStrategy field.
+func (o *PlatformTarget) SetTrialGraduationStrategy(v string) {
+	o.TrialGraduationStrategy = &v
+}
+
 // GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
 func (o *PlatformTarget) GetErrorMessage() string {
 	if o == nil || IsNil(o.ErrorMessage) {
@@ -518,6 +586,12 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PublishedAt) {
 		toSerialize["publishedAt"] = o.PublishedAt
+	}
+	if !IsNil(o.IsTrialReel) {
+		toSerialize["isTrialReel"] = o.IsTrialReel
+	}
+	if !IsNil(o.TrialGraduationStrategy) {
+		toSerialize["trialGraduationStrategy"] = o.TrialGraduationStrategy
 	}
 	if !IsNil(o.ErrorMessage) {
 		toSerialize["errorMessage"] = o.ErrorMessage
