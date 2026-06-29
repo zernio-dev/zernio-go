@@ -942,7 +942,7 @@ func (r AccountsAPIMoveAccountToProfileRequest) Execute() (*MoveAccountToProfile
 }
 
 /*
-MoveAccountToProfile Move account to a different profile
+MoveAccountToProfile Move account to another profile
 
 Moves a connected social account to a different profile owned by the same
 user. The target profile must belong to the same user as the account.

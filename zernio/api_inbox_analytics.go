@@ -46,7 +46,7 @@ func (r InboxAnalyticsAPIGetInboxConversationAnalyticsRequest) Execute() (*GetIn
 }
 
 /*
-GetInboxConversationAnalytics Get analytics for a single conversation
+GetInboxConversationAnalytics Get conversation analytics
 
 Per-conversation inbox analytics. The inbox analog of
 /v1/analytics/post-timeline — one conversation, daily totals,
@@ -252,7 +252,7 @@ func (r InboxAnalyticsAPIGetInboxHeatmapRequest) Execute() (*GetInboxHeatmap200R
 }
 
 /*
-GetInboxHeatmap Get inbox day-of-week × hour-of-day heatmap
+GetInboxHeatmap Get day × hour heatmap
 
 Day-of-week × hour-of-day breakdown of inbox messages. Buckets are
 sparse — only cells with at least one event are returned; clients
@@ -1230,7 +1230,7 @@ func (r InboxAnalyticsAPIListInboxConversationAnalyticsRequest) Execute() (*List
 }
 
 /*
-ListInboxConversationAnalytics List conversations with inbox analytics
+ListInboxConversationAnalytics List conversation analytics
 
 Per-conversation listing with per-row totals + first/last message
 timestamps. The inbox analog of GET /v1/analytics (posts listing) —

@@ -450,7 +450,7 @@ func (r WhatsAppAPICreateWhatsAppDatasetRequest) Execute() (*CreateWhatsAppDatas
 }
 
 /*
-CreateWhatsAppDataset Provision CTWA conversions dataset
+CreateWhatsAppDataset Provision CTWA dataset
 
 Creates (or fetches, if one already exists) the Meta dataset that
 Click-to-WhatsApp ad events are reported against via the Conversions
@@ -2294,7 +2294,7 @@ func (r WhatsAppAPIListWhatsAppConversionsRequest) Execute() (*ListWhatsAppConve
 }
 
 /*
-ListWhatsAppConversions List recent WhatsApp conversion events
+ListWhatsAppConversions List conversion events
 
 Returns the most recent conversion events sent through
 `POST /v1/whatsapp/conversions` for the given WhatsApp account.

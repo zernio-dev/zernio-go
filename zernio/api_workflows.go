@@ -1467,7 +1467,7 @@ func (r WorkflowsAPIRestoreWorkflowVersionRequest) Execute() (*RestoreWorkflowVe
 }
 
 /*
-RestoreWorkflowVersion Restore a previous workflow version
+RestoreWorkflowVersion Restore a workflow version
 
 Replace the current graph with the named version's snapshot. Before the swap, the current graph is itself snapshotted as a new version, so a restore is reversible. The workflow must be in `draft` or `paused` status (same gate as a normal graph edit). The returned workflow carries `restoredFromVersion` so the UI can surface which version was rolled back to.
 

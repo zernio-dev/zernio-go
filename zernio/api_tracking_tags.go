@@ -41,7 +41,7 @@ func (r TrackingTagsAPIAddTrackingTagSharedAccountRequest) Execute() (*AddTracki
 }
 
 /*
-AddTrackingTagSharedAccount Share a tracking tag with an ad account
+AddTrackingTagSharedAccount Share with an ad account
 
 Shares the pixel with another ad account so campaigns/audiences in that
 account can use it. Requires that you administer both the pixel's owning
@@ -174,7 +174,7 @@ func (r TrackingTagsAPICreateTrackingTagRequest) Execute() (*CreateTrackingTag20
 }
 
 /*
-CreateTrackingTag Create a tracking tag (Meta Pixel)
+CreateTrackingTag Create a tracking tag
 
 Creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`
 — `name` is the only input). Returns the created tag including its
@@ -307,7 +307,7 @@ func (r TrackingTagsAPIGetTrackingTagRequest) Execute() (*CreateTrackingTag201Re
 }
 
 /*
-GetTrackingTag Fetch a single tracking tag (Meta Pixel)
+GetTrackingTag Get a tracking tag
 
 Returns the full tag record including the base-code `code` snippet,
 `lastFiredTime`, `ownerBusinessId`, `isUnavailable`, etc. Meta only
@@ -449,7 +449,7 @@ func (r TrackingTagsAPIGetTrackingTagStatsRequest) Execute() (*GetTrackingTagSta
 }
 
 /*
-GetTrackingTagStats Aggregated event stats for a tracking tag (Meta Pixel)
+GetTrackingTagStats Get aggregated event stats
 
 Returns aggregated event counts for the pixel (`GET /{pixel_id}/stats`).
 Rows are passed through from Meta as-is — their shape depends on the
@@ -584,7 +584,7 @@ func (r TrackingTagsAPIListTrackingTagSharedAccountsRequest) Execute() (*ListTra
 }
 
 /*
-ListTrackingTagSharedAccounts List ad accounts a tracking tag is shared with
+ListTrackingTagSharedAccounts List accounts it is shared with
 
 Meta only (platform `metaads`); other platforms return 405.
 
@@ -709,7 +709,7 @@ func (r TrackingTagsAPIListTrackingTagsRequest) Execute() (*ListTrackingTags200R
 }
 
 /*
-ListTrackingTags List tracking tags (Meta Pixels)
+ListTrackingTags List tracking tags
 
 Returns the tracking tags (Meta Pixels) the connected ads account can
 see. Pass `?adAccountId=act_...` to scope the list to a single ad
@@ -845,7 +845,7 @@ func (r TrackingTagsAPIRemoveTrackingTagSharedAccountRequest) Execute() (*http.R
 }
 
 /*
-RemoveTrackingTagSharedAccount Stop sharing a tracking tag with an ad account
+RemoveTrackingTagSharedAccount Stop sharing with an account
 
 `adAccountId` may be passed as a query parameter (recommended) or as a
 JSON body field for clients that can send DELETE bodies. Meta only
@@ -963,7 +963,7 @@ func (r TrackingTagsAPIUpdateTrackingTagRequest) Execute() (*CreateTrackingTag20
 }
 
 /*
-UpdateTrackingTag Update a tracking tag (Meta Pixel)
+UpdateTrackingTag Update a tracking tag
 
 Partial-update a pixel. Whitelisted fields: `name` (rename),
 `enableAutomaticMatching`, `automaticMatchingFields`,

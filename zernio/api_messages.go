@@ -173,7 +173,7 @@ func (r MessagesAPICreateInboxConversationRequest) Execute() (*CreateInboxConver
 }
 
 /*
-CreateInboxConversation Create conversation (send a WhatsApp template)
+CreateInboxConversation Create conversation
 
 Initiate a new direct message conversation with a specified user. If a conversation already exists with the recipient, the message is added to the existing thread.
 

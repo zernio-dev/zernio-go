@@ -39,7 +39,7 @@ func (r WhatsAppSandboxAPICreateWhatsAppSandboxSessionRequest) Execute() (*Creat
 }
 
 /*
-CreateWhatsAppSandboxSession Start a sandbox activation for a phone
+CreateWhatsAppSandboxSession Start a sandbox activation
 
 Creates (or refreshes) a pending sandbox session for the given phone and
 immediately fires the verified sandbox template from the shared sandbox

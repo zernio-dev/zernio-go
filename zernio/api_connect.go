@@ -170,7 +170,7 @@ func (r ConnectAPICompleteWhatsAppPhoneSelectionRequest) Execute() (*CompleteWha
 }
 
 /*
-CompleteWhatsAppPhoneSelection Complete WhatsApp phone number selection
+CompleteWhatsAppPhoneSelection Complete number selection
 
 Bind a specific WhatsApp phone number to the Zernio profile after the user picks one from `listWhatsAppPhoneNumbers`. Exchanges the short-lived OAuth token for a long-lived token, subscribes the WABA to webhooks, and creates the SocialAccount.
 
@@ -327,7 +327,7 @@ func (r ConnectAPIConfigureTikTokAdsBrandIdentityRequest) Execute() (*ConfigureT
 }
 
 /*
-ConfigureTikTokAdsBrandIdentity Configure TikTok Ads Brand Identity
+ConfigureTikTokAdsBrandIdentity Set TikTok brand identity
 
 Set or update the Brand Identity (display name + avatar) for a
 `tiktokads` SocialAccount. TikTok requires every ad to carry an
@@ -3191,7 +3191,7 @@ func (r ConnectAPIListWhatsAppPhoneNumbersRequest) Execute() (*ListWhatsAppPhone
 }
 
 /*
-ListWhatsAppPhoneNumbers List WhatsApp phone numbers for selection
+ListWhatsAppPhoneNumbers List numbers for selection
 
 Fetch the WhatsApp phone numbers available across the user's WhatsApp Business Accounts (WABAs) after a headless OAuth flow.
 

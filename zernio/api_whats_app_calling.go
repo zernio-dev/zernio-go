@@ -425,7 +425,7 @@ func (r WhatsAppCallingAPIGetWhatsAppCallEstimateRequest) Execute() (*GetWhatsAp
 }
 
 /*
-GetWhatsAppCallEstimate Estimate per-minute cost for a destination
+GetWhatsAppCallEstimate Estimate per-minute cost
 
 Returns a zero-markup estimated cost for an outbound call to the
 given destination, broken down by Meta + Telnyx + recording line
@@ -564,7 +564,7 @@ func (r WhatsAppCallingAPIGetWhatsAppCallPermissionsRequest) Execute() (*GetWhat
 }
 
 /*
-GetWhatsAppCallPermissions Check call permission for a consumer
+GetWhatsAppCallPermissions Check call permission
 
 Returns the permission state and the list of available actions for
 a given consumer wa_id (e.g. `start_call`, `send_call_permission_request`).

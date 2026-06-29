@@ -41,7 +41,7 @@ func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Execute()
 }
 
 /*
-CheckWhatsAppNumberAvailability Check a country's availability + address constraint
+CheckWhatsAppNumberAvailability Check country availability
 
 Pre-purchase check, so you can warn BEFORE a customer invests in KYC
 (regulated review is async, 1-3 days). Tells you whether we have
@@ -435,7 +435,7 @@ func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest) Execute() (*GetW
 }
 
 /*
-GetWhatsAppNumberKycForm Get regulated-number KYC form spec
+GetWhatsAppNumberKycForm Get KYC form spec
 
 For a Tier 3/4 country, the fields the end customer must provide (Telnyx
 regulatory requirements) before a number can be ordered: text, date,
@@ -556,7 +556,7 @@ func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest) Execute() (*
 }
 
 /*
-GetWhatsAppNumberRemediation Get the declined requirements to fix
+GetWhatsAppNumberRemediation Get declined requirements
 
 For a number in `regulatory_declined`, returns ONLY the requirements the
 reviewer flagged declined, as a form spec (same shape as the KYC form GET).
@@ -1324,7 +1324,7 @@ func (r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) Execute() (*Remed
 }
 
 /*
-RemediateWhatsAppNumber Fix a declined number and re-submit
+RemediateWhatsAppNumber Resubmit a declined number
 
 Submit corrected values/documents for the declined requirement(s). We
 PATCH them onto the SAME requirement group and re-submit it for approval;
@@ -1487,7 +1487,7 @@ func (r WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest) Execute() 
 }
 
 /*
-SearchAvailableWhatsAppNumbers Search available numbers to purchase
+SearchAvailableWhatsAppNumbers Search available numbers
 
 Search the provider's inventory for numbers available to purchase in a
 country (default US). Optional filters narrow the results. The country
@@ -1631,7 +1631,7 @@ func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) Execute() (*Submi
 }
 
 /*
-SubmitWhatsAppNumberKyc Submit regulated-number KYC
+SubmitWhatsAppNumberKyc Submit KYC
 
 Submit the end customer's KYC (textual values, uploaded documents,
 address) for a Tier 3/4 country. Documents are streamed straight to the
@@ -1775,7 +1775,7 @@ func (r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) Execute()
 }
 
 /*
-UploadWhatsAppNumberKycDocument Upload a single regulated-number KYC document
+UploadWhatsAppNumberKycDocument Upload a KYC document
 
 Upload ONE document and get back its provider document id, to reference
 from POST /v1/whatsapp/phone-numbers/kyc via `documents[].documentId`.
@@ -1905,7 +1905,7 @@ func (r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) Execute(
 }
 
 /*
-ValidateWhatsAppNumberKycAddress Pre-validate a regulated-number KYC address (Tier 4)
+ValidateWhatsAppNumberKycAddress Pre-validate KYC address
 
 Optional early check for the address step of a Tier 4 (end-user identity)
 registration: validates a postal address for deliverability BEFORE the full

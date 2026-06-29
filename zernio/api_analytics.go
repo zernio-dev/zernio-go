@@ -2410,7 +2410,7 @@ func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) Execute() (*Instagr
 }
 
 /*
-GetLinkedInOrgAggregateAnalytics Get LinkedIn organization page aggregate analytics
+GetLinkedInOrgAggregateAnalytics Get LinkedIn org analytics
 
 Returns aggregate analytics for a LinkedIn organization page. Parallel to
 /v1/accounts/{id}/linkedin-aggregate-analytics (which handles personal accounts only).
@@ -3461,7 +3461,7 @@ func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) Execute() (*InstagramAccou
 }
 
 /*
-GetYouTubeChannelInsights Get YouTube channel-level insights
+GetYouTubeChannelInsights Get YouTube channel insights
 
 Returns channel-scoped aggregate metrics from YouTube Analytics API v2. Saves you
 from looping /v1/analytics/youtube/daily-views over every video when you only need

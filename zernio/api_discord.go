@@ -1101,7 +1101,7 @@ func (r DiscordAPIListDiscordPinnedMessagesRequest) Execute() (*ListDiscordPinne
 }
 
 /*
-ListDiscordPinnedMessages List pinned messages in a Discord channel
+ListDiscordPinnedMessages List pinned messages
 
 Returns the channel's pinned messages, sorted most-recently-pinned
 first. Discord caps a channel at 50 pinned messages and returns the

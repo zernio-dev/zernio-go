@@ -716,7 +716,7 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) Execute() (*GetAdsTimeline200Respon
 }
 
 /*
-GetAdsTimeline Get daily aggregate ad metrics for an account
+GetAdsTimeline Get daily account metrics
 
 Returns daily aggregate metrics across all ads in a SocialAccount as a single
 time series — one row per calendar day in the requested range. Use this for
@@ -1084,7 +1084,7 @@ func (r AdCampaignsAPIUpdateAdCampaignRequest) Execute() (*UpdateAdCampaign200Re
 }
 
 /*
-UpdateAdCampaign Update a campaign (budget and/or bid strategy)
+UpdateAdCampaign Update a campaign
 
 Campaign-level edits. At least one of `budget` or `bidStrategy` is required.
 
@@ -1345,7 +1345,7 @@ func (r AdCampaignsAPIUpdateAdSetRequest) Execute() (*UpdateAdSet200Response, *h
 }
 
 /*
-UpdateAdSet Update an ad set (budget, status, and/or bid strategy)
+UpdateAdSet Update an ad set
 
 Ad-set-level writes. Use this for ABO budget updates, ad-set-scoped
 pause/resume, and bid-strategy edits. At least one of `budget`,

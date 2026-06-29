@@ -41,7 +41,7 @@ func (r AdsAPIAddConversionAssociationsRequest) Execute() (*AddConversionAssocia
 }
 
 /*
-AddConversionAssociations Associate campaigns with a conversion destination
+AddConversionAssociations Associate campaigns
 
 Associate one or more campaigns with this conversion rule. Returns a
 per-campaign success/failure result so callers can retry only the
@@ -171,7 +171,7 @@ func (r AdsAPIAdjustConversionsRequest) Execute() (*AdjustConversions200Response
 }
 
 /*
-AdjustConversions Adjust already-uploaded conversions (Google only)
+AdjustConversions Adjust uploaded conversions
 
 Adjust conversions that were previously uploaded via `POST /v1/ads/conversions` —
 retract them, restate their value, or enhance them with first-party data. Requires
@@ -321,7 +321,7 @@ func (r AdsAPIArchiveLeadFormRequest) Execute() (*ArchiveLeadForm200Response, *h
 }
 
 /*
-ArchiveLeadForm Archive a Lead Gen form
+ArchiveLeadForm Archive a lead form
 
 Meta has no hard delete for forms; this archives the form (status=ARCHIVED).
 
@@ -567,7 +567,7 @@ func (r AdsAPICreateConversionDestinationRequest) Execute() (*CreateConversionDe
 }
 
 /*
-CreateConversionDestination Create a conversion destination (LinkedIn, Google Ads)
+CreateConversionDestination Create a conversion destination
 
 Create a new conversion destination on the platform. Supported for
 LinkedIn (conversion rule) and Google Ads (conversion action). Meta
@@ -724,7 +724,7 @@ func (r AdsAPICreateCtwaAdRequest) Execute() (*CreateCtwaAd201Response, *http.Re
 }
 
 /*
-CreateCtwaAd Create Click-to-WhatsApp ad(s)
+CreateCtwaAd Create Click-to-WhatsApp ad
 
 Creates one or more Click-to-WhatsApp (CTWA) ads on Meta under a single campaign and ad set. When tapped, each ad opens a WhatsApp conversation with the business attached to the supplied Facebook Page. The full hierarchy (campaign, ad set, creative(s), ad(s)) is created and activated in one call. The CTA is locked to WHATSAPP_MESSAGE and the destination is hard-coded to api.whatsapp.com/send; Meta resolves the actual WhatsApp number from the Page-to-WA pairing configured in Page settings or Business Manager.
 
@@ -854,7 +854,7 @@ func (r AdsAPICreateLeadFormRequest) Execute() (*CreateLeadForm200Response, *htt
 }
 
 /*
-CreateLeadForm Create a Lead Gen (Instant) form
+CreateLeadForm Create a lead form
 
 Creates a Lead Gen form on the connected Facebook Page (POST /{page-id}/leadgen_forms). NOT idempotent — a retry creates a second form. Prefilled question types (EMAIL, PHONE, FULL_NAME, …) must omit label/key; CUSTOM questions require both. Requires the Ads add-on.
 
@@ -1111,7 +1111,7 @@ func (r AdsAPICreateTestLeadRequest) Execute() (*CreateTestLead200Response, *htt
 }
 
 /*
-CreateTestLead Create a synthetic test lead
+CreateTestLead Create a test lead
 
 Submits a test lead against the form (POST /{form-id}/test_leads) to exercise retrieval without waiting for real ad impressions. Meta allows one test lead per form at a time.
 
@@ -1363,7 +1363,7 @@ func (r AdsAPIDeleteConversionDestinationRequest) Execute() (*http.Response, err
 }
 
 /*
-DeleteConversionDestination Soft-delete a conversion destination
+DeleteConversionDestination Delete a conversion destination
 
 LinkedIn-only today. LinkedIn does not expose hard-delete on conversion
 rules — what their UI calls "delete" is the same `enabled: false` flip
@@ -2093,7 +2093,7 @@ func (r AdsAPIGetAdTrackingTagsRequest) Execute() (*GetAdTrackingTags200Response
 }
 
 /*
-GetAdTrackingTags Read an ad's click-URL tracking tags
+GetAdTrackingTags Get ad tracking tags
 
 Unified read of the platform's native click-URL tracking params.
   - Meta (facebook/instagram): the creative's `url_tags` (and template_url_spec).
@@ -2222,7 +2222,7 @@ func (r AdsAPIGetConversionDestinationRequest) Execute() (*GetConversionDestinat
 }
 
 /*
-GetConversionDestination Fetch a single conversion destination
+GetConversionDestination Get a conversion destination
 
 LinkedIn-only today. Returns the full destination record for one
 conversion rule. The `adAccountId` query parameter is required because
@@ -2371,7 +2371,7 @@ func (r AdsAPIGetConversionMetricsRequest) Execute() (*GetConversionMetrics200Re
 }
 
 /*
-GetConversionMetrics Fetch attribution metrics for a conversion destination
+GetConversionMetrics Get attribution metrics
 
 LinkedIn-only today. Returns conversion-attribution metrics
 (`externalWebsiteConversions`, `externalWebsitePostClickConversions`,
@@ -2532,7 +2532,7 @@ func (r AdsAPIGetConversionsQualityRequest) Execute() (*GetConversionsQuality200
 }
 
 /*
-GetConversionsQuality Read Event Match Quality + coverage for a Meta pixel
+GetConversionsQuality Get Event Match Quality
 
 Reads Meta Event Match Quality (EMQ) and pixel↔CAPI event coverage for a
 pixel/dataset, live from Meta's Dataset Quality API. Web events only (a
@@ -2660,7 +2660,7 @@ func (r AdsAPIGetLeadFormRequest) Execute() (*GetLeadForm200Response, *http.Resp
 }
 
 /*
-GetLeadForm Get a single Lead Gen form
+GetLeadForm Get a lead form
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param formId
@@ -3585,7 +3585,7 @@ func (r AdsAPIListConversionAssociationsRequest) Execute() (*ListConversionAssoc
 }
 
 /*
-ListConversionAssociations List campaigns associated with a conversion destination
+ListConversionAssociations List associated campaigns
 
 LinkedIn-only today. Returns the campaigns currently associated with
 this conversion rule. Note that auto-association on rule creation
@@ -3710,7 +3710,7 @@ func (r AdsAPIListConversionDestinationsRequest) Execute() (*ListConversionDesti
 }
 
 /*
-ListConversionDestinations List destinations for the Conversions API
+ListConversionDestinations List conversion destinations
 
 Returns the list of pixels (Meta), conversion actions (Google), or
 conversion rules (LinkedIn) accessible to the connected ads account.
@@ -4012,7 +4012,7 @@ func (r AdsAPIListLeadFormsRequest) Execute() (*ListLeadForms200Response, *http.
 }
 
 /*
-ListLeadForms List Lead Gen (Instant) forms
+ListLeadForms List lead forms
 
 Lists the Lead Gen forms owned by the connected Facebook Page. Requires the Ads add-on.
 
@@ -4171,7 +4171,7 @@ func (r AdsAPIListLeadsRequest) Execute() (*ListLeads200Response, *http.Response
 }
 
 /*
-ListLeads List submitted leads (cross-form CRM view)
+ListLeads List submitted leads
 
 Returns persisted Meta Lead Gen leads for your team, newest-first, with keyset pagination on `cursor`. Leads are ingested in real time from the `leadgen` webhook. Requires the Ads add-on.
 
@@ -4315,7 +4315,7 @@ func (r AdsAPIListWhatsAppConversionsRequest) Execute() (*ListWhatsAppConversion
 }
 
 /*
-ListWhatsAppConversions List recent WhatsApp conversion events
+ListWhatsAppConversions List conversion events
 
 Returns the most recent conversion events sent through
 `POST /v1/whatsapp/conversions` for the given WhatsApp account.
@@ -4462,7 +4462,7 @@ func (r AdsAPIRemoveConversionAssociationsRequest) Execute() (*AddConversionAsso
 }
 
 /*
-RemoveConversionAssociations Remove campaign↔conversion associations
+RemoveConversionAssociations Remove associated campaigns
 
 Remove one or more campaign associations from this conversion rule.
 Pass `adAccountId` and `campaignIds` as query parameters
@@ -4607,7 +4607,7 @@ func (r AdsAPISearchAdInterestsRequest) Execute() (*SearchAdInterests200Response
 }
 
 /*
-SearchAdInterests Search targeting interests (deprecated)
+SearchAdInterests Search targeting interests
 
 Deprecated alias for `GET /v1/ads/targeting/search?dimension=interest`. Kept for
 backward compatibility, it returns the legacy `{ interests: [...] }` shape rather
@@ -4936,7 +4936,7 @@ func (r AdsAPISendConversionsRequest) Execute() (*SendConversions200Response, *h
 }
 
 /*
-SendConversions Send conversion events to an ad platform
+SendConversions Send conversion events
 
 Relay one or more conversion events to the target ad platform's native Conversions API.
 Platform is inferred from the provided `accountId`. Requires the Ads add-on.
@@ -5399,7 +5399,7 @@ func (r AdsAPIUpdateAdTrackingTagsRequest) Execute() (*http.Response, error) {
 }
 
 /*
-UpdateAdTrackingTags Set/update an ad's click-URL tracking tags
+UpdateAdTrackingTags Set ad tracking tags
 
 Unified update. Send only the fields for the ad's platform:
 
