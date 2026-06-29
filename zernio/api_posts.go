@@ -771,6 +771,7 @@ type PostsAPIListPostsRequest struct {
 	ApiService    *PostsAPIService
 	page          *int32
 	limit         *int32
+	source        *string
 	status        *string
 	platform      *string
 	profileId     *string
@@ -792,6 +793,12 @@ func (r PostsAPIListPostsRequest) Page(page int32) PostsAPIListPostsRequest {
 // Page size
 func (r PostsAPIListPostsRequest) Limit(limit int32) PostsAPIListPostsRequest {
 	r.limit = &limit
+	return r
+}
+
+// Which collection to read. &#x60;zernio&#x60; (default) returns posts authored through Zernio. &#x60;external&#x60; returns posts synced from the platform (existing/historical posts that were published outside Zernio). Combine with &#x60;accountId&#x60; and paginate via &#x60;page&#x60;/&#x60;limit&#x60; to walk the full synced history (we keep up to the last ~12 months per account).
+func (r PostsAPIListPostsRequest) Source(source string) PostsAPIListPostsRequest {
+	r.source = &source
 	return r
 }
 
@@ -902,6 +909,13 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 		var defaultValue int32 = 10
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
+	}
+	if r.source != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
+	} else {
+		var defaultValue string = "zernio"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "source", defaultValue, "form", "")
+		r.source = &defaultValue
 	}
 	if r.status != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
