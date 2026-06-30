@@ -62,6 +62,8 @@ type AdTreeCampaign struct {
 	RoasAverageFloor NullableFloat32            `json:"roasAverageFloor,omitempty"`
 	PromotedObject   *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
 	AdSets           []AdTreeAdSet              `json:"adSets,omitempty"`
+	// Per-day metric series for this campaign. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` (any `dailyLevel`). This is the per-campaign daily trend — summing its additive fields reproduces the campaign `metrics` total.
+	Daily []AdDailyMetrics `json:"daily,omitempty"`
 }
 
 // NewAdTreeCampaign instantiates a new AdTreeCampaign object
@@ -1071,6 +1073,38 @@ func (o *AdTreeCampaign) SetAdSets(v []AdTreeAdSet) {
 	o.AdSets = v
 }
 
+// GetDaily returns the Daily field value if set, zero value otherwise.
+func (o *AdTreeCampaign) GetDaily() []AdDailyMetrics {
+	if o == nil || IsNil(o.Daily) {
+		var ret []AdDailyMetrics
+		return ret
+	}
+	return o.Daily
+}
+
+// GetDailyOk returns a tuple with the Daily field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeCampaign) GetDailyOk() ([]AdDailyMetrics, bool) {
+	if o == nil || IsNil(o.Daily) {
+		return nil, false
+	}
+	return o.Daily, true
+}
+
+// HasDaily returns a boolean if a field has been set.
+func (o *AdTreeCampaign) HasDaily() bool {
+	if o != nil && !IsNil(o.Daily) {
+		return true
+	}
+
+	return false
+}
+
+// SetDaily gets a reference to the given []AdDailyMetrics and assigns it to the Daily field.
+func (o *AdTreeCampaign) SetDaily(v []AdDailyMetrics) {
+	o.Daily = v
+}
+
 func (o AdTreeCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1161,6 +1195,9 @@ func (o AdTreeCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AdSets) {
 		toSerialize["adSets"] = o.AdSets
+	}
+	if !IsNil(o.Daily) {
+		toSerialize["daily"] = o.Daily
 	}
 	return toSerialize, nil
 }

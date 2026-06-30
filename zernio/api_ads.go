@@ -2203,6 +2203,177 @@ func (a *AdsAPIService) GetAdTrackingTagsExecute(r AdsAPIGetAdTrackingTagsReques
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIGetCampaignAnalyticsRequest struct {
+	ctx        context.Context
+	ApiService *AdsAPIService
+	campaignId string
+	platform   *string
+	fromDate   *string
+	toDate     *string
+	breakdowns *string
+}
+
+// Disambiguate when the campaign id exists across platforms (e.g. facebook, instagram).
+func (r AdsAPIGetCampaignAnalyticsRequest) Platform(platform string) AdsAPIGetCampaignAnalyticsRequest {
+	r.platform = &platform
+	return r
+}
+
+// Start of date range (YYYY-MM-DD). Defaults to 90 days ago.
+func (r AdsAPIGetCampaignAnalyticsRequest) FromDate(fromDate string) AdsAPIGetCampaignAnalyticsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End of date range (YYYY-MM-DD). Defaults to today. Max 730-day range.
+func (r AdsAPIGetCampaignAnalyticsRequest) ToDate(toDate string) AdsAPIGetCampaignAnalyticsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Comma-separated breakdown dimensions (Meta only): age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.
+func (r AdsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) AdsAPIGetCampaignAnalyticsRequest {
+	r.breakdowns = &breakdowns
+	return r
+}
+
+func (r AdsAPIGetCampaignAnalyticsRequest) Execute() (*GetCampaignAnalytics200Response, *http.Response, error) {
+	return r.ApiService.GetCampaignAnalyticsExecute(r)
+}
+
+/*
+GetCampaignAnalytics Get campaign analytics
+
+Returns performance analytics for a whole campaign in one call: summary metrics, a daily
+timeline over the requested date range (summed across the campaign's ads), and optional
+demographic breakdowns. Breakdowns are fetched live from Meta at the campaign level (one call
+per dimension, no per-ad fan-out), so an agency dashboard gets campaign-level age/gender/etc.
+without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
+`platform` when a campaign id could be ambiguous across platforms. If no date range is provided,
+defaults to the last 90 days. Date range is capped at 730 days max.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Platform campaign id (platformCampaignId).
+	@return AdsAPIGetCampaignAnalyticsRequest
+*/
+func (a *AdsAPIService) GetCampaignAnalytics(ctx context.Context, campaignId string) AdsAPIGetCampaignAnalyticsRequest {
+	return AdsAPIGetCampaignAnalyticsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetCampaignAnalytics200Response
+func (a *AdsAPIService) GetCampaignAnalyticsExecute(r AdsAPIGetCampaignAnalyticsRequest) (*GetCampaignAnalytics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetCampaignAnalytics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetCampaignAnalytics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/analytics"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.breakdowns != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdowns", r.breakdowns, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIGetConversionDestinationRequest struct {
 	ctx           context.Context
 	ApiService    *AdsAPIService

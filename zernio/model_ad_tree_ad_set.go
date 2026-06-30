@@ -37,8 +37,10 @@ type AdTreeAdSet struct {
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Populated when bidStrategy is LOWEST_COST_WITH_MIN_ROAS.
 	RoasAverageFloor NullableFloat32            `json:"roasAverageFloor,omitempty"`
 	PromotedObject   *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
-	// Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent).
+	// Individual ads within this ad set (capped at 100). Returns a subset of Ad fields from the aggregation (core fields like _id, name, platform, status, budget, metrics, creative, goal are included; targeting and schedule may be absent). When `timeIncrement=1&dailyLevel=ad`, each entry also carries a `daily[]` array of `AdDailyMetrics`.
 	Ads []Ad `json:"ads,omitempty"`
+	// Per-day metric series for this ad set. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` and `dailyLevel` is `adset` or `ad`.
+	Daily []AdDailyMetrics `json:"daily,omitempty"`
 }
 
 // NewAdTreeAdSet instantiates a new AdTreeAdSet object
@@ -518,6 +520,38 @@ func (o *AdTreeAdSet) SetAds(v []Ad) {
 	o.Ads = v
 }
 
+// GetDaily returns the Daily field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetDaily() []AdDailyMetrics {
+	if o == nil || IsNil(o.Daily) {
+		var ret []AdDailyMetrics
+		return ret
+	}
+	return o.Daily
+}
+
+// GetDailyOk returns a tuple with the Daily field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetDailyOk() ([]AdDailyMetrics, bool) {
+	if o == nil || IsNil(o.Daily) {
+		return nil, false
+	}
+	return o.Daily, true
+}
+
+// HasDaily returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasDaily() bool {
+	if o != nil && !IsNil(o.Daily) {
+		return true
+	}
+
+	return false
+}
+
+// SetDaily gets a reference to the given []AdDailyMetrics and assigns it to the Daily field.
+func (o *AdTreeAdSet) SetDaily(v []AdDailyMetrics) {
+	o.Daily = v
+}
+
 func (o AdTreeAdSet) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -566,6 +600,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ads) {
 		toSerialize["ads"] = o.Ads
+	}
+	if !IsNil(o.Daily) {
+		toSerialize["daily"] = o.Daily
 	}
 	return toSerialize, nil
 }

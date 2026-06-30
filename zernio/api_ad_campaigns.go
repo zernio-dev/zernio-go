@@ -421,20 +421,22 @@ func (a *AdCampaignsAPIService) DuplicateAdCampaignExecute(r AdCampaignsAPIDupli
 }
 
 type AdCampaignsAPIGetAdTreeRequest struct {
-	ctx         context.Context
-	ApiService  *AdCampaignsAPIService
-	page        *int32
-	limit       *int32
-	source      *string
-	platform    *string
-	status      *AdStatus
-	adAccountId *string
-	accountId   *string
-	profileId   *string
-	campaignId  *string
-	fromDate    *string
-	toDate      *string
-	sort        *string
+	ctx           context.Context
+	ApiService    *AdCampaignsAPIService
+	page          *int32
+	limit         *int32
+	source        *string
+	platform      *string
+	status        *AdStatus
+	adAccountId   *string
+	accountId     *string
+	profileId     *string
+	campaignId    *string
+	fromDate      *string
+	toDate        *string
+	sort          *string
+	timeIncrement *int32
+	dailyLevel    *string
 }
 
 // Page number (1-based)
@@ -508,6 +510,18 @@ func (r AdCampaignsAPIGetAdTreeRequest) Sort(sort string) AdCampaignsAPIGetAdTre
 	return r
 }
 
+// Set to &#x60;1&#x60; to also return a daily breakdown. Mirrors Meta Insights&#39; &#x60;time_increment&#x3D;1&#x60;: each node gains a &#x60;daily[]&#x60; array of per-day metrics (same fields as the aggregated &#x60;metrics&#x60;) alongside the range total, so you get per-entity daily trends in ONE call instead of calling the tree once per day. Only &#x60;1&#x60; (daily) is supported. The daily series covers the same date range and uses the same source data as &#x60;metrics&#x60;. See &#x60;dailyLevel&#x60; to control which levels carry it.
+func (r AdCampaignsAPIGetAdTreeRequest) TimeIncrement(timeIncrement int32) AdCampaignsAPIGetAdTreeRequest {
+	r.timeIncrement = &timeIncrement
+	return r
+}
+
+// Which tree levels get the &#x60;daily[]&#x60; series when &#x60;timeIncrement&#x3D;1&#x60;. &#x60;campaign&#x60; (default) attaches it on campaign nodes only — the common per-campaign-trend case, and the smallest payload. &#x60;adset&#x60; adds it on ad sets too; &#x60;ad&#x60; adds it on every ad in &#x60;ads[]&#x60; as well (heaviest — a long range × up to 100 ads per ad set). Scope with &#x60;campaignId&#x60; to keep &#x60;ad&#x60;-level responses small. Ignored when &#x60;timeIncrement&#x60; is unset.
+func (r AdCampaignsAPIGetAdTreeRequest) DailyLevel(dailyLevel string) AdCampaignsAPIGetAdTreeRequest {
+	r.dailyLevel = &dailyLevel
+	return r
+}
+
 func (r AdCampaignsAPIGetAdTreeRequest) Execute() (*GetAdTree200Response, *http.Response, error) {
 	return r.ApiService.GetAdTreeExecute(r)
 }
@@ -521,6 +535,11 @@ Metrics are computed over an optional date range, then rolled up from ad level t
 and campaign levels. Pagination is at the campaign level. Ads without a campaign or ad set
 ID are grouped into synthetic "Ungrouped" buckets.
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
+
+Pass `timeIncrement=1` to also get a daily breakdown: each node gains a `daily[]` array of
+per-day metrics (same fields as the aggregated `metrics`) in the same call. Use `dailyLevel`
+(`campaign` default, or `adset` / `ad`) to choose which levels carry the series. This replaces
+calling the tree once per day for per-campaign daily trends.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIGetAdTreeRequest
@@ -605,6 +624,16 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 		var defaultValue string = "newest"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "sort", defaultValue, "form", "")
 		r.sort = &defaultValue
+	}
+	if r.timeIncrement != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "timeIncrement", r.timeIncrement, "form", "")
+	}
+	if r.dailyLevel != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "dailyLevel", r.dailyLevel, "form", "")
+	} else {
+		var defaultValue string = "campaign"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "dailyLevel", defaultValue, "form", "")
+		r.dailyLevel = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

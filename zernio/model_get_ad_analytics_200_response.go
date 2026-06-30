@@ -20,8 +20,8 @@ var _ MappedNullable = &GetAdAnalytics200Response{}
 
 // GetAdAnalytics200Response struct for GetAdAnalytics200Response
 type GetAdAnalytics200Response struct {
-	Ad        *GetAdAnalytics200ResponseAd        `json:"ad,omitempty"`
-	Analytics *GetAdAnalytics200ResponseAnalytics `json:"analytics,omitempty"`
+	Ad        *GetAdAnalytics200ResponseAd              `json:"ad,omitempty"`
+	Analytics *GetCampaignAnalytics200ResponseAnalytics `json:"analytics,omitempty"`
 }
 
 // NewGetAdAnalytics200Response instantiates a new GetAdAnalytics200Response object
@@ -74,9 +74,9 @@ func (o *GetAdAnalytics200Response) SetAd(v GetAdAnalytics200ResponseAd) {
 }
 
 // GetAnalytics returns the Analytics field value if set, zero value otherwise.
-func (o *GetAdAnalytics200Response) GetAnalytics() GetAdAnalytics200ResponseAnalytics {
+func (o *GetAdAnalytics200Response) GetAnalytics() GetCampaignAnalytics200ResponseAnalytics {
 	if o == nil || IsNil(o.Analytics) {
-		var ret GetAdAnalytics200ResponseAnalytics
+		var ret GetCampaignAnalytics200ResponseAnalytics
 		return ret
 	}
 	return *o.Analytics
@@ -84,7 +84,7 @@ func (o *GetAdAnalytics200Response) GetAnalytics() GetAdAnalytics200ResponseAnal
 
 // GetAnalyticsOk returns a tuple with the Analytics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetAdAnalytics200Response) GetAnalyticsOk() (*GetAdAnalytics200ResponseAnalytics, bool) {
+func (o *GetAdAnalytics200Response) GetAnalyticsOk() (*GetCampaignAnalytics200ResponseAnalytics, bool) {
 	if o == nil || IsNil(o.Analytics) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *GetAdAnalytics200Response) HasAnalytics() bool {
 	return false
 }
 
-// SetAnalytics gets a reference to the given GetAdAnalytics200ResponseAnalytics and assigns it to the Analytics field.
-func (o *GetAdAnalytics200Response) SetAnalytics(v GetAdAnalytics200ResponseAnalytics) {
+// SetAnalytics gets a reference to the given GetCampaignAnalytics200ResponseAnalytics and assigns it to the Analytics field.
+func (o *GetAdAnalytics200Response) SetAnalytics(v GetCampaignAnalytics200ResponseAnalytics) {
 	o.Analytics = &v
 }
 
