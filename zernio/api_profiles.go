@@ -169,7 +169,7 @@ func (r ProfilesAPIDeleteProfileRequest) Execute() (*ProfileDeleteResponse, *htt
 /*
 DeleteProfile Delete profile
 
-Permanently deletes a profile by ID.
+Permanently deletes a profile. Active connected accounts block deletion (returns 400) - disconnect them first. Any remaining disconnected accounts and provisioned WhatsApp numbers are moved to another of your profiles (a new one is created only if needed), never deleted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param profileId
