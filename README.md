@@ -431,6 +431,11 @@ func main() {
 | `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
 | `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
 
+### Mentions
+| Method | Description |
+|--------|-------------|
+| `client.MentionsAPI.ListInboxMentions(ctx)` | List mentions |
+
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|

@@ -107,6 +107,8 @@ type APIClient struct {
 
 	MediaAPI *MediaAPIService
 
+	MentionsAPI *MentionsAPIService
+
 	MessagesAPI *MessagesAPIService
 
 	PostsAPI *PostsAPIService
@@ -193,6 +195,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.LinkedInMentionsAPI = (*LinkedInMentionsAPIService)(&c.common)
 	c.LogsAPI = (*LogsAPIService)(&c.common)
 	c.MediaAPI = (*MediaAPIService)(&c.common)
+	c.MentionsAPI = (*MentionsAPIService)(&c.common)
 	c.MessagesAPI = (*MessagesAPIService)(&c.common)
 	c.PostsAPI = (*PostsAPIService)(&c.common)
 	c.ProfilesAPI = (*ProfilesAPIService)(&c.common)
