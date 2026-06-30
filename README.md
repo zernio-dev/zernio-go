@@ -522,18 +522,22 @@ func main() {
 | `client.WhatsAppAPI.GetWhatsAppGroupChat(ctx)` | Get group info |
 | `client.WhatsAppAPI.GetWhatsAppTemplate(ctx)` | Get template |
 | `client.WhatsAppAPI.GetWhatsAppTemplates(ctx)` | List templates |
+| `client.WhatsAppAPI.GetWhatsappBusinessUsername(ctx)` | Get business username |
+| `client.WhatsAppAPI.GetWhatsappBusinessUsernameSuggestions(ctx)` | Get username suggestions |
 | `client.WhatsAppAPI.UpdateWhatsAppBusinessProfile(ctx)` | Update business profile |
 | `client.WhatsAppAPI.UpdateWhatsAppDisplayName(ctx)` | Request display name change |
 | `client.WhatsAppAPI.UpdateWhatsAppGroupChat(ctx)` | Update group settings |
 | `client.WhatsAppAPI.UpdateWhatsAppTemplate(ctx)` | Update template |
 | `client.WhatsAppAPI.DeleteWhatsAppGroupChat(ctx)` | Delete group |
 | `client.WhatsAppAPI.DeleteWhatsAppTemplate(ctx)` | Delete template |
+| `client.WhatsAppAPI.DeleteWhatsappBusinessUsername(ctx)` | Delete business username |
 | `client.WhatsAppAPI.AddWhatsAppGroupParticipants(ctx)` | Add participants |
 | `client.WhatsAppAPI.ApproveWhatsAppGroupJoinRequests(ctx)` | Approve join requests |
 | `client.WhatsAppAPI.BlockWhatsAppUsers(ctx)` | Block users |
 | `client.WhatsAppAPI.RejectWhatsAppGroupJoinRequests(ctx)` | Reject join requests |
 | `client.WhatsAppAPI.RemoveWhatsAppGroupParticipants(ctx)` | Remove participants |
 | `client.WhatsAppAPI.SendWhatsAppConversion(ctx)` | Send WhatsApp conversion event |
+| `client.WhatsAppAPI.SetWhatsappBusinessUsername(ctx)` | Set business username |
 | `client.WhatsAppAPI.UnblockWhatsAppUsers(ctx)` | Unblock users |
 | `client.WhatsAppAPI.UploadWhatsAppProfilePhoto(ctx)` | Upload profile picture |
 

@@ -1221,6 +1221,129 @@ func (a *WhatsAppAPIService) DeleteWhatsAppTemplateExecute(r WhatsAppAPIDeleteWh
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppAPIDeleteWhatsappBusinessUsernameRequest struct {
+	ctx                        context.Context
+	ApiService                 *WhatsAppAPIService
+	sendTypingIndicatorRequest *SendTypingIndicatorRequest
+}
+
+func (r WhatsAppAPIDeleteWhatsappBusinessUsernameRequest) SendTypingIndicatorRequest(sendTypingIndicatorRequest SendTypingIndicatorRequest) WhatsAppAPIDeleteWhatsappBusinessUsernameRequest {
+	r.sendTypingIndicatorRequest = &sendTypingIndicatorRequest
+	return r
+}
+
+func (r WhatsAppAPIDeleteWhatsappBusinessUsernameRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.DeleteWhatsappBusinessUsernameExecute(r)
+}
+
+/*
+DeleteWhatsappBusinessUsername Delete business username
+
+Release the currently claimed WhatsApp Business username from the account.
+After deletion the username becomes available for other accounts to claim.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppAPIDeleteWhatsappBusinessUsernameRequest
+*/
+func (a *WhatsAppAPIService) DeleteWhatsappBusinessUsername(ctx context.Context) WhatsAppAPIDeleteWhatsappBusinessUsernameRequest {
+	return WhatsAppAPIDeleteWhatsappBusinessUsernameRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *WhatsAppAPIService) DeleteWhatsappBusinessUsernameExecute(r WhatsAppAPIDeleteWhatsappBusinessUsernameRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.DeleteWhatsappBusinessUsername")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/business-profile/username"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.sendTypingIndicatorRequest == nil {
+		return localVarReturnValue, nil, reportError("sendTypingIndicatorRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.sendTypingIndicatorRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppAPIGetWhatsAppBlockStatusRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppAPIService
@@ -2270,6 +2393,252 @@ func (a *WhatsAppAPIService) GetWhatsAppTemplatesExecute(r WhatsAppAPIGetWhatsAp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppAPIGetWhatsappBusinessUsernameRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppAPIService
+	accountId  *string
+}
+
+// WhatsApp social account ID
+func (r WhatsAppAPIGetWhatsappBusinessUsernameRequest) AccountId(accountId string) WhatsAppAPIGetWhatsappBusinessUsernameRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppAPIGetWhatsappBusinessUsernameRequest) Execute() (*GetWhatsappBusinessUsername200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsappBusinessUsernameExecute(r)
+}
+
+/*
+GetWhatsappBusinessUsername Get business username
+
+Fetch the current WhatsApp Business username and its approval status.
+Username status can be `approved` (active), `reserved` (pending activation), or `none` (no username set).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppAPIGetWhatsappBusinessUsernameRequest
+*/
+func (a *WhatsAppAPIService) GetWhatsappBusinessUsername(ctx context.Context) WhatsAppAPIGetWhatsappBusinessUsernameRequest {
+	return WhatsAppAPIGetWhatsappBusinessUsernameRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsappBusinessUsername200Response
+func (a *WhatsAppAPIService) GetWhatsappBusinessUsernameExecute(r WhatsAppAPIGetWhatsappBusinessUsernameRequest) (*GetWhatsappBusinessUsername200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsappBusinessUsername200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.GetWhatsappBusinessUsername")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/business-profile/username"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppAPIService
+	accountId  *string
+}
+
+// WhatsApp social account ID
+func (r WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest) AccountId(accountId string) WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest) Execute() (*GetWhatsappBusinessUsernameSuggestions200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsappBusinessUsernameSuggestionsExecute(r)
+}
+
+/*
+GetWhatsappBusinessUsernameSuggestions Get username suggestions
+
+Retrieve a list of available WhatsApp Business username suggestions based on the account's
+business profile name. Use these to help users discover valid, unclaimed usernames.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest
+*/
+func (a *WhatsAppAPIService) GetWhatsappBusinessUsernameSuggestions(ctx context.Context) WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest {
+	return WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsappBusinessUsernameSuggestions200Response
+func (a *WhatsAppAPIService) GetWhatsappBusinessUsernameSuggestionsExecute(r WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest) (*GetWhatsappBusinessUsernameSuggestions200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsappBusinessUsernameSuggestions200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.GetWhatsappBusinessUsernameSuggestions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/business-profile/username/suggestions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppAPIListWhatsAppConversionsRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppAPIService
@@ -3069,6 +3438,137 @@ func (a *WhatsAppAPIService) SendWhatsAppConversionExecute(r WhatsAppAPISendWhat
 	}
 	// body params
 	localVarPostBody = r.sendWhatsAppConversionRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppAPISetWhatsappBusinessUsernameRequest struct {
+	ctx                                context.Context
+	ApiService                         *WhatsAppAPIService
+	setWhatsappBusinessUsernameRequest *SetWhatsappBusinessUsernameRequest
+}
+
+func (r WhatsAppAPISetWhatsappBusinessUsernameRequest) SetWhatsappBusinessUsernameRequest(setWhatsappBusinessUsernameRequest SetWhatsappBusinessUsernameRequest) WhatsAppAPISetWhatsappBusinessUsernameRequest {
+	r.setWhatsappBusinessUsernameRequest = &setWhatsappBusinessUsernameRequest
+	return r
+}
+
+func (r WhatsAppAPISetWhatsappBusinessUsernameRequest) Execute() (*SetWhatsappBusinessUsername200Response, *http.Response, error) {
+	return r.ApiService.SetWhatsappBusinessUsernameExecute(r)
+}
+
+/*
+SetWhatsappBusinessUsername Set business username
+
+Claim or transfer a WhatsApp Business username for the account.
+
+Username rules: 3-35 characters, letters/digits/period/underscore only, must contain at least one letter,
+no leading or trailing periods, no consecutive periods, no `www` prefix, no domain TLD suffix (e.g. `.com`).
+
+If the desired username is currently held by another account, pass `transferAction: "force_transfer"` to
+request a transfer. On failure the API returns a standard error envelope with one of these codes:
+`whatsapp_username_unavailable` (already taken and transfer not requested),
+`whatsapp_username_ineligible` (account not eligible to claim a username), or
+`whatsapp_username_transfer_required` (username is held elsewhere; retry with `force_transfer`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppAPISetWhatsappBusinessUsernameRequest
+*/
+func (a *WhatsAppAPIService) SetWhatsappBusinessUsername(ctx context.Context) WhatsAppAPISetWhatsappBusinessUsernameRequest {
+	return WhatsAppAPISetWhatsappBusinessUsernameRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SetWhatsappBusinessUsername200Response
+func (a *WhatsAppAPIService) SetWhatsappBusinessUsernameExecute(r WhatsAppAPISetWhatsappBusinessUsernameRequest) (*SetWhatsappBusinessUsername200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SetWhatsappBusinessUsername200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppAPIService.SetWhatsappBusinessUsername")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/business-profile/username"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setWhatsappBusinessUsernameRequest == nil {
+		return localVarReturnValue, nil, reportError("setWhatsappBusinessUsernameRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setWhatsappBusinessUsernameRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
