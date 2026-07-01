@@ -55,7 +55,6 @@ func main() {
 | `client.PostsAPI.DeletePost(ctx)` | Delete post |
 | `client.PostsAPI.EditPost(ctx)` | Edit published post |
 | `client.PostsAPI.RetryPost(ctx)` | Retry failed post |
-| `client.PostsAPI.SyncExternalPosts(ctx)` | Sync an external post |
 | `client.PostsAPI.UnpublishPost(ctx)` | Unpublish post |
 
 ### Accounts
@@ -108,6 +107,7 @@ func main() {
 | `client.AnalyticsAPI.GetYouTubeDailyViews(ctx)` | Get YouTube daily views |
 | `client.AnalyticsAPI.GetYouTubeDemographics(ctx)` | Get YouTube demographics |
 | `client.AnalyticsAPI.GetYouTubeVideoRetention(ctx)` | Get YouTube video retention curve |
+| `client.AnalyticsAPI.SyncExternalPosts(ctx)` | Sync an external post |
 
 ### Account Groups
 | Method | Description |
