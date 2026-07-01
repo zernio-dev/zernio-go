@@ -30,6 +30,8 @@ type SendInboxMessageRequest struct {
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// Type of attachment. Defaults to file if not specified.
 	AttachmentType *string `json:"attachmentType,omitempty"`
+	// WhatsApp only. Display name for a document sent via attachmentUrl with attachmentType: file (e.g. \"Report.pdf\"). Maps to the recipient's file name; without it WhatsApp derives the name from the URL and shows \"Untitled\". Ignored for image/video/audio and for binary uploads (which use the uploaded file's name).
+	AttachmentName *string `json:"attachmentName,omitempty"`
 	// WhatsApp only. When `true` on an audio attachment, the message is sent as a voice message (PTT) — the recipient sees the waveform + voice-note UI instead of a basic audio attachment. The audio file MUST be `.ogg` encoded with the OPUS codec (mono) per Meta's voice-message contract; other formats are rejected by WhatsApp. Ignored for non-audio attachments.
 	VoiceNote *bool `json:"voiceNote,omitempty"`
 	// Quick reply buttons. Mutually exclusive with buttons. Max 13 items.
@@ -188,6 +190,38 @@ func (o *SendInboxMessageRequest) HasAttachmentType() bool {
 // SetAttachmentType gets a reference to the given string and assigns it to the AttachmentType field.
 func (o *SendInboxMessageRequest) SetAttachmentType(v string) {
 	o.AttachmentType = &v
+}
+
+// GetAttachmentName returns the AttachmentName field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetAttachmentName() string {
+	if o == nil || IsNil(o.AttachmentName) {
+		var ret string
+		return ret
+	}
+	return *o.AttachmentName
+}
+
+// GetAttachmentNameOk returns a tuple with the AttachmentName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetAttachmentNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AttachmentName) {
+		return nil, false
+	}
+	return o.AttachmentName, true
+}
+
+// HasAttachmentName returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasAttachmentName() bool {
+	if o != nil && !IsNil(o.AttachmentName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachmentName gets a reference to the given string and assigns it to the AttachmentName field.
+func (o *SendInboxMessageRequest) SetAttachmentName(v string) {
+	o.AttachmentName = &v
 }
 
 // GetVoiceNote returns the VoiceNote field value if set, zero value otherwise.
@@ -561,6 +595,9 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AttachmentType) {
 		toSerialize["attachmentType"] = o.AttachmentType
+	}
+	if !IsNil(o.AttachmentName) {
+		toSerialize["attachmentName"] = o.AttachmentName
 	}
 	if !IsNil(o.VoiceNote) {
 		toSerialize["voiceNote"] = o.VoiceNote
