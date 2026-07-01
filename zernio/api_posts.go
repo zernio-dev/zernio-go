@@ -1171,7 +1171,7 @@ func (r PostsAPISyncExternalPostsRequest) Execute() (*SyncExternalPosts200Respon
 }
 
 /*
-SyncExternalPosts Sync or verify an external post on demand
+SyncExternalPosts Sync an external post
 
 Fetch an account's latest external posts (published directly on the platform, not through Zernio) on demand, so a just-published post is retrievable within seconds instead of waiting for the background sync (which refreshes each account at most every ~90 minutes).
 

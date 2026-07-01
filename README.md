@@ -55,7 +55,7 @@ func main() {
 | `client.PostsAPI.DeletePost(ctx)` | Delete post |
 | `client.PostsAPI.EditPost(ctx)` | Edit published post |
 | `client.PostsAPI.RetryPost(ctx)` | Retry failed post |
-| `client.PostsAPI.SyncExternalPosts(ctx)` | Sync or verify an external post on demand |
+| `client.PostsAPI.SyncExternalPosts(ctx)` | Sync an external post |
 | `client.PostsAPI.UnpublishPost(ctx)` | Unpublish post |
 
 ### Accounts
