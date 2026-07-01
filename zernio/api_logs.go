@@ -17,25 +17,34 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // LogsAPIService LogsAPI service
 type LogsAPIService service
 
 type LogsAPIListLogsRequest struct {
-	ctx        context.Context
-	ApiService *LogsAPIService
-	type_      *string
-	status     *string
-	platform   *string
-	action     *string
-	search     *string
-	days       *int32
-	limit      *int32
-	skip       *int32
+	ctx                 context.Context
+	ApiService          *LogsAPIService
+	type_               *string
+	status              *string
+	platform            *string
+	action              *string
+	search              *string
+	days                *int32
+	limit               *int32
+	skip                *int32
+	accountId           *string
+	event               *string
+	requestId           *string
+	from                *time.Time
+	to                  *time.Time
+	statusCode          *int32
+	apiKeyId            *string
+	includeReadReceipts *bool
 }
 
-// Log category to query
+// Log category to query. Use &#x60;all&#x60; for the unified view across every category, or &#x60;api_request&#x60; for your API request logs (method, path, status, latency).
 func (r LogsAPIListLogsRequest) Type_(type_ string) LogsAPIListLogsRequest {
 	r.type_ = &type_
 	return r
@@ -80,6 +89,54 @@ func (r LogsAPIListLogsRequest) Limit(limit int32) LogsAPIListLogsRequest {
 // Number of logs to skip (for pagination)
 func (r LogsAPIListLogsRequest) Skip(skip int32) LogsAPIListLogsRequest {
 	r.skip = &skip
+	return r
+}
+
+// Filter by connected account ID
+func (r LogsAPIListLogsRequest) AccountId(accountId string) LogsAPIListLogsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Filter webhook logs by event (e.g. post.published, message.received)
+func (r LogsAPIListLogsRequest) Event(event string) LogsAPIListLogsRequest {
+	r.event = &event
+	return r
+}
+
+// Correlation ID — returns every log spawned by a single API request
+func (r LogsAPIListLogsRequest) RequestId(requestId string) LogsAPIListLogsRequest {
+	r.requestId = &requestId
+	return r
+}
+
+// Precise start instant (ISO 8601); narrows within the day range
+func (r LogsAPIListLogsRequest) From(from time.Time) LogsAPIListLogsRequest {
+	r.from = &from
+	return r
+}
+
+// Precise end instant (ISO 8601)
+func (r LogsAPIListLogsRequest) To(to time.Time) LogsAPIListLogsRequest {
+	r.to = &to
+	return r
+}
+
+// Filter by exact HTTP status code (api_request logs)
+func (r LogsAPIListLogsRequest) StatusCode(statusCode int32) LogsAPIListLogsRequest {
+	r.statusCode = &statusCode
+	return r
+}
+
+// Filter by the API key that made the request (api_request logs)
+func (r LogsAPIListLogsRequest) ApiKeyId(apiKeyId string) LogsAPIListLogsRequest {
+	r.apiKeyId = &apiKeyId
+	return r
+}
+
+// Include message.read / message.delivered events (hidden by default for messaging logs)
+func (r LogsAPIListLogsRequest) IncludeReadReceipts(includeReadReceipts bool) LogsAPIListLogsRequest {
+	r.includeReadReceipts = &includeReadReceipts
 	return r
 }
 
@@ -164,6 +221,34 @@ func (a *LogsAPIService) ListLogsExecute(r LogsAPIListLogsRequest) (*ListLogs200
 		var defaultValue int32 = 0
 		parameterAddToHeaderOrQuery(localVarQueryParams, "skip", defaultValue, "form", "")
 		r.skip = &defaultValue
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "account_id", r.accountId, "form", "")
+	}
+	if r.event != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "event", r.event, "form", "")
+	}
+	if r.requestId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "request_id", r.requestId, "form", "")
+	}
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	}
+	if r.to != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
+	}
+	if r.statusCode != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status_code", r.statusCode, "form", "")
+	}
+	if r.apiKeyId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "api_key_id", r.apiKeyId, "form", "")
+	}
+	if r.includeReadReceipts != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_read_receipts", r.includeReadReceipts, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_read_receipts", defaultValue, "form", "")
+		r.includeReadReceipts = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

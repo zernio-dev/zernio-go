@@ -42,6 +42,18 @@ type ListLogs200ResponseLogsInner struct {
 	CreatedAt    *time.Time `json:"created_at,omitempty"`
 	// Additional context as JSON string
 	Metadata *string `json:"metadata,omitempty"`
+	// Correlation ID linking every log from one API request (api_request logs)
+	RequestId *string `json:"request_id,omitempty"`
+	// The API key that made the request (api_request logs)
+	ApiKeyId *string `json:"api_key_id,omitempty"`
+	// HTTP method (api_request logs)
+	Method *string `json:"method,omitempty"`
+	// Request path (api_request logs)
+	Path *string `json:"path,omitempty"`
+	// Client IP address (api_request logs)
+	IpAddress *string `json:"ip_address,omitempty"`
+	// Client user-agent (api_request logs)
+	UserAgent *string `json:"user_agent,omitempty"`
 }
 
 // NewListLogs200ResponseLogsInner instantiates a new ListLogs200ResponseLogsInner object
@@ -541,6 +553,198 @@ func (o *ListLogs200ResponseLogsInner) SetMetadata(v string) {
 	o.Metadata = &v
 }
 
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *ListLogs200ResponseLogsInner) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
+// GetApiKeyId returns the ApiKeyId field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetApiKeyId() string {
+	if o == nil || IsNil(o.ApiKeyId) {
+		var ret string
+		return ret
+	}
+	return *o.ApiKeyId
+}
+
+// GetApiKeyIdOk returns a tuple with the ApiKeyId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetApiKeyIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ApiKeyId) {
+		return nil, false
+	}
+	return o.ApiKeyId, true
+}
+
+// HasApiKeyId returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasApiKeyId() bool {
+	if o != nil && !IsNil(o.ApiKeyId) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiKeyId gets a reference to the given string and assigns it to the ApiKeyId field.
+func (o *ListLogs200ResponseLogsInner) SetApiKeyId(v string) {
+	o.ApiKeyId = &v
+}
+
+// GetMethod returns the Method field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetMethod() string {
+	if o == nil || IsNil(o.Method) {
+		var ret string
+		return ret
+	}
+	return *o.Method
+}
+
+// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.Method) {
+		return nil, false
+	}
+	return o.Method, true
+}
+
+// HasMethod returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasMethod() bool {
+	if o != nil && !IsNil(o.Method) {
+		return true
+	}
+
+	return false
+}
+
+// SetMethod gets a reference to the given string and assigns it to the Method field.
+func (o *ListLogs200ResponseLogsInner) SetMethod(v string) {
+	o.Method = &v
+}
+
+// GetPath returns the Path field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetPath() string {
+	if o == nil || IsNil(o.Path) {
+		var ret string
+		return ret
+	}
+	return *o.Path
+}
+
+// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetPathOk() (*string, bool) {
+	if o == nil || IsNil(o.Path) {
+		return nil, false
+	}
+	return o.Path, true
+}
+
+// HasPath returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasPath() bool {
+	if o != nil && !IsNil(o.Path) {
+		return true
+	}
+
+	return false
+}
+
+// SetPath gets a reference to the given string and assigns it to the Path field.
+func (o *ListLogs200ResponseLogsInner) SetPath(v string) {
+	o.Path = &v
+}
+
+// GetIpAddress returns the IpAddress field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetIpAddress() string {
+	if o == nil || IsNil(o.IpAddress) {
+		var ret string
+		return ret
+	}
+	return *o.IpAddress
+}
+
+// GetIpAddressOk returns a tuple with the IpAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.IpAddress) {
+		return nil, false
+	}
+	return o.IpAddress, true
+}
+
+// HasIpAddress returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasIpAddress() bool {
+	if o != nil && !IsNil(o.IpAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpAddress gets a reference to the given string and assigns it to the IpAddress field.
+func (o *ListLogs200ResponseLogsInner) SetIpAddress(v string) {
+	o.IpAddress = &v
+}
+
+// GetUserAgent returns the UserAgent field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetUserAgent() string {
+	if o == nil || IsNil(o.UserAgent) {
+		var ret string
+		return ret
+	}
+	return *o.UserAgent
+}
+
+// GetUserAgentOk returns a tuple with the UserAgent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetUserAgentOk() (*string, bool) {
+	if o == nil || IsNil(o.UserAgent) {
+		return nil, false
+	}
+	return o.UserAgent, true
+}
+
+// HasUserAgent returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasUserAgent() bool {
+	if o != nil && !IsNil(o.UserAgent) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserAgent gets a reference to the given string and assigns it to the UserAgent field.
+func (o *ListLogs200ResponseLogsInner) SetUserAgent(v string) {
+	o.UserAgent = &v
+}
+
 func (o ListLogs200ResponseLogsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -595,6 +799,24 @@ func (o ListLogs200ResponseLogsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["request_id"] = o.RequestId
+	}
+	if !IsNil(o.ApiKeyId) {
+		toSerialize["api_key_id"] = o.ApiKeyId
+	}
+	if !IsNil(o.Method) {
+		toSerialize["method"] = o.Method
+	}
+	if !IsNil(o.Path) {
+		toSerialize["path"] = o.Path
+	}
+	if !IsNil(o.IpAddress) {
+		toSerialize["ip_address"] = o.IpAddress
+	}
+	if !IsNil(o.UserAgent) {
+		toSerialize["user_agent"] = o.UserAgent
 	}
 	return toSerialize, nil
 }
