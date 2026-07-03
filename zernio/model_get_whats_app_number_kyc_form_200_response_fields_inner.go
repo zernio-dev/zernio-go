@@ -30,6 +30,8 @@ type GetWhatsAppNumberKycForm200ResponseFieldsInner struct {
 	Example NullableString `json:"example,omitempty"`
 	// ISO country the value must be local to
 	LocalTo NullableString `json:"localTo,omitempty"`
+	// When set, the requirement applies ONLY to this end-user type — provide it for that type and OMIT it for the other (e.g. Brazil: \"Cartão CNPJ\" is business-only, \"CPF\" and \"ID/Passport Copy\" are personal-only). Submitting both sets makes the regulator ask whether the number is for personal or business use and stalls the review. Pass `entityType` on POST so the server drops the inapplicable set.
+	Audience NullableString `json:"audience,omitempty"`
 }
 
 // NewGetWhatsAppNumberKycForm200ResponseFieldsInner instantiates a new GetWhatsAppNumberKycForm200ResponseFieldsInner object
@@ -274,6 +276,49 @@ func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) UnsetLocalTo() {
 	o.LocalTo.Unset()
 }
 
+// GetAudience returns the Audience field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) GetAudience() string {
+	if o == nil || IsNil(o.Audience.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Audience.Get()
+}
+
+// GetAudienceOk returns a tuple with the Audience field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) GetAudienceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Audience.Get(), o.Audience.IsSet()
+}
+
+// HasAudience returns a boolean if a field has been set.
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) HasAudience() bool {
+	if o != nil && o.Audience.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAudience gets a reference to the given NullableString and assigns it to the Audience field.
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) SetAudience(v string) {
+	o.Audience.Set(&v)
+}
+
+// SetAudienceNil sets the value for Audience to be an explicit nil
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) SetAudienceNil() {
+	o.Audience.Set(nil)
+}
+
+// UnsetAudience ensures that no value is present for Audience, not even an explicit nil
+func (o *GetWhatsAppNumberKycForm200ResponseFieldsInner) UnsetAudience() {
+	o.Audience.Unset()
+}
+
 func (o GetWhatsAppNumberKycForm200ResponseFieldsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -301,6 +346,9 @@ func (o GetWhatsAppNumberKycForm200ResponseFieldsInner) ToMap() (map[string]inte
 	}
 	if o.LocalTo.IsSet() {
 		toSerialize["localTo"] = o.LocalTo.Get()
+	}
+	if o.Audience.IsSet() {
+		toSerialize["audience"] = o.Audience.Get()
 	}
 	return toSerialize, nil
 }
