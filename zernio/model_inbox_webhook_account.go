@@ -23,7 +23,9 @@ var _ MappedNullable = &InboxWebhookAccount{}
 // InboxWebhookAccount The account context included in inbox webhook payloads.
 type InboxWebhookAccount struct {
 	// Social account ID
-	Id          string  `json:"id"`
+	Id string `json:"id"`
+	// Social account ID (same value as id). Canonical field so consumers can filter every webhook event on one field (e.g. route staging vs production by account). id is kept for backward compatibility.
+	AccountId   *string `json:"accountId,omitempty"`
 	Platform    string  `json:"platform"`
 	Username    string  `json:"username"`
 	DisplayName *string `json:"displayName,omitempty"`
@@ -73,6 +75,38 @@ func (o *InboxWebhookAccount) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *InboxWebhookAccount) SetId(v string) {
 	o.Id = v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *InboxWebhookAccount) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InboxWebhookAccount) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *InboxWebhookAccount) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *InboxWebhookAccount) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -166,6 +200,9 @@ func (o InboxWebhookAccount) MarshalJSON() ([]byte, error) {
 func (o InboxWebhookAccount) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["username"] = o.Username
 	if !IsNil(o.DisplayName) {

@@ -23,9 +23,11 @@ var _ MappedNullable = &WebhookPayloadCommentAccount{}
 // WebhookPayloadCommentAccount struct for WebhookPayloadCommentAccount
 type WebhookPayloadCommentAccount struct {
 	// Social account ID
-	Id       string `json:"id"`
-	Platform string `json:"platform"`
-	Username string `json:"username"`
+	Id string `json:"id"`
+	// Social account ID (same as id); canonical field for account filtering.
+	AccountId *string `json:"accountId,omitempty"`
+	Platform  string  `json:"platform"`
+	Username  string  `json:"username"`
 }
 
 type _WebhookPayloadCommentAccount WebhookPayloadCommentAccount
@@ -72,6 +74,38 @@ func (o *WebhookPayloadCommentAccount) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadCommentAccount) SetId(v string) {
 	o.Id = v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentAccount) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentAccount) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentAccount) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *WebhookPayloadCommentAccount) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -133,6 +167,9 @@ func (o WebhookPayloadCommentAccount) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadCommentAccount) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["username"] = o.Username
 	return toSerialize, nil
