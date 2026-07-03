@@ -26,9 +26,9 @@ type CreateInviteTokenRequest struct {
 	Scope string `json:"scope"`
 	// Required if scope is 'profiles'. Array of profile IDs to grant access to.
 	ProfileIds []string `json:"profileIds,omitempty"`
-	// Org role granted to the invitee. Defaults to 'member'. 'viewer' creates a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
+	// Org role granted to the invitee. Defaults to 'member'. 'admin' can manage the team (invite/remove members, change roles and access) but not billing, ownership transfer or account deletion. 'viewer' creates a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
 	Role *string `json:"role,omitempty"`
-	// Deprecated. Use role 'viewer' instead. When true, the invite is created with role 'viewer'. Cannot be combined with role 'billing_admin'.
+	// Deprecated. Use role 'viewer' instead. When true, the invite is created with role 'viewer'. Cannot be combined with role 'billing_admin' or 'admin'.
 	// Deprecated
 	ReadOnly *bool `json:"readOnly,omitempty"`
 }
