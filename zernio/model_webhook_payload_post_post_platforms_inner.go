@@ -22,8 +22,10 @@ var _ MappedNullable = &WebhookPayloadPostPostPlatformsInner{}
 
 // WebhookPayloadPostPostPlatformsInner struct for WebhookPayloadPostPostPlatformsInner
 type WebhookPayloadPostPostPlatformsInner struct {
-	Platform       string  `json:"platform"`
-	Status         string  `json:"status"`
+	Platform string `json:"platform"`
+	Status   string `json:"status"`
+	// SocialAccount id this platform target published through. Use it to route events by connected account (e.g. separate staging vs production endpoints). A post can span multiple accounts.
+	AccountId      *string `json:"accountId,omitempty"`
 	PlatformPostId *string `json:"platformPostId,omitempty"`
 	PublishedUrl   *string `json:"publishedUrl,omitempty"`
 	Error          *string `json:"error,omitempty"`
@@ -96,6 +98,38 @@ func (o *WebhookPayloadPostPostPlatformsInner) GetStatusOk() (*string, bool) {
 // SetStatus sets field value
 func (o *WebhookPayloadPostPostPlatformsInner) SetStatus(v string) {
 	o.Status = v
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPostPlatformsInner) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *WebhookPayloadPostPostPlatformsInner) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetPlatformPostId returns the PlatformPostId field value if set, zero value otherwise.
@@ -206,6 +240,9 @@ func (o WebhookPayloadPostPostPlatformsInner) ToMap() (map[string]interface{}, e
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
 	toSerialize["status"] = o.Status
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	if !IsNil(o.PlatformPostId) {
 		toSerialize["platformPostId"] = o.PlatformPostId
 	}
