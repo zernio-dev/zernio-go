@@ -25,17 +25,18 @@ type UpdatePostRequest struct {
 	Content    *string     `json:"content,omitempty"`
 	MediaItems []MediaItem `json:"mediaItems,omitempty"`
 	// Target platforms and accounts for this post. Each item must include platform and accountId.
-	Platforms           []UpdatePostRequestPlatformsInner `json:"platforms,omitempty"`
-	ScheduledFor        *time.Time                        `json:"scheduledFor,omitempty"`
-	PublishNow          *bool                             `json:"publishNow,omitempty"`
-	IsDraft             *bool                             `json:"isDraft,omitempty"`
-	Timezone            *string                           `json:"timezone,omitempty"`
-	Visibility          *string                           `json:"visibility,omitempty"`
-	Tags                []string                          `json:"tags,omitempty"`
-	Hashtags            []string                          `json:"hashtags,omitempty"`
-	Mentions            []string                          `json:"mentions,omitempty"`
-	CrosspostingEnabled *bool                             `json:"crosspostingEnabled,omitempty"`
-	Metadata            map[string]interface{}            `json:"metadata,omitempty"`
+	Platforms    []UpdatePostRequestPlatformsInner `json:"platforms,omitempty"`
+	ScheduledFor *time.Time                        `json:"scheduledFor,omitempty"`
+	PublishNow   *bool                             `json:"publishNow,omitempty"`
+	// When omitted, the post keeps its current draft status. Send `false` to promote a draft to scheduled (combined with `scheduledFor`, `publishNow`, or a queue).
+	IsDraft             *bool                  `json:"isDraft,omitempty"`
+	Timezone            *string                `json:"timezone,omitempty"`
+	Visibility          *string                `json:"visibility,omitempty"`
+	Tags                []string               `json:"tags,omitempty"`
+	Hashtags            []string               `json:"hashtags,omitempty"`
+	Mentions            []string               `json:"mentions,omitempty"`
+	CrosspostingEnabled *bool                  `json:"crosspostingEnabled,omitempty"`
+	Metadata            map[string]interface{} `json:"metadata,omitempty"`
 	// Profile ID to schedule via queue.
 	QueuedFromProfile *string `json:"queuedFromProfile,omitempty"`
 	// Specific queue ID to use when scheduling via queue.

@@ -2964,6 +2964,112 @@ func (a *WebhookEventsAPIService) OnPostScheduledExecute(r WebhookEventsAPIOnPos
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnPostTikTokUrlResolvedRequest struct {
+	ctx                        context.Context
+	ApiService                 *WebhookEventsAPIService
+	webhookPayloadPostPlatform *WebhookPayloadPostPlatform
+}
+
+func (r WebhookEventsAPIOnPostTikTokUrlResolvedRequest) WebhookPayloadPostPlatform(webhookPayloadPostPlatform WebhookPayloadPostPlatform) WebhookEventsAPIOnPostTikTokUrlResolvedRequest {
+	r.webhookPayloadPostPlatform = &webhookPayloadPostPlatform
+	return r
+}
+
+func (r WebhookEventsAPIOnPostTikTokUrlResolvedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnPostTikTokUrlResolvedExecute(r)
+}
+
+/*
+OnPostTikTokUrlResolved TikTok post URL resolved event
+
+Fired when an already-published TikTok platform entry gets its public
+URL backfilled. TikTok exposes the numeric video id asynchronously
+(often minutes after PUBLISH_COMPLETE), so the terminal events can
+carry an empty `publishedUrl` for TikTok. This event delivers
+`platform.publishedUrl` and the resolved `platform.platformPostId`
+once available. At most once per platform target; never fires for
+drafts or private posts (no public URL exists). Payload shape is
+identical to `post.platform.published`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnPostTikTokUrlResolvedRequest
+*/
+func (a *WebhookEventsAPIService) OnPostTikTokUrlResolved(ctx context.Context) WebhookEventsAPIOnPostTikTokUrlResolvedRequest {
+	return WebhookEventsAPIOnPostTikTokUrlResolvedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnPostTikTokUrlResolvedExecute(r WebhookEventsAPIOnPostTikTokUrlResolvedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnPostTikTokUrlResolved")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/post.tiktok.url_resolved"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadPostPlatform == nil {
+		return nil, reportError("webhookPayloadPostPlatform is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadPostPlatform
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnReactionReceivedRequest struct {
 	ctx                    context.Context
 	ApiService             *WebhookEventsAPIService
