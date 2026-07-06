@@ -460,6 +460,7 @@ func main() {
 | `client.MessagesAPI.EditInboxMessage(ctx)` | Edit message |
 | `client.MessagesAPI.MarkConversationRead(ctx)` | Mark a conversation as read |
 | `client.MessagesAPI.RemoveMessageReaction(ctx)` | Remove reaction |
+| `client.MessagesAPI.SearchInboxConversations(ctx)` | Search conversations |
 | `client.MessagesAPI.SendInboxMessage(ctx)` | Send message |
 | `client.MessagesAPI.SendTypingIndicator(ctx)` | Send typing indicator |
 | `client.MessagesAPI.UploadMediaDirect(ctx)` | Upload media file |

@@ -1351,6 +1351,202 @@ func (a *MessagesAPIService) RemoveMessageReactionExecute(r MessagesAPIRemoveMes
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type MessagesAPISearchInboxConversationsRequest struct {
+	ctx        context.Context
+	ApiService *MessagesAPIService
+	query      *string
+	direction  *string
+	profileId  *string
+	platform   *string
+	accountId  *string
+	limit      *int32
+	cursor     *string
+}
+
+// Text to search for in message content
+func (r MessagesAPISearchInboxConversationsRequest) Query(query string) MessagesAPISearchInboxConversationsRequest {
+	r.query = &query
+	return r
+}
+
+// Only match messages sent to you (incoming) or by you (outgoing)
+func (r MessagesAPISearchInboxConversationsRequest) Direction(direction string) MessagesAPISearchInboxConversationsRequest {
+	r.direction = &direction
+	return r
+}
+
+// Filter by profile ID
+func (r MessagesAPISearchInboxConversationsRequest) ProfileId(profileId string) MessagesAPISearchInboxConversationsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Filter by platform (searchable platforms only)
+func (r MessagesAPISearchInboxConversationsRequest) Platform(platform string) MessagesAPISearchInboxConversationsRequest {
+	r.platform = &platform
+	return r
+}
+
+// Filter by specific social account ID
+func (r MessagesAPISearchInboxConversationsRequest) AccountId(accountId string) MessagesAPISearchInboxConversationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Maximum number of conversations to return
+func (r MessagesAPISearchInboxConversationsRequest) Limit(limit int32) MessagesAPISearchInboxConversationsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Pagination cursor for next page
+func (r MessagesAPISearchInboxConversationsRequest) Cursor(cursor string) MessagesAPISearchInboxConversationsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+func (r MessagesAPISearchInboxConversationsRequest) Execute() (*SearchInboxConversations200Response, *http.Response, error) {
+	return r.ApiService.SearchInboxConversationsExecute(r)
+}
+
+/*
+SearchInboxConversations Search conversations
+
+Search message text across your conversations and get back the conversations that contain the query, each with up to 3 most-recent matching messages. Useful for finding threads about a topic, or (with direction=outgoing) collecting examples of how you write to customers, for example to teach an AI agent your tone of voice.
+
+Only platforms whose messages are stored by Zernio are searchable: WhatsApp, SMS, Telegram, Facebook and Instagram. Twitter/X, Bluesky and Reddit conversations are fetched live from the platforms and cannot be searched; those accounts are listed in meta.accountsSkipped.
+
+Matching is word-based: case-insensitive and accent-insensitive, exact tokens only (no substrings, no stemming). Quote a phrase to match it exactly.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return MessagesAPISearchInboxConversationsRequest
+*/
+func (a *MessagesAPIService) SearchInboxConversations(ctx context.Context) MessagesAPISearchInboxConversationsRequest {
+	return MessagesAPISearchInboxConversationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SearchInboxConversations200Response
+func (a *MessagesAPIService) SearchInboxConversationsExecute(r MessagesAPISearchInboxConversationsRequest) (*SearchInboxConversations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SearchInboxConversations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.SearchInboxConversations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/conversations/search"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.query == nil {
+		return localVarReturnValue, nil, reportError("query is required and must be specified")
+	}
+	if strlen(*r.query) < 2 {
+		return localVarReturnValue, nil, reportError("query must have at least 2 elements")
+	}
+	if strlen(*r.query) > 200 {
+		return localVarReturnValue, nil, reportError("query must have less than 200 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	if r.direction != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "direction", r.direction, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 20
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type MessagesAPISendInboxMessageRequest struct {
 	ctx                     context.Context
 	ApiService              *MessagesAPIService
