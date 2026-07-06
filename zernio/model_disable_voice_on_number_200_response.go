@@ -20,6 +20,7 @@ var _ MappedNullable = &DisableVoiceOnNumber200Response{}
 
 // DisableVoiceOnNumber200Response struct for DisableVoiceOnNumber200Response
 type DisableVoiceOnNumber200Response struct {
+	// Always false after a successful disable.
 	Enabled     *bool   `json:"enabled,omitempty"`
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 }

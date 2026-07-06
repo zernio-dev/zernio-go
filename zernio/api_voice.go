@@ -61,8 +61,7 @@ webhooks). Outbound calls are capped per rolling hour (429 when hit).
 
 **Idempotency:** send an `Idempotency-Key` header to make retries safe;
 same key + same body replays the original response instead of dialing
-(and billing) a second call. The body `idempotencyKey` field predates
-the header and keeps working; prefer the header.
+(and billing) a second call.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPICreateVoiceCallRequest

@@ -22,7 +22,7 @@ var _ MappedNullable = &GetWhatsappBusinessUsername200Response{}
 type GetWhatsappBusinessUsername200Response struct {
 	Success *bool `json:"success,omitempty"`
 	// The current username, or null if none is set
-	Username *string `json:"username,omitempty"`
+	Username NullableString `json:"username,omitempty"`
 	// Approval state of the username
 	Status *string `json:"status,omitempty"`
 }
@@ -76,36 +76,47 @@ func (o *GetWhatsappBusinessUsername200Response) SetSuccess(v bool) {
 	o.Success = &v
 }
 
-// GetUsername returns the Username field value if set, zero value otherwise.
+// GetUsername returns the Username field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetWhatsappBusinessUsername200Response) GetUsername() string {
-	if o == nil || IsNil(o.Username) {
+	if o == nil || IsNil(o.Username.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Username
+	return *o.Username.Get()
 }
 
 // GetUsernameOk returns a tuple with the Username field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetWhatsappBusinessUsername200Response) GetUsernameOk() (*string, bool) {
-	if o == nil || IsNil(o.Username) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Username, true
+	return o.Username.Get(), o.Username.IsSet()
 }
 
 // HasUsername returns a boolean if a field has been set.
 func (o *GetWhatsappBusinessUsername200Response) HasUsername() bool {
-	if o != nil && !IsNil(o.Username) {
+	if o != nil && o.Username.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUsername gets a reference to the given string and assigns it to the Username field.
+// SetUsername gets a reference to the given NullableString and assigns it to the Username field.
 func (o *GetWhatsappBusinessUsername200Response) SetUsername(v string) {
-	o.Username = &v
+	o.Username.Set(&v)
+}
+
+// SetUsernameNil sets the value for Username to be an explicit nil
+func (o *GetWhatsappBusinessUsername200Response) SetUsernameNil() {
+	o.Username.Set(nil)
+}
+
+// UnsetUsername ensures that no value is present for Username, not even an explicit nil
+func (o *GetWhatsappBusinessUsername200Response) UnsetUsername() {
+	o.Username.Unset()
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -153,8 +164,8 @@ func (o GetWhatsappBusinessUsername200Response) ToMap() (map[string]interface{},
 	if !IsNil(o.Success) {
 		toSerialize["success"] = o.Success
 	}
-	if !IsNil(o.Username) {
-		toSerialize["username"] = o.Username
+	if o.Username.IsSet() {
+		toSerialize["username"] = o.Username.Get()
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

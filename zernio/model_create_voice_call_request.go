@@ -36,8 +36,6 @@ type CreateVoiceCallRequest struct {
 	TranscribeOverride *bool `json:"transcribeOverride,omitempty"`
 	// 'auto' derives from the callee's country; 'en'/'es' force it.
 	TranscriptionLanguage *string `json:"transcriptionLanguage,omitempty"`
-	// A retry with the same key returns the original call instead of dialing again.
-	IdempotencyKey *string `json:"idempotencyKey,omitempty"`
 	// Answering-machine detection; defers the bridge until human vs machine is known.
 	Amd *bool `json:"amd,omitempty"`
 	// Spoken to a detected machine, then hang up (implies `amd`). For outbound voicemail drops.
@@ -280,38 +278,6 @@ func (o *CreateVoiceCallRequest) SetTranscriptionLanguage(v string) {
 	o.TranscriptionLanguage = &v
 }
 
-// GetIdempotencyKey returns the IdempotencyKey field value if set, zero value otherwise.
-func (o *CreateVoiceCallRequest) GetIdempotencyKey() string {
-	if o == nil || IsNil(o.IdempotencyKey) {
-		var ret string
-		return ret
-	}
-	return *o.IdempotencyKey
-}
-
-// GetIdempotencyKeyOk returns a tuple with the IdempotencyKey field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateVoiceCallRequest) GetIdempotencyKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.IdempotencyKey) {
-		return nil, false
-	}
-	return o.IdempotencyKey, true
-}
-
-// HasIdempotencyKey returns a boolean if a field has been set.
-func (o *CreateVoiceCallRequest) HasIdempotencyKey() bool {
-	if o != nil && !IsNil(o.IdempotencyKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetIdempotencyKey gets a reference to the given string and assigns it to the IdempotencyKey field.
-func (o *CreateVoiceCallRequest) SetIdempotencyKey(v string) {
-	o.IdempotencyKey = &v
-}
-
 // GetAmd returns the Amd field value if set, zero value otherwise.
 func (o *CreateVoiceCallRequest) GetAmd() bool {
 	if o == nil || IsNil(o.Amd) {
@@ -404,9 +370,6 @@ func (o CreateVoiceCallRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TranscriptionLanguage) {
 		toSerialize["transcriptionLanguage"] = o.TranscriptionLanguage
-	}
-	if !IsNil(o.IdempotencyKey) {
-		toSerialize["idempotencyKey"] = o.IdempotencyKey
 	}
 	if !IsNil(o.Amd) {
 		toSerialize["amd"] = o.Amd

@@ -20,9 +20,9 @@ var _ MappedNullable = &ListInboxMentions200Response{}
 
 // ListInboxMentions200Response struct for ListInboxMentions200Response
 type ListInboxMentions200Response struct {
-	Data       []ListInboxMentions200ResponseDataInner `json:"data,omitempty"`
-	Pagination *ListInboxMentions200ResponsePagination `json:"pagination,omitempty"`
-	Meta       *ListInboxMentions200ResponseMeta       `json:"meta,omitempty"`
+	Data       []ListInboxMentions200ResponseDataInner    `json:"data,omitempty"`
+	Pagination *GetInboxPostComments200ResponsePagination `json:"pagination,omitempty"`
+	Meta       *ListInboxMentions200ResponseMeta          `json:"meta,omitempty"`
 }
 
 // NewListInboxMentions200Response instantiates a new ListInboxMentions200Response object
@@ -75,9 +75,9 @@ func (o *ListInboxMentions200Response) SetData(v []ListInboxMentions200ResponseD
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *ListInboxMentions200Response) GetPagination() ListInboxMentions200ResponsePagination {
+func (o *ListInboxMentions200Response) GetPagination() GetInboxPostComments200ResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret ListInboxMentions200ResponsePagination
+		var ret GetInboxPostComments200ResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -85,7 +85,7 @@ func (o *ListInboxMentions200Response) GetPagination() ListInboxMentions200Respo
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListInboxMentions200Response) GetPaginationOk() (*ListInboxMentions200ResponsePagination, bool) {
+func (o *ListInboxMentions200Response) GetPaginationOk() (*GetInboxPostComments200ResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -101,8 +101,8 @@ func (o *ListInboxMentions200Response) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given ListInboxMentions200ResponsePagination and assigns it to the Pagination field.
-func (o *ListInboxMentions200Response) SetPagination(v ListInboxMentions200ResponsePagination) {
+// SetPagination gets a reference to the given GetInboxPostComments200ResponsePagination and assigns it to the Pagination field.
+func (o *ListInboxMentions200Response) SetPagination(v GetInboxPostComments200ResponsePagination) {
 	o.Pagination = &v
 }
 

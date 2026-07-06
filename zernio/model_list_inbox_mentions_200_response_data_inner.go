@@ -29,9 +29,9 @@ type ListInboxMentions200ResponseDataInner struct {
 	// Text of the post that mentioned you
 	Content *string `json:"content,omitempty"`
 	// URL to the source post on LinkedIn
-	Permalink *string `json:"permalink,omitempty"`
+	Permalink NullableString `json:"permalink,omitempty"`
 	// LinkedIn URN of the person who mentioned you
-	AuthorUrn *string `json:"authorUrn,omitempty"`
+	AuthorUrn NullableString `json:"authorUrn,omitempty"`
 	// URN of the organization that was mentioned
 	OrganizationalEntity *string    `json:"organizationalEntity,omitempty"`
 	PublishedAt          *time.Time `json:"publishedAt,omitempty"`
@@ -215,68 +215,90 @@ func (o *ListInboxMentions200ResponseDataInner) SetContent(v string) {
 	o.Content = &v
 }
 
-// GetPermalink returns the Permalink field value if set, zero value otherwise.
+// GetPermalink returns the Permalink field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxMentions200ResponseDataInner) GetPermalink() string {
-	if o == nil || IsNil(o.Permalink) {
+	if o == nil || IsNil(o.Permalink.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Permalink
+	return *o.Permalink.Get()
 }
 
 // GetPermalinkOk returns a tuple with the Permalink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxMentions200ResponseDataInner) GetPermalinkOk() (*string, bool) {
-	if o == nil || IsNil(o.Permalink) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Permalink, true
+	return o.Permalink.Get(), o.Permalink.IsSet()
 }
 
 // HasPermalink returns a boolean if a field has been set.
 func (o *ListInboxMentions200ResponseDataInner) HasPermalink() bool {
-	if o != nil && !IsNil(o.Permalink) {
+	if o != nil && o.Permalink.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPermalink gets a reference to the given string and assigns it to the Permalink field.
+// SetPermalink gets a reference to the given NullableString and assigns it to the Permalink field.
 func (o *ListInboxMentions200ResponseDataInner) SetPermalink(v string) {
-	o.Permalink = &v
+	o.Permalink.Set(&v)
 }
 
-// GetAuthorUrn returns the AuthorUrn field value if set, zero value otherwise.
+// SetPermalinkNil sets the value for Permalink to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetPermalinkNil() {
+	o.Permalink.Set(nil)
+}
+
+// UnsetPermalink ensures that no value is present for Permalink, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetPermalink() {
+	o.Permalink.Unset()
+}
+
+// GetAuthorUrn returns the AuthorUrn field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxMentions200ResponseDataInner) GetAuthorUrn() string {
-	if o == nil || IsNil(o.AuthorUrn) {
+	if o == nil || IsNil(o.AuthorUrn.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.AuthorUrn
+	return *o.AuthorUrn.Get()
 }
 
 // GetAuthorUrnOk returns a tuple with the AuthorUrn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListInboxMentions200ResponseDataInner) GetAuthorUrnOk() (*string, bool) {
-	if o == nil || IsNil(o.AuthorUrn) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AuthorUrn, true
+	return o.AuthorUrn.Get(), o.AuthorUrn.IsSet()
 }
 
 // HasAuthorUrn returns a boolean if a field has been set.
 func (o *ListInboxMentions200ResponseDataInner) HasAuthorUrn() bool {
-	if o != nil && !IsNil(o.AuthorUrn) {
+	if o != nil && o.AuthorUrn.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAuthorUrn gets a reference to the given string and assigns it to the AuthorUrn field.
+// SetAuthorUrn gets a reference to the given NullableString and assigns it to the AuthorUrn field.
 func (o *ListInboxMentions200ResponseDataInner) SetAuthorUrn(v string) {
-	o.AuthorUrn = &v
+	o.AuthorUrn.Set(&v)
+}
+
+// SetAuthorUrnNil sets the value for AuthorUrn to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorUrnNil() {
+	o.AuthorUrn.Set(nil)
+}
+
+// UnsetAuthorUrn ensures that no value is present for AuthorUrn, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetAuthorUrn() {
+	o.AuthorUrn.Unset()
 }
 
 // GetOrganizationalEntity returns the OrganizationalEntity field value if set, zero value otherwise.
@@ -400,11 +422,11 @@ func (o ListInboxMentions200ResponseDataInner) ToMap() (map[string]interface{}, 
 	if !IsNil(o.Content) {
 		toSerialize["content"] = o.Content
 	}
-	if !IsNil(o.Permalink) {
-		toSerialize["permalink"] = o.Permalink
+	if o.Permalink.IsSet() {
+		toSerialize["permalink"] = o.Permalink.Get()
 	}
-	if !IsNil(o.AuthorUrn) {
-		toSerialize["authorUrn"] = o.AuthorUrn
+	if o.AuthorUrn.IsSet() {
+		toSerialize["authorUrn"] = o.AuthorUrn.Get()
 	}
 	if !IsNil(o.OrganizationalEntity) {
 		toSerialize["organizationalEntity"] = o.OrganizationalEntity

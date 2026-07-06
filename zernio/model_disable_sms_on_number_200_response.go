@@ -20,6 +20,7 @@ var _ MappedNullable = &DisableSmsOnNumber200Response{}
 
 // DisableSmsOnNumber200Response struct for DisableSmsOnNumber200Response
 type DisableSmsOnNumber200Response struct {
+	// Always false after a successful disable.
 	Enabled     *bool   `json:"enabled,omitempty"`
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 	// False when SMS was already off. Legacy field; prefer `enabled`.
