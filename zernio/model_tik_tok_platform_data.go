@@ -30,11 +30,11 @@ type TikTokPlatformData struct {
 	AllowDuet *bool `json:"allowDuet,omitempty"`
 	// Allow stitches (required for video posts)
 	AllowStitch *bool `json:"allowStitch,omitempty"`
-	// Type of commercial content disclosure
+	// Type of commercial content disclosure. Sufficient on its own: \"brand_organic\" (\"Your Brand\") implies isBrandOrganicPost and \"brand_content\" (\"Branded Content\", paid partnership) implies brandPartnerPromote, so you don't need to send the boolean flags separately. Branded content cannot be posted with privacyLevel SELF_ONLY.
 	CommercialContentType *string `json:"commercialContentType,omitempty"`
-	// Whether the post promotes a brand partner
+	// Whether the post promotes a brand partner (branded content / paid partnership). Only needed to disclose BOTH types at once (set it alongside commercialContentType \"brand_organic\"), or to override the value implied by commercialContentType.
 	BrandPartnerPromote *bool `json:"brandPartnerPromote,omitempty"`
-	// Whether the post is a brand organic post
+	// Whether the post promotes the creator's own brand (brand organic). Only needed to disclose BOTH types at once (set it alongside commercialContentType \"brand_content\"), or to override the value implied by commercialContentType.
 	IsBrandOrganicPost *bool `json:"isBrandOrganicPost,omitempty"`
 	// User has confirmed they previewed the content
 	ContentPreviewConfirmed *bool `json:"contentPreviewConfirmed,omitempty"`
