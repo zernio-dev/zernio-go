@@ -44,6 +44,24 @@ type AdMetrics struct {
 	PurchaseValue *float32 `json:"purchaseValue,omitempty"`
 	// Return on ad spend — derived as `purchaseValue / spend`. 0 when `spend` is 0. Equivalent to Meta's `purchase_roas` under default attribution. At ad-set and campaign levels this is recomputed from summed purchaseValue + spend (NOT averaged across children) so it's mathematically correct at every rollup level.
 	Roas *float32 `json:"roas,omitempty"`
+	// Meta video ads only (0 for non-video ads and other platforms), like all video* fields below. Number of times the video started playing (Meta `video_play_actions`), summed over the date range and across children at ad-set/campaign level.
+	VideoPlayActions *int32 `json:"videoPlayActions,omitempty"`
+	// Views of at least 30 seconds (or to the end, for shorter videos). Meta `video_30_sec_watched_actions`.
+	Video30SecWatchedActions *int32 `json:"video30SecWatchedActions,omitempty"`
+	// ThruPlays (watched to completion, or at least 15 seconds). Meta `video_thruplay_watched_actions`.
+	VideoThruplayWatchedActions *int32 `json:"videoThruplayWatchedActions,omitempty"`
+	// Views reaching 25% of the video's length. With the other percentile fields, powers hook/hold/drop-off analysis (e.g. hook rate = videoP25WatchedActions / videoPlayActions). Meta `video_p25_watched_actions`.
+	VideoP25WatchedActions *int32 `json:"videoP25WatchedActions,omitempty"`
+	// Views reaching 50% of the video's length. Meta `video_p50_watched_actions`.
+	VideoP50WatchedActions *int32 `json:"videoP50WatchedActions,omitempty"`
+	// Views reaching 75% of the video's length. Meta `video_p75_watched_actions`.
+	VideoP75WatchedActions *int32 `json:"videoP75WatchedActions,omitempty"`
+	// Views reaching 95% of the video's length. Meta `video_p95_watched_actions`.
+	VideoP95WatchedActions *int32 `json:"videoP95WatchedActions,omitempty"`
+	// Views reaching 100% of the video's length. Meta `video_p100_watched_actions`.
+	VideoP100WatchedActions *int32 `json:"videoP100WatchedActions,omitempty"`
+	// Average seconds watched per play (Meta `video_avg_time_watched_actions`). Aggregated over date ranges and across children as a play-weighted average (total watch time / total plays), never a plain average of averages.
+	VideoAvgTimeWatchedActions *float32 `json:"videoAvgTimeWatchedActions,omitempty"`
 	// Present on individual ads only, not on campaign aggregations
 	LastSyncedAt *time.Time `json:"lastSyncedAt,omitempty"`
 }
@@ -513,6 +531,294 @@ func (o *AdMetrics) SetRoas(v float32) {
 	o.Roas = &v
 }
 
+// GetVideoPlayActions returns the VideoPlayActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoPlayActions() int32 {
+	if o == nil || IsNil(o.VideoPlayActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoPlayActions
+}
+
+// GetVideoPlayActionsOk returns a tuple with the VideoPlayActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoPlayActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoPlayActions) {
+		return nil, false
+	}
+	return o.VideoPlayActions, true
+}
+
+// HasVideoPlayActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoPlayActions() bool {
+	if o != nil && !IsNil(o.VideoPlayActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoPlayActions gets a reference to the given int32 and assigns it to the VideoPlayActions field.
+func (o *AdMetrics) SetVideoPlayActions(v int32) {
+	o.VideoPlayActions = &v
+}
+
+// GetVideo30SecWatchedActions returns the Video30SecWatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideo30SecWatchedActions() int32 {
+	if o == nil || IsNil(o.Video30SecWatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.Video30SecWatchedActions
+}
+
+// GetVideo30SecWatchedActionsOk returns a tuple with the Video30SecWatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideo30SecWatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Video30SecWatchedActions) {
+		return nil, false
+	}
+	return o.Video30SecWatchedActions, true
+}
+
+// HasVideo30SecWatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideo30SecWatchedActions() bool {
+	if o != nil && !IsNil(o.Video30SecWatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo30SecWatchedActions gets a reference to the given int32 and assigns it to the Video30SecWatchedActions field.
+func (o *AdMetrics) SetVideo30SecWatchedActions(v int32) {
+	o.Video30SecWatchedActions = &v
+}
+
+// GetVideoThruplayWatchedActions returns the VideoThruplayWatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoThruplayWatchedActions() int32 {
+	if o == nil || IsNil(o.VideoThruplayWatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoThruplayWatchedActions
+}
+
+// GetVideoThruplayWatchedActionsOk returns a tuple with the VideoThruplayWatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoThruplayWatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoThruplayWatchedActions) {
+		return nil, false
+	}
+	return o.VideoThruplayWatchedActions, true
+}
+
+// HasVideoThruplayWatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoThruplayWatchedActions() bool {
+	if o != nil && !IsNil(o.VideoThruplayWatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoThruplayWatchedActions gets a reference to the given int32 and assigns it to the VideoThruplayWatchedActions field.
+func (o *AdMetrics) SetVideoThruplayWatchedActions(v int32) {
+	o.VideoThruplayWatchedActions = &v
+}
+
+// GetVideoP25WatchedActions returns the VideoP25WatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoP25WatchedActions() int32 {
+	if o == nil || IsNil(o.VideoP25WatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoP25WatchedActions
+}
+
+// GetVideoP25WatchedActionsOk returns a tuple with the VideoP25WatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoP25WatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoP25WatchedActions) {
+		return nil, false
+	}
+	return o.VideoP25WatchedActions, true
+}
+
+// HasVideoP25WatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoP25WatchedActions() bool {
+	if o != nil && !IsNil(o.VideoP25WatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoP25WatchedActions gets a reference to the given int32 and assigns it to the VideoP25WatchedActions field.
+func (o *AdMetrics) SetVideoP25WatchedActions(v int32) {
+	o.VideoP25WatchedActions = &v
+}
+
+// GetVideoP50WatchedActions returns the VideoP50WatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoP50WatchedActions() int32 {
+	if o == nil || IsNil(o.VideoP50WatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoP50WatchedActions
+}
+
+// GetVideoP50WatchedActionsOk returns a tuple with the VideoP50WatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoP50WatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoP50WatchedActions) {
+		return nil, false
+	}
+	return o.VideoP50WatchedActions, true
+}
+
+// HasVideoP50WatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoP50WatchedActions() bool {
+	if o != nil && !IsNil(o.VideoP50WatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoP50WatchedActions gets a reference to the given int32 and assigns it to the VideoP50WatchedActions field.
+func (o *AdMetrics) SetVideoP50WatchedActions(v int32) {
+	o.VideoP50WatchedActions = &v
+}
+
+// GetVideoP75WatchedActions returns the VideoP75WatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoP75WatchedActions() int32 {
+	if o == nil || IsNil(o.VideoP75WatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoP75WatchedActions
+}
+
+// GetVideoP75WatchedActionsOk returns a tuple with the VideoP75WatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoP75WatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoP75WatchedActions) {
+		return nil, false
+	}
+	return o.VideoP75WatchedActions, true
+}
+
+// HasVideoP75WatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoP75WatchedActions() bool {
+	if o != nil && !IsNil(o.VideoP75WatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoP75WatchedActions gets a reference to the given int32 and assigns it to the VideoP75WatchedActions field.
+func (o *AdMetrics) SetVideoP75WatchedActions(v int32) {
+	o.VideoP75WatchedActions = &v
+}
+
+// GetVideoP95WatchedActions returns the VideoP95WatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoP95WatchedActions() int32 {
+	if o == nil || IsNil(o.VideoP95WatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoP95WatchedActions
+}
+
+// GetVideoP95WatchedActionsOk returns a tuple with the VideoP95WatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoP95WatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoP95WatchedActions) {
+		return nil, false
+	}
+	return o.VideoP95WatchedActions, true
+}
+
+// HasVideoP95WatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoP95WatchedActions() bool {
+	if o != nil && !IsNil(o.VideoP95WatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoP95WatchedActions gets a reference to the given int32 and assigns it to the VideoP95WatchedActions field.
+func (o *AdMetrics) SetVideoP95WatchedActions(v int32) {
+	o.VideoP95WatchedActions = &v
+}
+
+// GetVideoP100WatchedActions returns the VideoP100WatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoP100WatchedActions() int32 {
+	if o == nil || IsNil(o.VideoP100WatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoP100WatchedActions
+}
+
+// GetVideoP100WatchedActionsOk returns a tuple with the VideoP100WatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoP100WatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoP100WatchedActions) {
+		return nil, false
+	}
+	return o.VideoP100WatchedActions, true
+}
+
+// HasVideoP100WatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoP100WatchedActions() bool {
+	if o != nil && !IsNil(o.VideoP100WatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoP100WatchedActions gets a reference to the given int32 and assigns it to the VideoP100WatchedActions field.
+func (o *AdMetrics) SetVideoP100WatchedActions(v int32) {
+	o.VideoP100WatchedActions = &v
+}
+
+// GetVideoAvgTimeWatchedActions returns the VideoAvgTimeWatchedActions field value if set, zero value otherwise.
+func (o *AdMetrics) GetVideoAvgTimeWatchedActions() float32 {
+	if o == nil || IsNil(o.VideoAvgTimeWatchedActions) {
+		var ret float32
+		return ret
+	}
+	return *o.VideoAvgTimeWatchedActions
+}
+
+// GetVideoAvgTimeWatchedActionsOk returns a tuple with the VideoAvgTimeWatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdMetrics) GetVideoAvgTimeWatchedActionsOk() (*float32, bool) {
+	if o == nil || IsNil(o.VideoAvgTimeWatchedActions) {
+		return nil, false
+	}
+	return o.VideoAvgTimeWatchedActions, true
+}
+
+// HasVideoAvgTimeWatchedActions returns a boolean if a field has been set.
+func (o *AdMetrics) HasVideoAvgTimeWatchedActions() bool {
+	if o != nil && !IsNil(o.VideoAvgTimeWatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoAvgTimeWatchedActions gets a reference to the given float32 and assigns it to the VideoAvgTimeWatchedActions field.
+func (o *AdMetrics) SetVideoAvgTimeWatchedActions(v float32) {
+	o.VideoAvgTimeWatchedActions = &v
+}
+
 // GetLastSyncedAt returns the LastSyncedAt field value if set, zero value otherwise.
 func (o *AdMetrics) GetLastSyncedAt() time.Time {
 	if o == nil || IsNil(o.LastSyncedAt) {
@@ -596,6 +902,33 @@ func (o AdMetrics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Roas) {
 		toSerialize["roas"] = o.Roas
+	}
+	if !IsNil(o.VideoPlayActions) {
+		toSerialize["videoPlayActions"] = o.VideoPlayActions
+	}
+	if !IsNil(o.Video30SecWatchedActions) {
+		toSerialize["video30SecWatchedActions"] = o.Video30SecWatchedActions
+	}
+	if !IsNil(o.VideoThruplayWatchedActions) {
+		toSerialize["videoThruplayWatchedActions"] = o.VideoThruplayWatchedActions
+	}
+	if !IsNil(o.VideoP25WatchedActions) {
+		toSerialize["videoP25WatchedActions"] = o.VideoP25WatchedActions
+	}
+	if !IsNil(o.VideoP50WatchedActions) {
+		toSerialize["videoP50WatchedActions"] = o.VideoP50WatchedActions
+	}
+	if !IsNil(o.VideoP75WatchedActions) {
+		toSerialize["videoP75WatchedActions"] = o.VideoP75WatchedActions
+	}
+	if !IsNil(o.VideoP95WatchedActions) {
+		toSerialize["videoP95WatchedActions"] = o.VideoP95WatchedActions
+	}
+	if !IsNil(o.VideoP100WatchedActions) {
+		toSerialize["videoP100WatchedActions"] = o.VideoP100WatchedActions
+	}
+	if !IsNil(o.VideoAvgTimeWatchedActions) {
+		toSerialize["videoAvgTimeWatchedActions"] = o.VideoAvgTimeWatchedActions
 	}
 	if !IsNil(o.LastSyncedAt) {
 		toSerialize["lastSyncedAt"] = o.LastSyncedAt
