@@ -25,7 +25,9 @@ type InboxWebhookAccount struct {
 	// Social account ID
 	Id string `json:"id"`
 	// Social account ID (same value as id). Canonical field so consumers can filter every webhook event on one field (e.g. route staging vs production by account). id is kept for backward compatibility.
-	AccountId   *string `json:"accountId,omitempty"`
+	AccountId *string `json:"accountId,omitempty"`
+	// Zernio profile (workspace) ID this account belongs to. Use it to route or filter inbox webhooks by workspace. This is the profile ID only, not its name (resolve the name via the API with this ID). Optional; omitted on the shared WhatsApp sandbox account and when the account has no resolvable profile.
+	ProfileId   *string `json:"profileId,omitempty"`
 	Platform    string  `json:"platform"`
 	Username    string  `json:"username"`
 	DisplayName *string `json:"displayName,omitempty"`
@@ -107,6 +109,38 @@ func (o *InboxWebhookAccount) HasAccountId() bool {
 // SetAccountId gets a reference to the given string and assigns it to the AccountId field.
 func (o *InboxWebhookAccount) SetAccountId(v string) {
 	o.AccountId = &v
+}
+
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *InboxWebhookAccount) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InboxWebhookAccount) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *InboxWebhookAccount) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *InboxWebhookAccount) SetProfileId(v string) {
+	o.ProfileId = &v
 }
 
 // GetPlatform returns the Platform field value
@@ -202,6 +236,9 @@ func (o InboxWebhookAccount) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profileId"] = o.ProfileId
 	}
 	toSerialize["platform"] = o.Platform
 	toSerialize["username"] = o.Username
