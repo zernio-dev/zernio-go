@@ -28,8 +28,8 @@ type DiscordPlatformDataEmbedsInner struct {
 	Url *string `json:"url,omitempty"`
 	// Embed accent color as decimal integer (e.g. 5814783 for blue). Convert hex to decimal.
 	Color     *int32                                `json:"color,omitempty"`
-	Image     *DiscordPlatformDataEmbedsInnerImage  `json:"image,omitempty"`
-	Thumbnail *DiscordPlatformDataEmbedsInnerImage  `json:"thumbnail,omitempty"`
+	Image     *GetWhatsAppCallRecording200Response  `json:"image,omitempty"`
+	Thumbnail *GetWhatsAppCallRecording200Response  `json:"thumbnail,omitempty"`
 	Footer    *DiscordPlatformDataEmbedsInnerFooter `json:"footer,omitempty"`
 	Author    *DiscordPlatformDataEmbedsInnerAuthor `json:"author,omitempty"`
 	// Up to 25 fields per embed
@@ -182,9 +182,9 @@ func (o *DiscordPlatformDataEmbedsInner) SetColor(v int32) {
 }
 
 // GetImage returns the Image field value if set, zero value otherwise.
-func (o *DiscordPlatformDataEmbedsInner) GetImage() DiscordPlatformDataEmbedsInnerImage {
+func (o *DiscordPlatformDataEmbedsInner) GetImage() GetWhatsAppCallRecording200Response {
 	if o == nil || IsNil(o.Image) {
-		var ret DiscordPlatformDataEmbedsInnerImage
+		var ret GetWhatsAppCallRecording200Response
 		return ret
 	}
 	return *o.Image
@@ -192,7 +192,7 @@ func (o *DiscordPlatformDataEmbedsInner) GetImage() DiscordPlatformDataEmbedsInn
 
 // GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DiscordPlatformDataEmbedsInner) GetImageOk() (*DiscordPlatformDataEmbedsInnerImage, bool) {
+func (o *DiscordPlatformDataEmbedsInner) GetImageOk() (*GetWhatsAppCallRecording200Response, bool) {
 	if o == nil || IsNil(o.Image) {
 		return nil, false
 	}
@@ -208,15 +208,15 @@ func (o *DiscordPlatformDataEmbedsInner) HasImage() bool {
 	return false
 }
 
-// SetImage gets a reference to the given DiscordPlatformDataEmbedsInnerImage and assigns it to the Image field.
-func (o *DiscordPlatformDataEmbedsInner) SetImage(v DiscordPlatformDataEmbedsInnerImage) {
+// SetImage gets a reference to the given GetWhatsAppCallRecording200Response and assigns it to the Image field.
+func (o *DiscordPlatformDataEmbedsInner) SetImage(v GetWhatsAppCallRecording200Response) {
 	o.Image = &v
 }
 
 // GetThumbnail returns the Thumbnail field value if set, zero value otherwise.
-func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() DiscordPlatformDataEmbedsInnerImage {
+func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() GetWhatsAppCallRecording200Response {
 	if o == nil || IsNil(o.Thumbnail) {
-		var ret DiscordPlatformDataEmbedsInnerImage
+		var ret GetWhatsAppCallRecording200Response
 		return ret
 	}
 	return *o.Thumbnail
@@ -224,7 +224,7 @@ func (o *DiscordPlatformDataEmbedsInner) GetThumbnail() DiscordPlatformDataEmbed
 
 // GetThumbnailOk returns a tuple with the Thumbnail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DiscordPlatformDataEmbedsInner) GetThumbnailOk() (*DiscordPlatformDataEmbedsInnerImage, bool) {
+func (o *DiscordPlatformDataEmbedsInner) GetThumbnailOk() (*GetWhatsAppCallRecording200Response, bool) {
 	if o == nil || IsNil(o.Thumbnail) {
 		return nil, false
 	}
@@ -240,8 +240,8 @@ func (o *DiscordPlatformDataEmbedsInner) HasThumbnail() bool {
 	return false
 }
 
-// SetThumbnail gets a reference to the given DiscordPlatformDataEmbedsInnerImage and assigns it to the Thumbnail field.
-func (o *DiscordPlatformDataEmbedsInner) SetThumbnail(v DiscordPlatformDataEmbedsInnerImage) {
+// SetThumbnail gets a reference to the given GetWhatsAppCallRecording200Response and assigns it to the Thumbnail field.
+func (o *DiscordPlatformDataEmbedsInner) SetThumbnail(v GetWhatsAppCallRecording200Response) {
 	o.Thumbnail = &v
 }
 

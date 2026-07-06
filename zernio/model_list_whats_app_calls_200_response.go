@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListWhatsAppCalls200Response type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,8 @@ var _ MappedNullable = &ListWhatsAppCalls200Response{}
 // ListWhatsAppCalls200Response struct for ListWhatsAppCalls200Response
 type ListWhatsAppCalls200Response struct {
 	Calls []ListWhatsAppCalls200ResponseCallsInner `json:"calls,omitempty"`
+	// Pass as `before` for the next page; null on the last page.
+	NextCursor NullableTime `json:"nextCursor,omitempty"`
 }
 
 // NewListWhatsAppCalls200Response instantiates a new ListWhatsAppCalls200Response object
@@ -72,6 +75,49 @@ func (o *ListWhatsAppCalls200Response) SetCalls(v []ListWhatsAppCalls200Response
 	o.Calls = v
 }
 
+// GetNextCursor returns the NextCursor field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListWhatsAppCalls200Response) GetNextCursor() time.Time {
+	if o == nil || IsNil(o.NextCursor.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.NextCursor.Get()
+}
+
+// GetNextCursorOk returns a tuple with the NextCursor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListWhatsAppCalls200Response) GetNextCursorOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NextCursor.Get(), o.NextCursor.IsSet()
+}
+
+// HasNextCursor returns a boolean if a field has been set.
+func (o *ListWhatsAppCalls200Response) HasNextCursor() bool {
+	if o != nil && o.NextCursor.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNextCursor gets a reference to the given NullableTime and assigns it to the NextCursor field.
+func (o *ListWhatsAppCalls200Response) SetNextCursor(v time.Time) {
+	o.NextCursor.Set(&v)
+}
+
+// SetNextCursorNil sets the value for NextCursor to be an explicit nil
+func (o *ListWhatsAppCalls200Response) SetNextCursorNil() {
+	o.NextCursor.Set(nil)
+}
+
+// UnsetNextCursor ensures that no value is present for NextCursor, not even an explicit nil
+func (o *ListWhatsAppCalls200Response) UnsetNextCursor() {
+	o.NextCursor.Unset()
+}
+
 func (o ListWhatsAppCalls200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +130,9 @@ func (o ListWhatsAppCalls200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Calls) {
 		toSerialize["calls"] = o.Calls
+	}
+	if o.NextCursor.IsSet() {
+		toSerialize["nextCursor"] = o.NextCursor.Get()
 	}
 	return toSerialize, nil
 }

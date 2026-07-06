@@ -21,25 +21,25 @@ var _ MappedNullable = &GetBroadcast200ResponseBroadcast{}
 
 // GetBroadcast200ResponseBroadcast struct for GetBroadcast200ResponseBroadcast
 type GetBroadcast200ResponseBroadcast struct {
-	Id             *string                                            `json:"id,omitempty"`
-	Name           *string                                            `json:"name,omitempty"`
-	Description    *string                                            `json:"description,omitempty"`
-	Platform       *string                                            `json:"platform,omitempty"`
-	AccountId      *string                                            `json:"accountId,omitempty"`
-	Message        *SendInboxMessageRequestInteractiveFooter          `json:"message,omitempty"`
-	Template       *GetWhatsAppPhoneNumbers200ResponseSandboxTemplate `json:"template,omitempty"`
-	SegmentFilters *ListContacts200ResponseFilters                    `json:"segmentFilters,omitempty"`
-	Status         *string                                            `json:"status,omitempty"`
-	ScheduledAt    *time.Time                                         `json:"scheduledAt,omitempty"`
-	StartedAt      *time.Time                                         `json:"startedAt,omitempty"`
-	CompletedAt    *time.Time                                         `json:"completedAt,omitempty"`
-	RecipientCount *int32                                             `json:"recipientCount,omitempty"`
-	SentCount      *int32                                             `json:"sentCount,omitempty"`
-	DeliveredCount *int32                                             `json:"deliveredCount,omitempty"`
-	ReadCount      *int32                                             `json:"readCount,omitempty"`
-	FailedCount    *int32                                             `json:"failedCount,omitempty"`
-	CreatedAt      *time.Time                                         `json:"createdAt,omitempty"`
-	UpdatedAt      *time.Time                                         `json:"updatedAt,omitempty"`
+	Id             *string                                     `json:"id,omitempty"`
+	Name           *string                                     `json:"name,omitempty"`
+	Description    *string                                     `json:"description,omitempty"`
+	Platform       *string                                     `json:"platform,omitempty"`
+	AccountId      *string                                     `json:"accountId,omitempty"`
+	Message        *SendInboxMessageRequestInteractiveFooter   `json:"message,omitempty"`
+	Template       *ListPhoneNumbers200ResponseSandboxTemplate `json:"template,omitempty"`
+	SegmentFilters *ListContacts200ResponseFilters             `json:"segmentFilters,omitempty"`
+	Status         *string                                     `json:"status,omitempty"`
+	ScheduledAt    *time.Time                                  `json:"scheduledAt,omitempty"`
+	StartedAt      *time.Time                                  `json:"startedAt,omitempty"`
+	CompletedAt    *time.Time                                  `json:"completedAt,omitempty"`
+	RecipientCount *int32                                      `json:"recipientCount,omitempty"`
+	SentCount      *int32                                      `json:"sentCount,omitempty"`
+	DeliveredCount *int32                                      `json:"deliveredCount,omitempty"`
+	ReadCount      *int32                                      `json:"readCount,omitempty"`
+	FailedCount    *int32                                      `json:"failedCount,omitempty"`
+	CreatedAt      *time.Time                                  `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time                                  `json:"updatedAt,omitempty"`
 }
 
 // NewGetBroadcast200ResponseBroadcast instantiates a new GetBroadcast200ResponseBroadcast object
@@ -252,9 +252,9 @@ func (o *GetBroadcast200ResponseBroadcast) SetMessage(v SendInboxMessageRequestI
 }
 
 // GetTemplate returns the Template field value if set, zero value otherwise.
-func (o *GetBroadcast200ResponseBroadcast) GetTemplate() GetWhatsAppPhoneNumbers200ResponseSandboxTemplate {
+func (o *GetBroadcast200ResponseBroadcast) GetTemplate() ListPhoneNumbers200ResponseSandboxTemplate {
 	if o == nil || IsNil(o.Template) {
-		var ret GetWhatsAppPhoneNumbers200ResponseSandboxTemplate
+		var ret ListPhoneNumbers200ResponseSandboxTemplate
 		return ret
 	}
 	return *o.Template
@@ -262,7 +262,7 @@ func (o *GetBroadcast200ResponseBroadcast) GetTemplate() GetWhatsAppPhoneNumbers
 
 // GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetBroadcast200ResponseBroadcast) GetTemplateOk() (*GetWhatsAppPhoneNumbers200ResponseSandboxTemplate, bool) {
+func (o *GetBroadcast200ResponseBroadcast) GetTemplateOk() (*ListPhoneNumbers200ResponseSandboxTemplate, bool) {
 	if o == nil || IsNil(o.Template) {
 		return nil, false
 	}
@@ -278,8 +278,8 @@ func (o *GetBroadcast200ResponseBroadcast) HasTemplate() bool {
 	return false
 }
 
-// SetTemplate gets a reference to the given GetWhatsAppPhoneNumbers200ResponseSandboxTemplate and assigns it to the Template field.
-func (o *GetBroadcast200ResponseBroadcast) SetTemplate(v GetWhatsAppPhoneNumbers200ResponseSandboxTemplate) {
+// SetTemplate gets a reference to the given ListPhoneNumbers200ResponseSandboxTemplate and assigns it to the Template field.
+func (o *GetBroadcast200ResponseBroadcast) SetTemplate(v ListPhoneNumbers200ResponseSandboxTemplate) {
 	o.Template = &v
 }
 

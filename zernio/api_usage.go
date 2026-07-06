@@ -17,10 +17,483 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // UsageAPIService UsageAPI service
 type UsageAPIService service
+
+type UsageAPIGetCallsUsageRequest struct {
+	ctx        context.Context
+	ApiService *UsageAPIService
+	since      *time.Time
+	until      *time.Time
+	channel    *string
+	number     *string
+	groupBy    *string
+}
+
+// Start of the window (inclusive). Default 30 days before &#x60;until&#x60;.
+func (r UsageAPIGetCallsUsageRequest) Since(since time.Time) UsageAPIGetCallsUsageRequest {
+	r.since = &since
+	return r
+}
+
+// End of the window (exclusive). Default now.
+func (r UsageAPIGetCallsUsageRequest) Until(until time.Time) UsageAPIGetCallsUsageRequest {
+	r.until = &until
+	return r
+}
+
+func (r UsageAPIGetCallsUsageRequest) Channel(channel string) UsageAPIGetCallsUsageRequest {
+	r.channel = &channel
+	return r
+}
+
+// Scope to calls involving this number (typically one of YOUR numbers). E.164, leading + optional.
+func (r UsageAPIGetCallsUsageRequest) Number(number string) UsageAPIGetCallsUsageRequest {
+	r.number = &number
+	return r
+}
+
+func (r UsageAPIGetCallsUsageRequest) GroupBy(groupBy string) UsageAPIGetCallsUsageRequest {
+	r.groupBy = &groupBy
+	return r
+}
+
+func (r UsageAPIGetCallsUsageRequest) Execute() (*GetCallsUsage200Response, *http.Response, error) {
+	return r.ApiService.GetCallsUsageExecute(r)
+}
+
+/*
+GetCallsUsage Calling usage (volumes + billable cost)
+
+Aggregated calling usage across your numbers, both channels
+(WhatsApp Business Calling + regular phone/PSTN): call counts,
+answered counts, minutes, and cost. Use it for cost visibility or to
+rebill your own customers per number.
+
+Costs come from each call's billing snapshot, so this endpoint always
+agrees with the invoice: `billableUSD` is what Zernio bills;
+`metaUSD` is the WhatsApp per-minute charge Meta bills directly to
+your WABA (display only, never billed by Zernio).
+
+Optional `groupBy` returns a breakdown by UTC day, by your number, or
+by channel. Defaults to the last 30 days.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return UsageAPIGetCallsUsageRequest
+*/
+func (a *UsageAPIService) GetCallsUsage(ctx context.Context) UsageAPIGetCallsUsageRequest {
+	return UsageAPIGetCallsUsageRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetCallsUsage200Response
+func (a *UsageAPIService) GetCallsUsageExecute(r UsageAPIGetCallsUsageRequest) (*GetCallsUsage200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetCallsUsage200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageAPIService.GetCallsUsage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/usage/calls"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	if r.channel != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "channel", r.channel, "form", "")
+	}
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
+	if r.groupBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "groupBy", r.groupBy, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type UsageAPIGetSmsUsageRequest struct {
+	ctx        context.Context
+	ApiService *UsageAPIService
+	since      *time.Time
+	until      *time.Time
+	number     *string
+	groupBy    *string
+}
+
+// Start of the window (inclusive). Default 30 days before &#x60;until&#x60;.
+func (r UsageAPIGetSmsUsageRequest) Since(since time.Time) UsageAPIGetSmsUsageRequest {
+	r.since = &since
+	return r
+}
+
+// End of the window (exclusive). Default now.
+func (r UsageAPIGetSmsUsageRequest) Until(until time.Time) UsageAPIGetSmsUsageRequest {
+	r.until = &until
+	return r
+}
+
+// Scope to one of YOUR SMS-enabled numbers (E.164, leading + optional).
+func (r UsageAPIGetSmsUsageRequest) Number(number string) UsageAPIGetSmsUsageRequest {
+	r.number = &number
+	return r
+}
+
+func (r UsageAPIGetSmsUsageRequest) GroupBy(groupBy string) UsageAPIGetSmsUsageRequest {
+	r.groupBy = &groupBy
+	return r
+}
+
+func (r UsageAPIGetSmsUsageRequest) Execute() (*GetSmsUsage200Response, *http.Response, error) {
+	return r.ApiService.GetSmsUsageExecute(r)
+}
+
+/*
+GetSmsUsage SMS usage (volumes)
+
+Aggregated SMS/MMS volumes across your numbers: sent, received, and
+total message counts, with an optional breakdown by UTC day or by
+number. Defaults to the last 30 days.
+
+Volumes only, deliberately: SMS cost is carrier-rated asynchronously
+and billed to your invoice, so per-message cost is not available here.
+Calling usage (GET /v1/usage/calls) does include billable cost.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return UsageAPIGetSmsUsageRequest
+*/
+func (a *UsageAPIService) GetSmsUsage(ctx context.Context) UsageAPIGetSmsUsageRequest {
+	return UsageAPIGetSmsUsageRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetSmsUsage200Response
+func (a *UsageAPIService) GetSmsUsageExecute(r UsageAPIGetSmsUsageRequest) (*GetSmsUsage200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetSmsUsage200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageAPIService.GetSmsUsage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/usage/sms"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
+	if r.groupBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "groupBy", r.groupBy, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type UsageAPIGetUsageRequest struct {
+	ctx        context.Context
+	ApiService *UsageAPIService
+	reconcile  *bool
+}
+
+// For Stripe subscription users, &#x60;true&#x60; forces a subscription reconciliation pass even when cached plan data looks complete. Omit the parameter, or pass &#x60;false&#x60;, to use the default first-time-only reconciliation behavior. Invalid boolean values are rejected.
+func (r UsageAPIGetUsageRequest) Reconcile(reconcile bool) UsageAPIGetUsageRequest {
+	r.reconcile = &reconcile
+	return r
+}
+
+func (r UsageAPIGetUsageRequest) Execute() (*UsageStats, *http.Response, error) {
+	return r.ApiService.GetUsageExecute(r)
+}
+
+/*
+GetUsage Get plan and usage snapshot
+
+The usage hub: current plan name, billing period, plan limits, and
+usage counts, in one snapshot. For metered consumption over an
+arbitrary window with breakdowns (by day, by number), use the
+domain spokes: `GET /v1/usage/calls` and `GET /v1/usage/sms`.
+
+The response shape depends on the account's `billingSystem`:
+
+  - Stripe users: per-period `usage.uploads` / `usage.profiles` counters.
+
+  - Metronome (usage-based) users: `usage.connectedAccounts`,
+    `usage.xApiCallsByOperation` (per-operation X API call counts —
+    resolve keys via `GET /v1/billing/x-pricing`), plus a `spend`
+    block with `currentPeriodCents`, `xSpendCents`, and
+    `xSpendLimitCents`. The legacy `usage.xApiCalls` 3-tier
+    aggregate is still emitted for back-compat but excludes the
+    $0.200 URL tier and any future tiers — new clients should
+    consume `xApiCallsByOperation` only.
+
+    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+    @return UsageAPIGetUsageRequest
+*/
+func (a *UsageAPIService) GetUsage(ctx context.Context) UsageAPIGetUsageRequest {
+	return UsageAPIGetUsageRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UsageStats
+func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*UsageStats, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UsageStats
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageAPIService.GetUsage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/usage"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.reconcile != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reconcile", r.reconcile, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type UsageAPIGetUsageStatsRequest struct {
 	ctx        context.Context
@@ -41,6 +514,10 @@ func (r UsageAPIGetUsageStatsRequest) Execute() (*UsageStats, *http.Response, er
 /*
 GetUsageStats Get plan and usage stats
 
+Deprecated alias of `GET /v1/usage`; same contract. New integrations
+should use that path (the usage hub), with `GET /v1/usage/calls` and
+`GET /v1/usage/sms` for metered breakdowns.
+
 Returns the current plan name, billing period, plan limits, and usage counts.
 
 The response shape depends on the account's `billingSystem`:
@@ -58,6 +535,8 @@ The response shape depends on the account's `billingSystem`:
 
     @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
     @return UsageAPIGetUsageStatsRequest
+
+Deprecated
 */
 func (a *UsageAPIService) GetUsageStats(ctx context.Context) UsageAPIGetUsageStatsRequest {
 	return UsageAPIGetUsageStatsRequest{
@@ -69,6 +548,8 @@ func (a *UsageAPIService) GetUsageStats(ctx context.Context) UsageAPIGetUsageSta
 // Execute executes the request
 //
 //	@return UsageStats
+//
+// Deprecated
 func (a *UsageAPIService) GetUsageStatsExecute(r UsageAPIGetUsageStatsRequest) (*UsageStats, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet

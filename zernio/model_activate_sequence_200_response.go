@@ -20,8 +20,8 @@ var _ MappedNullable = &ActivateSequence200Response{}
 
 // ActivateSequence200Response struct for ActivateSequence200Response
 type ActivateSequence200Response struct {
-	Success  *bool                                          `json:"success,omitempty"`
-	Sequence *RemediateWhatsAppNumber200ResponsePhoneNumber `json:"sequence,omitempty"`
+	Success  *bool                                       `json:"success,omitempty"`
+	Sequence *RemediatePhoneNumber200ResponsePhoneNumber `json:"sequence,omitempty"`
 }
 
 // NewActivateSequence200Response instantiates a new ActivateSequence200Response object
@@ -74,9 +74,9 @@ func (o *ActivateSequence200Response) SetSuccess(v bool) {
 }
 
 // GetSequence returns the Sequence field value if set, zero value otherwise.
-func (o *ActivateSequence200Response) GetSequence() RemediateWhatsAppNumber200ResponsePhoneNumber {
+func (o *ActivateSequence200Response) GetSequence() RemediatePhoneNumber200ResponsePhoneNumber {
 	if o == nil || IsNil(o.Sequence) {
-		var ret RemediateWhatsAppNumber200ResponsePhoneNumber
+		var ret RemediatePhoneNumber200ResponsePhoneNumber
 		return ret
 	}
 	return *o.Sequence
@@ -84,7 +84,7 @@ func (o *ActivateSequence200Response) GetSequence() RemediateWhatsAppNumber200Re
 
 // GetSequenceOk returns a tuple with the Sequence field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ActivateSequence200Response) GetSequenceOk() (*RemediateWhatsAppNumber200ResponsePhoneNumber, bool) {
+func (o *ActivateSequence200Response) GetSequenceOk() (*RemediatePhoneNumber200ResponsePhoneNumber, bool) {
 	if o == nil || IsNil(o.Sequence) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *ActivateSequence200Response) HasSequence() bool {
 	return false
 }
 
-// SetSequence gets a reference to the given RemediateWhatsAppNumber200ResponsePhoneNumber and assigns it to the Sequence field.
-func (o *ActivateSequence200Response) SetSequence(v RemediateWhatsAppNumber200ResponsePhoneNumber) {
+// SetSequence gets a reference to the given RemediatePhoneNumber200ResponsePhoneNumber and assigns it to the Sequence field.
+func (o *ActivateSequence200Response) SetSequence(v RemediatePhoneNumber200ResponsePhoneNumber) {
 	o.Sequence = &v
 }
 

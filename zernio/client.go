@@ -67,6 +67,8 @@ type APIClient struct {
 
 	BroadcastsAPI *BroadcastsAPIService
 
+	CallsAPI *CallsAPIService
+
 	CommentAutomationsAPI *CommentAutomationsAPIService
 
 	CommentsAPI *CommentsAPIService
@@ -111,6 +113,8 @@ type APIClient struct {
 
 	MessagesAPI *MessagesAPIService
 
+	PhoneNumbersAPI *PhoneNumbersAPIService
+
 	PostsAPI *PostsAPIService
 
 	ProfilesAPI *ProfilesAPIService
@@ -120,6 +124,8 @@ type APIClient struct {
 	RedditSearchAPI *RedditSearchAPIService
 
 	ReviewsAPI *ReviewsAPIService
+
+	SMSAPI *SMSAPIService
 
 	SequencesAPI *SequencesAPIService
 
@@ -132,6 +138,8 @@ type APIClient struct {
 	UsersAPI *UsersAPIService
 
 	ValidateAPI *ValidateAPIService
+
+	VoiceAPI *VoiceAPIService
 
 	WebhooksAPI *WebhooksAPIService
 
@@ -175,6 +183,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.AdsAPI = (*AdsAPIService)(&c.common)
 	c.AnalyticsAPI = (*AnalyticsAPIService)(&c.common)
 	c.BroadcastsAPI = (*BroadcastsAPIService)(&c.common)
+	c.CallsAPI = (*CallsAPIService)(&c.common)
 	c.CommentAutomationsAPI = (*CommentAutomationsAPIService)(&c.common)
 	c.CommentsAPI = (*CommentsAPIService)(&c.common)
 	c.ConnectAPI = (*ConnectAPIService)(&c.common)
@@ -197,17 +206,20 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.MediaAPI = (*MediaAPIService)(&c.common)
 	c.MentionsAPI = (*MentionsAPIService)(&c.common)
 	c.MessagesAPI = (*MessagesAPIService)(&c.common)
+	c.PhoneNumbersAPI = (*PhoneNumbersAPIService)(&c.common)
 	c.PostsAPI = (*PostsAPIService)(&c.common)
 	c.ProfilesAPI = (*ProfilesAPIService)(&c.common)
 	c.QueueAPI = (*QueueAPIService)(&c.common)
 	c.RedditSearchAPI = (*RedditSearchAPIService)(&c.common)
 	c.ReviewsAPI = (*ReviewsAPIService)(&c.common)
+	c.SMSAPI = (*SMSAPIService)(&c.common)
 	c.SequencesAPI = (*SequencesAPIService)(&c.common)
 	c.TrackingTagsAPI = (*TrackingTagsAPIService)(&c.common)
 	c.TwitterEngagementAPI = (*TwitterEngagementAPIService)(&c.common)
 	c.UsageAPI = (*UsageAPIService)(&c.common)
 	c.UsersAPI = (*UsersAPIService)(&c.common)
 	c.ValidateAPI = (*ValidateAPIService)(&c.common)
+	c.VoiceAPI = (*VoiceAPIService)(&c.common)
 	c.WebhooksAPI = (*WebhooksAPIService)(&c.common)
 	c.WhatsAppAPI = (*WhatsAppAPIService)(&c.common)
 	c.WhatsAppCallingAPI = (*WhatsAppCallingAPIService)(&c.common)

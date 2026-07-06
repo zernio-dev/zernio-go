@@ -21,15 +21,15 @@ var _ MappedNullable = &WebhookPayloadCallFailedCall{}
 
 // WebhookPayloadCallFailedCall struct for WebhookPayloadCallFailedCall
 type WebhookPayloadCallFailedCall struct {
-	Id            *string                            `json:"id,omitempty"`
-	MetaCallId    NullableString                     `json:"metaCallId,omitempty"`
-	AccountId     *string                            `json:"accountId,omitempty"`
-	PhoneNumberId *string                            `json:"phoneNumberId,omitempty"`
-	Direction     *string                            `json:"direction,omitempty"`
-	From          *string                            `json:"from,omitempty"`
-	To            *string                            `json:"to,omitempty"`
-	FailedAt      *time.Time                         `json:"failedAt,omitempty"`
-	Error         *WebhookPayloadCallFailedCallError `json:"error,omitempty"`
+	Id            *string                    `json:"id,omitempty"`
+	MetaCallId    NullableString             `json:"metaCallId,omitempty"`
+	AccountId     *string                    `json:"accountId,omitempty"`
+	PhoneNumberId *string                    `json:"phoneNumberId,omitempty"`
+	Direction     *string                    `json:"direction,omitempty"`
+	From          *string                    `json:"from,omitempty"`
+	To            *string                    `json:"to,omitempty"`
+	FailedAt      *time.Time                 `json:"failedAt,omitempty"`
+	Error         *CallRecordCallErrorsInner `json:"error,omitempty"`
 }
 
 // NewWebhookPayloadCallFailedCall instantiates a new WebhookPayloadCallFailedCall object
@@ -317,9 +317,9 @@ func (o *WebhookPayloadCallFailedCall) SetFailedAt(v time.Time) {
 }
 
 // GetError returns the Error field value if set, zero value otherwise.
-func (o *WebhookPayloadCallFailedCall) GetError() WebhookPayloadCallFailedCallError {
+func (o *WebhookPayloadCallFailedCall) GetError() CallRecordCallErrorsInner {
 	if o == nil || IsNil(o.Error) {
-		var ret WebhookPayloadCallFailedCallError
+		var ret CallRecordCallErrorsInner
 		return ret
 	}
 	return *o.Error
@@ -327,7 +327,7 @@ func (o *WebhookPayloadCallFailedCall) GetError() WebhookPayloadCallFailedCallEr
 
 // GetErrorOk returns a tuple with the Error field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadCallFailedCall) GetErrorOk() (*WebhookPayloadCallFailedCallError, bool) {
+func (o *WebhookPayloadCallFailedCall) GetErrorOk() (*CallRecordCallErrorsInner, bool) {
 	if o == nil || IsNil(o.Error) {
 		return nil, false
 	}
@@ -343,8 +343,8 @@ func (o *WebhookPayloadCallFailedCall) HasError() bool {
 	return false
 }
 
-// SetError gets a reference to the given WebhookPayloadCallFailedCallError and assigns it to the Error field.
-func (o *WebhookPayloadCallFailedCall) SetError(v WebhookPayloadCallFailedCallError) {
+// SetError gets a reference to the given CallRecordCallErrorsInner and assigns it to the Error field.
+func (o *WebhookPayloadCallFailedCall) SetError(v CallRecordCallErrorsInner) {
 	o.Error = &v
 }
 

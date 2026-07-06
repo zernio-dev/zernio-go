@@ -20,8 +20,8 @@ var _ MappedNullable = &PauseWorkflow200Response{}
 
 // PauseWorkflow200Response struct for PauseWorkflow200Response
 type PauseWorkflow200Response struct {
-	Success  *bool                                          `json:"success,omitempty"`
-	Workflow *RemediateWhatsAppNumber200ResponsePhoneNumber `json:"workflow,omitempty"`
+	Success  *bool                                       `json:"success,omitempty"`
+	Workflow *RemediatePhoneNumber200ResponsePhoneNumber `json:"workflow,omitempty"`
 }
 
 // NewPauseWorkflow200Response instantiates a new PauseWorkflow200Response object
@@ -74,9 +74,9 @@ func (o *PauseWorkflow200Response) SetSuccess(v bool) {
 }
 
 // GetWorkflow returns the Workflow field value if set, zero value otherwise.
-func (o *PauseWorkflow200Response) GetWorkflow() RemediateWhatsAppNumber200ResponsePhoneNumber {
+func (o *PauseWorkflow200Response) GetWorkflow() RemediatePhoneNumber200ResponsePhoneNumber {
 	if o == nil || IsNil(o.Workflow) {
-		var ret RemediateWhatsAppNumber200ResponsePhoneNumber
+		var ret RemediatePhoneNumber200ResponsePhoneNumber
 		return ret
 	}
 	return *o.Workflow
@@ -84,7 +84,7 @@ func (o *PauseWorkflow200Response) GetWorkflow() RemediateWhatsAppNumber200Respo
 
 // GetWorkflowOk returns a tuple with the Workflow field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PauseWorkflow200Response) GetWorkflowOk() (*RemediateWhatsAppNumber200ResponsePhoneNumber, bool) {
+func (o *PauseWorkflow200Response) GetWorkflowOk() (*RemediatePhoneNumber200ResponsePhoneNumber, bool) {
 	if o == nil || IsNil(o.Workflow) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *PauseWorkflow200Response) HasWorkflow() bool {
 	return false
 }
 
-// SetWorkflow gets a reference to the given RemediateWhatsAppNumber200ResponsePhoneNumber and assigns it to the Workflow field.
-func (o *PauseWorkflow200Response) SetWorkflow(v RemediateWhatsAppNumber200ResponsePhoneNumber) {
+// SetWorkflow gets a reference to the given RemediatePhoneNumber200ResponsePhoneNumber and assigns it to the Workflow field.
+func (o *PauseWorkflow200Response) SetWorkflow(v RemediatePhoneNumber200ResponsePhoneNumber) {
 	o.Workflow = &v
 }
 

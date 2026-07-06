@@ -20,8 +20,8 @@ var _ MappedNullable = &CancelBroadcast200Response{}
 
 // CancelBroadcast200Response struct for CancelBroadcast200Response
 type CancelBroadcast200Response struct {
-	Success   *bool                                          `json:"success,omitempty"`
-	Broadcast *RemediateWhatsAppNumber200ResponsePhoneNumber `json:"broadcast,omitempty"`
+	Success   *bool                                       `json:"success,omitempty"`
+	Broadcast *RemediatePhoneNumber200ResponsePhoneNumber `json:"broadcast,omitempty"`
 }
 
 // NewCancelBroadcast200Response instantiates a new CancelBroadcast200Response object
@@ -74,9 +74,9 @@ func (o *CancelBroadcast200Response) SetSuccess(v bool) {
 }
 
 // GetBroadcast returns the Broadcast field value if set, zero value otherwise.
-func (o *CancelBroadcast200Response) GetBroadcast() RemediateWhatsAppNumber200ResponsePhoneNumber {
+func (o *CancelBroadcast200Response) GetBroadcast() RemediatePhoneNumber200ResponsePhoneNumber {
 	if o == nil || IsNil(o.Broadcast) {
-		var ret RemediateWhatsAppNumber200ResponsePhoneNumber
+		var ret RemediatePhoneNumber200ResponsePhoneNumber
 		return ret
 	}
 	return *o.Broadcast
@@ -84,7 +84,7 @@ func (o *CancelBroadcast200Response) GetBroadcast() RemediateWhatsAppNumber200Re
 
 // GetBroadcastOk returns a tuple with the Broadcast field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CancelBroadcast200Response) GetBroadcastOk() (*RemediateWhatsAppNumber200ResponsePhoneNumber, bool) {
+func (o *CancelBroadcast200Response) GetBroadcastOk() (*RemediatePhoneNumber200ResponsePhoneNumber, bool) {
 	if o == nil || IsNil(o.Broadcast) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *CancelBroadcast200Response) HasBroadcast() bool {
 	return false
 }
 
-// SetBroadcast gets a reference to the given RemediateWhatsAppNumber200ResponsePhoneNumber and assigns it to the Broadcast field.
-func (o *CancelBroadcast200Response) SetBroadcast(v RemediateWhatsAppNumber200ResponsePhoneNumber) {
+// SetBroadcast gets a reference to the given RemediatePhoneNumber200ResponsePhoneNumber and assigns it to the Broadcast field.
+func (o *CancelBroadcast200Response) SetBroadcast(v RemediatePhoneNumber200ResponsePhoneNumber) {
 	o.Broadcast = &v
 }
 

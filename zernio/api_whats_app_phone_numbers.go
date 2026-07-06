@@ -36,12 +36,15 @@ func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Country(c
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Execute() (*CheckWhatsAppNumberAvailability200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Execute() (*CheckPhoneNumberAvailability200Response, *http.Response, error) {
 	return r.ApiService.CheckWhatsAppNumberAvailabilityExecute(r)
 }
 
 /*
 CheckWhatsAppNumberAvailability Check country availability
+
+Deprecated alias of `/v1/phone-numbers/availability`; same contract. New
+integrations should use that path.
 
 Pre-purchase check, so you can warn BEFORE a customer invests in KYC
 (regulated review is async, 1-3 days). Tells you whether we have
@@ -56,6 +59,8 @@ Call this before starting the KYC form for regulated countries.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailability(ctx context.Context) WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest {
 	return WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest{
@@ -66,13 +71,15 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailability(ctx con
 
 // Execute executes the request
 //
-//	@return CheckWhatsAppNumberAvailability200Response
-func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) (*CheckWhatsAppNumberAvailability200Response, *http.Response, error) {
+//	@return CheckPhoneNumberAvailability200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) (*CheckPhoneNumberAvailability200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CheckWhatsAppNumberAvailability200Response
+		localVarReturnValue *CheckPhoneNumberAvailability200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.CheckWhatsAppNumberAvailability")
@@ -155,22 +162,25 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(
 }
 
 type WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest struct {
-	ctx                                context.Context
-	ApiService                         *WhatsAppPhoneNumbersAPIService
-	createWhatsAppNumberKycLinkRequest *CreateWhatsAppNumberKycLinkRequest
+	ctx                             context.Context
+	ApiService                      *WhatsAppPhoneNumbersAPIService
+	createPhoneNumberKycLinkRequest *CreatePhoneNumberKycLinkRequest
 }
 
-func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) CreateWhatsAppNumberKycLinkRequest(createWhatsAppNumberKycLinkRequest CreateWhatsAppNumberKycLinkRequest) WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest {
-	r.createWhatsAppNumberKycLinkRequest = &createWhatsAppNumberKycLinkRequest
+func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) CreatePhoneNumberKycLinkRequest(createPhoneNumberKycLinkRequest CreatePhoneNumberKycLinkRequest) WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest {
+	r.createPhoneNumberKycLinkRequest = &createPhoneNumberKycLinkRequest
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) Execute() (*CreateWhatsAppNumberKycLink200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) Execute() (*CreatePhoneNumberKycLink200Response, *http.Response, error) {
 	return r.ApiService.CreateWhatsAppNumberKycLinkExecute(r)
 }
 
 /*
 CreateWhatsAppNumberKycLink Create a hosted KYC link
+
+Deprecated alias of `/v1/phone-numbers/kyc/share`; same contract. New
+integrations should use that path.
 
 Create a single-use, 7-day hosted KYC link that your end customer
 completes WITHOUT a Zernio login — useful when the person who holds the
@@ -187,6 +197,8 @@ when the form is completed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLink(ctx context.Context) WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest {
 	return WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest{
@@ -197,13 +209,15 @@ func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLink(ctx context
 
 // Execute executes the request
 //
-//	@return CreateWhatsAppNumberKycLink200Response
-func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLinkExecute(r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) (*CreateWhatsAppNumberKycLink200Response, *http.Response, error) {
+//	@return CreatePhoneNumberKycLink200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLinkExecute(r WhatsAppPhoneNumbersAPICreateWhatsAppNumberKycLinkRequest) (*CreatePhoneNumberKycLink200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateWhatsAppNumberKycLink200Response
+		localVarReturnValue *CreatePhoneNumberKycLink200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.CreateWhatsAppNumberKycLink")
@@ -216,8 +230,8 @@ func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLinkExecute(r Wh
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.createWhatsAppNumberKycLinkRequest == nil {
-		return localVarReturnValue, nil, reportError("createWhatsAppNumberKycLinkRequest is required and must be specified")
+	if r.createPhoneNumberKycLinkRequest == nil {
+		return localVarReturnValue, nil, reportError("createPhoneNumberKycLinkRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -238,7 +252,7 @@ func (a *WhatsAppPhoneNumbersAPIService) CreateWhatsAppNumberKycLinkExecute(r Wh
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.createWhatsAppNumberKycLinkRequest
+	localVarPostBody = r.createPhoneNumberKycLinkRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -437,12 +451,17 @@ func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest) Execute() (*GetW
 /*
 GetWhatsAppNumberKycForm Get KYC form spec
 
+Deprecated alias of `/v1/phone-numbers/kyc`; same contract. New
+integrations should use that path.
+
 For a Tier 3/4 country, the fields the end customer must provide (Telnyx
 regulatory requirements) before a number can be ordered: text, date,
 address, or file (document) per requirement.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberKycForm(ctx context.Context) WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest {
 	return WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest{
@@ -454,6 +473,8 @@ func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberKycForm(ctx context.Co
 // Execute executes the request
 //
 //	@return GetWhatsAppNumberKycForm200Response
+//
+// Deprecated
 func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberKycFormExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppNumberKycFormRequest) (*GetWhatsAppNumberKycForm200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -551,12 +572,15 @@ type WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest struct {
 	id         string
 }
 
-func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest) Execute() (*GetWhatsAppNumberRemediation200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest) Execute() (*GetPhoneNumberRemediation200Response, *http.Response, error) {
 	return r.ApiService.GetWhatsAppNumberRemediationExecute(r)
 }
 
 /*
 GetWhatsAppNumberRemediation Get declined requirements
+
+Deprecated alias of `/v1/phone-numbers/{id}/remediate`; same contract. New
+integrations should use that path.
 
 For a number in `regulatory_declined`, returns ONLY the requirements the
 reviewer flagged declined, as a form spec (same shape as the KYC form GET).
@@ -567,6 +591,8 @@ to the full spec if the provider exposes no per-requirement flags.
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id WhatsAppPhoneNumber id.
 	@return WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberRemediation(ctx context.Context, id string) WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest {
 	return WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest{
@@ -578,13 +604,15 @@ func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberRemediation(ctx contex
 
 // Execute executes the request
 //
-//	@return GetWhatsAppNumberRemediation200Response
-func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberRemediationExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest) (*GetWhatsAppNumberRemediation200Response, *http.Response, error) {
+//	@return GetPhoneNumberRemediation200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppNumberRemediationExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppNumberRemediationRequest) (*GetPhoneNumberRemediation200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppNumberRemediation200Response
+		localVarReturnValue *GetPhoneNumberRemediation200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.GetWhatsAppNumberRemediation")
@@ -670,12 +698,15 @@ type WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest struct {
 	phoneNumberId string
 }
 
-func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest) Execute() (*GetWhatsAppPhoneNumber200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest) Execute() (*GetPhoneNumber200Response, *http.Response, error) {
 	return r.ApiService.GetWhatsAppPhoneNumberExecute(r)
 }
 
 /*
 GetWhatsAppPhoneNumber Get phone number
+
+Deprecated alias of `/v1/phone-numbers/{id}`; same contract. New
+integrations should use that path.
 
 Retrieve the current status of a purchased phone number. Poll this to
 track Meta pre-verification (US sync path) and, for regulated (Tier 3/4)
@@ -688,6 +719,8 @@ instead of polling.)
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param phoneNumberId Phone number record ID
 	@return WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string) WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest {
 	return WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest{
@@ -699,13 +732,15 @@ func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumber(ctx context.Cont
 
 // Execute executes the request
 //
-//	@return GetWhatsAppPhoneNumber200Response
-func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest) (*GetWhatsAppPhoneNumber200Response, *http.Response, error) {
+//	@return GetPhoneNumber200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumberRequest) (*GetPhoneNumber200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppPhoneNumber200Response
+		localVarReturnValue *GetPhoneNumber200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.GetWhatsAppPhoneNumber")
@@ -814,12 +849,15 @@ func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) ProfileId(profile
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) Execute() (*GetWhatsAppPhoneNumbers200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) Execute() (*ListPhoneNumbers200Response, *http.Response, error) {
 	return r.ApiService.GetWhatsAppPhoneNumbersExecute(r)
 }
 
 /*
 GetWhatsAppPhoneNumbers List phone numbers
+
+Deprecated alias of `/v1/phone-numbers`; same contract. New
+integrations should use that path.
 
 List all WhatsApp phone numbers purchased by the authenticated user.
 By default, released numbers are excluded. Connected (bring-your-own)
@@ -828,6 +866,8 @@ billed and have no provisioning lifecycle.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumbers(ctx context.Context) WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest {
 	return WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest{
@@ -838,13 +878,15 @@ func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumbers(ctx context.Con
 
 // Execute executes the request
 //
-//	@return GetWhatsAppPhoneNumbers200Response
-func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumbersExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) (*GetWhatsAppPhoneNumbers200Response, *http.Response, error) {
+//	@return ListPhoneNumbers200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumbersExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) (*ListPhoneNumbers200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppPhoneNumbers200Response
+		localVarReturnValue *ListPhoneNumbers200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.GetWhatsAppPhoneNumbers")
@@ -940,6 +982,9 @@ func (r WhatsAppPhoneNumbersAPIListWhatsAppNumberCountriesRequest) Execute() (*L
 /*
 ListWhatsAppNumberCountries List offerable number countries
 
+Deprecated alias of `/v1/phone-numbers/countries`; same contract. New
+integrations should use that path.
+
 The WhatsApp number countries available to purchase, each with its flat
 monthly price (cents), regulatory tier, whether it needs end-user KYC
 (Tier 3/4), and whether outbound calling is available (not BIC-blocked).
@@ -947,6 +992,8 @@ Drives the country picker. Tier-4 countries appear only when enabled.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIListWhatsAppNumberCountriesRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) ListWhatsAppNumberCountries(ctx context.Context) WhatsAppPhoneNumbersAPIListWhatsAppNumberCountriesRequest {
 	return WhatsAppPhoneNumbersAPIListWhatsAppNumberCountriesRequest{
@@ -958,6 +1005,8 @@ func (a *WhatsAppPhoneNumbersAPIService) ListWhatsAppNumberCountries(ctx context
 // Execute executes the request
 //
 //	@return ListWhatsAppNumberCountries200Response
+//
+// Deprecated
 func (a *WhatsAppPhoneNumbersAPIService) ListWhatsAppNumberCountriesExecute(r WhatsAppPhoneNumbersAPIListWhatsAppNumberCountriesRequest) (*ListWhatsAppNumberCountries200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1052,12 +1101,15 @@ func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) PurchaseWhats
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) Execute() (*PurchaseWhatsAppPhoneNumber200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) Execute() (*PurchasePhoneNumber200Response, *http.Response, error) {
 	return r.ApiService.PurchaseWhatsAppPhoneNumberExecute(r)
 }
 
 /*
 PurchaseWhatsAppPhoneNumber Purchase phone number
+
+Deprecated alias of `/v1/phone-numbers/purchase`; same contract. New
+integrations should use that path.
 
 Initiate purchasing a WhatsApp phone number. Payment-first flow: the user does not pick
 a specific number. The system either creates a Stripe Checkout Session (first number)
@@ -1067,6 +1119,8 @@ Requires a paid plan. The maximum number of phone numbers is determined by the u
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumber(ctx context.Context) WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest {
 	return WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest{
@@ -1077,13 +1131,15 @@ func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumber(ctx context
 
 // Execute executes the request
 //
-//	@return PurchaseWhatsAppPhoneNumber200Response
-func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) (*PurchaseWhatsAppPhoneNumber200Response, *http.Response, error) {
+//	@return PurchasePhoneNumber200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIPurchaseWhatsAppPhoneNumberRequest) (*PurchasePhoneNumber200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *PurchaseWhatsAppPhoneNumber200Response
+		localVarReturnValue *PurchasePhoneNumber200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.PurchaseWhatsAppPhoneNumber")
@@ -1153,7 +1209,7 @@ func (a *WhatsAppPhoneNumbersAPIService) PurchaseWhatsAppPhoneNumberExecute(r Wh
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
-			var v PurchaseWhatsAppPhoneNumber409Response
+			var v PurchasePhoneNumber409Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1184,12 +1240,15 @@ type WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest struct {
 	phoneNumberId string
 }
 
-func (r WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest) Execute() (*ReleaseWhatsAppPhoneNumber200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest) Execute() (*ReleasePhoneNumber200Response, *http.Response, error) {
 	return r.ApiService.ReleaseWhatsAppPhoneNumberExecute(r)
 }
 
 /*
 ReleaseWhatsAppPhoneNumber Release phone number
+
+Deprecated alias of `/v1/phone-numbers/{id}`; same contract. New
+integrations should use that path.
 
 Release a purchased phone number. This will:
 1. Disconnect any linked WhatsApp social account
@@ -1200,6 +1259,8 @@ Release a purchased phone number. This will:
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param phoneNumberId Phone number record ID
 	@return WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumber(ctx context.Context, phoneNumberId string) WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest {
 	return WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest{
@@ -1211,13 +1272,15 @@ func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumber(ctx context.
 
 // Execute executes the request
 //
-//	@return ReleaseWhatsAppPhoneNumber200Response
-func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest) (*ReleaseWhatsAppPhoneNumber200Response, *http.Response, error) {
+//	@return ReleasePhoneNumber200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumberExecute(r WhatsAppPhoneNumbersAPIReleaseWhatsAppPhoneNumberRequest) (*ReleasePhoneNumber200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ReleaseWhatsAppPhoneNumber200Response
+		localVarReturnValue *ReleasePhoneNumber200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.ReleaseWhatsAppPhoneNumber")
@@ -1308,23 +1371,26 @@ func (a *WhatsAppPhoneNumbersAPIService) ReleaseWhatsAppPhoneNumberExecute(r Wha
 }
 
 type WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest struct {
-	ctx                            context.Context
-	ApiService                     *WhatsAppPhoneNumbersAPIService
-	id                             string
-	remediateWhatsAppNumberRequest *RemediateWhatsAppNumberRequest
+	ctx                         context.Context
+	ApiService                  *WhatsAppPhoneNumbersAPIService
+	id                          string
+	remediatePhoneNumberRequest *RemediatePhoneNumberRequest
 }
 
-func (r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) RemediateWhatsAppNumberRequest(remediateWhatsAppNumberRequest RemediateWhatsAppNumberRequest) WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest {
-	r.remediateWhatsAppNumberRequest = &remediateWhatsAppNumberRequest
+func (r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) RemediatePhoneNumberRequest(remediatePhoneNumberRequest RemediatePhoneNumberRequest) WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest {
+	r.remediatePhoneNumberRequest = &remediatePhoneNumberRequest
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) Execute() (*RemediateWhatsAppNumber200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) Execute() (*RemediatePhoneNumber200Response, *http.Response, error) {
 	return r.ApiService.RemediateWhatsAppNumberExecute(r)
 }
 
 /*
 RemediateWhatsAppNumber Resubmit a declined number
+
+Deprecated alias of `/v1/phone-numbers/{id}/remediate`; same contract. New
+integrations should use that path.
 
 Submit corrected values/documents for the declined requirement(s). We
 PATCH them onto the SAME requirement group and re-submit it for approval;
@@ -1335,6 +1401,8 @@ documents / address) — send only the corrected fields.
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
 	@return WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumber(ctx context.Context, id string) WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest {
 	return WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest{
@@ -1346,13 +1414,15 @@ func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumber(ctx context.Con
 
 // Execute executes the request
 //
-//	@return RemediateWhatsAppNumber200Response
-func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumberExecute(r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) (*RemediateWhatsAppNumber200Response, *http.Response, error) {
+//	@return RemediatePhoneNumber200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumberExecute(r WhatsAppPhoneNumbersAPIRemediateWhatsAppNumberRequest) (*RemediatePhoneNumber200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *RemediateWhatsAppNumber200Response
+		localVarReturnValue *RemediatePhoneNumber200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.RemediateWhatsAppNumber")
@@ -1366,8 +1436,8 @@ func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumberExecute(r WhatsA
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.remediateWhatsAppNumberRequest == nil {
-		return localVarReturnValue, nil, reportError("remediateWhatsAppNumberRequest is required and must be specified")
+	if r.remediatePhoneNumberRequest == nil {
+		return localVarReturnValue, nil, reportError("remediatePhoneNumberRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1388,7 +1458,7 @@ func (a *WhatsAppPhoneNumbersAPIService) RemediateWhatsAppNumberExecute(r WhatsA
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.remediateWhatsAppNumberRequest
+	localVarPostBody = r.remediatePhoneNumberRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1489,12 +1559,17 @@ func (r WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest) Execute() 
 /*
 SearchAvailableWhatsAppNumbers Search available numbers
 
+Deprecated alias of `/v1/phone-numbers/available`; same contract. New
+integrations should use that path.
+
 Search the provider's inventory for numbers available to purchase in a
 country (default US). Optional filters narrow the results. The country
 must be offerable (see GET /v1/whatsapp/phone-numbers/countries).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) SearchAvailableWhatsAppNumbers(ctx context.Context) WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest {
 	return WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest{
@@ -1506,6 +1581,8 @@ func (a *WhatsAppPhoneNumbersAPIService) SearchAvailableWhatsAppNumbers(ctx cont
 // Execute executes the request
 //
 //	@return SearchAvailableWhatsAppNumbers200Response
+//
+// Deprecated
 func (a *WhatsAppPhoneNumbersAPIService) SearchAvailableWhatsAppNumbersExecute(r WhatsAppPhoneNumbersAPISearchAvailableWhatsAppNumbersRequest) (*SearchAvailableWhatsAppNumbers200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1616,22 +1693,25 @@ func (a *WhatsAppPhoneNumbersAPIService) SearchAvailableWhatsAppNumbersExecute(r
 }
 
 type WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest struct {
-	ctx                            context.Context
-	ApiService                     *WhatsAppPhoneNumbersAPIService
-	submitWhatsAppNumberKycRequest *SubmitWhatsAppNumberKycRequest
+	ctx                         context.Context
+	ApiService                  *WhatsAppPhoneNumbersAPIService
+	submitPhoneNumberKycRequest *SubmitPhoneNumberKycRequest
 }
 
-func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) SubmitWhatsAppNumberKycRequest(submitWhatsAppNumberKycRequest SubmitWhatsAppNumberKycRequest) WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest {
-	r.submitWhatsAppNumberKycRequest = &submitWhatsAppNumberKycRequest
+func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) SubmitPhoneNumberKycRequest(submitPhoneNumberKycRequest SubmitPhoneNumberKycRequest) WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest {
+	r.submitPhoneNumberKycRequest = &submitPhoneNumberKycRequest
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) Execute() (*SubmitWhatsAppNumberKyc200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) Execute() (*SubmitPhoneNumberKyc200Response, *http.Response, error) {
 	return r.ApiService.SubmitWhatsAppNumberKycExecute(r)
 }
 
 /*
 SubmitWhatsAppNumberKyc Submit KYC
+
+Deprecated alias of `/v1/phone-numbers/kyc`; same contract. New
+integrations should use that path.
 
 Submit the end customer's KYC (textual values, uploaded documents,
 address) for a Tier 3/4 country. Documents are streamed straight to the
@@ -1653,6 +1733,8 @@ can pass review yet never be assignable a number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKyc(ctx context.Context) WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest {
 	return WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest{
@@ -1663,13 +1745,15 @@ func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKyc(ctx context.Con
 
 // Execute executes the request
 //
-//	@return SubmitWhatsAppNumberKyc200Response
-func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) (*SubmitWhatsAppNumberKyc200Response, *http.Response, error) {
+//	@return SubmitPhoneNumberKyc200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) (*SubmitPhoneNumberKyc200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *SubmitWhatsAppNumberKyc200Response
+		localVarReturnValue *SubmitPhoneNumberKyc200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.SubmitWhatsAppNumberKyc")
@@ -1682,8 +1766,8 @@ func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsA
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.submitWhatsAppNumberKycRequest == nil {
-		return localVarReturnValue, nil, reportError("submitWhatsAppNumberKycRequest is required and must be specified")
+	if r.submitPhoneNumberKycRequest == nil {
+		return localVarReturnValue, nil, reportError("submitPhoneNumberKycRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1704,7 +1788,7 @@ func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsA
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.submitWhatsAppNumberKycRequest
+	localVarPostBody = r.submitPhoneNumberKycRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1770,12 +1854,15 @@ func (r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) Body(body
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) Execute() (*UploadWhatsAppNumberKycDocument200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) Execute() (*UploadPhoneNumberKycDocument200Response, *http.Response, error) {
 	return r.ApiService.UploadWhatsAppNumberKycDocumentExecute(r)
 }
 
 /*
 UploadWhatsAppNumberKycDocument Upload a KYC document
+
+Deprecated alias of `/v1/phone-numbers/kyc/upload-document`; same contract. New
+integrations should use that path.
 
 Upload ONE document and get back its provider document id, to reference
 from POST /v1/whatsapp/phone-numbers/kyc via `documents[].documentId`.
@@ -1786,6 +1873,8 @@ number provider and is not stored by Zernio.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) UploadWhatsAppNumberKycDocument(ctx context.Context) WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest {
 	return WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest{
@@ -1796,13 +1885,15 @@ func (a *WhatsAppPhoneNumbersAPIService) UploadWhatsAppNumberKycDocument(ctx con
 
 // Execute executes the request
 //
-//	@return UploadWhatsAppNumberKycDocument200Response
-func (a *WhatsAppPhoneNumbersAPIService) UploadWhatsAppNumberKycDocumentExecute(r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) (*UploadWhatsAppNumberKycDocument200Response, *http.Response, error) {
+//	@return UploadPhoneNumberKycDocument200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) UploadWhatsAppNumberKycDocumentExecute(r WhatsAppPhoneNumbersAPIUploadWhatsAppNumberKycDocumentRequest) (*UploadPhoneNumberKycDocument200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UploadWhatsAppNumberKycDocument200Response
+		localVarReturnValue *UploadPhoneNumberKycDocument200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.UploadWhatsAppNumberKycDocument")
@@ -1890,22 +1981,25 @@ func (a *WhatsAppPhoneNumbersAPIService) UploadWhatsAppNumberKycDocumentExecute(
 }
 
 type WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest struct {
-	ctx                                     context.Context
-	ApiService                              *WhatsAppPhoneNumbersAPIService
-	validateWhatsAppNumberKycAddressRequest *ValidateWhatsAppNumberKycAddressRequest
+	ctx                                  context.Context
+	ApiService                           *WhatsAppPhoneNumbersAPIService
+	validatePhoneNumberKycAddressRequest *ValidatePhoneNumberKycAddressRequest
 }
 
-func (r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) ValidateWhatsAppNumberKycAddressRequest(validateWhatsAppNumberKycAddressRequest ValidateWhatsAppNumberKycAddressRequest) WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest {
-	r.validateWhatsAppNumberKycAddressRequest = &validateWhatsAppNumberKycAddressRequest
+func (r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) ValidatePhoneNumberKycAddressRequest(validatePhoneNumberKycAddressRequest ValidatePhoneNumberKycAddressRequest) WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest {
+	r.validatePhoneNumberKycAddressRequest = &validatePhoneNumberKycAddressRequest
 	return r
 }
 
-func (r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) Execute() (*ValidateWhatsAppNumberKycAddress200Response, *http.Response, error) {
+func (r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) Execute() (*ValidatePhoneNumberKycAddress200Response, *http.Response, error) {
 	return r.ApiService.ValidateWhatsAppNumberKycAddressExecute(r)
 }
 
 /*
 ValidateWhatsAppNumberKycAddress Pre-validate KYC address
+
+Deprecated alias of `/v1/phone-numbers/kyc/validate-address`; same contract. New
+integrations should use that path.
 
 Optional early check for the address step of a Tier 4 (end-user identity)
 registration: validates a postal address for deliverability BEFORE the full
@@ -1919,6 +2013,8 @@ final submit still validates).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest
+
+Deprecated
 */
 func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddress(ctx context.Context) WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest {
 	return WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest{
@@ -1929,13 +2025,15 @@ func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddress(ctx co
 
 // Execute executes the request
 //
-//	@return ValidateWhatsAppNumberKycAddress200Response
-func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddressExecute(r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) (*ValidateWhatsAppNumberKycAddress200Response, *http.Response, error) {
+//	@return ValidatePhoneNumberKycAddress200Response
+//
+// Deprecated
+func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddressExecute(r WhatsAppPhoneNumbersAPIValidateWhatsAppNumberKycAddressRequest) (*ValidatePhoneNumberKycAddress200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ValidateWhatsAppNumberKycAddress200Response
+		localVarReturnValue *ValidatePhoneNumberKycAddress200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.ValidateWhatsAppNumberKycAddress")
@@ -1948,8 +2046,8 @@ func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddressExecute
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.validateWhatsAppNumberKycAddressRequest == nil {
-		return localVarReturnValue, nil, reportError("validateWhatsAppNumberKycAddressRequest is required and must be specified")
+	if r.validatePhoneNumberKycAddressRequest == nil {
+		return localVarReturnValue, nil, reportError("validatePhoneNumberKycAddressRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1970,7 +2068,7 @@ func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddressExecute
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.validateWhatsAppNumberKycAddressRequest
+	localVarPostBody = r.validatePhoneNumberKycAddressRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1994,7 +2092,7 @@ func (a *WhatsAppPhoneNumbersAPIService) ValidateWhatsAppNumberKycAddressExecute
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v ValidateWhatsAppNumberKycAddress400Response
+			var v ValidatePhoneNumberKycAddress400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

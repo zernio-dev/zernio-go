@@ -72,6 +72,127 @@ func (a *WhatsAppCallingAPIService) DisableWhatsAppCallingExecute(r WhatsAppCall
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/calling"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppCallingAPIService
+	id         string
+	accountId  *string
+}
+
+func (r WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest) AccountId(accountId string) WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DisableWhatsAppCallingLegacyExecute(r)
+}
+
+/*
+DisableWhatsAppCallingLegacy Disable calling on a number
+
+Deprecated alias of `/v1/phone-numbers/{id}/whatsapp/calling`; same contract. New
+integrations should use that path.
+
+Disable calling. Sends calling.status=DISABLED to Meta (best-effort)
+and flips the local `callingEnabled` flag off. forwardTo and SIP
+creds are preserved so a re-enable does not lose the destination.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id
+	@return WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest
+
+Deprecated
+*/
+func (a *WhatsAppCallingAPIService) DisableWhatsAppCallingLegacy(ctx context.Context, id string) WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest {
+	return WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+// Deprecated
+func (a *WhatsAppCallingAPIService) DisableWhatsAppCallingLegacyExecute(r WhatsAppCallingAPIDisableWhatsAppCallingLegacyRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.DisableWhatsAppCallingLegacy")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
 	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/calling"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
 
@@ -140,18 +261,18 @@ func (a *WhatsAppCallingAPIService) DisableWhatsAppCallingExecute(r WhatsAppCall
 }
 
 type WhatsAppCallingAPIEnableWhatsAppCallingRequest struct {
-	ctx                          context.Context
-	ApiService                   *WhatsAppCallingAPIService
-	id                           string
-	enableWhatsAppCallingRequest *EnableWhatsAppCallingRequest
+	ctx                                context.Context
+	ApiService                         *WhatsAppCallingAPIService
+	id                                 string
+	enableWhatsAppCallingLegacyRequest *EnableWhatsAppCallingLegacyRequest
 }
 
-func (r WhatsAppCallingAPIEnableWhatsAppCallingRequest) EnableWhatsAppCallingRequest(enableWhatsAppCallingRequest EnableWhatsAppCallingRequest) WhatsAppCallingAPIEnableWhatsAppCallingRequest {
-	r.enableWhatsAppCallingRequest = &enableWhatsAppCallingRequest
+func (r WhatsAppCallingAPIEnableWhatsAppCallingRequest) EnableWhatsAppCallingLegacyRequest(enableWhatsAppCallingLegacyRequest EnableWhatsAppCallingLegacyRequest) WhatsAppCallingAPIEnableWhatsAppCallingRequest {
+	r.enableWhatsAppCallingLegacyRequest = &enableWhatsAppCallingLegacyRequest
 	return r
 }
 
-func (r WhatsAppCallingAPIEnableWhatsAppCallingRequest) Execute() (*EnableWhatsAppCalling200Response, *http.Response, error) {
+func (r WhatsAppCallingAPIEnableWhatsAppCallingRequest) Execute() (*EnableWhatsAppCallingLegacy200Response, *http.Response, error) {
 	return r.ApiService.EnableWhatsAppCallingExecute(r)
 }
 
@@ -164,7 +285,7 @@ stores the Meta-issued SIP password (encrypted), and snapshots the
 customer's forward-to destination.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param id WhatsAppPhoneNumber Mongo ID
+	@param id Phone number record ID (from GET /v1/phone-numbers).
 	@return WhatsAppCallingAPIEnableWhatsAppCallingRequest
 */
 func (a *WhatsAppCallingAPIService) EnableWhatsAppCalling(ctx context.Context, id string) WhatsAppCallingAPIEnableWhatsAppCallingRequest {
@@ -177,13 +298,13 @@ func (a *WhatsAppCallingAPIService) EnableWhatsAppCalling(ctx context.Context, i
 
 // Execute executes the request
 //
-//	@return EnableWhatsAppCalling200Response
-func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingExecute(r WhatsAppCallingAPIEnableWhatsAppCallingRequest) (*EnableWhatsAppCalling200Response, *http.Response, error) {
+//	@return EnableWhatsAppCallingLegacy200Response
+func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingExecute(r WhatsAppCallingAPIEnableWhatsAppCallingRequest) (*EnableWhatsAppCallingLegacy200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *EnableWhatsAppCalling200Response
+		localVarReturnValue *EnableWhatsAppCallingLegacy200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.EnableWhatsAppCalling")
@@ -191,14 +312,14 @@ func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingExecute(r WhatsAppCalli
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/calling"
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/calling"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.enableWhatsAppCallingRequest == nil {
-		return localVarReturnValue, nil, reportError("enableWhatsAppCallingRequest is required and must be specified")
+	if r.enableWhatsAppCallingLegacyRequest == nil {
+		return localVarReturnValue, nil, reportError("enableWhatsAppCallingLegacyRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -219,7 +340,143 @@ func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingExecute(r WhatsAppCalli
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.enableWhatsAppCallingRequest
+	localVarPostBody = r.enableWhatsAppCallingLegacyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest struct {
+	ctx                                context.Context
+	ApiService                         *WhatsAppCallingAPIService
+	id                                 string
+	enableWhatsAppCallingLegacyRequest *EnableWhatsAppCallingLegacyRequest
+}
+
+func (r WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest) EnableWhatsAppCallingLegacyRequest(enableWhatsAppCallingLegacyRequest EnableWhatsAppCallingLegacyRequest) WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest {
+	r.enableWhatsAppCallingLegacyRequest = &enableWhatsAppCallingLegacyRequest
+	return r
+}
+
+func (r WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest) Execute() (*EnableWhatsAppCallingLegacy200Response, *http.Response, error) {
+	return r.ApiService.EnableWhatsAppCallingLegacyExecute(r)
+}
+
+/*
+EnableWhatsAppCallingLegacy Enable calling on a number
+
+Deprecated alias of `/v1/phone-numbers/{id}/whatsapp/calling`; same contract. New
+integrations should use that path.
+
+Enable WhatsApp Business Calling on a connected number. Configures
+Meta calling.status=ENABLED with our Telnyx SIP endpoint, fetches and
+stores the Meta-issued SIP password (encrypted), and snapshots the
+customer's forward-to destination.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id WhatsAppPhoneNumber Mongo ID
+	@return WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest
+
+Deprecated
+*/
+func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingLegacy(ctx context.Context, id string) WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest {
+	return WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EnableWhatsAppCallingLegacy200Response
+//
+// Deprecated
+func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingLegacyExecute(r WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest) (*EnableWhatsAppCallingLegacy200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EnableWhatsAppCallingLegacy200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.EnableWhatsAppCallingLegacy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/calling"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.enableWhatsAppCallingLegacyRequest == nil {
+		return localVarReturnValue, nil, reportError("enableWhatsAppCallingLegacyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.enableWhatsAppCallingLegacyRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -676,6 +933,267 @@ func (a *WhatsAppCallingAPIService) GetWhatsAppCallPermissionsExecute(r WhatsApp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type WhatsAppCallingAPIGetWhatsAppCallRecordingRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppCallingAPIService
+	callId     string
+	accountId  *string
+	as         *string
+}
+
+func (r WhatsAppCallingAPIGetWhatsAppCallRecordingRequest) AccountId(accountId string) WhatsAppCallingAPIGetWhatsAppCallRecordingRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// &#x60;json&#x60; returns &#x60;{ url }&#x60; instead of a 302 redirect.
+func (r WhatsAppCallingAPIGetWhatsAppCallRecordingRequest) As(as string) WhatsAppCallingAPIGetWhatsAppCallRecordingRequest {
+	r.as = &as
+	return r
+}
+
+func (r WhatsAppCallingAPIGetWhatsAppCallRecordingRequest) Execute() (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppCallRecordingExecute(r)
+}
+
+/*
+GetWhatsAppCallRecording Get a call recording
+
+Resolves a fresh, playable MP3 URL for the call's recording.
+Provider-signed recording URLs expire ~10 minutes after signing, so the
+`recordingUrl` stored on the call is usually stale by the time it is
+played; this endpoint re-signs on demand. Default responds `302 Found`
+redirecting to the fresh URL (point an `<audio>` element or a link
+straight at this endpoint); pass `as=json` to receive `{ url }` instead.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param callId
+	@return WhatsAppCallingAPIGetWhatsAppCallRecordingRequest
+*/
+func (a *WhatsAppCallingAPIService) GetWhatsAppCallRecording(ctx context.Context, callId string) WhatsAppCallingAPIGetWhatsAppCallRecordingRequest {
+	return WhatsAppCallingAPIGetWhatsAppCallRecordingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		callId:     callId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppCallRecording200Response
+func (a *WhatsAppCallingAPIService) GetWhatsAppCallRecordingExecute(r WhatsAppCallingAPIGetWhatsAppCallRecordingRequest) (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppCallRecording200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.GetWhatsAppCallRecording")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/calls/{callId}/recording"
+	localVarPath = strings.Replace(localVarPath, "{"+"callId"+"}", url.PathEscape(parameterValueToString(r.callId, "callId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.as != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "as", r.as, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppCallingAPIGetWhatsAppCallingRequest struct {
+	ctx        context.Context
+	ApiService *WhatsAppCallingAPIService
+	id         string
+}
+
+func (r WhatsAppCallingAPIGetWhatsAppCallingRequest) Execute() (*GetWhatsAppCalling200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppCallingExecute(r)
+}
+
+/*
+GetWhatsAppCalling Get calling config for a number
+
+The WhatsApp Business Calling configuration of this number, keyed the
+same way as the POST/PATCH/DELETE below (full read-write on one
+sub-resource). Encrypted secrets are never returned; only a boolean
+saying whether a SIP password is stored. The account-scoped read
+(`GET /v1/whatsapp/calling?accountId=`) remains for callers that only
+know the social account id, and additionally carries account-level
+extras (billing eligibility, current-period spend).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id Phone number record ID (from GET /v1/phone-numbers).
+	@return WhatsAppCallingAPIGetWhatsAppCallingRequest
+*/
+func (a *WhatsAppCallingAPIService) GetWhatsAppCalling(ctx context.Context, id string) WhatsAppCallingAPIGetWhatsAppCallingRequest {
+	return WhatsAppCallingAPIGetWhatsAppCallingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppCalling200Response
+func (a *WhatsAppCallingAPIService) GetWhatsAppCallingExecute(r WhatsAppCallingAPIGetWhatsAppCallingRequest) (*GetWhatsAppCalling200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppCalling200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.GetWhatsAppCalling")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/calling"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type WhatsAppCallingAPIGetWhatsAppCallingConfigRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppCallingAPIService
@@ -697,10 +1215,12 @@ GetWhatsAppCallingConfig Get calling config for an account
 
 Returns the local calling configuration snapshot for the connected
 WhatsApp account: whether calling is enabled, the forward-to
-destination URI, recording opt-in state, the WhatsAppPhoneNumber
-doc id (use as `{id}` on the calling-config write endpoints) and
-whether SIP digest credentials are stored (the encrypted password
-itself is never returned).
+destination URI, recording opt-in state, the phone number record id
+(use as `{id}` on the read-write calling sub-resource at
+/v1/phone-numbers/{id}/whatsapp/calling) and whether SIP digest
+credentials are stored (the encrypted password itself is never
+returned). Also carries account-level extras (billing eligibility,
+current-period spend) that the number-keyed GET does not.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppCallingAPIGetWhatsAppCallingConfigRequest
@@ -807,10 +1327,17 @@ type WhatsAppCallingAPIInitiateWhatsAppCallRequest struct {
 	ctx                         context.Context
 	ApiService                  *WhatsAppCallingAPIService
 	initiateWhatsAppCallRequest *InitiateWhatsAppCallRequest
+	idempotencyKey              *string
 }
 
 func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) InitiateWhatsAppCallRequest(initiateWhatsAppCallRequest InitiateWhatsAppCallRequest) WhatsAppCallingAPIInitiateWhatsAppCallRequest {
 	r.initiateWhatsAppCallRequest = &initiateWhatsAppCallRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes dial retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r WhatsAppCallingAPIInitiateWhatsAppCallRequest) IdempotencyKey(idempotencyKey string) WhatsAppCallingAPIInitiateWhatsAppCallRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -832,6 +1359,10 @@ call, pass `action: "send_call_permission_request"` (+ optional
 `bodyText`). The consumer must tap Allow in WhatsApp before
 `start_call` is permitted; Meta limits the prompt to 1 per consumer
 per 24h (2 per 7 days) and requires an open 24h service window.
+
+**Idempotency:** send an `Idempotency-Key` header to make retries
+safe; same key + same body replays the original response instead of
+dialing (and billing) a second call.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppCallingAPIInitiateWhatsAppCallRequest
@@ -884,6 +1415,9 @@ func (a *WhatsAppCallingAPIService) InitiateWhatsAppCallExecute(r WhatsAppCallin
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.initiateWhatsAppCallRequest
@@ -943,6 +1477,7 @@ type WhatsAppCallingAPIListWhatsAppCallsRequest struct {
 	direction  *string
 	since      *time.Time
 	until      *time.Time
+	before     *time.Time
 	limit      *int32
 }
 
@@ -971,6 +1506,12 @@ func (r WhatsAppCallingAPIListWhatsAppCallsRequest) Until(until time.Time) Whats
 	return r
 }
 
+// Return calls with startedAt strictly before this instant (use the previous page&#39;s nextCursor).
+func (r WhatsAppCallingAPIListWhatsAppCallsRequest) Before(before time.Time) WhatsAppCallingAPIListWhatsAppCallsRequest {
+	r.before = &before
+	return r
+}
+
 func (r WhatsAppCallingAPIListWhatsAppCallsRequest) Limit(limit int32) WhatsAppCallingAPIListWhatsAppCallsRequest {
 	r.limit = &limit
 	return r
@@ -986,6 +1527,10 @@ ListWhatsAppCalls List call history for an account
 Compact history listing for a single connected account. Results are
 scoped to the resolved SocialAccount; profile-scoped team members
 cannot read calls on sibling accounts.
+
+Cursor pagination: pass the returned `nextCursor` as `before` to fetch
+the next page (same scheme as `GET /v1/calls`). `since`/`until` remain
+as absolute range filters and combine with the cursor.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppCallingAPIListWhatsAppCallsRequest
@@ -1034,6 +1579,9 @@ func (a *WhatsAppCallingAPIService) ListWhatsAppCallsExecute(r WhatsAppCallingAP
 	}
 	if r.until != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	if r.before != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "before", r.before, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
@@ -1103,14 +1651,14 @@ func (a *WhatsAppCallingAPIService) ListWhatsAppCallsExecute(r WhatsAppCallingAP
 }
 
 type WhatsAppCallingAPIUpdateWhatsAppCallingRequest struct {
-	ctx                          context.Context
-	ApiService                   *WhatsAppCallingAPIService
-	id                           string
-	updateWhatsAppCallingRequest *UpdateWhatsAppCallingRequest
+	ctx                                context.Context
+	ApiService                         *WhatsAppCallingAPIService
+	id                                 string
+	updateWhatsAppCallingLegacyRequest *UpdateWhatsAppCallingLegacyRequest
 }
 
-func (r WhatsAppCallingAPIUpdateWhatsAppCallingRequest) UpdateWhatsAppCallingRequest(updateWhatsAppCallingRequest UpdateWhatsAppCallingRequest) WhatsAppCallingAPIUpdateWhatsAppCallingRequest {
-	r.updateWhatsAppCallingRequest = &updateWhatsAppCallingRequest
+func (r WhatsAppCallingAPIUpdateWhatsAppCallingRequest) UpdateWhatsAppCallingLegacyRequest(updateWhatsAppCallingLegacyRequest UpdateWhatsAppCallingLegacyRequest) WhatsAppCallingAPIUpdateWhatsAppCallingRequest {
+	r.updateWhatsAppCallingLegacyRequest = &updateWhatsAppCallingLegacyRequest
 	return r
 }
 
@@ -1152,14 +1700,14 @@ func (a *WhatsAppCallingAPIService) UpdateWhatsAppCallingExecute(r WhatsAppCalli
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/calling"
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/whatsapp/calling"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.updateWhatsAppCallingRequest == nil {
-		return nil, reportError("updateWhatsAppCallingRequest is required and must be specified")
+	if r.updateWhatsAppCallingLegacyRequest == nil {
+		return nil, reportError("updateWhatsAppCallingLegacyRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1180,7 +1728,131 @@ func (a *WhatsAppCallingAPIService) UpdateWhatsAppCallingExecute(r WhatsAppCalli
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.updateWhatsAppCallingRequest
+	localVarPostBody = r.updateWhatsAppCallingLegacyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest struct {
+	ctx                                context.Context
+	ApiService                         *WhatsAppCallingAPIService
+	id                                 string
+	updateWhatsAppCallingLegacyRequest *UpdateWhatsAppCallingLegacyRequest
+}
+
+func (r WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest) UpdateWhatsAppCallingLegacyRequest(updateWhatsAppCallingLegacyRequest UpdateWhatsAppCallingLegacyRequest) WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest {
+	r.updateWhatsAppCallingLegacyRequest = &updateWhatsAppCallingLegacyRequest
+	return r
+}
+
+func (r WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest) Execute() (*http.Response, error) {
+	return r.ApiService.UpdateWhatsAppCallingLegacyExecute(r)
+}
+
+/*
+UpdateWhatsAppCallingLegacy Update calling config
+
+Deprecated alias of `/v1/phone-numbers/{id}/whatsapp/calling`; same contract. New
+integrations should use that path.
+
+Update fields on an already-enabled number. Only fields present in
+the body are written; `undefined` leaves the stored value alone,
+explicit `null` clears a nullable field. No Meta side effect, this
+only changes local routing state consumed by the Telnyx webhook
+handler.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id
+	@return WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest
+
+Deprecated
+*/
+func (a *WhatsAppCallingAPIService) UpdateWhatsAppCallingLegacy(ctx context.Context, id string) WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest {
+	return WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+// Deprecated
+func (a *WhatsAppCallingAPIService) UpdateWhatsAppCallingLegacyExecute(r WhatsAppCallingAPIUpdateWhatsAppCallingLegacyRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppCallingAPIService.UpdateWhatsAppCallingLegacy")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/phone-numbers/{id}/calling"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateWhatsAppCallingLegacyRequest == nil {
+		return nil, reportError("updateWhatsAppCallingLegacyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateWhatsAppCallingLegacyRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

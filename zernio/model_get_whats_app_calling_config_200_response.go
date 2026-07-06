@@ -20,7 +20,7 @@ var _ MappedNullable = &GetWhatsAppCallingConfig200Response{}
 
 // GetWhatsAppCallingConfig200Response struct for GetWhatsAppCallingConfig200Response
 type GetWhatsAppCallingConfig200Response struct {
-	// WhatsAppPhoneNumber Mongo ID (use on /v1/whatsapp/phone-numbers/{id}/calling)
+	// Phone number record ID (use on /v1/phone-numbers/{id}/whatsapp/calling)
 	PhoneNumberDocId *string `json:"phoneNumberDocId,omitempty"`
 	PhoneNumber      *string `json:"phoneNumber,omitempty"`
 	CallingEnabled   *bool   `json:"callingEnabled,omitempty"`

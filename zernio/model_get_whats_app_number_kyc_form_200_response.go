@@ -23,7 +23,7 @@ type GetWhatsAppNumberKycForm200Response struct {
 	Country    *string                                          `json:"country,omitempty"`
 	NumberType *string                                          `json:"numberType,omitempty"`
 	Fields     []GetWhatsAppNumberKycForm200ResponseFieldsInner `json:"fields,omitempty"`
-	Reusable   *GetWhatsAppNumberKycForm200ResponseReusable     `json:"reusable,omitempty"`
+	Reusable   *GetPhoneNumberKycForm200ResponseReusable        `json:"reusable,omitempty"`
 }
 
 // NewGetWhatsAppNumberKycForm200Response instantiates a new GetWhatsAppNumberKycForm200Response object
@@ -140,9 +140,9 @@ func (o *GetWhatsAppNumberKycForm200Response) SetFields(v []GetWhatsAppNumberKyc
 }
 
 // GetReusable returns the Reusable field value if set, zero value otherwise.
-func (o *GetWhatsAppNumberKycForm200Response) GetReusable() GetWhatsAppNumberKycForm200ResponseReusable {
+func (o *GetWhatsAppNumberKycForm200Response) GetReusable() GetPhoneNumberKycForm200ResponseReusable {
 	if o == nil || IsNil(o.Reusable) {
-		var ret GetWhatsAppNumberKycForm200ResponseReusable
+		var ret GetPhoneNumberKycForm200ResponseReusable
 		return ret
 	}
 	return *o.Reusable
@@ -150,7 +150,7 @@ func (o *GetWhatsAppNumberKycForm200Response) GetReusable() GetWhatsAppNumberKyc
 
 // GetReusableOk returns a tuple with the Reusable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetWhatsAppNumberKycForm200Response) GetReusableOk() (*GetWhatsAppNumberKycForm200ResponseReusable, bool) {
+func (o *GetWhatsAppNumberKycForm200Response) GetReusableOk() (*GetPhoneNumberKycForm200ResponseReusable, bool) {
 	if o == nil || IsNil(o.Reusable) {
 		return nil, false
 	}
@@ -166,8 +166,8 @@ func (o *GetWhatsAppNumberKycForm200Response) HasReusable() bool {
 	return false
 }
 
-// SetReusable gets a reference to the given GetWhatsAppNumberKycForm200ResponseReusable and assigns it to the Reusable field.
-func (o *GetWhatsAppNumberKycForm200Response) SetReusable(v GetWhatsAppNumberKycForm200ResponseReusable) {
+// SetReusable gets a reference to the given GetPhoneNumberKycForm200ResponseReusable and assigns it to the Reusable field.
+func (o *GetWhatsAppNumberKycForm200Response) SetReusable(v GetPhoneNumberKycForm200ResponseReusable) {
 	o.Reusable = &v
 }
 
