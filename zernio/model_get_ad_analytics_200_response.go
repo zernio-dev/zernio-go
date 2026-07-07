@@ -20,8 +20,10 @@ var _ MappedNullable = &GetAdAnalytics200Response{}
 
 // GetAdAnalytics200Response struct for GetAdAnalytics200Response
 type GetAdAnalytics200Response struct {
-	Ad        *GetAdAnalytics200ResponseAd              `json:"ad,omitempty"`
-	Analytics *GetCampaignAnalytics200ResponseAnalytics `json:"analytics,omitempty"`
+	Ad *GetAdAnalytics200ResponseAd `json:"ad,omitempty"`
+	// Present and true only on `202` responses: part of the requested date range is still being backfilled from the platform in the background. Retry the same request shortly; it returns 200 once the range is fully ingested.
+	BackfillPending *bool                                     `json:"backfillPending,omitempty"`
+	Analytics       *GetCampaignAnalytics200ResponseAnalytics `json:"analytics,omitempty"`
 }
 
 // NewGetAdAnalytics200Response instantiates a new GetAdAnalytics200Response object
@@ -73,6 +75,38 @@ func (o *GetAdAnalytics200Response) SetAd(v GetAdAnalytics200ResponseAd) {
 	o.Ad = &v
 }
 
+// GetBackfillPending returns the BackfillPending field value if set, zero value otherwise.
+func (o *GetAdAnalytics200Response) GetBackfillPending() bool {
+	if o == nil || IsNil(o.BackfillPending) {
+		var ret bool
+		return ret
+	}
+	return *o.BackfillPending
+}
+
+// GetBackfillPendingOk returns a tuple with the BackfillPending field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAnalytics200Response) GetBackfillPendingOk() (*bool, bool) {
+	if o == nil || IsNil(o.BackfillPending) {
+		return nil, false
+	}
+	return o.BackfillPending, true
+}
+
+// HasBackfillPending returns a boolean if a field has been set.
+func (o *GetAdAnalytics200Response) HasBackfillPending() bool {
+	if o != nil && !IsNil(o.BackfillPending) {
+		return true
+	}
+
+	return false
+}
+
+// SetBackfillPending gets a reference to the given bool and assigns it to the BackfillPending field.
+func (o *GetAdAnalytics200Response) SetBackfillPending(v bool) {
+	o.BackfillPending = &v
+}
+
 // GetAnalytics returns the Analytics field value if set, zero value otherwise.
 func (o *GetAdAnalytics200Response) GetAnalytics() GetCampaignAnalytics200ResponseAnalytics {
 	if o == nil || IsNil(o.Analytics) {
@@ -117,6 +151,9 @@ func (o GetAdAnalytics200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if !IsNil(o.BackfillPending) {
+		toSerialize["backfillPending"] = o.BackfillPending
 	}
 	if !IsNil(o.Analytics) {
 		toSerialize["analytics"] = o.Analytics

@@ -21,6 +21,8 @@ var _ MappedNullable = &GetAdsTimeline200Response{}
 // GetAdsTimeline200Response struct for GetAdsTimeline200Response
 type GetAdsTimeline200Response struct {
 	Rows []GetAdsTimeline200ResponseRowsInner `json:"rows,omitempty"`
+	// Present and true only on `202` responses: part of the requested date range is still being backfilled from the platform in the background. Retry the same request shortly; it returns 200 once the range is fully ingested.
+	BackfillPending *bool `json:"backfillPending,omitempty"`
 }
 
 // NewGetAdsTimeline200Response instantiates a new GetAdsTimeline200Response object
@@ -72,6 +74,38 @@ func (o *GetAdsTimeline200Response) SetRows(v []GetAdsTimeline200ResponseRowsInn
 	o.Rows = v
 }
 
+// GetBackfillPending returns the BackfillPending field value if set, zero value otherwise.
+func (o *GetAdsTimeline200Response) GetBackfillPending() bool {
+	if o == nil || IsNil(o.BackfillPending) {
+		var ret bool
+		return ret
+	}
+	return *o.BackfillPending
+}
+
+// GetBackfillPendingOk returns a tuple with the BackfillPending field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdsTimeline200Response) GetBackfillPendingOk() (*bool, bool) {
+	if o == nil || IsNil(o.BackfillPending) {
+		return nil, false
+	}
+	return o.BackfillPending, true
+}
+
+// HasBackfillPending returns a boolean if a field has been set.
+func (o *GetAdsTimeline200Response) HasBackfillPending() bool {
+	if o != nil && !IsNil(o.BackfillPending) {
+		return true
+	}
+
+	return false
+}
+
+// SetBackfillPending gets a reference to the given bool and assigns it to the BackfillPending field.
+func (o *GetAdsTimeline200Response) SetBackfillPending(v bool) {
+	o.BackfillPending = &v
+}
+
 func (o GetAdsTimeline200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +118,9 @@ func (o GetAdsTimeline200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Rows) {
 		toSerialize["rows"] = o.Rows
+	}
+	if !IsNil(o.BackfillPending) {
+		toSerialize["backfillPending"] = o.BackfillPending
 	}
 	return toSerialize, nil
 }

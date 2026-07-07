@@ -20,8 +20,10 @@ var _ MappedNullable = &ListAds200Response{}
 
 // ListAds200Response struct for ListAds200Response
 type ListAds200Response struct {
-	Ads        []Ad        `json:"ads,omitempty"`
-	Pagination *Pagination `json:"pagination,omitempty"`
+	Ads []Ad `json:"ads,omitempty"`
+	// Present and true only on `202` responses: part of the requested date range is still being backfilled from the platform in the background. Retry the same request shortly; it returns 200 once the range is fully ingested.
+	BackfillPending *bool       `json:"backfillPending,omitempty"`
+	Pagination      *Pagination `json:"pagination,omitempty"`
 }
 
 // NewListAds200Response instantiates a new ListAds200Response object
@@ -73,6 +75,38 @@ func (o *ListAds200Response) SetAds(v []Ad) {
 	o.Ads = v
 }
 
+// GetBackfillPending returns the BackfillPending field value if set, zero value otherwise.
+func (o *ListAds200Response) GetBackfillPending() bool {
+	if o == nil || IsNil(o.BackfillPending) {
+		var ret bool
+		return ret
+	}
+	return *o.BackfillPending
+}
+
+// GetBackfillPendingOk returns a tuple with the BackfillPending field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAds200Response) GetBackfillPendingOk() (*bool, bool) {
+	if o == nil || IsNil(o.BackfillPending) {
+		return nil, false
+	}
+	return o.BackfillPending, true
+}
+
+// HasBackfillPending returns a boolean if a field has been set.
+func (o *ListAds200Response) HasBackfillPending() bool {
+	if o != nil && !IsNil(o.BackfillPending) {
+		return true
+	}
+
+	return false
+}
+
+// SetBackfillPending gets a reference to the given bool and assigns it to the BackfillPending field.
+func (o *ListAds200Response) SetBackfillPending(v bool) {
+	o.BackfillPending = &v
+}
+
 // GetPagination returns the Pagination field value if set, zero value otherwise.
 func (o *ListAds200Response) GetPagination() Pagination {
 	if o == nil || IsNil(o.Pagination) {
@@ -117,6 +151,9 @@ func (o ListAds200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Ads) {
 		toSerialize["ads"] = o.Ads
+	}
+	if !IsNil(o.BackfillPending) {
+		toSerialize["backfillPending"] = o.BackfillPending
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
