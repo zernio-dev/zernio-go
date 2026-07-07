@@ -32,6 +32,12 @@ type ListInboxMentions200ResponseDataInner struct {
 	Permalink NullableString `json:"permalink,omitempty"`
 	// LinkedIn URN of the person who mentioned you
 	AuthorUrn NullableString `json:"authorUrn,omitempty"`
+	// Display name of the author, resolved from authorUrn. Null when LinkedIn does not allow resolving the profile.
+	AuthorName NullableString `json:"authorName,omitempty"`
+	// LinkedIn vanity name of the author (the slug in their profile URL)
+	AuthorUsername NullableString `json:"authorUsername,omitempty"`
+	// Profile picture URL of the author. LinkedIn CDN URLs expire after some time, so fetch promptly rather than storing long-term.
+	AuthorPicture NullableString `json:"authorPicture,omitempty"`
 	// URN of the organization that was mentioned
 	OrganizationalEntity *string    `json:"organizationalEntity,omitempty"`
 	PublishedAt          *time.Time `json:"publishedAt,omitempty"`
@@ -301,6 +307,135 @@ func (o *ListInboxMentions200ResponseDataInner) UnsetAuthorUrn() {
 	o.AuthorUrn.Unset()
 }
 
+// GetAuthorName returns the AuthorName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorName() string {
+	if o == nil || IsNil(o.AuthorName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AuthorName.Get()
+}
+
+// GetAuthorNameOk returns a tuple with the AuthorName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AuthorName.Get(), o.AuthorName.IsSet()
+}
+
+// HasAuthorName returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasAuthorName() bool {
+	if o != nil && o.AuthorName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthorName gets a reference to the given NullableString and assigns it to the AuthorName field.
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorName(v string) {
+	o.AuthorName.Set(&v)
+}
+
+// SetAuthorNameNil sets the value for AuthorName to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorNameNil() {
+	o.AuthorName.Set(nil)
+}
+
+// UnsetAuthorName ensures that no value is present for AuthorName, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetAuthorName() {
+	o.AuthorName.Unset()
+}
+
+// GetAuthorUsername returns the AuthorUsername field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorUsername() string {
+	if o == nil || IsNil(o.AuthorUsername.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AuthorUsername.Get()
+}
+
+// GetAuthorUsernameOk returns a tuple with the AuthorUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorUsernameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AuthorUsername.Get(), o.AuthorUsername.IsSet()
+}
+
+// HasAuthorUsername returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasAuthorUsername() bool {
+	if o != nil && o.AuthorUsername.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthorUsername gets a reference to the given NullableString and assigns it to the AuthorUsername field.
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorUsername(v string) {
+	o.AuthorUsername.Set(&v)
+}
+
+// SetAuthorUsernameNil sets the value for AuthorUsername to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorUsernameNil() {
+	o.AuthorUsername.Set(nil)
+}
+
+// UnsetAuthorUsername ensures that no value is present for AuthorUsername, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetAuthorUsername() {
+	o.AuthorUsername.Unset()
+}
+
+// GetAuthorPicture returns the AuthorPicture field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorPicture() string {
+	if o == nil || IsNil(o.AuthorPicture.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AuthorPicture.Get()
+}
+
+// GetAuthorPictureOk returns a tuple with the AuthorPicture field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetAuthorPictureOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AuthorPicture.Get(), o.AuthorPicture.IsSet()
+}
+
+// HasAuthorPicture returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasAuthorPicture() bool {
+	if o != nil && o.AuthorPicture.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthorPicture gets a reference to the given NullableString and assigns it to the AuthorPicture field.
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorPicture(v string) {
+	o.AuthorPicture.Set(&v)
+}
+
+// SetAuthorPictureNil sets the value for AuthorPicture to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetAuthorPictureNil() {
+	o.AuthorPicture.Set(nil)
+}
+
+// UnsetAuthorPicture ensures that no value is present for AuthorPicture, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetAuthorPicture() {
+	o.AuthorPicture.Unset()
+}
+
 // GetOrganizationalEntity returns the OrganizationalEntity field value if set, zero value otherwise.
 func (o *ListInboxMentions200ResponseDataInner) GetOrganizationalEntity() string {
 	if o == nil || IsNil(o.OrganizationalEntity) {
@@ -427,6 +562,15 @@ func (o ListInboxMentions200ResponseDataInner) ToMap() (map[string]interface{}, 
 	}
 	if o.AuthorUrn.IsSet() {
 		toSerialize["authorUrn"] = o.AuthorUrn.Get()
+	}
+	if o.AuthorName.IsSet() {
+		toSerialize["authorName"] = o.AuthorName.Get()
+	}
+	if o.AuthorUsername.IsSet() {
+		toSerialize["authorUsername"] = o.AuthorUsername.Get()
+	}
+	if o.AuthorPicture.IsSet() {
+		toSerialize["authorPicture"] = o.AuthorPicture.Get()
 	}
 	if !IsNil(o.OrganizationalEntity) {
 		toSerialize["organizationalEntity"] = o.OrganizationalEntity
