@@ -24,6 +24,10 @@ type SendInboxMessageRequestInteractiveAction struct {
 	SendInboxMessageRequestInteractiveActionOneOf2 *SendInboxMessageRequestInteractiveActionOneOf2
 	SendInboxMessageRequestInteractiveActionOneOf3 *SendInboxMessageRequestInteractiveActionOneOf3
 	SendInboxMessageRequestInteractiveActionOneOf4 *SendInboxMessageRequestInteractiveActionOneOf4
+	SendInboxMessageRequestInteractiveActionOneOf5 *SendInboxMessageRequestInteractiveActionOneOf5
+	SendInboxMessageRequestInteractiveActionOneOf6 *SendInboxMessageRequestInteractiveActionOneOf6
+	SendInboxMessageRequestInteractiveActionOneOf7 *SendInboxMessageRequestInteractiveActionOneOf7
+	SendInboxMessageRequestInteractiveActionOneOf8 *SendInboxMessageRequestInteractiveActionOneOf8
 }
 
 // SendInboxMessageRequestInteractiveActionOneOfAsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf wrapped in SendInboxMessageRequestInteractiveAction
@@ -58,6 +62,34 @@ func SendInboxMessageRequestInteractiveActionOneOf3AsSendInboxMessageRequestInte
 func SendInboxMessageRequestInteractiveActionOneOf4AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf4) SendInboxMessageRequestInteractiveAction {
 	return SendInboxMessageRequestInteractiveAction{
 		SendInboxMessageRequestInteractiveActionOneOf4: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf5AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf5 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf5AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf5) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf5: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf6AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf6 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf6AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf6) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf6: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf7AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf7 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf7AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf7) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf7: v,
+	}
+}
+
+// SendInboxMessageRequestInteractiveActionOneOf8AsSendInboxMessageRequestInteractiveAction is a convenience function that returns SendInboxMessageRequestInteractiveActionOneOf8 wrapped in SendInboxMessageRequestInteractiveAction
+func SendInboxMessageRequestInteractiveActionOneOf8AsSendInboxMessageRequestInteractiveAction(v *SendInboxMessageRequestInteractiveActionOneOf8) SendInboxMessageRequestInteractiveAction {
+	return SendInboxMessageRequestInteractiveAction{
+		SendInboxMessageRequestInteractiveActionOneOf8: v,
 	}
 }
 
@@ -150,6 +182,74 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		dst.SendInboxMessageRequestInteractiveActionOneOf4 = nil
 	}
 
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf5
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf5)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf5, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf5)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf5) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf5 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf5); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf5 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf5 = nil
+	}
+
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf6
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf6)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf6, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf6)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf6) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf6 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf6); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf6 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf6 = nil
+	}
+
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf7
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf7)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf7, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf7)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf7) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf7 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf7); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf7 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf7 = nil
+	}
+
+	// try to unmarshal data into SendInboxMessageRequestInteractiveActionOneOf8
+	err = newStrictDecoder(data).Decode(&dst.SendInboxMessageRequestInteractiveActionOneOf8)
+	if err == nil {
+		jsonSendInboxMessageRequestInteractiveActionOneOf8, _ := json.Marshal(dst.SendInboxMessageRequestInteractiveActionOneOf8)
+		if string(jsonSendInboxMessageRequestInteractiveActionOneOf8) == "{}" { // empty struct
+			dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
+		} else {
+			if err = validator.Validate(dst.SendInboxMessageRequestInteractiveActionOneOf8); err != nil {
+				dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf = nil
@@ -157,6 +257,10 @@ func (dst *SendInboxMessageRequestInteractiveAction) UnmarshalJSON(data []byte) 
 		dst.SendInboxMessageRequestInteractiveActionOneOf2 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf3 = nil
 		dst.SendInboxMessageRequestInteractiveActionOneOf4 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf5 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf6 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf7 = nil
+		dst.SendInboxMessageRequestInteractiveActionOneOf8 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(SendInboxMessageRequestInteractiveAction)")
 	} else if match == 1 {
@@ -188,6 +292,22 @@ func (src SendInboxMessageRequestInteractiveAction) MarshalJSON() ([]byte, error
 		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf4)
 	}
 
+	if src.SendInboxMessageRequestInteractiveActionOneOf5 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf5)
+	}
+
+	if src.SendInboxMessageRequestInteractiveActionOneOf6 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf6)
+	}
+
+	if src.SendInboxMessageRequestInteractiveActionOneOf7 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf7)
+	}
+
+	if src.SendInboxMessageRequestInteractiveActionOneOf8 != nil {
+		return json.Marshal(&src.SendInboxMessageRequestInteractiveActionOneOf8)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -216,6 +336,22 @@ func (obj *SendInboxMessageRequestInteractiveAction) GetActualInstance() interfa
 		return obj.SendInboxMessageRequestInteractiveActionOneOf4
 	}
 
+	if obj.SendInboxMessageRequestInteractiveActionOneOf5 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf5
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf6 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf6
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf7 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf7
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf8 != nil {
+		return obj.SendInboxMessageRequestInteractiveActionOneOf8
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -240,6 +376,22 @@ func (obj SendInboxMessageRequestInteractiveAction) GetActualInstanceValue() int
 
 	if obj.SendInboxMessageRequestInteractiveActionOneOf4 != nil {
 		return *obj.SendInboxMessageRequestInteractiveActionOneOf4
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf5 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf5
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf6 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf6
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf7 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf7
+	}
+
+	if obj.SendInboxMessageRequestInteractiveActionOneOf8 != nil {
+		return *obj.SendInboxMessageRequestInteractiveActionOneOf8
 	}
 
 	// all schemas are nil

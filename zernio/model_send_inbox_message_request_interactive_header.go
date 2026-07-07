@@ -18,7 +18,7 @@ import (
 // checks if the SendInboxMessageRequestInteractiveHeader type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessageRequestInteractiveHeader{}
 
-// SendInboxMessageRequestInteractiveHeader Optional header shown above the body.
+// SendInboxMessageRequestInteractiveHeader Optional header shown above the body. Required with `type: \"text\"` for `product_list`; not allowed for `product` or `carousel`.
 type SendInboxMessageRequestInteractiveHeader struct {
 	Type *string `json:"type,omitempty"`
 	// Required when header type is text.
