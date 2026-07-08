@@ -30,6 +30,8 @@ type PostAnalytics struct {
 	Saves  *int32 `json:"saves,omitempty"`
 	Clicks *int32 `json:"clicks,omitempty"`
 	Views  *int32 `json:"views,omitempty"`
+	// Instagram feed posts and stories only: organic accounts that started following from this post. 0 for reels and other platforms.
+	Follows *int32 `json:"follows,omitempty"`
 	// Instagram Reels only: average watch time per play, in milliseconds. 0 for non-Reels media and other platforms.
 	IgReelsAvgWatchTime *int32 `json:"igReelsAvgWatchTime,omitempty"`
 	// Instagram Reels only: total watch time including replays, in milliseconds. 0 for non-Reels media and other platforms.
@@ -311,6 +313,38 @@ func (o *PostAnalytics) SetViews(v int32) {
 	o.Views = &v
 }
 
+// GetFollows returns the Follows field value if set, zero value otherwise.
+func (o *PostAnalytics) GetFollows() int32 {
+	if o == nil || IsNil(o.Follows) {
+		var ret int32
+		return ret
+	}
+	return *o.Follows
+}
+
+// GetFollowsOk returns a tuple with the Follows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetFollowsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Follows) {
+		return nil, false
+	}
+	return o.Follows, true
+}
+
+// HasFollows returns a boolean if a field has been set.
+func (o *PostAnalytics) HasFollows() bool {
+	if o != nil && !IsNil(o.Follows) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollows gets a reference to the given int32 and assigns it to the Follows field.
+func (o *PostAnalytics) SetFollows(v int32) {
+	o.Follows = &v
+}
+
 // GetIgReelsAvgWatchTime returns the IgReelsAvgWatchTime field value if set, zero value otherwise.
 func (o *PostAnalytics) GetIgReelsAvgWatchTime() int32 {
 	if o == nil || IsNil(o.IgReelsAvgWatchTime) {
@@ -472,6 +506,9 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Views) {
 		toSerialize["views"] = o.Views
+	}
+	if !IsNil(o.Follows) {
+		toSerialize["follows"] = o.Follows
 	}
 	if !IsNil(o.IgReelsAvgWatchTime) {
 		toSerialize["igReelsAvgWatchTime"] = o.IgReelsAvgWatchTime
