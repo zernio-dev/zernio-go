@@ -1049,6 +1049,7 @@ model_update_account_group_request.go
 model_update_account_request.go
 model_update_account_request_x_capabilities.go
 model_update_ad_200_response.go
+model_update_ad_audience_request.go
 model_update_ad_campaign_200_response.go
 model_update_ad_campaign_request.go
 model_update_ad_campaign_request_budget.go

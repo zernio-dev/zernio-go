@@ -20,11 +20,13 @@ var _ MappedNullable = &ListAdAudiences200ResponseAudiencesInner{}
 
 // ListAdAudiences200ResponseAudiencesInner struct for ListAdAudiences200ResponseAudiencesInner
 type ListAdAudiences200ResponseAudiencesInner struct {
-	Id                 NullableString `json:"id,omitempty"`
-	PlatformAudienceId *string        `json:"platformAudienceId,omitempty"`
-	Name               *string        `json:"name,omitempty"`
-	Description        *string        `json:"description,omitempty"`
-	Type               *string        `json:"type,omitempty"`
+	Id NullableString `json:"id,omitempty"`
+	// Social account the audience was created against. Returned for saved_targeting items.
+	AccountId          *string `json:"accountId,omitempty"`
+	PlatformAudienceId *string `json:"platformAudienceId,omitempty"`
+	Name               *string `json:"name,omitempty"`
+	Description        *string `json:"description,omitempty"`
+	Type               *string `json:"type,omitempty"`
 	// Present (and the only meaningful payload) when `type` is `saved_targeting`. Null for uploaded/derived audience types.
 	Spec     NullableTargetingSpec `json:"spec,omitempty"`
 	Platform *string               `json:"platform,omitempty"`
@@ -90,6 +92,38 @@ func (o *ListAdAudiences200ResponseAudiencesInner) SetIdNil() {
 // UnsetId ensures that no value is present for Id, not even an explicit nil
 func (o *ListAdAudiences200ResponseAudiencesInner) UnsetId() {
 	o.Id.Unset()
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *ListAdAudiences200ResponseAudiencesInner) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAudiences200ResponseAudiencesInner) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *ListAdAudiences200ResponseAudiencesInner) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *ListAdAudiences200ResponseAudiencesInner) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetPlatformAudienceId returns the PlatformAudienceId field value if set, zero value otherwise.
@@ -371,6 +405,9 @@ func (o ListAdAudiences200ResponseAudiencesInner) ToMap() (map[string]interface{
 	toSerialize := map[string]interface{}{}
 	if o.Id.IsSet() {
 		toSerialize["id"] = o.Id.Get()
+	}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
 	}
 	if !IsNil(o.PlatformAudienceId) {
 		toSerialize["platformAudienceId"] = o.PlatformAudienceId
