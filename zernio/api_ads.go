@@ -1761,7 +1761,7 @@ func (r AdsAPIGetAdAnalyticsRequest) ToDate(toDate string) AdsAPIGetAdAnalyticsR
 	return r
 }
 
-// Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
+// Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset. TikTok: gender, age, country_code, platform, ac, language. &#x60;placement&#x60; is accepted as an alias for &#x60;publisher_platform&#x60; (Facebook vs Instagram vs Audience Network). The singular &#x60;breakdown&#x60; is accepted too. Unknown values return 400 with the supported list rather than being ignored.
 func (r AdsAPIGetAdAnalyticsRequest) Breakdowns(breakdowns string) AdsAPIGetAdAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -1860,6 +1860,17 @@ func (a *AdsAPIService) GetAdAnalyticsExecute(r AdsAPIGetAdAnalyticsRequest) (*G
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
@@ -2231,7 +2242,7 @@ func (r AdsAPIGetCampaignAnalyticsRequest) ToDate(toDate string) AdsAPIGetCampai
 	return r
 }
 
-// Comma-separated breakdown dimensions (Meta only): age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.
+// Comma-separated breakdown dimensions (Meta only): age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset. &#x60;placement&#x60; is accepted as an alias for &#x60;publisher_platform&#x60; (Facebook vs Instagram vs Audience Network). The singular &#x60;breakdown&#x60; is accepted too. Unknown values return 400 with the supported list rather than being ignored.
 func (r AdsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) AdsAPIGetCampaignAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -2337,6 +2348,17 @@ func (a *AdsAPIService) GetCampaignAnalyticsExecute(r AdsAPIGetCampaignAnalytics
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
