@@ -29,6 +29,8 @@ type WebhookPayloadPostPost struct {
 	ScheduledFor time.Time                              `json:"scheduledFor"`
 	PublishedAt  *time.Time                             `json:"publishedAt,omitempty"`
 	Platforms    []WebhookPayloadPostPostPlatformsInner `json:"platforms"`
+	// The free-form `metadata` object supplied when the post was created, echoed back so you can map events onto your own records. Omitted when the post was created without it.
+	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }
 
 type _WebhookPayloadPostPost WebhookPayloadPostPost
@@ -207,6 +209,38 @@ func (o *WebhookPayloadPostPost) SetPlatforms(v []WebhookPayloadPostPostPlatform
 	o.Platforms = v
 }
 
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPost) GetMetadata() map[string]interface{} {
+	if o == nil || IsNil(o.Metadata) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPost) GetMetadataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return map[string]interface{}{}, false
+	}
+	return o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPost) HasMetadata() bool {
+	if o != nil && !IsNil(o.Metadata) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetadata gets a reference to the given map[string]interface{} and assigns it to the Metadata field.
+func (o *WebhookPayloadPostPost) SetMetadata(v map[string]interface{}) {
+	o.Metadata = v
+}
+
 func (o WebhookPayloadPostPost) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -225,6 +259,9 @@ func (o WebhookPayloadPostPost) ToMap() (map[string]interface{}, error) {
 		toSerialize["publishedAt"] = o.PublishedAt
 	}
 	toSerialize["platforms"] = o.Platforms
+	if !IsNil(o.Metadata) {
+		toSerialize["metadata"] = o.Metadata
+	}
 	return toSerialize, nil
 }
 
