@@ -27,18 +27,20 @@ type StartSmsRegistrationRequestBrand struct {
 	// Legal company name. Required for every entityType except SOLE_PROPRIETOR.
 	CompanyName *string `json:"companyName,omitempty"`
 	// Required for every entityType except SOLE_PROPRIETOR.
-	Ein   *string `json:"ein,omitempty"`
+	Ein *string `json:"ein,omitempty"`
+	// Business contact phone. Required for every entityType except SOLE_PROPRIETOR.
 	Phone *string `json:"phone,omitempty"`
 	// Required for SOLE_PROPRIETOR; the verification OTP is texted there (US/CA mobile).
 	MobilePhone *string `json:"mobilePhone,omitempty"`
-	Street      *string `json:"street,omitempty"`
-	City        *string `json:"city,omitempty"`
-	State       *string `json:"state,omitempty"`
-	PostalCode  *string `json:"postalCode,omitempty"`
+	Street      string  `json:"street"`
+	City        string  `json:"city"`
+	State       string  `json:"state"`
+	PostalCode  string  `json:"postalCode"`
 	Country     string  `json:"country"`
 	// Brand contact email; defaults to your account email when omitted.
-	Email       *string `json:"email,omitempty"`
-	Website     *string `json:"website,omitempty"`
+	Email *string `json:"email,omitempty"`
+	// The brand's website (sole proprietors may use a social profile such as LinkedIn or a business Facebook page). Carriers verify the brand against it; a bare domain is normalized to https://.
+	Website     string  `json:"website"`
 	Vertical    string  `json:"vertical"`
 	StockSymbol *string `json:"stockSymbol,omitempty"`
 }
@@ -49,11 +51,16 @@ type _StartSmsRegistrationRequestBrand StartSmsRegistrationRequestBrand
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStartSmsRegistrationRequestBrand(entityType string, displayName string, country string, vertical string) *StartSmsRegistrationRequestBrand {
+func NewStartSmsRegistrationRequestBrand(entityType string, displayName string, street string, city string, state string, postalCode string, country string, website string, vertical string) *StartSmsRegistrationRequestBrand {
 	this := StartSmsRegistrationRequestBrand{}
 	this.EntityType = entityType
 	this.DisplayName = displayName
+	this.Street = street
+	this.City = city
+	this.State = state
+	this.PostalCode = postalCode
 	this.Country = country
+	this.Website = website
 	this.Vertical = vertical
 	return &this
 }
@@ -242,132 +249,100 @@ func (o *StartSmsRegistrationRequestBrand) SetMobilePhone(v string) {
 	o.MobilePhone = &v
 }
 
-// GetStreet returns the Street field value if set, zero value otherwise.
+// GetStreet returns the Street field value
 func (o *StartSmsRegistrationRequestBrand) GetStreet() string {
-	if o == nil || IsNil(o.Street) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Street
+
+	return o.Street
 }
 
-// GetStreetOk returns a tuple with the Street field value if set, nil otherwise
+// GetStreetOk returns a tuple with the Street field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestBrand) GetStreetOk() (*string, bool) {
-	if o == nil || IsNil(o.Street) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Street, true
+	return &o.Street, true
 }
 
-// HasStreet returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestBrand) HasStreet() bool {
-	if o != nil && !IsNil(o.Street) {
-		return true
-	}
-
-	return false
-}
-
-// SetStreet gets a reference to the given string and assigns it to the Street field.
+// SetStreet sets field value
 func (o *StartSmsRegistrationRequestBrand) SetStreet(v string) {
-	o.Street = &v
+	o.Street = v
 }
 
-// GetCity returns the City field value if set, zero value otherwise.
+// GetCity returns the City field value
 func (o *StartSmsRegistrationRequestBrand) GetCity() string {
-	if o == nil || IsNil(o.City) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.City
+
+	return o.City
 }
 
-// GetCityOk returns a tuple with the City field value if set, nil otherwise
+// GetCityOk returns a tuple with the City field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestBrand) GetCityOk() (*string, bool) {
-	if o == nil || IsNil(o.City) {
+	if o == nil {
 		return nil, false
 	}
-	return o.City, true
+	return &o.City, true
 }
 
-// HasCity returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestBrand) HasCity() bool {
-	if o != nil && !IsNil(o.City) {
-		return true
-	}
-
-	return false
-}
-
-// SetCity gets a reference to the given string and assigns it to the City field.
+// SetCity sets field value
 func (o *StartSmsRegistrationRequestBrand) SetCity(v string) {
-	o.City = &v
+	o.City = v
 }
 
-// GetState returns the State field value if set, zero value otherwise.
+// GetState returns the State field value
 func (o *StartSmsRegistrationRequestBrand) GetState() string {
-	if o == nil || IsNil(o.State) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.State
+
+	return o.State
 }
 
-// GetStateOk returns a tuple with the State field value if set, nil otherwise
+// GetStateOk returns a tuple with the State field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestBrand) GetStateOk() (*string, bool) {
-	if o == nil || IsNil(o.State) {
+	if o == nil {
 		return nil, false
 	}
-	return o.State, true
+	return &o.State, true
 }
 
-// HasState returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestBrand) HasState() bool {
-	if o != nil && !IsNil(o.State) {
-		return true
-	}
-
-	return false
-}
-
-// SetState gets a reference to the given string and assigns it to the State field.
+// SetState sets field value
 func (o *StartSmsRegistrationRequestBrand) SetState(v string) {
-	o.State = &v
+	o.State = v
 }
 
-// GetPostalCode returns the PostalCode field value if set, zero value otherwise.
+// GetPostalCode returns the PostalCode field value
 func (o *StartSmsRegistrationRequestBrand) GetPostalCode() string {
-	if o == nil || IsNil(o.PostalCode) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.PostalCode
+
+	return o.PostalCode
 }
 
-// GetPostalCodeOk returns a tuple with the PostalCode field value if set, nil otherwise
+// GetPostalCodeOk returns a tuple with the PostalCode field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestBrand) GetPostalCodeOk() (*string, bool) {
-	if o == nil || IsNil(o.PostalCode) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PostalCode, true
+	return &o.PostalCode, true
 }
 
-// HasPostalCode returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestBrand) HasPostalCode() bool {
-	if o != nil && !IsNil(o.PostalCode) {
-		return true
-	}
-
-	return false
-}
-
-// SetPostalCode gets a reference to the given string and assigns it to the PostalCode field.
+// SetPostalCode sets field value
 func (o *StartSmsRegistrationRequestBrand) SetPostalCode(v string) {
-	o.PostalCode = &v
+	o.PostalCode = v
 }
 
 // GetCountry returns the Country field value
@@ -426,36 +401,28 @@ func (o *StartSmsRegistrationRequestBrand) SetEmail(v string) {
 	o.Email = &v
 }
 
-// GetWebsite returns the Website field value if set, zero value otherwise.
+// GetWebsite returns the Website field value
 func (o *StartSmsRegistrationRequestBrand) GetWebsite() string {
-	if o == nil || IsNil(o.Website) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Website
+
+	return o.Website
 }
 
-// GetWebsiteOk returns a tuple with the Website field value if set, nil otherwise
+// GetWebsiteOk returns a tuple with the Website field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestBrand) GetWebsiteOk() (*string, bool) {
-	if o == nil || IsNil(o.Website) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Website, true
+	return &o.Website, true
 }
 
-// HasWebsite returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestBrand) HasWebsite() bool {
-	if o != nil && !IsNil(o.Website) {
-		return true
-	}
-
-	return false
-}
-
-// SetWebsite gets a reference to the given string and assigns it to the Website field.
+// SetWebsite sets field value
 func (o *StartSmsRegistrationRequestBrand) SetWebsite(v string) {
-	o.Website = &v
+	o.Website = v
 }
 
 // GetVertical returns the Vertical field value
@@ -538,25 +505,15 @@ func (o StartSmsRegistrationRequestBrand) ToMap() (map[string]interface{}, error
 	if !IsNil(o.MobilePhone) {
 		toSerialize["mobilePhone"] = o.MobilePhone
 	}
-	if !IsNil(o.Street) {
-		toSerialize["street"] = o.Street
-	}
-	if !IsNil(o.City) {
-		toSerialize["city"] = o.City
-	}
-	if !IsNil(o.State) {
-		toSerialize["state"] = o.State
-	}
-	if !IsNil(o.PostalCode) {
-		toSerialize["postalCode"] = o.PostalCode
-	}
+	toSerialize["street"] = o.Street
+	toSerialize["city"] = o.City
+	toSerialize["state"] = o.State
+	toSerialize["postalCode"] = o.PostalCode
 	toSerialize["country"] = o.Country
 	if !IsNil(o.Email) {
 		toSerialize["email"] = o.Email
 	}
-	if !IsNil(o.Website) {
-		toSerialize["website"] = o.Website
-	}
+	toSerialize["website"] = o.Website
 	toSerialize["vertical"] = o.Vertical
 	if !IsNil(o.StockSymbol) {
 		toSerialize["stockSymbol"] = o.StockSymbol
@@ -571,7 +528,12 @@ func (o *StartSmsRegistrationRequestBrand) UnmarshalJSON(data []byte) (err error
 	requiredProperties := []string{
 		"entityType",
 		"displayName",
+		"street",
+		"city",
+		"state",
+		"postalCode",
 		"country",
+		"website",
 		"vertical",
 	}
 

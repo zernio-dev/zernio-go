@@ -20,25 +20,26 @@ import (
 // checks if the StartSmsRegistrationRequestCampaign type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StartSmsRegistrationRequestCampaign{}
 
-// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out.
+// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. Opt-in/opt-out/help auto-responses must name the registered brand and carry the carrier-required disclosures; submissions that don't (or that are blank) are automatically rewritten to a compliant, brand-named template before the campaign is filed.
 type StartSmsRegistrationRequestCampaign struct {
 	Usecase     string `json:"usecase"`
 	Description string `json:"description"`
 	// How a recipient ends up receiving your messages (the opt-in flow).
-	MessageFlow    string  `json:"messageFlow"`
-	Sample1        string  `json:"sample1"`
-	Sample2        *string `json:"sample2,omitempty"`
-	HelpMessage    string  `json:"helpMessage"`
-	OptinKeywords  string  `json:"optinKeywords"`
-	OptinMessage   string  `json:"optinMessage"`
-	OptoutKeywords string  `json:"optoutKeywords"`
-	OptoutMessage  string  `json:"optoutMessage"`
-	HelpKeywords   string  `json:"helpKeywords"`
-	EmbeddedLink   *bool   `json:"embeddedLink,omitempty"`
-	EmbeddedPhone  *bool   `json:"embeddedPhone,omitempty"`
-	NumberPool     *bool   `json:"numberPool,omitempty"`
-	AgeGated       *bool   `json:"ageGated,omitempty"`
-	DirectLending  *bool   `json:"directLending,omitempty"`
+	MessageFlow string `json:"messageFlow"`
+	Sample1     string `json:"sample1"`
+	// Second example message; carriers require two distinct samples
+	Sample2        string `json:"sample2"`
+	HelpMessage    string `json:"helpMessage"`
+	OptinKeywords  string `json:"optinKeywords"`
+	OptinMessage   string `json:"optinMessage"`
+	OptoutKeywords string `json:"optoutKeywords"`
+	OptoutMessage  string `json:"optoutMessage"`
+	HelpKeywords   string `json:"helpKeywords"`
+	EmbeddedLink   *bool  `json:"embeddedLink,omitempty"`
+	EmbeddedPhone  *bool  `json:"embeddedPhone,omitempty"`
+	NumberPool     *bool  `json:"numberPool,omitempty"`
+	AgeGated       *bool  `json:"ageGated,omitempty"`
+	DirectLending  *bool  `json:"directLending,omitempty"`
 }
 
 type _StartSmsRegistrationRequestCampaign StartSmsRegistrationRequestCampaign
@@ -47,12 +48,13 @@ type _StartSmsRegistrationRequestCampaign StartSmsRegistrationRequestCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStartSmsRegistrationRequestCampaign(usecase string, description string, messageFlow string, sample1 string, helpMessage string, optinKeywords string, optinMessage string, optoutKeywords string, optoutMessage string, helpKeywords string) *StartSmsRegistrationRequestCampaign {
+func NewStartSmsRegistrationRequestCampaign(usecase string, description string, messageFlow string, sample1 string, sample2 string, helpMessage string, optinKeywords string, optinMessage string, optoutKeywords string, optoutMessage string, helpKeywords string) *StartSmsRegistrationRequestCampaign {
 	this := StartSmsRegistrationRequestCampaign{}
 	this.Usecase = usecase
 	this.Description = description
 	this.MessageFlow = messageFlow
 	this.Sample1 = sample1
+	this.Sample2 = sample2
 	this.HelpMessage = helpMessage
 	this.OptinKeywords = optinKeywords
 	this.OptinMessage = optinMessage
@@ -166,36 +168,28 @@ func (o *StartSmsRegistrationRequestCampaign) SetSample1(v string) {
 	o.Sample1 = v
 }
 
-// GetSample2 returns the Sample2 field value if set, zero value otherwise.
+// GetSample2 returns the Sample2 field value
 func (o *StartSmsRegistrationRequestCampaign) GetSample2() string {
-	if o == nil || IsNil(o.Sample2) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Sample2
+
+	return o.Sample2
 }
 
-// GetSample2Ok returns a tuple with the Sample2 field value if set, nil otherwise
+// GetSample2Ok returns a tuple with the Sample2 field value
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestCampaign) GetSample2Ok() (*string, bool) {
-	if o == nil || IsNil(o.Sample2) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Sample2, true
+	return &o.Sample2, true
 }
 
-// HasSample2 returns a boolean if a field has been set.
-func (o *StartSmsRegistrationRequestCampaign) HasSample2() bool {
-	if o != nil && !IsNil(o.Sample2) {
-		return true
-	}
-
-	return false
-}
-
-// SetSample2 gets a reference to the given string and assigns it to the Sample2 field.
+// SetSample2 sets field value
 func (o *StartSmsRegistrationRequestCampaign) SetSample2(v string) {
-	o.Sample2 = &v
+	o.Sample2 = v
 }
 
 // GetHelpMessage returns the HelpMessage field value
@@ -516,9 +510,7 @@ func (o StartSmsRegistrationRequestCampaign) ToMap() (map[string]interface{}, er
 	toSerialize["description"] = o.Description
 	toSerialize["messageFlow"] = o.MessageFlow
 	toSerialize["sample1"] = o.Sample1
-	if !IsNil(o.Sample2) {
-		toSerialize["sample2"] = o.Sample2
-	}
+	toSerialize["sample2"] = o.Sample2
 	toSerialize["helpMessage"] = o.HelpMessage
 	toSerialize["optinKeywords"] = o.OptinKeywords
 	toSerialize["optinMessage"] = o.OptinMessage
@@ -552,6 +544,7 @@ func (o *StartSmsRegistrationRequestCampaign) UnmarshalJSON(data []byte) (err er
 		"description",
 		"messageFlow",
 		"sample1",
+		"sample2",
 		"helpMessage",
 		"optinKeywords",
 		"optinMessage",
