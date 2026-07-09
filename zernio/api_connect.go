@@ -477,7 +477,7 @@ func (r ConnectAPIConnectAdsRequest) AccountId(accountId string) ConnectAPIConne
 	return r
 }
 
-// Custom redirect URL after OAuth completes (same-token platforms only)
+// Custom redirect URL after OAuth completes (same-token platforms only). Accepts an http(s) URL, a custom app scheme for mobile deeplinks (e.g. myapp://callback), or a relative path.
 func (r ConnectAPIConnectAdsRequest) RedirectUrl(redirectUrl string) ConnectAPIConnectAdsRequest {
 	r.redirectUrl = &redirectUrl
 	return r
@@ -910,7 +910,7 @@ func (r ConnectAPIGetConnectUrlRequest) ProfileId(profileId string) ConnectAPIGe
 	return r
 }
 
-// Your custom redirect URL after connection completes. Standard mode appends ?connected&#x3D;{platform}&amp;profileId&#x3D;X&amp;accountId&#x3D;Y&amp;username&#x3D;Z. Headless mode appends OAuth data params for platforms requiring selection (e.g. LinkedIn orgs, Facebook pages). If no selection is needed, the account is created directly and the redirect includes accountId.
+// Your custom redirect URL after connection completes. Accepts an http(s) URL, a custom app scheme for mobile deeplinks (e.g. myapp://callback), or a relative path. Result params are appended with the URL API, so an existing query string is preserved. Standard mode appends connected&#x3D;{platform}&amp;profileId&#x3D;X&amp;accountId&#x3D;Y&amp;username&#x3D;Z. Headless mode appends OAuth data params for platforms requiring selection (e.g. LinkedIn orgs, Facebook pages). If no selection is needed, the account is created directly and the redirect includes accountId.
 func (r ConnectAPIGetConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetConnectUrlRequest {
 	r.redirectUrl = &redirectUrl
 	return r
