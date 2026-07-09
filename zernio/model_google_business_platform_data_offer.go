@@ -20,8 +20,6 @@ var _ MappedNullable = &GoogleBusinessPlatformDataOffer{}
 
 // GoogleBusinessPlatformDataOffer Offer details. Required when topicType is OFFER. All fields are optional per Google's API, but at least one is recommended.
 type GoogleBusinessPlatformDataOffer struct {
-	// Type of offer
-	OfferType *string `json:"offerType,omitempty"`
 	// URL where the offer can be redeemed online
 	RedeemOnlineUrl *string `json:"redeemOnlineUrl,omitempty"`
 	// Terms and conditions for the offer
@@ -45,38 +43,6 @@ func NewGoogleBusinessPlatformDataOffer() *GoogleBusinessPlatformDataOffer {
 func NewGoogleBusinessPlatformDataOfferWithDefaults() *GoogleBusinessPlatformDataOffer {
 	this := GoogleBusinessPlatformDataOffer{}
 	return &this
-}
-
-// GetOfferType returns the OfferType field value if set, zero value otherwise.
-func (o *GoogleBusinessPlatformDataOffer) GetOfferType() string {
-	if o == nil || IsNil(o.OfferType) {
-		var ret string
-		return ret
-	}
-	return *o.OfferType
-}
-
-// GetOfferTypeOk returns a tuple with the OfferType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GoogleBusinessPlatformDataOffer) GetOfferTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.OfferType) {
-		return nil, false
-	}
-	return o.OfferType, true
-}
-
-// HasOfferType returns a boolean if a field has been set.
-func (o *GoogleBusinessPlatformDataOffer) HasOfferType() bool {
-	if o != nil && !IsNil(o.OfferType) {
-		return true
-	}
-
-	return false
-}
-
-// SetOfferType gets a reference to the given string and assigns it to the OfferType field.
-func (o *GoogleBusinessPlatformDataOffer) SetOfferType(v string) {
-	o.OfferType = &v
 }
 
 // GetRedeemOnlineUrl returns the RedeemOnlineUrl field value if set, zero value otherwise.
@@ -185,9 +151,6 @@ func (o GoogleBusinessPlatformDataOffer) MarshalJSON() ([]byte, error) {
 
 func (o GoogleBusinessPlatformDataOffer) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.OfferType) {
-		toSerialize["offerType"] = o.OfferType
-	}
 	if !IsNil(o.RedeemOnlineUrl) {
 		toSerialize["redeemOnlineUrl"] = o.RedeemOnlineUrl
 	}
