@@ -66,7 +66,7 @@ func (r UsageAPIGetCallsUsageRequest) Execute() (*GetCallsUsage200Response, *htt
 }
 
 /*
-GetCallsUsage Calling usage (volumes + billable cost)
+GetCallsUsage Calling usage and cost
 
 Aggregated calling usage across your numbers, both channels
 (WhatsApp Business Calling + regular phone/PSTN): call counts,

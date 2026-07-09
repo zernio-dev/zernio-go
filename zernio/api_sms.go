@@ -902,7 +902,7 @@ func (r SMSAPIReuseSmsRegistrationForNumberRequest) Execute() (*ReuseSmsRegistra
 }
 
 /*
-ReuseSmsRegistrationForNumber Add a number to an existing registration
+ReuseSmsRegistrationForNumber Add number to SMS registration
 
 Attaches this number to your existing approved 10DLC campaign instead
 of running a fresh registration: the number inherits the campaign's

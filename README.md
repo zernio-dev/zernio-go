@@ -159,7 +159,7 @@ func main() {
 ### Usage
 | Method | Description |
 |--------|-------------|
-| `client.UsageAPI.GetCallsUsage(ctx)` | Calling usage (volumes + billable cost) |
+| `client.UsageAPI.GetCallsUsage(ctx)` | Calling usage and cost |
 | `client.UsageAPI.GetSmsUsage(ctx)` | SMS usage (volumes) |
 | `client.UsageAPI.GetUsage(ctx)` | Get plan and usage snapshot |
 | `client.UsageAPI.GetUsageStats(ctx)` | Get plan and usage stats |
@@ -316,7 +316,7 @@ func main() {
 |--------|-------------|
 | `client.CallsAPI.ListCalls(ctx)` | List all calls (unified history) |
 | `client.CallsAPI.GetCall(ctx)` | Get a call (any channel) |
-| `client.CallsAPI.GetCallRecording(ctx)` | Get a call recording (any channel) |
+| `client.CallsAPI.GetCallRecording(ctx)` | Get a call recording |
 
 ### Comment Automations
 | Method | Description |
@@ -521,7 +521,7 @@ func main() {
 | `client.SMSAPI.DisableSmsOnNumber(ctx)` | Disable SMS on a number |
 | `client.SMSAPI.EnableSmsOnNumber(ctx)` | Enable SMS on a number |
 | `client.SMSAPI.LookupSmsNumber(ctx)` | Look up carrier + line type |
-| `client.SMSAPI.ReuseSmsRegistrationForNumber(ctx)` | Add a number to an existing registration |
+| `client.SMSAPI.ReuseSmsRegistrationForNumber(ctx)` | Add number to SMS registration |
 | `client.SMSAPI.SendSms(ctx)` | Send an SMS/MMS |
 | `client.SMSAPI.ShareSmsRegistration(ctx)` | Create a registration share link |
 | `client.SMSAPI.StartSmsRegistration(ctx)` | Start a carrier registration |

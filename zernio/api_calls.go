@@ -161,7 +161,7 @@ func (r CallsAPIGetCallRecordingRequest) Execute() (*GetWhatsAppCallRecording200
 }
 
 /*
-GetCallRecording Get a call recording (any channel)
+GetCallRecording Get a call recording
 
 Channel-agnostic recording fetch: resolves a fresh, playable MP3 URL
 for any call regardless of channel (provider-signed URLs expire ~10
