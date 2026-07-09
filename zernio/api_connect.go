@@ -4118,7 +4118,7 @@ func (r ConnectAPISetRedditPostFlairRequest) Execute() (*UpdateYoutubeDefaultPla
 }
 
 /*
-SetRedditPostFlair Set flair on a published Reddit post
+SetRedditPostFlair Set Reddit post flair
 
 Applies a flair to a post the connected account already published. Use the GET on this
 path to list the available `flairTemplateId` values for the subreddit.

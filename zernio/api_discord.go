@@ -606,7 +606,7 @@ func (r DiscordAPICrosspostDiscordMessageRequest) Execute() (*CrosspostDiscordMe
 }
 
 /*
-CrosspostDiscordMessage Crosspost a Discord announcement message
+CrosspostDiscordMessage Crosspost Discord message
 
 Publishes a message from an announcement channel so it propagates to every server
 following that channel.

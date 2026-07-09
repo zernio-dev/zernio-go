@@ -209,7 +209,7 @@ func main() {
 | `client.ConnectAPI.SelectLinkedInOrganization(ctx)` | Select LinkedIn org |
 | `client.ConnectAPI.SelectPinterestBoard(ctx)` | Select Pinterest board |
 | `client.ConnectAPI.SelectSnapchatProfile(ctx)` | Select Snapchat profile |
-| `client.ConnectAPI.SetRedditPostFlair(ctx)` | Set flair on a published Reddit post |
+| `client.ConnectAPI.SetRedditPostFlair(ctx)` | Set Reddit post flair |
 | `client.ConnectAPI.VoteRedditThing(ctx)` | Vote on a Reddit post or comment |
 
 ### Reddit
@@ -383,7 +383,7 @@ func main() {
 | `client.DiscordAPI.DeleteDiscordMessage(ctx)` | Delete a Discord channel message |
 | `client.DiscordAPI.DeleteDiscordScheduledEvent(ctx)` | Delete a Discord scheduled event |
 | `client.DiscordAPI.AddDiscordMemberRole(ctx)` | Assign a role to a guild member |
-| `client.DiscordAPI.CrosspostDiscordMessage(ctx)` | Crosspost a Discord announcement message |
+| `client.DiscordAPI.CrosspostDiscordMessage(ctx)` | Crosspost Discord message |
 | `client.DiscordAPI.EditDiscordGuildRole(ctx)` | Edit a Discord guild role |
 | `client.DiscordAPI.PinDiscordMessage(ctx)` | Pin a Discord message |
 | `client.DiscordAPI.RemoveDiscordMemberRole(ctx)` | Remove a role from a guild member |
