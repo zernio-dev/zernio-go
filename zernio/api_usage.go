@@ -23,6 +23,135 @@ import (
 // UsageAPIService UsageAPI service
 type UsageAPIService service
 
+type UsageAPIGetBillingRequest struct {
+	ctx        context.Context
+	ApiService *UsageAPIService
+}
+
+func (r UsageAPIGetBillingRequest) Execute() (*BillingSnapshot, *http.Response, error) {
+	return r.ApiService.GetBillingExecute(r)
+}
+
+/*
+GetBilling Account billing snapshot (plan, cycle, balance, caps, status)
+
+The billing "wallet/statement" view: current plan, billing cycle,
+accrued balance + remaining credits this period, spend caps, and
+payment / access status. This is the billing half of the legacy
+`/v1/usage-stats` snapshot — the per-product consumption half is metering
+and lives on `GET /v1/usage`.
+
+Usage-based (Metronome) accounts get a populated `balance`; legacy Stripe
+accounts get `balance: null` plus a deprecated `legacy.limits` block and,
+when payment-blocked, `status.openInvoiceUrl` / `status.declineReason`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return UsageAPIGetBillingRequest
+*/
+func (a *UsageAPIService) GetBilling(ctx context.Context) UsageAPIGetBillingRequest {
+	return UsageAPIGetBillingRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return BillingSnapshot
+func (a *UsageAPIService) GetBillingExecute(r UsageAPIGetBillingRequest) (*BillingSnapshot, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BillingSnapshot
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageAPIService.GetBilling")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/billing"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type UsageAPIGetCallsUsageRequest struct {
 	ctx        context.Context
 	ApiService *UsageAPIService
@@ -349,44 +478,74 @@ func (a *UsageAPIService) GetSmsUsageExecute(r UsageAPIGetSmsUsageRequest) (*Get
 }
 
 type UsageAPIGetUsageRequest struct {
-	ctx        context.Context
-	ApiService *UsageAPIService
-	reconcile  *bool
+	ctx         context.Context
+	ApiService  *UsageAPIService
+	reconcile   *bool
+	range_      *string
+	from        *string
+	to          *string
+	granularity *string
 }
 
-// For Stripe subscription users, &#x60;true&#x60; forces a subscription reconciliation pass even when cached plan data looks complete. Omit the parameter, or pass &#x60;false&#x60;, to use the default first-time-only reconciliation behavior. Invalid boolean values are rejected.
+// Snapshot mode only. For Stripe subscription users, &#x60;true&#x60; forces a subscription reconciliation pass even when cached plan data looks complete.
 func (r UsageAPIGetUsageRequest) Reconcile(reconcile bool) UsageAPIGetUsageRequest {
 	r.reconcile = &reconcile
 	return r
 }
 
-func (r UsageAPIGetUsageRequest) Execute() (*UsageStats, *http.Response, error) {
+// Window to report. &#x60;cycle&#x60; / &#x60;prev-cycle&#x60; resolve to the customer&#39;s real billing-period bounds (falling back to a trailing 30 days when no invoice exists yet); &#x60;7d&#x60;…&#x60;12mo&#x60; are trailing windows; &#x60;custom&#x60; uses &#x60;from&#x60; / &#x60;to&#x60;.
+func (r UsageAPIGetUsageRequest) Range_(range_ string) UsageAPIGetUsageRequest {
+	r.range_ = &range_
+	return r
+}
+
+// Inclusive start (UTC date). Required when &#x60;range&#x3D;custom&#x60;.
+func (r UsageAPIGetUsageRequest) From(from string) UsageAPIGetUsageRequest {
+	r.from = &from
+	return r
+}
+
+// Inclusive end (UTC date). Required when &#x60;range&#x3D;custom&#x60;. Max span 366 days.
+func (r UsageAPIGetUsageRequest) To(to string) UsageAPIGetUsageRequest {
+	r.to = &to
+	return r
+}
+
+// Bucketing of the &#x60;days&#x60; series: &#x60;day&#x60; (one row per UTC day), &#x60;month&#x60; (one row per calendar month, dated to the 1st), or &#x60;total&#x60; (no series — read &#x60;totals&#x60;). Does not affect &#x60;totals&#x60;.
+func (r UsageAPIGetUsageRequest) Granularity(granularity string) UsageAPIGetUsageRequest {
+	r.granularity = &granularity
+	return r
+}
+
+func (r UsageAPIGetUsageRequest) Execute() (*GetUsage200Response, *http.Response, error) {
 	return r.ApiService.GetUsageExecute(r)
 }
 
 /*
-GetUsage Get plan and usage snapshot
+GetUsage Usage snapshot (default) or billed-spend metering (with params)
 
-The usage hub: current plan name, billing period, plan limits, and
-usage counts, in one snapshot. For metered consumption over an
-arbitrary window with breakdowns (by day, by number), use the
-domain spokes: `GET /v1/usage/calls` and `GET /v1/usage/sms`.
+Dual-mode endpoint, selected by query params — fully backward
+compatible:
 
-The response shape depends on the account's `billingSystem`:
+**Without metering params (the default):** the plan / quota / usage
+snapshot — plan name, billing period, limits, usage counts, access
+state. Identical to `GET /v1/usage-stats`. Existing integrations keep
+working unchanged.
 
-  - Stripe users: per-period `usage.uploads` / `usage.profiles` counters.
+**With `range`, `granularity`, `from`, or `to`:** usage METERING —
+billed spend (USD) by product family (`accounts`, `numbers`, `calls`,
+`sms`, `dlc`, `xApi`, `credits`, `other`) over the window, at
+`day` / `month` / `total` granularity, from Metronome's invoice
+breakdown (the CHARGE view — always reconciles with what gets billed).
+Also served at `GET /v1/usage/daily`. Usage-based accounts only —
+legacy Stripe accounts get `{ "supported": false, "days": [] }`.
 
-  - Metronome (usage-based) users: `usage.connectedAccounts`,
-    `usage.xApiCallsByOperation` (per-operation X API call counts —
-    resolve keys via `GET /v1/billing/x-pricing`), plus a `spend`
-    block with `currentPeriodCents`, `xSpendCents`, and
-    `xSpendLimitCents`. The legacy `usage.xApiCalls` 3-tier
-    aggregate is still emitted for back-compat but excludes the
-    $0.200 URL tier and any future tiers — new clients should
-    consume `xApiCallsByOperation` only.
+For per-domain consumption *volumes* use `GET /v1/usage/calls` and
+`GET /v1/usage/sms`. For the billing statement (balance, credits,
+caps, payment status) use `GET /v1/billing`.
 
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-    @return UsageAPIGetUsageRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return UsageAPIGetUsageRequest
 */
 func (a *UsageAPIService) GetUsage(ctx context.Context) UsageAPIGetUsageRequest {
 	return UsageAPIGetUsageRequest{
@@ -397,13 +556,13 @@ func (a *UsageAPIService) GetUsage(ctx context.Context) UsageAPIGetUsageRequest 
 
 // Execute executes the request
 //
-//	@return UsageStats
-func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*UsageStats, *http.Response, error) {
+//	@return GetUsage200Response
+func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*GetUsage200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UsageStats
+		localVarReturnValue *GetUsage200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageAPIService.GetUsage")
@@ -419,6 +578,26 @@ func (a *UsageAPIService) GetUsageExecute(r UsageAPIGetUsageRequest) (*UsageStat
 
 	if r.reconcile != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "reconcile", r.reconcile, "form", "")
+	}
+	if r.range_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "range", r.range_, "form", "")
+	} else {
+		var defaultValue string = "cycle"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "range", defaultValue, "form", "")
+		r.range_ = &defaultValue
+	}
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
+	}
+	if r.to != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
+	}
+	if r.granularity != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", r.granularity, "form", "")
+	} else {
+		var defaultValue string = "day"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
+		r.granularity = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -512,13 +691,14 @@ func (r UsageAPIGetUsageStatsRequest) Execute() (*UsageStats, *http.Response, er
 }
 
 /*
-GetUsageStats Get plan and usage stats
+GetUsageStats Get plan and usage snapshot (plan, limits, payment status)
 
-Deprecated alias of `GET /v1/usage`; same contract. New integrations
-should use that path (the usage hub), with `GET /v1/usage/calls` and
-`GET /v1/usage/sms` for metered breakdowns.
-
-Returns the current plan name, billing period, plan limits, and usage counts.
+The plan / quota / payment-status snapshot: current plan name, billing
+period, plan limits, usage counts, and access state. Identical to a
+bare `GET /v1/usage` call (this path is its deprecated alias). For
+billed spend by product, call `GET /v1/usage` with `range` /
+`granularity` params. The statement view (balance, credits, caps,
+payment status) lives at `GET /v1/billing`.
 
 The response shape depends on the account's `billingSystem`:
 

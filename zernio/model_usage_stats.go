@@ -35,10 +35,10 @@ type UsageStats struct {
 	// True if this is a team member; limits/usage reflect the account owner.
 	IsInvitedUser *bool `json:"isInvitedUser,omitempty"`
 	// Stripe-only. Always false for Metronome users.
-	AutoUpgradeEnabled *bool             `json:"autoUpgradeEnabled,omitempty"`
-	Limits             *UsageStatsLimits `json:"limits,omitempty"`
-	Usage              *UsageStatsUsage  `json:"usage,omitempty"`
-	Spend              *UsageStatsSpend  `json:"spend,omitempty"`
+	AutoUpgradeEnabled *bool                        `json:"autoUpgradeEnabled,omitempty"`
+	Limits             *BillingSnapshotLegacyLimits `json:"limits,omitempty"`
+	Usage              *UsageStatsUsage             `json:"usage,omitempty"`
+	Spend              *UsageStatsSpend             `json:"spend,omitempty"`
 }
 
 // NewUsageStats instantiates a new UsageStats object
@@ -358,9 +358,9 @@ func (o *UsageStats) SetAutoUpgradeEnabled(v bool) {
 }
 
 // GetLimits returns the Limits field value if set, zero value otherwise.
-func (o *UsageStats) GetLimits() UsageStatsLimits {
+func (o *UsageStats) GetLimits() BillingSnapshotLegacyLimits {
 	if o == nil || IsNil(o.Limits) {
-		var ret UsageStatsLimits
+		var ret BillingSnapshotLegacyLimits
 		return ret
 	}
 	return *o.Limits
@@ -368,7 +368,7 @@ func (o *UsageStats) GetLimits() UsageStatsLimits {
 
 // GetLimitsOk returns a tuple with the Limits field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UsageStats) GetLimitsOk() (*UsageStatsLimits, bool) {
+func (o *UsageStats) GetLimitsOk() (*BillingSnapshotLegacyLimits, bool) {
 	if o == nil || IsNil(o.Limits) {
 		return nil, false
 	}
@@ -384,8 +384,8 @@ func (o *UsageStats) HasLimits() bool {
 	return false
 }
 
-// SetLimits gets a reference to the given UsageStatsLimits and assigns it to the Limits field.
-func (o *UsageStats) SetLimits(v UsageStatsLimits) {
+// SetLimits gets a reference to the given BillingSnapshotLegacyLimits and assigns it to the Limits field.
+func (o *UsageStats) SetLimits(v BillingSnapshotLegacyLimits) {
 	o.Limits = &v
 }
 
