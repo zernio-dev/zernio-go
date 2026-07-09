@@ -164,6 +164,151 @@ func (a *DiscordAPIService) AddDiscordMemberRoleExecute(r DiscordAPIAddDiscordMe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type DiscordAPICreateDiscordGuildRoleRequest struct {
+	ctx                           context.Context
+	ApiService                    *DiscordAPIService
+	guildId                       string
+	accountId                     *string
+	createDiscordGuildRoleRequest *CreateDiscordGuildRoleRequest
+}
+
+// SocialAccount _id of the Discord account bound to this guild
+func (r DiscordAPICreateDiscordGuildRoleRequest) AccountId(accountId string) DiscordAPICreateDiscordGuildRoleRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPICreateDiscordGuildRoleRequest) CreateDiscordGuildRoleRequest(createDiscordGuildRoleRequest CreateDiscordGuildRoleRequest) DiscordAPICreateDiscordGuildRoleRequest {
+	r.createDiscordGuildRoleRequest = &createDiscordGuildRoleRequest
+	return r
+}
+
+func (r DiscordAPICreateDiscordGuildRoleRequest) Execute() (*CreateDiscordGuildRole201Response, *http.Response, error) {
+	return r.ApiService.CreateDiscordGuildRoleExecute(r)
+}
+
+/*
+CreateDiscordGuildRole Create a Discord guild role
+
+Creates a new role in the guild.
+
+Requires the bot to hold the Manage Roles permission. Guilds that added the Zernio bot
+before role management shipped must re-invite it, because Discord applies the
+permission set at invite time.
+
+Discord's role hierarchy applies: the bot cannot create a role positioned at or above
+its own highest role, and cannot grant permissions it does not itself hold. Either
+attempt returns a 403 carrying Discord's own error.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param guildId Discord guild snowflake ID
+	@return DiscordAPICreateDiscordGuildRoleRequest
+*/
+func (a *DiscordAPIService) CreateDiscordGuildRole(ctx context.Context, guildId string) DiscordAPICreateDiscordGuildRoleRequest {
+	return DiscordAPICreateDiscordGuildRoleRequest{
+		ApiService: a,
+		ctx:        ctx,
+		guildId:    guildId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateDiscordGuildRole201Response
+func (a *DiscordAPIService) CreateDiscordGuildRoleExecute(r DiscordAPICreateDiscordGuildRoleRequest) (*CreateDiscordGuildRole201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateDiscordGuildRole201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.CreateDiscordGuildRole")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/guilds/{guildId}/roles"
+	localVarPath = strings.Replace(localVarPath, "{"+"guildId"+"}", url.PathEscape(parameterValueToString(r.guildId, "guildId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.createDiscordGuildRoleRequest == nil {
+		return localVarReturnValue, nil, reportError("createDiscordGuildRoleRequest is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createDiscordGuildRoleRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type DiscordAPICreateDiscordScheduledEventRequest struct {
 	ctx                                context.Context
 	ApiService                         *DiscordAPIService
@@ -301,6 +446,553 @@ func (a *DiscordAPIService) CreateDiscordScheduledEventExecute(r DiscordAPICreat
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type DiscordAPICreateDiscordThreadRequest struct {
+	ctx                        context.Context
+	ApiService                 *DiscordAPIService
+	channelId                  string
+	accountId                  *string
+	createDiscordThreadRequest *CreateDiscordThreadRequest
+}
+
+// SocialAccount _id of the Discord account bound to this channel&#39;s guild
+func (r DiscordAPICreateDiscordThreadRequest) AccountId(accountId string) DiscordAPICreateDiscordThreadRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPICreateDiscordThreadRequest) CreateDiscordThreadRequest(createDiscordThreadRequest CreateDiscordThreadRequest) DiscordAPICreateDiscordThreadRequest {
+	r.createDiscordThreadRequest = &createDiscordThreadRequest
+	return r
+}
+
+func (r DiscordAPICreateDiscordThreadRequest) Execute() (*CreateDiscordThread200Response, *http.Response, error) {
+	return r.ApiService.CreateDiscordThreadExecute(r)
+}
+
+/*
+CreateDiscordThread Create a Discord public thread
+
+Creates a public thread in a channel. Pass `messageId` to start the thread from an
+existing message, or omit it to create a standalone thread.
+
+Threads created here are always public. Requires the bot to hold Create Public
+Threads, which the Zernio bot requests at install time.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param channelId Discord channel snowflake ID
+	@return DiscordAPICreateDiscordThreadRequest
+*/
+func (a *DiscordAPIService) CreateDiscordThread(ctx context.Context, channelId string) DiscordAPICreateDiscordThreadRequest {
+	return DiscordAPICreateDiscordThreadRequest{
+		ApiService: a,
+		ctx:        ctx,
+		channelId:  channelId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateDiscordThread200Response
+func (a *DiscordAPIService) CreateDiscordThreadExecute(r DiscordAPICreateDiscordThreadRequest) (*CreateDiscordThread200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateDiscordThread200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.CreateDiscordThread")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/channels/{channelId}/threads"
+	localVarPath = strings.Replace(localVarPath, "{"+"channelId"+"}", url.PathEscape(parameterValueToString(r.channelId, "channelId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.createDiscordThreadRequest == nil {
+		return localVarReturnValue, nil, reportError("createDiscordThreadRequest is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createDiscordThreadRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type DiscordAPICrosspostDiscordMessageRequest struct {
+	ctx        context.Context
+	ApiService *DiscordAPIService
+	channelId  string
+	messageId  string
+	accountId  *string
+}
+
+// SocialAccount _id of the Discord account bound to this channel&#39;s guild
+func (r DiscordAPICrosspostDiscordMessageRequest) AccountId(accountId string) DiscordAPICrosspostDiscordMessageRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPICrosspostDiscordMessageRequest) Execute() (*CrosspostDiscordMessage200Response, *http.Response, error) {
+	return r.ApiService.CrosspostDiscordMessageExecute(r)
+}
+
+/*
+CrosspostDiscordMessage Crosspost a Discord announcement message
+
+Publishes a message from an announcement channel so it propagates to every server
+following that channel.
+
+The source channel must be an announcement channel. Calling this on a regular text
+channel returns a 400 before Discord is contacted, because Discord's own error for
+this case is opaque.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param channelId Discord announcement channel snowflake ID
+	@param messageId Discord message snowflake ID
+	@return DiscordAPICrosspostDiscordMessageRequest
+*/
+func (a *DiscordAPIService) CrosspostDiscordMessage(ctx context.Context, channelId string, messageId string) DiscordAPICrosspostDiscordMessageRequest {
+	return DiscordAPICrosspostDiscordMessageRequest{
+		ApiService: a,
+		ctx:        ctx,
+		channelId:  channelId,
+		messageId:  messageId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CrosspostDiscordMessage200Response
+func (a *DiscordAPIService) CrosspostDiscordMessageExecute(r DiscordAPICrosspostDiscordMessageRequest) (*CrosspostDiscordMessage200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CrosspostDiscordMessage200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.CrosspostDiscordMessage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/channels/{channelId}/messages/{messageId}/crosspost"
+	localVarPath = strings.Replace(localVarPath, "{"+"channelId"+"}", url.PathEscape(parameterValueToString(r.channelId, "channelId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"messageId"+"}", url.PathEscape(parameterValueToString(r.messageId, "messageId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type DiscordAPIDeleteDiscordGuildRoleRequest struct {
+	ctx        context.Context
+	ApiService *DiscordAPIService
+	guildId    string
+	roleId     string
+	accountId  *string
+}
+
+// SocialAccount _id of the Discord account bound to this guild
+func (r DiscordAPIDeleteDiscordGuildRoleRequest) AccountId(accountId string) DiscordAPIDeleteDiscordGuildRoleRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPIDeleteDiscordGuildRoleRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.DeleteDiscordGuildRoleExecute(r)
+}
+
+/*
+DeleteDiscordGuildRole Delete a Discord guild role
+
+Permanently deletes a role from the guild and removes it from every member.
+This cannot be undone.
+
+Requires the bot to hold Manage Roles, and the target role must sit below the bot's
+highest role.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param guildId Discord guild snowflake ID
+	@param roleId Discord role snowflake ID
+	@return DiscordAPIDeleteDiscordGuildRoleRequest
+*/
+func (a *DiscordAPIService) DeleteDiscordGuildRole(ctx context.Context, guildId string, roleId string) DiscordAPIDeleteDiscordGuildRoleRequest {
+	return DiscordAPIDeleteDiscordGuildRoleRequest{
+		ApiService: a,
+		ctx:        ctx,
+		guildId:    guildId,
+		roleId:     roleId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *DiscordAPIService) DeleteDiscordGuildRoleExecute(r DiscordAPIDeleteDiscordGuildRoleRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.DeleteDiscordGuildRole")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/guilds/{guildId}/roles/{roleId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"guildId"+"}", url.PathEscape(parameterValueToString(r.guildId, "guildId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type DiscordAPIDeleteDiscordMessageRequest struct {
+	ctx        context.Context
+	ApiService *DiscordAPIService
+	channelId  string
+	messageId  string
+	accountId  *string
+}
+
+// SocialAccount _id of the Discord account bound to this channel&#39;s guild
+func (r DiscordAPIDeleteDiscordMessageRequest) AccountId(accountId string) DiscordAPIDeleteDiscordMessageRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPIDeleteDiscordMessageRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.DeleteDiscordMessageExecute(r)
+}
+
+/*
+DeleteDiscordMessage Delete a Discord channel message
+
+Deletes a message from a channel, for moderation and cleanup. This cannot be undone.
+
+Deleting a message the bot did not send requires the bot to hold the Manage Messages
+permission, which the Zernio bot requests at install time. Deleting the bot's own
+message needs no extra permission.
+
+Ownership is verified by resolving the channel's guild and confirming the caller owns
+a Discord account bound to it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param channelId Discord channel snowflake ID
+	@param messageId Discord message snowflake ID
+	@return DiscordAPIDeleteDiscordMessageRequest
+*/
+func (a *DiscordAPIService) DeleteDiscordMessage(ctx context.Context, channelId string, messageId string) DiscordAPIDeleteDiscordMessageRequest {
+	return DiscordAPIDeleteDiscordMessageRequest{
+		ApiService: a,
+		ctx:        ctx,
+		channelId:  channelId,
+		messageId:  messageId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *DiscordAPIService) DeleteDiscordMessageExecute(r DiscordAPIDeleteDiscordMessageRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.DeleteDiscordMessage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/channels/{channelId}/messages/{messageId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"channelId"+"}", url.PathEscape(parameterValueToString(r.channelId, "channelId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"messageId"+"}", url.PathEscape(parameterValueToString(r.messageId, "messageId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type DiscordAPIDeleteDiscordScheduledEventRequest struct {
 	ctx        context.Context
 	ApiService *DiscordAPIService
@@ -383,6 +1075,151 @@ func (a *DiscordAPIService) DeleteDiscordScheduledEventExecute(r DiscordAPIDelet
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type DiscordAPIEditDiscordGuildRoleRequest struct {
+	ctx                         context.Context
+	ApiService                  *DiscordAPIService
+	guildId                     string
+	roleId                      string
+	accountId                   *string
+	editDiscordGuildRoleRequest *EditDiscordGuildRoleRequest
+}
+
+// SocialAccount _id of the Discord account bound to this guild
+func (r DiscordAPIEditDiscordGuildRoleRequest) AccountId(accountId string) DiscordAPIEditDiscordGuildRoleRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPIEditDiscordGuildRoleRequest) EditDiscordGuildRoleRequest(editDiscordGuildRoleRequest EditDiscordGuildRoleRequest) DiscordAPIEditDiscordGuildRoleRequest {
+	r.editDiscordGuildRoleRequest = &editDiscordGuildRoleRequest
+	return r
+}
+
+func (r DiscordAPIEditDiscordGuildRoleRequest) Execute() (*CreateDiscordGuildRole201Response, *http.Response, error) {
+	return r.ApiService.EditDiscordGuildRoleExecute(r)
+}
+
+/*
+EditDiscordGuildRole Edit a Discord guild role
+
+Updates a role's name, color, hoist, mentionable flag, or permission bitfield.
+At least one field must be supplied. Omitted fields are left unchanged.
+
+Requires the bot to hold Manage Roles, and the target role must sit below the bot's
+highest role. See the create-role operation for the re-invite requirement.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param guildId Discord guild snowflake ID
+	@param roleId Discord role snowflake ID
+	@return DiscordAPIEditDiscordGuildRoleRequest
+*/
+func (a *DiscordAPIService) EditDiscordGuildRole(ctx context.Context, guildId string, roleId string) DiscordAPIEditDiscordGuildRoleRequest {
+	return DiscordAPIEditDiscordGuildRoleRequest{
+		ApiService: a,
+		ctx:        ctx,
+		guildId:    guildId,
+		roleId:     roleId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateDiscordGuildRole201Response
+func (a *DiscordAPIService) EditDiscordGuildRoleExecute(r DiscordAPIEditDiscordGuildRoleRequest) (*CreateDiscordGuildRole201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateDiscordGuildRole201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.EditDiscordGuildRole")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/guilds/{guildId}/roles/{roleId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"guildId"+"}", url.PathEscape(parameterValueToString(r.guildId, "guildId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.editDiscordGuildRoleRequest == nil {
+		return localVarReturnValue, nil, reportError("editDiscordGuildRoleRequest is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.editDiscordGuildRoleRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

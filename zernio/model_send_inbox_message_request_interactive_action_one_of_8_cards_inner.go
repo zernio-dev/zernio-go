@@ -24,7 +24,7 @@ type SendInboxMessageRequestInteractiveActionOneOf8CardsInner struct {
 	CardIndex *int32 `json:"card_index,omitempty"`
 	// `product` for a product card; media cards use `cta_url` or a quick-reply type.
 	Type *string `json:"type,omitempty"`
-	// Media cards only
+	// Media cards only, required. Carries the card's image or video.
 	Header map[string]interface{} `json:"header,omitempty"`
 	// Optional card body text.
 	Body map[string]interface{} `json:"body,omitempty"`

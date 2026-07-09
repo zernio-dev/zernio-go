@@ -171,6 +171,140 @@ func (a *CommentsAPIService) DeleteInboxCommentExecute(r CommentsAPIDeleteInboxC
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommentsAPIEditInboxCommentRequest struct {
+	ctx                     context.Context
+	ApiService              *CommentsAPIService
+	postId                  string
+	commentId               string
+	editInboxCommentRequest *EditInboxCommentRequest
+}
+
+func (r CommentsAPIEditInboxCommentRequest) EditInboxCommentRequest(editInboxCommentRequest EditInboxCommentRequest) CommentsAPIEditInboxCommentRequest {
+	r.editInboxCommentRequest = &editInboxCommentRequest
+	return r
+}
+
+func (r CommentsAPIEditInboxCommentRequest) Execute() (*EditInboxComment200Response, *http.Response, error) {
+	return r.ApiService.EditInboxCommentExecute(r)
+}
+
+/*
+EditInboxComment Edit comment
+
+Edit the body of a comment the connected account posted. Supported on Reddit only.
+
+Reddit keeps the same comment id after an edit. Reddit exposes no API to edit a post
+title, and a link post has no editable body. To edit a published post's body, use
+`POST /v1/posts/{postId}/edit`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId
+	@param commentId
+	@return CommentsAPIEditInboxCommentRequest
+*/
+func (a *CommentsAPIService) EditInboxComment(ctx context.Context, postId string, commentId string) CommentsAPIEditInboxCommentRequest {
+	return CommentsAPIEditInboxCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EditInboxComment200Response
+func (a *CommentsAPIService) EditInboxCommentExecute(r CommentsAPIEditInboxCommentRequest) (*EditInboxComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EditInboxComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.EditInboxComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/comments/{postId}/{commentId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.editInboxCommentRequest == nil {
+		return localVarReturnValue, nil, reportError("editInboxCommentRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.editInboxCommentRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommentsAPIGetInboxPostCommentsRequest struct {
 	ctx        context.Context
 	ApiService *CommentsAPIService
@@ -1070,6 +1204,145 @@ func (a *CommentsAPIService) SendPrivateReplyToCommentExecute(r CommentsAPISendP
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommentsAPISetCommentModerationRequest struct {
+	ctx                         context.Context
+	ApiService                  *CommentsAPIService
+	postId                      string
+	commentId                   string
+	setCommentModerationRequest *SetCommentModerationRequest
+}
+
+func (r CommentsAPISetCommentModerationRequest) SetCommentModerationRequest(setCommentModerationRequest SetCommentModerationRequest) CommentsAPISetCommentModerationRequest {
+	r.setCommentModerationRequest = &setCommentModerationRequest
+	return r
+}
+
+func (r CommentsAPISetCommentModerationRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.SetCommentModerationExecute(r)
+}
+
+/*
+SetCommentModeration Set comment moderation status
+
+Set a comment's moderation status. Supported on YouTube only.
+
+Use this to work a moderation queue: approve a held comment (`published`), reject it
+(`rejected`), or send it back for review (`heldForReview`).
+
+The request must be authorized by the owner of the channel or video the comment
+belongs to. You cannot moderate comments on videos you do not own.
+
+This is distinct from `POST /v1/inbox/comments/{postId}/{commentId}/hide`, which
+covers Facebook, Instagram, Threads, and X/Twitter and does not apply to YouTube.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId
+	@param commentId
+	@return CommentsAPISetCommentModerationRequest
+*/
+func (a *CommentsAPIService) SetCommentModeration(ctx context.Context, postId string, commentId string) CommentsAPISetCommentModerationRequest {
+	return CommentsAPISetCommentModerationRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *CommentsAPIService) SetCommentModerationExecute(r CommentsAPISetCommentModerationRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.SetCommentModeration")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/comments/{postId}/{commentId}/moderation"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setCommentModerationRequest == nil {
+		return localVarReturnValue, nil, reportError("setCommentModerationRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setCommentModerationRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

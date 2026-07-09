@@ -22,9 +22,9 @@ var _ MappedNullable = &EditPostRequest{}
 
 // EditPostRequest struct for EditPostRequest
 type EditPostRequest struct {
-	// The platform to edit the post on. Currently only twitter is supported.
+	// The platform to edit the post on.
 	Platform string `json:"platform"`
-	// The new tweet text content
+	// The new post text content
 	Content string `json:"content"`
 }
 

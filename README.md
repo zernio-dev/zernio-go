@@ -91,6 +91,7 @@ func main() {
 | `client.AnalyticsAPI.GetContentDecay(ctx)` | Get content performance decay |
 | `client.AnalyticsAPI.GetDailyMetrics(ctx)` | Get daily aggregated metrics |
 | `client.AnalyticsAPI.GetFacebookPageInsights(ctx)` | Get Facebook Page insights |
+| `client.AnalyticsAPI.GetFacebookPostReactions(ctx)` | Get Facebook post reactions |
 | `client.AnalyticsAPI.GetGoogleBusinessPerformance(ctx)` | Get GBP performance metrics |
 | `client.AnalyticsAPI.GetGoogleBusinessSearchKeywords(ctx)` | Get GBP search keywords |
 | `client.AnalyticsAPI.GetInstagramAccountInsights(ctx)` | Get Instagram insights |
@@ -186,6 +187,7 @@ func main() {
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
 | `client.ConnectAPI.GetRedditSubreddits(ctx)` | List Reddit subreddits |
+| `client.ConnectAPI.GetSubredditRules(ctx)` | Get subreddit rules |
 | `client.ConnectAPI.GetTelegramConnectStatus(ctx)` | Generate Telegram code |
 | `client.ConnectAPI.GetYoutubePlaylists(ctx)` | List YouTube playlists |
 | `client.ConnectAPI.UpdateFacebookPage(ctx)` | Update Facebook page |
@@ -207,6 +209,8 @@ func main() {
 | `client.ConnectAPI.SelectLinkedInOrganization(ctx)` | Select LinkedIn org |
 | `client.ConnectAPI.SelectPinterestBoard(ctx)` | Select Pinterest board |
 | `client.ConnectAPI.SelectSnapchatProfile(ctx)` | Select Snapchat profile |
+| `client.ConnectAPI.SetRedditPostFlair(ctx)` | Set flair on a published Reddit post |
+| `client.ConnectAPI.VoteRedditThing(ctx)` | Vote on a Reddit post or comment |
 
 ### Reddit
 | Method | Description |
@@ -330,10 +334,12 @@ func main() {
 | `client.CommentsAPI.ListInboxComments(ctx)` | List commented posts |
 | `client.CommentsAPI.GetInboxPostComments(ctx)` | Get post comments |
 | `client.CommentsAPI.DeleteInboxComment(ctx)` | Delete comment |
+| `client.CommentsAPI.EditInboxComment(ctx)` | Edit comment |
 | `client.CommentsAPI.HideInboxComment(ctx)` | Hide comment |
 | `client.CommentsAPI.LikeInboxComment(ctx)` | Like comment |
 | `client.CommentsAPI.ReplyToInboxPost(ctx)` | Reply to comment |
 | `client.CommentsAPI.SendPrivateReplyToComment(ctx)` | Send private reply |
+| `client.CommentsAPI.SetCommentModeration(ctx)` | Set comment moderation status |
 | `client.CommentsAPI.UnhideInboxComment(ctx)` | Unhide comment |
 | `client.CommentsAPI.UnlikeInboxComment(ctx)` | Unlike comment |
 
@@ -365,14 +371,20 @@ func main() {
 | `client.DiscordAPI.ListDiscordGuildRoles(ctx)` | List Discord guild roles |
 | `client.DiscordAPI.ListDiscordPinnedMessages(ctx)` | List pinned messages |
 | `client.DiscordAPI.ListDiscordScheduledEvents(ctx)` | List Discord scheduled events |
+| `client.DiscordAPI.CreateDiscordGuildRole(ctx)` | Create a Discord guild role |
 | `client.DiscordAPI.CreateDiscordScheduledEvent(ctx)` | Create a Discord scheduled event |
+| `client.DiscordAPI.CreateDiscordThread(ctx)` | Create a Discord public thread |
 | `client.DiscordAPI.GetDiscordChannels(ctx)` | List Discord guild channels |
 | `client.DiscordAPI.GetDiscordScheduledEvent(ctx)` | Get a Discord scheduled event |
 | `client.DiscordAPI.GetDiscordSettings(ctx)` | Get Discord account settings |
 | `client.DiscordAPI.UpdateDiscordScheduledEvent(ctx)` | Update a Discord scheduled event |
 | `client.DiscordAPI.UpdateDiscordSettings(ctx)` | Update Discord settings |
+| `client.DiscordAPI.DeleteDiscordGuildRole(ctx)` | Delete a Discord guild role |
+| `client.DiscordAPI.DeleteDiscordMessage(ctx)` | Delete a Discord channel message |
 | `client.DiscordAPI.DeleteDiscordScheduledEvent(ctx)` | Delete a Discord scheduled event |
 | `client.DiscordAPI.AddDiscordMemberRole(ctx)` | Assign a role to a guild member |
+| `client.DiscordAPI.CrosspostDiscordMessage(ctx)` | Crosspost a Discord announcement message |
+| `client.DiscordAPI.EditDiscordGuildRole(ctx)` | Edit a Discord guild role |
 | `client.DiscordAPI.PinDiscordMessage(ctx)` | Pin a Discord message |
 | `client.DiscordAPI.RemoveDiscordMemberRole(ctx)` | Remove a role from a guild member |
 | `client.DiscordAPI.SendDiscordDirectMessage(ctx)` | Send a Discord Direct Message |
@@ -441,12 +453,14 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
+| `client.InstagramAPI.GetInstagramPublishingLimit(ctx)` | Get Instagram publishing limit |
 | `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
 
 ### Mentions
 | Method | Description |
 |--------|-------------|
 | `client.MentionsAPI.ListInboxMentions(ctx)` | List mentions |
+| `client.MentionsAPI.ReplyToMention(ctx)` | Reply to a mention |
 
 ### Messages (Inbox)
 | Method | Description |

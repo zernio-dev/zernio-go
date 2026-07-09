@@ -23,6 +23,127 @@ import (
 // InstagramAPIService InstagramAPI service
 type InstagramAPIService service
 
+type InstagramAPIGetInstagramPublishingLimitRequest struct {
+	ctx        context.Context
+	ApiService *InstagramAPIService
+	accountId  string
+}
+
+func (r InstagramAPIGetInstagramPublishingLimitRequest) Execute() (*GetInstagramPublishingLimit200Response, *http.Response, error) {
+	return r.ApiService.GetInstagramPublishingLimitExecute(r)
+}
+
+/*
+GetInstagramPublishingLimit Get Instagram publishing limit
+
+Returns the account's remaining content-publishing quota for Instagram's rolling
+24-hour window, so you can pace publishing and warn before the cap is reached.
+
+`quotaUsage` counts containers published since the start of the window.
+Always compare against the returned `quotaTotal` rather than hardcoding a number:
+Meta's prose documentation and the live API disagree on the value, and the live
+value is authoritative.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Instagram account
+	@return InstagramAPIGetInstagramPublishingLimitRequest
+*/
+func (a *InstagramAPIService) GetInstagramPublishingLimit(ctx context.Context, accountId string) InstagramAPIGetInstagramPublishingLimitRequest {
+	return InstagramAPIGetInstagramPublishingLimitRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetInstagramPublishingLimit200Response
+func (a *InstagramAPIService) GetInstagramPublishingLimitExecute(r InstagramAPIGetInstagramPublishingLimitRequest) (*GetInstagramPublishingLimit200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetInstagramPublishingLimit200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstagramAPIService.GetInstagramPublishingLimit")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/instagram/publishing-limit"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type InstagramAPIGetInstagramStoryInsightsRequest struct {
 	ctx        context.Context
 	ApiService *InstagramAPIService

@@ -192,3 +192,139 @@ func (a *MentionsAPIService) ListInboxMentionsExecute(r MentionsAPIListInboxMent
 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
+
+type MentionsAPIReplyToMentionRequest struct {
+	ctx                   context.Context
+	ApiService            *MentionsAPIService
+	replyToMentionRequest *ReplyToMentionRequest
+}
+
+func (r MentionsAPIReplyToMentionRequest) ReplyToMentionRequest(replyToMentionRequest ReplyToMentionRequest) MentionsAPIReplyToMentionRequest {
+	r.replyToMentionRequest = &replyToMentionRequest
+	return r
+}
+
+func (r MentionsAPIReplyToMentionRequest) Execute() (*ReplyToMention200Response, *http.Response, error) {
+	return r.ApiService.ReplyToMentionExecute(r)
+}
+
+/*
+ReplyToMention Reply to a mention
+
+Reply to a mention of the connected account. Supported on Instagram only.
+
+Two shapes, selected by whether `commentId` is present:
+
+  - **Comment mention** (someone @mentioned the account inside a comment): pass both
+    `mediaId` and `commentId`. Instagram posts a reply under that comment.
+  - **Caption mention** (someone @mentioned the account in their media caption, so no
+    comment exists): pass `mediaId` only. Instagram posts a comment on their media.
+
+Story mentions are not supported by Instagram's API.
+
+Note that `GET /v1/inbox/mentions` currently returns LinkedIn mentions only and does
+not surface Instagram mentions. Source `mediaId` and `commentId` from Instagram's
+`comments` webhook, which is where mention notifications are delivered for accounts
+connected through Instagram Login.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return MentionsAPIReplyToMentionRequest
+*/
+func (a *MentionsAPIService) ReplyToMention(ctx context.Context) MentionsAPIReplyToMentionRequest {
+	return MentionsAPIReplyToMentionRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplyToMention200Response
+func (a *MentionsAPIService) ReplyToMentionExecute(r MentionsAPIReplyToMentionRequest) (*ReplyToMention200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplyToMention200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MentionsAPIService.ReplyToMention")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/mentions/reply"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replyToMentionRequest == nil {
+		return localVarReturnValue, nil, reportError("replyToMentionRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replyToMentionRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}

@@ -1035,6 +1035,137 @@ func (a *AnalyticsAPIService) GetFacebookPageInsightsExecute(r AnalyticsAPIGetFa
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AnalyticsAPIGetFacebookPostReactionsRequest struct {
+	ctx        context.Context
+	ApiService *AnalyticsAPIService
+	accountId  string
+	postId     *string
+}
+
+// The Facebook post ID
+func (r AnalyticsAPIGetFacebookPostReactionsRequest) PostId(postId string) AnalyticsAPIGetFacebookPostReactionsRequest {
+	r.postId = &postId
+	return r
+}
+
+func (r AnalyticsAPIGetFacebookPostReactionsRequest) Execute() (*GetFacebookPostReactions200Response, *http.Response, error) {
+	return r.ApiService.GetFacebookPostReactionsExecute(r)
+}
+
+/*
+GetFacebookPostReactions Get Facebook post reactions
+
+Returns the reaction breakdown for a Facebook Page post: a count per reaction type
+plus the overall total.
+
+The whole breakdown is fetched in a single Graph call. Note that the post analytics
+endpoint reports only an aggregate reaction count (surfaced there as `likes`), so use
+this endpoint when you need per-type counts.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Facebook Page account
+	@return AnalyticsAPIGetFacebookPostReactionsRequest
+*/
+func (a *AnalyticsAPIService) GetFacebookPostReactions(ctx context.Context, accountId string) AnalyticsAPIGetFacebookPostReactionsRequest {
+	return AnalyticsAPIGetFacebookPostReactionsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetFacebookPostReactions200Response
+func (a *AnalyticsAPIService) GetFacebookPostReactionsExecute(r AnalyticsAPIGetFacebookPostReactionsRequest) (*GetFacebookPostReactions200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetFacebookPostReactions200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetFacebookPostReactions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/facebook-post-reactions"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.postId == nil {
+		return localVarReturnValue, nil, reportError("postId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "postId", r.postId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AnalyticsAPIGetFollowerStatsRequest struct {
 	ctx         context.Context
 	ApiService  *AnalyticsAPIService

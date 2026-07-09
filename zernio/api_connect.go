@@ -1924,6 +1924,129 @@ func (a *ConnectAPIService) GetRedditSubredditsExecute(r ConnectAPIGetRedditSubr
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetSubredditRulesRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	accountId  string
+	subreddit  string
+}
+
+func (r ConnectAPIGetSubredditRulesRequest) Execute() (*GetSubredditRules200Response, *http.Response, error) {
+	return r.ApiService.GetSubredditRulesExecute(r)
+}
+
+/*
+GetSubredditRules Get subreddit rules
+
+Returns a subreddit's posting rules plus Reddit's site-wide rules, so you can check
+them before submitting and avoid a removal.
+
+Use this alongside `POST /v1/tools/validate/subreddit`, which only confirms that a
+subreddit exists and reports its basic posting settings.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Reddit account
+	@param subreddit Subreddit name (without the \"r/\" prefix)
+	@return ConnectAPIGetSubredditRulesRequest
+*/
+func (a *ConnectAPIService) GetSubredditRules(ctx context.Context, accountId string, subreddit string) ConnectAPIGetSubredditRulesRequest {
+	return ConnectAPIGetSubredditRulesRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		subreddit:  subreddit,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetSubredditRules200Response
+func (a *ConnectAPIService) GetSubredditRulesExecute(r ConnectAPIGetSubredditRulesRequest) (*GetSubredditRules200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetSubredditRules200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetSubredditRules")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/reddit-subreddits/{subreddit}/rules"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"subreddit"+"}", url.PathEscape(parameterValueToString(r.subreddit, "subreddit")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetTelegramConnectStatusRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -3978,6 +4101,139 @@ func (a *ConnectAPIService) SelectSnapchatProfileExecute(r ConnectAPISelectSnapc
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPISetRedditPostFlairRequest struct {
+	ctx                       context.Context
+	ApiService                *ConnectAPIService
+	accountId                 string
+	setRedditPostFlairRequest *SetRedditPostFlairRequest
+}
+
+func (r ConnectAPISetRedditPostFlairRequest) SetRedditPostFlairRequest(setRedditPostFlairRequest SetRedditPostFlairRequest) ConnectAPISetRedditPostFlairRequest {
+	r.setRedditPostFlairRequest = &setRedditPostFlairRequest
+	return r
+}
+
+func (r ConnectAPISetRedditPostFlairRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.SetRedditPostFlairExecute(r)
+}
+
+/*
+SetRedditPostFlair Set flair on a published Reddit post
+
+Applies a flair to a post the connected account already published. Use the GET on this
+path to list the available `flairTemplateId` values for the subreddit.
+
+Flair can also be set at submit time by passing `flairId` in `platformSpecificData`
+when creating the post. This endpoint is for changing it afterwards.
+
+The subreddit must allow users to select their own post flair. Setting flair on
+another user's post requires moderator permissions, which Zernio does not request.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Reddit account that owns the post
+	@return ConnectAPISetRedditPostFlairRequest
+*/
+func (a *ConnectAPIService) SetRedditPostFlair(ctx context.Context, accountId string) ConnectAPISetRedditPostFlairRequest {
+	return ConnectAPISetRedditPostFlairRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *ConnectAPIService) SetRedditPostFlairExecute(r ConnectAPISetRedditPostFlairRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.SetRedditPostFlair")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/reddit-flairs"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setRedditPostFlairRequest == nil {
+		return localVarReturnValue, nil, reportError("setRedditPostFlairRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setRedditPostFlairRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIUpdateFacebookPageRequest struct {
 	ctx                       context.Context
 	ApiService                *ConnectAPIService
@@ -4686,6 +4942,138 @@ func (a *ConnectAPIService) UpdateYoutubeDefaultPlaylistExecute(r ConnectAPIUpda
 	}
 	// body params
 	localVarPostBody = r.updateYoutubeDefaultPlaylistRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIVoteRedditThingRequest struct {
+	ctx                    context.Context
+	ApiService             *ConnectAPIService
+	accountId              string
+	voteRedditThingRequest *VoteRedditThingRequest
+}
+
+func (r ConnectAPIVoteRedditThingRequest) VoteRedditThingRequest(voteRedditThingRequest VoteRedditThingRequest) ConnectAPIVoteRedditThingRequest {
+	r.voteRedditThingRequest = &voteRedditThingRequest
+	return r
+}
+
+func (r ConnectAPIVoteRedditThingRequest) Execute() (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	return r.ApiService.VoteRedditThingExecute(r)
+}
+
+/*
+VoteRedditThing Vote on a Reddit post or comment
+
+Cast, change, or clear the connected account's vote on a Reddit post or comment.
+
+**Reddit requires that votes be cast by humans.** Reddit's API terms permit a client
+to proxy a human's action one-for-one, and prohibit a bot from deciding how to vote
+or from amplifying a human's vote. Call this endpoint only in direct response to an
+explicit action by the account owner. Automated or agent-decided voting is
+vote manipulation and puts API access at risk.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of the Reddit account casting the vote
+	@return ConnectAPIVoteRedditThingRequest
+*/
+func (a *ConnectAPIService) VoteRedditThing(ctx context.Context, accountId string) ConnectAPIVoteRedditThingRequest {
+	return ConnectAPIVoteRedditThingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateYoutubeDefaultPlaylist200Response
+func (a *ConnectAPIService) VoteRedditThingExecute(r ConnectAPIVoteRedditThingRequest) (*UpdateYoutubeDefaultPlaylist200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateYoutubeDefaultPlaylist200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.VoteRedditThing")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/reddit-vote"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.voteRedditThingRequest == nil {
+		return localVarReturnValue, nil, reportError("voteRedditThingRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.voteRedditThingRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
