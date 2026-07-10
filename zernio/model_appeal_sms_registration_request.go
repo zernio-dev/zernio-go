@@ -22,7 +22,12 @@ var _ MappedNullable = &AppealSmsRegistrationRequest{}
 
 // AppealSmsRegistrationRequest struct for AppealSmsRegistrationRequest
 type AppealSmsRegistrationRequest struct {
+	// Goes verbatim to the carrier reviewer — address the decline reason directly.
 	AppealReason string `json:"appealReason"`
+	// Corrected opt-in flow; include a link to the opt-in page/form.
+	MessageFlow *string `json:"messageFlow,omitempty"`
+	Sample1     *string `json:"sample1,omitempty"`
+	Sample2     *string `json:"sample2,omitempty"`
 }
 
 type _AppealSmsRegistrationRequest AppealSmsRegistrationRequest
@@ -69,6 +74,102 @@ func (o *AppealSmsRegistrationRequest) SetAppealReason(v string) {
 	o.AppealReason = v
 }
 
+// GetMessageFlow returns the MessageFlow field value if set, zero value otherwise.
+func (o *AppealSmsRegistrationRequest) GetMessageFlow() string {
+	if o == nil || IsNil(o.MessageFlow) {
+		var ret string
+		return ret
+	}
+	return *o.MessageFlow
+}
+
+// GetMessageFlowOk returns a tuple with the MessageFlow field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AppealSmsRegistrationRequest) GetMessageFlowOk() (*string, bool) {
+	if o == nil || IsNil(o.MessageFlow) {
+		return nil, false
+	}
+	return o.MessageFlow, true
+}
+
+// HasMessageFlow returns a boolean if a field has been set.
+func (o *AppealSmsRegistrationRequest) HasMessageFlow() bool {
+	if o != nil && !IsNil(o.MessageFlow) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageFlow gets a reference to the given string and assigns it to the MessageFlow field.
+func (o *AppealSmsRegistrationRequest) SetMessageFlow(v string) {
+	o.MessageFlow = &v
+}
+
+// GetSample1 returns the Sample1 field value if set, zero value otherwise.
+func (o *AppealSmsRegistrationRequest) GetSample1() string {
+	if o == nil || IsNil(o.Sample1) {
+		var ret string
+		return ret
+	}
+	return *o.Sample1
+}
+
+// GetSample1Ok returns a tuple with the Sample1 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AppealSmsRegistrationRequest) GetSample1Ok() (*string, bool) {
+	if o == nil || IsNil(o.Sample1) {
+		return nil, false
+	}
+	return o.Sample1, true
+}
+
+// HasSample1 returns a boolean if a field has been set.
+func (o *AppealSmsRegistrationRequest) HasSample1() bool {
+	if o != nil && !IsNil(o.Sample1) {
+		return true
+	}
+
+	return false
+}
+
+// SetSample1 gets a reference to the given string and assigns it to the Sample1 field.
+func (o *AppealSmsRegistrationRequest) SetSample1(v string) {
+	o.Sample1 = &v
+}
+
+// GetSample2 returns the Sample2 field value if set, zero value otherwise.
+func (o *AppealSmsRegistrationRequest) GetSample2() string {
+	if o == nil || IsNil(o.Sample2) {
+		var ret string
+		return ret
+	}
+	return *o.Sample2
+}
+
+// GetSample2Ok returns a tuple with the Sample2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AppealSmsRegistrationRequest) GetSample2Ok() (*string, bool) {
+	if o == nil || IsNil(o.Sample2) {
+		return nil, false
+	}
+	return o.Sample2, true
+}
+
+// HasSample2 returns a boolean if a field has been set.
+func (o *AppealSmsRegistrationRequest) HasSample2() bool {
+	if o != nil && !IsNil(o.Sample2) {
+		return true
+	}
+
+	return false
+}
+
+// SetSample2 gets a reference to the given string and assigns it to the Sample2 field.
+func (o *AppealSmsRegistrationRequest) SetSample2(v string) {
+	o.Sample2 = &v
+}
+
 func (o AppealSmsRegistrationRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -80,6 +181,15 @@ func (o AppealSmsRegistrationRequest) MarshalJSON() ([]byte, error) {
 func (o AppealSmsRegistrationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["appealReason"] = o.AppealReason
+	if !IsNil(o.MessageFlow) {
+		toSerialize["messageFlow"] = o.MessageFlow
+	}
+	if !IsNil(o.Sample1) {
+		toSerialize["sample1"] = o.Sample1
+	}
+	if !IsNil(o.Sample2) {
+		toSerialize["sample2"] = o.Sample2
+	}
 	return toSerialize, nil
 }
 

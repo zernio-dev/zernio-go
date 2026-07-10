@@ -22,9 +22,11 @@ var _ MappedNullable = &StartSmsRegistrationRequestCampaign{}
 
 // StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. Opt-in/opt-out/help auto-responses must name the registered brand and carry the carrier-required disclosures; submissions that don't (or that are blank) are automatically rewritten to a compliant, brand-named template before the campaign is filed.
 type StartSmsRegistrationRequestCampaign struct {
-	Usecase     string `json:"usecase"`
-	Description string `json:"description"`
-	// How a recipient ends up receiving your messages (the opt-in flow).
+	Usecase string `json:"usecase"`
+	// The concrete kinds of messages a MIXED campaign sends (the carrier registry requires 2-5, and reviewers match them against the sample messages). Omitted: a default pair is applied for MIXED.
+	SubUsecases []string `json:"subUsecases,omitempty"`
+	Description string   `json:"description"`
+	// How a recipient ends up receiving your messages (the opt-in flow). Include a link to the page or form where they opt in — carrier reviewers reject campaigns whose consent they can't verify.
 	MessageFlow string `json:"messageFlow"`
 	Sample1     string `json:"sample1"`
 	// Second example message; carriers require two distinct samples
@@ -94,6 +96,38 @@ func (o *StartSmsRegistrationRequestCampaign) GetUsecaseOk() (*string, bool) {
 // SetUsecase sets field value
 func (o *StartSmsRegistrationRequestCampaign) SetUsecase(v string) {
 	o.Usecase = v
+}
+
+// GetSubUsecases returns the SubUsecases field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequestCampaign) GetSubUsecases() []string {
+	if o == nil || IsNil(o.SubUsecases) {
+		var ret []string
+		return ret
+	}
+	return o.SubUsecases
+}
+
+// GetSubUsecasesOk returns a tuple with the SubUsecases field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequestCampaign) GetSubUsecasesOk() ([]string, bool) {
+	if o == nil || IsNil(o.SubUsecases) {
+		return nil, false
+	}
+	return o.SubUsecases, true
+}
+
+// HasSubUsecases returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasSubUsecases() bool {
+	if o != nil && !IsNil(o.SubUsecases) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubUsecases gets a reference to the given []string and assigns it to the SubUsecases field.
+func (o *StartSmsRegistrationRequestCampaign) SetSubUsecases(v []string) {
+	o.SubUsecases = v
 }
 
 // GetDescription returns the Description field value
@@ -507,6 +541,9 @@ func (o StartSmsRegistrationRequestCampaign) MarshalJSON() ([]byte, error) {
 func (o StartSmsRegistrationRequestCampaign) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["usecase"] = o.Usecase
+	if !IsNil(o.SubUsecases) {
+		toSerialize["subUsecases"] = o.SubUsecases
+	}
 	toSerialize["description"] = o.Description
 	toSerialize["messageFlow"] = o.MessageFlow
 	toSerialize["sample1"] = o.Sample1

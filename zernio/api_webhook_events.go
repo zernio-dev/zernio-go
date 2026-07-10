@@ -3474,6 +3474,112 @@ func (a *WebhookEventsAPIService) OnWebhookTestExecute(r WebhookEventsAPIOnWebho
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnWhatsAppAutomaticEventRequest struct {
+	ctx                             context.Context
+	ApiService                      *WebhookEventsAPIService
+	onWhatsAppAutomaticEventRequest *OnWhatsAppAutomaticEventRequest
+}
+
+func (r WebhookEventsAPIOnWhatsAppAutomaticEventRequest) OnWhatsAppAutomaticEventRequest(onWhatsAppAutomaticEventRequest OnWhatsAppAutomaticEventRequest) WebhookEventsAPIOnWhatsAppAutomaticEventRequest {
+	r.onWhatsAppAutomaticEventRequest = &onWhatsAppAutomaticEventRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnWhatsAppAutomaticEventRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnWhatsAppAutomaticEventExecute(r)
+}
+
+/*
+OnWhatsAppAutomaticEvent WhatsApp automatic event detected
+
+Fired when Meta's automatic event identification (opt-in during
+Embedded Signup; not available for EU/UK/JP businesses) detects a
+lead or purchase in a Click-to-WhatsApp conversation. Branch on
+`eventName` (`LeadSubmitted` | `Purchase`). Carries the `ctwa_clid`
+even on coexistence numbers where the inbound referral omits it (this
+webhook is the only surface that delivers it there); the clid is also
+written back onto the conversation, so POST /v1/whatsapp/conversions
+becomes usable for the thread.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnWhatsAppAutomaticEventRequest
+*/
+func (a *WebhookEventsAPIService) OnWhatsAppAutomaticEvent(ctx context.Context) WebhookEventsAPIOnWhatsAppAutomaticEventRequest {
+	return WebhookEventsAPIOnWhatsAppAutomaticEventRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnWhatsAppAutomaticEventExecute(r WebhookEventsAPIOnWhatsAppAutomaticEventRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnWhatsAppAutomaticEvent")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/whatsapp.automatic_event"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onWhatsAppAutomaticEventRequest == nil {
+		return nil, reportError("onWhatsAppAutomaticEventRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onWhatsAppAutomaticEventRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnWhatsAppNumberActionRequiredRequest struct {
 	ctx                                   context.Context
 	ApiService                            *WebhookEventsAPIService

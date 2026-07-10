@@ -20,14 +20,15 @@ var _ MappedNullable = &GetSmsRegistration200Response{}
 
 // GetSmsRegistration200Response struct for GetSmsRegistration200Response
 type GetSmsRegistration200Response struct {
-	Id               *string        `json:"id,omitempty"`
-	RegistrationType *string        `json:"registrationType,omitempty"`
-	Status           *string        `json:"status,omitempty"`
-	BrandStatus      *string        `json:"brandStatus,omitempty"`
-	CampaignStatus   *string        `json:"campaignStatus,omitempty"`
-	DeclineReason    NullableString `json:"declineReason,omitempty"`
-	PhoneNumbers     []string       `json:"phoneNumbers,omitempty"`
-	AwaitingOtp      *bool          `json:"awaitingOtp,omitempty"`
+	Id               *string                                       `json:"id,omitempty"`
+	RegistrationType *string                                       `json:"registrationType,omitempty"`
+	Status           *string                                       `json:"status,omitempty"`
+	BrandStatus      *string                                       `json:"brandStatus,omitempty"`
+	CampaignStatus   *string                                       `json:"campaignStatus,omitempty"`
+	DeclineReason    NullableString                                `json:"declineReason,omitempty"`
+	PhoneNumbers     []string                                      `json:"phoneNumbers,omitempty"`
+	AwaitingOtp      *bool                                         `json:"awaitingOtp,omitempty"`
+	CampaignContent  *GetSmsRegistration200ResponseCampaignContent `json:"campaignContent,omitempty"`
 }
 
 // NewGetSmsRegistration200Response instantiates a new GetSmsRegistration200Response object
@@ -314,6 +315,38 @@ func (o *GetSmsRegistration200Response) SetAwaitingOtp(v bool) {
 	o.AwaitingOtp = &v
 }
 
+// GetCampaignContent returns the CampaignContent field value if set, zero value otherwise.
+func (o *GetSmsRegistration200Response) GetCampaignContent() GetSmsRegistration200ResponseCampaignContent {
+	if o == nil || IsNil(o.CampaignContent) {
+		var ret GetSmsRegistration200ResponseCampaignContent
+		return ret
+	}
+	return *o.CampaignContent
+}
+
+// GetCampaignContentOk returns a tuple with the CampaignContent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetSmsRegistration200Response) GetCampaignContentOk() (*GetSmsRegistration200ResponseCampaignContent, bool) {
+	if o == nil || IsNil(o.CampaignContent) {
+		return nil, false
+	}
+	return o.CampaignContent, true
+}
+
+// HasCampaignContent returns a boolean if a field has been set.
+func (o *GetSmsRegistration200Response) HasCampaignContent() bool {
+	if o != nil && !IsNil(o.CampaignContent) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignContent gets a reference to the given GetSmsRegistration200ResponseCampaignContent and assigns it to the CampaignContent field.
+func (o *GetSmsRegistration200Response) SetCampaignContent(v GetSmsRegistration200ResponseCampaignContent) {
+	o.CampaignContent = &v
+}
+
 func (o GetSmsRegistration200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -347,6 +380,9 @@ func (o GetSmsRegistration200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AwaitingOtp) {
 		toSerialize["awaitingOtp"] = o.AwaitingOtp
+	}
+	if !IsNil(o.CampaignContent) {
+		toSerialize["campaignContent"] = o.CampaignContent
 	}
 	return toSerialize, nil
 }

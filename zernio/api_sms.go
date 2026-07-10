@@ -47,6 +47,13 @@ registration that reached campaign creation can be appealed; a
 brand-level rejection should be fixed and re-verified instead. On
 success the registration returns to `pending`.
 
+Content rejections (e.g. an opt-in flow without a verifiable form link,
+or unrealistic samples) should be FIXED in the same call: pass the
+corrected `messageFlow` / `sample1` / `sample2` and the campaign is
+updated before the appeal is filed, so the reviewer sees the new
+content. The current content is on `GET /v1/sms/registrations/{id}`
+(`campaignContent`).
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
 	@return SMSAPIAppealSmsRegistrationRequest
