@@ -21,9 +21,9 @@ var _ MappedNullable = &SearchInboxConversations200ResponseDataInner{}
 // SearchInboxConversations200ResponseDataInner struct for SearchInboxConversations200ResponseDataInner
 type SearchInboxConversations200ResponseDataInner struct {
 	Conversation *SearchInboxConversations200ResponseDataInnerConversation `json:"conversation,omitempty"`
-	// Total number of matching messages in this conversation
+	// Number of matching messages in this conversation. 0 when the conversation matched only on contact identity (name, username, or phone number), not on message text.
 	MatchCount *int32 `json:"matchCount,omitempty"`
-	// Up to 3 most-recent matching messages
+	// Up to 3 most-recent matching messages (empty for an identity-only match)
 	Matches []SearchInboxConversations200ResponseDataInnerMatchesInner `json:"matches,omitempty"`
 }
 

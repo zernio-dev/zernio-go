@@ -29,7 +29,9 @@ type SearchInboxConversations200ResponseDataInnerConversation struct {
 	ParticipantUsername NullableString `json:"participantUsername,omitempty"`
 	ParticipantPicture  NullableString `json:"participantPicture,omitempty"`
 	Status              *string        `json:"status,omitempty"`
-	LastMessageAt       NullableTime   `json:"lastMessageAt,omitempty"`
+	// The conversation's most recent message preview
+	LastMessage   NullableString `json:"lastMessage,omitempty"`
+	LastMessageAt NullableTime   `json:"lastMessageAt,omitempty"`
 }
 
 // NewSearchInboxConversations200ResponseDataInnerConversation instantiates a new SearchInboxConversations200ResponseDataInnerConversation object
@@ -306,6 +308,49 @@ func (o *SearchInboxConversations200ResponseDataInnerConversation) SetStatus(v s
 	o.Status = &v
 }
 
+// GetLastMessage returns the LastMessage field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetLastMessage() string {
+	if o == nil || IsNil(o.LastMessage.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LastMessage.Get()
+}
+
+// GetLastMessageOk returns a tuple with the LastMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetLastMessageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastMessage.Get(), o.LastMessage.IsSet()
+}
+
+// HasLastMessage returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) HasLastMessage() bool {
+	if o != nil && o.LastMessage.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLastMessage gets a reference to the given NullableString and assigns it to the LastMessage field.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetLastMessage(v string) {
+	o.LastMessage.Set(&v)
+}
+
+// SetLastMessageNil sets the value for LastMessage to be an explicit nil
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetLastMessageNil() {
+	o.LastMessage.Set(nil)
+}
+
+// UnsetLastMessage ensures that no value is present for LastMessage, not even an explicit nil
+func (o *SearchInboxConversations200ResponseDataInnerConversation) UnsetLastMessage() {
+	o.LastMessage.Unset()
+}
+
 // GetLastMessageAt returns the LastMessageAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SearchInboxConversations200ResponseDataInnerConversation) GetLastMessageAt() time.Time {
 	if o == nil || IsNil(o.LastMessageAt.Get()) {
@@ -379,6 +424,9 @@ func (o SearchInboxConversations200ResponseDataInnerConversation) ToMap() (map[s
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.LastMessage.IsSet() {
+		toSerialize["lastMessage"] = o.LastMessage.Get()
 	}
 	if o.LastMessageAt.IsSet() {
 		toSerialize["lastMessageAt"] = o.LastMessageAt.Get()
