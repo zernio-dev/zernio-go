@@ -29,6 +29,10 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneName *string `json:"timezoneName,omitempty"`
 	// Signed UTC offset in hours, reflecting current DST (Meta only).
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
+	// Meta only. Whether the account can create/run ads now. Absent (treat as true) on non-Meta platforms.
+	Selectable *bool `json:"selectable,omitempty"`
+	// Meta only. Human-readable reason when selectable is false; null when selectable.
+	UnusableReason *string `json:"unusableReason,omitempty"`
 }
 
 // NewListAdAccounts200ResponseAccountsInner instantiates a new ListAdAccounts200ResponseAccountsInner object
@@ -240,6 +244,70 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetTimezoneOffsetHoursUtc(v flo
 	o.TimezoneOffsetHoursUtc = &v
 }
 
+// GetSelectable returns the Selectable field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetSelectable() bool {
+	if o == nil || IsNil(o.Selectable) {
+		var ret bool
+		return ret
+	}
+	return *o.Selectable
+}
+
+// GetSelectableOk returns a tuple with the Selectable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetSelectableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Selectable) {
+		return nil, false
+	}
+	return o.Selectable, true
+}
+
+// HasSelectable returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasSelectable() bool {
+	if o != nil && !IsNil(o.Selectable) {
+		return true
+	}
+
+	return false
+}
+
+// SetSelectable gets a reference to the given bool and assigns it to the Selectable field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetSelectable(v bool) {
+	o.Selectable = &v
+}
+
+// GetUnusableReason returns the UnusableReason field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetUnusableReason() string {
+	if o == nil || IsNil(o.UnusableReason) {
+		var ret string
+		return ret
+	}
+	return *o.UnusableReason
+}
+
+// GetUnusableReasonOk returns a tuple with the UnusableReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetUnusableReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.UnusableReason) {
+		return nil, false
+	}
+	return o.UnusableReason, true
+}
+
+// HasUnusableReason returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasUnusableReason() bool {
+	if o != nil && !IsNil(o.UnusableReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnusableReason gets a reference to the given string and assigns it to the UnusableReason field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetUnusableReason(v string) {
+	o.UnusableReason = &v
+}
+
 func (o ListAdAccounts200ResponseAccountsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -267,6 +335,12 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.TimezoneOffsetHoursUtc) {
 		toSerialize["timezoneOffsetHoursUtc"] = o.TimezoneOffsetHoursUtc
+	}
+	if !IsNil(o.Selectable) {
+		toSerialize["selectable"] = o.Selectable
+	}
+	if !IsNil(o.UnusableReason) {
+		toSerialize["unusableReason"] = o.UnusableReason
 	}
 	return toSerialize, nil
 }
