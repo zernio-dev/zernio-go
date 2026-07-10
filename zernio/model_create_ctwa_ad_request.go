@@ -61,7 +61,8 @@ type CreateCtwaAdRequest struct {
 	AgeMax          *int32                                    `json:"ageMax,omitempty"`
 	Interests       []CreateStandaloneAdRequestBehaviorsInner `json:"interests,omitempty"`
 	// Custom audience ID to target.
-	AudienceId *string `json:"audienceId,omitempty"`
+	AudienceId *string                              `json:"audienceId,omitempty"`
+	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// Meta's Advantage+ audience expansion. `0` (default) keeps targeting strict; `1` lets Meta expand beyond the supplied targeting when its delivery system finds better matches. Always sent on CREATE (Meta requires it).
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Defaults to `OUTCOME_ENGAGEMENT` (the broadly-supported CTWA objective). `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
@@ -766,6 +767,38 @@ func (o *CreateCtwaAdRequest) SetAudienceId(v string) {
 	o.AudienceId = &v
 }
 
+// GetPlacements returns the Placements field value if set, zero value otherwise.
+func (o *CreateCtwaAdRequest) GetPlacements() CreateStandaloneAdRequestPlacements {
+	if o == nil || IsNil(o.Placements) {
+		var ret CreateStandaloneAdRequestPlacements
+		return ret
+	}
+	return *o.Placements
+}
+
+// GetPlacementsOk returns a tuple with the Placements field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCtwaAdRequest) GetPlacementsOk() (*CreateStandaloneAdRequestPlacements, bool) {
+	if o == nil || IsNil(o.Placements) {
+		return nil, false
+	}
+	return o.Placements, true
+}
+
+// HasPlacements returns a boolean if a field has been set.
+func (o *CreateCtwaAdRequest) HasPlacements() bool {
+	if o != nil && !IsNil(o.Placements) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlacements gets a reference to the given CreateStandaloneAdRequestPlacements and assigns it to the Placements field.
+func (o *CreateCtwaAdRequest) SetPlacements(v CreateStandaloneAdRequestPlacements) {
+	o.Placements = &v
+}
+
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
 func (o *CreateCtwaAdRequest) GetAdvantageAudience() int32 {
 	if o == nil || IsNil(o.AdvantageAudience) {
@@ -1055,6 +1088,9 @@ func (o CreateCtwaAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudienceId) {
 		toSerialize["audienceId"] = o.AudienceId
+	}
+	if !IsNil(o.Placements) {
+		toSerialize["placements"] = o.Placements
 	}
 	if !IsNil(o.AdvantageAudience) {
 		toSerialize["advantageAudience"] = o.AdvantageAudience
