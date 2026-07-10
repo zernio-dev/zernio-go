@@ -31,6 +31,7 @@ type UsageMetering struct {
 	Peaks     *UsageMeteringPeaks           `json:"peaks,omitempty"`
 	CallUsage *UsageMeteringCallUsage       `json:"callUsage,omitempty"`
 	Period    *UsageMeteringPeriod          `json:"period,omitempty"`
+	Tax       *UsageMeteringTax             `json:"tax,omitempty"`
 }
 
 // NewUsageMetering instantiates a new UsageMetering object
@@ -306,6 +307,38 @@ func (o *UsageMetering) SetPeriod(v UsageMeteringPeriod) {
 	o.Period = &v
 }
 
+// GetTax returns the Tax field value if set, zero value otherwise.
+func (o *UsageMetering) GetTax() UsageMeteringTax {
+	if o == nil || IsNil(o.Tax) {
+		var ret UsageMeteringTax
+		return ret
+	}
+	return *o.Tax
+}
+
+// GetTaxOk returns a tuple with the Tax field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMetering) GetTaxOk() (*UsageMeteringTax, bool) {
+	if o == nil || IsNil(o.Tax) {
+		return nil, false
+	}
+	return o.Tax, true
+}
+
+// HasTax returns a boolean if a field has been set.
+func (o *UsageMetering) HasTax() bool {
+	if o != nil && !IsNil(o.Tax) {
+		return true
+	}
+
+	return false
+}
+
+// SetTax gets a reference to the given UsageMeteringTax and assigns it to the Tax field.
+func (o *UsageMetering) SetTax(v UsageMeteringTax) {
+	o.Tax = &v
+}
+
 func (o UsageMetering) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -339,6 +372,9 @@ func (o UsageMetering) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Period) {
 		toSerialize["period"] = o.Period
+	}
+	if !IsNil(o.Tax) {
+		toSerialize["tax"] = o.Tax
 	}
 	return toSerialize, nil
 }

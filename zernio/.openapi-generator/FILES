@@ -1183,6 +1183,7 @@ model_usage_metering_days_inner.go
 model_usage_metering_line_items_inner.go
 model_usage_metering_peaks.go
 model_usage_metering_period.go
+model_usage_metering_tax.go
 model_usage_metering_totals.go
 model_usage_stats.go
 model_usage_stats_spend.go
