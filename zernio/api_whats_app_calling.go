@@ -528,7 +528,7 @@ func (a *WhatsAppCallingAPIService) EnableWhatsAppCallingLegacyExecute(r WhatsAp
 type WhatsAppCallingAPIGetWhatsAppCallRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppCallingAPIService
-	callId     string
+	id         string
 	accountId  *string
 }
 
@@ -545,14 +545,14 @@ func (r WhatsAppCallingAPIGetWhatsAppCallRequest) Execute() (*GetWhatsAppCall200
 GetWhatsAppCall Get a single call
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param callId
+	@param id
 	@return WhatsAppCallingAPIGetWhatsAppCallRequest
 */
-func (a *WhatsAppCallingAPIService) GetWhatsAppCall(ctx context.Context, callId string) WhatsAppCallingAPIGetWhatsAppCallRequest {
+func (a *WhatsAppCallingAPIService) GetWhatsAppCall(ctx context.Context, id string) WhatsAppCallingAPIGetWhatsAppCallRequest {
 	return WhatsAppCallingAPIGetWhatsAppCallRequest{
 		ApiService: a,
 		ctx:        ctx,
-		callId:     callId,
+		id:         id,
 	}
 }
 
@@ -572,8 +572,8 @@ func (a *WhatsAppCallingAPIService) GetWhatsAppCallExecute(r WhatsAppCallingAPIG
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/whatsapp/calls/{callId}"
-	localVarPath = strings.Replace(localVarPath, "{"+"callId"+"}", url.PathEscape(parameterValueToString(r.callId, "callId")), -1)
+	localVarPath := localBasePath + "/v1/whatsapp/calls/{id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -936,7 +936,7 @@ func (a *WhatsAppCallingAPIService) GetWhatsAppCallPermissionsExecute(r WhatsApp
 type WhatsAppCallingAPIGetWhatsAppCallRecordingRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppCallingAPIService
-	callId     string
+	id         string
 	accountId  *string
 	as         *string
 }
@@ -967,14 +967,14 @@ redirecting to the fresh URL (point an `<audio>` element or a link
 straight at this endpoint); pass `as=json` to receive `{ url }` instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param callId
+	@param id
 	@return WhatsAppCallingAPIGetWhatsAppCallRecordingRequest
 */
-func (a *WhatsAppCallingAPIService) GetWhatsAppCallRecording(ctx context.Context, callId string) WhatsAppCallingAPIGetWhatsAppCallRecordingRequest {
+func (a *WhatsAppCallingAPIService) GetWhatsAppCallRecording(ctx context.Context, id string) WhatsAppCallingAPIGetWhatsAppCallRecordingRequest {
 	return WhatsAppCallingAPIGetWhatsAppCallRecordingRequest{
 		ApiService: a,
 		ctx:        ctx,
-		callId:     callId,
+		id:         id,
 	}
 }
 
@@ -994,8 +994,8 @@ func (a *WhatsAppCallingAPIService) GetWhatsAppCallRecordingExecute(r WhatsAppCa
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/whatsapp/calls/{callId}/recording"
-	localVarPath = strings.Replace(localVarPath, "{"+"callId"+"}", url.PathEscape(parameterValueToString(r.callId, "callId")), -1)
+	localVarPath := localBasePath + "/v1/whatsapp/calls/{id}/recording"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
