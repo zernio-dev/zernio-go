@@ -284,6 +284,7 @@ func main() {
 | `client.AdsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
 | `client.AdsAPI.GetLeadForm(ctx)` | Get a lead form |
 | `client.AdsAPI.UpdateAd(ctx)` | Update ad |
+| `client.AdsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |
 | `client.AdsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
 | `client.AdsAPI.DeleteAd(ctx)` | Cancel an ad |

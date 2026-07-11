@@ -5575,6 +5575,141 @@ func (a *AdsAPIService) UpdateAdExecute(r AdsAPIUpdateAdRequest) (*UpdateAd200Re
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIUpdateAdStatusRequest struct {
+	ctx                   context.Context
+	ApiService            *AdsAPIService
+	adId                  string
+	updateAdStatusRequest *UpdateAdStatusRequest
+}
+
+func (r AdsAPIUpdateAdStatusRequest) UpdateAdStatusRequest(updateAdStatusRequest UpdateAdStatusRequest) AdsAPIUpdateAdStatusRequest {
+	r.updateAdStatusRequest = &updateAdStatusRequest
+	return r
+}
+
+func (r AdsAPIUpdateAdStatusRequest) Execute() (*UpdateAdStatus200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdStatusExecute(r)
+}
+
+/*
+UpdateAdStatus Pause or resume a single ad
+
+Ad-scoped pause/resume — touches ONLY this ad, never its parent ad set or
+campaign (so sibling ads keep running). Thin wrapper over the `status`
+field of PUT /v1/ads/{adId}, for callers that want a URL symmetric to
+/v1/ads/campaigns/{campaignId}/status and /v1/ads/ad-sets/{adSetId}/status.
+
+`{adId}` accepts the same identifier dialects as GET/PUT /v1/ads/{adId}
+(Zernio hex `_id`, Meta numeric `platformAdId`, or the creative's
+effective story/media IDs). `platform` is inferred from the ad, so it's
+not required in the body. Ads in terminal statuses (rejected, completed,
+cancelled) and no-op flips (already in the target state) are skipped.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs.
+	@return AdsAPIUpdateAdStatusRequest
+*/
+func (a *AdsAPIService) UpdateAdStatus(ctx context.Context, adId string) AdsAPIUpdateAdStatusRequest {
+	return AdsAPIUpdateAdStatusRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateAdStatus200Response
+func (a *AdsAPIService) UpdateAdStatusExecute(r AdsAPIUpdateAdStatusRequest) (*UpdateAdStatus200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateAdStatus200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.UpdateAdStatus")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/status"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateAdStatusRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdStatusRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateAdStatusRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIUpdateAdTrackingTagsRequest struct {
 	ctx                         context.Context
 	ApiService                  *AdsAPIService
