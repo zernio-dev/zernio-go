@@ -36,8 +36,9 @@ type CreateInboxConversationRequest struct {
 	TemplateName *string `json:"templateName,omitempty"`
 	// WhatsApp only. Template language code (e.g. en_US).
 	TemplateLanguage *string `json:"templateLanguage,omitempty"`
-	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here.
-	TemplateParams []string `json:"templateParams,omitempty"`
+	// WhatsApp only. Template variable values as one flat array, in the order the variables appear across the whole template: text-header variables first, then body variables, then one value per dynamic URL button (in button order). Works with positional placeholders ({{1}}, {{2}}, ...) and with named placeholders ({{name}}, {{company}} - how Meta Business Manager creates templates), where values fill the named slots in order of appearance. Example - a body with {{1}}, {{2}} plus a URL button https://example.com/{{1}} takes three values: [body1, body2, buttonSuffix]. Media headers (image, video, document) are filled automatically from the approved template and take no value here (use headerMedia to override the header asset per send).
+	TemplateParams []string                                   `json:"templateParams,omitempty"`
+	HeaderMedia    *CreateInboxConversationRequestHeaderMedia `json:"headerMedia,omitempty"`
 }
 
 type _CreateInboxConversationRequest CreateInboxConversationRequest
@@ -312,6 +313,38 @@ func (o *CreateInboxConversationRequest) SetTemplateParams(v []string) {
 	o.TemplateParams = v
 }
 
+// GetHeaderMedia returns the HeaderMedia field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetHeaderMedia() CreateInboxConversationRequestHeaderMedia {
+	if o == nil || IsNil(o.HeaderMedia) {
+		var ret CreateInboxConversationRequestHeaderMedia
+		return ret
+	}
+	return *o.HeaderMedia
+}
+
+// GetHeaderMediaOk returns a tuple with the HeaderMedia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetHeaderMediaOk() (*CreateInboxConversationRequestHeaderMedia, bool) {
+	if o == nil || IsNil(o.HeaderMedia) {
+		return nil, false
+	}
+	return o.HeaderMedia, true
+}
+
+// HasHeaderMedia returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasHeaderMedia() bool {
+	if o != nil && !IsNil(o.HeaderMedia) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeaderMedia gets a reference to the given CreateInboxConversationRequestHeaderMedia and assigns it to the HeaderMedia field.
+func (o *CreateInboxConversationRequest) SetHeaderMedia(v CreateInboxConversationRequestHeaderMedia) {
+	o.HeaderMedia = &v
+}
+
 func (o CreateInboxConversationRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -343,6 +376,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TemplateParams) {
 		toSerialize["templateParams"] = o.TemplateParams
+	}
+	if !IsNil(o.HeaderMedia) {
+		toSerialize["headerMedia"] = o.HeaderMedia
 	}
 	return toSerialize, nil
 }
