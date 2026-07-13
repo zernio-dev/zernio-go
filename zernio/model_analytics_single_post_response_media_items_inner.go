@@ -25,6 +25,8 @@ type AnalyticsSinglePostResponseMediaItemsInner struct {
 	Url *string `json:"url,omitempty"`
 	// Thumbnail URL (same as url for images)
 	Thumbnail *string `json:"thumbnail,omitempty"`
+	// Accessibility alt text set on the media, when present.
+	AltText *string `json:"altText,omitempty"`
 }
 
 // NewAnalyticsSinglePostResponseMediaItemsInner instantiates a new AnalyticsSinglePostResponseMediaItemsInner object
@@ -140,6 +142,38 @@ func (o *AnalyticsSinglePostResponseMediaItemsInner) SetThumbnail(v string) {
 	o.Thumbnail = &v
 }
 
+// GetAltText returns the AltText field value if set, zero value otherwise.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetAltText() string {
+	if o == nil || IsNil(o.AltText) {
+		var ret string
+		return ret
+	}
+	return *o.AltText
+}
+
+// GetAltTextOk returns a tuple with the AltText field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) GetAltTextOk() (*string, bool) {
+	if o == nil || IsNil(o.AltText) {
+		return nil, false
+	}
+	return o.AltText, true
+}
+
+// HasAltText returns a boolean if a field has been set.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) HasAltText() bool {
+	if o != nil && !IsNil(o.AltText) {
+		return true
+	}
+
+	return false
+}
+
+// SetAltText gets a reference to the given string and assigns it to the AltText field.
+func (o *AnalyticsSinglePostResponseMediaItemsInner) SetAltText(v string) {
+	o.AltText = &v
+}
+
 func (o AnalyticsSinglePostResponseMediaItemsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -158,6 +192,9 @@ func (o AnalyticsSinglePostResponseMediaItemsInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.Thumbnail) {
 		toSerialize["thumbnail"] = o.Thumbnail
+	}
+	if !IsNil(o.AltText) {
+		toSerialize["altText"] = o.AltText
 	}
 	return toSerialize, nil
 }
