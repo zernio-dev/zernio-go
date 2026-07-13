@@ -73,9 +73,9 @@ type CreateCtwaAdRequest struct {
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Decimal ROAS multiplier (e.g. `2.0` = 2.0× ROAS floor). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`; rejected otherwise. Meta enforces its own upper bound server-side.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
-	// Name of the legal entity benefiting from the ad. Required by Meta when targeting EU users (DSA Article 26). Not enforced at schema level; enforced server-side when targeting intersects EU member states.
+	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
-	// Name of the legal entity paying for the ad. Required by Meta when targeting EU users (DSA Article 26). Note Meta API spelling: dsa_payor (not dsa_payer).
+	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor *string `json:"dsaPayor,omitempty"`
 }
 

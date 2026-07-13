@@ -2836,6 +2836,281 @@ func (a *AdsAPIService) GetConversionsQualityExecute(r AdsAPIGetConversionsQuali
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIGetDsaDefaultsRequest struct {
+	ctx         context.Context
+	ApiService  *AdsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Social account ID (metaads, or a facebook/instagram posting account)
+func (r AdsAPIGetDsaDefaultsRequest) AccountId(accountId string) AdsAPIGetDsaDefaultsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account ID (act_...)
+func (r AdsAPIGetDsaDefaultsRequest) AdAccountId(adAccountId string) AdsAPIGetDsaDefaultsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdsAPIGetDsaDefaultsRequest) Execute() (*UpdateAdAccount200Response, *http.Response, error) {
+	return r.ApiService.GetDsaDefaultsExecute(r)
+}
+
+/*
+GetDsaDefaults Get ad account DSA defaults
+
+Returns the default DSA beneficiary and payor currently set on a Meta ad account,
+whether they were set via `PATCH /v1/ads/accounts` or in Meta Ads Manager. Fields
+are omitted when no default is configured. Meta accounts only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIGetDsaDefaultsRequest
+*/
+func (a *AdsAPIService) GetDsaDefaults(ctx context.Context) AdsAPIGetDsaDefaultsRequest {
+	return AdsAPIGetDsaDefaultsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateAdAccount200Response
+func (a *AdsAPIService) GetDsaDefaultsExecute(r AdsAPIGetDsaDefaultsRequest) (*UpdateAdAccount200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateAdAccount200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetDsaDefaults")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/dsa-defaults"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIGetDsaRecommendationsRequest struct {
+	ctx         context.Context
+	ApiService  *AdsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Social account ID (metaads, or a facebook/instagram posting account)
+func (r AdsAPIGetDsaRecommendationsRequest) AccountId(accountId string) AdsAPIGetDsaRecommendationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account ID (act_...)
+func (r AdsAPIGetDsaRecommendationsRequest) AdAccountId(adAccountId string) AdsAPIGetDsaRecommendationsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdsAPIGetDsaRecommendationsRequest) Execute() (*GetDsaRecommendations200Response, *http.Response, error) {
+	return r.ApiService.GetDsaRecommendationsExecute(r)
+}
+
+/*
+GetDsaRecommendations List DSA beneficiary/payor suggestions
+
+Returns Meta's suggested beneficiary/payor names for an ad account, derived by Meta
+from the account's recent activity. Useful for prefilling `dsaBeneficiary`/`dsaPayor`
+inputs, or the defaults sent to `PATCH /v1/ads/accounts`, in your own UI.
+
+Meta returns a single flat list. Entries are not labeled as beneficiary or payor,
+and since these are legal disclosures Zernio never applies them automatically: let
+your user pick the right entity. The list may be empty for accounts with little
+activity. Meta accounts only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIGetDsaRecommendationsRequest
+*/
+func (a *AdsAPIService) GetDsaRecommendations(ctx context.Context) AdsAPIGetDsaRecommendationsRequest {
+	return AdsAPIGetDsaRecommendationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetDsaRecommendations200Response
+func (a *AdsAPIService) GetDsaRecommendationsExecute(r AdsAPIGetDsaRecommendationsRequest) (*GetDsaRecommendations200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetDsaRecommendations200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetDsaRecommendations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/dsa-recommendations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIGetLeadFormRequest struct {
 	ctx        context.Context
 	ApiService *AdsAPIService
@@ -5550,6 +5825,143 @@ func (a *AdsAPIService) UpdateAdExecute(r AdsAPIUpdateAdRequest) (*UpdateAd200Re
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIUpdateAdAccountRequest struct {
+	ctx                    context.Context
+	ApiService             *AdsAPIService
+	updateAdAccountRequest *UpdateAdAccountRequest
+}
+
+func (r AdsAPIUpdateAdAccountRequest) UpdateAdAccountRequest(updateAdAccountRequest UpdateAdAccountRequest) AdsAPIUpdateAdAccountRequest {
+	r.updateAdAccountRequest = &updateAdAccountRequest
+	return r
+}
+
+func (r AdsAPIUpdateAdAccountRequest) Execute() (*UpdateAdAccount200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdAccountExecute(r)
+}
+
+/*
+UpdateAdAccount Update ad account settings
+
+Sets the default DSA beneficiary and payor on a Meta ad account (EU DSA, Article 26).
+Set them once and every EU-targeted call to `/v1/ads/create`, `/v1/ads/boost` and
+`/v1/ads/ctwa` on that ad account can omit `dsaBeneficiary`/`dsaPayor`: Meta applies
+the defaults automatically.
+
+The values are written to the ad account on Meta, the same setting Ads Manager edits.
+Nothing is stored in Zernio, and defaults already set in Ads Manager work identically.
+Zernio never guesses these values for you. Beneficiary and payor are legal disclosures
+shown to EU users, so you must provide the entity names explicitly. Use
+`GET /v1/ads/dsa-recommendations` to offer suggestions in your UI.
+
+If `defaultDsaPayor` is omitted, the beneficiary is also set as the payor, which
+covers the common case where the same entity benefits from and pays for the ads.
+Read the current values back with `GET /v1/ads/dsa-defaults`.
+
+Currently supported for Meta accounts only; other platforms return 400.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIUpdateAdAccountRequest
+*/
+func (a *AdsAPIService) UpdateAdAccount(ctx context.Context) AdsAPIUpdateAdAccountRequest {
+	return AdsAPIUpdateAdAccountRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateAdAccount200Response
+func (a *AdsAPIService) UpdateAdAccountExecute(r AdsAPIUpdateAdAccountRequest) (*UpdateAdAccount200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateAdAccount200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.UpdateAdAccount")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/accounts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateAdAccountRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdAccountRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateAdAccountRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

@@ -282,8 +282,11 @@ func main() {
 | `client.AdsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.AdsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
 | `client.AdsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
+| `client.AdsAPI.GetDsaDefaults(ctx)` | Get ad account DSA defaults |
+| `client.AdsAPI.GetDsaRecommendations(ctx)` | List DSA beneficiary/payor suggestions |
 | `client.AdsAPI.GetLeadForm(ctx)` | Get a lead form |
 | `client.AdsAPI.UpdateAd(ctx)` | Update ad |
+| `client.AdsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
 | `client.AdsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |
 | `client.AdsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
