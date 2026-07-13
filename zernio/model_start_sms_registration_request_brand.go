@@ -36,7 +36,8 @@ type StartSmsRegistrationRequestBrand struct {
 	City        string  `json:"city"`
 	State       string  `json:"state"`
 	PostalCode  string  `json:"postalCode"`
-	Country     string  `json:"country"`
+	// ISO 3166-1 alpha-2 country where the company is registered. Companies worldwide can register standard 10DLC (non-US companies use their local tax ID in `ein`; carrier vetting may take longer). SOLE_PROPRIETOR is US/CA only.
+	Country string `json:"country"`
 	// Brand contact email; defaults to your account email when omitted.
 	Email *string `json:"email,omitempty"`
 	// The brand's website (sole proprietors may use a social profile such as LinkedIn or a business Facebook page). Carriers verify the brand against it; a bare domain is normalized to https://.
