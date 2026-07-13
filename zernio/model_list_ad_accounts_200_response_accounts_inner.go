@@ -29,6 +29,8 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneName *string `json:"timezoneName,omitempty"`
 	// Signed UTC offset in hours, reflecting current DST (Meta only).
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
+	// Meta only. Minimum daily budget for the account, in the account currency's major units. This is the impressions-billed minimum; other billing events have higher minimums. Absent when the connected token cannot read it.
+	MinimumDailyBudget *float32 `json:"minimumDailyBudget,omitempty"`
 	// Meta only. Whether the account can create/run ads now. Absent (treat as true) on non-Meta platforms.
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta only. Human-readable reason when selectable is false; null when selectable.
@@ -244,6 +246,38 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetTimezoneOffsetHoursUtc(v flo
 	o.TimezoneOffsetHoursUtc = &v
 }
 
+// GetMinimumDailyBudget returns the MinimumDailyBudget field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetMinimumDailyBudget() float32 {
+	if o == nil || IsNil(o.MinimumDailyBudget) {
+		var ret float32
+		return ret
+	}
+	return *o.MinimumDailyBudget
+}
+
+// GetMinimumDailyBudgetOk returns a tuple with the MinimumDailyBudget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetMinimumDailyBudgetOk() (*float32, bool) {
+	if o == nil || IsNil(o.MinimumDailyBudget) {
+		return nil, false
+	}
+	return o.MinimumDailyBudget, true
+}
+
+// HasMinimumDailyBudget returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasMinimumDailyBudget() bool {
+	if o != nil && !IsNil(o.MinimumDailyBudget) {
+		return true
+	}
+
+	return false
+}
+
+// SetMinimumDailyBudget gets a reference to the given float32 and assigns it to the MinimumDailyBudget field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetMinimumDailyBudget(v float32) {
+	o.MinimumDailyBudget = &v
+}
+
 // GetSelectable returns the Selectable field value if set, zero value otherwise.
 func (o *ListAdAccounts200ResponseAccountsInner) GetSelectable() bool {
 	if o == nil || IsNil(o.Selectable) {
@@ -335,6 +369,9 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.TimezoneOffsetHoursUtc) {
 		toSerialize["timezoneOffsetHoursUtc"] = o.TimezoneOffsetHoursUtc
+	}
+	if !IsNil(o.MinimumDailyBudget) {
+		toSerialize["minimumDailyBudget"] = o.MinimumDailyBudget
 	}
 	if !IsNil(o.Selectable) {
 		toSerialize["selectable"] = o.Selectable

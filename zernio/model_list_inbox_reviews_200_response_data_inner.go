@@ -30,8 +30,12 @@ type ListInboxReviews200ResponseDataInner struct {
 	Text            *string                                       `json:"text,omitempty"`
 	Created         *time.Time                                    `json:"created,omitempty"`
 	Replied         *bool                                         `json:"hasReply,omitempty"`
-	Reply           *ListInboxReviews200ResponseDataInnerReply    `json:"reply,omitempty"`
-	ReviewUrl       NullableString                                `json:"reviewUrl,omitempty"`
+	// Whether the review has at least one photo. Google Business only; always false for other platforms.
+	HasPhotos *bool `json:"hasPhotos,omitempty"`
+	// Number of photos attached to the review (photos only; videos are not counted). Google Business only; 0 for other platforms.
+	PhotoCount *int32                                     `json:"photoCount,omitempty"`
+	Reply      *ListInboxReviews200ResponseDataInnerReply `json:"reply,omitempty"`
+	ReviewUrl  NullableString                             `json:"reviewUrl,omitempty"`
 }
 
 // NewListInboxReviews200ResponseDataInner instantiates a new ListInboxReviews200ResponseDataInner object
@@ -339,6 +343,70 @@ func (o *ListInboxReviews200ResponseDataInner) SetReplied(v bool) {
 	o.Replied = &v
 }
 
+// GetHasPhotos returns the HasPhotos field value if set, zero value otherwise.
+func (o *ListInboxReviews200ResponseDataInner) GetHasPhotos() bool {
+	if o == nil || IsNil(o.HasPhotos) {
+		var ret bool
+		return ret
+	}
+	return *o.HasPhotos
+}
+
+// GetHasPhotosOk returns a tuple with the HasPhotos field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxReviews200ResponseDataInner) GetHasPhotosOk() (*bool, bool) {
+	if o == nil || IsNil(o.HasPhotos) {
+		return nil, false
+	}
+	return o.HasPhotos, true
+}
+
+// HasHasPhotos returns a boolean if a field has been set.
+func (o *ListInboxReviews200ResponseDataInner) HasHasPhotos() bool {
+	if o != nil && !IsNil(o.HasPhotos) {
+		return true
+	}
+
+	return false
+}
+
+// SetHasPhotos gets a reference to the given bool and assigns it to the HasPhotos field.
+func (o *ListInboxReviews200ResponseDataInner) SetHasPhotos(v bool) {
+	o.HasPhotos = &v
+}
+
+// GetPhotoCount returns the PhotoCount field value if set, zero value otherwise.
+func (o *ListInboxReviews200ResponseDataInner) GetPhotoCount() int32 {
+	if o == nil || IsNil(o.PhotoCount) {
+		var ret int32
+		return ret
+	}
+	return *o.PhotoCount
+}
+
+// GetPhotoCountOk returns a tuple with the PhotoCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxReviews200ResponseDataInner) GetPhotoCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.PhotoCount) {
+		return nil, false
+	}
+	return o.PhotoCount, true
+}
+
+// HasPhotoCount returns a boolean if a field has been set.
+func (o *ListInboxReviews200ResponseDataInner) HasPhotoCount() bool {
+	if o != nil && !IsNil(o.PhotoCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhotoCount gets a reference to the given int32 and assigns it to the PhotoCount field.
+func (o *ListInboxReviews200ResponseDataInner) SetPhotoCount(v int32) {
+	o.PhotoCount = &v
+}
+
 // GetReply returns the Reply field value if set, zero value otherwise.
 func (o *ListInboxReviews200ResponseDataInner) GetReply() ListInboxReviews200ResponseDataInnerReply {
 	if o == nil || IsNil(o.Reply) {
@@ -450,6 +518,12 @@ func (o ListInboxReviews200ResponseDataInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Replied) {
 		toSerialize["hasReply"] = o.Replied
+	}
+	if !IsNil(o.HasPhotos) {
+		toSerialize["hasPhotos"] = o.HasPhotos
+	}
+	if !IsNil(o.PhotoCount) {
+		toSerialize["photoCount"] = o.PhotoCount
 	}
 	if !IsNil(o.Reply) {
 		toSerialize["reply"] = o.Reply
