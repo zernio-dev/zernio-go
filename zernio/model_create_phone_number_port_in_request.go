@@ -30,9 +30,11 @@ type CreatePhoneNumberPortInRequest struct {
 	LoaDocumentId string `json:"loaDocumentId"`
 	// Document id from POST /v1/phone-numbers/port-in/documents (kind=invoice).
 	InvoiceDocumentId string `json:"invoiceDocumentId"`
-	// Requested port date; the carrier confirms the actual FOC later.
+	// Requested port date; the carrier confirms the actual FOC later. Defaults to one week out (shifted off weekends) when omitted.
 	FocDatetimeRequested *time.Time `json:"focDatetimeRequested,omitempty"`
 	CustomerReference    *string    `json:"customerReference,omitempty"`
+	// Whether the losing account ports all its numbers (full) or keeps some (partial).
+	PortType *string `json:"portType,omitempty"`
 }
 
 type _CreatePhoneNumberPortInRequest CreatePhoneNumberPortInRequest
@@ -47,6 +49,8 @@ func NewCreatePhoneNumberPortInRequest(phoneNumbers []string, endUser CreatePhon
 	this.EndUser = endUser
 	this.LoaDocumentId = loaDocumentId
 	this.InvoiceDocumentId = invoiceDocumentId
+	var portType string = "full"
+	this.PortType = &portType
 	return &this
 }
 
@@ -55,6 +59,8 @@ func NewCreatePhoneNumberPortInRequest(phoneNumbers []string, endUser CreatePhon
 // but it doesn't guarantee that properties required by API are set
 func NewCreatePhoneNumberPortInRequestWithDefaults() *CreatePhoneNumberPortInRequest {
 	this := CreatePhoneNumberPortInRequest{}
+	var portType string = "full"
+	this.PortType = &portType
 	return &this
 }
 
@@ -218,6 +224,38 @@ func (o *CreatePhoneNumberPortInRequest) SetCustomerReference(v string) {
 	o.CustomerReference = &v
 }
 
+// GetPortType returns the PortType field value if set, zero value otherwise.
+func (o *CreatePhoneNumberPortInRequest) GetPortType() string {
+	if o == nil || IsNil(o.PortType) {
+		var ret string
+		return ret
+	}
+	return *o.PortType
+}
+
+// GetPortTypeOk returns a tuple with the PortType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberPortInRequest) GetPortTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PortType) {
+		return nil, false
+	}
+	return o.PortType, true
+}
+
+// HasPortType returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequest) HasPortType() bool {
+	if o != nil && !IsNil(o.PortType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortType gets a reference to the given string and assigns it to the PortType field.
+func (o *CreatePhoneNumberPortInRequest) SetPortType(v string) {
+	o.PortType = &v
+}
+
 func (o CreatePhoneNumberPortInRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -237,6 +275,9 @@ func (o CreatePhoneNumberPortInRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.CustomerReference) {
 		toSerialize["customerReference"] = o.CustomerReference
+	}
+	if !IsNil(o.PortType) {
+		toSerialize["portType"] = o.PortType
 	}
 	return toSerialize, nil
 }

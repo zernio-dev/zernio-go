@@ -22,8 +22,9 @@ var _ MappedNullable = &CreatePhoneNumberPortInRequestEndUser{}
 
 // CreatePhoneNumberPortInRequestEndUser End-user / current-carrier account info that authorizes the port.
 type CreatePhoneNumberPortInRequestEndUser struct {
-	EntityName         string  `json:"entityName"`
-	AuthPersonName     string  `json:"authPersonName"`
+	EntityName     string `json:"entityName"`
+	AuthPersonName string `json:"authPersonName"`
+	// Phone number on the losing carrier's bill. Defaults to the ported number itself on single-number orders.
 	BillingPhoneNumber *string `json:"billingPhoneNumber,omitempty"`
 	AccountNumber      *string `json:"accountNumber,omitempty"`
 	// Transfer PIN. Forwarded to the carrier, never stored.
