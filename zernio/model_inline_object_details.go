@@ -26,9 +26,7 @@ type InlineObjectDetails struct {
 	CurrentAccountCount *int32 `json:"current_account_count,omitempty"`
 	// Whether the team currently has a card on file in Stripe. Set when reason=free_tier_exceeded or reason=twitter_passthrough.
 	HasPaymentMethod *bool `json:"has_payment_method,omitempty"`
-	// Public pricing ceiling (the published cap beyond which an enterprise contract is required). Only set when reason=enterprise_required.
-	PublicAccountLimit *int32 `json:"public_account_limit,omitempty"`
-	// The cap actually applied to this team. Equals `public_account_limit` for organic teams; for teams with a per-customer override (grandfathered legacy customers, signed enterprise contracts) this can be higher. Only set when reason=enterprise_required.
+	// The negotiated connected-account cap from the team's enterprise contract. Self-service teams have no cap and never receive this reason. Only set when reason=enterprise_required.
 	EffectiveAccountLimit *int32 `json:"effective_account_limit,omitempty"`
 }
 
@@ -145,38 +143,6 @@ func (o *InlineObjectDetails) SetHasPaymentMethod(v bool) {
 	o.HasPaymentMethod = &v
 }
 
-// GetPublicAccountLimit returns the PublicAccountLimit field value if set, zero value otherwise.
-func (o *InlineObjectDetails) GetPublicAccountLimit() int32 {
-	if o == nil || IsNil(o.PublicAccountLimit) {
-		var ret int32
-		return ret
-	}
-	return *o.PublicAccountLimit
-}
-
-// GetPublicAccountLimitOk returns a tuple with the PublicAccountLimit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObjectDetails) GetPublicAccountLimitOk() (*int32, bool) {
-	if o == nil || IsNil(o.PublicAccountLimit) {
-		return nil, false
-	}
-	return o.PublicAccountLimit, true
-}
-
-// HasPublicAccountLimit returns a boolean if a field has been set.
-func (o *InlineObjectDetails) HasPublicAccountLimit() bool {
-	if o != nil && !IsNil(o.PublicAccountLimit) {
-		return true
-	}
-
-	return false
-}
-
-// SetPublicAccountLimit gets a reference to the given int32 and assigns it to the PublicAccountLimit field.
-func (o *InlineObjectDetails) SetPublicAccountLimit(v int32) {
-	o.PublicAccountLimit = &v
-}
-
 // GetEffectiveAccountLimit returns the EffectiveAccountLimit field value if set, zero value otherwise.
 func (o *InlineObjectDetails) GetEffectiveAccountLimit() int32 {
 	if o == nil || IsNil(o.EffectiveAccountLimit) {
@@ -227,9 +193,6 @@ func (o InlineObjectDetails) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.HasPaymentMethod) {
 		toSerialize["has_payment_method"] = o.HasPaymentMethod
-	}
-	if !IsNil(o.PublicAccountLimit) {
-		toSerialize["public_account_limit"] = o.PublicAccountLimit
 	}
 	if !IsNil(o.EffectiveAccountLimit) {
 		toSerialize["effective_account_limit"] = o.EffectiveAccountLimit
