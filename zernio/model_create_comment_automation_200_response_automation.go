@@ -30,13 +30,17 @@ type CreateCommentAutomation200ResponseAutomation struct {
 	MatchMode      *string  `json:"matchMode,omitempty"`
 	DmMessage      *string  `json:"dmMessage,omitempty"`
 	// Inline DM buttons (up to 3). Omitted when none are set.
-	Buttons      []DmButton                                         `json:"buttons,omitempty"`
-	CommentReply *string                                            `json:"commentReply,omitempty"`
-	LinkTracking *bool                                              `json:"linkTracking,omitempty"`
-	ClickTag     *string                                            `json:"clickTag,omitempty"`
-	IsActive     *bool                                              `json:"isActive,omitempty"`
-	Stats        *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
-	CreatedAt    *time.Time                                         `json:"createdAt,omitempty"`
+	Buttons      []DmButton `json:"buttons,omitempty"`
+	CommentReply *string    `json:"commentReply,omitempty"`
+	// Alternate DM texts rotated at random with dmMessage. Omitted when none.
+	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
+	// Alternate public replies rotated at random with commentReply. Omitted when none.
+	CommentReplyVariations []string                                           `json:"commentReplyVariations,omitempty"`
+	LinkTracking           *bool                                              `json:"linkTracking,omitempty"`
+	ClickTag               *string                                            `json:"clickTag,omitempty"`
+	IsActive               *bool                                              `json:"isActive,omitempty"`
+	Stats                  *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
+	CreatedAt              *time.Time                                         `json:"createdAt,omitempty"`
 }
 
 // NewCreateCommentAutomation200ResponseAutomation instantiates a new CreateCommentAutomation200ResponseAutomation object
@@ -376,6 +380,70 @@ func (o *CreateCommentAutomation200ResponseAutomation) SetCommentReply(v string)
 	o.CommentReply = &v
 }
 
+// GetDmMessageVariations returns the DmMessageVariations field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetDmMessageVariations() []string {
+	if o == nil || IsNil(o.DmMessageVariations) {
+		var ret []string
+		return ret
+	}
+	return o.DmMessageVariations
+}
+
+// GetDmMessageVariationsOk returns a tuple with the DmMessageVariations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetDmMessageVariationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DmMessageVariations) {
+		return nil, false
+	}
+	return o.DmMessageVariations, true
+}
+
+// HasDmMessageVariations returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasDmMessageVariations() bool {
+	if o != nil && !IsNil(o.DmMessageVariations) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmMessageVariations gets a reference to the given []string and assigns it to the DmMessageVariations field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetDmMessageVariations(v []string) {
+	o.DmMessageVariations = v
+}
+
+// GetCommentReplyVariations returns the CommentReplyVariations field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetCommentReplyVariations() []string {
+	if o == nil || IsNil(o.CommentReplyVariations) {
+		var ret []string
+		return ret
+	}
+	return o.CommentReplyVariations
+}
+
+// GetCommentReplyVariationsOk returns a tuple with the CommentReplyVariations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetCommentReplyVariationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CommentReplyVariations) {
+		return nil, false
+	}
+	return o.CommentReplyVariations, true
+}
+
+// HasCommentReplyVariations returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasCommentReplyVariations() bool {
+	if o != nil && !IsNil(o.CommentReplyVariations) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyVariations gets a reference to the given []string and assigns it to the CommentReplyVariations field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetCommentReplyVariations(v []string) {
+	o.CommentReplyVariations = v
+}
+
 // GetLinkTracking returns the LinkTracking field value if set, zero value otherwise.
 func (o *CreateCommentAutomation200ResponseAutomation) GetLinkTracking() bool {
 	if o == nil || IsNil(o.LinkTracking) {
@@ -575,6 +643,12 @@ func (o CreateCommentAutomation200ResponseAutomation) ToMap() (map[string]interf
 	}
 	if !IsNil(o.CommentReply) {
 		toSerialize["commentReply"] = o.CommentReply
+	}
+	if !IsNil(o.DmMessageVariations) {
+		toSerialize["dmMessageVariations"] = o.DmMessageVariations
+	}
+	if !IsNil(o.CommentReplyVariations) {
+		toSerialize["commentReplyVariations"] = o.CommentReplyVariations
 	}
 	if !IsNil(o.LinkTracking) {
 		toSerialize["linkTracking"] = o.LinkTracking

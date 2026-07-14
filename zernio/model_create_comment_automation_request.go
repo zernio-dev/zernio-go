@@ -44,6 +44,10 @@ type CreateCommentAutomationRequest struct {
 	Buttons []DmButton `json:"buttons,omitempty"`
 	// Optional public reply to the comment
 	CommentReply *string `json:"commentReply,omitempty"`
+	// Optional alternate DM texts for random rotation. When set, each triggered comment sends one picked at random from [dmMessage, ...dmMessageVariations], so repeat commenters get slightly different DMs (helps avoid identical-message patterns). Up to 5. Buttons are attached to whichever text is picked, not varied.
+	DmMessageVariations []string `json:"dmMessageVariations,omitempty"`
+	// Optional alternate public replies, rotated at random alongside commentReply (picked independently of the DM). Up to 5.
+	CommentReplyVariations []string `json:"commentReplyVariations,omitempty"`
 	// Wrap link buttons in the DM in a tracked redirect so clicks are counted (Link Clicks / CTR). Pass false to send links exactly as written. Defaults to on.
 	LinkTracking *bool `json:"linkTracking,omitempty"`
 	// Optional tag applied to a contact when they click a tracked link (requires linkTracking). Lets you segment clickers for broadcasts/sequences.
@@ -437,6 +441,70 @@ func (o *CreateCommentAutomationRequest) SetCommentReply(v string) {
 	o.CommentReply = &v
 }
 
+// GetDmMessageVariations returns the DmMessageVariations field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetDmMessageVariations() []string {
+	if o == nil || IsNil(o.DmMessageVariations) {
+		var ret []string
+		return ret
+	}
+	return o.DmMessageVariations
+}
+
+// GetDmMessageVariationsOk returns a tuple with the DmMessageVariations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetDmMessageVariationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DmMessageVariations) {
+		return nil, false
+	}
+	return o.DmMessageVariations, true
+}
+
+// HasDmMessageVariations returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasDmMessageVariations() bool {
+	if o != nil && !IsNil(o.DmMessageVariations) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmMessageVariations gets a reference to the given []string and assigns it to the DmMessageVariations field.
+func (o *CreateCommentAutomationRequest) SetDmMessageVariations(v []string) {
+	o.DmMessageVariations = v
+}
+
+// GetCommentReplyVariations returns the CommentReplyVariations field value if set, zero value otherwise.
+func (o *CreateCommentAutomationRequest) GetCommentReplyVariations() []string {
+	if o == nil || IsNil(o.CommentReplyVariations) {
+		var ret []string
+		return ret
+	}
+	return o.CommentReplyVariations
+}
+
+// GetCommentReplyVariationsOk returns a tuple with the CommentReplyVariations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomationRequest) GetCommentReplyVariationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CommentReplyVariations) {
+		return nil, false
+	}
+	return o.CommentReplyVariations, true
+}
+
+// HasCommentReplyVariations returns a boolean if a field has been set.
+func (o *CreateCommentAutomationRequest) HasCommentReplyVariations() bool {
+	if o != nil && !IsNil(o.CommentReplyVariations) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentReplyVariations gets a reference to the given []string and assigns it to the CommentReplyVariations field.
+func (o *CreateCommentAutomationRequest) SetCommentReplyVariations(v []string) {
+	o.CommentReplyVariations = v
+}
+
 // GetLinkTracking returns the LinkTracking field value if set, zero value otherwise.
 func (o *CreateCommentAutomationRequest) GetLinkTracking() bool {
 	if o == nil || IsNil(o.LinkTracking) {
@@ -538,6 +606,12 @@ func (o CreateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.CommentReply) {
 		toSerialize["commentReply"] = o.CommentReply
+	}
+	if !IsNil(o.DmMessageVariations) {
+		toSerialize["dmMessageVariations"] = o.DmMessageVariations
+	}
+	if !IsNil(o.CommentReplyVariations) {
+		toSerialize["commentReplyVariations"] = o.CommentReplyVariations
 	}
 	if !IsNil(o.LinkTracking) {
 		toSerialize["linkTracking"] = o.LinkTracking
