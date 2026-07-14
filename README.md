@@ -526,6 +526,7 @@ func main() {
 | `client.SMSAPI.DisableSmsOnNumber(ctx)` | Disable SMS on a number |
 | `client.SMSAPI.EnableSmsOnNumber(ctx)` | Enable SMS on a number |
 | `client.SMSAPI.LookupSmsNumber(ctx)` | Look up carrier + line type |
+| `client.SMSAPI.ResendSmsRegistrationOtp(ctx)` | Re-send the sole-prop OTP |
 | `client.SMSAPI.ReuseSmsRegistrationForNumber(ctx)` | Add number to SMS registration |
 | `client.SMSAPI.SendSms(ctx)` | Send an SMS/MMS |
 | `client.SMSAPI.ShareSmsRegistration(ctx)` | Create a registration share link |

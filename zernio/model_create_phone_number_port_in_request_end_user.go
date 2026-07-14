@@ -20,21 +20,26 @@ import (
 // checks if the CreatePhoneNumberPortInRequestEndUser type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreatePhoneNumberPortInRequestEndUser{}
 
-// CreatePhoneNumberPortInRequestEndUser End-user / current-carrier account info that authorizes the port.
+// CreatePhoneNumberPortInRequestEndUser End-user / current-carrier account info that authorizes the port. The losing carrier matches every field against its records and rejects the whole port on a mismatch — enter values exactly as they appear on the carrier bill.
 type CreatePhoneNumberPortInRequestEndUser struct {
-	EntityName     string `json:"entityName"`
+	// Account holder / business name, as on the carrier account.
+	EntityName string `json:"entityName"`
+	// Full name (first + last) of the person authorizing the port — must match the LOA signature.
 	AuthPersonName string `json:"authPersonName"`
-	// Phone number on the losing carrier's bill. Defaults to the ported number itself on single-number orders.
+	// Phone number on the losing carrier's bill. Defaults to the ported number itself on single-number orders. Validated as a real phone number when present.
 	BillingPhoneNumber *string `json:"billingPhoneNumber,omitempty"`
-	AccountNumber      *string `json:"accountNumber,omitempty"`
-	// Transfer PIN. Forwarded to the carrier, never stored.
-	PinPasscode        *string `json:"pinPasscode,omitempty"`
-	StreetAddress      string  `json:"streetAddress"`
-	ExtendedAddress    *string `json:"extendedAddress,omitempty"`
-	Locality           string  `json:"locality"`
-	AdministrativeArea string  `json:"administrativeArea"`
-	PostalCode         string  `json:"postalCode"`
-	CountryCode        string  `json:"countryCode"`
+	// Account number with the losing carrier — required (carriers reject ports without it; on prepaid mobile plans it is often the phone number itself).
+	AccountNumber string `json:"accountNumber"`
+	// Transfer PIN. Required for mobile numbers (wireless carriers reject PIN-less ports). Forwarded to the carrier, never stored.
+	PinPasscode     *string `json:"pinPasscode,omitempty"`
+	StreetAddress   string  `json:"streetAddress"`
+	ExtendedAddress *string `json:"extendedAddress,omitempty"`
+	Locality        string  `json:"locality"`
+	// 2-letter US state / CA province code (full names are accepted and normalized).
+	AdministrativeArea string `json:"administrativeArea"`
+	// US ZIP (5 digits) or Canadian postal code, matching countryCode.
+	PostalCode  string `json:"postalCode"`
+	CountryCode string `json:"countryCode"`
 }
 
 type _CreatePhoneNumberPortInRequestEndUser CreatePhoneNumberPortInRequestEndUser
@@ -43,10 +48,11 @@ type _CreatePhoneNumberPortInRequestEndUser CreatePhoneNumberPortInRequestEndUse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatePhoneNumberPortInRequestEndUser(entityName string, authPersonName string, streetAddress string, locality string, administrativeArea string, postalCode string, countryCode string) *CreatePhoneNumberPortInRequestEndUser {
+func NewCreatePhoneNumberPortInRequestEndUser(entityName string, authPersonName string, accountNumber string, streetAddress string, locality string, administrativeArea string, postalCode string, countryCode string) *CreatePhoneNumberPortInRequestEndUser {
 	this := CreatePhoneNumberPortInRequestEndUser{}
 	this.EntityName = entityName
 	this.AuthPersonName = authPersonName
+	this.AccountNumber = accountNumber
 	this.StreetAddress = streetAddress
 	this.Locality = locality
 	this.AdministrativeArea = administrativeArea
@@ -143,36 +149,28 @@ func (o *CreatePhoneNumberPortInRequestEndUser) SetBillingPhoneNumber(v string) 
 	o.BillingPhoneNumber = &v
 }
 
-// GetAccountNumber returns the AccountNumber field value if set, zero value otherwise.
+// GetAccountNumber returns the AccountNumber field value
 func (o *CreatePhoneNumberPortInRequestEndUser) GetAccountNumber() string {
-	if o == nil || IsNil(o.AccountNumber) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.AccountNumber
+
+	return o.AccountNumber
 }
 
-// GetAccountNumberOk returns a tuple with the AccountNumber field value if set, nil otherwise
+// GetAccountNumberOk returns a tuple with the AccountNumber field value
 // and a boolean to check if the value has been set.
 func (o *CreatePhoneNumberPortInRequestEndUser) GetAccountNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.AccountNumber) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AccountNumber, true
+	return &o.AccountNumber, true
 }
 
-// HasAccountNumber returns a boolean if a field has been set.
-func (o *CreatePhoneNumberPortInRequestEndUser) HasAccountNumber() bool {
-	if o != nil && !IsNil(o.AccountNumber) {
-		return true
-	}
-
-	return false
-}
-
-// SetAccountNumber gets a reference to the given string and assigns it to the AccountNumber field.
+// SetAccountNumber sets field value
 func (o *CreatePhoneNumberPortInRequestEndUser) SetAccountNumber(v string) {
-	o.AccountNumber = &v
+	o.AccountNumber = v
 }
 
 // GetPinPasscode returns the PinPasscode field value if set, zero value otherwise.
@@ -374,9 +372,7 @@ func (o CreatePhoneNumberPortInRequestEndUser) ToMap() (map[string]interface{}, 
 	if !IsNil(o.BillingPhoneNumber) {
 		toSerialize["billingPhoneNumber"] = o.BillingPhoneNumber
 	}
-	if !IsNil(o.AccountNumber) {
-		toSerialize["accountNumber"] = o.AccountNumber
-	}
+	toSerialize["accountNumber"] = o.AccountNumber
 	if !IsNil(o.PinPasscode) {
 		toSerialize["pinPasscode"] = o.PinPasscode
 	}
@@ -398,6 +394,7 @@ func (o *CreatePhoneNumberPortInRequestEndUser) UnmarshalJSON(data []byte) (err 
 	requiredProperties := []string{
 		"entityName",
 		"authPersonName",
+		"accountNumber",
 		"streetAddress",
 		"locality",
 		"administrativeArea",

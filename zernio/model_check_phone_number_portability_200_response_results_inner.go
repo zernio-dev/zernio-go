@@ -24,6 +24,8 @@ type CheckPhoneNumberPortability200ResponseResultsInner struct {
 	Portable    *bool   `json:"portable,omitempty"`
 	// Qualifies for the carrier's accelerated FastPort lane.
 	FastPortable *bool `json:"fastPortable,omitempty"`
+	// Line type when known (mobile, landline, voip…). A mobile number requires the transfer PIN at submit.
+	LineType NullableString `json:"lineType,omitempty"`
 	// Carrier reason when not portable; null when portable.
 	NotPortableReason NullableString `json:"notPortableReason,omitempty"`
 }
@@ -141,6 +143,49 @@ func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetFastPortable(v b
 	o.FastPortable = &v
 }
 
+// GetLineType returns the LineType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetLineType() string {
+	if o == nil || IsNil(o.LineType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LineType.Get()
+}
+
+// GetLineTypeOk returns a tuple with the LineType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetLineTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LineType.Get(), o.LineType.IsSet()
+}
+
+// HasLineType returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasLineType() bool {
+	if o != nil && o.LineType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLineType gets a reference to the given NullableString and assigns it to the LineType field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetLineType(v string) {
+	o.LineType.Set(&v)
+}
+
+// SetLineTypeNil sets the value for LineType to be an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetLineTypeNil() {
+	o.LineType.Set(nil)
+}
+
+// UnsetLineType ensures that no value is present for LineType, not even an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetLineType() {
+	o.LineType.Unset()
+}
+
 // GetNotPortableReason returns the NotPortableReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetNotPortableReason() string {
 	if o == nil || IsNil(o.NotPortableReason.Get()) {
@@ -202,6 +247,9 @@ func (o CheckPhoneNumberPortability200ResponseResultsInner) ToMap() (map[string]
 	}
 	if !IsNil(o.FastPortable) {
 		toSerialize["fastPortable"] = o.FastPortable
+	}
+	if o.LineType.IsSet() {
+		toSerialize["lineType"] = o.LineType.Get()
 	}
 	if o.NotPortableReason.IsSet() {
 		toSerialize["notPortableReason"] = o.NotPortableReason.Get()

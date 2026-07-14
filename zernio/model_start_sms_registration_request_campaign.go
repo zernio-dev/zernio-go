@@ -20,7 +20,7 @@ import (
 // checks if the StartSmsRegistrationRequestCampaign type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StartSmsRegistrationRequestCampaign{}
 
-// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. Opt-in/opt-out/help auto-responses must name the registered brand and carry the carrier-required disclosures; submissions that don't (or that are blank) are automatically rewritten to a compliant, brand-named template before the campaign is filed.
+// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. The opt-in/opt-out/help auto-responses (`optinMessage`, `optoutMessage`, `helpMessage`) are optional: when omitted, a compliant, brand-named template with the carrier-required disclosures is generated for you. If you do send them, they must name the registered brand and carry the disclosures — submissions that don't are rewritten to the compliant template before the campaign is filed.
 type StartSmsRegistrationRequestCampaign struct {
 	Usecase string `json:"usecase"`
 	// The concrete kinds of messages a MIXED campaign sends (the carrier registry requires 2-5, and reviewers match them against the sample messages). Omitted: a default pair is applied for MIXED.
@@ -30,18 +30,18 @@ type StartSmsRegistrationRequestCampaign struct {
 	MessageFlow string `json:"messageFlow"`
 	Sample1     string `json:"sample1"`
 	// Second example message; carriers require two distinct samples
-	Sample2        string `json:"sample2"`
-	HelpMessage    string `json:"helpMessage"`
-	OptinKeywords  string `json:"optinKeywords"`
-	OptinMessage   string `json:"optinMessage"`
-	OptoutKeywords string `json:"optoutKeywords"`
-	OptoutMessage  string `json:"optoutMessage"`
-	HelpKeywords   string `json:"helpKeywords"`
-	EmbeddedLink   *bool  `json:"embeddedLink,omitempty"`
-	EmbeddedPhone  *bool  `json:"embeddedPhone,omitempty"`
-	NumberPool     *bool  `json:"numberPool,omitempty"`
-	AgeGated       *bool  `json:"ageGated,omitempty"`
-	DirectLending  *bool  `json:"directLending,omitempty"`
+	Sample2        string  `json:"sample2"`
+	HelpMessage    *string `json:"helpMessage,omitempty"`
+	OptinKeywords  string  `json:"optinKeywords"`
+	OptinMessage   *string `json:"optinMessage,omitempty"`
+	OptoutKeywords string  `json:"optoutKeywords"`
+	OptoutMessage  *string `json:"optoutMessage,omitempty"`
+	HelpKeywords   string  `json:"helpKeywords"`
+	EmbeddedLink   *bool   `json:"embeddedLink,omitempty"`
+	EmbeddedPhone  *bool   `json:"embeddedPhone,omitempty"`
+	NumberPool     *bool   `json:"numberPool,omitempty"`
+	AgeGated       *bool   `json:"ageGated,omitempty"`
+	DirectLending  *bool   `json:"directLending,omitempty"`
 }
 
 type _StartSmsRegistrationRequestCampaign StartSmsRegistrationRequestCampaign
@@ -50,18 +50,15 @@ type _StartSmsRegistrationRequestCampaign StartSmsRegistrationRequestCampaign
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStartSmsRegistrationRequestCampaign(usecase string, description string, messageFlow string, sample1 string, sample2 string, helpMessage string, optinKeywords string, optinMessage string, optoutKeywords string, optoutMessage string, helpKeywords string) *StartSmsRegistrationRequestCampaign {
+func NewStartSmsRegistrationRequestCampaign(usecase string, description string, messageFlow string, sample1 string, sample2 string, optinKeywords string, optoutKeywords string, helpKeywords string) *StartSmsRegistrationRequestCampaign {
 	this := StartSmsRegistrationRequestCampaign{}
 	this.Usecase = usecase
 	this.Description = description
 	this.MessageFlow = messageFlow
 	this.Sample1 = sample1
 	this.Sample2 = sample2
-	this.HelpMessage = helpMessage
 	this.OptinKeywords = optinKeywords
-	this.OptinMessage = optinMessage
 	this.OptoutKeywords = optoutKeywords
-	this.OptoutMessage = optoutMessage
 	this.HelpKeywords = helpKeywords
 	return &this
 }
@@ -226,28 +223,36 @@ func (o *StartSmsRegistrationRequestCampaign) SetSample2(v string) {
 	o.Sample2 = v
 }
 
-// GetHelpMessage returns the HelpMessage field value
+// GetHelpMessage returns the HelpMessage field value if set, zero value otherwise.
 func (o *StartSmsRegistrationRequestCampaign) GetHelpMessage() string {
-	if o == nil {
+	if o == nil || IsNil(o.HelpMessage) {
 		var ret string
 		return ret
 	}
-
-	return o.HelpMessage
+	return *o.HelpMessage
 }
 
-// GetHelpMessageOk returns a tuple with the HelpMessage field value
+// GetHelpMessageOk returns a tuple with the HelpMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestCampaign) GetHelpMessageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.HelpMessage) {
 		return nil, false
 	}
-	return &o.HelpMessage, true
+	return o.HelpMessage, true
 }
 
-// SetHelpMessage sets field value
+// HasHelpMessage returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasHelpMessage() bool {
+	if o != nil && !IsNil(o.HelpMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetHelpMessage gets a reference to the given string and assigns it to the HelpMessage field.
 func (o *StartSmsRegistrationRequestCampaign) SetHelpMessage(v string) {
-	o.HelpMessage = v
+	o.HelpMessage = &v
 }
 
 // GetOptinKeywords returns the OptinKeywords field value
@@ -274,28 +279,36 @@ func (o *StartSmsRegistrationRequestCampaign) SetOptinKeywords(v string) {
 	o.OptinKeywords = v
 }
 
-// GetOptinMessage returns the OptinMessage field value
+// GetOptinMessage returns the OptinMessage field value if set, zero value otherwise.
 func (o *StartSmsRegistrationRequestCampaign) GetOptinMessage() string {
-	if o == nil {
+	if o == nil || IsNil(o.OptinMessage) {
 		var ret string
 		return ret
 	}
-
-	return o.OptinMessage
+	return *o.OptinMessage
 }
 
-// GetOptinMessageOk returns a tuple with the OptinMessage field value
+// GetOptinMessageOk returns a tuple with the OptinMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestCampaign) GetOptinMessageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.OptinMessage) {
 		return nil, false
 	}
-	return &o.OptinMessage, true
+	return o.OptinMessage, true
 }
 
-// SetOptinMessage sets field value
+// HasOptinMessage returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasOptinMessage() bool {
+	if o != nil && !IsNil(o.OptinMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptinMessage gets a reference to the given string and assigns it to the OptinMessage field.
 func (o *StartSmsRegistrationRequestCampaign) SetOptinMessage(v string) {
-	o.OptinMessage = v
+	o.OptinMessage = &v
 }
 
 // GetOptoutKeywords returns the OptoutKeywords field value
@@ -322,28 +335,36 @@ func (o *StartSmsRegistrationRequestCampaign) SetOptoutKeywords(v string) {
 	o.OptoutKeywords = v
 }
 
-// GetOptoutMessage returns the OptoutMessage field value
+// GetOptoutMessage returns the OptoutMessage field value if set, zero value otherwise.
 func (o *StartSmsRegistrationRequestCampaign) GetOptoutMessage() string {
-	if o == nil {
+	if o == nil || IsNil(o.OptoutMessage) {
 		var ret string
 		return ret
 	}
-
-	return o.OptoutMessage
+	return *o.OptoutMessage
 }
 
-// GetOptoutMessageOk returns a tuple with the OptoutMessage field value
+// GetOptoutMessageOk returns a tuple with the OptoutMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StartSmsRegistrationRequestCampaign) GetOptoutMessageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.OptoutMessage) {
 		return nil, false
 	}
-	return &o.OptoutMessage, true
+	return o.OptoutMessage, true
 }
 
-// SetOptoutMessage sets field value
+// HasOptoutMessage returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasOptoutMessage() bool {
+	if o != nil && !IsNil(o.OptoutMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptoutMessage gets a reference to the given string and assigns it to the OptoutMessage field.
 func (o *StartSmsRegistrationRequestCampaign) SetOptoutMessage(v string) {
-	o.OptoutMessage = v
+	o.OptoutMessage = &v
 }
 
 // GetHelpKeywords returns the HelpKeywords field value
@@ -548,11 +569,17 @@ func (o StartSmsRegistrationRequestCampaign) ToMap() (map[string]interface{}, er
 	toSerialize["messageFlow"] = o.MessageFlow
 	toSerialize["sample1"] = o.Sample1
 	toSerialize["sample2"] = o.Sample2
-	toSerialize["helpMessage"] = o.HelpMessage
+	if !IsNil(o.HelpMessage) {
+		toSerialize["helpMessage"] = o.HelpMessage
+	}
 	toSerialize["optinKeywords"] = o.OptinKeywords
-	toSerialize["optinMessage"] = o.OptinMessage
+	if !IsNil(o.OptinMessage) {
+		toSerialize["optinMessage"] = o.OptinMessage
+	}
 	toSerialize["optoutKeywords"] = o.OptoutKeywords
-	toSerialize["optoutMessage"] = o.OptoutMessage
+	if !IsNil(o.OptoutMessage) {
+		toSerialize["optoutMessage"] = o.OptoutMessage
+	}
 	toSerialize["helpKeywords"] = o.HelpKeywords
 	if !IsNil(o.EmbeddedLink) {
 		toSerialize["embeddedLink"] = o.EmbeddedLink
@@ -582,11 +609,8 @@ func (o *StartSmsRegistrationRequestCampaign) UnmarshalJSON(data []byte) (err er
 		"messageFlow",
 		"sample1",
 		"sample2",
-		"helpMessage",
 		"optinKeywords",
-		"optinMessage",
 		"optoutKeywords",
-		"optoutMessage",
 		"helpKeywords",
 	}
 
