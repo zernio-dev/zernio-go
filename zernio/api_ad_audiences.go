@@ -565,7 +565,7 @@ func (r AdAudiencesAPIListAdAudiencesRequest) Platform(platform string) AdAudien
 	return r
 }
 
-// Filter to one audience type. &#x60;saved_targeting&#x60; returns stored TargetingSpec audiences (each item carries a &#x60;spec&#x60;); the other types return uploaded/derived audiences.
+// Filter to one audience type. &#x60;saved_targeting&#x60; returns stored TargetingSpec audiences; the other types return uploaded/derived audiences.
 func (r AdAudiencesAPIListAdAudiencesRequest) Type_(type_ string) AdAudiencesAPIListAdAudiencesRequest {
 	r.type_ = &type_
 	return r

@@ -28,6 +28,16 @@ type UploadedOrDerivedAudience struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`
 	Type        string  `json:"type"`
+	// Required for engagement audiences (LinkedIn only): what members engaged with — a video/leadgen/single-image ad campaign, a Company Page or an Event page.
+	SourceType *string `json:"sourceType,omitempty"`
+	// Required for engagement audiences. The action, validated by LinkedIn against `sourceType`. Common values: VIDEO_ADS FIRST_QUARTILE / MIDPOINT / THIRD_QUARTILE / FULL_COMPLETE; LEAD_GEN_FORMS VIEW_FORM / LEAD_FORM_SUBMIT; ORGANIZATION_PAGES VIEW / CTA_CLICK; EVENT_PAGES RSVPED / VIDEO_VIEWED / ENGAGEMENT / CLICK.
+	Trigger *string `json:"trigger,omitempty"`
+	// Required for engagement audiences. Rolling window.
+	LookbackDays *int32 `json:"lookbackDays,omitempty"`
+	// Required for engagement audiences. Campaign URNs for the ad source types, organization URNs for pages and events. LinkedIn creates one rule per source, all sharing the same trigger and lookbackDays.
+	EngagementSources []string `json:"engagementSources,omitempty"`
+	// Required for company_list audiences (LinkedIn only): plain-text company rows for account targeting. Each row needs at least one identifier. LinkedIn recommends 1,000+ companies for a usable match rate and takes up to 48h to process the list.
+	Companies []UploadedOrDerivedAudienceCompaniesInner `json:"companies,omitempty"`
 	// Required for website audiences
 	PixelId *string `json:"pixelId,omitempty"`
 	// Required for website audiences
@@ -193,6 +203,166 @@ func (o *UploadedOrDerivedAudience) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *UploadedOrDerivedAudience) SetType(v string) {
 	o.Type = v
+}
+
+// GetSourceType returns the SourceType field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetSourceType() string {
+	if o == nil || IsNil(o.SourceType) {
+		var ret string
+		return ret
+	}
+	return *o.SourceType
+}
+
+// GetSourceTypeOk returns a tuple with the SourceType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetSourceTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SourceType) {
+		return nil, false
+	}
+	return o.SourceType, true
+}
+
+// HasSourceType returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasSourceType() bool {
+	if o != nil && !IsNil(o.SourceType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceType gets a reference to the given string and assigns it to the SourceType field.
+func (o *UploadedOrDerivedAudience) SetSourceType(v string) {
+	o.SourceType = &v
+}
+
+// GetTrigger returns the Trigger field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetTrigger() string {
+	if o == nil || IsNil(o.Trigger) {
+		var ret string
+		return ret
+	}
+	return *o.Trigger
+}
+
+// GetTriggerOk returns a tuple with the Trigger field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetTriggerOk() (*string, bool) {
+	if o == nil || IsNil(o.Trigger) {
+		return nil, false
+	}
+	return o.Trigger, true
+}
+
+// HasTrigger returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasTrigger() bool {
+	if o != nil && !IsNil(o.Trigger) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrigger gets a reference to the given string and assigns it to the Trigger field.
+func (o *UploadedOrDerivedAudience) SetTrigger(v string) {
+	o.Trigger = &v
+}
+
+// GetLookbackDays returns the LookbackDays field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetLookbackDays() int32 {
+	if o == nil || IsNil(o.LookbackDays) {
+		var ret int32
+		return ret
+	}
+	return *o.LookbackDays
+}
+
+// GetLookbackDaysOk returns a tuple with the LookbackDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetLookbackDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.LookbackDays) {
+		return nil, false
+	}
+	return o.LookbackDays, true
+}
+
+// HasLookbackDays returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasLookbackDays() bool {
+	if o != nil && !IsNil(o.LookbackDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetLookbackDays gets a reference to the given int32 and assigns it to the LookbackDays field.
+func (o *UploadedOrDerivedAudience) SetLookbackDays(v int32) {
+	o.LookbackDays = &v
+}
+
+// GetEngagementSources returns the EngagementSources field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEngagementSources() []string {
+	if o == nil || IsNil(o.EngagementSources) {
+		var ret []string
+		return ret
+	}
+	return o.EngagementSources
+}
+
+// GetEngagementSourcesOk returns a tuple with the EngagementSources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEngagementSourcesOk() ([]string, bool) {
+	if o == nil || IsNil(o.EngagementSources) {
+		return nil, false
+	}
+	return o.EngagementSources, true
+}
+
+// HasEngagementSources returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEngagementSources() bool {
+	if o != nil && !IsNil(o.EngagementSources) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementSources gets a reference to the given []string and assigns it to the EngagementSources field.
+func (o *UploadedOrDerivedAudience) SetEngagementSources(v []string) {
+	o.EngagementSources = v
+}
+
+// GetCompanies returns the Companies field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetCompanies() []UploadedOrDerivedAudienceCompaniesInner {
+	if o == nil || IsNil(o.Companies) {
+		var ret []UploadedOrDerivedAudienceCompaniesInner
+		return ret
+	}
+	return o.Companies
+}
+
+// GetCompaniesOk returns a tuple with the Companies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetCompaniesOk() ([]UploadedOrDerivedAudienceCompaniesInner, bool) {
+	if o == nil || IsNil(o.Companies) {
+		return nil, false
+	}
+	return o.Companies, true
+}
+
+// HasCompanies returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasCompanies() bool {
+	if o != nil && !IsNil(o.Companies) {
+		return true
+	}
+
+	return false
+}
+
+// SetCompanies gets a reference to the given []UploadedOrDerivedAudienceCompaniesInner and assigns it to the Companies field.
+func (o *UploadedOrDerivedAudience) SetCompanies(v []UploadedOrDerivedAudienceCompaniesInner) {
+	o.Companies = v
 }
 
 // GetPixelId returns the PixelId field value if set, zero value otherwise.
@@ -436,6 +606,21 @@ func (o UploadedOrDerivedAudience) ToMap() (map[string]interface{}, error) {
 		toSerialize["description"] = o.Description
 	}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.SourceType) {
+		toSerialize["sourceType"] = o.SourceType
+	}
+	if !IsNil(o.Trigger) {
+		toSerialize["trigger"] = o.Trigger
+	}
+	if !IsNil(o.LookbackDays) {
+		toSerialize["lookbackDays"] = o.LookbackDays
+	}
+	if !IsNil(o.EngagementSources) {
+		toSerialize["engagementSources"] = o.EngagementSources
+	}
+	if !IsNil(o.Companies) {
+		toSerialize["companies"] = o.Companies
+	}
 	if !IsNil(o.PixelId) {
 		toSerialize["pixelId"] = o.PixelId
 	}
