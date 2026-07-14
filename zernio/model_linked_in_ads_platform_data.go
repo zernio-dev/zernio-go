@@ -33,13 +33,15 @@ type LinkedInAdsPlatformData struct {
 	// Deliver on the LinkedIn Audience Network. Defaults to false.
 	OffsiteDeliveryEnabled *bool `json:"offsiteDeliveryEnabled,omitempty"`
 	// Restrict delivery to Connected TV inventory.
-	ConnectedTelevisionOnly *bool                             `json:"connectedTelevisionOnly,omitempty"`
-	Carousel                *LinkedInAdsPlatformDataCarousel  `json:"carousel,omitempty"`
-	Document                *LinkedInAdsPlatformDataDocument  `json:"document,omitempty"`
-	Spotlight               *LinkedInAdsPlatformDataSpotlight `json:"spotlight,omitempty"`
-	Follower                *LinkedInAdsPlatformDataFollower  `json:"follower,omitempty"`
-	TextAd                  *LinkedInAdsPlatformDataTextAd    `json:"textAd,omitempty"`
-	Event                   *LinkedInAdsPlatformDataEvent     `json:"event,omitempty"`
+	ConnectedTelevisionOnly *bool                                `json:"connectedTelevisionOnly,omitempty"`
+	Carousel                *LinkedInAdsPlatformDataCarousel     `json:"carousel,omitempty"`
+	Document                *LinkedInAdsPlatformDataDocument     `json:"document,omitempty"`
+	Spotlight               *LinkedInAdsPlatformDataSpotlight    `json:"spotlight,omitempty"`
+	Follower                *LinkedInAdsPlatformDataFollower     `json:"follower,omitempty"`
+	Jobs                    *LinkedInAdsPlatformDataJobs         `json:"jobs,omitempty"`
+	TextAd                  *LinkedInAdsPlatformDataTextAd       `json:"textAd,omitempty"`
+	Conversation            *LinkedInAdsPlatformDataConversation `json:"conversation,omitempty"`
+	Event                   *LinkedInAdsPlatformDataEvent        `json:"event,omitempty"`
 	AdditionalProperties    map[string]interface{}
 }
 
@@ -414,6 +416,38 @@ func (o *LinkedInAdsPlatformData) SetFollower(v LinkedInAdsPlatformDataFollower)
 	o.Follower = &v
 }
 
+// GetJobs returns the Jobs field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetJobs() LinkedInAdsPlatformDataJobs {
+	if o == nil || IsNil(o.Jobs) {
+		var ret LinkedInAdsPlatformDataJobs
+		return ret
+	}
+	return *o.Jobs
+}
+
+// GetJobsOk returns a tuple with the Jobs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetJobsOk() (*LinkedInAdsPlatformDataJobs, bool) {
+	if o == nil || IsNil(o.Jobs) {
+		return nil, false
+	}
+	return o.Jobs, true
+}
+
+// HasJobs returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasJobs() bool {
+	if o != nil && !IsNil(o.Jobs) {
+		return true
+	}
+
+	return false
+}
+
+// SetJobs gets a reference to the given LinkedInAdsPlatformDataJobs and assigns it to the Jobs field.
+func (o *LinkedInAdsPlatformData) SetJobs(v LinkedInAdsPlatformDataJobs) {
+	o.Jobs = &v
+}
+
 // GetTextAd returns the TextAd field value if set, zero value otherwise.
 func (o *LinkedInAdsPlatformData) GetTextAd() LinkedInAdsPlatformDataTextAd {
 	if o == nil || IsNil(o.TextAd) {
@@ -444,6 +478,38 @@ func (o *LinkedInAdsPlatformData) HasTextAd() bool {
 // SetTextAd gets a reference to the given LinkedInAdsPlatformDataTextAd and assigns it to the TextAd field.
 func (o *LinkedInAdsPlatformData) SetTextAd(v LinkedInAdsPlatformDataTextAd) {
 	o.TextAd = &v
+}
+
+// GetConversation returns the Conversation field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetConversation() LinkedInAdsPlatformDataConversation {
+	if o == nil || IsNil(o.Conversation) {
+		var ret LinkedInAdsPlatformDataConversation
+		return ret
+	}
+	return *o.Conversation
+}
+
+// GetConversationOk returns a tuple with the Conversation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetConversationOk() (*LinkedInAdsPlatformDataConversation, bool) {
+	if o == nil || IsNil(o.Conversation) {
+		return nil, false
+	}
+	return o.Conversation, true
+}
+
+// HasConversation returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasConversation() bool {
+	if o != nil && !IsNil(o.Conversation) {
+		return true
+	}
+
+	return false
+}
+
+// SetConversation gets a reference to the given LinkedInAdsPlatformDataConversation and assigns it to the Conversation field.
+func (o *LinkedInAdsPlatformData) SetConversation(v LinkedInAdsPlatformDataConversation) {
+	o.Conversation = &v
 }
 
 // GetEvent returns the Event field value if set, zero value otherwise.
@@ -521,8 +587,14 @@ func (o LinkedInAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Follower) {
 		toSerialize["follower"] = o.Follower
 	}
+	if !IsNil(o.Jobs) {
+		toSerialize["jobs"] = o.Jobs
+	}
 	if !IsNil(o.TextAd) {
 		toSerialize["textAd"] = o.TextAd
+	}
+	if !IsNil(o.Conversation) {
+		toSerialize["conversation"] = o.Conversation
 	}
 	if !IsNil(o.Event) {
 		toSerialize["event"] = o.Event
@@ -560,7 +632,9 @@ func (o *LinkedInAdsPlatformData) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "document")
 		delete(additionalProperties, "spotlight")
 		delete(additionalProperties, "follower")
+		delete(additionalProperties, "jobs")
 		delete(additionalProperties, "textAd")
+		delete(additionalProperties, "conversation")
 		delete(additionalProperties, "event")
 		o.AdditionalProperties = additionalProperties
 	}
