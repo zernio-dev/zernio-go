@@ -18,7 +18,7 @@ import (
 // checks if the LinkedInAdsPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &LinkedInAdsPlatformData{}
 
-// LinkedInAdsPlatformData LinkedIn campaign bidding and delivery controls for POST /v1/ads/boost and POST /v1/ads/create. Unknown keys are rejected.
+// LinkedInAdsPlatformData LinkedIn-specific options for POST /v1/ads/boost and POST /v1/ads/create: campaign bidding and delivery controls, plus the LinkedIn-only creative formats on /v1/ads/create. Unknown keys are rejected.
 type LinkedInAdsPlatformData struct {
 	// Campaign cost model (billing event). Defaults to `CPM`. Required when `unitCost` is set so the manual bid applies to an explicit cost model.
 	CostType *string `json:"costType,omitempty"`
@@ -33,8 +33,17 @@ type LinkedInAdsPlatformData struct {
 	// Deliver on the LinkedIn Audience Network. Defaults to false.
 	OffsiteDeliveryEnabled *bool `json:"offsiteDeliveryEnabled,omitempty"`
 	// Restrict delivery to Connected TV inventory.
-	ConnectedTelevisionOnly *bool `json:"connectedTelevisionOnly,omitempty"`
+	ConnectedTelevisionOnly *bool                             `json:"connectedTelevisionOnly,omitempty"`
+	Carousel                *LinkedInAdsPlatformDataCarousel  `json:"carousel,omitempty"`
+	Document                *LinkedInAdsPlatformDataDocument  `json:"document,omitempty"`
+	Spotlight               *LinkedInAdsPlatformDataSpotlight `json:"spotlight,omitempty"`
+	Follower                *LinkedInAdsPlatformDataFollower  `json:"follower,omitempty"`
+	TextAd                  *LinkedInAdsPlatformDataTextAd    `json:"textAd,omitempty"`
+	Event                   *LinkedInAdsPlatformDataEvent     `json:"event,omitempty"`
+	AdditionalProperties    map[string]interface{}
 }
+
+type _LinkedInAdsPlatformData LinkedInAdsPlatformData
 
 // NewLinkedInAdsPlatformData instantiates a new LinkedInAdsPlatformData object
 // This constructor will assign default values to properties that have it defined,
@@ -277,6 +286,198 @@ func (o *LinkedInAdsPlatformData) SetConnectedTelevisionOnly(v bool) {
 	o.ConnectedTelevisionOnly = &v
 }
 
+// GetCarousel returns the Carousel field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetCarousel() LinkedInAdsPlatformDataCarousel {
+	if o == nil || IsNil(o.Carousel) {
+		var ret LinkedInAdsPlatformDataCarousel
+		return ret
+	}
+	return *o.Carousel
+}
+
+// GetCarouselOk returns a tuple with the Carousel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetCarouselOk() (*LinkedInAdsPlatformDataCarousel, bool) {
+	if o == nil || IsNil(o.Carousel) {
+		return nil, false
+	}
+	return o.Carousel, true
+}
+
+// HasCarousel returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasCarousel() bool {
+	if o != nil && !IsNil(o.Carousel) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarousel gets a reference to the given LinkedInAdsPlatformDataCarousel and assigns it to the Carousel field.
+func (o *LinkedInAdsPlatformData) SetCarousel(v LinkedInAdsPlatformDataCarousel) {
+	o.Carousel = &v
+}
+
+// GetDocument returns the Document field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetDocument() LinkedInAdsPlatformDataDocument {
+	if o == nil || IsNil(o.Document) {
+		var ret LinkedInAdsPlatformDataDocument
+		return ret
+	}
+	return *o.Document
+}
+
+// GetDocumentOk returns a tuple with the Document field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetDocumentOk() (*LinkedInAdsPlatformDataDocument, bool) {
+	if o == nil || IsNil(o.Document) {
+		return nil, false
+	}
+	return o.Document, true
+}
+
+// HasDocument returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasDocument() bool {
+	if o != nil && !IsNil(o.Document) {
+		return true
+	}
+
+	return false
+}
+
+// SetDocument gets a reference to the given LinkedInAdsPlatformDataDocument and assigns it to the Document field.
+func (o *LinkedInAdsPlatformData) SetDocument(v LinkedInAdsPlatformDataDocument) {
+	o.Document = &v
+}
+
+// GetSpotlight returns the Spotlight field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetSpotlight() LinkedInAdsPlatformDataSpotlight {
+	if o == nil || IsNil(o.Spotlight) {
+		var ret LinkedInAdsPlatformDataSpotlight
+		return ret
+	}
+	return *o.Spotlight
+}
+
+// GetSpotlightOk returns a tuple with the Spotlight field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetSpotlightOk() (*LinkedInAdsPlatformDataSpotlight, bool) {
+	if o == nil || IsNil(o.Spotlight) {
+		return nil, false
+	}
+	return o.Spotlight, true
+}
+
+// HasSpotlight returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasSpotlight() bool {
+	if o != nil && !IsNil(o.Spotlight) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpotlight gets a reference to the given LinkedInAdsPlatformDataSpotlight and assigns it to the Spotlight field.
+func (o *LinkedInAdsPlatformData) SetSpotlight(v LinkedInAdsPlatformDataSpotlight) {
+	o.Spotlight = &v
+}
+
+// GetFollower returns the Follower field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetFollower() LinkedInAdsPlatformDataFollower {
+	if o == nil || IsNil(o.Follower) {
+		var ret LinkedInAdsPlatformDataFollower
+		return ret
+	}
+	return *o.Follower
+}
+
+// GetFollowerOk returns a tuple with the Follower field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetFollowerOk() (*LinkedInAdsPlatformDataFollower, bool) {
+	if o == nil || IsNil(o.Follower) {
+		return nil, false
+	}
+	return o.Follower, true
+}
+
+// HasFollower returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasFollower() bool {
+	if o != nil && !IsNil(o.Follower) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollower gets a reference to the given LinkedInAdsPlatformDataFollower and assigns it to the Follower field.
+func (o *LinkedInAdsPlatformData) SetFollower(v LinkedInAdsPlatformDataFollower) {
+	o.Follower = &v
+}
+
+// GetTextAd returns the TextAd field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetTextAd() LinkedInAdsPlatformDataTextAd {
+	if o == nil || IsNil(o.TextAd) {
+		var ret LinkedInAdsPlatformDataTextAd
+		return ret
+	}
+	return *o.TextAd
+}
+
+// GetTextAdOk returns a tuple with the TextAd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetTextAdOk() (*LinkedInAdsPlatformDataTextAd, bool) {
+	if o == nil || IsNil(o.TextAd) {
+		return nil, false
+	}
+	return o.TextAd, true
+}
+
+// HasTextAd returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasTextAd() bool {
+	if o != nil && !IsNil(o.TextAd) {
+		return true
+	}
+
+	return false
+}
+
+// SetTextAd gets a reference to the given LinkedInAdsPlatformDataTextAd and assigns it to the TextAd field.
+func (o *LinkedInAdsPlatformData) SetTextAd(v LinkedInAdsPlatformDataTextAd) {
+	o.TextAd = &v
+}
+
+// GetEvent returns the Event field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetEvent() LinkedInAdsPlatformDataEvent {
+	if o == nil || IsNil(o.Event) {
+		var ret LinkedInAdsPlatformDataEvent
+		return ret
+	}
+	return *o.Event
+}
+
+// GetEventOk returns a tuple with the Event field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetEventOk() (*LinkedInAdsPlatformDataEvent, bool) {
+	if o == nil || IsNil(o.Event) {
+		return nil, false
+	}
+	return o.Event, true
+}
+
+// HasEvent returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasEvent() bool {
+	if o != nil && !IsNil(o.Event) {
+		return true
+	}
+
+	return false
+}
+
+// SetEvent gets a reference to the given LinkedInAdsPlatformDataEvent and assigns it to the Event field.
+func (o *LinkedInAdsPlatformData) SetEvent(v LinkedInAdsPlatformDataEvent) {
+	o.Event = &v
+}
+
 func (o LinkedInAdsPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -308,7 +509,63 @@ func (o LinkedInAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ConnectedTelevisionOnly) {
 		toSerialize["connectedTelevisionOnly"] = o.ConnectedTelevisionOnly
 	}
+	if !IsNil(o.Carousel) {
+		toSerialize["carousel"] = o.Carousel
+	}
+	if !IsNil(o.Document) {
+		toSerialize["document"] = o.Document
+	}
+	if !IsNil(o.Spotlight) {
+		toSerialize["spotlight"] = o.Spotlight
+	}
+	if !IsNil(o.Follower) {
+		toSerialize["follower"] = o.Follower
+	}
+	if !IsNil(o.TextAd) {
+		toSerialize["textAd"] = o.TextAd
+	}
+	if !IsNil(o.Event) {
+		toSerialize["event"] = o.Event
+	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *LinkedInAdsPlatformData) UnmarshalJSON(data []byte) (err error) {
+	varLinkedInAdsPlatformData := _LinkedInAdsPlatformData{}
+
+	err = json.Unmarshal(data, &varLinkedInAdsPlatformData)
+
+	if err != nil {
+		return err
+	}
+
+	*o = LinkedInAdsPlatformData(varLinkedInAdsPlatformData)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "costType")
+		delete(additionalProperties, "unitCost")
+		delete(additionalProperties, "optimizationTargetType")
+		delete(additionalProperties, "creativeSelection")
+		delete(additionalProperties, "audienceExpansionEnabled")
+		delete(additionalProperties, "offsiteDeliveryEnabled")
+		delete(additionalProperties, "connectedTelevisionOnly")
+		delete(additionalProperties, "carousel")
+		delete(additionalProperties, "document")
+		delete(additionalProperties, "spotlight")
+		delete(additionalProperties, "follower")
+		delete(additionalProperties, "textAd")
+		delete(additionalProperties, "event")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableLinkedInAdsPlatformData struct {
