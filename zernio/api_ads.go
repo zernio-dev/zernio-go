@@ -1761,7 +1761,7 @@ func (r AdsAPIGetAdAnalyticsRequest) ToDate(toDate string) AdsAPIGetAdAnalyticsR
 	return r
 }
 
-// Comma-separated breakdown dimensions. Meta: age, gender, country, publisher_platform, device_platform, region. TikTok: gender, age, country_code, platform, ac, language.
+// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region.  **TikTok**: gender, age, country_code, platform, ac, language.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.
 func (r AdsAPIGetAdAnalyticsRequest) Breakdowns(breakdowns string) AdsAPIGetAdAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -2242,7 +2242,7 @@ func (r AdsAPIGetCampaignAnalyticsRequest) ToDate(toDate string) AdsAPIGetCampai
 	return r
 }
 
-// Comma-separated breakdown dimensions (Meta only): age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.
+// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.
 func (r AdsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) AdsAPIGetCampaignAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
