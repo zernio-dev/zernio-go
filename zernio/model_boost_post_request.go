@@ -42,8 +42,10 @@ type BoostPostRequest struct {
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. Backward-compat: providing `bidAmount` without `bidStrategy` is treated as `LOWEST_COST_WITH_BID_CAP`.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000 (Meta uses fixed-point integers).
-	RoasAverageFloor *float32                  `json:"roasAverageFloor,omitempty"`
-	Tracking         *BoostPostRequestTracking `json:"tracking,omitempty"`
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Platform-specific options. The platform is derived from `accountId`; sending options for a different platform returns a 400. LinkedIn (campaign bidding and delivery controls) is the only platform with options today.
+	PlatformSpecificData *LinkedInAdsPlatformData  `json:"platformSpecificData,omitempty"`
+	Tracking             *BoostPostRequestTracking `json:"tracking,omitempty"`
 	// Meta only. Required for housing, employment, credit, or political ads.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// TikTok-only. Custom destination URL for the Spark Ad. Without this, TikTok Spark Ads have no clickable destination — required for traffic / conversion objectives. Maps to `landing_page_url` on the creative entry of /v2/ad/create/ (TikTok SDK `AdcreateCreatives.landing_page_url`). Ignored on Meta / LinkedIn / Pinterest / X / Google (those infer the destination from the boosted post).
@@ -458,6 +460,38 @@ func (o *BoostPostRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret LinkedInAdsPlatformData
+		return ret
+	}
+	return *o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetPlatformSpecificDataOk() (*LinkedInAdsPlatformData, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return nil, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given LinkedInAdsPlatformData and assigns it to the PlatformSpecificData field.
+func (o *BoostPostRequest) SetPlatformSpecificData(v LinkedInAdsPlatformData) {
+	o.PlatformSpecificData = &v
+}
+
 // GetTracking returns the Tracking field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetTracking() BoostPostRequestTracking {
 	if o == nil || IsNil(o.Tracking) {
@@ -720,6 +754,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
 	}
 	if !IsNil(o.Tracking) {
 		toSerialize["tracking"] = o.Tracking

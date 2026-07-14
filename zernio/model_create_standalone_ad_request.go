@@ -137,6 +137,8 @@ type CreateStandaloneAdRequest struct {
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Platform-specific options. The platform is derived from `accountId`; sending options for a different platform returns a 400. LinkedIn (campaign bidding and delivery controls) is the only platform with options today.
+	PlatformSpecificData *LinkedInAdsPlatformData `json:"platformSpecificData,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
@@ -2173,6 +2175,38 @@ func (o *CreateStandaloneAdRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificData() LinkedInAdsPlatformData {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret LinkedInAdsPlatformData
+		return ret
+	}
+	return *o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetPlatformSpecificDataOk() (*LinkedInAdsPlatformData, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return nil, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given LinkedInAdsPlatformData and assigns it to the PlatformSpecificData field.
+func (o *CreateStandaloneAdRequest) SetPlatformSpecificData(v LinkedInAdsPlatformData) {
+	o.PlatformSpecificData = &v
+}
+
 // GetDsaBeneficiary returns the DsaBeneficiary field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetDsaBeneficiary() string {
 	if o == nil || IsNil(o.DsaBeneficiary) {
@@ -2525,6 +2559,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
 	}
 	if !IsNil(o.DsaBeneficiary) {
 		toSerialize["dsaBeneficiary"] = o.DsaBeneficiary
