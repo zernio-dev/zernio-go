@@ -1684,6 +1684,147 @@ func (a *SMSAPIService) UploadSmsOptInProofExecute(r SMSAPIUploadSmsOptInProofRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type SMSAPIUploadSmsOptInProofFileRequest struct {
+	ctx        context.Context
+	ApiService *SMSAPIService
+	file       *os.File
+}
+
+// PNG, JPG, WebP, GIF or PDF, max 4MB.
+func (r SMSAPIUploadSmsOptInProofFileRequest) File(file *os.File) SMSAPIUploadSmsOptInProofFileRequest {
+	r.file = file
+	return r
+}
+
+func (r SMSAPIUploadSmsOptInProofFileRequest) Execute() (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+	return r.ApiService.UploadSmsOptInProofFileExecute(r)
+}
+
+/*
+UploadSmsOptInProofFile Upload opt-in form proof
+
+Hosts a screenshot (or PDF) of your SMS opt-in form and returns its
+public URL. Include that URL in the campaign's `messageFlow` (the
+opt-in workflow text) — the carrier registry has no attachment field,
+so reviewers verify consent by opening links in that answer. Works
+before a registration exists (use it when registering) and for
+appeals. `/v1/sms/registrations/{id}/opt-in-proof` is an alias.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return SMSAPIUploadSmsOptInProofFileRequest
+*/
+func (a *SMSAPIService) UploadSmsOptInProofFile(ctx context.Context) SMSAPIUploadSmsOptInProofFileRequest {
+	return SMSAPIUploadSmsOptInProofFileRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppCallRecording200Response
+func (a *SMSAPIService) UploadSmsOptInProofFileExecute(r SMSAPIUploadSmsOptInProofFileRequest) (*GetWhatsAppCallRecording200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppCallRecording200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SMSAPIService.UploadSmsOptInProofFile")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/sms/opt-in-proof"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.file == nil {
+		return localVarReturnValue, nil, reportError("file is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"multipart/form-data"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	var fileLocalVarFormFileName string
+	var fileLocalVarFileName string
+	var fileLocalVarFileBytes []byte
+
+	fileLocalVarFormFileName = "file"
+	fileLocalVarFile := r.file
+
+	if fileLocalVarFile != nil {
+		fbs, _ := io.ReadAll(fileLocalVarFile)
+
+		fileLocalVarFileBytes = fbs
+		fileLocalVarFileName = fileLocalVarFile.Name()
+		fileLocalVarFile.Close()
+		formFiles = append(formFiles, formFile{fileBytes: fileLocalVarFileBytes, fileName: fileLocalVarFileName, formFileName: fileLocalVarFormFileName})
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type SMSAPIVerifySmsRegistrationOtpRequest struct {
 	ctx                             context.Context
 	ApiService                      *SMSAPIService
