@@ -526,6 +526,7 @@ func main() {
 | `client.SMSAPI.ListSmsRegistrations(ctx)` | List carrier registrations |
 | `client.SMSAPI.GetSmsRegistration(ctx)` | Get a carrier registration |
 | `client.SMSAPI.AppealSmsRegistration(ctx)` | Appeal a rejected campaign |
+| `client.SMSAPI.DeactivateSmsRegistration(ctx)` | Deactivate a brand/campaign registration |
 | `client.SMSAPI.DisableSmsOnNumber(ctx)` | Disable SMS on a number |
 | `client.SMSAPI.EnableSmsOnNumber(ctx)` | Enable SMS on a number |
 | `client.SMSAPI.LookupSmsNumber(ctx)` | Look up carrier + line type |

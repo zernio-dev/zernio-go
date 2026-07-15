@@ -302,6 +302,7 @@ model_create_workflow_request.go
 model_crosspost_discord_message_200_response.go
 model_ctwa_multi_response.go
 model_ctwa_single_response.go
+model_deactivate_sms_registration_200_response.go
 model_delete_account_group_200_response.go
 model_delete_ad_campaign_200_response.go
 model_delete_ad_campaign_request.go
