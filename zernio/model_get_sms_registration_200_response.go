@@ -20,15 +20,16 @@ var _ MappedNullable = &GetSmsRegistration200Response{}
 
 // GetSmsRegistration200Response struct for GetSmsRegistration200Response
 type GetSmsRegistration200Response struct {
-	Id               *string                                       `json:"id,omitempty"`
-	RegistrationType *string                                       `json:"registrationType,omitempty"`
-	Status           *string                                       `json:"status,omitempty"`
-	BrandStatus      *string                                       `json:"brandStatus,omitempty"`
-	CampaignStatus   *string                                       `json:"campaignStatus,omitempty"`
-	DeclineReason    NullableString                                `json:"declineReason,omitempty"`
-	PhoneNumbers     []string                                      `json:"phoneNumbers,omitempty"`
-	AwaitingOtp      *bool                                         `json:"awaitingOtp,omitempty"`
-	CampaignContent  *GetSmsRegistration200ResponseCampaignContent `json:"campaignContent,omitempty"`
+	Id               *string `json:"id,omitempty"`
+	RegistrationType *string `json:"registrationType,omitempty"`
+	// requested/changes_requested = pre-submission review states; customers see them as pending / needs changes.
+	Status          *string                                       `json:"status,omitempty"`
+	BrandStatus     *string                                       `json:"brandStatus,omitempty"`
+	CampaignStatus  *string                                       `json:"campaignStatus,omitempty"`
+	DeclineReason   NullableString                                `json:"declineReason,omitempty"`
+	PhoneNumbers    []string                                      `json:"phoneNumbers,omitempty"`
+	AwaitingOtp     *bool                                         `json:"awaitingOtp,omitempty"`
+	CampaignContent *GetSmsRegistration200ResponseCampaignContent `json:"campaignContent,omitempty"`
 }
 
 // NewGetSmsRegistration200Response instantiates a new GetSmsRegistration200Response object

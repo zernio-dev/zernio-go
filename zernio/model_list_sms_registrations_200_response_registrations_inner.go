@@ -23,7 +23,8 @@ type ListSmsRegistrations200ResponseRegistrationsInner struct {
 	Id               *string        `json:"id,omitempty"`
 	RegistrationType *string        `json:"registrationType,omitempty"`
 	DisplayName      NullableString `json:"displayName,omitempty"`
-	Status           *string        `json:"status,omitempty"`
+	// requested/changes_requested = pre-submission review states; customers see them as pending / needs changes.
+	Status *string `json:"status,omitempty"`
 	// Carrier-registry brand status (e.g. VERIFIED).
 	BrandStatus    *string `json:"brandStatus,omitempty"`
 	CampaignStatus *string `json:"campaignStatus,omitempty"`

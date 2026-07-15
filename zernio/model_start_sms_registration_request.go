@@ -27,7 +27,11 @@ type StartSmsRegistrationRequest struct {
 	PhoneNumbers []string                             `json:"phoneNumbers"`
 	Brand        *StartSmsRegistrationRequestBrand    `json:"brand,omitempty"`
 	Campaign     *StartSmsRegistrationRequestCampaign `json:"campaign,omitempty"`
-	TollFree     *StartSmsRegistrationRequestTollFree `json:"tollFree,omitempty"`
+	// Raw dashboard-wizard answers, stored only to prefill edit-and-resubmit. API integrators can omit.
+	WizardValues map[string]string `json:"wizardValues,omitempty"`
+	// Resubmit a registration that was returned for changes — updates it in place instead of creating a new one.
+	ResubmitRequestId *string                              `json:"resubmitRequestId,omitempty"`
+	TollFree          *StartSmsRegistrationRequestTollFree `json:"tollFree,omitempty"`
 }
 
 type _StartSmsRegistrationRequest StartSmsRegistrationRequest
@@ -163,6 +167,70 @@ func (o *StartSmsRegistrationRequest) SetCampaign(v StartSmsRegistrationRequestC
 	o.Campaign = &v
 }
 
+// GetWizardValues returns the WizardValues field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequest) GetWizardValues() map[string]string {
+	if o == nil || IsNil(o.WizardValues) {
+		var ret map[string]string
+		return ret
+	}
+	return o.WizardValues
+}
+
+// GetWizardValuesOk returns a tuple with the WizardValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequest) GetWizardValuesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.WizardValues) {
+		return map[string]string{}, false
+	}
+	return o.WizardValues, true
+}
+
+// HasWizardValues returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequest) HasWizardValues() bool {
+	if o != nil && !IsNil(o.WizardValues) {
+		return true
+	}
+
+	return false
+}
+
+// SetWizardValues gets a reference to the given map[string]string and assigns it to the WizardValues field.
+func (o *StartSmsRegistrationRequest) SetWizardValues(v map[string]string) {
+	o.WizardValues = v
+}
+
+// GetResubmitRequestId returns the ResubmitRequestId field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequest) GetResubmitRequestId() string {
+	if o == nil || IsNil(o.ResubmitRequestId) {
+		var ret string
+		return ret
+	}
+	return *o.ResubmitRequestId
+}
+
+// GetResubmitRequestIdOk returns a tuple with the ResubmitRequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequest) GetResubmitRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ResubmitRequestId) {
+		return nil, false
+	}
+	return o.ResubmitRequestId, true
+}
+
+// HasResubmitRequestId returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequest) HasResubmitRequestId() bool {
+	if o != nil && !IsNil(o.ResubmitRequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetResubmitRequestId gets a reference to the given string and assigns it to the ResubmitRequestId field.
+func (o *StartSmsRegistrationRequest) SetResubmitRequestId(v string) {
+	o.ResubmitRequestId = &v
+}
+
 // GetTollFree returns the TollFree field value if set, zero value otherwise.
 func (o *StartSmsRegistrationRequest) GetTollFree() StartSmsRegistrationRequestTollFree {
 	if o == nil || IsNil(o.TollFree) {
@@ -212,6 +280,12 @@ func (o StartSmsRegistrationRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Campaign) {
 		toSerialize["campaign"] = o.Campaign
+	}
+	if !IsNil(o.WizardValues) {
+		toSerialize["wizardValues"] = o.WizardValues
+	}
+	if !IsNil(o.ResubmitRequestId) {
+		toSerialize["resubmitRequestId"] = o.ResubmitRequestId
 	}
 	if !IsNil(o.TollFree) {
 		toSerialize["tollFree"] = o.TollFree

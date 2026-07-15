@@ -21,7 +21,8 @@ var _ MappedNullable = &ReuseSmsRegistrationForNumber200Response{}
 // ReuseSmsRegistrationForNumber200Response struct for ReuseSmsRegistrationForNumber200Response
 type ReuseSmsRegistrationForNumber200Response struct {
 	RegistrationId *string `json:"registrationId,omitempty"`
-	Status         *string `json:"status,omitempty"`
+	// requested/changes_requested = pre-submission review states; customers see them as pending / needs changes.
+	Status *string `json:"status,omitempty"`
 }
 
 // NewReuseSmsRegistrationForNumber200Response instantiates a new ReuseSmsRegistrationForNumber200Response object
