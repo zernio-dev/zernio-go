@@ -532,6 +532,7 @@ func main() {
 | `client.SMSAPI.SendSms(ctx)` | Send an SMS/MMS |
 | `client.SMSAPI.ShareSmsRegistration(ctx)` | Create a registration share link |
 | `client.SMSAPI.StartSmsRegistration(ctx)` | Start a carrier registration |
+| `client.SMSAPI.UploadSmsOptInProof(ctx)` | Upload opt-in form proof for an appeal |
 | `client.SMSAPI.VerifySmsRegistrationOtp(ctx)` | Submit the sole-prop OTP |
 
 ### Sequences
