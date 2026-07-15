@@ -784,8 +784,15 @@ func (a *SMSAPIService) ListSmsOptOutsExecute(r SMSAPIListSmsOptOutsRequest) (*L
 }
 
 type SMSAPIListSmsRegistrationsRequest struct {
-	ctx        context.Context
-	ApiService *SMSAPIService
+	ctx                context.Context
+	ApiService         *SMSAPIService
+	includeDeactivated *bool
+}
+
+// Deactivated (terminated) registrations are hidden by default — pass true to include them.
+func (r SMSAPIListSmsRegistrationsRequest) IncludeDeactivated(includeDeactivated bool) SMSAPIListSmsRegistrationsRequest {
+	r.includeDeactivated = &includeDeactivated
+	return r
 }
 
 func (r SMSAPIListSmsRegistrationsRequest) Execute() (*ListSmsRegistrations200Response, *http.Response, error) {
@@ -827,6 +834,9 @@ func (a *SMSAPIService) ListSmsRegistrationsExecute(r SMSAPIListSmsRegistrations
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.includeDeactivated != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDeactivated", r.includeDeactivated, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
