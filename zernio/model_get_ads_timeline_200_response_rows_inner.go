@@ -33,7 +33,7 @@ type GetAdsTimeline200ResponseRowsInner struct {
 	Cpc *float32 `json:"cpc,omitempty"`
 	// Cost per 1000 impressions in native currency.
 	Cpm *float32 `json:"cpm,omitempty"`
-	// Sum of conversion events matching the campaign optimization goal. Meta-only at time of writing.
+	// Sum of conversion events over the range. Meta: events matching the campaign optimization goal. Google: tracked conversions. X / LinkedIn: reported website/lead conversions (added 2026-07).
 	Conversions       *int32   `json:"conversions,omitempty"`
 	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 	// Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
