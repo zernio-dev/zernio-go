@@ -37,11 +37,17 @@ type StartSmsRegistrationRequestCampaign struct {
 	OptoutKeywords string  `json:"optoutKeywords"`
 	OptoutMessage  *string `json:"optoutMessage,omitempty"`
 	HelpKeywords   string  `json:"helpKeywords"`
-	EmbeddedLink   *bool   `json:"embeddedLink,omitempty"`
-	EmbeddedPhone  *bool   `json:"embeddedPhone,omitempty"`
-	NumberPool     *bool   `json:"numberPool,omitempty"`
-	AgeGated       *bool   `json:"ageGated,omitempty"`
-	DirectLending  *bool   `json:"directLending,omitempty"`
+	// Whether messages carry links. Auto-derived from the samples when omitted, so the declaration matches what the reviewer reads.
+	EmbeddedLink *bool `json:"embeddedLink,omitempty"`
+	// Whether messages carry phone numbers. Auto-derived from the samples when omitted.
+	EmbeddedPhone *bool `json:"embeddedPhone,omitempty"`
+	NumberPool    *bool `json:"numberPool,omitempty"`
+	AgeGated      *bool `json:"ageGated,omitempty"`
+	DirectLending *bool `json:"directLending,omitempty"`
+	// Link to your privacy policy. Recommended: reviewers check that it says mobile information is not sold or shared with third parties for promotional purposes. A bare domain is normalized to https://.
+	PrivacyPolicyLink *string `json:"privacyPolicyLink,omitempty"`
+	// Link to your terms & conditions. A bare domain is normalized to https://.
+	TermsAndConditionsLink *string `json:"termsAndConditionsLink,omitempty"`
 }
 
 type _StartSmsRegistrationRequestCampaign StartSmsRegistrationRequestCampaign
@@ -551,6 +557,70 @@ func (o *StartSmsRegistrationRequestCampaign) SetDirectLending(v bool) {
 	o.DirectLending = &v
 }
 
+// GetPrivacyPolicyLink returns the PrivacyPolicyLink field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequestCampaign) GetPrivacyPolicyLink() string {
+	if o == nil || IsNil(o.PrivacyPolicyLink) {
+		var ret string
+		return ret
+	}
+	return *o.PrivacyPolicyLink
+}
+
+// GetPrivacyPolicyLinkOk returns a tuple with the PrivacyPolicyLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequestCampaign) GetPrivacyPolicyLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.PrivacyPolicyLink) {
+		return nil, false
+	}
+	return o.PrivacyPolicyLink, true
+}
+
+// HasPrivacyPolicyLink returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasPrivacyPolicyLink() bool {
+	if o != nil && !IsNil(o.PrivacyPolicyLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivacyPolicyLink gets a reference to the given string and assigns it to the PrivacyPolicyLink field.
+func (o *StartSmsRegistrationRequestCampaign) SetPrivacyPolicyLink(v string) {
+	o.PrivacyPolicyLink = &v
+}
+
+// GetTermsAndConditionsLink returns the TermsAndConditionsLink field value if set, zero value otherwise.
+func (o *StartSmsRegistrationRequestCampaign) GetTermsAndConditionsLink() string {
+	if o == nil || IsNil(o.TermsAndConditionsLink) {
+		var ret string
+		return ret
+	}
+	return *o.TermsAndConditionsLink
+}
+
+// GetTermsAndConditionsLinkOk returns a tuple with the TermsAndConditionsLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StartSmsRegistrationRequestCampaign) GetTermsAndConditionsLinkOk() (*string, bool) {
+	if o == nil || IsNil(o.TermsAndConditionsLink) {
+		return nil, false
+	}
+	return o.TermsAndConditionsLink, true
+}
+
+// HasTermsAndConditionsLink returns a boolean if a field has been set.
+func (o *StartSmsRegistrationRequestCampaign) HasTermsAndConditionsLink() bool {
+	if o != nil && !IsNil(o.TermsAndConditionsLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetTermsAndConditionsLink gets a reference to the given string and assigns it to the TermsAndConditionsLink field.
+func (o *StartSmsRegistrationRequestCampaign) SetTermsAndConditionsLink(v string) {
+	o.TermsAndConditionsLink = &v
+}
+
 func (o StartSmsRegistrationRequestCampaign) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -595,6 +665,12 @@ func (o StartSmsRegistrationRequestCampaign) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.DirectLending) {
 		toSerialize["directLending"] = o.DirectLending
+	}
+	if !IsNil(o.PrivacyPolicyLink) {
+		toSerialize["privacyPolicyLink"] = o.PrivacyPolicyLink
+	}
+	if !IsNil(o.TermsAndConditionsLink) {
+		toSerialize["termsAndConditionsLink"] = o.TermsAndConditionsLink
 	}
 	return toSerialize, nil
 }
