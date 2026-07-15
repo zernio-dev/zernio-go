@@ -33,15 +33,16 @@ type LinkedInAdsPlatformData struct {
 	// Deliver on the LinkedIn Audience Network. Defaults to false.
 	OffsiteDeliveryEnabled *bool `json:"offsiteDeliveryEnabled,omitempty"`
 	// Restrict delivery to Connected TV inventory.
-	ConnectedTelevisionOnly *bool                                `json:"connectedTelevisionOnly,omitempty"`
-	Carousel                *LinkedInAdsPlatformDataCarousel     `json:"carousel,omitempty"`
-	Document                *LinkedInAdsPlatformDataDocument     `json:"document,omitempty"`
-	Spotlight               *LinkedInAdsPlatformDataSpotlight    `json:"spotlight,omitempty"`
-	Follower                *LinkedInAdsPlatformDataFollower     `json:"follower,omitempty"`
-	Jobs                    *LinkedInAdsPlatformDataJobs         `json:"jobs,omitempty"`
-	TextAd                  *LinkedInAdsPlatformDataTextAd       `json:"textAd,omitempty"`
-	Conversation            *LinkedInAdsPlatformDataConversation `json:"conversation,omitempty"`
-	Event                   *LinkedInAdsPlatformDataEvent        `json:"event,omitempty"`
+	ConnectedTelevisionOnly *bool                                 `json:"connectedTelevisionOnly,omitempty"`
+	Carousel                *LinkedInAdsPlatformDataCarousel      `json:"carousel,omitempty"`
+	Document                *LinkedInAdsPlatformDataDocument      `json:"document,omitempty"`
+	Spotlight               *LinkedInAdsPlatformDataSpotlight     `json:"spotlight,omitempty"`
+	Follower                *LinkedInAdsPlatformDataFollower      `json:"follower,omitempty"`
+	Jobs                    *LinkedInAdsPlatformDataJobs          `json:"jobs,omitempty"`
+	TextAd                  *LinkedInAdsPlatformDataTextAd        `json:"textAd,omitempty"`
+	Conversation            *LinkedInAdsPlatformDataConversation  `json:"conversation,omitempty"`
+	Event                   *LinkedInAdsPlatformDataEvent         `json:"event,omitempty"`
+	ThoughtLeader           *LinkedInAdsPlatformDataThoughtLeader `json:"thoughtLeader,omitempty"`
 	AdditionalProperties    map[string]interface{}
 }
 
@@ -544,6 +545,38 @@ func (o *LinkedInAdsPlatformData) SetEvent(v LinkedInAdsPlatformDataEvent) {
 	o.Event = &v
 }
 
+// GetThoughtLeader returns the ThoughtLeader field value if set, zero value otherwise.
+func (o *LinkedInAdsPlatformData) GetThoughtLeader() LinkedInAdsPlatformDataThoughtLeader {
+	if o == nil || IsNil(o.ThoughtLeader) {
+		var ret LinkedInAdsPlatformDataThoughtLeader
+		return ret
+	}
+	return *o.ThoughtLeader
+}
+
+// GetThoughtLeaderOk returns a tuple with the ThoughtLeader field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInAdsPlatformData) GetThoughtLeaderOk() (*LinkedInAdsPlatformDataThoughtLeader, bool) {
+	if o == nil || IsNil(o.ThoughtLeader) {
+		return nil, false
+	}
+	return o.ThoughtLeader, true
+}
+
+// HasThoughtLeader returns a boolean if a field has been set.
+func (o *LinkedInAdsPlatformData) HasThoughtLeader() bool {
+	if o != nil && !IsNil(o.ThoughtLeader) {
+		return true
+	}
+
+	return false
+}
+
+// SetThoughtLeader gets a reference to the given LinkedInAdsPlatformDataThoughtLeader and assigns it to the ThoughtLeader field.
+func (o *LinkedInAdsPlatformData) SetThoughtLeader(v LinkedInAdsPlatformDataThoughtLeader) {
+	o.ThoughtLeader = &v
+}
+
 func (o LinkedInAdsPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -599,6 +632,9 @@ func (o LinkedInAdsPlatformData) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Event) {
 		toSerialize["event"] = o.Event
 	}
+	if !IsNil(o.ThoughtLeader) {
+		toSerialize["thoughtLeader"] = o.ThoughtLeader
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -636,6 +672,7 @@ func (o *LinkedInAdsPlatformData) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "textAd")
 		delete(additionalProperties, "conversation")
 		delete(additionalProperties, "event")
+		delete(additionalProperties, "thoughtLeader")
 		o.AdditionalProperties = additionalProperties
 	}
 
