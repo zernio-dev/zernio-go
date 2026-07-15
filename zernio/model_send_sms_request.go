@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the SendSmsRequest type satisfies the MappedNullable interface at compile time
@@ -30,6 +31,8 @@ type SendSmsRequest struct {
 	Text *string `json:"text,omitempty"`
 	// Public media URLs to attach (sends as MMS). Max 10.
 	MediaUrls []string `json:"mediaUrls,omitempty"`
+	// Optional. Schedule the send for a future time (ISO 8601 with offset, e.g. `2026-08-01T12:00:00Z`). Must be in the future. The message is queued and the `message.delivered` webhook fires when it actually sends.
+	SendAt *time.Time `json:"sendAt,omitempty"`
 }
 
 type _SendSmsRequest SendSmsRequest
@@ -165,6 +168,38 @@ func (o *SendSmsRequest) SetMediaUrls(v []string) {
 	o.MediaUrls = v
 }
 
+// GetSendAt returns the SendAt field value if set, zero value otherwise.
+func (o *SendSmsRequest) GetSendAt() time.Time {
+	if o == nil || IsNil(o.SendAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.SendAt
+}
+
+// GetSendAtOk returns a tuple with the SendAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendSmsRequest) GetSendAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.SendAt) {
+		return nil, false
+	}
+	return o.SendAt, true
+}
+
+// HasSendAt returns a boolean if a field has been set.
+func (o *SendSmsRequest) HasSendAt() bool {
+	if o != nil && !IsNil(o.SendAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetSendAt gets a reference to the given time.Time and assigns it to the SendAt field.
+func (o *SendSmsRequest) SetSendAt(v time.Time) {
+	o.SendAt = &v
+}
+
 func (o SendSmsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -182,6 +217,9 @@ func (o SendSmsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaUrls) {
 		toSerialize["mediaUrls"] = o.MediaUrls
+	}
+	if !IsNil(o.SendAt) {
+		toSerialize["sendAt"] = o.SendAt
 	}
 	return toSerialize, nil
 }
