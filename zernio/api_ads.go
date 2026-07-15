@@ -3233,6 +3233,287 @@ func (a *AdsAPIService) GetLeadFormExecute(r AdsAPIGetLeadFormRequest) (*GetLead
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIGetLinkedInBidPricingRequest struct {
+	ctx                          context.Context
+	ApiService                   *AdsAPIService
+	getLinkedInBidPricingRequest *GetLinkedInBidPricingRequest
+}
+
+func (r AdsAPIGetLinkedInBidPricingRequest) GetLinkedInBidPricingRequest(getLinkedInBidPricingRequest GetLinkedInBidPricingRequest) AdsAPIGetLinkedInBidPricingRequest {
+	r.getLinkedInBidPricingRequest = &getLinkedInBidPricingRequest
+	return r
+}
+
+func (r AdsAPIGetLinkedInBidPricingRequest) Execute() (*GetLinkedInBidPricing200Response, *http.Response, error) {
+	return r.ApiService.GetLinkedInBidPricingExecute(r)
+}
+
+/*
+GetLinkedInBidPricing Suggested bid and budget bounds (LinkedIn)
+
+LinkedIn-only. Returns the suggested bid and bid limits for a targeting
+spec, plus the daily-budget bounds LinkedIn will accept. Use it before
+creating a campaign to pick a bid inside the allowed range and warn the
+user if their daily budget is below the minimum. Wraps LinkedIn's
+`adBudgetPricing` finder.
+
+Non-LinkedIn accounts return `available: false` so clients can hide the
+pricing UI without treating it as a failure.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIGetLinkedInBidPricingRequest
+*/
+func (a *AdsAPIService) GetLinkedInBidPricing(ctx context.Context) AdsAPIGetLinkedInBidPricingRequest {
+	return AdsAPIGetLinkedInBidPricingRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetLinkedInBidPricing200Response
+func (a *AdsAPIService) GetLinkedInBidPricingExecute(r AdsAPIGetLinkedInBidPricingRequest) (*GetLinkedInBidPricing200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetLinkedInBidPricing200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetLinkedInBidPricing")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/targeting/bid-pricing"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.getLinkedInBidPricingRequest == nil {
+		return localVarReturnValue, nil, reportError("getLinkedInBidPricingRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.getLinkedInBidPricingRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIGetLinkedInSupplyForecastRequest struct {
+	ctx                              context.Context
+	ApiService                       *AdsAPIService
+	getLinkedInSupplyForecastRequest *GetLinkedInSupplyForecastRequest
+}
+
+func (r AdsAPIGetLinkedInSupplyForecastRequest) GetLinkedInSupplyForecastRequest(getLinkedInSupplyForecastRequest GetLinkedInSupplyForecastRequest) AdsAPIGetLinkedInSupplyForecastRequest {
+	r.getLinkedInSupplyForecastRequest = &getLinkedInSupplyForecastRequest
+	return r
+}
+
+func (r AdsAPIGetLinkedInSupplyForecastRequest) Execute() (*GetLinkedInSupplyForecast200Response, *http.Response, error) {
+	return r.ApiService.GetLinkedInSupplyForecastExecute(r)
+}
+
+/*
+GetLinkedInSupplyForecast Impressions, clicks and spend forecast (LinkedIn)
+
+LinkedIn-only. Forecasted impressions, clicks, spend and ~20 other
+metrics for a targeting spec over a time range. Wraps LinkedIn's
+`adSupplyForecasts` finder.
+
+Each returned series carries a `metricType` (IMPRESSION, CLICK, SPENDING,
+MAX_POTENTIAL_BUDGET, COST_PER_MILLION_IMPRESSIONS, ...) and a
+`granularity` (DAILY, SEVEN_DAY, THIRTY_DAY, CUSTOM). LinkedIn caps the
+daily spending forecast at 1.2x the daily budget and returns 0 once the
+total budget is exhausted.
+
+Non-LinkedIn accounts return `available: false`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIGetLinkedInSupplyForecastRequest
+*/
+func (a *AdsAPIService) GetLinkedInSupplyForecast(ctx context.Context) AdsAPIGetLinkedInSupplyForecastRequest {
+	return AdsAPIGetLinkedInSupplyForecastRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetLinkedInSupplyForecast200Response
+func (a *AdsAPIService) GetLinkedInSupplyForecastExecute(r AdsAPIGetLinkedInSupplyForecastRequest) (*GetLinkedInSupplyForecast200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetLinkedInSupplyForecast200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetLinkedInSupplyForecast")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/targeting/supply-forecast"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.getLinkedInSupplyForecastRequest == nil {
+		return localVarReturnValue, nil, reportError("getLinkedInSupplyForecastRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.getLinkedInSupplyForecastRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIListAdAccountsRequest struct {
 	ctx         context.Context
 	ApiService  *AdsAPIService

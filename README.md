@@ -286,6 +286,8 @@ func main() {
 | `client.AdsAPI.GetDsaDefaults(ctx)` | Get ad account DSA defaults |
 | `client.AdsAPI.GetDsaRecommendations(ctx)` | List DSA beneficiary/payor suggestions |
 | `client.AdsAPI.GetLeadForm(ctx)` | Get a lead form |
+| `client.AdsAPI.GetLinkedInBidPricing(ctx)` | Suggested bid and budget bounds (LinkedIn) |
+| `client.AdsAPI.GetLinkedInSupplyForecast(ctx)` | Impressions, clicks and spend forecast (LinkedIn) |
 | `client.AdsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
 | `client.AdsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
