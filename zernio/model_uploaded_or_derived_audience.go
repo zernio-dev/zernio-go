@@ -28,6 +28,8 @@ type UploadedOrDerivedAudience struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`
 	Type        string  `json:"type"`
+	// Required for website_retargeting audiences (LinkedIn only). Each rule is a URL pattern; a member who visits any matching page enters the segment. Needs the LinkedIn Insight Tag installed on the customer's site — the segment only starts filling once the tag reports visits.
+	MatchRules []UploadedOrDerivedAudienceMatchRulesInner `json:"matchRules,omitempty"`
 	// Required for engagement audiences (LinkedIn only): what members engaged with — a video/leadgen/single-image ad campaign, a Company Page or an Event page.
 	SourceType *string `json:"sourceType,omitempty"`
 	// Required for engagement audiences. The action, validated by LinkedIn against `sourceType`. Common values: VIDEO_ADS FIRST_QUARTILE / MIDPOINT / THIRD_QUARTILE / FULL_COMPLETE; LEAD_GEN_FORMS VIEW_FORM / LEAD_FORM_SUBMIT; ORGANIZATION_PAGES VIEW / CTA_CLICK; EVENT_PAGES RSVPED / VIDEO_VIEWED / ENGAGEMENT / CLICK.
@@ -203,6 +205,38 @@ func (o *UploadedOrDerivedAudience) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *UploadedOrDerivedAudience) SetType(v string) {
 	o.Type = v
+}
+
+// GetMatchRules returns the MatchRules field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetMatchRules() []UploadedOrDerivedAudienceMatchRulesInner {
+	if o == nil || IsNil(o.MatchRules) {
+		var ret []UploadedOrDerivedAudienceMatchRulesInner
+		return ret
+	}
+	return o.MatchRules
+}
+
+// GetMatchRulesOk returns a tuple with the MatchRules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetMatchRulesOk() ([]UploadedOrDerivedAudienceMatchRulesInner, bool) {
+	if o == nil || IsNil(o.MatchRules) {
+		return nil, false
+	}
+	return o.MatchRules, true
+}
+
+// HasMatchRules returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasMatchRules() bool {
+	if o != nil && !IsNil(o.MatchRules) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchRules gets a reference to the given []UploadedOrDerivedAudienceMatchRulesInner and assigns it to the MatchRules field.
+func (o *UploadedOrDerivedAudience) SetMatchRules(v []UploadedOrDerivedAudienceMatchRulesInner) {
+	o.MatchRules = v
 }
 
 // GetSourceType returns the SourceType field value if set, zero value otherwise.
@@ -606,6 +640,9 @@ func (o UploadedOrDerivedAudience) ToMap() (map[string]interface{}, error) {
 		toSerialize["description"] = o.Description
 	}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.MatchRules) {
+		toSerialize["matchRules"] = o.MatchRules
+	}
 	if !IsNil(o.SourceType) {
 		toSerialize["sourceType"] = o.SourceType
 	}
