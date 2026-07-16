@@ -26,8 +26,9 @@ type UpdateAdCampaignRequest struct {
 	Budget   *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// Campaign-level default. Ad sets inherit this unless they override.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
-	// Rename the campaign (Meta only; other platforms return 501). At least one of budget/bidStrategy/name is required.
-	Name *string `json:"name,omitempty"`
+	// Rename the campaign (Meta only; other platforms return 501). At least one of budget/bidStrategy/name/platformSpecificData is required.
+	Name                 *string                                      `json:"name,omitempty"`
+	PlatformSpecificData *UpdateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 }
 
 type _UpdateAdCampaignRequest UpdateAdCampaignRequest
@@ -170,6 +171,38 @@ func (o *UpdateAdCampaignRequest) SetName(v string) {
 	o.Name = &v
 }
 
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetPlatformSpecificData() UpdateAdCampaignRequestPlatformSpecificData {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret UpdateAdCampaignRequestPlatformSpecificData
+		return ret
+	}
+	return *o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetPlatformSpecificDataOk() (*UpdateAdCampaignRequestPlatformSpecificData, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return nil, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given UpdateAdCampaignRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *UpdateAdCampaignRequest) SetPlatformSpecificData(v UpdateAdCampaignRequestPlatformSpecificData) {
+	o.PlatformSpecificData = &v
+}
+
 func (o UpdateAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -189,6 +222,9 @@ func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
 	}
 	return toSerialize, nil
 }

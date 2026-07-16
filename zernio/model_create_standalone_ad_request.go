@@ -37,6 +37,8 @@ type CreateStandaloneAdRequest struct {
 	Goal *string `json:"goal,omitempty"`
 	// Meta only. Explicit ad-set `optimization_goal` (e.g. `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `REACH`, `IMPRESSIONS`, `OFFSITE_CONVERSIONS`, `THRUPLAY`, `LEAD_GENERATION`). Overrides the default derived from `goal` (e.g. `traffic` defaults to `LINK_CLICKS`). Forwarded verbatim to Meta, which validates compatibility with the campaign objective and rejects incompatible combinations.
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
+	// Meta only. Explicit ad-set `billing_event`. Defaults to `IMPRESSIONS`. Forwarded verbatim to Meta, which validates compatibility with the optimization goal.
+	BillingEvent *string `json:"billingEvent,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
@@ -445,6 +447,38 @@ func (o *CreateStandaloneAdRequest) HasOptimizationGoal() bool {
 // SetOptimizationGoal gets a reference to the given string and assigns it to the OptimizationGoal field.
 func (o *CreateStandaloneAdRequest) SetOptimizationGoal(v string) {
 	o.OptimizationGoal = &v
+}
+
+// GetBillingEvent returns the BillingEvent field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetBillingEvent() string {
+	if o == nil || IsNil(o.BillingEvent) {
+		var ret string
+		return ret
+	}
+	return *o.BillingEvent
+}
+
+// GetBillingEventOk returns a tuple with the BillingEvent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetBillingEventOk() (*string, bool) {
+	if o == nil || IsNil(o.BillingEvent) {
+		return nil, false
+	}
+	return o.BillingEvent, true
+}
+
+// HasBillingEvent returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasBillingEvent() bool {
+	if o != nil && !IsNil(o.BillingEvent) {
+		return true
+	}
+
+	return false
+}
+
+// SetBillingEvent gets a reference to the given string and assigns it to the BillingEvent field.
+func (o *CreateStandaloneAdRequest) SetBillingEvent(v string) {
+	o.BillingEvent = &v
 }
 
 // GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
@@ -2397,6 +2431,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal
+	}
+	if !IsNil(o.BillingEvent) {
+		toSerialize["billingEvent"] = o.BillingEvent
 	}
 	if !IsNil(o.BudgetAmount) {
 		toSerialize["budgetAmount"] = o.BudgetAmount

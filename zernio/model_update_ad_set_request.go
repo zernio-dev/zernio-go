@@ -33,7 +33,8 @@ type UpdateAdSetRequest struct {
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000.
-	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	RoasAverageFloor     *float32                                `json:"roasAverageFloor,omitempty"`
+	PlatformSpecificData *UpdateAdSetRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
 }
 
 type _UpdateAdSetRequest UpdateAdSetRequest
@@ -272,6 +273,38 @@ func (o *UpdateAdSetRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetPlatformSpecificData() UpdateAdSetRequestPlatformSpecificData {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret UpdateAdSetRequestPlatformSpecificData
+		return ret
+	}
+	return *o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetPlatformSpecificDataOk() (*UpdateAdSetRequestPlatformSpecificData, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return nil, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given UpdateAdSetRequestPlatformSpecificData and assigns it to the PlatformSpecificData field.
+func (o *UpdateAdSetRequest) SetPlatformSpecificData(v UpdateAdSetRequestPlatformSpecificData) {
+	o.PlatformSpecificData = &v
+}
+
 func (o UpdateAdSetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -300,6 +333,9 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
 	}
 	return toSerialize, nil
 }

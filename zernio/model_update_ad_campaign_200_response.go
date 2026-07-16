@@ -20,10 +20,11 @@ var _ MappedNullable = &UpdateAdCampaign200Response{}
 
 // UpdateAdCampaign200Response struct for UpdateAdCampaign200Response
 type UpdateAdCampaign200Response struct {
-	Updated     *int32       `json:"updated,omitempty"`
-	Budget      *AdBudget    `json:"budget,omitempty"`
-	BudgetLevel *string      `json:"budgetLevel,omitempty"`
-	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+	Updated              *int32                 `json:"updated,omitempty"`
+	Budget               *AdBudget              `json:"budget,omitempty"`
+	BudgetLevel          *string                `json:"budgetLevel,omitempty"`
+	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
+	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 }
 
 // NewUpdateAdCampaign200Response instantiates a new UpdateAdCampaign200Response object
@@ -171,6 +172,38 @@ func (o *UpdateAdCampaign200Response) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
 }
 
+// GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetPlatformSpecificData() map[string]interface{} {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.PlatformSpecificData
+}
+
+// GetPlatformSpecificDataOk returns a tuple with the PlatformSpecificData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetPlatformSpecificDataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PlatformSpecificData) {
+		return map[string]interface{}{}, false
+	}
+	return o.PlatformSpecificData, true
+}
+
+// HasPlatformSpecificData returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasPlatformSpecificData() bool {
+	if o != nil && !IsNil(o.PlatformSpecificData) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformSpecificData gets a reference to the given map[string]interface{} and assigns it to the PlatformSpecificData field.
+func (o *UpdateAdCampaign200Response) SetPlatformSpecificData(v map[string]interface{}) {
+	o.PlatformSpecificData = v
+}
+
 func (o UpdateAdCampaign200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +225,9 @@ func (o UpdateAdCampaign200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.PlatformSpecificData) {
+		toSerialize["platformSpecificData"] = o.PlatformSpecificData
 	}
 	return toSerialize, nil
 }
