@@ -23,8 +23,10 @@ type EnrollContacts200Response struct {
 	Success *bool `json:"success,omitempty"`
 	// Number of contacts successfully enrolled
 	Enrolled *int32 `json:"enrolled,omitempty"`
-	// Number skipped (already enrolled or missing channel)
-	Skipped *int32 `json:"skipped,omitempty"`
+	// Number that failed (already enrolled, or no subscribed channel on the sequence platform)
+	Failed *int32 `json:"failed,omitempty"`
+	// Per-contact outcome
+	Results []EnrollContacts200ResponseResultsInner `json:"results,omitempty"`
 }
 
 // NewEnrollContacts200Response instantiates a new EnrollContacts200Response object
@@ -108,36 +110,68 @@ func (o *EnrollContacts200Response) SetEnrolled(v int32) {
 	o.Enrolled = &v
 }
 
-// GetSkipped returns the Skipped field value if set, zero value otherwise.
-func (o *EnrollContacts200Response) GetSkipped() int32 {
-	if o == nil || IsNil(o.Skipped) {
+// GetFailed returns the Failed field value if set, zero value otherwise.
+func (o *EnrollContacts200Response) GetFailed() int32 {
+	if o == nil || IsNil(o.Failed) {
 		var ret int32
 		return ret
 	}
-	return *o.Skipped
+	return *o.Failed
 }
 
-// GetSkippedOk returns a tuple with the Skipped field value if set, nil otherwise
+// GetFailedOk returns a tuple with the Failed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EnrollContacts200Response) GetSkippedOk() (*int32, bool) {
-	if o == nil || IsNil(o.Skipped) {
+func (o *EnrollContacts200Response) GetFailedOk() (*int32, bool) {
+	if o == nil || IsNil(o.Failed) {
 		return nil, false
 	}
-	return o.Skipped, true
+	return o.Failed, true
 }
 
-// HasSkipped returns a boolean if a field has been set.
-func (o *EnrollContacts200Response) HasSkipped() bool {
-	if o != nil && !IsNil(o.Skipped) {
+// HasFailed returns a boolean if a field has been set.
+func (o *EnrollContacts200Response) HasFailed() bool {
+	if o != nil && !IsNil(o.Failed) {
 		return true
 	}
 
 	return false
 }
 
-// SetSkipped gets a reference to the given int32 and assigns it to the Skipped field.
-func (o *EnrollContacts200Response) SetSkipped(v int32) {
-	o.Skipped = &v
+// SetFailed gets a reference to the given int32 and assigns it to the Failed field.
+func (o *EnrollContacts200Response) SetFailed(v int32) {
+	o.Failed = &v
+}
+
+// GetResults returns the Results field value if set, zero value otherwise.
+func (o *EnrollContacts200Response) GetResults() []EnrollContacts200ResponseResultsInner {
+	if o == nil || IsNil(o.Results) {
+		var ret []EnrollContacts200ResponseResultsInner
+		return ret
+	}
+	return o.Results
+}
+
+// GetResultsOk returns a tuple with the Results field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EnrollContacts200Response) GetResultsOk() ([]EnrollContacts200ResponseResultsInner, bool) {
+	if o == nil || IsNil(o.Results) {
+		return nil, false
+	}
+	return o.Results, true
+}
+
+// HasResults returns a boolean if a field has been set.
+func (o *EnrollContacts200Response) HasResults() bool {
+	if o != nil && !IsNil(o.Results) {
+		return true
+	}
+
+	return false
+}
+
+// SetResults gets a reference to the given []EnrollContacts200ResponseResultsInner and assigns it to the Results field.
+func (o *EnrollContacts200Response) SetResults(v []EnrollContacts200ResponseResultsInner) {
+	o.Results = v
 }
 
 func (o EnrollContacts200Response) MarshalJSON() ([]byte, error) {
@@ -156,8 +190,11 @@ func (o EnrollContacts200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Enrolled) {
 		toSerialize["enrolled"] = o.Enrolled
 	}
-	if !IsNil(o.Skipped) {
-		toSerialize["skipped"] = o.Skipped
+	if !IsNil(o.Failed) {
+		toSerialize["failed"] = o.Failed
+	}
+	if !IsNil(o.Results) {
+		toSerialize["results"] = o.Results
 	}
 	return toSerialize, nil
 }

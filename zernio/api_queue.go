@@ -157,7 +157,7 @@ func (r QueueAPIDeleteQueueSlotRequest) ProfileId(profileId string) QueueAPIDele
 	return r
 }
 
-// Queue ID to delete
+// Queue ID to delete. Omit to delete all queues for the profile
 func (r QueueAPIDeleteQueueSlotRequest) QueueId(queueId string) QueueAPIDeleteQueueSlotRequest {
 	r.queueId = &queueId
 	return r
@@ -170,7 +170,8 @@ func (r QueueAPIDeleteQueueSlotRequest) Execute() (*QueueDeleteResponse, *http.R
 /*
 DeleteQueueSlot Delete schedule
 
-Delete a queue from a profile. Requires queueId to specify which queue to delete.
+Delete a queue from a profile. Pass queueId to delete a specific queue;
+omit it to delete all queues for the profile.
 If deleting the default queue, another queue will be promoted to default.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -207,12 +208,11 @@ func (a *QueueAPIService) DeleteQueueSlotExecute(r QueueAPIDeleteQueueSlotReques
 	if r.profileId == nil {
 		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
 	}
-	if r.queueId == nil {
-		return localVarReturnValue, nil, reportError("queueId is required and must be specified")
-	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "queueId", r.queueId, "form", "")
+	if r.queueId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "queueId", r.queueId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -261,6 +261,7 @@ func (a *QueueAPIService) DeleteQueueSlotExecute(r QueueAPIDeleteQueueSlotReques
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
