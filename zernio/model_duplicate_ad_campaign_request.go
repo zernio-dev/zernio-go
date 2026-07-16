@@ -25,7 +25,8 @@ var _ MappedNullable = &DuplicateAdCampaignRequest{}
 type DuplicateAdCampaignRequest struct {
 	Platform string `json:"platform"`
 	// Copy child ad sets + ads + creatives + targeting
-	DeepCopy     *bool   `json:"deepCopy,omitempty"`
+	DeepCopy *bool `json:"deepCopy,omitempty"`
+	// ACTIVE = launch the clone immediately (spends the moment LinkedIn approves it). PAUSED = clone stays DRAFT, safe default. INHERITED_FROM_SOURCE = mirror each entity's source status per-entity. Duplicating an ACTIVE campaign this way starts a second front of spend.
 	StatusOption *string `json:"statusOption,omitempty"`
 	// Reschedule the copied hierarchy's start time
 	StartTime      *time.Time `json:"startTime,omitempty"`
