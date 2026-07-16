@@ -3947,6 +3947,7 @@ type AnalyticsAPIGetYouTubeDemographicsRequest struct {
 	ctx        context.Context
 	ApiService *AnalyticsAPIService
 	accountId  *string
+	videoId    *string
 	breakdown  *string
 	startDate  *string
 	endDate    *string
@@ -3958,13 +3959,19 @@ func (r AnalyticsAPIGetYouTubeDemographicsRequest) AccountId(accountId string) A
 	return r
 }
 
+// YouTube video ID. When provided, demographics are scoped to this single video (must belong to the connected channel; otherwise 404 video_not_found).
+func (r AnalyticsAPIGetYouTubeDemographicsRequest) VideoId(videoId string) AnalyticsAPIGetYouTubeDemographicsRequest {
+	r.videoId = &videoId
+	return r
+}
+
 // Comma-separated list of demographic dimensions: age, gender, country. Defaults to all three if omitted.
 func (r AnalyticsAPIGetYouTubeDemographicsRequest) Breakdown(breakdown string) AnalyticsAPIGetYouTubeDemographicsRequest {
 	r.breakdown = &breakdown
 	return r
 }
 
-// Start date in YYYY-MM-DD format. Defaults to 90 days ago.
+// Start date in YYYY-MM-DD format. Defaults to 90 days ago, or to the video&#39;s publish date (lifetime) when videoId is provided.
 func (r AnalyticsAPIGetYouTubeDemographicsRequest) StartDate(startDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
 	r.startDate = &startDate
 	return r
@@ -3984,8 +3991,11 @@ func (r AnalyticsAPIGetYouTubeDemographicsRequest) Execute() (*YouTubeDemographi
 GetYouTubeDemographics Get YouTube demographics
 
 Returns audience demographic insights for a YouTube channel, broken down by age, gender, and/or country.
+Pass videoId to get the audience profile of a single video instead of the whole channel.
 Age and gender values are viewer percentages (0-100). Country values are view counts.
-Data is based on signed-in viewers only, with a 2-3 day delay. Requires the Analytics add-on.
+Data is based on signed-in viewers only, with a 2-3 day delay. YouTube suppresses demographics
+for videos with too few signed-in views, so low-traffic videos can return empty breakdowns.
+Requires the Analytics add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeDemographicsRequest
@@ -4023,6 +4033,9 @@ func (a *AnalyticsAPIService) GetYouTubeDemographicsExecute(r AnalyticsAPIGetYou
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.videoId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "videoId", r.videoId, "form", "")
+	}
 	if r.breakdown != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdown", r.breakdown, "form", "")
 	}

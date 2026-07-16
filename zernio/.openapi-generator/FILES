@@ -1087,6 +1087,7 @@ model_sync_external_posts_200_response_synced.go
 model_sync_external_posts_request.go
 model_targeting_spec.go
 model_targeting_spec_excluded_locations.go
+model_targeting_spec_excluded_locations_cities_inner.go
 model_telegram_platform_data.go
 model_test_webhook_request.go
 model_threads_platform_data.go

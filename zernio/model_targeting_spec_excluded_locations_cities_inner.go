@@ -17,41 +17,40 @@ import (
 	"fmt"
 )
 
-// checks if the CreateStandaloneAdRequestCitiesInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateStandaloneAdRequestCitiesInner{}
+// checks if the TargetingSpecExcludedLocationsCitiesInner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TargetingSpecExcludedLocationsCitiesInner{}
 
-// CreateStandaloneAdRequestCitiesInner struct for CreateStandaloneAdRequestCitiesInner
-type CreateStandaloneAdRequestCitiesInner struct {
-	// Meta city ID, from /v1/ads/targeting/search results.
+// TargetingSpecExcludedLocationsCitiesInner struct for TargetingSpecExcludedLocationsCitiesInner
+type TargetingSpecExcludedLocationsCitiesInner struct {
 	Key string `json:"key"`
-	// Optional radius around the city. Must be set together with distance_unit. Meta enforces a minimum city radius (~17 km / 10 mi); smaller values resolve to a 0-size audience and the ad fails at launch. For a tighter catchment use customLocations (lat/lng).
+	// Radius around the excluded city. Requires distanceUnit.
 	Radius *float32 `json:"radius,omitempty"`
-	// Unit for radius. Required if radius is set.
-	DistanceUnit *string `json:"distance_unit,omitempty"`
+	// Required if radius is set.
+	DistanceUnit *string `json:"distanceUnit,omitempty"`
 }
 
-type _CreateStandaloneAdRequestCitiesInner CreateStandaloneAdRequestCitiesInner
+type _TargetingSpecExcludedLocationsCitiesInner TargetingSpecExcludedLocationsCitiesInner
 
-// NewCreateStandaloneAdRequestCitiesInner instantiates a new CreateStandaloneAdRequestCitiesInner object
+// NewTargetingSpecExcludedLocationsCitiesInner instantiates a new TargetingSpecExcludedLocationsCitiesInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestCitiesInner(key string) *CreateStandaloneAdRequestCitiesInner {
-	this := CreateStandaloneAdRequestCitiesInner{}
+func NewTargetingSpecExcludedLocationsCitiesInner(key string) *TargetingSpecExcludedLocationsCitiesInner {
+	this := TargetingSpecExcludedLocationsCitiesInner{}
 	this.Key = key
 	return &this
 }
 
-// NewCreateStandaloneAdRequestCitiesInnerWithDefaults instantiates a new CreateStandaloneAdRequestCitiesInner object
+// NewTargetingSpecExcludedLocationsCitiesInnerWithDefaults instantiates a new TargetingSpecExcludedLocationsCitiesInner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewCreateStandaloneAdRequestCitiesInnerWithDefaults() *CreateStandaloneAdRequestCitiesInner {
-	this := CreateStandaloneAdRequestCitiesInner{}
+func NewTargetingSpecExcludedLocationsCitiesInnerWithDefaults() *TargetingSpecExcludedLocationsCitiesInner {
+	this := TargetingSpecExcludedLocationsCitiesInner{}
 	return &this
 }
 
 // GetKey returns the Key field value
-func (o *CreateStandaloneAdRequestCitiesInner) GetKey() string {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetKey() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -62,7 +61,7 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetKey() string {
 
 // GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetKeyOk() (*string, bool) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetKeyOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,12 +69,12 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetKeyOk() (*string, bool) {
 }
 
 // SetKey sets field value
-func (o *CreateStandaloneAdRequestCitiesInner) SetKey(v string) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) SetKey(v string) {
 	o.Key = v
 }
 
 // GetRadius returns the Radius field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCitiesInner) GetRadius() float32 {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetRadius() float32 {
 	if o == nil || IsNil(o.Radius) {
 		var ret float32
 		return ret
@@ -85,7 +84,7 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetRadius() float32 {
 
 // GetRadiusOk returns a tuple with the Radius field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetRadiusOk() (*float32, bool) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetRadiusOk() (*float32, bool) {
 	if o == nil || IsNil(o.Radius) {
 		return nil, false
 	}
@@ -93,7 +92,7 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetRadiusOk() (*float32, bool) {
 }
 
 // HasRadius returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) HasRadius() bool {
+func (o *TargetingSpecExcludedLocationsCitiesInner) HasRadius() bool {
 	if o != nil && !IsNil(o.Radius) {
 		return true
 	}
@@ -102,12 +101,12 @@ func (o *CreateStandaloneAdRequestCitiesInner) HasRadius() bool {
 }
 
 // SetRadius gets a reference to the given float32 and assigns it to the Radius field.
-func (o *CreateStandaloneAdRequestCitiesInner) SetRadius(v float32) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) SetRadius(v float32) {
 	o.Radius = &v
 }
 
 // GetDistanceUnit returns the DistanceUnit field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnit() string {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetDistanceUnit() string {
 	if o == nil || IsNil(o.DistanceUnit) {
 		var ret string
 		return ret
@@ -117,7 +116,7 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnit() string {
 
 // GetDistanceUnitOk returns a tuple with the DistanceUnit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnitOk() (*string, bool) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) GetDistanceUnitOk() (*string, bool) {
 	if o == nil || IsNil(o.DistanceUnit) {
 		return nil, false
 	}
@@ -125,7 +124,7 @@ func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnitOk() (*string, boo
 }
 
 // HasDistanceUnit returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) HasDistanceUnit() bool {
+func (o *TargetingSpecExcludedLocationsCitiesInner) HasDistanceUnit() bool {
 	if o != nil && !IsNil(o.DistanceUnit) {
 		return true
 	}
@@ -134,11 +133,11 @@ func (o *CreateStandaloneAdRequestCitiesInner) HasDistanceUnit() bool {
 }
 
 // SetDistanceUnit gets a reference to the given string and assigns it to the DistanceUnit field.
-func (o *CreateStandaloneAdRequestCitiesInner) SetDistanceUnit(v string) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) SetDistanceUnit(v string) {
 	o.DistanceUnit = &v
 }
 
-func (o CreateStandaloneAdRequestCitiesInner) MarshalJSON() ([]byte, error) {
+func (o TargetingSpecExcludedLocationsCitiesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -146,19 +145,19 @@ func (o CreateStandaloneAdRequestCitiesInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o CreateStandaloneAdRequestCitiesInner) ToMap() (map[string]interface{}, error) {
+func (o TargetingSpecExcludedLocationsCitiesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["key"] = o.Key
 	if !IsNil(o.Radius) {
 		toSerialize["radius"] = o.Radius
 	}
 	if !IsNil(o.DistanceUnit) {
-		toSerialize["distance_unit"] = o.DistanceUnit
+		toSerialize["distanceUnit"] = o.DistanceUnit
 	}
 	return toSerialize, nil
 }
 
-func (o *CreateStandaloneAdRequestCitiesInner) UnmarshalJSON(data []byte) (err error) {
+func (o *TargetingSpecExcludedLocationsCitiesInner) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -180,53 +179,53 @@ func (o *CreateStandaloneAdRequestCitiesInner) UnmarshalJSON(data []byte) (err e
 		}
 	}
 
-	varCreateStandaloneAdRequestCitiesInner := _CreateStandaloneAdRequestCitiesInner{}
+	varTargetingSpecExcludedLocationsCitiesInner := _TargetingSpecExcludedLocationsCitiesInner{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestCitiesInner)
+	err = decoder.Decode(&varTargetingSpecExcludedLocationsCitiesInner)
 
 	if err != nil {
 		return err
 	}
 
-	*o = CreateStandaloneAdRequestCitiesInner(varCreateStandaloneAdRequestCitiesInner)
+	*o = TargetingSpecExcludedLocationsCitiesInner(varTargetingSpecExcludedLocationsCitiesInner)
 
 	return err
 }
 
-type NullableCreateStandaloneAdRequestCitiesInner struct {
-	value *CreateStandaloneAdRequestCitiesInner
+type NullableTargetingSpecExcludedLocationsCitiesInner struct {
+	value *TargetingSpecExcludedLocationsCitiesInner
 	isSet bool
 }
 
-func (v NullableCreateStandaloneAdRequestCitiesInner) Get() *CreateStandaloneAdRequestCitiesInner {
+func (v NullableTargetingSpecExcludedLocationsCitiesInner) Get() *TargetingSpecExcludedLocationsCitiesInner {
 	return v.value
 }
 
-func (v *NullableCreateStandaloneAdRequestCitiesInner) Set(val *CreateStandaloneAdRequestCitiesInner) {
+func (v *NullableTargetingSpecExcludedLocationsCitiesInner) Set(val *TargetingSpecExcludedLocationsCitiesInner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableCreateStandaloneAdRequestCitiesInner) IsSet() bool {
+func (v NullableTargetingSpecExcludedLocationsCitiesInner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableCreateStandaloneAdRequestCitiesInner) Unset() {
+func (v *NullableTargetingSpecExcludedLocationsCitiesInner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableCreateStandaloneAdRequestCitiesInner(val *CreateStandaloneAdRequestCitiesInner) *NullableCreateStandaloneAdRequestCitiesInner {
-	return &NullableCreateStandaloneAdRequestCitiesInner{value: val, isSet: true}
+func NewNullableTargetingSpecExcludedLocationsCitiesInner(val *TargetingSpecExcludedLocationsCitiesInner) *NullableTargetingSpecExcludedLocationsCitiesInner {
+	return &NullableTargetingSpecExcludedLocationsCitiesInner{value: val, isSet: true}
 }
 
-func (v NullableCreateStandaloneAdRequestCitiesInner) MarshalJSON() ([]byte, error) {
+func (v NullableTargetingSpecExcludedLocationsCitiesInner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableCreateStandaloneAdRequestCitiesInner) UnmarshalJSON(src []byte) error {
+func (v *NullableTargetingSpecExcludedLocationsCitiesInner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

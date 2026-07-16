@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the YouTubeDemographicsResponse type satisfies the MappedNullable interface at compile time
@@ -24,6 +25,12 @@ type YouTubeDemographicsResponse struct {
 	// The Zernio SocialAccount ID
 	AccountId *string `json:"accountId,omitempty"`
 	Platform  *string `json:"platform,omitempty"`
+	// Present only when demographics are scoped to a single video
+	VideoId *string `json:"videoId,omitempty"`
+	// Video title (video mode only)
+	Title NullableString `json:"title,omitempty"`
+	// Video publish date (video mode only)
+	PublishedAt NullableTime `json:"publishedAt,omitempty"`
 	// Object keyed by breakdown dimension (age, gender, country)
 	Demographics map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"demographics,omitempty"`
 	DateRange    *YouTubeDemographicsResponseDateRange                                    `json:"dateRange,omitempty"`
@@ -143,6 +150,124 @@ func (o *YouTubeDemographicsResponse) SetPlatform(v string) {
 	o.Platform = &v
 }
 
+// GetVideoId returns the VideoId field value if set, zero value otherwise.
+func (o *YouTubeDemographicsResponse) GetVideoId() string {
+	if o == nil || IsNil(o.VideoId) {
+		var ret string
+		return ret
+	}
+	return *o.VideoId
+}
+
+// GetVideoIdOk returns a tuple with the VideoId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeDemographicsResponse) GetVideoIdOk() (*string, bool) {
+	if o == nil || IsNil(o.VideoId) {
+		return nil, false
+	}
+	return o.VideoId, true
+}
+
+// HasVideoId returns a boolean if a field has been set.
+func (o *YouTubeDemographicsResponse) HasVideoId() bool {
+	if o != nil && !IsNil(o.VideoId) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoId gets a reference to the given string and assigns it to the VideoId field.
+func (o *YouTubeDemographicsResponse) SetVideoId(v string) {
+	o.VideoId = &v
+}
+
+// GetTitle returns the Title field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *YouTubeDemographicsResponse) GetTitle() string {
+	if o == nil || IsNil(o.Title.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Title.Get()
+}
+
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *YouTubeDemographicsResponse) GetTitleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Title.Get(), o.Title.IsSet()
+}
+
+// HasTitle returns a boolean if a field has been set.
+func (o *YouTubeDemographicsResponse) HasTitle() bool {
+	if o != nil && o.Title.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle gets a reference to the given NullableString and assigns it to the Title field.
+func (o *YouTubeDemographicsResponse) SetTitle(v string) {
+	o.Title.Set(&v)
+}
+
+// SetTitleNil sets the value for Title to be an explicit nil
+func (o *YouTubeDemographicsResponse) SetTitleNil() {
+	o.Title.Set(nil)
+}
+
+// UnsetTitle ensures that no value is present for Title, not even an explicit nil
+func (o *YouTubeDemographicsResponse) UnsetTitle() {
+	o.Title.Unset()
+}
+
+// GetPublishedAt returns the PublishedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *YouTubeDemographicsResponse) GetPublishedAt() time.Time {
+	if o == nil || IsNil(o.PublishedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.PublishedAt.Get()
+}
+
+// GetPublishedAtOk returns a tuple with the PublishedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *YouTubeDemographicsResponse) GetPublishedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PublishedAt.Get(), o.PublishedAt.IsSet()
+}
+
+// HasPublishedAt returns a boolean if a field has been set.
+func (o *YouTubeDemographicsResponse) HasPublishedAt() bool {
+	if o != nil && o.PublishedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPublishedAt gets a reference to the given NullableTime and assigns it to the PublishedAt field.
+func (o *YouTubeDemographicsResponse) SetPublishedAt(v time.Time) {
+	o.PublishedAt.Set(&v)
+}
+
+// SetPublishedAtNil sets the value for PublishedAt to be an explicit nil
+func (o *YouTubeDemographicsResponse) SetPublishedAtNil() {
+	o.PublishedAt.Set(nil)
+}
+
+// UnsetPublishedAt ensures that no value is present for PublishedAt, not even an explicit nil
+func (o *YouTubeDemographicsResponse) UnsetPublishedAt() {
+	o.PublishedAt.Unset()
+}
+
 // GetDemographics returns the Demographics field value if set, zero value otherwise.
 func (o *YouTubeDemographicsResponse) GetDemographics() map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner {
 	if o == nil || IsNil(o.Demographics) {
@@ -257,6 +382,15 @@ func (o YouTubeDemographicsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
+	}
+	if !IsNil(o.VideoId) {
+		toSerialize["videoId"] = o.VideoId
+	}
+	if o.Title.IsSet() {
+		toSerialize["title"] = o.Title.Get()
+	}
+	if o.PublishedAt.IsSet() {
+		toSerialize["publishedAt"] = o.PublishedAt.Get()
 	}
 	if !IsNil(o.Demographics) {
 		toSerialize["demographics"] = o.Demographics

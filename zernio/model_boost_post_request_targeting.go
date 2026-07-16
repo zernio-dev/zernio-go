@@ -30,7 +30,7 @@ type BoostPostRequestTargeting struct {
 	Countries []string `json:"countries,omitempty"`
 	// Region/state targeting. `key` from /v1/ads/targeting/search?dimension=geo&geoType=region.
 	Regions []BoostPostRequestTargetingRegionsInner `json:"regions,omitempty"`
-	// City targeting. Optional `radius` + `distance_unit` extend beyond the city limits (both set together, Meta only).
+	// City targeting. Optional `radius` + `distanceUnit` extend beyond the city limits (both set together, Meta only).
 	Cities []BoostPostRequestTargetingCitiesInner `json:"cities,omitempty"`
 	// Postal/ZIP targeting. `key` is the platform's postal location ID (e.g. Meta `US:94304`).
 	Zips []BoostPostRequestTargetingRegionsInner `json:"zips,omitempty"`

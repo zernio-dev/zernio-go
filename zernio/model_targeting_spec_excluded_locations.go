@@ -22,9 +22,9 @@ var _ MappedNullable = &TargetingSpecExcludedLocations{}
 type TargetingSpecExcludedLocations struct {
 	Countries []string                                `json:"countries,omitempty"`
 	Regions   []BoostPostRequestTargetingRegionsInner `json:"regions,omitempty"`
-	// Cities to exclude. Optional `radius` + `distance_unit` exclude a catchment around the city (both must be set together or both omitted); Meta honours the radius on excluded cities.
-	Cities []CreateStandaloneAdRequestCitiesInner  `json:"cities,omitempty"`
-	Zips   []BoostPostRequestTargetingRegionsInner `json:"zips,omitempty"`
+	// Cities to exclude. Optional `radius` + `distanceUnit` exclude a catchment around the city (both must be set together or both omitted); Meta honours the radius on excluded cities.
+	Cities []TargetingSpecExcludedLocationsCitiesInner `json:"cities,omitempty"`
+	Zips   []BoostPostRequestTargetingRegionsInner     `json:"zips,omitempty"`
 	// Named points of interest to exclude. `key` from /v1/ads/targeting/search.
 	Places []CreateStandaloneAdRequestRegionsInner `json:"places,omitempty"`
 	// Named neighbourhood areas to exclude. `key` from /v1/ads/targeting/search.
@@ -115,9 +115,9 @@ func (o *TargetingSpecExcludedLocations) SetRegions(v []BoostPostRequestTargetin
 }
 
 // GetCities returns the Cities field value if set, zero value otherwise.
-func (o *TargetingSpecExcludedLocations) GetCities() []CreateStandaloneAdRequestCitiesInner {
+func (o *TargetingSpecExcludedLocations) GetCities() []TargetingSpecExcludedLocationsCitiesInner {
 	if o == nil || IsNil(o.Cities) {
-		var ret []CreateStandaloneAdRequestCitiesInner
+		var ret []TargetingSpecExcludedLocationsCitiesInner
 		return ret
 	}
 	return o.Cities
@@ -125,7 +125,7 @@ func (o *TargetingSpecExcludedLocations) GetCities() []CreateStandaloneAdRequest
 
 // GetCitiesOk returns a tuple with the Cities field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpecExcludedLocations) GetCitiesOk() ([]CreateStandaloneAdRequestCitiesInner, bool) {
+func (o *TargetingSpecExcludedLocations) GetCitiesOk() ([]TargetingSpecExcludedLocationsCitiesInner, bool) {
 	if o == nil || IsNil(o.Cities) {
 		return nil, false
 	}
@@ -141,8 +141,8 @@ func (o *TargetingSpecExcludedLocations) HasCities() bool {
 	return false
 }
 
-// SetCities gets a reference to the given []CreateStandaloneAdRequestCitiesInner and assigns it to the Cities field.
-func (o *TargetingSpecExcludedLocations) SetCities(v []CreateStandaloneAdRequestCitiesInner) {
+// SetCities gets a reference to the given []TargetingSpecExcludedLocationsCitiesInner and assigns it to the Cities field.
+func (o *TargetingSpecExcludedLocations) SetCities(v []TargetingSpecExcludedLocationsCitiesInner) {
 	o.Cities = v
 }
 

@@ -24,9 +24,9 @@ var _ MappedNullable = &BoostPostRequestTargetingCitiesInner{}
 type BoostPostRequestTargetingCitiesInner struct {
 	Key  string  `json:"key"`
 	Name *string `json:"name,omitempty"`
-	// Requires distance_unit.
+	// Requires distanceUnit. Meta enforces a minimum city radius (~17 km / 10 mi); smaller values resolve to a 0-size audience and the ad fails at launch. For a tighter catchment use customLocations (lat/lng).
 	Radius       *float32 `json:"radius,omitempty"`
-	DistanceUnit *string  `json:"distance_unit,omitempty"`
+	DistanceUnit *string  `json:"distanceUnit,omitempty"`
 }
 
 type _BoostPostRequestTargetingCitiesInner BoostPostRequestTargetingCitiesInner
@@ -187,7 +187,7 @@ func (o BoostPostRequestTargetingCitiesInner) ToMap() (map[string]interface{}, e
 		toSerialize["radius"] = o.Radius
 	}
 	if !IsNil(o.DistanceUnit) {
-		toSerialize["distance_unit"] = o.DistanceUnit
+		toSerialize["distanceUnit"] = o.DistanceUnit
 	}
 	return toSerialize, nil
 }
