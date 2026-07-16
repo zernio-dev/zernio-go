@@ -22,13 +22,13 @@ var _ MappedNullable = &SendInboxMessageRequestButtonsInner{}
 
 // SendInboxMessageRequestButtonsInner struct for SendInboxMessageRequestButtonsInner
 type SendInboxMessageRequestButtonsInner struct {
-	// Button type. phone is Facebook only.
+	// Button type. phone is Facebook only. Ignored on WhatsApp (buttons always render as reply buttons).
 	Type string `json:"type"`
 	// Button label (max 20 chars)
 	Title string `json:"title"`
-	// URL for url-type buttons
+	// URL for url-type buttons (Facebook/Instagram only)
 	Url *string `json:"url,omitempty"`
-	// Payload for postback-type buttons
+	// Payload for postback-type buttons. On WhatsApp, this is the reply ID returned on the message.received webhook when the button is tapped.
 	Payload *string `json:"payload,omitempty"`
 	// Phone number for phone-type buttons (Facebook only)
 	Phone *string `json:"phone,omitempty"`
