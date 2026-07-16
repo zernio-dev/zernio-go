@@ -98,7 +98,7 @@ type CreateStandaloneAdRequest struct {
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
 	// Normalized household-income tier. Meta and TikTok express all four; Google maps only `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible with housing/employment/credit `specialAdCategories`.
 	IncomeTier *string `json:"incomeTier,omitempty"`
-	// Language codes (e.g. ['en']). Restricts the audience by language.
+	// Language codes restricting the audience by language. On Meta, ISO 639-1 codes (e.g. ['en'], ['de']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"). Unknown codes are rejected. Other ad platforms use their own language-code systems.
 	Languages  []string                             `json:"languages,omitempty"`
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// ID of a `saved_targeting` audience (created via POST /v1/ads/audiences). When set, its stored TargetingSpec is expanded as the base targeting; inline fields on this body merge on top. Lets you reuse a named targeting preset without re-sending every field.

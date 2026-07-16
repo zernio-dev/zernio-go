@@ -1328,6 +1328,7 @@ type ConnectAPIGetGmbLocationsRequest struct {
 	accountId  string
 	search     *string
 	filter     *string
+	limit      *int32
 }
 
 // Free-text search on the business name, applied server-side by Google. Use for accounts with many locations.
@@ -1342,6 +1343,12 @@ func (r ConnectAPIGetGmbLocationsRequest) Filter(filter string) ConnectAPIGetGmb
 	return r
 }
 
+// Max locations to return (default 100, max 500). Raise it to enumerate an account with more than 100 locations; for accounts with thousands, use search/filter instead.
+func (r ConnectAPIGetGmbLocationsRequest) Limit(limit int32) ConnectAPIGetGmbLocationsRequest {
+	r.limit = &limit
+	return r
+}
+
 func (r ConnectAPIGetGmbLocationsRequest) Execute() (*GetGmbLocations200Response, *http.Response, error) {
 	return r.ApiService.GetGmbLocationsExecute(r)
 }
@@ -1349,7 +1356,7 @@ func (r ConnectAPIGetGmbLocationsRequest) Execute() (*GetGmbLocations200Response
 /*
 GetGmbLocations List GBP locations
 
-Returns Google Business Profile locations the connected account can access, plus the currently selected location. The list is bounded (see hasMore); for accounts that own many locations, use the search or filter query params to find a specific one instead of loading them all.
+Returns Google Business Profile locations the connected account can access, plus the currently selected location. The list is bounded (see hasMore); for accounts that own many locations, use the search or filter query params to find a specific one instead of loading them all, or raise limit to enumerate an account with more than 100 locations.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1391,6 +1398,13 @@ func (a *ConnectAPIService) GetGmbLocationsExecute(r ConnectAPIGetGmbLocationsRe
 	}
 	if r.filter != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "filter", r.filter, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
