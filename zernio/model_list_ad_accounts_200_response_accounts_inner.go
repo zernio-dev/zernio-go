@@ -34,7 +34,7 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	// Meta only. Whether the account can create/run ads now. Absent (treat as true) on non-Meta platforms.
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta only. Human-readable reason when selectable is false; null when selectable.
-	UnusableReason *string `json:"unusableReason,omitempty"`
+	UnusableReason NullableString `json:"unusableReason,omitempty"`
 }
 
 // NewListAdAccounts200ResponseAccountsInner instantiates a new ListAdAccounts200ResponseAccountsInner object
@@ -310,36 +310,47 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetSelectable(v bool) {
 	o.Selectable = &v
 }
 
-// GetUnusableReason returns the UnusableReason field value if set, zero value otherwise.
+// GetUnusableReason returns the UnusableReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListAdAccounts200ResponseAccountsInner) GetUnusableReason() string {
-	if o == nil || IsNil(o.UnusableReason) {
+	if o == nil || IsNil(o.UnusableReason.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.UnusableReason
+	return *o.UnusableReason.Get()
 }
 
 // GetUnusableReasonOk returns a tuple with the UnusableReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListAdAccounts200ResponseAccountsInner) GetUnusableReasonOk() (*string, bool) {
-	if o == nil || IsNil(o.UnusableReason) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UnusableReason, true
+	return o.UnusableReason.Get(), o.UnusableReason.IsSet()
 }
 
 // HasUnusableReason returns a boolean if a field has been set.
 func (o *ListAdAccounts200ResponseAccountsInner) HasUnusableReason() bool {
-	if o != nil && !IsNil(o.UnusableReason) {
+	if o != nil && o.UnusableReason.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUnusableReason gets a reference to the given string and assigns it to the UnusableReason field.
+// SetUnusableReason gets a reference to the given NullableString and assigns it to the UnusableReason field.
 func (o *ListAdAccounts200ResponseAccountsInner) SetUnusableReason(v string) {
-	o.UnusableReason = &v
+	o.UnusableReason.Set(&v)
+}
+
+// SetUnusableReasonNil sets the value for UnusableReason to be an explicit nil
+func (o *ListAdAccounts200ResponseAccountsInner) SetUnusableReasonNil() {
+	o.UnusableReason.Set(nil)
+}
+
+// UnsetUnusableReason ensures that no value is present for UnusableReason, not even an explicit nil
+func (o *ListAdAccounts200ResponseAccountsInner) UnsetUnusableReason() {
+	o.UnusableReason.Unset()
 }
 
 func (o ListAdAccounts200ResponseAccountsInner) MarshalJSON() ([]byte, error) {
@@ -376,8 +387,8 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	if !IsNil(o.Selectable) {
 		toSerialize["selectable"] = o.Selectable
 	}
-	if !IsNil(o.UnusableReason) {
-		toSerialize["unusableReason"] = o.UnusableReason
+	if o.UnusableReason.IsSet() {
+		toSerialize["unusableReason"] = o.UnusableReason.Get()
 	}
 	return toSerialize, nil
 }

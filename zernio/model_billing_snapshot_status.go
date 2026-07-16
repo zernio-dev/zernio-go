@@ -21,14 +21,14 @@ var _ MappedNullable = &BillingSnapshotStatus{}
 
 // BillingSnapshotStatus struct for BillingSnapshotStatus
 type BillingSnapshotStatus struct {
-	HasAccess        *bool      `json:"hasAccess,omitempty"`
-	Suspended        *bool      `json:"suspended,omitempty"`
-	SuspendedAt      *time.Time `json:"suspendedAt,omitempty"`
-	SuspensionReason *string    `json:"suspensionReason,omitempty"`
+	HasAccess        *bool          `json:"hasAccess,omitempty"`
+	Suspended        *bool          `json:"suspended,omitempty"`
+	SuspendedAt      NullableTime   `json:"suspendedAt,omitempty"`
+	SuspensionReason NullableString `json:"suspensionReason,omitempty"`
 	// Hosted invoice URL for dunning (Stripe).
-	OpenInvoiceUrl     *string `json:"openInvoiceUrl,omitempty"`
-	DeclineReason      *string `json:"declineReason,omitempty"`
-	AutoUpgradeEnabled *bool   `json:"autoUpgradeEnabled,omitempty"`
+	OpenInvoiceUrl     NullableString `json:"openInvoiceUrl,omitempty"`
+	DeclineReason      NullableString `json:"declineReason,omitempty"`
+	AutoUpgradeEnabled *bool          `json:"autoUpgradeEnabled,omitempty"`
 }
 
 // NewBillingSnapshotStatus instantiates a new BillingSnapshotStatus object
@@ -112,132 +112,176 @@ func (o *BillingSnapshotStatus) SetSuspended(v bool) {
 	o.Suspended = &v
 }
 
-// GetSuspendedAt returns the SuspendedAt field value if set, zero value otherwise.
+// GetSuspendedAt returns the SuspendedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotStatus) GetSuspendedAt() time.Time {
-	if o == nil || IsNil(o.SuspendedAt) {
+	if o == nil || IsNil(o.SuspendedAt.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.SuspendedAt
+	return *o.SuspendedAt.Get()
 }
 
 // GetSuspendedAtOk returns a tuple with the SuspendedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotStatus) GetSuspendedAtOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.SuspendedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SuspendedAt, true
+	return o.SuspendedAt.Get(), o.SuspendedAt.IsSet()
 }
 
 // HasSuspendedAt returns a boolean if a field has been set.
 func (o *BillingSnapshotStatus) HasSuspendedAt() bool {
-	if o != nil && !IsNil(o.SuspendedAt) {
+	if o != nil && o.SuspendedAt.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSuspendedAt gets a reference to the given time.Time and assigns it to the SuspendedAt field.
+// SetSuspendedAt gets a reference to the given NullableTime and assigns it to the SuspendedAt field.
 func (o *BillingSnapshotStatus) SetSuspendedAt(v time.Time) {
-	o.SuspendedAt = &v
+	o.SuspendedAt.Set(&v)
 }
 
-// GetSuspensionReason returns the SuspensionReason field value if set, zero value otherwise.
+// SetSuspendedAtNil sets the value for SuspendedAt to be an explicit nil
+func (o *BillingSnapshotStatus) SetSuspendedAtNil() {
+	o.SuspendedAt.Set(nil)
+}
+
+// UnsetSuspendedAt ensures that no value is present for SuspendedAt, not even an explicit nil
+func (o *BillingSnapshotStatus) UnsetSuspendedAt() {
+	o.SuspendedAt.Unset()
+}
+
+// GetSuspensionReason returns the SuspensionReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotStatus) GetSuspensionReason() string {
-	if o == nil || IsNil(o.SuspensionReason) {
+	if o == nil || IsNil(o.SuspensionReason.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.SuspensionReason
+	return *o.SuspensionReason.Get()
 }
 
 // GetSuspensionReasonOk returns a tuple with the SuspensionReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotStatus) GetSuspensionReasonOk() (*string, bool) {
-	if o == nil || IsNil(o.SuspensionReason) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SuspensionReason, true
+	return o.SuspensionReason.Get(), o.SuspensionReason.IsSet()
 }
 
 // HasSuspensionReason returns a boolean if a field has been set.
 func (o *BillingSnapshotStatus) HasSuspensionReason() bool {
-	if o != nil && !IsNil(o.SuspensionReason) {
+	if o != nil && o.SuspensionReason.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSuspensionReason gets a reference to the given string and assigns it to the SuspensionReason field.
+// SetSuspensionReason gets a reference to the given NullableString and assigns it to the SuspensionReason field.
 func (o *BillingSnapshotStatus) SetSuspensionReason(v string) {
-	o.SuspensionReason = &v
+	o.SuspensionReason.Set(&v)
 }
 
-// GetOpenInvoiceUrl returns the OpenInvoiceUrl field value if set, zero value otherwise.
+// SetSuspensionReasonNil sets the value for SuspensionReason to be an explicit nil
+func (o *BillingSnapshotStatus) SetSuspensionReasonNil() {
+	o.SuspensionReason.Set(nil)
+}
+
+// UnsetSuspensionReason ensures that no value is present for SuspensionReason, not even an explicit nil
+func (o *BillingSnapshotStatus) UnsetSuspensionReason() {
+	o.SuspensionReason.Unset()
+}
+
+// GetOpenInvoiceUrl returns the OpenInvoiceUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotStatus) GetOpenInvoiceUrl() string {
-	if o == nil || IsNil(o.OpenInvoiceUrl) {
+	if o == nil || IsNil(o.OpenInvoiceUrl.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.OpenInvoiceUrl
+	return *o.OpenInvoiceUrl.Get()
 }
 
 // GetOpenInvoiceUrlOk returns a tuple with the OpenInvoiceUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotStatus) GetOpenInvoiceUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.OpenInvoiceUrl) {
+	if o == nil {
 		return nil, false
 	}
-	return o.OpenInvoiceUrl, true
+	return o.OpenInvoiceUrl.Get(), o.OpenInvoiceUrl.IsSet()
 }
 
 // HasOpenInvoiceUrl returns a boolean if a field has been set.
 func (o *BillingSnapshotStatus) HasOpenInvoiceUrl() bool {
-	if o != nil && !IsNil(o.OpenInvoiceUrl) {
+	if o != nil && o.OpenInvoiceUrl.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOpenInvoiceUrl gets a reference to the given string and assigns it to the OpenInvoiceUrl field.
+// SetOpenInvoiceUrl gets a reference to the given NullableString and assigns it to the OpenInvoiceUrl field.
 func (o *BillingSnapshotStatus) SetOpenInvoiceUrl(v string) {
-	o.OpenInvoiceUrl = &v
+	o.OpenInvoiceUrl.Set(&v)
 }
 
-// GetDeclineReason returns the DeclineReason field value if set, zero value otherwise.
+// SetOpenInvoiceUrlNil sets the value for OpenInvoiceUrl to be an explicit nil
+func (o *BillingSnapshotStatus) SetOpenInvoiceUrlNil() {
+	o.OpenInvoiceUrl.Set(nil)
+}
+
+// UnsetOpenInvoiceUrl ensures that no value is present for OpenInvoiceUrl, not even an explicit nil
+func (o *BillingSnapshotStatus) UnsetOpenInvoiceUrl() {
+	o.OpenInvoiceUrl.Unset()
+}
+
+// GetDeclineReason returns the DeclineReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotStatus) GetDeclineReason() string {
-	if o == nil || IsNil(o.DeclineReason) {
+	if o == nil || IsNil(o.DeclineReason.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.DeclineReason
+	return *o.DeclineReason.Get()
 }
 
 // GetDeclineReasonOk returns a tuple with the DeclineReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotStatus) GetDeclineReasonOk() (*string, bool) {
-	if o == nil || IsNil(o.DeclineReason) {
+	if o == nil {
 		return nil, false
 	}
-	return o.DeclineReason, true
+	return o.DeclineReason.Get(), o.DeclineReason.IsSet()
 }
 
 // HasDeclineReason returns a boolean if a field has been set.
 func (o *BillingSnapshotStatus) HasDeclineReason() bool {
-	if o != nil && !IsNil(o.DeclineReason) {
+	if o != nil && o.DeclineReason.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDeclineReason gets a reference to the given string and assigns it to the DeclineReason field.
+// SetDeclineReason gets a reference to the given NullableString and assigns it to the DeclineReason field.
 func (o *BillingSnapshotStatus) SetDeclineReason(v string) {
-	o.DeclineReason = &v
+	o.DeclineReason.Set(&v)
+}
+
+// SetDeclineReasonNil sets the value for DeclineReason to be an explicit nil
+func (o *BillingSnapshotStatus) SetDeclineReasonNil() {
+	o.DeclineReason.Set(nil)
+}
+
+// UnsetDeclineReason ensures that no value is present for DeclineReason, not even an explicit nil
+func (o *BillingSnapshotStatus) UnsetDeclineReason() {
+	o.DeclineReason.Unset()
 }
 
 // GetAutoUpgradeEnabled returns the AutoUpgradeEnabled field value if set, zero value otherwise.
@@ -288,17 +332,17 @@ func (o BillingSnapshotStatus) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Suspended) {
 		toSerialize["suspended"] = o.Suspended
 	}
-	if !IsNil(o.SuspendedAt) {
-		toSerialize["suspendedAt"] = o.SuspendedAt
+	if o.SuspendedAt.IsSet() {
+		toSerialize["suspendedAt"] = o.SuspendedAt.Get()
 	}
-	if !IsNil(o.SuspensionReason) {
-		toSerialize["suspensionReason"] = o.SuspensionReason
+	if o.SuspensionReason.IsSet() {
+		toSerialize["suspensionReason"] = o.SuspensionReason.Get()
 	}
-	if !IsNil(o.OpenInvoiceUrl) {
-		toSerialize["openInvoiceUrl"] = o.OpenInvoiceUrl
+	if o.OpenInvoiceUrl.IsSet() {
+		toSerialize["openInvoiceUrl"] = o.OpenInvoiceUrl.Get()
 	}
-	if !IsNil(o.DeclineReason) {
-		toSerialize["declineReason"] = o.DeclineReason
+	if o.DeclineReason.IsSet() {
+		toSerialize["declineReason"] = o.DeclineReason.Get()
 	}
 	if !IsNil(o.AutoUpgradeEnabled) {
 		toSerialize["autoUpgradeEnabled"] = o.AutoUpgradeEnabled

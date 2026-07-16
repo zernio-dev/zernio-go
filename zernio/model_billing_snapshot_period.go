@@ -21,8 +21,8 @@ var _ MappedNullable = &BillingSnapshotPeriod{}
 
 // BillingSnapshotPeriod Current billing cycle. `start`/`end` are resolved for usage-based accounts only.
 type BillingSnapshotPeriod struct {
-	Start *time.Time `json:"start,omitempty"`
-	End   *time.Time `json:"end,omitempty"`
+	Start NullableTime `json:"start,omitempty"`
+	End   NullableTime `json:"end,omitempty"`
 	// Day-of-month the cycle resets.
 	AnchorDay *int32 `json:"anchorDay,omitempty"`
 }
@@ -44,68 +44,90 @@ func NewBillingSnapshotPeriodWithDefaults() *BillingSnapshotPeriod {
 	return &this
 }
 
-// GetStart returns the Start field value if set, zero value otherwise.
+// GetStart returns the Start field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotPeriod) GetStart() time.Time {
-	if o == nil || IsNil(o.Start) {
+	if o == nil || IsNil(o.Start.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.Start
+	return *o.Start.Get()
 }
 
 // GetStartOk returns a tuple with the Start field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotPeriod) GetStartOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.Start) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Start, true
+	return o.Start.Get(), o.Start.IsSet()
 }
 
 // HasStart returns a boolean if a field has been set.
 func (o *BillingSnapshotPeriod) HasStart() bool {
-	if o != nil && !IsNil(o.Start) {
+	if o != nil && o.Start.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetStart gets a reference to the given time.Time and assigns it to the Start field.
+// SetStart gets a reference to the given NullableTime and assigns it to the Start field.
 func (o *BillingSnapshotPeriod) SetStart(v time.Time) {
-	o.Start = &v
+	o.Start.Set(&v)
 }
 
-// GetEnd returns the End field value if set, zero value otherwise.
+// SetStartNil sets the value for Start to be an explicit nil
+func (o *BillingSnapshotPeriod) SetStartNil() {
+	o.Start.Set(nil)
+}
+
+// UnsetStart ensures that no value is present for Start, not even an explicit nil
+func (o *BillingSnapshotPeriod) UnsetStart() {
+	o.Start.Unset()
+}
+
+// GetEnd returns the End field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotPeriod) GetEnd() time.Time {
-	if o == nil || IsNil(o.End) {
+	if o == nil || IsNil(o.End.Get()) {
 		var ret time.Time
 		return ret
 	}
-	return *o.End
+	return *o.End.Get()
 }
 
 // GetEndOk returns a tuple with the End field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotPeriod) GetEndOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.End) {
+	if o == nil {
 		return nil, false
 	}
-	return o.End, true
+	return o.End.Get(), o.End.IsSet()
 }
 
 // HasEnd returns a boolean if a field has been set.
 func (o *BillingSnapshotPeriod) HasEnd() bool {
-	if o != nil && !IsNil(o.End) {
+	if o != nil && o.End.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEnd gets a reference to the given time.Time and assigns it to the End field.
+// SetEnd gets a reference to the given NullableTime and assigns it to the End field.
 func (o *BillingSnapshotPeriod) SetEnd(v time.Time) {
-	o.End = &v
+	o.End.Set(&v)
+}
+
+// SetEndNil sets the value for End to be an explicit nil
+func (o *BillingSnapshotPeriod) SetEndNil() {
+	o.End.Set(nil)
+}
+
+// UnsetEnd ensures that no value is present for End, not even an explicit nil
+func (o *BillingSnapshotPeriod) UnsetEnd() {
+	o.End.Unset()
 }
 
 // GetAnchorDay returns the AnchorDay field value if set, zero value otherwise.
@@ -150,11 +172,11 @@ func (o BillingSnapshotPeriod) MarshalJSON() ([]byte, error) {
 
 func (o BillingSnapshotPeriod) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Start) {
-		toSerialize["start"] = o.Start
+	if o.Start.IsSet() {
+		toSerialize["start"] = o.Start.Get()
 	}
-	if !IsNil(o.End) {
-		toSerialize["end"] = o.End
+	if o.End.IsSet() {
+		toSerialize["end"] = o.End.Get()
 	}
 	if !IsNil(o.AnchorDay) {
 		toSerialize["anchorDay"] = o.AnchorDay

@@ -29,7 +29,7 @@ type StartSmsRegistrationRequestCampaign struct {
 	// How a recipient ends up receiving your messages (the opt-in flow). Include a link to the page or form where they opt in — carrier reviewers reject campaigns whose consent they can't verify.
 	MessageFlow string `json:"messageFlow"`
 	Sample1     string `json:"sample1"`
-	// Second example message; carriers require two distinct samples
+	// Second example message; carriers require two distinct samples, so it must differ from sample1.
 	Sample2        string  `json:"sample2"`
 	HelpMessage    *string `json:"helpMessage,omitempty"`
 	OptinKeywords  string  `json:"optinKeywords"`

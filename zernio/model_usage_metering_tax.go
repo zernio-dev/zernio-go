@@ -20,11 +20,11 @@ var _ MappedNullable = &UsageMeteringTax{}
 
 // UsageMeteringTax Estimated tax on the window's net `totals.total`, computed with Stripe Tax against the billing address (the same engine the real invoice uses; invoices apply exclusive tax, so the card is charged total + tax). Null when the account has no billing address on file, the total is zero or negative, or the estimate failed.
 type UsageMeteringTax struct {
-	// Estimated tax in USD
+	// Estimated tax in USD, added on top of `totals.total`.
 	TaxUsd *float32 `json:"taxUsd,omitempty"`
-	// Combined rate percentage
+	// Combined rate percentage, e.g. 21.
 	RatePercent NullableFloat32 `json:"ratePercent,omitempty"`
-	// Human jurisdiction label
+	// Human jurisdiction label, e.g. \"ES VAT\" or \"WA sales tax\".
 	JurisdictionLabel NullableString `json:"jurisdictionLabel,omitempty"`
 	// True for EU/UK B2B reverse charge (0 tax added by design).
 	ReverseCharge *bool `json:"reverseCharge,omitempty"`

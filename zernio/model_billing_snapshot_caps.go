@@ -22,7 +22,7 @@ var _ MappedNullable = &BillingSnapshotCaps{}
 type BillingSnapshotCaps struct {
 	XSpendUsedCents *int32 `json:"xSpendUsedCents,omitempty"`
 	// Monthly X-API spend cap; null = unlimited.
-	XSpendLimitCents *int32 `json:"xSpendLimitCents,omitempty"`
+	XSpendLimitCents NullableInt32 `json:"xSpendLimitCents,omitempty"`
 }
 
 // NewBillingSnapshotCaps instantiates a new BillingSnapshotCaps object
@@ -74,36 +74,47 @@ func (o *BillingSnapshotCaps) SetXSpendUsedCents(v int32) {
 	o.XSpendUsedCents = &v
 }
 
-// GetXSpendLimitCents returns the XSpendLimitCents field value if set, zero value otherwise.
+// GetXSpendLimitCents returns the XSpendLimitCents field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BillingSnapshotCaps) GetXSpendLimitCents() int32 {
-	if o == nil || IsNil(o.XSpendLimitCents) {
+	if o == nil || IsNil(o.XSpendLimitCents.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.XSpendLimitCents
+	return *o.XSpendLimitCents.Get()
 }
 
 // GetXSpendLimitCentsOk returns a tuple with the XSpendLimitCents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BillingSnapshotCaps) GetXSpendLimitCentsOk() (*int32, bool) {
-	if o == nil || IsNil(o.XSpendLimitCents) {
+	if o == nil {
 		return nil, false
 	}
-	return o.XSpendLimitCents, true
+	return o.XSpendLimitCents.Get(), o.XSpendLimitCents.IsSet()
 }
 
 // HasXSpendLimitCents returns a boolean if a field has been set.
 func (o *BillingSnapshotCaps) HasXSpendLimitCents() bool {
-	if o != nil && !IsNil(o.XSpendLimitCents) {
+	if o != nil && o.XSpendLimitCents.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetXSpendLimitCents gets a reference to the given int32 and assigns it to the XSpendLimitCents field.
+// SetXSpendLimitCents gets a reference to the given NullableInt32 and assigns it to the XSpendLimitCents field.
 func (o *BillingSnapshotCaps) SetXSpendLimitCents(v int32) {
-	o.XSpendLimitCents = &v
+	o.XSpendLimitCents.Set(&v)
+}
+
+// SetXSpendLimitCentsNil sets the value for XSpendLimitCents to be an explicit nil
+func (o *BillingSnapshotCaps) SetXSpendLimitCentsNil() {
+	o.XSpendLimitCents.Set(nil)
+}
+
+// UnsetXSpendLimitCents ensures that no value is present for XSpendLimitCents, not even an explicit nil
+func (o *BillingSnapshotCaps) UnsetXSpendLimitCents() {
+	o.XSpendLimitCents.Unset()
 }
 
 func (o BillingSnapshotCaps) MarshalJSON() ([]byte, error) {
@@ -119,8 +130,8 @@ func (o BillingSnapshotCaps) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.XSpendUsedCents) {
 		toSerialize["xSpendUsedCents"] = o.XSpendUsedCents
 	}
-	if !IsNil(o.XSpendLimitCents) {
-		toSerialize["xSpendLimitCents"] = o.XSpendLimitCents
+	if o.XSpendLimitCents.IsSet() {
+		toSerialize["xSpendLimitCents"] = o.XSpendLimitCents.Get()
 	}
 	return toSerialize, nil
 }
