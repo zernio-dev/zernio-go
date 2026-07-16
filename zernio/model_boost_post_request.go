@@ -36,7 +36,9 @@ type BoostPostRequest struct {
 	Budget    UpdateAdCampaignRequestBudget `json:"budget"`
 	Currency  *string                       `json:"currency,omitempty"`
 	Schedule  *BoostPostRequestSchedule     `json:"schedule,omitempty"`
-	Targeting *UpdateAdRequestTargeting     `json:"targeting,omitempty"`
+	Targeting *BoostPostRequestTargeting    `json:"targeting,omitempty"`
+	// Meta only. A verbatim Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`), forwarded unchanged. Mutually exclusive with `targeting` (sending both is a 400). Use for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places).
+	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`. Backward-compat: providing `bidAmount` without `bidStrategy` is treated as `LOWEST_COST_WITH_BID_CAP`.
@@ -333,9 +335,9 @@ func (o *BoostPostRequest) SetSchedule(v BoostPostRequestSchedule) {
 }
 
 // GetTargeting returns the Targeting field value if set, zero value otherwise.
-func (o *BoostPostRequest) GetTargeting() UpdateAdRequestTargeting {
+func (o *BoostPostRequest) GetTargeting() BoostPostRequestTargeting {
 	if o == nil || IsNil(o.Targeting) {
-		var ret UpdateAdRequestTargeting
+		var ret BoostPostRequestTargeting
 		return ret
 	}
 	return *o.Targeting
@@ -343,7 +345,7 @@ func (o *BoostPostRequest) GetTargeting() UpdateAdRequestTargeting {
 
 // GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BoostPostRequest) GetTargetingOk() (*UpdateAdRequestTargeting, bool) {
+func (o *BoostPostRequest) GetTargetingOk() (*BoostPostRequestTargeting, bool) {
 	if o == nil || IsNil(o.Targeting) {
 		return nil, false
 	}
@@ -359,9 +361,41 @@ func (o *BoostPostRequest) HasTargeting() bool {
 	return false
 }
 
-// SetTargeting gets a reference to the given UpdateAdRequestTargeting and assigns it to the Targeting field.
-func (o *BoostPostRequest) SetTargeting(v UpdateAdRequestTargeting) {
+// SetTargeting gets a reference to the given BoostPostRequestTargeting and assigns it to the Targeting field.
+func (o *BoostPostRequest) SetTargeting(v BoostPostRequestTargeting) {
 	o.Targeting = &v
+}
+
+// GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetRawTargeting() map[string]interface{} {
+	if o == nil || IsNil(o.RawTargeting) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.RawTargeting
+}
+
+// GetRawTargetingOk returns a tuple with the RawTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetRawTargetingOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.RawTargeting) {
+		return map[string]interface{}{}, false
+	}
+	return o.RawTargeting, true
+}
+
+// HasRawTargeting returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasRawTargeting() bool {
+	if o != nil && !IsNil(o.RawTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetRawTargeting gets a reference to the given map[string]interface{} and assigns it to the RawTargeting field.
+func (o *BoostPostRequest) SetRawTargeting(v map[string]interface{}) {
+	o.RawTargeting = v
 }
 
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
@@ -745,6 +779,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Targeting) {
 		toSerialize["targeting"] = o.Targeting
+	}
+	if !IsNil(o.RawTargeting) {
+		toSerialize["rawTargeting"] = o.RawTargeting
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy

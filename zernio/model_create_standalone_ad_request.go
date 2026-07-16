@@ -89,11 +89,11 @@ type CreateStandaloneAdRequest struct {
 	// Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Postal/ZIP geo targeting. `key` is the platform's postal location ID from /v1/ads/targeting/search?dimension=geo&geoType=zip. Supported on Meta, Google, TikTok, Pinterest, X.
-	Zips []CreateStandaloneAdRequestZipsInner `json:"zips,omitempty"`
+	Zips []BoostPostRequestTargetingRegionsInner `json:"zips,omitempty"`
 	// DMA / metro-area geo targeting. `key` is the platform's metro ID from /v1/ads/targeting/search?dimension=geo&geoType=metro.
-	Metros []CreateStandaloneAdRequestZipsInner `json:"metros,omitempty"`
+	Metros []BoostPostRequestTargetingRegionsInner `json:"metros,omitempty"`
 	// Point-radius (lat/lng) geo targeting. Meta only (custom_locations). Rejected on platforms without radius support.
-	CustomLocations []CreateStandaloneAdRequestCustomLocationsInner `json:"customLocations,omitempty"`
+	CustomLocations []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok. Each must include id.
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
 	// Normalized household-income tier. Meta and TikTok express all four; Google maps only `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible with housing/employment/credit `specialAdCategories`.
@@ -1344,9 +1344,9 @@ func (o *CreateStandaloneAdRequest) SetInterests(v []UpdateAdRequestTargetingInt
 }
 
 // GetZips returns the Zips field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetZips() []CreateStandaloneAdRequestZipsInner {
+func (o *CreateStandaloneAdRequest) GetZips() []BoostPostRequestTargetingRegionsInner {
 	if o == nil || IsNil(o.Zips) {
-		var ret []CreateStandaloneAdRequestZipsInner
+		var ret []BoostPostRequestTargetingRegionsInner
 		return ret
 	}
 	return o.Zips
@@ -1354,7 +1354,7 @@ func (o *CreateStandaloneAdRequest) GetZips() []CreateStandaloneAdRequestZipsInn
 
 // GetZipsOk returns a tuple with the Zips field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetZipsOk() ([]CreateStandaloneAdRequestZipsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetZipsOk() ([]BoostPostRequestTargetingRegionsInner, bool) {
 	if o == nil || IsNil(o.Zips) {
 		return nil, false
 	}
@@ -1370,15 +1370,15 @@ func (o *CreateStandaloneAdRequest) HasZips() bool {
 	return false
 }
 
-// SetZips gets a reference to the given []CreateStandaloneAdRequestZipsInner and assigns it to the Zips field.
-func (o *CreateStandaloneAdRequest) SetZips(v []CreateStandaloneAdRequestZipsInner) {
+// SetZips gets a reference to the given []BoostPostRequestTargetingRegionsInner and assigns it to the Zips field.
+func (o *CreateStandaloneAdRequest) SetZips(v []BoostPostRequestTargetingRegionsInner) {
 	o.Zips = v
 }
 
 // GetMetros returns the Metros field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetMetros() []CreateStandaloneAdRequestZipsInner {
+func (o *CreateStandaloneAdRequest) GetMetros() []BoostPostRequestTargetingRegionsInner {
 	if o == nil || IsNil(o.Metros) {
-		var ret []CreateStandaloneAdRequestZipsInner
+		var ret []BoostPostRequestTargetingRegionsInner
 		return ret
 	}
 	return o.Metros
@@ -1386,7 +1386,7 @@ func (o *CreateStandaloneAdRequest) GetMetros() []CreateStandaloneAdRequestZipsI
 
 // GetMetrosOk returns a tuple with the Metros field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetMetrosOk() ([]CreateStandaloneAdRequestZipsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetMetrosOk() ([]BoostPostRequestTargetingRegionsInner, bool) {
 	if o == nil || IsNil(o.Metros) {
 		return nil, false
 	}
@@ -1402,15 +1402,15 @@ func (o *CreateStandaloneAdRequest) HasMetros() bool {
 	return false
 }
 
-// SetMetros gets a reference to the given []CreateStandaloneAdRequestZipsInner and assigns it to the Metros field.
-func (o *CreateStandaloneAdRequest) SetMetros(v []CreateStandaloneAdRequestZipsInner) {
+// SetMetros gets a reference to the given []BoostPostRequestTargetingRegionsInner and assigns it to the Metros field.
+func (o *CreateStandaloneAdRequest) SetMetros(v []BoostPostRequestTargetingRegionsInner) {
 	o.Metros = v
 }
 
 // GetCustomLocations returns the CustomLocations field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetCustomLocations() []CreateStandaloneAdRequestCustomLocationsInner {
+func (o *CreateStandaloneAdRequest) GetCustomLocations() []BoostPostRequestTargetingCustomLocationsInner {
 	if o == nil || IsNil(o.CustomLocations) {
-		var ret []CreateStandaloneAdRequestCustomLocationsInner
+		var ret []BoostPostRequestTargetingCustomLocationsInner
 		return ret
 	}
 	return o.CustomLocations
@@ -1418,7 +1418,7 @@ func (o *CreateStandaloneAdRequest) GetCustomLocations() []CreateStandaloneAdReq
 
 // GetCustomLocationsOk returns a tuple with the CustomLocations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetCustomLocationsOk() ([]CreateStandaloneAdRequestCustomLocationsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetCustomLocationsOk() ([]BoostPostRequestTargetingCustomLocationsInner, bool) {
 	if o == nil || IsNil(o.CustomLocations) {
 		return nil, false
 	}
@@ -1434,8 +1434,8 @@ func (o *CreateStandaloneAdRequest) HasCustomLocations() bool {
 	return false
 }
 
-// SetCustomLocations gets a reference to the given []CreateStandaloneAdRequestCustomLocationsInner and assigns it to the CustomLocations field.
-func (o *CreateStandaloneAdRequest) SetCustomLocations(v []CreateStandaloneAdRequestCustomLocationsInner) {
+// SetCustomLocations gets a reference to the given []BoostPostRequestTargetingCustomLocationsInner and assigns it to the CustomLocations field.
+func (o *CreateStandaloneAdRequest) SetCustomLocations(v []BoostPostRequestTargetingCustomLocationsInner) {
 	o.CustomLocations = v
 }
 

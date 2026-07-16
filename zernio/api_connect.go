@@ -461,6 +461,7 @@ type ConnectAPIConnectAdsRequest struct {
 	accountId    *string
 	redirectUrl  *string
 	headless     *bool
+	force        *bool
 	adAccountId  *string
 	adAccountIds *[]string
 }
@@ -486,6 +487,12 @@ func (r ConnectAPIConnectAdsRequest) RedirectUrl(redirectUrl string) ConnectAPIC
 // Enable headless mode (same-token platforms only)
 func (r ConnectAPIConnectAdsRequest) Headless(headless bool) ConnectAPIConnectAdsRequest {
 	r.headless = &headless
+	return r
+}
+
+// Force a fresh OAuth even when an account already exists. Normally the endpoint returns &#x60;alreadyConnected: true&#x60; whenever a connected account is found, keying off its active state rather than token liveness. Set &#x60;force&#x3D;true&#x60; to bypass that and always receivean &#x60;authUrl&#x60;. Completing the returned OAuth refreshes the stored token on the existing posting and ads accounts in place.
+func (r ConnectAPIConnectAdsRequest) Force(force bool) ConnectAPIConnectAdsRequest {
+	r.force = &force
 	return r
 }
 
@@ -571,6 +578,13 @@ func (a *ConnectAPIService) ConnectAdsExecute(r ConnectAPIConnectAdsRequest) (*C
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "headless", defaultValue, "form", "")
 		r.headless = &defaultValue
+	}
+	if r.force != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "force", r.force, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "force", defaultValue, "form", "")
+		r.force = &defaultValue
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
