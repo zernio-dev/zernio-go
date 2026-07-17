@@ -43,9 +43,9 @@ jobs:
           # Version is pinned in openapitools.json.
           # - structPrefix=true prefixes request structs by service, avoiding
           #   collisions where an operationId is reused across tags.
-          # - name-mappings renames the hasReply property (Go field "Replied")
-          #   so it doesn't collide with the Has-helper for the "reply" field;
-          #   the JSON tag stays "hasReply".
+          # - name-mappings renames hasX properties whose sibling field "x"
+          #   generates a colliding HasX() presence helper (hasReply vs reply,
+          #   hasPhotos vs photos on GBP reviews). JSON tags stay camelCase.
           # Output into zernio/ so the import path stays
           # github.com/zernio-dev/zernio-go/zernio.
           openapi-generator-cli generate \
@@ -53,7 +53,7 @@ jobs:
             -g go \
             -o zernio \
             --skip-validate-spec \
-            --name-mappings hasReply=Replied \
+            --name-mappings hasReply=Replied,hasPhotos=PhotosPresent \
             --additional-properties=packageName=zernio,structPrefix=true \
             --git-user-id=zernio-dev \
             --git-repo-id=zernio-go
