@@ -27,7 +27,7 @@ type WebhookPayloadMessageEdited struct {
 	Event   string              `json:"event"`
 	Message InboxWebhookMessage `json:"message"`
 	// Prior versions of the message, oldest first.
-	EditHistory []WebhookPayloadMessageEditedEditHistoryInner `json:"editHistory"`
+	EditHistory []InboxMessageEditHistoryEntry `json:"editHistory"`
 	// Total number of edits applied to this message.
 	EditCount int32 `json:"editCount"`
 	// When the most recent edit happened.
@@ -43,7 +43,7 @@ type _WebhookPayloadMessageEdited WebhookPayloadMessageEdited
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadMessageEdited(id string, event string, message InboxWebhookMessage, editHistory []WebhookPayloadMessageEditedEditHistoryInner, editCount int32, editedAt time.Time, conversation InboxWebhookConversation, account InboxWebhookAccount, timestamp time.Time) *WebhookPayloadMessageEdited {
+func NewWebhookPayloadMessageEdited(id string, event string, message InboxWebhookMessage, editHistory []InboxMessageEditHistoryEntry, editCount int32, editedAt time.Time, conversation InboxWebhookConversation, account InboxWebhookAccount, timestamp time.Time) *WebhookPayloadMessageEdited {
 	this := WebhookPayloadMessageEdited{}
 	this.Id = id
 	this.Event = event
@@ -138,9 +138,9 @@ func (o *WebhookPayloadMessageEdited) SetMessage(v InboxWebhookMessage) {
 }
 
 // GetEditHistory returns the EditHistory field value
-func (o *WebhookPayloadMessageEdited) GetEditHistory() []WebhookPayloadMessageEditedEditHistoryInner {
+func (o *WebhookPayloadMessageEdited) GetEditHistory() []InboxMessageEditHistoryEntry {
 	if o == nil {
-		var ret []WebhookPayloadMessageEditedEditHistoryInner
+		var ret []InboxMessageEditHistoryEntry
 		return ret
 	}
 
@@ -149,7 +149,7 @@ func (o *WebhookPayloadMessageEdited) GetEditHistory() []WebhookPayloadMessageEd
 
 // GetEditHistoryOk returns a tuple with the EditHistory field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadMessageEdited) GetEditHistoryOk() ([]WebhookPayloadMessageEditedEditHistoryInner, bool) {
+func (o *WebhookPayloadMessageEdited) GetEditHistoryOk() ([]InboxMessageEditHistoryEntry, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -157,7 +157,7 @@ func (o *WebhookPayloadMessageEdited) GetEditHistoryOk() ([]WebhookPayloadMessag
 }
 
 // SetEditHistory sets field value
-func (o *WebhookPayloadMessageEdited) SetEditHistory(v []WebhookPayloadMessageEditedEditHistoryInner) {
+func (o *WebhookPayloadMessageEdited) SetEditHistory(v []InboxMessageEditHistoryEntry) {
 	o.EditHistory = v
 }
 

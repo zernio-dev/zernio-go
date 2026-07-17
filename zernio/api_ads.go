@@ -550,6 +550,131 @@ func (a *AdsAPIService) BoostPostExecute(r AdsAPIBoostPostRequest) (*UpdateAd200
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPICreateAdInsightsReportRequest struct {
+	ctx                           context.Context
+	ApiService                    *AdsAPIService
+	createAdInsightsReportRequest *CreateAdInsightsReportRequest
+}
+
+func (r AdsAPICreateAdInsightsReportRequest) CreateAdInsightsReportRequest(createAdInsightsReportRequest CreateAdInsightsReportRequest) AdsAPICreateAdInsightsReportRequest {
+	r.createAdInsightsReportRequest = &createAdInsightsReportRequest
+	return r
+}
+
+func (r AdsAPICreateAdInsightsReportRequest) Execute() (*CreateAdInsightsReport202Response, *http.Response, error) {
+	return r.ApiService.CreateAdInsightsReportExecute(r)
+}
+
+/*
+CreateAdInsightsReport Submit an async insights report run (Meta)
+
+Submits an asynchronous Meta insights report. Same query surface as GET /v1/ads/insights, but
+in the JSON body; Meta processes the report server-side, which is the right choice for long
+ranges or large accounts where the sync query is slow or rate-limited. Returns a `reportRunId`
+to poll via GET /v1/ads/insights/reports/{reportRunId}. Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPICreateAdInsightsReportRequest
+*/
+func (a *AdsAPIService) CreateAdInsightsReport(ctx context.Context) AdsAPICreateAdInsightsReportRequest {
+	return AdsAPICreateAdInsightsReportRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateAdInsightsReport202Response
+func (a *AdsAPIService) CreateAdInsightsReportExecute(r AdsAPICreateAdInsightsReportRequest) (*CreateAdInsightsReport202Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateAdInsightsReport202Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.CreateAdInsightsReport")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/insights/reports"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createAdInsightsReportRequest == nil {
+		return localVarReturnValue, nil, reportError("createAdInsightsReportRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createAdInsightsReportRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPICreateConversionDestinationRequest struct {
 	ctx                                context.Context
 	ApiService                         *AdsAPIService
@@ -2068,6 +2193,156 @@ func (a *AdsAPIService) GetAdCommentsExecute(r AdsAPIGetAdCommentsRequest) (*Get
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIGetAdInsightsReportRequest struct {
+	ctx         context.Context
+	ApiService  *AdsAPIService
+	reportRunId string
+	accountId   *string
+	limit       *int32
+	after       *string
+}
+
+// Zernio SocialAccount id used to resolve the Meta token (must be the same connection that created the run).
+func (r AdsAPIGetAdInsightsReportRequest) AccountId(accountId string) AdsAPIGetAdInsightsReportRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdsAPIGetAdInsightsReportRequest) Limit(limit int32) AdsAPIGetAdInsightsReportRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r AdsAPIGetAdInsightsReportRequest) After(after string) AdsAPIGetAdInsightsReportRequest {
+	r.after = &after
+	return r
+}
+
+func (r AdsAPIGetAdInsightsReportRequest) Execute() (*GetAdInsightsReport200Response, *http.Response, error) {
+	return r.ApiService.GetAdInsightsReportExecute(r)
+}
+
+/*
+GetAdInsightsReport Poll an async insights report run (Meta)
+
+Status and results for a report run created via POST /v1/ads/insights/reports. While the job
+runs, returns `status` and `percentCompletion`. Once `status` is "Job Completed" the response
+also carries a `data` page, cursor-paginated via `limit` / `after`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param reportRunId
+	@return AdsAPIGetAdInsightsReportRequest
+*/
+func (a *AdsAPIService) GetAdInsightsReport(ctx context.Context, reportRunId string) AdsAPIGetAdInsightsReportRequest {
+	return AdsAPIGetAdInsightsReportRequest{
+		ApiService:  a,
+		ctx:         ctx,
+		reportRunId: reportRunId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdInsightsReport200Response
+func (a *AdsAPIService) GetAdInsightsReportExecute(r AdsAPIGetAdInsightsReportRequest) (*GetAdInsightsReport200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdInsightsReport200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetAdInsightsReport")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/insights/reports/{reportRunId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"reportRunId"+"}", url.PathEscape(parameterValueToString(r.reportRunId, "reportRunId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -5120,6 +5395,252 @@ func (a *AdsAPIService) ListWhatsAppConversionsExecute(r AdsAPIListWhatsAppConve
 		var defaultValue int32 = 50
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIQueryAdInsightsRequest struct {
+	ctx           context.Context
+	ApiService    *AdsAPIService
+	accountId     *string
+	objectId      *string
+	level         *string
+	fields        *string
+	breakdowns    *string
+	filtering     *string
+	datePreset    *string
+	fromDate      *string
+	toDate        *string
+	timeIncrement *string
+	limit         *int32
+	after         *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdsAPIQueryAdInsightsRequest) AccountId(accountId string) AdsAPIQueryAdInsightsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta insights node: act_&lt;n&gt;, campaign id, ad set id or ad id.
+func (r AdsAPIQueryAdInsightsRequest) ObjectId(objectId string) AdsAPIQueryAdInsightsRequest {
+	r.objectId = &objectId
+	return r
+}
+
+// Row granularity
+func (r AdsAPIQueryAdInsightsRequest) Level(level string) AdsAPIQueryAdInsightsRequest {
+	r.level = &level
+	return r
+}
+
+// Comma-separated Graph insights fields (e.g. spend,impressions,frequency,website_purchase_roas). Omitted &#x3D; Meta&#39;s default set.
+func (r AdsAPIQueryAdInsightsRequest) Fields(fields string) AdsAPIQueryAdInsightsRequest {
+	r.fields = &fields
+	return r
+}
+
+// Comma-separated Graph breakdowns (e.g. age,gender or publisher_platform).
+func (r AdsAPIQueryAdInsightsRequest) Breakdowns(breakdowns string) AdsAPIQueryAdInsightsRequest {
+	r.breakdowns = &breakdowns
+	return r
+}
+
+// JSON array of Meta filter objects: [{\&quot;field\&quot;, \&quot;operator\&quot;, \&quot;value\&quot;}]. Applied server-side by Meta.
+func (r AdsAPIQueryAdInsightsRequest) Filtering(filtering string) AdsAPIQueryAdInsightsRequest {
+	r.filtering = &filtering
+	return r
+}
+
+// Meta date_preset (e.g. last_7d, last_30d, this_month). Mutually exclusive with fromDate/toDate.
+func (r AdsAPIQueryAdInsightsRequest) DatePreset(datePreset string) AdsAPIQueryAdInsightsRequest {
+	r.datePreset = &datePreset
+	return r
+}
+
+// Start of range (YYYY-MM-DD); requires toDate.
+func (r AdsAPIQueryAdInsightsRequest) FromDate(fromDate string) AdsAPIQueryAdInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End of range (YYYY-MM-DD); requires fromDate.
+func (r AdsAPIQueryAdInsightsRequest) ToDate(toDate string) AdsAPIQueryAdInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Days per row (1-90), monthly, or all_days.
+func (r AdsAPIQueryAdInsightsRequest) TimeIncrement(timeIncrement string) AdsAPIQueryAdInsightsRequest {
+	r.timeIncrement = &timeIncrement
+	return r
+}
+
+// Rows per page
+func (r AdsAPIQueryAdInsightsRequest) Limit(limit int32) AdsAPIQueryAdInsightsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Cursor from paging.after of the previous page.
+func (r AdsAPIQueryAdInsightsRequest) After(after string) AdsAPIQueryAdInsightsRequest {
+	r.after = &after
+	return r
+}
+
+func (r AdsAPIQueryAdInsightsRequest) Execute() (*QueryAdInsights200Response, *http.Response, error) {
+	return r.ApiService.QueryAdInsightsExecute(r)
+}
+
+/*
+QueryAdInsights Flexible live insights query (Meta)
+
+Live, flexible insights query against Meta's Graph API. Unlike GET /v1/ads/{adId}/analytics
+(fixed metric set, cached), this forwards caller-chosen `fields`, `breakdowns` and `filtering`
+to any Meta insights node and returns Meta's rows verbatim.
+
+`objectId` selects the node: an ad account, campaign, ad set or ad platform id.
+`level` sets row granularity independently of the node.
+
+Semantic validation is Meta's: an unknown field or invalid breakdown combination returns a 400
+carrying Meta's message. For long ranges or agency-scale accounts prefer the async variant
+(POST /v1/ads/insights/reports). Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIQueryAdInsightsRequest
+*/
+func (a *AdsAPIService) QueryAdInsights(ctx context.Context) AdsAPIQueryAdInsightsRequest {
+	return AdsAPIQueryAdInsightsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return QueryAdInsights200Response
+func (a *AdsAPIService) QueryAdInsightsExecute(r AdsAPIQueryAdInsightsRequest) (*QueryAdInsights200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *QueryAdInsights200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.QueryAdInsights")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/insights"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.objectId == nil {
+		return localVarReturnValue, nil, reportError("objectId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "objectId", r.objectId, "form", "")
+	if r.level != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "level", r.level, "form", "")
+	}
+	if r.fields != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.breakdowns != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdowns", r.breakdowns, "form", "")
+	}
+	if r.filtering != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "filtering", r.filtering, "form", "")
+	}
+	if r.datePreset != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "datePreset", r.datePreset, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	if r.timeIncrement != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "timeIncrement", r.timeIncrement, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.after != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

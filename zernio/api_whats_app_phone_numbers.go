@@ -28,11 +28,18 @@ type WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest struct {
 	ctx        context.Context
 	ApiService *WhatsAppPhoneNumbersAPIService
 	country    *string
+	numberType *string
 }
 
 // ISO-2 country code.
 func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) Country(country string) WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest {
 	r.country = &country
+	return r
+}
+
+// Check a specific offered type (stock and address constraints are per type). Omitted &#x3D; the country&#39;s default type.
+func (r WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest) NumberType(numberType string) WhatsAppPhoneNumbersAPICheckWhatsAppNumberAvailabilityRequest {
+	r.numberType = &numberType
 	return r
 }
 
@@ -97,6 +104,9 @@ func (a *WhatsAppPhoneNumbersAPIService) CheckWhatsAppNumberAvailabilityExecute(
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "country", r.country, "form", "")
+	if r.numberType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

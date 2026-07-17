@@ -46,7 +46,7 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	// Total number of edits applied.
 	EditCount *int32 `json:"editCount,omitempty"`
 	// Every prior version of the message, oldest first.
-	EditHistory []GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner `json:"editHistory,omitempty"`
+	EditHistory []InboxMessageEditHistoryEntry `json:"editHistory,omitempty"`
 	// True if the sender has deleted (unsent) this message. The original message and attachments fields remain populated.
 	IsDeleted *bool        `json:"isDeleted,omitempty"`
 	DeletedAt NullableTime `json:"deletedAt,omitempty"`
@@ -691,9 +691,9 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) SetEditCount(v in
 }
 
 // GetEditHistory returns the EditHistory field value if set, zero value otherwise.
-func (o *GetInboxConversationMessages200ResponseMessagesInner) GetEditHistory() []GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner {
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetEditHistory() []InboxMessageEditHistoryEntry {
 	if o == nil || IsNil(o.EditHistory) {
-		var ret []GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner
+		var ret []InboxMessageEditHistoryEntry
 		return ret
 	}
 	return o.EditHistory
@@ -701,7 +701,7 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) GetEditHistory() 
 
 // GetEditHistoryOk returns a tuple with the EditHistory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetInboxConversationMessages200ResponseMessagesInner) GetEditHistoryOk() ([]GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner, bool) {
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetEditHistoryOk() ([]InboxMessageEditHistoryEntry, bool) {
 	if o == nil || IsNil(o.EditHistory) {
 		return nil, false
 	}
@@ -717,8 +717,8 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) HasEditHistory() 
 	return false
 }
 
-// SetEditHistory gets a reference to the given []GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner and assigns it to the EditHistory field.
-func (o *GetInboxConversationMessages200ResponseMessagesInner) SetEditHistory(v []GetInboxConversationMessages200ResponseMessagesInnerEditHistoryInner) {
+// SetEditHistory gets a reference to the given []InboxMessageEditHistoryEntry and assigns it to the EditHistory field.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetEditHistory(v []InboxMessageEditHistoryEntry) {
 	o.EditHistory = v
 }
 

@@ -35,6 +35,10 @@ type GetGoogleBusinessReviews200ResponseReviewsInner struct {
 	CreateTime  *time.Time                                                  `json:"createTime,omitempty"`
 	UpdateTime  *time.Time                                                  `json:"updateTime,omitempty"`
 	ReviewReply *GetGoogleBusinessReviews200ResponseReviewsInnerReviewReply `json:"reviewReply,omitempty"`
+	// Number of photos attached to the review (photos only, videos are not counted)
+	PhotoCount *int32 `json:"photoCount,omitempty"`
+	// Photos attached to the review by the reviewer
+	Photos []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner `json:"photos,omitempty"`
 }
 
 // NewGetGoogleBusinessReviews200ResponseReviewsInner instantiates a new GetGoogleBusinessReviews200ResponseReviewsInner object
@@ -342,6 +346,70 @@ func (o *GetGoogleBusinessReviews200ResponseReviewsInner) SetReviewReply(v GetGo
 	o.ReviewReply = &v
 }
 
+// GetPhotoCount returns the PhotoCount field value if set, zero value otherwise.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) GetPhotoCount() int32 {
+	if o == nil || IsNil(o.PhotoCount) {
+		var ret int32
+		return ret
+	}
+	return *o.PhotoCount
+}
+
+// GetPhotoCountOk returns a tuple with the PhotoCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) GetPhotoCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.PhotoCount) {
+		return nil, false
+	}
+	return o.PhotoCount, true
+}
+
+// HasPhotoCount returns a boolean if a field has been set.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) HasPhotoCount() bool {
+	if o != nil && !IsNil(o.PhotoCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhotoCount gets a reference to the given int32 and assigns it to the PhotoCount field.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) SetPhotoCount(v int32) {
+	o.PhotoCount = &v
+}
+
+// GetPhotos returns the Photos field value if set, zero value otherwise.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) GetPhotos() []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner {
+	if o == nil || IsNil(o.Photos) {
+		var ret []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner
+		return ret
+	}
+	return o.Photos
+}
+
+// GetPhotosOk returns a tuple with the Photos field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) GetPhotosOk() ([]GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner, bool) {
+	if o == nil || IsNil(o.Photos) {
+		return nil, false
+	}
+	return o.Photos, true
+}
+
+// HasPhotos returns a boolean if a field has been set.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) HasPhotos() bool {
+	if o != nil && !IsNil(o.Photos) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhotos gets a reference to the given []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner and assigns it to the Photos field.
+func (o *GetGoogleBusinessReviews200ResponseReviewsInner) SetPhotos(v []GetGoogleBusinessReviews200ResponseReviewsInnerPhotosInner) {
+	o.Photos = v
+}
+
 func (o GetGoogleBusinessReviews200ResponseReviewsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -378,6 +446,12 @@ func (o GetGoogleBusinessReviews200ResponseReviewsInner) ToMap() (map[string]int
 	}
 	if !IsNil(o.ReviewReply) {
 		toSerialize["reviewReply"] = o.ReviewReply
+	}
+	if !IsNil(o.PhotoCount) {
+		toSerialize["photoCount"] = o.PhotoCount
+	}
+	if !IsNil(o.Photos) {
+		toSerialize["photos"] = o.Photos
 	}
 	return toSerialize, nil
 }

@@ -22,7 +22,9 @@ var _ MappedNullable = &PurchasePhoneNumber202Response{}
 type PurchasePhoneNumber202Response struct {
 	Status  *string `json:"status,omitempty"`
 	Country *string `json:"country,omitempty"`
-	KycUrl  *string `json:"kycUrl,omitempty"`
+	// The type that will be ordered after KYC approval.
+	NumberType *string `json:"numberType,omitempty"`
+	KycUrl     *string `json:"kycUrl,omitempty"`
 }
 
 // NewPurchasePhoneNumber202Response instantiates a new PurchasePhoneNumber202Response object
@@ -106,6 +108,38 @@ func (o *PurchasePhoneNumber202Response) SetCountry(v string) {
 	o.Country = &v
 }
 
+// GetNumberType returns the NumberType field value if set, zero value otherwise.
+func (o *PurchasePhoneNumber202Response) GetNumberType() string {
+	if o == nil || IsNil(o.NumberType) {
+		var ret string
+		return ret
+	}
+	return *o.NumberType
+}
+
+// GetNumberTypeOk returns a tuple with the NumberType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumber202Response) GetNumberTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.NumberType) {
+		return nil, false
+	}
+	return o.NumberType, true
+}
+
+// HasNumberType returns a boolean if a field has been set.
+func (o *PurchasePhoneNumber202Response) HasNumberType() bool {
+	if o != nil && !IsNil(o.NumberType) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumberType gets a reference to the given string and assigns it to the NumberType field.
+func (o *PurchasePhoneNumber202Response) SetNumberType(v string) {
+	o.NumberType = &v
+}
+
 // GetKycUrl returns the KycUrl field value if set, zero value otherwise.
 func (o *PurchasePhoneNumber202Response) GetKycUrl() string {
 	if o == nil || IsNil(o.KycUrl) {
@@ -153,6 +187,9 @@ func (o PurchasePhoneNumber202Response) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
+	}
+	if !IsNil(o.NumberType) {
+		toSerialize["numberType"] = o.NumberType
 	}
 	if !IsNil(o.KycUrl) {
 		toSerialize["kycUrl"] = o.KycUrl

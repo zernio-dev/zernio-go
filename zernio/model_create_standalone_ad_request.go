@@ -80,7 +80,9 @@ type CreateStandaloneAdRequest struct {
 	BoardId *string `json:"boardId,omitempty"`
 	// LinkedIn only. The Company Page that authors the Direct Sponsored Content (\"dark\") post backing the ad — accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
-	// ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no `cities` or `regions` are provided. (LinkedIn currently honours country-level targeting only.)
+	// Nested targeting object — the same TargetingSpec shape as `POST /v1/ads/boost`, `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences. Merged UNDER the flat inline targeting fields below: `savedTargetingId` < `targeting` < flat fields (a flat field present on the body replaces the nested value entirely). Both forms are equivalent; use whichever your integration already builds.
+	Targeting *TargetingSpec `json:"targeting,omitempty"`
+	// ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no other geo targeting (flat or nested `targeting`) is provided. (LinkedIn currently honours country-level targeting only.)
 	Countries []string `json:"countries,omitempty"`
 	// Meta-only. City-level geo targeting. Each city is targeted by Meta's opaque `key` (the city ID) which can be looked up via `GET /v1/ads/targeting/search?type=city&q=<name>&country_code=<ISO>`. Optional `radius` + `distance_unit` extend the targeting beyond the city limits (e.g. radius 25 km around the city center). Both must be set together, or both omitted (Meta defaults to ~16 km when omitted).  Cannot overlap with the same country in `countries` (Meta returns a \"locations overlap\" error). Either drop the country or scope it to a different country.
 	Cities []CreateStandaloneAdRequestCitiesInner `json:"cities,omitempty"`
@@ -1183,6 +1185,38 @@ func (o *CreateStandaloneAdRequest) HasOrganizationId() bool {
 // SetOrganizationId gets a reference to the given string and assigns it to the OrganizationId field.
 func (o *CreateStandaloneAdRequest) SetOrganizationId(v string) {
 	o.OrganizationId = &v
+}
+
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetTargeting() TargetingSpec {
+	if o == nil || IsNil(o.Targeting) {
+		var ret TargetingSpec
+		return ret
+	}
+	return *o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetTargetingOk() (*TargetingSpec, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return nil, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given TargetingSpec and assigns it to the Targeting field.
+func (o *CreateStandaloneAdRequest) SetTargeting(v TargetingSpec) {
+	o.Targeting = &v
 }
 
 // GetCountries returns the Countries field value if set, zero value otherwise.
@@ -2500,6 +2534,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OrganizationId) {
 		toSerialize["organizationId"] = o.OrganizationId
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
 	}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries

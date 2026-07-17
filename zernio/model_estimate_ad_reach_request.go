@@ -27,7 +27,7 @@ type EstimateAdReachRequest struct {
 	// Required. The platform ad-account ID the reach call runs against (Meta act_..., LinkedIn numeric sponsoredAccount ID, Pinterest ad-account ID, X account ID) - every backing reach API is scoped to one ad account. Get it from GET /v1/ads/accounts.
 	AdAccountId string `json:"adAccountId"`
 	// The targeting spec to estimate. Same shape used by POST /v1/ads/create.
-	Spec TargetingSpec `json:"spec"`
+	Spec NullableTargetingSpec `json:"spec"`
 	// Optional. The optimization goal the estimate should assume (platform's own vocabulary, e.g. Meta `REACH`, `LINK_CLICKS`, `OFFSITE_CONVERSIONS`). Some platforms vary the estimate by goal; omit to use the platform default.
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
@@ -38,7 +38,7 @@ type _EstimateAdReachRequest EstimateAdReachRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEstimateAdReachRequest(accountId string, adAccountId string, spec TargetingSpec) *EstimateAdReachRequest {
+func NewEstimateAdReachRequest(accountId string, adAccountId string, spec NullableTargetingSpec) *EstimateAdReachRequest {
 	this := EstimateAdReachRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
@@ -103,27 +103,29 @@ func (o *EstimateAdReachRequest) SetAdAccountId(v string) {
 }
 
 // GetSpec returns the Spec field value
+// If the value is explicit nil, the zero value for TargetingSpec will be returned
 func (o *EstimateAdReachRequest) GetSpec() TargetingSpec {
-	if o == nil {
+	if o == nil || o.Spec.Get() == nil {
 		var ret TargetingSpec
 		return ret
 	}
 
-	return o.Spec
+	return *o.Spec.Get()
 }
 
 // GetSpecOk returns a tuple with the Spec field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EstimateAdReachRequest) GetSpecOk() (*TargetingSpec, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Spec, true
+	return o.Spec.Get(), o.Spec.IsSet()
 }
 
 // SetSpec sets field value
 func (o *EstimateAdReachRequest) SetSpec(v TargetingSpec) {
-	o.Spec = v
+	o.Spec.Set(&v)
 }
 
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
@@ -170,7 +172,7 @@ func (o EstimateAdReachRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
-	toSerialize["spec"] = o.Spec
+	toSerialize["spec"] = o.Spec.Get()
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal
 	}

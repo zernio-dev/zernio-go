@@ -33,6 +33,10 @@ type ListPhoneNumberCountries200ResponseCountriesInner struct {
 	SmsAvailable *bool `json:"smsAvailable,omitempty"`
 	// WhatsApp Business Calling (BIC) outbound availability, a Meta feature blocked in some countries. NOT the PSTN Calls feature (`callsAvailable`).
 	OutboundCallingAvailable *bool `json:"outboundCallingAvailable,omitempty"`
+	// Live carrier-stock snapshot (refreshed every 6h + on availability checks): false when NO offered type currently has deliverable inventory, so a purchase would fail. Treat as advisory; the purchase itself re-checks.
+	InStock *bool `json:"inStock,omitempty"`
+	// Every number type offered in this country (default first). Capabilities, KYC tier, monthly price, and stock are per type. The country-level fields above mirror the first (default) entry. Pass the chosen `numberType` to POST /v1/phone-numbers/purchase.
+	Types []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner `json:"types,omitempty"`
 }
 
 // NewListPhoneNumberCountries200ResponseCountriesInner instantiates a new ListPhoneNumberCountries200ResponseCountriesInner object
@@ -308,6 +312,70 @@ func (o *ListPhoneNumberCountries200ResponseCountriesInner) SetOutboundCallingAv
 	o.OutboundCallingAvailable = &v
 }
 
+// GetInStock returns the InStock field value if set, zero value otherwise.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetInStock() bool {
+	if o == nil || IsNil(o.InStock) {
+		var ret bool
+		return ret
+	}
+	return *o.InStock
+}
+
+// GetInStockOk returns a tuple with the InStock field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetInStockOk() (*bool, bool) {
+	if o == nil || IsNil(o.InStock) {
+		return nil, false
+	}
+	return o.InStock, true
+}
+
+// HasInStock returns a boolean if a field has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) HasInStock() bool {
+	if o != nil && !IsNil(o.InStock) {
+		return true
+	}
+
+	return false
+}
+
+// SetInStock gets a reference to the given bool and assigns it to the InStock field.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) SetInStock(v bool) {
+	o.InStock = &v
+}
+
+// GetTypes returns the Types field value if set, zero value otherwise.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetTypes() []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner {
+	if o == nil || IsNil(o.Types) {
+		var ret []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner
+		return ret
+	}
+	return o.Types
+}
+
+// GetTypesOk returns a tuple with the Types field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetTypesOk() ([]ListPhoneNumberCountries200ResponseCountriesInnerTypesInner, bool) {
+	if o == nil || IsNil(o.Types) {
+		return nil, false
+	}
+	return o.Types, true
+}
+
+// HasTypes returns a boolean if a field has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) HasTypes() bool {
+	if o != nil && !IsNil(o.Types) {
+		return true
+	}
+
+	return false
+}
+
+// SetTypes gets a reference to the given []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner and assigns it to the Types field.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) SetTypes(v []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) {
+	o.Types = v
+}
+
 func (o ListPhoneNumberCountries200ResponseCountriesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -341,6 +409,12 @@ func (o ListPhoneNumberCountries200ResponseCountriesInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.OutboundCallingAvailable) {
 		toSerialize["outboundCallingAvailable"] = o.OutboundCallingAvailable
+	}
+	if !IsNil(o.InStock) {
+		toSerialize["inStock"] = o.InStock
+	}
+	if !IsNil(o.Types) {
+		toSerialize["types"] = o.Types
 	}
 	return toSerialize, nil
 }

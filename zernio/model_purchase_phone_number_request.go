@@ -26,6 +26,8 @@ type PurchasePhoneNumberRequest struct {
 	ProfileId string `json:"profileId"`
 	// ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: \"kyc_required\", kycUrl } — the customer must complete KYC at that URL before the number is ordered. See GET /v1/phone-numbers/countries.
 	Country *string `json:"country,omitempty"`
+	// Which of the country's offered number types to order (see `types[]` on GET /v1/phone-numbers/countries). Omitted = the country's default type, which is always the WhatsApp-safe choice. Capabilities, price, and KYC requirements are per (country, type): toll_free can never connect WhatsApp (400 when combined with connectWhatsapp:true), and wantsSms:true requires an SMS-capable type.
+	NumberType *string `json:"numberType,omitempty"`
 	// A phone number is the unit; WhatsApp is one optional feature. Pass false to buy a STANDALONE number (Calls/SMS only): provisioning skips the Meta pre-verify/OTP steps and the number activates immediately. Omitted defaults to the WhatsApp provisioning path. WhatsApp can be connected to a standalone number later from the connect flow.
 	ConnectWhatsapp *bool `json:"connectWhatsapp,omitempty"`
 	// SMS capability is per-number, not per-country. Pass true to provision from the SMS-capable inventory pool so the number can actually text (see also GET /v1/phone-numbers/available with sms=true, and smsAvailable on GET /v1/phone-numbers/countries).
@@ -126,6 +128,38 @@ func (o *PurchasePhoneNumberRequest) HasCountry() bool {
 // SetCountry gets a reference to the given string and assigns it to the Country field.
 func (o *PurchasePhoneNumberRequest) SetCountry(v string) {
 	o.Country = &v
+}
+
+// GetNumberType returns the NumberType field value if set, zero value otherwise.
+func (o *PurchasePhoneNumberRequest) GetNumberType() string {
+	if o == nil || IsNil(o.NumberType) {
+		var ret string
+		return ret
+	}
+	return *o.NumberType
+}
+
+// GetNumberTypeOk returns a tuple with the NumberType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumberRequest) GetNumberTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.NumberType) {
+		return nil, false
+	}
+	return o.NumberType, true
+}
+
+// HasNumberType returns a boolean if a field has been set.
+func (o *PurchasePhoneNumberRequest) HasNumberType() bool {
+	if o != nil && !IsNil(o.NumberType) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumberType gets a reference to the given string and assigns it to the NumberType field.
+func (o *PurchasePhoneNumberRequest) SetNumberType(v string) {
+	o.NumberType = &v
 }
 
 // GetConnectWhatsapp returns the ConnectWhatsapp field value if set, zero value otherwise.
@@ -269,6 +303,9 @@ func (o PurchasePhoneNumberRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["profileId"] = o.ProfileId
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
+	}
+	if !IsNil(o.NumberType) {
+		toSerialize["numberType"] = o.NumberType
 	}
 	if !IsNil(o.ConnectWhatsapp) {
 		toSerialize["connectWhatsapp"] = o.ConnectWhatsapp

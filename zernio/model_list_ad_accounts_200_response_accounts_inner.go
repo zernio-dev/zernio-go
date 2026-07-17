@@ -31,9 +31,9 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 	// Meta only. Minimum daily budget for the account, in the account currency's major units. This is the impressions-billed minimum; other billing events have higher minimums. Absent when the connected token cannot read it.
 	MinimumDailyBudget *float32 `json:"minimumDailyBudget,omitempty"`
-	// Meta only. Whether the account can create/run ads now. Absent (treat as true) on non-Meta platforms.
+	// Meta and X only. Whether the account can create/run ads now. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
-	// Meta only. Human-readable reason when selectable is false; null when selectable.
+	// Meta and X only. Human-readable reason when selectable is false; null when selectable.
 	UnusableReason NullableString `json:"unusableReason,omitempty"`
 }
 

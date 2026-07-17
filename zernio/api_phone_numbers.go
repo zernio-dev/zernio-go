@@ -147,11 +147,18 @@ type PhoneNumbersAPICheckPhoneNumberAvailabilityRequest struct {
 	ctx        context.Context
 	ApiService *PhoneNumbersAPIService
 	country    *string
+	numberType *string
 }
 
 // ISO-2 country code.
 func (r PhoneNumbersAPICheckPhoneNumberAvailabilityRequest) Country(country string) PhoneNumbersAPICheckPhoneNumberAvailabilityRequest {
 	r.country = &country
+	return r
+}
+
+// Check a specific offered type (stock and address constraints are per type). Omitted &#x3D; the country&#39;s default type.
+func (r PhoneNumbersAPICheckPhoneNumberAvailabilityRequest) NumberType(numberType string) PhoneNumbersAPICheckPhoneNumberAvailabilityRequest {
+	r.numberType = &numberType
 	return r
 }
 
@@ -209,6 +216,9 @@ func (a *PhoneNumbersAPIService) CheckPhoneNumberAvailabilityExecute(r PhoneNumb
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "country", r.country, "form", "")
+	if r.numberType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -798,10 +808,17 @@ type PhoneNumbersAPIGetPhoneNumberKycFormRequest struct {
 	ctx        context.Context
 	ApiService *PhoneNumbersAPIService
 	country    *string
+	numberType *string
 }
 
 func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) Country(country string) PhoneNumbersAPIGetPhoneNumberKycFormRequest {
 	r.country = &country
+	return r
+}
+
+// Requirements and reuse eligibility are per (country, type). Omitted &#x3D; the country&#39;s default type. Pass the same value on the POST.
+func (r PhoneNumbersAPIGetPhoneNumberKycFormRequest) NumberType(numberType string) PhoneNumbersAPIGetPhoneNumberKycFormRequest {
+	r.numberType = &numberType
 	return r
 }
 
@@ -852,6 +869,9 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "country", r.country, "form", "")
+	if r.numberType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

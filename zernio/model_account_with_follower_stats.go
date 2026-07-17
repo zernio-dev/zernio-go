@@ -33,6 +33,8 @@ type AccountWithFollowerStats struct {
 	// Full profile URL for the connected account on its platform.
 	ProfileUrl *string `json:"profileUrl,omitempty"`
 	IsActive   bool    `json:"isActive"`
+	// The platform definitively reported the stored OAuth token as dead. While true, GET /v1/connect/{platform}/ads returns a fresh authUrl (implicit force=true) instead of alreadyConnected, so re-running the connect flow recovers the account. Cleared automatically when the account is re-authorized.
+	NeedsReconnection *bool `json:"needsReconnection,omitempty"`
 	// Follower count (only included if user has analytics add-on)
 	FollowersCount *float32 `json:"followersCount,omitempty"`
 	// Last time follower count was updated (only included if user has analytics add-on)
@@ -300,6 +302,38 @@ func (o *AccountWithFollowerStats) GetIsActiveOk() (*bool, bool) {
 // SetIsActive sets field value
 func (o *AccountWithFollowerStats) SetIsActive(v bool) {
 	o.IsActive = v
+}
+
+// GetNeedsReconnection returns the NeedsReconnection field value if set, zero value otherwise.
+func (o *AccountWithFollowerStats) GetNeedsReconnection() bool {
+	if o == nil || IsNil(o.NeedsReconnection) {
+		var ret bool
+		return ret
+	}
+	return *o.NeedsReconnection
+}
+
+// GetNeedsReconnectionOk returns a tuple with the NeedsReconnection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountWithFollowerStats) GetNeedsReconnectionOk() (*bool, bool) {
+	if o == nil || IsNil(o.NeedsReconnection) {
+		return nil, false
+	}
+	return o.NeedsReconnection, true
+}
+
+// HasNeedsReconnection returns a boolean if a field has been set.
+func (o *AccountWithFollowerStats) HasNeedsReconnection() bool {
+	if o != nil && !IsNil(o.NeedsReconnection) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeedsReconnection gets a reference to the given bool and assigns it to the NeedsReconnection field.
+func (o *AccountWithFollowerStats) SetNeedsReconnection(v bool) {
+	o.NeedsReconnection = &v
 }
 
 // GetFollowersCount returns the FollowersCount field value if set, zero value otherwise.
@@ -680,6 +714,9 @@ func (o AccountWithFollowerStats) ToMap() (map[string]interface{}, error) {
 		toSerialize["profileUrl"] = o.ProfileUrl
 	}
 	toSerialize["isActive"] = o.IsActive
+	if !IsNil(o.NeedsReconnection) {
+		toSerialize["needsReconnection"] = o.NeedsReconnection
+	}
 	if !IsNil(o.FollowersCount) {
 		toSerialize["followersCount"] = o.FollowersCount
 	}
