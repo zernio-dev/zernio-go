@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateGoogleBusinessServicesRequest{}
 
 // UpdateGoogleBusinessServicesRequest struct for UpdateGoogleBusinessServicesRequest
 type UpdateGoogleBusinessServicesRequest struct {
-	ServiceItems []GetGoogleBusinessServices200ResponseServicesInner `json:"serviceItems"`
+	ServiceItems []UpdateGoogleBusinessServicesRequestServiceItemsInner `json:"serviceItems"`
 }
 
 type _UpdateGoogleBusinessServicesRequest UpdateGoogleBusinessServicesRequest
@@ -31,7 +31,7 @@ type _UpdateGoogleBusinessServicesRequest UpdateGoogleBusinessServicesRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateGoogleBusinessServicesRequest(serviceItems []GetGoogleBusinessServices200ResponseServicesInner) *UpdateGoogleBusinessServicesRequest {
+func NewUpdateGoogleBusinessServicesRequest(serviceItems []UpdateGoogleBusinessServicesRequestServiceItemsInner) *UpdateGoogleBusinessServicesRequest {
 	this := UpdateGoogleBusinessServicesRequest{}
 	this.ServiceItems = serviceItems
 	return &this
@@ -46,9 +46,9 @@ func NewUpdateGoogleBusinessServicesRequestWithDefaults() *UpdateGoogleBusinessS
 }
 
 // GetServiceItems returns the ServiceItems field value
-func (o *UpdateGoogleBusinessServicesRequest) GetServiceItems() []GetGoogleBusinessServices200ResponseServicesInner {
+func (o *UpdateGoogleBusinessServicesRequest) GetServiceItems() []UpdateGoogleBusinessServicesRequestServiceItemsInner {
 	if o == nil {
-		var ret []GetGoogleBusinessServices200ResponseServicesInner
+		var ret []UpdateGoogleBusinessServicesRequestServiceItemsInner
 		return ret
 	}
 
@@ -57,7 +57,7 @@ func (o *UpdateGoogleBusinessServicesRequest) GetServiceItems() []GetGoogleBusin
 
 // GetServiceItemsOk returns a tuple with the ServiceItems field value
 // and a boolean to check if the value has been set.
-func (o *UpdateGoogleBusinessServicesRequest) GetServiceItemsOk() ([]GetGoogleBusinessServices200ResponseServicesInner, bool) {
+func (o *UpdateGoogleBusinessServicesRequest) GetServiceItemsOk() ([]UpdateGoogleBusinessServicesRequestServiceItemsInner, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,7 +65,7 @@ func (o *UpdateGoogleBusinessServicesRequest) GetServiceItemsOk() ([]GetGoogleBu
 }
 
 // SetServiceItems sets field value
-func (o *UpdateGoogleBusinessServicesRequest) SetServiceItems(v []GetGoogleBusinessServices200ResponseServicesInner) {
+func (o *UpdateGoogleBusinessServicesRequest) SetServiceItems(v []UpdateGoogleBusinessServicesRequestServiceItemsInner) {
 	o.ServiceItems = v
 }
 

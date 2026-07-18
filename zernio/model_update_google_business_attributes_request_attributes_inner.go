@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the UpdateGoogleBusinessAttributesRequestAttributesInner type satisfies the MappedNullable interface at compile time
@@ -20,17 +22,22 @@ var _ MappedNullable = &UpdateGoogleBusinessAttributesRequestAttributesInner{}
 
 // UpdateGoogleBusinessAttributesRequestAttributesInner struct for UpdateGoogleBusinessAttributesRequestAttributesInner
 type UpdateGoogleBusinessAttributesRequestAttributesInner struct {
-	Name              *string                                                                 `json:"name,omitempty"`
+	Name              string                                                                  `json:"name"`
+	ValueType         *string                                                                 `json:"valueType,omitempty"`
 	Values            []interface{}                                                           `json:"values,omitempty"`
 	RepeatedEnumValue *GetGoogleBusinessAttributes200ResponseAttributesInnerRepeatedEnumValue `json:"repeatedEnumValue,omitempty"`
+	UriValues         []UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner    `json:"uriValues,omitempty"`
 }
+
+type _UpdateGoogleBusinessAttributesRequestAttributesInner UpdateGoogleBusinessAttributesRequestAttributesInner
 
 // NewUpdateGoogleBusinessAttributesRequestAttributesInner instantiates a new UpdateGoogleBusinessAttributesRequestAttributesInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateGoogleBusinessAttributesRequestAttributesInner() *UpdateGoogleBusinessAttributesRequestAttributesInner {
+func NewUpdateGoogleBusinessAttributesRequestAttributesInner(name string) *UpdateGoogleBusinessAttributesRequestAttributesInner {
 	this := UpdateGoogleBusinessAttributesRequestAttributesInner{}
+	this.Name = name
 	return &this
 }
 
@@ -42,36 +49,60 @@ func NewUpdateGoogleBusinessAttributesRequestAttributesInnerWithDefaults() *Upda
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetName() string {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Name
+
+	return o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Name, true
+	return &o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+// SetName sets field value
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) SetName(v string) {
+	o.Name = v
+}
+
+// GetValueType returns the ValueType field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetValueType() string {
+	if o == nil || IsNil(o.ValueType) {
+		var ret string
+		return ret
+	}
+	return *o.ValueType
+}
+
+// GetValueTypeOk returns a tuple with the ValueType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetValueTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ValueType) {
+		return nil, false
+	}
+	return o.ValueType, true
+}
+
+// HasValueType returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) HasValueType() bool {
+	if o != nil && !IsNil(o.ValueType) {
 		return true
 	}
 
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) SetName(v string) {
-	o.Name = &v
+// SetValueType gets a reference to the given string and assigns it to the ValueType field.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) SetValueType(v string) {
+	o.ValueType = &v
 }
 
 // GetValues returns the Values field value if set, zero value otherwise.
@@ -138,6 +169,38 @@ func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) SetRepeatedEnumVa
 	o.RepeatedEnumValue = &v
 }
 
+// GetUriValues returns the UriValues field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetUriValues() []UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner {
+	if o == nil || IsNil(o.UriValues) {
+		var ret []UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner
+		return ret
+	}
+	return o.UriValues
+}
+
+// GetUriValuesOk returns a tuple with the UriValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) GetUriValuesOk() ([]UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner, bool) {
+	if o == nil || IsNil(o.UriValues) {
+		return nil, false
+	}
+	return o.UriValues, true
+}
+
+// HasUriValues returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) HasUriValues() bool {
+	if o != nil && !IsNil(o.UriValues) {
+		return true
+	}
+
+	return false
+}
+
+// SetUriValues gets a reference to the given []UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner and assigns it to the UriValues field.
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) SetUriValues(v []UpdateGoogleBusinessAttributesRequestAttributesInnerUriValuesInner) {
+	o.UriValues = v
+}
+
 func (o UpdateGoogleBusinessAttributesRequestAttributesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -148,8 +211,9 @@ func (o UpdateGoogleBusinessAttributesRequestAttributesInner) MarshalJSON() ([]b
 
 func (o UpdateGoogleBusinessAttributesRequestAttributesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	toSerialize["name"] = o.Name
+	if !IsNil(o.ValueType) {
+		toSerialize["valueType"] = o.ValueType
 	}
 	if !IsNil(o.Values) {
 		toSerialize["values"] = o.Values
@@ -157,7 +221,47 @@ func (o UpdateGoogleBusinessAttributesRequestAttributesInner) ToMap() (map[strin
 	if !IsNil(o.RepeatedEnumValue) {
 		toSerialize["repeatedEnumValue"] = o.RepeatedEnumValue
 	}
+	if !IsNil(o.UriValues) {
+		toSerialize["uriValues"] = o.UriValues
+	}
 	return toSerialize, nil
+}
+
+func (o *UpdateGoogleBusinessAttributesRequestAttributesInner) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"name",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUpdateGoogleBusinessAttributesRequestAttributesInner := _UpdateGoogleBusinessAttributesRequestAttributesInner{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUpdateGoogleBusinessAttributesRequestAttributesInner)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UpdateGoogleBusinessAttributesRequestAttributesInner(varUpdateGoogleBusinessAttributesRequestAttributesInner)
+
+	return err
 }
 
 type NullableUpdateGoogleBusinessAttributesRequestAttributesInner struct {

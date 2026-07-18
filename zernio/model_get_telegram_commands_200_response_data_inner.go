@@ -20,7 +20,7 @@ var _ MappedNullable = &GetTelegramCommands200ResponseDataInner{}
 
 // GetTelegramCommands200ResponseDataInner struct for GetTelegramCommands200ResponseDataInner
 type GetTelegramCommands200ResponseDataInner struct {
-	Command     *string `json:"command,omitempty"`
+	Command     *string `json:"command,omitempty" validate:"regexp=^[a-z0-9_]+$"`
 	Description *string `json:"description,omitempty"`
 }
 

@@ -22,12 +22,12 @@ var _ MappedNullable = &SelectLinkedInOrganizationRequest{}
 
 // SelectLinkedInOrganizationRequest struct for SelectLinkedInOrganizationRequest
 type SelectLinkedInOrganizationRequest struct {
-	ProfileId            string                 `json:"profileId"`
-	TempToken            string                 `json:"tempToken"`
-	UserProfile          map[string]interface{} `json:"userProfile"`
-	AccountType          string                 `json:"accountType"`
-	SelectedOrganization map[string]interface{} `json:"selectedOrganization,omitempty"`
-	RedirectUrl          *string                `json:"redirect_url,omitempty"`
+	ProfileId            string                                                 `json:"profileId"`
+	TempToken            string                                                 `json:"tempToken"`
+	UserProfile          map[string]interface{}                                 `json:"userProfile"`
+	AccountType          string                                                 `json:"accountType"`
+	SelectedOrganization *SelectLinkedInOrganizationRequestSelectedOrganization `json:"selectedOrganization,omitempty"`
+	RedirectUrl          *string                                                `json:"redirect_url,omitempty"`
 }
 
 type _SelectLinkedInOrganizationRequest SelectLinkedInOrganizationRequest
@@ -150,19 +150,19 @@ func (o *SelectLinkedInOrganizationRequest) SetAccountType(v string) {
 }
 
 // GetSelectedOrganization returns the SelectedOrganization field value if set, zero value otherwise.
-func (o *SelectLinkedInOrganizationRequest) GetSelectedOrganization() map[string]interface{} {
+func (o *SelectLinkedInOrganizationRequest) GetSelectedOrganization() SelectLinkedInOrganizationRequestSelectedOrganization {
 	if o == nil || IsNil(o.SelectedOrganization) {
-		var ret map[string]interface{}
+		var ret SelectLinkedInOrganizationRequestSelectedOrganization
 		return ret
 	}
-	return o.SelectedOrganization
+	return *o.SelectedOrganization
 }
 
 // GetSelectedOrganizationOk returns a tuple with the SelectedOrganization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SelectLinkedInOrganizationRequest) GetSelectedOrganizationOk() (map[string]interface{}, bool) {
+func (o *SelectLinkedInOrganizationRequest) GetSelectedOrganizationOk() (*SelectLinkedInOrganizationRequestSelectedOrganization, bool) {
 	if o == nil || IsNil(o.SelectedOrganization) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.SelectedOrganization, true
 }
@@ -176,9 +176,9 @@ func (o *SelectLinkedInOrganizationRequest) HasSelectedOrganization() bool {
 	return false
 }
 
-// SetSelectedOrganization gets a reference to the given map[string]interface{} and assigns it to the SelectedOrganization field.
-func (o *SelectLinkedInOrganizationRequest) SetSelectedOrganization(v map[string]interface{}) {
-	o.SelectedOrganization = v
+// SetSelectedOrganization gets a reference to the given SelectLinkedInOrganizationRequestSelectedOrganization and assigns it to the SelectedOrganization field.
+func (o *SelectLinkedInOrganizationRequest) SetSelectedOrganization(v SelectLinkedInOrganizationRequestSelectedOrganization) {
+	o.SelectedOrganization = &v
 }
 
 // GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.

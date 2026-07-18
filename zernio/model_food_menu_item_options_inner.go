@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the FoodMenuItemOptionsInner type satisfies the MappedNullable interface at compile time
@@ -20,16 +22,20 @@ var _ MappedNullable = &FoodMenuItemOptionsInner{}
 
 // FoodMenuItemOptionsInner struct for FoodMenuItemOptionsInner
 type FoodMenuItemOptionsInner struct {
-	Labels     []FoodMenuLabel         `json:"labels,omitempty"`
-	Attributes *FoodMenuItemAttributes `json:"attributes,omitempty"`
+	Labels     []FoodMenuLabel        `json:"labels"`
+	Attributes FoodMenuItemAttributes `json:"attributes"`
 }
+
+type _FoodMenuItemOptionsInner FoodMenuItemOptionsInner
 
 // NewFoodMenuItemOptionsInner instantiates a new FoodMenuItemOptionsInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFoodMenuItemOptionsInner() *FoodMenuItemOptionsInner {
+func NewFoodMenuItemOptionsInner(labels []FoodMenuLabel, attributes FoodMenuItemAttributes) *FoodMenuItemOptionsInner {
 	this := FoodMenuItemOptionsInner{}
+	this.Labels = labels
+	this.Attributes = attributes
 	return &this
 }
 
@@ -41,68 +47,52 @@ func NewFoodMenuItemOptionsInnerWithDefaults() *FoodMenuItemOptionsInner {
 	return &this
 }
 
-// GetLabels returns the Labels field value if set, zero value otherwise.
+// GetLabels returns the Labels field value
 func (o *FoodMenuItemOptionsInner) GetLabels() []FoodMenuLabel {
-	if o == nil || IsNil(o.Labels) {
+	if o == nil {
 		var ret []FoodMenuLabel
 		return ret
 	}
+
 	return o.Labels
 }
 
-// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// GetLabelsOk returns a tuple with the Labels field value
 // and a boolean to check if the value has been set.
 func (o *FoodMenuItemOptionsInner) GetLabelsOk() ([]FoodMenuLabel, bool) {
-	if o == nil || IsNil(o.Labels) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Labels, true
 }
 
-// HasLabels returns a boolean if a field has been set.
-func (o *FoodMenuItemOptionsInner) HasLabels() bool {
-	if o != nil && !IsNil(o.Labels) {
-		return true
-	}
-
-	return false
-}
-
-// SetLabels gets a reference to the given []FoodMenuLabel and assigns it to the Labels field.
+// SetLabels sets field value
 func (o *FoodMenuItemOptionsInner) SetLabels(v []FoodMenuLabel) {
 	o.Labels = v
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value
 func (o *FoodMenuItemOptionsInner) GetAttributes() FoodMenuItemAttributes {
-	if o == nil || IsNil(o.Attributes) {
+	if o == nil {
 		var ret FoodMenuItemAttributes
 		return ret
 	}
-	return *o.Attributes
+
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *FoodMenuItemOptionsInner) GetAttributesOk() (*FoodMenuItemAttributes, bool) {
-	if o == nil || IsNil(o.Attributes) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *FoodMenuItemOptionsInner) HasAttributes() bool {
-	if o != nil && !IsNil(o.Attributes) {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributes gets a reference to the given FoodMenuItemAttributes and assigns it to the Attributes field.
+// SetAttributes sets field value
 func (o *FoodMenuItemOptionsInner) SetAttributes(v FoodMenuItemAttributes) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
 func (o FoodMenuItemOptionsInner) MarshalJSON() ([]byte, error) {
@@ -115,13 +105,47 @@ func (o FoodMenuItemOptionsInner) MarshalJSON() ([]byte, error) {
 
 func (o FoodMenuItemOptionsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Labels) {
-		toSerialize["labels"] = o.Labels
-	}
-	if !IsNil(o.Attributes) {
-		toSerialize["attributes"] = o.Attributes
-	}
+	toSerialize["labels"] = o.Labels
+	toSerialize["attributes"] = o.Attributes
 	return toSerialize, nil
+}
+
+func (o *FoodMenuItemOptionsInner) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"labels",
+		"attributes",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varFoodMenuItemOptionsInner := _FoodMenuItemOptionsInner{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varFoodMenuItemOptionsInner)
+
+	if err != nil {
+		return err
+	}
+
+	*o = FoodMenuItemOptionsInner(varFoodMenuItemOptionsInner)
+
+	return err
 }
 
 type NullableFoodMenuItemOptionsInner struct {

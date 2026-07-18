@@ -25,6 +25,9 @@ type UpdateGmbLocationRequest struct {
 	SelectedLocationId string `json:"selectedLocationId"`
 	// Optional but recommended. The Google Business Account resource name (\"accounts/123\") that owns the new location (from GET gmb-locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations. Named `googleAccountId` to disambiguate from the path `accountId` (the Zernio account). The legacy field name `accountId` is still accepted for backwards compatibility.
 	GoogleAccountId *string `json:"googleAccountId,omitempty"`
+	// Legacy alias for googleAccountId. Use googleAccountId for new integrations.
+	// Deprecated
+	AccountId *string `json:"accountId,omitempty"`
 }
 
 type _UpdateGmbLocationRequest UpdateGmbLocationRequest
@@ -103,6 +106,41 @@ func (o *UpdateGmbLocationRequest) SetGoogleAccountId(v string) {
 	o.GoogleAccountId = &v
 }
 
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+// Deprecated
+func (o *UpdateGmbLocationRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// Deprecated
+func (o *UpdateGmbLocationRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *UpdateGmbLocationRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+// Deprecated
+func (o *UpdateGmbLocationRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
 func (o UpdateGmbLocationRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -116,6 +154,9 @@ func (o UpdateGmbLocationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["selectedLocationId"] = o.SelectedLocationId
 	if !IsNil(o.GoogleAccountId) {
 		toSerialize["googleAccountId"] = o.GoogleAccountId
+	}
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
 	}
 	return toSerialize, nil
 }

@@ -2849,7 +2849,7 @@ type AnalyticsAPIGetLinkedInPostReactionsRequest struct {
 	accountId  string
 	urn        *string
 	limit      *int32
-	cursor     *string
+	cursor     *int32
 }
 
 // The LinkedIn post URN
@@ -2865,7 +2865,7 @@ func (r AnalyticsAPIGetLinkedInPostReactionsRequest) Limit(limit int32) Analytic
 }
 
 // Offset-based pagination start index
-func (r AnalyticsAPIGetLinkedInPostReactionsRequest) Cursor(cursor string) AnalyticsAPIGetLinkedInPostReactionsRequest {
+func (r AnalyticsAPIGetLinkedInPostReactionsRequest) Cursor(cursor int32) AnalyticsAPIGetLinkedInPostReactionsRequest {
 	r.cursor = &cursor
 	return r
 }
@@ -2930,6 +2930,10 @@ func (a *AnalyticsAPIService) GetLinkedInPostReactionsExecute(r AnalyticsAPIGetL
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", defaultValue, "form", "")
+		r.cursor = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2971,7 +2975,7 @@ func (a *AnalyticsAPIService) GetLinkedInPostReactionsExecute(r AnalyticsAPIGetL
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GetLinkedInPostReactions400Response
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

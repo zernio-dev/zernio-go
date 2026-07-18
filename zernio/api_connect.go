@@ -2022,6 +2022,9 @@ func (a *ConnectAPIService) GetRedditFlairsExecute(r ConnectAPIGetRedditFlairsRe
 	if r.subreddit == nil {
 		return localVarReturnValue, nil, reportError("subreddit is required and must be specified")
 	}
+	if strlen(*r.subreddit) < 1 {
+		return localVarReturnValue, nil, reportError("subreddit must have at least 1 elements")
+	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "subreddit", r.subreddit, "form", "")
 	// to determine the Content-Type header
@@ -4789,7 +4792,7 @@ func (r ConnectAPIUpdateLinkedInOrganizationRequest) UpdateLinkedInOrganizationR
 	return r
 }
 
-func (r ConnectAPIUpdateLinkedInOrganizationRequest) Execute() (*ConnectBlueskyCredentials200Response, *http.Response, error) {
+func (r ConnectAPIUpdateLinkedInOrganizationRequest) Execute() (*UpdateLinkedInOrganization200Response, *http.Response, error) {
 	return r.ApiService.UpdateLinkedInOrganizationExecute(r)
 }
 
@@ -4812,13 +4815,13 @@ func (a *ConnectAPIService) UpdateLinkedInOrganization(ctx context.Context, acco
 
 // Execute executes the request
 //
-//	@return ConnectBlueskyCredentials200Response
-func (a *ConnectAPIService) UpdateLinkedInOrganizationExecute(r ConnectAPIUpdateLinkedInOrganizationRequest) (*ConnectBlueskyCredentials200Response, *http.Response, error) {
+//	@return UpdateLinkedInOrganization200Response
+func (a *ConnectAPIService) UpdateLinkedInOrganizationExecute(r ConnectAPIUpdateLinkedInOrganizationRequest) (*UpdateLinkedInOrganization200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ConnectBlueskyCredentials200Response
+		localVarReturnValue *UpdateLinkedInOrganization200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.UpdateLinkedInOrganization")

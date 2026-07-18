@@ -23,7 +23,7 @@ var _ MappedNullable = &SetTelegramCommandsRequestCommandsInner{}
 // SetTelegramCommandsRequestCommandsInner struct for SetTelegramCommandsRequestCommandsInner
 type SetTelegramCommandsRequestCommandsInner struct {
 	// Bot command without leading slash
-	Command string `json:"command"`
+	Command string `json:"command" validate:"regexp=^[a-z0-9_]+$"`
 	// Command description
 	Description string `json:"description"`
 }
