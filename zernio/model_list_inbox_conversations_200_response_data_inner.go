@@ -21,6 +21,7 @@ var _ MappedNullable = &ListInboxConversations200ResponseDataInner{}
 
 // ListInboxConversations200ResponseDataInner struct for ListInboxConversations200ResponseDataInner
 type ListInboxConversations200ResponseDataInner struct {
+	// Opaque conversation identifier. Pass it back verbatim to any /v1/inbox/conversations/{conversationId} route; do not assume a fixed format.
 	Id                 *string        `json:"id,omitempty"`
 	Platform           *string        `json:"platform,omitempty"`
 	AccountId          *string        `json:"accountId,omitempty"`
