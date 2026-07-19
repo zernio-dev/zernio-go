@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateStandaloneAdRequestRegionsInner{}
 
 // CreateStandaloneAdRequestRegionsInner struct for CreateStandaloneAdRequestRegionsInner
 type CreateStandaloneAdRequestRegionsInner struct {
-	// Meta region ID, from /v1/ads/targeting/search results.
+	// Platform region ID, from /v1/ads/targeting/search results.
 	Key string `json:"key"`
 }
 

@@ -6058,6 +6058,12 @@ varies by platform (e.g. behaviours are Meta/TikTok only). Results are normalize
 across platforms into a single shape, so the same client code consumes Meta,
 TikTok, LinkedIn, X, Pinterest, and Google results.
 
+TikTok geo searches return every matching level in one list (`type` is
+`country`, `region`, `city`, `district`, or `metro` for DMA areas) —
+`geoType` is not applied. Results are scoped to the advertiser's targetable
+markets, and every id is usable in `regions`/`cities`/`metros` keys on
+`POST /v1/ads/create`.
+
 For geo queries, `q` should contain only the locality name (e.g. `"Amsterdam"`,
 not `"Amsterdam, NL"`). Use `countryCode` to disambiguate.
 
