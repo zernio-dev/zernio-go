@@ -20,7 +20,7 @@ import (
 // checks if the UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem{}
 
-// UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem struct for UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem
+// UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem Exactly one of structuredServiceItem or freeFormServiceItem is required per item (enforced server-side; not modeled as oneOf because required-only oneOf branches break SDK generators).
 type UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem struct {
 	ServiceTypeId string  `json:"serviceTypeId"`
 	Description   *string `json:"description,omitempty"`

@@ -20,9 +20,9 @@ var _ MappedNullable = &UpdateGoogleBusinessServicesRequestServiceItemsInner{}
 
 // UpdateGoogleBusinessServicesRequestServiceItemsInner struct for UpdateGoogleBusinessServicesRequestServiceItemsInner
 type UpdateGoogleBusinessServicesRequestServiceItemsInner struct {
-	StructuredServiceItem *UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem
-	FreeFormServiceItem   *UpdateGoogleBusinessServicesRequestServiceItemsInnerFreeFormServiceItem
-	Price                 *UpdateGoogleBusinessServicesRequestServiceItemsInnerPrice
+	StructuredServiceItem *UpdateGoogleBusinessServicesRequestServiceItemsInnerStructuredServiceItem `json:"structuredServiceItem,omitempty"`
+	FreeFormServiceItem   *UpdateGoogleBusinessServicesRequestServiceItemsInnerFreeFormServiceItem   `json:"freeFormServiceItem,omitempty"`
+	Price                 *UpdateGoogleBusinessServicesRequestServiceItemsInnerPrice                 `json:"price,omitempty"`
 }
 
 // NewUpdateGoogleBusinessServicesRequestServiceItemsInner instantiates a new UpdateGoogleBusinessServicesRequestServiceItemsInner object

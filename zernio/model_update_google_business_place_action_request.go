@@ -23,11 +23,11 @@ var _ MappedNullable = &UpdateGoogleBusinessPlaceActionRequest{}
 // UpdateGoogleBusinessPlaceActionRequest struct for UpdateGoogleBusinessPlaceActionRequest
 type UpdateGoogleBusinessPlaceActionRequest struct {
 	// Resource name of the place action link (e.g. locations/123/placeActionLinks/456)
-	Name string
-	// New action URL
-	Uri *string
+	Name string `json:"name"`
+	// New action URL. At least one of uri or placeActionType is required (enforced server-side; not modeled as anyOf because required-only anyOf branches break SDK generators).
+	Uri *string `json:"uri,omitempty"`
 	// New action type
-	PlaceActionType *string
+	PlaceActionType *string `json:"placeActionType,omitempty"`
 }
 
 type _UpdateGoogleBusinessPlaceActionRequest UpdateGoogleBusinessPlaceActionRequest
@@ -38,6 +38,7 @@ type _UpdateGoogleBusinessPlaceActionRequest UpdateGoogleBusinessPlaceActionRequ
 // will change when the set of required properties is changed
 func NewUpdateGoogleBusinessPlaceActionRequest(name string) *UpdateGoogleBusinessPlaceActionRequest {
 	this := UpdateGoogleBusinessPlaceActionRequest{}
+	this.Name = name
 	return &this
 }
 
