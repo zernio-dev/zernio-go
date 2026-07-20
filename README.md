@@ -272,15 +272,18 @@ func main() {
 | `client.AdsAPI.ListLeadForms(ctx)` | List lead forms |
 | `client.AdsAPI.ListLeads(ctx)` | List submitted leads |
 | `client.AdsAPI.CreateAdInsightsReport(ctx)` | Submit an async insights report run (Meta) |
+| `client.AdsAPI.CreateCallAd(ctx)` | Create Click-to-Call ad |
 | `client.AdsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
-| `client.AdsAPI.CreateCtwaAd(ctx)` | Create Click-to-WhatsApp ad |
+| `client.AdsAPI.CreateCtwaAd(ctx)` | Create Click-to-WhatsApp ad (deprecated) |
 | `client.AdsAPI.CreateLeadForm(ctx)` | Create a lead form |
+| `client.AdsAPI.CreateMessagingAd(ctx)` | Create click-to-message ad (WhatsApp / Messenger / Instagram Direct) |
 | `client.AdsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdsAPI.CreateTestLead(ctx)` | Create a test lead |
 | `client.AdsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdsAPI.GetAdComments(ctx)` | List comments on an ad |
 | `client.AdsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run (Meta) |
+| `client.AdsAPI.GetAdPreviews(ctx)` | Render previews of an existing ad (Meta) |
 | `client.AdsAPI.GetAdTrackingTags(ctx)` | Get ad tracking tags |
 | `client.AdsAPI.GetCampaignAnalytics(ctx)` | Get campaign analytics |
 | `client.AdsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
@@ -303,6 +306,7 @@ func main() {
 | `client.AdsAPI.ArchiveLeadForm(ctx)` | Archive a lead form |
 | `client.AdsAPI.BoostPost(ctx)` | Boost post as ad |
 | `client.AdsAPI.EstimateAdReach(ctx)` | Estimate audience reach |
+| `client.AdsAPI.GenerateAdPreviews(ctx)` | Render pre-create ad previews (Meta) |
 | `client.AdsAPI.QueryAdInsights(ctx)` | Flexible live insights query (Meta) |
 | `client.AdsAPI.RemoveConversionAssociations(ctx)` | Remove associated campaigns |
 | `client.AdsAPI.SearchAdInterests(ctx)` | Search targeting interests |

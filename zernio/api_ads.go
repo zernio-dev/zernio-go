@@ -675,6 +675,119 @@ func (a *AdsAPIService) CreateAdInsightsReportExecute(r AdsAPICreateAdInsightsRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPICreateCallAdRequest struct {
+	ctx                 context.Context
+	ApiService          *AdsAPIService
+	createCallAdRequest *CreateCallAdRequest
+}
+
+func (r AdsAPICreateCallAdRequest) CreateCallAdRequest(createCallAdRequest CreateCallAdRequest) AdsAPICreateCallAdRequest {
+	r.createCallAdRequest = &createCallAdRequest
+	return r
+}
+
+func (r AdsAPICreateCallAdRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CreateCallAdExecute(r)
+}
+
+/*
+CreateCallAd Create Click-to-Call ad
+
+Same shape and flow as POST /v1/ads/ctwa, but the CTA is CALL_NOW dialing `phoneNumber`
+via a tel: link. The ad set is destination_type PHONE_CALL optimizing QUALITY_CALL
+and the campaign objective defaults to OUTCOME_LEADS.
+Supports the same single-creative and multi-creative shapes as CTWA.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPICreateCallAdRequest
+*/
+func (a *AdsAPIService) CreateCallAd(ctx context.Context) AdsAPICreateCallAdRequest {
+	return AdsAPICreateCallAdRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *AdsAPIService) CreateCallAdExecute(r AdsAPICreateCallAdRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.CreateCallAd")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/call"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createCallAdRequest == nil {
+		return nil, reportError("createCallAdRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createCallAdRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type AdsAPICreateConversionDestinationRequest struct {
 	ctx                                context.Context
 	ApiService                         *AdsAPIService
@@ -834,13 +947,13 @@ func (a *AdsAPIService) CreateConversionDestinationExecute(r AdsAPICreateConvers
 }
 
 type AdsAPICreateCtwaAdRequest struct {
-	ctx                 context.Context
-	ApiService          *AdsAPIService
-	createCtwaAdRequest *CreateCtwaAdRequest
+	ctx               context.Context
+	ApiService        *AdsAPIService
+	ctwaAdRequestBody *CtwaAdRequestBody
 }
 
-func (r AdsAPICreateCtwaAdRequest) CreateCtwaAdRequest(createCtwaAdRequest CreateCtwaAdRequest) AdsAPICreateCtwaAdRequest {
-	r.createCtwaAdRequest = &createCtwaAdRequest
+func (r AdsAPICreateCtwaAdRequest) CtwaAdRequestBody(ctwaAdRequestBody CtwaAdRequestBody) AdsAPICreateCtwaAdRequest {
+	r.ctwaAdRequestBody = &ctwaAdRequestBody
 	return r
 }
 
@@ -849,7 +962,9 @@ func (r AdsAPICreateCtwaAdRequest) Execute() (*CreateCtwaAd201Response, *http.Re
 }
 
 /*
-CreateCtwaAd Create Click-to-WhatsApp ad
+CreateCtwaAd Create Click-to-WhatsApp ad (deprecated)
+
+Deprecated: use POST /v1/ads/messaging with `destination: whatsapp`. This endpoint stays available for back-compat; no removal planned.
 
 Creates one or more Click-to-WhatsApp (CTWA) ads on Meta under a single campaign and ad set. When tapped, each ad opens a WhatsApp conversation with the business attached to the supplied Facebook Page. The full hierarchy (campaign, ad set, creative(s), ad(s)) is created and activated in one call. The CTA is locked to WHATSAPP_MESSAGE and the destination is hard-coded to api.whatsapp.com/send; Meta resolves the actual WhatsApp number from the Page-to-WA pairing configured in Page settings or Business Manager.
 
@@ -863,6 +978,8 @@ Prerequisites enforced by Meta (surfaced as platform_error on failure): the Face
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdsAPICreateCtwaAdRequest
+
+Deprecated
 */
 func (a *AdsAPIService) CreateCtwaAd(ctx context.Context) AdsAPICreateCtwaAdRequest {
 	return AdsAPICreateCtwaAdRequest{
@@ -874,6 +991,8 @@ func (a *AdsAPIService) CreateCtwaAd(ctx context.Context) AdsAPICreateCtwaAdRequ
 // Execute executes the request
 //
 //	@return CreateCtwaAd201Response
+//
+// Deprecated
 func (a *AdsAPIService) CreateCtwaAdExecute(r AdsAPICreateCtwaAdRequest) (*CreateCtwaAd201Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -892,8 +1011,8 @@ func (a *AdsAPIService) CreateCtwaAdExecute(r AdsAPICreateCtwaAdRequest) (*Creat
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.createCtwaAdRequest == nil {
-		return localVarReturnValue, nil, reportError("createCtwaAdRequest is required and must be specified")
+	if r.ctwaAdRequestBody == nil {
+		return localVarReturnValue, nil, reportError("ctwaAdRequestBody is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -914,7 +1033,7 @@ func (a *AdsAPIService) CreateCtwaAdExecute(r AdsAPICreateCtwaAdRequest) (*Creat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.createCtwaAdRequest
+	localVarPostBody = r.ctwaAdRequestBody
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1083,6 +1202,121 @@ func (a *AdsAPIService) CreateLeadFormExecute(r AdsAPICreateLeadFormRequest) (*C
 	}
 
 	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPICreateMessagingAdRequest struct {
+	ctx                      context.Context
+	ApiService               *AdsAPIService
+	createMessagingAdRequest *CreateMessagingAdRequest
+}
+
+func (r AdsAPICreateMessagingAdRequest) CreateMessagingAdRequest(createMessagingAdRequest CreateMessagingAdRequest) AdsAPICreateMessagingAdRequest {
+	r.createMessagingAdRequest = &createMessagingAdRequest
+	return r
+}
+
+func (r AdsAPICreateMessagingAdRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CreateMessagingAdExecute(r)
+}
+
+/*
+CreateMessagingAd Create click-to-message ad (WhatsApp / Messenger / Instagram Direct)
+
+Creates a click-to-message ad; `destination` selects where the tapped ad opens a
+conversation: WhatsApp, the Page's Messenger inbox or the linked Instagram account's Direct inbox.
+The ad set is created with the matching destination_type and
+CONVERSATIONS optimization; the campaign objective defaults to OUTCOME_ENGAGEMENT.
+Supports single-creative and multi-creative shapes. Supersedes POST /v1/ads/ctwa
+(deprecated, equivalent to `destination: whatsapp`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPICreateMessagingAdRequest
+*/
+func (a *AdsAPIService) CreateMessagingAd(ctx context.Context) AdsAPICreateMessagingAdRequest {
+	return AdsAPICreateMessagingAdRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *AdsAPIService) CreateMessagingAdExecute(r AdsAPICreateMessagingAdRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.CreateMessagingAd")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/messaging"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createMessagingAdRequest == nil {
+		return nil, reportError("createMessagingAdRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createMessagingAdRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
 }
 
 type AdsAPICreateStandaloneAdRequest struct {
@@ -1732,6 +1966,131 @@ func (a *AdsAPIService) EstimateAdReachExecute(r AdsAPIEstimateAdReachRequest) (
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIGenerateAdPreviewsRequest struct {
+	ctx                       context.Context
+	ApiService                *AdsAPIService
+	generateAdPreviewsRequest *GenerateAdPreviewsRequest
+}
+
+func (r AdsAPIGenerateAdPreviewsRequest) GenerateAdPreviewsRequest(generateAdPreviewsRequest GenerateAdPreviewsRequest) AdsAPIGenerateAdPreviewsRequest {
+	r.generateAdPreviewsRequest = &generateAdPreviewsRequest
+	return r
+}
+
+func (r AdsAPIGenerateAdPreviewsRequest) Execute() (*GenerateAdPreviews200Response, *http.Response, error) {
+	return r.ApiService.GenerateAdPreviewsExecute(r)
+}
+
+/*
+GenerateAdPreviews Render pre-create ad previews (Meta)
+
+Renders how a creative would look per placement BEFORE any ad exists, via Meta's
+`/generatepreviews`. Provide exactly one creative source: `existingCreativeId` or `creativeSpec`.
+Each preview is an HTML `<iframe>` snippet embeddable directly. Unknown `formats` values
+return Meta's 400 verbatim. Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPIGenerateAdPreviewsRequest
+*/
+func (a *AdsAPIService) GenerateAdPreviews(ctx context.Context) AdsAPIGenerateAdPreviewsRequest {
+	return AdsAPIGenerateAdPreviewsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GenerateAdPreviews200Response
+func (a *AdsAPIService) GenerateAdPreviewsExecute(r AdsAPIGenerateAdPreviewsRequest) (*GenerateAdPreviews200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GenerateAdPreviews200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GenerateAdPreviews")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/preview"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.generateAdPreviewsRequest == nil {
+		return localVarReturnValue, nil, reportError("generateAdPreviewsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.generateAdPreviewsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIGetAdRequest struct {
 	ctx        context.Context
 	ApiService *AdsAPIService
@@ -2302,6 +2661,133 @@ func (a *AdsAPIService) GetAdInsightsReportExecute(r AdsAPIGetAdInsightsReportRe
 	}
 	if r.after != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "after", r.after, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIGetAdPreviewsRequest struct {
+	ctx        context.Context
+	ApiService *AdsAPIService
+	adId       string
+	formats    *string
+}
+
+// Comma-separated Meta ad_format values (max 10), one preview per format. Defaults to DESKTOP_FEED_STANDARD.
+func (r AdsAPIGetAdPreviewsRequest) Formats(formats string) AdsAPIGetAdPreviewsRequest {
+	r.formats = &formats
+	return r
+}
+
+func (r AdsAPIGetAdPreviewsRequest) Execute() (*GetAdPreviews200Response, *http.Response, error) {
+	return r.ApiService.GetAdPreviewsExecute(r)
+}
+
+/*
+GetAdPreviews Render previews of an existing ad (Meta)
+
+Renders an EXISTING ad per placement via Meta's `/{ad_id}/previews`. Each preview is an HTML
+`<iframe>` snippet embeddable directly. Unknown `formats` values return Meta's 400 verbatim.
+Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Zernio ad id (24-char hex).
+	@return AdsAPIGetAdPreviewsRequest
+*/
+func (a *AdsAPIService) GetAdPreviews(ctx context.Context, adId string) AdsAPIGetAdPreviewsRequest {
+	return AdsAPIGetAdPreviewsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdPreviews200Response
+func (a *AdsAPIService) GetAdPreviewsExecute(r AdsAPIGetAdPreviewsRequest) (*GetAdPreviews200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdPreviews200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetAdPreviews")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/preview"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.formats != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "formats", r.formats, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
