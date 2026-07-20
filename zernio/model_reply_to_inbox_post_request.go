@@ -24,6 +24,8 @@ var _ MappedNullable = &ReplyToInboxPostRequest{}
 type ReplyToInboxPostRequest struct {
 	AccountId string `json:"accountId"`
 	Message   string `json:"message"`
+	// (Facebook only) URL of an image to attach, publishing a photo comment alongside the text. The URL must be publicly accessible so Meta can fetch it. Returns 400 for other platforms.
+	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// Reply to specific comment (optional)
 	CommentId *string `json:"commentId,omitempty"`
 	// (Bluesky only) Parent content identifier
@@ -101,6 +103,38 @@ func (o *ReplyToInboxPostRequest) GetMessageOk() (*string, bool) {
 // SetMessage sets field value
 func (o *ReplyToInboxPostRequest) SetMessage(v string) {
 	o.Message = v
+}
+
+// GetAttachmentUrl returns the AttachmentUrl field value if set, zero value otherwise.
+func (o *ReplyToInboxPostRequest) GetAttachmentUrl() string {
+	if o == nil || IsNil(o.AttachmentUrl) {
+		var ret string
+		return ret
+	}
+	return *o.AttachmentUrl
+}
+
+// GetAttachmentUrlOk returns a tuple with the AttachmentUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplyToInboxPostRequest) GetAttachmentUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.AttachmentUrl) {
+		return nil, false
+	}
+	return o.AttachmentUrl, true
+}
+
+// HasAttachmentUrl returns a boolean if a field has been set.
+func (o *ReplyToInboxPostRequest) HasAttachmentUrl() bool {
+	if o != nil && !IsNil(o.AttachmentUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachmentUrl gets a reference to the given string and assigns it to the AttachmentUrl field.
+func (o *ReplyToInboxPostRequest) SetAttachmentUrl(v string) {
+	o.AttachmentUrl = &v
 }
 
 // GetCommentId returns the CommentId field value if set, zero value otherwise.
@@ -243,6 +277,9 @@ func (o ReplyToInboxPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["message"] = o.Message
+	if !IsNil(o.AttachmentUrl) {
+		toSerialize["attachmentUrl"] = o.AttachmentUrl
+	}
 	if !IsNil(o.CommentId) {
 		toSerialize["commentId"] = o.CommentId
 	}
