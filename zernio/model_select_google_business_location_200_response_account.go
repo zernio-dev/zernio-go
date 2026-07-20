@@ -21,13 +21,15 @@ var _ MappedNullable = &SelectGoogleBusinessLocation200ResponseAccount{}
 // SelectGoogleBusinessLocation200ResponseAccount struct for SelectGoogleBusinessLocation200ResponseAccount
 type SelectGoogleBusinessLocation200ResponseAccount struct {
 	// ID of the created SocialAccount
-	AccountId            *string `json:"accountId,omitempty"`
-	Platform             *string `json:"platform,omitempty"`
-	Username             *string `json:"username,omitempty"`
-	DisplayName          *string `json:"displayName,omitempty"`
-	IsActive             *bool   `json:"isActive,omitempty"`
+	AccountId   *string `json:"accountId,omitempty"`
+	Platform    *string `json:"platform,omitempty"`
+	Username    *string `json:"username,omitempty"`
+	DisplayName *string `json:"displayName,omitempty"`
+	IsActive    *bool   `json:"isActive,omitempty"`
+	// Human-readable location display name, NOT a resource name. Do not use it to build API paths.
 	SelectedLocationName *string `json:"selectedLocationName,omitempty"`
-	SelectedLocationId   *string `json:"selectedLocationId,omitempty"`
+	// Bare GBP location id. Combine with the GBP account id as accounts/{gbpAccountId}/locations/{selectedLocationId} to form the location resource names that gmb-reviews/batch expects in locationNames.
+	SelectedLocationId *string `json:"selectedLocationId,omitempty"`
 }
 
 // NewSelectGoogleBusinessLocation200ResponseAccount instantiates a new SelectGoogleBusinessLocation200ResponseAccount object

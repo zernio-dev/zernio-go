@@ -21,15 +21,20 @@ var _ MappedNullable = &ListInboxReviews200ResponseDataInner{}
 
 // ListInboxReviews200ResponseDataInner struct for ListInboxReviews200ResponseDataInner
 type ListInboxReviews200ResponseDataInner struct {
-	Id              *string                                       `json:"id,omitempty"`
-	Platform        *string                                       `json:"platform,omitempty"`
-	AccountId       *string                                       `json:"accountId,omitempty"`
-	AccountUsername *string                                       `json:"accountUsername,omitempty"`
-	Reviewer        *ListInboxReviews200ResponseDataInnerReviewer `json:"reviewer,omitempty"`
-	Rating          *int32                                        `json:"rating,omitempty"`
-	Text            *string                                       `json:"text,omitempty"`
-	Created         *time.Time                                    `json:"created,omitempty"`
-	Replied         *bool                                         `json:"hasReply,omitempty"`
+	// Review identifier. For Google Business this is the full review resource name (accounts/{accountId}/locations/{locationId}/reviews/{reviewId}), so it also encodes the location.
+	Id              *string `json:"id,omitempty"`
+	Platform        *string `json:"platform,omitempty"`
+	AccountId       *string `json:"accountId,omitempty"`
+	AccountUsername *string `json:"accountUsername,omitempty"`
+	// Bare GBP location id the review belongs to. Google Business only; absent for other platforms.
+	LocationId *string `json:"locationId,omitempty"`
+	// Human-readable GBP location display name. Google Business only; absent for other platforms.
+	LocationName NullableString                                `json:"locationName,omitempty"`
+	Reviewer     *ListInboxReviews200ResponseDataInnerReviewer `json:"reviewer,omitempty"`
+	Rating       *int32                                        `json:"rating,omitempty"`
+	Text         *string                                       `json:"text,omitempty"`
+	Created      *time.Time                                    `json:"created,omitempty"`
+	Replied      *bool                                         `json:"hasReply,omitempty"`
 	// Whether the review has at least one photo. Google Business only; always false for other platforms.
 	PhotosPresent *bool `json:"hasPhotos,omitempty"`
 	// Number of photos attached to the review (photos only; videos are not counted). Google Business only; 0 for other platforms.
@@ -183,6 +188,81 @@ func (o *ListInboxReviews200ResponseDataInner) HasAccountUsername() bool {
 // SetAccountUsername gets a reference to the given string and assigns it to the AccountUsername field.
 func (o *ListInboxReviews200ResponseDataInner) SetAccountUsername(v string) {
 	o.AccountUsername = &v
+}
+
+// GetLocationId returns the LocationId field value if set, zero value otherwise.
+func (o *ListInboxReviews200ResponseDataInner) GetLocationId() string {
+	if o == nil || IsNil(o.LocationId) {
+		var ret string
+		return ret
+	}
+	return *o.LocationId
+}
+
+// GetLocationIdOk returns a tuple with the LocationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxReviews200ResponseDataInner) GetLocationIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LocationId) {
+		return nil, false
+	}
+	return o.LocationId, true
+}
+
+// HasLocationId returns a boolean if a field has been set.
+func (o *ListInboxReviews200ResponseDataInner) HasLocationId() bool {
+	if o != nil && !IsNil(o.LocationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationId gets a reference to the given string and assigns it to the LocationId field.
+func (o *ListInboxReviews200ResponseDataInner) SetLocationId(v string) {
+	o.LocationId = &v
+}
+
+// GetLocationName returns the LocationName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxReviews200ResponseDataInner) GetLocationName() string {
+	if o == nil || IsNil(o.LocationName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LocationName.Get()
+}
+
+// GetLocationNameOk returns a tuple with the LocationName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxReviews200ResponseDataInner) GetLocationNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LocationName.Get(), o.LocationName.IsSet()
+}
+
+// HasLocationName returns a boolean if a field has been set.
+func (o *ListInboxReviews200ResponseDataInner) HasLocationName() bool {
+	if o != nil && o.LocationName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationName gets a reference to the given NullableString and assigns it to the LocationName field.
+func (o *ListInboxReviews200ResponseDataInner) SetLocationName(v string) {
+	o.LocationName.Set(&v)
+}
+
+// SetLocationNameNil sets the value for LocationName to be an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) SetLocationNameNil() {
+	o.LocationName.Set(nil)
+}
+
+// UnsetLocationName ensures that no value is present for LocationName, not even an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) UnsetLocationName() {
+	o.LocationName.Unset()
 }
 
 // GetReviewer returns the Reviewer field value if set, zero value otherwise.
@@ -537,6 +617,12 @@ func (o ListInboxReviews200ResponseDataInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.AccountUsername) {
 		toSerialize["accountUsername"] = o.AccountUsername
+	}
+	if !IsNil(o.LocationId) {
+		toSerialize["locationId"] = o.LocationId
+	}
+	if o.LocationName.IsSet() {
+		toSerialize["locationName"] = o.LocationName.Get()
 	}
 	if !IsNil(o.Reviewer) {
 		toSerialize["reviewer"] = o.Reviewer

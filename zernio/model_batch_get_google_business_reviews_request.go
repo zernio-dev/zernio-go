@@ -22,12 +22,14 @@ var _ MappedNullable = &BatchGetGoogleBusinessReviewsRequest{}
 
 // BatchGetGoogleBusinessReviewsRequest struct for BatchGetGoogleBusinessReviewsRequest
 type BatchGetGoogleBusinessReviewsRequest struct {
-	// Array of full location resource names (e.g. ['accounts/123/locations/456'])
+	// Array of full location resource names (e.g. ['accounts/123/locations/456']). Max 50 per request (Google's batchGetReviews cap); chunk larger sets into multiple requests.
 	LocationNames []string `json:"locationNames"`
 	// Number of reviews per page (max 50)
 	PageSize *int32 `json:"pageSize,omitempty"`
 	// Pagination token from previous response
 	PageToken *string `json:"pageToken,omitempty"`
+	// Sort order requested from Google. Defaults to 'updateTime desc' (newest first), which allows early-stopping pagination once results cross your date window.
+	OrderBy *string `json:"orderBy,omitempty"`
 }
 
 type _BatchGetGoogleBusinessReviewsRequest BatchGetGoogleBusinessReviewsRequest
@@ -41,6 +43,8 @@ func NewBatchGetGoogleBusinessReviewsRequest(locationNames []string) *BatchGetGo
 	this.LocationNames = locationNames
 	var pageSize int32 = 50
 	this.PageSize = &pageSize
+	var orderBy string = "updateTime desc"
+	this.OrderBy = &orderBy
 	return &this
 }
 
@@ -51,6 +55,8 @@ func NewBatchGetGoogleBusinessReviewsRequestWithDefaults() *BatchGetGoogleBusine
 	this := BatchGetGoogleBusinessReviewsRequest{}
 	var pageSize int32 = 50
 	this.PageSize = &pageSize
+	var orderBy string = "updateTime desc"
+	this.OrderBy = &orderBy
 	return &this
 }
 
@@ -142,6 +148,38 @@ func (o *BatchGetGoogleBusinessReviewsRequest) SetPageToken(v string) {
 	o.PageToken = &v
 }
 
+// GetOrderBy returns the OrderBy field value if set, zero value otherwise.
+func (o *BatchGetGoogleBusinessReviewsRequest) GetOrderBy() string {
+	if o == nil || IsNil(o.OrderBy) {
+		var ret string
+		return ret
+	}
+	return *o.OrderBy
+}
+
+// GetOrderByOk returns a tuple with the OrderBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BatchGetGoogleBusinessReviewsRequest) GetOrderByOk() (*string, bool) {
+	if o == nil || IsNil(o.OrderBy) {
+		return nil, false
+	}
+	return o.OrderBy, true
+}
+
+// HasOrderBy returns a boolean if a field has been set.
+func (o *BatchGetGoogleBusinessReviewsRequest) HasOrderBy() bool {
+	if o != nil && !IsNil(o.OrderBy) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrderBy gets a reference to the given string and assigns it to the OrderBy field.
+func (o *BatchGetGoogleBusinessReviewsRequest) SetOrderBy(v string) {
+	o.OrderBy = &v
+}
+
 func (o BatchGetGoogleBusinessReviewsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -158,6 +196,9 @@ func (o BatchGetGoogleBusinessReviewsRequest) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.PageToken) {
 		toSerialize["pageToken"] = o.PageToken
+	}
+	if !IsNil(o.OrderBy) {
+		toSerialize["orderBy"] = o.OrderBy
 	}
 	return toSerialize, nil
 }

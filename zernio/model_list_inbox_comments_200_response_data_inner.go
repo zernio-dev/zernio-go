@@ -21,16 +21,20 @@ var _ MappedNullable = &ListInboxComments200ResponseDataInner{}
 
 // ListInboxComments200ResponseDataInner struct for ListInboxComments200ResponseDataInner
 type ListInboxComments200ResponseDataInner struct {
-	Id              *string        `json:"id,omitempty"`
-	Platform        *string        `json:"platform,omitempty"`
-	AccountId       *string        `json:"accountId,omitempty"`
-	AccountUsername *string        `json:"accountUsername,omitempty"`
-	Content         *string        `json:"content,omitempty"`
-	Picture         NullableString `json:"picture,omitempty"`
-	Permalink       NullableString `json:"permalink,omitempty"`
-	CreatedTime     *time.Time     `json:"createdTime,omitempty"`
-	CommentCount    *int32         `json:"commentCount,omitempty"`
-	LikeCount       *int32         `json:"likeCount,omitempty"`
+	Id              *string `json:"id,omitempty"`
+	Platform        *string `json:"platform,omitempty"`
+	AccountId       *string `json:"accountId,omitempty"`
+	AccountUsername *string `json:"accountUsername,omitempty"`
+	// The post text/caption. On ad rows (isAd: true) this is the AD NAME, not the underlying post's caption — the creative text isn't exposed here.
+	Content *string `json:"content,omitempty"`
+	// Post media thumbnail. On ad rows this is the ad creative thumbnail.
+	Picture NullableString `json:"picture,omitempty"`
+	// Public URL of the post. On ad rows: the Facebook dark-post URL (facebook placement) or the IG media permalink (instagram placement); may be null when unknown.
+	Permalink    NullableString `json:"permalink,omitempty"`
+	CreatedTime  *time.Time     `json:"createdTime,omitempty"`
+	CommentCount *int32         `json:"commentCount,omitempty"`
+	// Not fetched for ad rows (always 0 there).
+	LikeCount *int32 `json:"likeCount,omitempty"`
 	// Bluesky content identifier
 	Cid NullableString `json:"cid,omitempty"`
 	// Reddit subreddit name
