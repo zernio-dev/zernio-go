@@ -118,7 +118,9 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Override the Instagram account the ad is delivered as — pass an Instagram Business Account ID (e.g. 17841...), mapped to the creative's `instagram_user_id`. When omitted we auto-resolve the IG account linked to the connected Facebook Page (the existing default). Useful when a Page has more than one eligible IG account.
 	InstagramAccountId *string                                   `json:"instagramAccountId,omitempty"`
 	DynamicCreative    *CreateStandaloneAdRequestDynamicCreative `json:"dynamicCreative,omitempty"`
-	PlacementAssets    *CreateStandaloneAdRequestPlacementAssets `json:"placementAssets,omitempty"`
+	// Meta only. Hand-built carousel: 2-10 authored cards in DETERMINISTIC order, mapped to the creative's `link_data.child_attachments`. Unlike `dynamicCreative`, you control the card order and per-card copy/link. Requires top-level `body`, `linkUrl` and `callToAction`. Mutually exclusive with `imageUrl`/`video`, `creatives[]`, `dynamicCreative`, `placementAssets`, `existingCreativeId`, `adSetId`, `leadGenFormId` and goal `catalog_sales`.
+	CarouselCards   []CreateStandaloneAdRequestCarouselCardsInner `json:"carouselCards,omitempty"`
+	PlacementAssets *CreateStandaloneAdRequestPlacementAssets     `json:"placementAssets,omitempty"`
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only
@@ -1859,6 +1861,38 @@ func (o *CreateStandaloneAdRequest) SetDynamicCreative(v CreateStandaloneAdReque
 	o.DynamicCreative = &v
 }
 
+// GetCarouselCards returns the CarouselCards field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCarouselCards() []CreateStandaloneAdRequestCarouselCardsInner {
+	if o == nil || IsNil(o.CarouselCards) {
+		var ret []CreateStandaloneAdRequestCarouselCardsInner
+		return ret
+	}
+	return o.CarouselCards
+}
+
+// GetCarouselCardsOk returns a tuple with the CarouselCards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCarouselCardsOk() ([]CreateStandaloneAdRequestCarouselCardsInner, bool) {
+	if o == nil || IsNil(o.CarouselCards) {
+		return nil, false
+	}
+	return o.CarouselCards, true
+}
+
+// HasCarouselCards returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCarouselCards() bool {
+	if o != nil && !IsNil(o.CarouselCards) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarouselCards gets a reference to the given []CreateStandaloneAdRequestCarouselCardsInner and assigns it to the CarouselCards field.
+func (o *CreateStandaloneAdRequest) SetCarouselCards(v []CreateStandaloneAdRequestCarouselCardsInner) {
+	o.CarouselCards = v
+}
+
 // GetPlacementAssets returns the PlacementAssets field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetPlacementAssets() CreateStandaloneAdRequestPlacementAssets {
 	if o == nil || IsNil(o.PlacementAssets) {
@@ -2597,6 +2631,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DynamicCreative) {
 		toSerialize["dynamicCreative"] = o.DynamicCreative
+	}
+	if !IsNil(o.CarouselCards) {
+		toSerialize["carouselCards"] = o.CarouselCards
 	}
 	if !IsNil(o.PlacementAssets) {
 		toSerialize["placementAssets"] = o.PlacementAssets

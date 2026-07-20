@@ -31,6 +31,14 @@ type CreateAdInsightsReportRequest struct {
 	Fields *string `json:"fields,omitempty"`
 	// Comma-separated Graph breakdowns.
 	Breakdowns *string `json:"breakdowns,omitempty"`
+	// Comma-separated Graph action breakdowns (e.g. action_type,action_destination).
+	ActionBreakdowns *string `json:"actionBreakdowns,omitempty"`
+	// Meta attribution windows (e.g. [\"7d_click\", \"1d_view\"]). Action values are returned keyed per window.
+	ActionAttributionWindows []string `json:"actionAttributionWindows,omitempty"`
+	// When actions are counted: impression, conversion or mixed.
+	ActionReportTime *string `json:"actionReportTime,omitempty"`
+	// Use the ad sets' own attribution settings for action counting.
+	UseUnifiedAttributionSetting *bool `json:"useUnifiedAttributionSetting,omitempty"`
 	// Meta filter objects, applied server-side.
 	Filtering []CreateAdInsightsReportRequestFilteringInner `json:"filtering,omitempty"`
 	// Mutually exclusive with fromDate/toDate.
@@ -203,6 +211,134 @@ func (o *CreateAdInsightsReportRequest) HasBreakdowns() bool {
 // SetBreakdowns gets a reference to the given string and assigns it to the Breakdowns field.
 func (o *CreateAdInsightsReportRequest) SetBreakdowns(v string) {
 	o.Breakdowns = &v
+}
+
+// GetActionBreakdowns returns the ActionBreakdowns field value if set, zero value otherwise.
+func (o *CreateAdInsightsReportRequest) GetActionBreakdowns() string {
+	if o == nil || IsNil(o.ActionBreakdowns) {
+		var ret string
+		return ret
+	}
+	return *o.ActionBreakdowns
+}
+
+// GetActionBreakdownsOk returns a tuple with the ActionBreakdowns field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdInsightsReportRequest) GetActionBreakdownsOk() (*string, bool) {
+	if o == nil || IsNil(o.ActionBreakdowns) {
+		return nil, false
+	}
+	return o.ActionBreakdowns, true
+}
+
+// HasActionBreakdowns returns a boolean if a field has been set.
+func (o *CreateAdInsightsReportRequest) HasActionBreakdowns() bool {
+	if o != nil && !IsNil(o.ActionBreakdowns) {
+		return true
+	}
+
+	return false
+}
+
+// SetActionBreakdowns gets a reference to the given string and assigns it to the ActionBreakdowns field.
+func (o *CreateAdInsightsReportRequest) SetActionBreakdowns(v string) {
+	o.ActionBreakdowns = &v
+}
+
+// GetActionAttributionWindows returns the ActionAttributionWindows field value if set, zero value otherwise.
+func (o *CreateAdInsightsReportRequest) GetActionAttributionWindows() []string {
+	if o == nil || IsNil(o.ActionAttributionWindows) {
+		var ret []string
+		return ret
+	}
+	return o.ActionAttributionWindows
+}
+
+// GetActionAttributionWindowsOk returns a tuple with the ActionAttributionWindows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdInsightsReportRequest) GetActionAttributionWindowsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ActionAttributionWindows) {
+		return nil, false
+	}
+	return o.ActionAttributionWindows, true
+}
+
+// HasActionAttributionWindows returns a boolean if a field has been set.
+func (o *CreateAdInsightsReportRequest) HasActionAttributionWindows() bool {
+	if o != nil && !IsNil(o.ActionAttributionWindows) {
+		return true
+	}
+
+	return false
+}
+
+// SetActionAttributionWindows gets a reference to the given []string and assigns it to the ActionAttributionWindows field.
+func (o *CreateAdInsightsReportRequest) SetActionAttributionWindows(v []string) {
+	o.ActionAttributionWindows = v
+}
+
+// GetActionReportTime returns the ActionReportTime field value if set, zero value otherwise.
+func (o *CreateAdInsightsReportRequest) GetActionReportTime() string {
+	if o == nil || IsNil(o.ActionReportTime) {
+		var ret string
+		return ret
+	}
+	return *o.ActionReportTime
+}
+
+// GetActionReportTimeOk returns a tuple with the ActionReportTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdInsightsReportRequest) GetActionReportTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.ActionReportTime) {
+		return nil, false
+	}
+	return o.ActionReportTime, true
+}
+
+// HasActionReportTime returns a boolean if a field has been set.
+func (o *CreateAdInsightsReportRequest) HasActionReportTime() bool {
+	if o != nil && !IsNil(o.ActionReportTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetActionReportTime gets a reference to the given string and assigns it to the ActionReportTime field.
+func (o *CreateAdInsightsReportRequest) SetActionReportTime(v string) {
+	o.ActionReportTime = &v
+}
+
+// GetUseUnifiedAttributionSetting returns the UseUnifiedAttributionSetting field value if set, zero value otherwise.
+func (o *CreateAdInsightsReportRequest) GetUseUnifiedAttributionSetting() bool {
+	if o == nil || IsNil(o.UseUnifiedAttributionSetting) {
+		var ret bool
+		return ret
+	}
+	return *o.UseUnifiedAttributionSetting
+}
+
+// GetUseUnifiedAttributionSettingOk returns a tuple with the UseUnifiedAttributionSetting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdInsightsReportRequest) GetUseUnifiedAttributionSettingOk() (*bool, bool) {
+	if o == nil || IsNil(o.UseUnifiedAttributionSetting) {
+		return nil, false
+	}
+	return o.UseUnifiedAttributionSetting, true
+}
+
+// HasUseUnifiedAttributionSetting returns a boolean if a field has been set.
+func (o *CreateAdInsightsReportRequest) HasUseUnifiedAttributionSetting() bool {
+	if o != nil && !IsNil(o.UseUnifiedAttributionSetting) {
+		return true
+	}
+
+	return false
+}
+
+// SetUseUnifiedAttributionSetting gets a reference to the given bool and assigns it to the UseUnifiedAttributionSetting field.
+func (o *CreateAdInsightsReportRequest) SetUseUnifiedAttributionSetting(v bool) {
+	o.UseUnifiedAttributionSetting = &v
 }
 
 // GetFiltering returns the Filtering field value if set, zero value otherwise.
@@ -385,6 +521,18 @@ func (o CreateAdInsightsReportRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Breakdowns) {
 		toSerialize["breakdowns"] = o.Breakdowns
+	}
+	if !IsNil(o.ActionBreakdowns) {
+		toSerialize["actionBreakdowns"] = o.ActionBreakdowns
+	}
+	if !IsNil(o.ActionAttributionWindows) {
+		toSerialize["actionAttributionWindows"] = o.ActionAttributionWindows
+	}
+	if !IsNil(o.ActionReportTime) {
+		toSerialize["actionReportTime"] = o.ActionReportTime
+	}
+	if !IsNil(o.UseUnifiedAttributionSetting) {
+		toSerialize["useUnifiedAttributionSetting"] = o.UseUnifiedAttributionSetting
 	}
 	if !IsNil(o.Filtering) {
 		toSerialize["filtering"] = o.Filtering

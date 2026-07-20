@@ -5462,20 +5462,24 @@ func (a *AdsAPIService) ListWhatsAppConversionsExecute(r AdsAPIListWhatsAppConve
 }
 
 type AdsAPIQueryAdInsightsRequest struct {
-	ctx           context.Context
-	ApiService    *AdsAPIService
-	accountId     *string
-	objectId      *string
-	level         *string
-	fields        *string
-	breakdowns    *string
-	filtering     *string
-	datePreset    *string
-	fromDate      *string
-	toDate        *string
-	timeIncrement *string
-	limit         *int32
-	after         *string
+	ctx                          context.Context
+	ApiService                   *AdsAPIService
+	accountId                    *string
+	objectId                     *string
+	level                        *string
+	fields                       *string
+	breakdowns                   *string
+	actionBreakdowns             *string
+	actionAttributionWindows     *string
+	actionReportTime             *string
+	useUnifiedAttributionSetting *bool
+	filtering                    *string
+	datePreset                   *string
+	fromDate                     *string
+	toDate                       *string
+	timeIncrement                *string
+	limit                        *int32
+	after                        *string
 }
 
 // Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
@@ -5505,6 +5509,30 @@ func (r AdsAPIQueryAdInsightsRequest) Fields(fields string) AdsAPIQueryAdInsight
 // Comma-separated Graph breakdowns (e.g. age,gender or publisher_platform).
 func (r AdsAPIQueryAdInsightsRequest) Breakdowns(breakdowns string) AdsAPIQueryAdInsightsRequest {
 	r.breakdowns = &breakdowns
+	return r
+}
+
+// Comma-separated Graph action breakdowns. Segments the actions[] arrays in each row.
+func (r AdsAPIQueryAdInsightsRequest) ActionBreakdowns(actionBreakdowns string) AdsAPIQueryAdInsightsRequest {
+	r.actionBreakdowns = &actionBreakdowns
+	return r
+}
+
+// Comma-separated Meta attribution windows. Action values are returned keyed per window.
+func (r AdsAPIQueryAdInsightsRequest) ActionAttributionWindows(actionAttributionWindows string) AdsAPIQueryAdInsightsRequest {
+	r.actionAttributionWindows = &actionAttributionWindows
+	return r
+}
+
+// When actions are counted: impression, conversion or mixed.
+func (r AdsAPIQueryAdInsightsRequest) ActionReportTime(actionReportTime string) AdsAPIQueryAdInsightsRequest {
+	r.actionReportTime = &actionReportTime
+	return r
+}
+
+// Use the ad sets&#39; own attribution settings for action counting.
+func (r AdsAPIQueryAdInsightsRequest) UseUnifiedAttributionSetting(useUnifiedAttributionSetting bool) AdsAPIQueryAdInsightsRequest {
+	r.useUnifiedAttributionSetting = &useUnifiedAttributionSetting
 	return r
 }
 
@@ -5616,6 +5644,18 @@ func (a *AdsAPIService) QueryAdInsightsExecute(r AdsAPIQueryAdInsightsRequest) (
 	}
 	if r.breakdowns != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdowns", r.breakdowns, "form", "")
+	}
+	if r.actionBreakdowns != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "actionBreakdowns", r.actionBreakdowns, "form", "")
+	}
+	if r.actionAttributionWindows != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "actionAttributionWindows", r.actionAttributionWindows, "form", "")
+	}
+	if r.actionReportTime != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "actionReportTime", r.actionReportTime, "form", "")
+	}
+	if r.useUnifiedAttributionSetting != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "useUnifiedAttributionSetting", r.useUnifiedAttributionSetting, "form", "")
 	}
 	if r.filtering != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "filtering", r.filtering, "form", "")
