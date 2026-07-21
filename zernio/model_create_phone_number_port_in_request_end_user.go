@@ -30,15 +30,20 @@ type CreatePhoneNumberPortInRequestEndUser struct {
 	BillingPhoneNumber *string `json:"billingPhoneNumber,omitempty"`
 	// Account number with the losing carrier — required (carriers reject ports without it; on prepaid mobile plans it is often the phone number itself).
 	AccountNumber string `json:"accountNumber"`
-	// Transfer PIN. Required for mobile numbers (wireless carriers reject PIN-less ports). Forwarded to the carrier, never stored.
-	PinPasscode     *string `json:"pinPasscode,omitempty"`
-	StreetAddress   string  `json:"streetAddress"`
-	ExtendedAddress *string `json:"extendedAddress,omitempty"`
-	Locality        string  `json:"locality"`
-	// 2-letter US state / CA province code (full names are accepted and normalized).
-	AdministrativeArea string `json:"administrativeArea"`
-	// US ZIP (5 digits) or Canadian postal code, matching countryCode.
-	PostalCode  string `json:"postalCode"`
+	// Transfer PIN. Required for US/CA mobile numbers (wireless carriers reject PIN-less ports). Forwarded to the carrier, never stored. International porting codes (e.g. the UK PAC) go through `requirements` instead.
+	PinPasscode *string `json:"pinPasscode,omitempty"`
+	// Company tax id on the carrier account (EU ports, e.g. Spanish CIF).
+	TaxIdentifier *string `json:"taxIdentifier,omitempty"`
+	// Business registration id on the carrier account (EU ports).
+	BusinessIdentifier *string `json:"businessIdentifier,omitempty"`
+	StreetAddress      string  `json:"streetAddress"`
+	ExtendedAddress    *string `json:"extendedAddress,omitempty"`
+	Locality           string  `json:"locality"`
+	// Region. Required for US/CA as the 2-letter state/province code (full names are accepted and normalized); optional elsewhere.
+	AdministrativeArea *string `json:"administrativeArea,omitempty"`
+	// Postal code. Validated as a US ZIP / Canadian postal code for US/CA; free-form elsewhere.
+	PostalCode string `json:"postalCode"`
+	// Service-address country (a supported port-in country).
 	CountryCode string `json:"countryCode"`
 }
 
@@ -48,14 +53,13 @@ type _CreatePhoneNumberPortInRequestEndUser CreatePhoneNumberPortInRequestEndUse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreatePhoneNumberPortInRequestEndUser(entityName string, authPersonName string, accountNumber string, streetAddress string, locality string, administrativeArea string, postalCode string, countryCode string) *CreatePhoneNumberPortInRequestEndUser {
+func NewCreatePhoneNumberPortInRequestEndUser(entityName string, authPersonName string, accountNumber string, streetAddress string, locality string, postalCode string, countryCode string) *CreatePhoneNumberPortInRequestEndUser {
 	this := CreatePhoneNumberPortInRequestEndUser{}
 	this.EntityName = entityName
 	this.AuthPersonName = authPersonName
 	this.AccountNumber = accountNumber
 	this.StreetAddress = streetAddress
 	this.Locality = locality
-	this.AdministrativeArea = administrativeArea
 	this.PostalCode = postalCode
 	this.CountryCode = countryCode
 	return &this
@@ -205,6 +209,70 @@ func (o *CreatePhoneNumberPortInRequestEndUser) SetPinPasscode(v string) {
 	o.PinPasscode = &v
 }
 
+// GetTaxIdentifier returns the TaxIdentifier field value if set, zero value otherwise.
+func (o *CreatePhoneNumberPortInRequestEndUser) GetTaxIdentifier() string {
+	if o == nil || IsNil(o.TaxIdentifier) {
+		var ret string
+		return ret
+	}
+	return *o.TaxIdentifier
+}
+
+// GetTaxIdentifierOk returns a tuple with the TaxIdentifier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberPortInRequestEndUser) GetTaxIdentifierOk() (*string, bool) {
+	if o == nil || IsNil(o.TaxIdentifier) {
+		return nil, false
+	}
+	return o.TaxIdentifier, true
+}
+
+// HasTaxIdentifier returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequestEndUser) HasTaxIdentifier() bool {
+	if o != nil && !IsNil(o.TaxIdentifier) {
+		return true
+	}
+
+	return false
+}
+
+// SetTaxIdentifier gets a reference to the given string and assigns it to the TaxIdentifier field.
+func (o *CreatePhoneNumberPortInRequestEndUser) SetTaxIdentifier(v string) {
+	o.TaxIdentifier = &v
+}
+
+// GetBusinessIdentifier returns the BusinessIdentifier field value if set, zero value otherwise.
+func (o *CreatePhoneNumberPortInRequestEndUser) GetBusinessIdentifier() string {
+	if o == nil || IsNil(o.BusinessIdentifier) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessIdentifier
+}
+
+// GetBusinessIdentifierOk returns a tuple with the BusinessIdentifier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberPortInRequestEndUser) GetBusinessIdentifierOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessIdentifier) {
+		return nil, false
+	}
+	return o.BusinessIdentifier, true
+}
+
+// HasBusinessIdentifier returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequestEndUser) HasBusinessIdentifier() bool {
+	if o != nil && !IsNil(o.BusinessIdentifier) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessIdentifier gets a reference to the given string and assigns it to the BusinessIdentifier field.
+func (o *CreatePhoneNumberPortInRequestEndUser) SetBusinessIdentifier(v string) {
+	o.BusinessIdentifier = &v
+}
+
 // GetStreetAddress returns the StreetAddress field value
 func (o *CreatePhoneNumberPortInRequestEndUser) GetStreetAddress() string {
 	if o == nil {
@@ -285,28 +353,36 @@ func (o *CreatePhoneNumberPortInRequestEndUser) SetLocality(v string) {
 	o.Locality = v
 }
 
-// GetAdministrativeArea returns the AdministrativeArea field value
+// GetAdministrativeArea returns the AdministrativeArea field value if set, zero value otherwise.
 func (o *CreatePhoneNumberPortInRequestEndUser) GetAdministrativeArea() string {
-	if o == nil {
+	if o == nil || IsNil(o.AdministrativeArea) {
 		var ret string
 		return ret
 	}
-
-	return o.AdministrativeArea
+	return *o.AdministrativeArea
 }
 
-// GetAdministrativeAreaOk returns a tuple with the AdministrativeArea field value
+// GetAdministrativeAreaOk returns a tuple with the AdministrativeArea field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreatePhoneNumberPortInRequestEndUser) GetAdministrativeAreaOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.AdministrativeArea) {
 		return nil, false
 	}
-	return &o.AdministrativeArea, true
+	return o.AdministrativeArea, true
 }
 
-// SetAdministrativeArea sets field value
+// HasAdministrativeArea returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequestEndUser) HasAdministrativeArea() bool {
+	if o != nil && !IsNil(o.AdministrativeArea) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdministrativeArea gets a reference to the given string and assigns it to the AdministrativeArea field.
 func (o *CreatePhoneNumberPortInRequestEndUser) SetAdministrativeArea(v string) {
-	o.AdministrativeArea = v
+	o.AdministrativeArea = &v
 }
 
 // GetPostalCode returns the PostalCode field value
@@ -376,12 +452,20 @@ func (o CreatePhoneNumberPortInRequestEndUser) ToMap() (map[string]interface{}, 
 	if !IsNil(o.PinPasscode) {
 		toSerialize["pinPasscode"] = o.PinPasscode
 	}
+	if !IsNil(o.TaxIdentifier) {
+		toSerialize["taxIdentifier"] = o.TaxIdentifier
+	}
+	if !IsNil(o.BusinessIdentifier) {
+		toSerialize["businessIdentifier"] = o.BusinessIdentifier
+	}
 	toSerialize["streetAddress"] = o.StreetAddress
 	if !IsNil(o.ExtendedAddress) {
 		toSerialize["extendedAddress"] = o.ExtendedAddress
 	}
 	toSerialize["locality"] = o.Locality
-	toSerialize["administrativeArea"] = o.AdministrativeArea
+	if !IsNil(o.AdministrativeArea) {
+		toSerialize["administrativeArea"] = o.AdministrativeArea
+	}
 	toSerialize["postalCode"] = o.PostalCode
 	toSerialize["countryCode"] = o.CountryCode
 	return toSerialize, nil
@@ -397,7 +481,6 @@ func (o *CreatePhoneNumberPortInRequestEndUser) UnmarshalJSON(data []byte) (err 
 		"accountNumber",
 		"streetAddress",
 		"locality",
-		"administrativeArea",
 		"postalCode",
 		"countryCode",
 	}

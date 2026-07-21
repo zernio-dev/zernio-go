@@ -30,11 +30,13 @@ type CreatePhoneNumberPortInRequest struct {
 	LoaDocumentId string `json:"loaDocumentId"`
 	// Document id from POST /v1/phone-numbers/port-in/documents (kind=invoice).
 	InvoiceDocumentId string `json:"invoiceDocumentId"`
-	// Requested port date; the carrier confirms the actual FOC later. Defaults to one week out (shifted off weekends) when omitted.
+	// Requested port date; the carrier confirms the actual FOC later. US/CA default is one week out (shifted off weekends); international orders are scheduled into the carrier's next allowed porting window at or after this date.
 	FocDatetimeRequested *time.Time `json:"focDatetimeRequested,omitempty"`
 	CustomerReference    *string    `json:"customerReference,omitempty"`
 	// Whether the losing account ports all its numbers (full) or keeps some (partial).
 	PortType *string `json:"portType,omitempty"`
+	// Country-specific requirement values for international ports (from GET /v1/phone-numbers/port-in/requirements). Not needed for US/CA. The LOA and invoice requirements are satisfied automatically by loaDocumentId/invoiceDocumentId, and address-type requirements by the endUser service address.
+	Requirements []CreatePhoneNumberPortInRequestRequirementsInner `json:"requirements,omitempty"`
 }
 
 type _CreatePhoneNumberPortInRequest CreatePhoneNumberPortInRequest
@@ -256,6 +258,38 @@ func (o *CreatePhoneNumberPortInRequest) SetPortType(v string) {
 	o.PortType = &v
 }
 
+// GetRequirements returns the Requirements field value if set, zero value otherwise.
+func (o *CreatePhoneNumberPortInRequest) GetRequirements() []CreatePhoneNumberPortInRequestRequirementsInner {
+	if o == nil || IsNil(o.Requirements) {
+		var ret []CreatePhoneNumberPortInRequestRequirementsInner
+		return ret
+	}
+	return o.Requirements
+}
+
+// GetRequirementsOk returns a tuple with the Requirements field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberPortInRequest) GetRequirementsOk() ([]CreatePhoneNumberPortInRequestRequirementsInner, bool) {
+	if o == nil || IsNil(o.Requirements) {
+		return nil, false
+	}
+	return o.Requirements, true
+}
+
+// HasRequirements returns a boolean if a field has been set.
+func (o *CreatePhoneNumberPortInRequest) HasRequirements() bool {
+	if o != nil && !IsNil(o.Requirements) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequirements gets a reference to the given []CreatePhoneNumberPortInRequestRequirementsInner and assigns it to the Requirements field.
+func (o *CreatePhoneNumberPortInRequest) SetRequirements(v []CreatePhoneNumberPortInRequestRequirementsInner) {
+	o.Requirements = v
+}
+
 func (o CreatePhoneNumberPortInRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -278,6 +312,9 @@ func (o CreatePhoneNumberPortInRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.PortType) {
 		toSerialize["portType"] = o.PortType
+	}
+	if !IsNil(o.Requirements) {
+		toSerialize["requirements"] = o.Requirements
 	}
 	return toSerialize, nil
 }

@@ -566,10 +566,18 @@ supports messaging).
 
 Run the portability check (POST /v1/phone-numbers/port-in/check) and
 upload the two documents (POST /v1/phone-numbers/port-in/documents)
-first. The carrier may split the numbers into several orders (by
-country, number type, losing carrier); `orders` carries per-order
-results, and a partial failure still returns 201 with the failed
-orders' `error` set (they stay as cancellable drafts).
+first — uploaded documents must be attached to an order within 30
+minutes or the carrier deletes them, so upload right before this call.
+The carrier may split the numbers into several orders (by country,
+number type, losing carrier); `orders` carries per-order results, and a
+partial failure still returns 201 with the failed orders' `error` set
+(they stay as cancellable drafts).
+
+Non-US/CA numbers additionally need the country-specific values from
+GET /v1/phone-numbers/port-in/requirements, passed via `requirements`,
+and must be submitted one country per request. When required
+information is still missing after submission, the order is kept as a
+resumable draft whose `error` / `declineReason` names the gaps.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPICreatePhoneNumberPortInRequest
@@ -646,6 +654,17 @@ func (a *PhoneNumbersAPIService) CreatePhoneNumberPortInExecute(r PhoneNumbersAP
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
@@ -920,6 +939,294 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest struct {
+	ctx        context.Context
+	ApiService *PhoneNumbersAPIService
+	id         string
+}
+
+func (r PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest) Execute() (*GetPhoneNumberPortInOrderRequirements200Response, *http.Response, error) {
+	return r.ApiService.GetPhoneNumberPortInOrderRequirementsExecute(r)
+}
+
+/*
+GetPhoneNumberPortInOrderRequirements A port-in order's pending requirements
+
+The live requirements on an EXISTING porting order: which are filled,
+which are still pending, and which bounced on review
+(`requirement-info-exception`). Use it to fix and resubmit a rejected
+international port. Same field shape as the country-level requirements
+endpoint, plus per-requirement status.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id Porting order ID (from the port-in list).
+	@return PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest
+*/
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortInOrderRequirements(ctx context.Context, id string) PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest {
+	return PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetPhoneNumberPortInOrderRequirements200Response
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortInOrderRequirementsExecute(r PhoneNumbersAPIGetPhoneNumberPortInOrderRequirementsRequest) (*GetPhoneNumberPortInOrderRequirements200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetPhoneNumberPortInOrderRequirements200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.GetPhoneNumberPortInOrderRequirements")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/port-in/{id}/requirements"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest struct {
+	ctx        context.Context
+	ApiService *PhoneNumbersAPIService
+	country    *string
+	numberType *string
+}
+
+// ISO country of the numbers being ported (a supported port-in country).
+func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) Country(country string) PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest {
+	r.country = &country
+	return r
+}
+
+// The portability check&#39;s phoneNumberType — requirements differ by type.
+func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) NumberType(numberType string) PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest {
+	r.numberType = &numberType
+	return r
+}
+
+func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) Execute() (*GetPhoneNumberPortInRequirements200Response, *http.Response, error) {
+	return r.ApiService.GetPhoneNumberPortInRequirementsExecute(r)
+}
+
+/*
+GetPhoneNumberPortInRequirements Country porting requirements
+
+The country-specific information a port-in needs BEYOND the LOA,
+invoice, and account/address details — e.g. an ID copy, proof of
+address, a tax id, or a porting code. Call it after the portability
+check (which returns each number's `countryCode` and
+`phoneNumberType`), render the fields, and pass the collected values as
+the create request's `requirements`. US/CA return an empty list.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest
+*/
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortInRequirements(ctx context.Context) PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest {
+	return PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetPhoneNumberPortInRequirements200Response
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortInRequirementsExecute(r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) (*GetPhoneNumberPortInRequirements200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetPhoneNumberPortInRequirements200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.GetPhoneNumberPortInRequirements")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/port-in/requirements"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.country == nil {
+		return localVarReturnValue, nil, reportError("country is required and must be specified")
+	}
+	if strlen(*r.country) < 2 {
+		return localVarReturnValue, nil, reportError("country must have at least 2 elements")
+	}
+	if strlen(*r.country) > 2 {
+		return localVarReturnValue, nil, reportError("country must have less than 2 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "country", r.country, "form", "")
+	if r.numberType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
+	} else {
+		var defaultValue string = "local"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", defaultValue, "form", "")
+		r.numberType = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2416,7 +2723,7 @@ func (r PhoneNumbersAPIUploadPhoneNumberPortInDocumentRequest) File(file *os.Fil
 	return r
 }
 
-// Informational; used for the stored filename.
+// &#39;loa&#39;, &#39;invoice&#39;, or any short slug for requirement documents. Informational; used for the stored filename.
 func (r PhoneNumbersAPIUploadPhoneNumberPortInDocumentRequest) Kind(kind string) PhoneNumbersAPIUploadPhoneNumberPortInDocumentRequest {
 	r.kind = &kind
 	return r
@@ -2429,9 +2736,13 @@ func (r PhoneNumbersAPIUploadPhoneNumberPortInDocumentRequest) Execute() (*Uploa
 /*
 UploadPhoneNumberPortInDocument Upload a porting document
 
-Upload ONE porting document (the signed LOA or a recent carrier invoice)
-and get back its `documentId`, which the port-in create request takes as
-`loaDocumentId` / `invoiceDocumentId`. PDF, JPEG, or PNG, 10MB max.
+Upload ONE porting document and get back its `documentId`. For the
+signed LOA / carrier invoice the id goes to `loaDocumentId` /
+`invoiceDocumentId`; for a country-specific document requirement
+(international ports) it becomes that requirement's `fieldValue`.
+Requirement documents are normalized to PDF automatically (regulators
+reject raw images). PDF, JPEG, or PNG, 10MB max. Uploads must be
+attached to an order within 30 minutes or the carrier deletes them.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPIUploadPhoneNumberPortInDocumentRequest

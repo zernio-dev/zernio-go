@@ -515,6 +515,8 @@ func main() {
 | `client.PhoneNumbersAPI.CreatePhoneNumberPortIn(ctx)` | Port numbers in |
 | `client.PhoneNumbersAPI.GetPhoneNumber(ctx)` | Get phone number |
 | `client.PhoneNumbersAPI.GetPhoneNumberKycForm(ctx)` | Get KYC form spec |
+| `client.PhoneNumbersAPI.GetPhoneNumberPortInOrderRequirements(ctx)` | A port-in order's pending requirements |
+| `client.PhoneNumbersAPI.GetPhoneNumberPortInRequirements(ctx)` | Country porting requirements |
 | `client.PhoneNumbersAPI.GetPhoneNumberRemediation(ctx)` | Get declined requirements |
 | `client.PhoneNumbersAPI.CancelPhoneNumberPortIn(ctx)` | Cancel a port-in |
 | `client.PhoneNumbersAPI.CheckPhoneNumberAvailability(ctx)` | Check country availability |

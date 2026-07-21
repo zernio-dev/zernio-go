@@ -24,8 +24,12 @@ type CheckPhoneNumberPortability200ResponseResultsInner struct {
 	Portable    *bool   `json:"portable,omitempty"`
 	// Qualifies for the carrier's accelerated FastPort lane.
 	FastPortable *bool `json:"fastPortable,omitempty"`
-	// Line type when known (mobile, landline, voip…). A mobile number requires the transfer PIN at submit.
+	// Line type when known (mobile, landline, voip…). A US/CA mobile number requires the transfer PIN at submit.
 	LineType NullableString `json:"lineType,omitempty"`
+	// ISO country of the number — pass it to GET /v1/phone-numbers/port-in/requirements for international numbers.
+	CountryCode NullableString `json:"countryCode,omitempty"`
+	// Carrier number-type classification (local, mobile, national, toll_free…) — the numberType for the requirements endpoint.
+	PhoneNumberType NullableString `json:"phoneNumberType,omitempty"`
 	// Carrier reason when not portable; null when portable.
 	NotPortableReason NullableString `json:"notPortableReason,omitempty"`
 }
@@ -186,6 +190,92 @@ func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetLineType() {
 	o.LineType.Unset()
 }
 
+// GetCountryCode returns the CountryCode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetCountryCode() string {
+	if o == nil || IsNil(o.CountryCode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CountryCode.Get()
+}
+
+// GetCountryCodeOk returns a tuple with the CountryCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetCountryCodeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CountryCode.Get(), o.CountryCode.IsSet()
+}
+
+// HasCountryCode returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasCountryCode() bool {
+	if o != nil && o.CountryCode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryCode gets a reference to the given NullableString and assigns it to the CountryCode field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetCountryCode(v string) {
+	o.CountryCode.Set(&v)
+}
+
+// SetCountryCodeNil sets the value for CountryCode to be an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetCountryCodeNil() {
+	o.CountryCode.Set(nil)
+}
+
+// UnsetCountryCode ensures that no value is present for CountryCode, not even an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetCountryCode() {
+	o.CountryCode.Unset()
+}
+
+// GetPhoneNumberType returns the PhoneNumberType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetPhoneNumberType() string {
+	if o == nil || IsNil(o.PhoneNumberType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PhoneNumberType.Get()
+}
+
+// GetPhoneNumberTypeOk returns a tuple with the PhoneNumberType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetPhoneNumberTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PhoneNumberType.Get(), o.PhoneNumberType.IsSet()
+}
+
+// HasPhoneNumberType returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasPhoneNumberType() bool {
+	if o != nil && o.PhoneNumberType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumberType gets a reference to the given NullableString and assigns it to the PhoneNumberType field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetPhoneNumberType(v string) {
+	o.PhoneNumberType.Set(&v)
+}
+
+// SetPhoneNumberTypeNil sets the value for PhoneNumberType to be an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetPhoneNumberTypeNil() {
+	o.PhoneNumberType.Set(nil)
+}
+
+// UnsetPhoneNumberType ensures that no value is present for PhoneNumberType, not even an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetPhoneNumberType() {
+	o.PhoneNumberType.Unset()
+}
+
 // GetNotPortableReason returns the NotPortableReason field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetNotPortableReason() string {
 	if o == nil || IsNil(o.NotPortableReason.Get()) {
@@ -250,6 +340,12 @@ func (o CheckPhoneNumberPortability200ResponseResultsInner) ToMap() (map[string]
 	}
 	if o.LineType.IsSet() {
 		toSerialize["lineType"] = o.LineType.Get()
+	}
+	if o.CountryCode.IsSet() {
+		toSerialize["countryCode"] = o.CountryCode.Get()
+	}
+	if o.PhoneNumberType.IsSet() {
+		toSerialize["phoneNumberType"] = o.PhoneNumberType.Get()
 	}
 	if o.NotPortableReason.IsSet() {
 		toSerialize["notPortableReason"] = o.NotPortableReason.Get()
