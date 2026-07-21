@@ -550,6 +550,129 @@ func (a *AdsAPIService) BoostPostExecute(r AdsAPIBoostPostRequest) (*UpdateAd200
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPICancelRfReservationRequest struct {
+	ctx          context.Context
+	ApiService   *AdsAPIService
+	predictionId string
+	accountId    *string
+	adAccountId  *string
+}
+
+func (r AdsAPICancelRfReservationRequest) AccountId(accountId string) AdsAPICancelRfReservationRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdsAPICancelRfReservationRequest) AdAccountId(adAccountId string) AdsAPICancelRfReservationRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdsAPICancelRfReservationRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CancelRfReservationExecute(r)
+}
+
+/*
+CancelRfReservation Cancel a Reach & Frequency reservation (Meta)
+
+Releases a RESERVATION's locked price and inventory. Unreserved predictions expire on their own.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param predictionId
+	@return AdsAPICancelRfReservationRequest
+*/
+func (a *AdsAPIService) CancelRfReservation(ctx context.Context, predictionId string) AdsAPICancelRfReservationRequest {
+	return AdsAPICancelRfReservationRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		predictionId: predictionId,
+	}
+}
+
+// Execute executes the request
+func (a *AdsAPIService) CancelRfReservationExecute(r AdsAPICancelRfReservationRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.CancelRfReservation")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rf-predictions/{predictionId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"predictionId"+"}", url.PathEscape(parameterValueToString(r.predictionId, "predictionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type AdsAPICreateAdInsightsReportRequest struct {
 	ctx                           context.Context
 	ApiService                    *AdsAPIService
@@ -1317,6 +1440,137 @@ func (a *AdsAPIService) CreateMessagingAdExecute(r AdsAPICreateMessagingAdReques
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type AdsAPICreateRfPredictionRequest struct {
+	ctx                       context.Context
+	ApiService                *AdsAPIService
+	createRfPredictionRequest *CreateRfPredictionRequest
+}
+
+func (r AdsAPICreateRfPredictionRequest) CreateRfPredictionRequest(createRfPredictionRequest CreateRfPredictionRequest) AdsAPICreateRfPredictionRequest {
+	r.createRfPredictionRequest = &createRfPredictionRequest
+	return r
+}
+
+func (r AdsAPICreateRfPredictionRequest) Execute() (*CreateRfPrediction201Response, *http.Response, error) {
+	return r.ApiService.CreateRfPredictionExecute(r)
+}
+
+/*
+CreateRfPrediction Create a Reach & Frequency prediction (Meta)
+
+Creates an R&F prediction — a QUOTE, nothing is bought and no ad entities are created.
+Provide a date range plus exactly one of `budgetAmount` (Meta predicts reach) or `reach`
+(Meta predicts the budget). The response carries the estimate and its allowed bounds
+(min/max budget and reach). Predictions expire on their own; to buy, reserve one via
+POST /v1/ads/rf-predictions/{predictionId}/reserve and pass the RESERVED id to
+POST /v1/ads/create with `buyingType: "RESERVED"`.
+
+Reservation campaigns reject automatic placements, so omitted `placements` default to
+Facebook feed (+ Instagram stream when a linked IG professional account resolves);
+Instagram placements require that IG account. Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdsAPICreateRfPredictionRequest
+*/
+func (a *AdsAPIService) CreateRfPrediction(ctx context.Context) AdsAPICreateRfPredictionRequest {
+	return AdsAPICreateRfPredictionRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateRfPrediction201Response
+func (a *AdsAPIService) CreateRfPredictionExecute(r AdsAPICreateRfPredictionRequest) (*CreateRfPrediction201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateRfPrediction201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.CreateRfPrediction")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rf-predictions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createRfPredictionRequest == nil {
+		return localVarReturnValue, nil, reportError("createRfPredictionRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createRfPredictionRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type AdsAPICreateStandaloneAdRequest struct {
@@ -4601,6 +4855,139 @@ func (a *AdsAPIService) GetLinkedInSupplyForecastExecute(r AdsAPIGetLinkedInSupp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdsAPIGetRfPredictionRequest struct {
+	ctx          context.Context
+	ApiService   *AdsAPIService
+	predictionId string
+	accountId    *string
+	adAccountId  *string
+}
+
+func (r AdsAPIGetRfPredictionRequest) AccountId(accountId string) AdsAPIGetRfPredictionRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdsAPIGetRfPredictionRequest) AdAccountId(adAccountId string) AdsAPIGetRfPredictionRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdsAPIGetRfPredictionRequest) Execute() (*CreateRfPrediction201Response, *http.Response, error) {
+	return r.ApiService.GetRfPredictionExecute(r)
+}
+
+/*
+GetRfPrediction Read a Reach & Frequency prediction (Meta)
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param predictionId
+	@return AdsAPIGetRfPredictionRequest
+*/
+func (a *AdsAPIService) GetRfPrediction(ctx context.Context, predictionId string) AdsAPIGetRfPredictionRequest {
+	return AdsAPIGetRfPredictionRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		predictionId: predictionId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateRfPrediction201Response
+func (a *AdsAPIService) GetRfPredictionExecute(r AdsAPIGetRfPredictionRequest) (*CreateRfPrediction201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateRfPrediction201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.GetRfPrediction")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rf-predictions/{predictionId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"predictionId"+"}", url.PathEscape(parameterValueToString(r.predictionId, "predictionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdsAPIListAdAccountsRequest struct {
 	ctx         context.Context
 	ApiService  *AdsAPIService
@@ -6826,6 +7213,134 @@ func (a *AdsAPIService) RemoveConversionAssociationsExecute(r AdsAPIRemoveConver
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdsAPIReserveRfPredictionRequest struct {
+	ctx                        context.Context
+	ApiService                 *AdsAPIService
+	predictionId               string
+	reserveRfPredictionRequest *ReserveRfPredictionRequest
+}
+
+func (r AdsAPIReserveRfPredictionRequest) ReserveRfPredictionRequest(reserveRfPredictionRequest ReserveRfPredictionRequest) AdsAPIReserveRfPredictionRequest {
+	r.reserveRfPredictionRequest = &reserveRfPredictionRequest
+	return r
+}
+
+func (r AdsAPIReserveRfPredictionRequest) Execute() (*ReserveRfPrediction201Response, *http.Response, error) {
+	return r.ApiService.ReserveRfPredictionExecute(r)
+}
+
+/*
+ReserveRfPrediction Reserve a Reach & Frequency prediction (Meta)
+
+Locks the quoted price + inventory until the returned `expiresAt` and mints a NEW
+prediction id — pass that RESERVED id (not the original) as `rfPredictionId` on
+POST /v1/ads/create. Release an unused reservation via DELETE. Meta only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param predictionId
+	@return AdsAPIReserveRfPredictionRequest
+*/
+func (a *AdsAPIService) ReserveRfPrediction(ctx context.Context, predictionId string) AdsAPIReserveRfPredictionRequest {
+	return AdsAPIReserveRfPredictionRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		predictionId: predictionId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReserveRfPrediction201Response
+func (a *AdsAPIService) ReserveRfPredictionExecute(r AdsAPIReserveRfPredictionRequest) (*ReserveRfPrediction201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReserveRfPrediction201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdsAPIService.ReserveRfPrediction")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/rf-predictions/{predictionId}/reserve"
+	localVarPath = strings.Replace(localVarPath, "{"+"predictionId"+"}", url.PathEscape(parameterValueToString(r.predictionId, "predictionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.reserveRfPredictionRequest == nil {
+		return localVarReturnValue, nil, reportError("reserveRfPredictionRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.reserveRfPredictionRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

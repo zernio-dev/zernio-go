@@ -39,6 +39,10 @@ type CreateStandaloneAdRequest struct {
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta only. Explicit ad-set `billing_event`. Defaults to `IMPRESSIONS`. Forwarded verbatim to Meta, which validates compatibility with the optimization goal.
 	BillingEvent *string `json:"billingEvent,omitempty"`
+	// Meta only. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
+	BuyingType *string `json:"buyingType,omitempty"`
+	// Meta only. The RESERVED prediction id the R&F ad set runs on (reserving mints a new id — pass that one). Requires buyingType RESERVED.
+	RfPredictionId *string `json:"rfPredictionId,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
@@ -483,6 +487,70 @@ func (o *CreateStandaloneAdRequest) HasBillingEvent() bool {
 // SetBillingEvent gets a reference to the given string and assigns it to the BillingEvent field.
 func (o *CreateStandaloneAdRequest) SetBillingEvent(v string) {
 	o.BillingEvent = &v
+}
+
+// GetBuyingType returns the BuyingType field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetBuyingType() string {
+	if o == nil || IsNil(o.BuyingType) {
+		var ret string
+		return ret
+	}
+	return *o.BuyingType
+}
+
+// GetBuyingTypeOk returns a tuple with the BuyingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetBuyingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.BuyingType) {
+		return nil, false
+	}
+	return o.BuyingType, true
+}
+
+// HasBuyingType returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasBuyingType() bool {
+	if o != nil && !IsNil(o.BuyingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetBuyingType gets a reference to the given string and assigns it to the BuyingType field.
+func (o *CreateStandaloneAdRequest) SetBuyingType(v string) {
+	o.BuyingType = &v
+}
+
+// GetRfPredictionId returns the RfPredictionId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetRfPredictionId() string {
+	if o == nil || IsNil(o.RfPredictionId) {
+		var ret string
+		return ret
+	}
+	return *o.RfPredictionId
+}
+
+// GetRfPredictionIdOk returns a tuple with the RfPredictionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetRfPredictionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RfPredictionId) {
+		return nil, false
+	}
+	return o.RfPredictionId, true
+}
+
+// HasRfPredictionId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasRfPredictionId() bool {
+	if o != nil && !IsNil(o.RfPredictionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRfPredictionId gets a reference to the given string and assigns it to the RfPredictionId field.
+func (o *CreateStandaloneAdRequest) SetRfPredictionId(v string) {
+	o.RfPredictionId = &v
 }
 
 // GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
@@ -2502,6 +2570,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BillingEvent) {
 		toSerialize["billingEvent"] = o.BillingEvent
+	}
+	if !IsNil(o.BuyingType) {
+		toSerialize["buyingType"] = o.BuyingType
+	}
+	if !IsNil(o.RfPredictionId) {
+		toSerialize["rfPredictionId"] = o.RfPredictionId
 	}
 	if !IsNil(o.BudgetAmount) {
 		toSerialize["budgetAmount"] = o.BudgetAmount

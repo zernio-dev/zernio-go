@@ -279,6 +279,7 @@ func main() {
 | `client.AdsAPI.CreateCtwaAd(ctx)` | Create Click-to-WhatsApp ad (deprecated) |
 | `client.AdsAPI.CreateLeadForm(ctx)` | Create a lead form |
 | `client.AdsAPI.CreateMessagingAd(ctx)` | Create click-to-message ad (WhatsApp / Messenger / Instagram Direct) |
+| `client.AdsAPI.CreateRfPrediction(ctx)` | Create a Reach & Frequency prediction (Meta) |
 | `client.AdsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdsAPI.CreateTestLead(ctx)` | Create a test lead |
 | `client.AdsAPI.GetAd(ctx)` | Get ad details |
@@ -298,6 +299,7 @@ func main() {
 | `client.AdsAPI.GetLeadForm(ctx)` | Get a lead form |
 | `client.AdsAPI.GetLinkedInBidPricing(ctx)` | Suggested bid and budget bounds (LinkedIn) |
 | `client.AdsAPI.GetLinkedInSupplyForecast(ctx)` | Impressions, clicks and spend forecast (LinkedIn) |
+| `client.AdsAPI.GetRfPrediction(ctx)` | Read a Reach & Frequency prediction (Meta) |
 | `client.AdsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
 | `client.AdsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
@@ -309,10 +311,12 @@ func main() {
 | `client.AdsAPI.AdjustConversions(ctx)` | Adjust uploaded conversions |
 | `client.AdsAPI.ArchiveLeadForm(ctx)` | Archive a lead form |
 | `client.AdsAPI.BoostPost(ctx)` | Boost post as ad |
+| `client.AdsAPI.CancelRfReservation(ctx)` | Cancel a Reach & Frequency reservation (Meta) |
 | `client.AdsAPI.EstimateAdReach(ctx)` | Estimate audience reach |
 | `client.AdsAPI.GenerateAdPreviews(ctx)` | Render pre-create ad previews (Meta) |
 | `client.AdsAPI.QueryAdInsights(ctx)` | Flexible live insights query (Meta) |
 | `client.AdsAPI.RemoveConversionAssociations(ctx)` | Remove associated campaigns |
+| `client.AdsAPI.ReserveRfPrediction(ctx)` | Reserve a Reach & Frequency prediction (Meta) |
 | `client.AdsAPI.SearchAdInterests(ctx)` | Search targeting interests |
 | `client.AdsAPI.SearchAdTargeting(ctx)` | Search targeting options |
 | `client.AdsAPI.SendConversions(ctx)` | Send conversion events |
