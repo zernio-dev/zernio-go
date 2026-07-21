@@ -249,6 +249,7 @@ func main() {
 |--------|-------------|
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
+| `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Live ad-set details incl. learning phase (Meta) |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
@@ -264,6 +265,7 @@ func main() {
 | `client.AdsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdsAPI.ListAdCatalogProductSets(ctx)` | List a catalog's product sets |
 | `client.AdsAPI.ListAdCatalogs(ctx)` | List Meta product catalogs |
+| `client.AdsAPI.ListAdStudies(ctx)` | A/B tests and lift studies (Meta) |
 | `client.AdsAPI.ListAds(ctx)` | List ads |
 | `client.AdsAPI.ListAdsBusinessCenters(ctx)` | List TikTok Business Centers |
 | `client.AdsAPI.ListConversionAssociations(ctx)` | List associated campaigns |
@@ -280,11 +282,13 @@ func main() {
 | `client.AdsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdsAPI.CreateTestLead(ctx)` | Create a test lead |
 | `client.AdsAPI.GetAd(ctx)` | Get ad details |
+| `client.AdsAPI.GetAdAccountFinance(ctx)` | Ad account finances (Meta) |
 | `client.AdsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdsAPI.GetAdComments(ctx)` | List comments on an ad |
 | `client.AdsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run (Meta) |
 | `client.AdsAPI.GetAdPreviews(ctx)` | Render previews of an existing ad (Meta) |
 | `client.AdsAPI.GetAdTrackingTags(ctx)` | Get ad tracking tags |
+| `client.AdsAPI.GetAdsActivityLog(ctx)` | Ad account change / audit log (Meta) |
 | `client.AdsAPI.GetCampaignAnalytics(ctx)` | Get campaign analytics |
 | `client.AdsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.AdsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
@@ -312,6 +316,7 @@ func main() {
 | `client.AdsAPI.SearchAdInterests(ctx)` | Search targeting interests |
 | `client.AdsAPI.SearchAdTargeting(ctx)` | Search targeting options |
 | `client.AdsAPI.SendConversions(ctx)` | Send conversion events |
+| `client.AdsAPI.UploadAdImage(ctx)` | Upload an ad image from base64 (Meta) |
 
 ### Broadcasts
 | Method | Description |
