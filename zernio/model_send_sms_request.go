@@ -23,7 +23,7 @@ var _ MappedNullable = &SendSmsRequest{}
 
 // SendSmsRequest struct for SendSmsRequest
 type SendSmsRequest struct {
-	// One of your SMS-enabled numbers (E.164; formatting is normalized).
+	// One of your SMS-enabled numbers (E.164; formatting is normalized), or an approved alphanumeric sender ID (3-11 letters/digits/spaces, created via `/v1/sms/sender-ids`).
 	From string `json:"from"`
 	// Recipient number (E.164).
 	To string `json:"to"`
