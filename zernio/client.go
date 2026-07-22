@@ -139,6 +139,8 @@ type APIClient struct {
 
 	ValidateAPI *ValidateAPIService
 
+	VerifyAPI *VerifyAPIService
+
 	VoiceAPI *VoiceAPIService
 
 	WebhooksAPI *WebhooksAPIService
@@ -219,6 +221,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.UsageAPI = (*UsageAPIService)(&c.common)
 	c.UsersAPI = (*UsersAPIService)(&c.common)
 	c.ValidateAPI = (*ValidateAPIService)(&c.common)
+	c.VerifyAPI = (*VerifyAPIService)(&c.common)
 	c.VoiceAPI = (*VoiceAPIService)(&c.common)
 	c.WebhooksAPI = (*WebhooksAPIService)(&c.common)
 	c.WhatsAppAPI = (*WhatsAppAPIService)(&c.common)

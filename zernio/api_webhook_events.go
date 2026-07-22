@@ -3375,6 +3375,206 @@ func (a *WebhookEventsAPIService) OnReviewUpdatedExecute(r WebhookEventsAPIOnRev
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnVerificationApprovedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	onVerificationApprovedRequest *OnVerificationApprovedRequest
+}
+
+func (r WebhookEventsAPIOnVerificationApprovedRequest) OnVerificationApprovedRequest(onVerificationApprovedRequest OnVerificationApprovedRequest) WebhookEventsAPIOnVerificationApprovedRequest {
+	r.onVerificationApprovedRequest = &onVerificationApprovedRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnVerificationApprovedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnVerificationApprovedExecute(r)
+}
+
+/*
+OnVerificationApproved Verification approved event
+
+Fired when a managed-OTP verification is approved (the user submitted
+the correct code to POST /v1/verify/verifications/{verificationId}/check).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnVerificationApprovedRequest
+*/
+func (a *WebhookEventsAPIService) OnVerificationApproved(ctx context.Context) WebhookEventsAPIOnVerificationApprovedRequest {
+	return WebhookEventsAPIOnVerificationApprovedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnVerificationApprovedExecute(r WebhookEventsAPIOnVerificationApprovedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnVerificationApproved")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/verification.approved"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onVerificationApprovedRequest == nil {
+		return nil, reportError("onVerificationApprovedRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onVerificationApprovedRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnVerificationFailedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	onVerificationFailedRequest *OnVerificationFailedRequest
+}
+
+func (r WebhookEventsAPIOnVerificationFailedRequest) OnVerificationFailedRequest(onVerificationFailedRequest OnVerificationFailedRequest) WebhookEventsAPIOnVerificationFailedRequest {
+	r.onVerificationFailedRequest = &onVerificationFailedRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnVerificationFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnVerificationFailedExecute(r)
+}
+
+/*
+OnVerificationFailed Verification failed event
+
+Fired when a managed-OTP verification is exhausted (the maximum number
+of wrong code attempts was reached).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnVerificationFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnVerificationFailed(ctx context.Context) WebhookEventsAPIOnVerificationFailedRequest {
+	return WebhookEventsAPIOnVerificationFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnVerificationFailedExecute(r WebhookEventsAPIOnVerificationFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnVerificationFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/verification.failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onVerificationFailedRequest == nil {
+		return nil, reportError("onVerificationFailedRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onVerificationFailedRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnWebhookTestRequest struct {
 	ctx                context.Context
 	ApiService         *WebhookEventsAPIService
