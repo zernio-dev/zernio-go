@@ -32,6 +32,8 @@ type PurchasePhoneNumberRequest struct {
 	ConnectWhatsapp *bool `json:"connectWhatsapp,omitempty"`
 	// SMS capability is per-number, not per-country. Pass true to provision from the SMS-capable inventory pool so the number can actually text (see also GET /v1/phone-numbers/available with sms=true, and smsAvailable on GET /v1/phone-numbers/countries).
 	WantsSms *bool `json:"wantsSms,omitempty"`
+	// Declare WhatsApp intent on a STANDALONE purchase (connectWhatsapp:false). The number still activates and bills immediately, but if WhatsApp's buy-time check rejects the assigned number, it is automatically swapped for a WhatsApp-eligible one during the purchase instead of being delivered with WhatsApp unavailable. Ignored on the WhatsApp provisioning path (connectWhatsapp omitted or true), which always delivers a WhatsApp-verified number.
+	WantsWhatsapp *bool `json:"wantsWhatsapp,omitempty"`
 	// Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: \"already_purchased\", numberId, phoneNumber } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
 	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 	// Any second purchase within 10 minutes of a previous one is rejected with 409 code PURCHASE_VELOCITY as duplicate protection. Pass true to confirm the additional purchase is intentional (e.g. bulk provisioning).
@@ -53,6 +55,8 @@ func NewPurchasePhoneNumberRequest(profileId string) *PurchasePhoneNumberRequest
 	this.ConnectWhatsapp = &connectWhatsapp
 	var wantsSms bool = false
 	this.WantsSms = &wantsSms
+	var wantsWhatsapp bool = false
+	this.WantsWhatsapp = &wantsWhatsapp
 	var allowMultiple bool = false
 	this.AllowMultiple = &allowMultiple
 	return &this
@@ -69,6 +73,8 @@ func NewPurchasePhoneNumberRequestWithDefaults() *PurchasePhoneNumberRequest {
 	this.ConnectWhatsapp = &connectWhatsapp
 	var wantsSms bool = false
 	this.WantsSms = &wantsSms
+	var wantsWhatsapp bool = false
+	this.WantsWhatsapp = &wantsWhatsapp
 	var allowMultiple bool = false
 	this.AllowMultiple = &allowMultiple
 	return &this
@@ -226,6 +232,38 @@ func (o *PurchasePhoneNumberRequest) SetWantsSms(v bool) {
 	o.WantsSms = &v
 }
 
+// GetWantsWhatsapp returns the WantsWhatsapp field value if set, zero value otherwise.
+func (o *PurchasePhoneNumberRequest) GetWantsWhatsapp() bool {
+	if o == nil || IsNil(o.WantsWhatsapp) {
+		var ret bool
+		return ret
+	}
+	return *o.WantsWhatsapp
+}
+
+// GetWantsWhatsappOk returns a tuple with the WantsWhatsapp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumberRequest) GetWantsWhatsappOk() (*bool, bool) {
+	if o == nil || IsNil(o.WantsWhatsapp) {
+		return nil, false
+	}
+	return o.WantsWhatsapp, true
+}
+
+// HasWantsWhatsapp returns a boolean if a field has been set.
+func (o *PurchasePhoneNumberRequest) HasWantsWhatsapp() bool {
+	if o != nil && !IsNil(o.WantsWhatsapp) {
+		return true
+	}
+
+	return false
+}
+
+// SetWantsWhatsapp gets a reference to the given bool and assigns it to the WantsWhatsapp field.
+func (o *PurchasePhoneNumberRequest) SetWantsWhatsapp(v bool) {
+	o.WantsWhatsapp = &v
+}
+
 // GetPurchaseIntentId returns the PurchaseIntentId field value if set, zero value otherwise.
 func (o *PurchasePhoneNumberRequest) GetPurchaseIntentId() string {
 	if o == nil || IsNil(o.PurchaseIntentId) {
@@ -312,6 +350,9 @@ func (o PurchasePhoneNumberRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.WantsSms) {
 		toSerialize["wantsSms"] = o.WantsSms
+	}
+	if !IsNil(o.WantsWhatsapp) {
+		toSerialize["wantsWhatsapp"] = o.WantsWhatsapp
 	}
 	if !IsNil(o.PurchaseIntentId) {
 		toSerialize["purchaseIntentId"] = o.PurchaseIntentId

@@ -19,10 +19,12 @@ import (
 
 // WhatsAppTemplateComponent - struct for WhatsAppTemplateComponent
 type WhatsAppTemplateComponent struct {
-	WhatsAppBodyComponent    *WhatsAppBodyComponent
-	WhatsAppButtonsComponent *WhatsAppButtonsComponent
-	WhatsAppFooterComponent  *WhatsAppFooterComponent
-	WhatsAppHeaderComponent  *WhatsAppHeaderComponent
+	WhatsAppBodyComponent             *WhatsAppBodyComponent
+	WhatsAppButtonsComponent          *WhatsAppButtonsComponent
+	WhatsAppCarouselComponent         *WhatsAppCarouselComponent
+	WhatsAppFooterComponent           *WhatsAppFooterComponent
+	WhatsAppHeaderComponent           *WhatsAppHeaderComponent
+	WhatsAppLimitedTimeOfferComponent *WhatsAppLimitedTimeOfferComponent
 }
 
 // WhatsAppBodyComponentAsWhatsAppTemplateComponent is a convenience function that returns WhatsAppBodyComponent wrapped in WhatsAppTemplateComponent
@@ -39,6 +41,13 @@ func WhatsAppButtonsComponentAsWhatsAppTemplateComponent(v *WhatsAppButtonsCompo
 	}
 }
 
+// WhatsAppCarouselComponentAsWhatsAppTemplateComponent is a convenience function that returns WhatsAppCarouselComponent wrapped in WhatsAppTemplateComponent
+func WhatsAppCarouselComponentAsWhatsAppTemplateComponent(v *WhatsAppCarouselComponent) WhatsAppTemplateComponent {
+	return WhatsAppTemplateComponent{
+		WhatsAppCarouselComponent: v,
+	}
+}
+
 // WhatsAppFooterComponentAsWhatsAppTemplateComponent is a convenience function that returns WhatsAppFooterComponent wrapped in WhatsAppTemplateComponent
 func WhatsAppFooterComponentAsWhatsAppTemplateComponent(v *WhatsAppFooterComponent) WhatsAppTemplateComponent {
 	return WhatsAppTemplateComponent{
@@ -50,6 +59,13 @@ func WhatsAppFooterComponentAsWhatsAppTemplateComponent(v *WhatsAppFooterCompone
 func WhatsAppHeaderComponentAsWhatsAppTemplateComponent(v *WhatsAppHeaderComponent) WhatsAppTemplateComponent {
 	return WhatsAppTemplateComponent{
 		WhatsAppHeaderComponent: v,
+	}
+}
+
+// WhatsAppLimitedTimeOfferComponentAsWhatsAppTemplateComponent is a convenience function that returns WhatsAppLimitedTimeOfferComponent wrapped in WhatsAppTemplateComponent
+func WhatsAppLimitedTimeOfferComponentAsWhatsAppTemplateComponent(v *WhatsAppLimitedTimeOfferComponent) WhatsAppTemplateComponent {
+	return WhatsAppTemplateComponent{
+		WhatsAppLimitedTimeOfferComponent: v,
 	}
 }
 
@@ -91,6 +107,23 @@ func (dst *WhatsAppTemplateComponent) UnmarshalJSON(data []byte) error {
 		dst.WhatsAppButtonsComponent = nil
 	}
 
+	// try to unmarshal data into WhatsAppCarouselComponent
+	err = newStrictDecoder(data).Decode(&dst.WhatsAppCarouselComponent)
+	if err == nil {
+		jsonWhatsAppCarouselComponent, _ := json.Marshal(dst.WhatsAppCarouselComponent)
+		if string(jsonWhatsAppCarouselComponent) == "{}" { // empty struct
+			dst.WhatsAppCarouselComponent = nil
+		} else {
+			if err = validator.Validate(dst.WhatsAppCarouselComponent); err != nil {
+				dst.WhatsAppCarouselComponent = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.WhatsAppCarouselComponent = nil
+	}
+
 	// try to unmarshal data into WhatsAppFooterComponent
 	err = newStrictDecoder(data).Decode(&dst.WhatsAppFooterComponent)
 	if err == nil {
@@ -125,12 +158,31 @@ func (dst *WhatsAppTemplateComponent) UnmarshalJSON(data []byte) error {
 		dst.WhatsAppHeaderComponent = nil
 	}
 
+	// try to unmarshal data into WhatsAppLimitedTimeOfferComponent
+	err = newStrictDecoder(data).Decode(&dst.WhatsAppLimitedTimeOfferComponent)
+	if err == nil {
+		jsonWhatsAppLimitedTimeOfferComponent, _ := json.Marshal(dst.WhatsAppLimitedTimeOfferComponent)
+		if string(jsonWhatsAppLimitedTimeOfferComponent) == "{}" { // empty struct
+			dst.WhatsAppLimitedTimeOfferComponent = nil
+		} else {
+			if err = validator.Validate(dst.WhatsAppLimitedTimeOfferComponent); err != nil {
+				dst.WhatsAppLimitedTimeOfferComponent = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.WhatsAppLimitedTimeOfferComponent = nil
+	}
+
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.WhatsAppBodyComponent = nil
 		dst.WhatsAppButtonsComponent = nil
+		dst.WhatsAppCarouselComponent = nil
 		dst.WhatsAppFooterComponent = nil
 		dst.WhatsAppHeaderComponent = nil
+		dst.WhatsAppLimitedTimeOfferComponent = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(WhatsAppTemplateComponent)")
 	} else if match == 1 {
@@ -150,12 +202,20 @@ func (src WhatsAppTemplateComponent) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.WhatsAppButtonsComponent)
 	}
 
+	if src.WhatsAppCarouselComponent != nil {
+		return json.Marshal(&src.WhatsAppCarouselComponent)
+	}
+
 	if src.WhatsAppFooterComponent != nil {
 		return json.Marshal(&src.WhatsAppFooterComponent)
 	}
 
 	if src.WhatsAppHeaderComponent != nil {
 		return json.Marshal(&src.WhatsAppHeaderComponent)
+	}
+
+	if src.WhatsAppLimitedTimeOfferComponent != nil {
+		return json.Marshal(&src.WhatsAppLimitedTimeOfferComponent)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -174,12 +234,20 @@ func (obj *WhatsAppTemplateComponent) GetActualInstance() interface{} {
 		return obj.WhatsAppButtonsComponent
 	}
 
+	if obj.WhatsAppCarouselComponent != nil {
+		return obj.WhatsAppCarouselComponent
+	}
+
 	if obj.WhatsAppFooterComponent != nil {
 		return obj.WhatsAppFooterComponent
 	}
 
 	if obj.WhatsAppHeaderComponent != nil {
 		return obj.WhatsAppHeaderComponent
+	}
+
+	if obj.WhatsAppLimitedTimeOfferComponent != nil {
+		return obj.WhatsAppLimitedTimeOfferComponent
 	}
 
 	// all schemas are nil
@@ -196,12 +264,20 @@ func (obj WhatsAppTemplateComponent) GetActualInstanceValue() interface{} {
 		return *obj.WhatsAppButtonsComponent
 	}
 
+	if obj.WhatsAppCarouselComponent != nil {
+		return *obj.WhatsAppCarouselComponent
+	}
+
 	if obj.WhatsAppFooterComponent != nil {
 		return *obj.WhatsAppFooterComponent
 	}
 
 	if obj.WhatsAppHeaderComponent != nil {
 		return *obj.WhatsAppHeaderComponent
+	}
+
+	if obj.WhatsAppLimitedTimeOfferComponent != nil {
+		return *obj.WhatsAppLimitedTimeOfferComponent
 	}
 
 	// all schemas are nil
