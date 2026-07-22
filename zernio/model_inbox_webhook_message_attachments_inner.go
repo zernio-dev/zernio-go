@@ -24,7 +24,7 @@ var _ MappedNullable = &InboxWebhookMessageAttachmentsInner{}
 type InboxWebhookMessageAttachmentsInner struct {
 	// Attachment type (image, video, file, sticker, audio)
 	Type string `json:"type"`
-	// Attachment URL (may expire for Meta platforms)
+	// Where to fetch the attachment. The contract depends on direction and platform: inbound WhatsApp media points at the authenticated `GET /v1/whatsapp/media/{mediaId}` and requires `Authorization: Bearer <your API key>`, while outgoing media carries the URL originally supplied and Instagram / Facebook / Telegram carry direct platform CDN links that need no authentication.
 	Url string `json:"url"`
 	// Additional attachment metadata
 	Payload map[string]interface{} `json:"payload,omitempty"`

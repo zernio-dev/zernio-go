@@ -17,68 +17,93 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 )
 
-// MediaAPIService MediaAPI service
-type MediaAPIService service
+// InboxAPIService InboxAPI service
+type InboxAPIService service
 
-type MediaAPIGetMediaPresignedUrlRequest struct {
-	ctx                         context.Context
-	ApiService                  *MediaAPIService
-	getMediaPresignedUrlRequest *GetMediaPresignedUrlRequest
+type InboxAPIGetWhatsAppMediaRequest struct {
+	ctx        context.Context
+	ApiService *InboxAPIService
+	mediaId    string
+	accountId  *string
 }
 
-func (r MediaAPIGetMediaPresignedUrlRequest) GetMediaPresignedUrlRequest(getMediaPresignedUrlRequest GetMediaPresignedUrlRequest) MediaAPIGetMediaPresignedUrlRequest {
-	r.getMediaPresignedUrlRequest = &getMediaPresignedUrlRequest
+// The WhatsApp account that received the media.
+func (r InboxAPIGetWhatsAppMediaRequest) AccountId(accountId string) InboxAPIGetWhatsAppMediaRequest {
+	r.accountId = &accountId
 	return r
 }
 
-func (r MediaAPIGetMediaPresignedUrlRequest) Execute() (*GetMediaPresignedUrl200Response, *http.Response, error) {
-	return r.ApiService.GetMediaPresignedUrlExecute(r)
+func (r InboxAPIGetWhatsAppMediaRequest) Execute() (*os.File, *http.Response, error) {
+	return r.ApiService.GetWhatsAppMediaExecute(r)
 }
 
 /*
-GetMediaPresignedUrl Get upload URL
+GetWhatsAppMedia Download WhatsApp media
 
-Get a presigned URL to upload files directly to cloud storage (up to 5GB). Returns an uploadUrl and publicUrl. PUT your file to the uploadUrl, then use the publicUrl in your posts.
+Streams the binary for a WhatsApp attachment. This is the endpoint the
+`url` on a WhatsApp `attachments[]` entry points at, in both the
+`message.received` webhook and the List messages response.
+
+**This is an authenticated endpoint, not a public link.** Send
+`Authorization: Bearer <your API key>` exactly as you would for any other
+call. Passing the URL straight to a browser, an LLM vision API, or a
+no-code "download file" step without the header returns `401`. This is
+the most common integration mistake on this endpoint, and it differs from
+Instagram, Facebook and Telegram, whose `attachments[].url` is a direct
+CDN link that needs no header.
+
+**Fetch on receipt, not lazily.** WhatsApp media lives in Meta's media
+store, not ours, and it is removed after a limited retention window
+(currently 7 days, and Meta has been dropping some inbound media sooner).
+Once Meta drops it the media is unrecoverable and this endpoint answers
+`400` permanently, so retrying will never succeed. Download and store the
+bytes when the webhook arrives.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return MediaAPIGetMediaPresignedUrlRequest
+	@param mediaId The media id from `attachments[].payload.id`.
+	@return InboxAPIGetWhatsAppMediaRequest
 */
-func (a *MediaAPIService) GetMediaPresignedUrl(ctx context.Context) MediaAPIGetMediaPresignedUrlRequest {
-	return MediaAPIGetMediaPresignedUrlRequest{
+func (a *InboxAPIService) GetWhatsAppMedia(ctx context.Context, mediaId string) InboxAPIGetWhatsAppMediaRequest {
+	return InboxAPIGetWhatsAppMediaRequest{
 		ApiService: a,
 		ctx:        ctx,
+		mediaId:    mediaId,
 	}
 }
 
 // Execute executes the request
 //
-//	@return GetMediaPresignedUrl200Response
-func (a *MediaAPIService) GetMediaPresignedUrlExecute(r MediaAPIGetMediaPresignedUrlRequest) (*GetMediaPresignedUrl200Response, *http.Response, error) {
+//	@return *os.File
+func (a *InboxAPIService) GetWhatsAppMediaExecute(r InboxAPIGetWhatsAppMediaRequest) (*os.File, *http.Response, error) {
 	var (
-		localVarHTTPMethod  = http.MethodPost
+		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetMediaPresignedUrl200Response
+		localVarReturnValue *os.File
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MediaAPIService.GetMediaPresignedUrl")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InboxAPIService.GetWhatsAppMedia")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/media/presign"
+	localVarPath := localBasePath + "/v1/whatsapp/media/{mediaId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"mediaId"+"}", url.PathEscape(parameterValueToString(r.mediaId, "mediaId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.getMediaPresignedUrlRequest == nil {
-		return localVarReturnValue, nil, reportError("getMediaPresignedUrlRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -87,15 +112,13 @@ func (a *MediaAPIService) GetMediaPresignedUrlExecute(r MediaAPIGetMediaPresigne
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
+	localVarHTTPHeaderAccepts := []string{"application/octet-stream", "application/json"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.getMediaPresignedUrlRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -118,17 +141,6 @@ func (a *MediaAPIService) GetMediaPresignedUrlExecute(r MediaAPIGetMediaPresigne
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -138,6 +150,7 @@ func (a *MediaAPIService) GetMediaPresignedUrlExecute(r MediaAPIGetMediaPresigne
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
