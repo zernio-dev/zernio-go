@@ -97,8 +97,6 @@ type APIClient struct {
 
 	GMBVerificationsAPI *GMBVerificationsAPIService
 
-	InboxAPI *InboxAPIService
-
 	InboxAnalyticsAPI *InboxAnalyticsAPIService
 
 	InstagramAPI *InstagramAPIService
@@ -202,7 +200,6 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.GMBReviewsAPI = (*GMBReviewsAPIService)(&c.common)
 	c.GMBServicesAPI = (*GMBServicesAPIService)(&c.common)
 	c.GMBVerificationsAPI = (*GMBVerificationsAPIService)(&c.common)
-	c.InboxAPI = (*InboxAPIService)(&c.common)
 	c.InboxAnalyticsAPI = (*InboxAnalyticsAPIService)(&c.common)
 	c.InstagramAPI = (*InstagramAPIService)(&c.common)
 	c.InvitesAPI = (*InvitesAPIService)(&c.common)

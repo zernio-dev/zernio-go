@@ -463,11 +463,6 @@ func main() {
 | `client.GMBVerificationsAPI.FetchGoogleBusinessVerificationOptions(ctx)` | Fetch verification options |
 | `client.GMBVerificationsAPI.StartGoogleBusinessVerification(ctx)` | Start a verification |
 
-### Inbox
-| Method | Description |
-|--------|-------------|
-| `client.InboxAPI.GetWhatsAppMedia(ctx)` | Download WhatsApp media |
-
 ### Inbox Analytics
 | Method | Description |
 |--------|-------------|
@@ -645,6 +640,7 @@ func main() {
 | `client.WhatsAppAPI.GetWhatsAppDataset(ctx)` | Get CTWA conversions dataset |
 | `client.WhatsAppAPI.GetWhatsAppDisplayName(ctx)` | Get display name status |
 | `client.WhatsAppAPI.GetWhatsAppGroupChat(ctx)` | Get group info |
+| `client.WhatsAppAPI.GetWhatsAppMedia(ctx)` | Download WhatsApp media |
 | `client.WhatsAppAPI.GetWhatsAppTemplate(ctx)` | Get template |
 | `client.WhatsAppAPI.GetWhatsAppTemplates(ctx)` | List templates |
 | `client.WhatsAppAPI.GetWhatsappBusinessUsername(ctx)` | Get business username |

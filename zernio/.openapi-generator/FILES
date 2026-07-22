@@ -24,7 +24,6 @@ api_gmb_place_actions.go
 api_gmb_reviews.go
 api_gmb_services.go
 api_gmb_verifications.go
-api_inbox.go
 api_inbox_analytics.go
 api_instagram.go
 api_invites.go
