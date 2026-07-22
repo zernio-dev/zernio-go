@@ -240,7 +240,7 @@ func main() {
 | `client.AdAudiencesAPI.ListAdAudiences(ctx)` | List custom audiences |
 | `client.AdAudiencesAPI.CreateAdAudience(ctx)` | Create custom audience |
 | `client.AdAudiencesAPI.GetAdAudience(ctx)` | Get audience details |
-| `client.AdAudiencesAPI.UpdateAdAudience(ctx)` | Update saved targeting audience |
+| `client.AdAudiencesAPI.UpdateAdAudience(ctx)` | Update an audience |
 | `client.AdAudiencesAPI.DeleteAdAudience(ctx)` | Delete custom audience |
 | `client.AdAudiencesAPI.AddUsersToAdAudience(ctx)` | Add users to audience |
 
@@ -249,6 +249,7 @@ func main() {
 |--------|-------------|
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
+| `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign (Meta) |
 | `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Live ad-set details incl. learning phase (Meta) |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
@@ -258,6 +259,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
+| `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set (Meta) |
 
 ### Ads
 | Method | Description |
@@ -265,14 +267,20 @@ func main() {
 | `client.AdsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdsAPI.ListAdCatalogProductSets(ctx)` | List a catalog's product sets |
 | `client.AdsAPI.ListAdCatalogs(ctx)` | List Meta product catalogs |
+| `client.AdsAPI.ListAdCreatives(ctx)` | Creative library (Meta) |
+| `client.AdsAPI.ListAdImages(ctx)` | Ad image library (Meta) |
+| `client.AdsAPI.ListAdLabels(ctx)` | Ad labels (Meta) |
 | `client.AdsAPI.ListAdStudies(ctx)` | A/B tests and lift studies (Meta) |
 | `client.AdsAPI.ListAds(ctx)` | List ads |
 | `client.AdsAPI.ListAdsBusinessCenters(ctx)` | List TikTok Business Centers |
 | `client.AdsAPI.ListConversionAssociations(ctx)` | List associated campaigns |
 | `client.AdsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
 | `client.AdsAPI.ListFormLeads(ctx)` | List leads for a single form |
+| `client.AdsAPI.ListHighDemandPeriods(ctx)` | High demand periods / budget schedules (Meta) |
 | `client.AdsAPI.ListLeadForms(ctx)` | List lead forms |
 | `client.AdsAPI.ListLeads(ctx)` | List submitted leads |
+| `client.AdsAPI.ListMetaBusinesses(ctx)` | Businesses list (Meta) |
+| `client.AdsAPI.CreateAdCreative(ctx)` | Create a standalone creative (Meta) |
 | `client.AdsAPI.CreateAdInsightsReport(ctx)` | Submit an async insights report run (Meta) |
 | `client.AdsAPI.CreateCallAd(ctx)` | Create Click-to-Call ad |
 | `client.AdsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
@@ -286,6 +294,7 @@ func main() {
 | `client.AdsAPI.GetAdAccountFinance(ctx)` | Ad account finances (Meta) |
 | `client.AdsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdsAPI.GetAdComments(ctx)` | List comments on an ad |
+| `client.AdsAPI.GetAdCreative(ctx)` | Creative details (Meta) |
 | `client.AdsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run (Meta) |
 | `client.AdsAPI.GetAdPreviews(ctx)` | Render previews of an existing ad (Meta) |
 | `client.AdsAPI.GetAdTrackingTags(ctx)` | Get ad tracking tags |
@@ -302,16 +311,19 @@ func main() {
 | `client.AdsAPI.GetRfPrediction(ctx)` | Read a Reach & Frequency prediction (Meta) |
 | `client.AdsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
+| `client.AdsAPI.UpdateAdCreative(ctx)` | Rename a creative (Meta) |
 | `client.AdsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |
 | `client.AdsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
 | `client.AdsAPI.DeleteAd(ctx)` | Cancel an ad |
+| `client.AdsAPI.DeleteAdCreative(ctx)` | Delete a creative (Meta) |
 | `client.AdsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |
 | `client.AdsAPI.AddConversionAssociations(ctx)` | Associate campaigns |
 | `client.AdsAPI.AdjustConversions(ctx)` | Adjust uploaded conversions |
 | `client.AdsAPI.ArchiveLeadForm(ctx)` | Archive a lead form |
 | `client.AdsAPI.BoostPost(ctx)` | Boost post as ad |
 | `client.AdsAPI.CancelRfReservation(ctx)` | Cancel a Reach & Frequency reservation (Meta) |
+| `client.AdsAPI.DuplicateAd(ctx)` | Duplicate an ad (Meta) |
 | `client.AdsAPI.EstimateAdReach(ctx)` | Estimate audience reach |
 | `client.AdsAPI.GenerateAdPreviews(ctx)` | Render pre-create ad previews (Meta) |
 | `client.AdsAPI.QueryAdInsights(ctx)` | Flexible live insights query (Meta) |
@@ -400,6 +412,7 @@ func main() {
 | `client.DiscordAPI.CreateDiscordScheduledEvent(ctx)` | Create a Discord scheduled event |
 | `client.DiscordAPI.CreateDiscordThread(ctx)` | Create a Discord public thread |
 | `client.DiscordAPI.GetDiscordChannels(ctx)` | List Discord guild channels |
+| `client.DiscordAPI.GetDiscordGuildMember(ctx)` | Get a Discord guild member |
 | `client.DiscordAPI.GetDiscordScheduledEvent(ctx)` | Get a Discord scheduled event |
 | `client.DiscordAPI.GetDiscordSettings(ctx)` | Get Discord account settings |
 | `client.DiscordAPI.UpdateDiscordScheduledEvent(ctx)` | Update a Discord scheduled event |
@@ -412,6 +425,7 @@ func main() {
 | `client.DiscordAPI.EditDiscordGuildRole(ctx)` | Edit a Discord guild role |
 | `client.DiscordAPI.PinDiscordMessage(ctx)` | Pin a Discord message |
 | `client.DiscordAPI.RemoveDiscordMemberRole(ctx)` | Remove a role from a guild member |
+| `client.DiscordAPI.SearchDiscordGuildMembers(ctx)` | Search Discord guild members |
 | `client.DiscordAPI.SendDiscordDirectMessage(ctx)` | Send a Discord Direct Message |
 | `client.DiscordAPI.UnpinDiscordMessage(ctx)` | Unpin a Discord message |
 
@@ -543,12 +557,16 @@ func main() {
 |--------|-------------|
 | `client.SMSAPI.ListSmsOptOuts(ctx)` | List SMS opt-outs |
 | `client.SMSAPI.ListSmsRegistrations(ctx)` | List carrier registrations |
+| `client.SMSAPI.ListSmsSenderIds(ctx)` | List alphanumeric sender IDs |
+| `client.SMSAPI.CreateSmsSenderId(ctx)` | Create an alphanumeric sender ID |
 | `client.SMSAPI.GetSmsRegistration(ctx)` | Get a carrier registration |
+| `client.SMSAPI.DeleteSmsSenderId(ctx)` | Delete an alphanumeric sender ID |
 | `client.SMSAPI.AppealSmsRegistration(ctx)` | Appeal a rejected campaign |
 | `client.SMSAPI.DeactivateSmsRegistration(ctx)` | Deactivate a brand/campaign registration |
 | `client.SMSAPI.DisableSmsOnNumber(ctx)` | Disable SMS on a number |
 | `client.SMSAPI.EnableSmsOnNumber(ctx)` | Enable SMS on a number |
 | `client.SMSAPI.LookupSmsNumber(ctx)` | Look up carrier + line type |
+| `client.SMSAPI.RequestSmsSenderIdLimitIncrease(ctx)` | Request a higher sender ID daily limit |
 | `client.SMSAPI.ResendSmsRegistrationOtp(ctx)` | Re-send the sole-prop OTP |
 | `client.SMSAPI.ReuseSmsRegistrationForNumber(ctx)` | Add number to SMS registration |
 | `client.SMSAPI.SendSms(ctx)` | Send an SMS/MMS |

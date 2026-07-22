@@ -1383,6 +1383,149 @@ func (a *DiscordAPIService) GetDiscordChannelsExecute(r DiscordAPIGetDiscordChan
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type DiscordAPIGetDiscordGuildMemberRequest struct {
+	ctx        context.Context
+	ApiService *DiscordAPIService
+	guildId    string
+	userId     string
+	accountId  *string
+}
+
+func (r DiscordAPIGetDiscordGuildMemberRequest) AccountId(accountId string) DiscordAPIGetDiscordGuildMemberRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r DiscordAPIGetDiscordGuildMemberRequest) Execute() (*GetDiscordGuildMember200Response, *http.Response, error) {
+	return r.ApiService.GetDiscordGuildMemberExecute(r)
+}
+
+/*
+GetDiscordGuildMember Get a Discord guild member
+
+Fetch a single guild member by Discord user id.
+
+Does not require the privileged Server Members Intent, so this works
+even where the full member listing returns 403.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param guildId
+	@param userId Discord user snowflake.
+	@return DiscordAPIGetDiscordGuildMemberRequest
+*/
+func (a *DiscordAPIService) GetDiscordGuildMember(ctx context.Context, guildId string, userId string) DiscordAPIGetDiscordGuildMemberRequest {
+	return DiscordAPIGetDiscordGuildMemberRequest{
+		ApiService: a,
+		ctx:        ctx,
+		guildId:    guildId,
+		userId:     userId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetDiscordGuildMember200Response
+func (a *DiscordAPIService) GetDiscordGuildMemberExecute(r DiscordAPIGetDiscordGuildMemberRequest) (*GetDiscordGuildMember200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetDiscordGuildMember200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.GetDiscordGuildMember")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/guilds/{guildId}/members/{userId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"guildId"+"}", url.PathEscape(parameterValueToString(r.guildId, "guildId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type DiscordAPIGetDiscordScheduledEventRequest struct {
 	ctx        context.Context
 	ApiService *DiscordAPIService
@@ -1663,10 +1806,10 @@ objects so callers can build community-ops automation (e.g. "add role
 to all members joined in the last 7 days") on the actual platform shape.
 
 **Important:** this endpoint requires the privileged "Server Members
-Intent" enabled on the Discord app (Developer Portal → Bot tab → toggle
-"Server Members Intent" ON, then Save). Without it, Discord returns an
-empty array with no error. Verify the intent is enabled before relying
-on this endpoint.
+Intent" on the Discord application. If the intent is not enabled,
+Discord rejects the call and this endpoint returns **403**. Single
+member lookup and prefix search (see the sibling endpoints) do not
+need the intent.
 
 Pagination: pass `after` = the last `user.id` from the previous page.
 Omit on the first call. Response includes a `nextCursor` and `hasMore`
@@ -2401,6 +2544,165 @@ func (a *DiscordAPIService) RemoveDiscordMemberRoleExecute(r DiscordAPIRemoveDis
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type DiscordAPISearchDiscordGuildMembersRequest struct {
+	ctx        context.Context
+	ApiService *DiscordAPIService
+	guildId    string
+	accountId  *string
+	query      *string
+	limit      *int32
+}
+
+func (r DiscordAPISearchDiscordGuildMembersRequest) AccountId(accountId string) DiscordAPISearchDiscordGuildMembersRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Username or nickname prefix to match.
+func (r DiscordAPISearchDiscordGuildMembersRequest) Query(query string) DiscordAPISearchDiscordGuildMembersRequest {
+	r.query = &query
+	return r
+}
+
+func (r DiscordAPISearchDiscordGuildMembersRequest) Limit(limit int32) DiscordAPISearchDiscordGuildMembersRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r DiscordAPISearchDiscordGuildMembersRequest) Execute() (*SearchDiscordGuildMembers200Response, *http.Response, error) {
+	return r.ApiService.SearchDiscordGuildMembersExecute(r)
+}
+
+/*
+SearchDiscordGuildMembers Search Discord guild members
+
+Search guild members whose username or nickname **starts with** the
+query (Discord matches prefixes only, not substrings).
+
+Does not require the privileged Server Members Intent, so this works
+even where the full member listing returns 403.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param guildId
+	@return DiscordAPISearchDiscordGuildMembersRequest
+*/
+func (a *DiscordAPIService) SearchDiscordGuildMembers(ctx context.Context, guildId string) DiscordAPISearchDiscordGuildMembersRequest {
+	return DiscordAPISearchDiscordGuildMembersRequest{
+		ApiService: a,
+		ctx:        ctx,
+		guildId:    guildId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SearchDiscordGuildMembers200Response
+func (a *DiscordAPIService) SearchDiscordGuildMembersExecute(r DiscordAPISearchDiscordGuildMembersRequest) (*SearchDiscordGuildMembers200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SearchDiscordGuildMembers200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiscordAPIService.SearchDiscordGuildMembers")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/discord/guilds/{guildId}/members/search"
+	localVarPath = strings.Replace(localVarPath, "{"+"guildId"+"}", url.PathEscape(parameterValueToString(r.guildId, "guildId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.query == nil {
+		return localVarReturnValue, nil, reportError("query is required and must be specified")
+	}
+	if strlen(*r.query) < 1 {
+		return localVarReturnValue, nil, reportError("query must have at least 1 elements")
+	}
+	if strlen(*r.query) > 100 {
+		return localVarReturnValue, nil, reportError("query must have less than 100 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

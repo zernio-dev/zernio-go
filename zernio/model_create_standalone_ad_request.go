@@ -43,6 +43,10 @@ type CreateStandaloneAdRequest struct {
 	BuyingType *string `json:"buyingType,omitempty"`
 	// Meta only. The RESERVED prediction id the R&F ad set runs on (reserving mints a new id — pass that one). Requires buyingType RESERVED.
 	RfPredictionId *string `json:"rfPredictionId,omitempty"`
+	// Meta only. Advantage+ creative enhancements: a partial map of Meta creative feature keys (snake_case, e.g. enhance_cta, image_brightness_and_contrast, text_optimizations) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Meta validates the keys; unspecified features default to OPT_OUT. The legacy standard_enhancements bundle is deprecated by Meta and rejected.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
+	// Meta only, single standalone shape only (no creatives[], adSetId, or RESERVED). Dry-run: each node runs Meta's execution_options validate_only and NOTHING is created or persisted. Children need real parents, so a fresh tree validates the campaign + creative (the ad set needs its campaign to exist — pass existingCampaignId to validate it too; the ad itself is never validatable pre-create). A Meta validation failure returns the 400 verbatim; success returns 200 with per-node results instead of an ad.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Required on legacy + multi-creative shapes. Inherited on attach.
@@ -551,6 +555,70 @@ func (o *CreateStandaloneAdRequest) HasRfPredictionId() bool {
 // SetRfPredictionId gets a reference to the given string and assigns it to the RfPredictionId field.
 func (o *CreateStandaloneAdRequest) SetRfPredictionId(v string) {
 	o.RfPredictionId = &v
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *CreateStandaloneAdRequest) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *CreateStandaloneAdRequest) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
 }
 
 // GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
@@ -2576,6 +2644,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RfPredictionId) {
 		toSerialize["rfPredictionId"] = o.RfPredictionId
+	}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
 	}
 	if !IsNil(o.BudgetAmount) {
 		toSerialize["budgetAmount"] = o.BudgetAmount

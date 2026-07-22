@@ -708,12 +708,15 @@ func (r AdAudiencesAPIUpdateAdAudienceRequest) Execute() (*CreateAdAudience201Re
 }
 
 /*
-UpdateAdAudience Update saved targeting audience
+UpdateAdAudience Update an audience
 
-Update a `saved_targeting` audience's name, description, or spec. Only `saved_targeting` audiences are
-updatable (they exist only on Zernio); uploaded/derived audiences return 422, delete and recreate those
-instead. `spec` replaces the stored spec wholesale (no merge). Ads already created from this audience are
-unaffected, they snapshot the targeting at creation.
+Update an audience. `saved_targeting` audiences accept `name`, `description`, and `spec`
+(full replacement, no merge, Zernio-only, no platform call). Platform audiences
+(uploaded/website/lookalike) accept `name` and `description` only, updated on the
+platform first and then mirrored locally; their rules are immutable, so `spec` returns
+400 for them. Platform audience updates are Meta-only for now (other platforms return
+501). Ads already created from a saved_targeting audience are unaffected, they snapshot
+the targeting at creation.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param audienceId

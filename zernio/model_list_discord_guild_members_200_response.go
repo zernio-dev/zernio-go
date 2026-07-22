@@ -20,7 +20,7 @@ var _ MappedNullable = &ListDiscordGuildMembers200Response{}
 
 // ListDiscordGuildMembers200Response struct for ListDiscordGuildMembers200Response
 type ListDiscordGuildMembers200Response struct {
-	Data       []ListDiscordGuildMembers200ResponseDataInner `json:"data,omitempty"`
+	Data       []DiscordGuildMember                          `json:"data,omitempty"`
 	Pagination *ListDiscordGuildMembers200ResponsePagination `json:"pagination,omitempty"`
 }
 
@@ -42,9 +42,9 @@ func NewListDiscordGuildMembers200ResponseWithDefaults() *ListDiscordGuildMember
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *ListDiscordGuildMembers200Response) GetData() []ListDiscordGuildMembers200ResponseDataInner {
+func (o *ListDiscordGuildMembers200Response) GetData() []DiscordGuildMember {
 	if o == nil || IsNil(o.Data) {
-		var ret []ListDiscordGuildMembers200ResponseDataInner
+		var ret []DiscordGuildMember
 		return ret
 	}
 	return o.Data
@@ -52,7 +52,7 @@ func (o *ListDiscordGuildMembers200Response) GetData() []ListDiscordGuildMembers
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListDiscordGuildMembers200Response) GetDataOk() ([]ListDiscordGuildMembers200ResponseDataInner, bool) {
+func (o *ListDiscordGuildMembers200Response) GetDataOk() ([]DiscordGuildMember, bool) {
 	if o == nil || IsNil(o.Data) {
 		return nil, false
 	}
@@ -68,8 +68,8 @@ func (o *ListDiscordGuildMembers200Response) HasData() bool {
 	return false
 }
 
-// SetData gets a reference to the given []ListDiscordGuildMembers200ResponseDataInner and assigns it to the Data field.
-func (o *ListDiscordGuildMembers200Response) SetData(v []ListDiscordGuildMembers200ResponseDataInner) {
+// SetData gets a reference to the given []DiscordGuildMember and assigns it to the Data field.
+func (o *ListDiscordGuildMembers200Response) SetData(v []DiscordGuildMember) {
 	o.Data = v
 }
 

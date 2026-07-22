@@ -41,6 +41,8 @@ type CreateAdCreativeRequest struct {
 	CarouselCards []CreateAdCreativeRequestCarouselCardsInner `json:"carouselCards,omitempty"`
 	// Appended to every outbound URL (e.g. utm_source=fb).
 	UrlTags *string `json:"urlTags,omitempty"`
+	// Advantage+ creative enhancements: partial map of Meta creative feature keys (snake_case) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Unspecified features default to OPT_OUT.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 }
 
 type _CreateAdCreativeRequest CreateAdCreativeRequest
@@ -383,6 +385,38 @@ func (o *CreateAdCreativeRequest) SetUrlTags(v string) {
 	o.UrlTags = &v
 }
 
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *CreateAdCreativeRequest) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreativeRequest) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *CreateAdCreativeRequest) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *CreateAdCreativeRequest) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
+}
+
 func (o CreateAdCreativeRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -415,6 +449,9 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.UrlTags) {
 		toSerialize["urlTags"] = o.UrlTags
+	}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
 	}
 	return toSerialize, nil
 }
