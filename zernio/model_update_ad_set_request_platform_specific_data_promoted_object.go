@@ -18,17 +18,22 @@ import (
 // checks if the UpdateAdSetRequestPlatformSpecificDataPromotedObject type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdSetRequestPlatformSpecificDataPromotedObject{}
 
-// UpdateAdSetRequestPlatformSpecificDataPromotedObject Meta ad-set promoted_object, forwarded verbatim (same shape as /v1/ads/create).
+// UpdateAdSetRequestPlatformSpecificDataPromotedObject Meta ad-set promoted_object, forwarded verbatim (same shape as /v1/ads/create). Unknown keys are rejected with 400.
 type UpdateAdSetRequestPlatformSpecificDataPromotedObject struct {
-	PixelId            *string `json:"pixelId,omitempty"`
-	CustomEventType    *string `json:"customEventType,omitempty"`
-	PageId             *string `json:"pageId,omitempty"`
-	ApplicationId      *string `json:"applicationId,omitempty"`
-	ObjectStoreUrl     *string `json:"objectStoreUrl,omitempty"`
-	CustomConversionId *string `json:"customConversionId,omitempty"`
-	ProductCatalogId   *string `json:"productCatalogId,omitempty"`
-	ProductSetId       *string `json:"productSetId,omitempty"`
+	PixelId                    *string `json:"pixelId,omitempty"`
+	CustomEventType            *string `json:"customEventType,omitempty"`
+	PageId                     *string `json:"pageId,omitempty"`
+	ApplicationId              *string `json:"applicationId,omitempty"`
+	ObjectStoreUrl             *string `json:"objectStoreUrl,omitempty"`
+	CustomConversionId         *string `json:"customConversionId,omitempty"`
+	ProductCatalogId           *string `json:"productCatalogId,omitempty"`
+	ProductSetId               *string `json:"productSetId,omitempty"`
+	OfflineConversionDataSetId *string `json:"offlineConversionDataSetId,omitempty"`
+	WhatsappPhoneNumber        *string `json:"whatsappPhoneNumber,omitempty"`
+	AdditionalProperties       map[string]interface{}
 }
+
+type _UpdateAdSetRequestPlatformSpecificDataPromotedObject UpdateAdSetRequestPlatformSpecificDataPromotedObject
 
 // NewUpdateAdSetRequestPlatformSpecificDataPromotedObject instantiates a new UpdateAdSetRequestPlatformSpecificDataPromotedObject object
 // This constructor will assign default values to properties that have it defined,
@@ -303,6 +308,70 @@ func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) SetProductSetId(v
 	o.ProductSetId = &v
 }
 
+// GetOfflineConversionDataSetId returns the OfflineConversionDataSetId field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetOfflineConversionDataSetId() string {
+	if o == nil || IsNil(o.OfflineConversionDataSetId) {
+		var ret string
+		return ret
+	}
+	return *o.OfflineConversionDataSetId
+}
+
+// GetOfflineConversionDataSetIdOk returns a tuple with the OfflineConversionDataSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetOfflineConversionDataSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OfflineConversionDataSetId) {
+		return nil, false
+	}
+	return o.OfflineConversionDataSetId, true
+}
+
+// HasOfflineConversionDataSetId returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) HasOfflineConversionDataSetId() bool {
+	if o != nil && !IsNil(o.OfflineConversionDataSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOfflineConversionDataSetId gets a reference to the given string and assigns it to the OfflineConversionDataSetId field.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) SetOfflineConversionDataSetId(v string) {
+	o.OfflineConversionDataSetId = &v
+}
+
+// GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetWhatsappPhoneNumber() string {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappPhoneNumber
+}
+
+// GetWhatsappPhoneNumberOk returns a tuple with the WhatsappPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) GetWhatsappPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		return nil, false
+	}
+	return o.WhatsappPhoneNumber, true
+}
+
+// HasWhatsappPhoneNumber returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) HasWhatsappPhoneNumber() bool {
+	if o != nil && !IsNil(o.WhatsappPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) SetWhatsappPhoneNumber(v string) {
+	o.WhatsappPhoneNumber = &v
+}
+
 func (o UpdateAdSetRequestPlatformSpecificDataPromotedObject) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -337,7 +406,48 @@ func (o UpdateAdSetRequestPlatformSpecificDataPromotedObject) ToMap() (map[strin
 	if !IsNil(o.ProductSetId) {
 		toSerialize["productSetId"] = o.ProductSetId
 	}
+	if !IsNil(o.OfflineConversionDataSetId) {
+		toSerialize["offlineConversionDataSetId"] = o.OfflineConversionDataSetId
+	}
+	if !IsNil(o.WhatsappPhoneNumber) {
+		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
+	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *UpdateAdSetRequestPlatformSpecificDataPromotedObject) UnmarshalJSON(data []byte) (err error) {
+	varUpdateAdSetRequestPlatformSpecificDataPromotedObject := _UpdateAdSetRequestPlatformSpecificDataPromotedObject{}
+
+	err = json.Unmarshal(data, &varUpdateAdSetRequestPlatformSpecificDataPromotedObject)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UpdateAdSetRequestPlatformSpecificDataPromotedObject(varUpdateAdSetRequestPlatformSpecificDataPromotedObject)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pixelId")
+		delete(additionalProperties, "customEventType")
+		delete(additionalProperties, "pageId")
+		delete(additionalProperties, "applicationId")
+		delete(additionalProperties, "objectStoreUrl")
+		delete(additionalProperties, "customConversionId")
+		delete(additionalProperties, "productCatalogId")
+		delete(additionalProperties, "productSetId")
+		delete(additionalProperties, "offlineConversionDataSetId")
+		delete(additionalProperties, "whatsappPhoneNumber")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableUpdateAdSetRequestPlatformSpecificDataPromotedObject struct {

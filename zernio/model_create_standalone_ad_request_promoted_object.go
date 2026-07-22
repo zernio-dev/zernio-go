@@ -36,7 +36,14 @@ type CreateStandaloneAdRequestPromotedObject struct {
 	ProductCatalogId *string `json:"productCatalogId,omitempty"`
 	// Product Set ID inside the catalog.
 	ProductSetId *string `json:"productSetId,omitempty"`
+	// Meta only. Offline event set (dataset) to optimise toward. Post-merger these are datasets: the id is the dataset id (for pixel-backed datasets, the pixel id).
+	OfflineConversionDataSetId *string `json:"offlineConversionDataSetId,omitempty"`
+	// Meta only. WhatsApp number on messaging-destination ad sets.
+	WhatsappPhoneNumber  *string `json:"whatsappPhoneNumber,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _CreateStandaloneAdRequestPromotedObject CreateStandaloneAdRequestPromotedObject
 
 // NewCreateStandaloneAdRequestPromotedObject instantiates a new CreateStandaloneAdRequestPromotedObject object
 // This constructor will assign default values to properties that have it defined,
@@ -311,6 +318,70 @@ func (o *CreateStandaloneAdRequestPromotedObject) SetProductSetId(v string) {
 	o.ProductSetId = &v
 }
 
+// GetOfflineConversionDataSetId returns the OfflineConversionDataSetId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPromotedObject) GetOfflineConversionDataSetId() string {
+	if o == nil || IsNil(o.OfflineConversionDataSetId) {
+		var ret string
+		return ret
+	}
+	return *o.OfflineConversionDataSetId
+}
+
+// GetOfflineConversionDataSetIdOk returns a tuple with the OfflineConversionDataSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) GetOfflineConversionDataSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OfflineConversionDataSetId) {
+		return nil, false
+	}
+	return o.OfflineConversionDataSetId, true
+}
+
+// HasOfflineConversionDataSetId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) HasOfflineConversionDataSetId() bool {
+	if o != nil && !IsNil(o.OfflineConversionDataSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOfflineConversionDataSetId gets a reference to the given string and assigns it to the OfflineConversionDataSetId field.
+func (o *CreateStandaloneAdRequestPromotedObject) SetOfflineConversionDataSetId(v string) {
+	o.OfflineConversionDataSetId = &v
+}
+
+// GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPromotedObject) GetWhatsappPhoneNumber() string {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappPhoneNumber
+}
+
+// GetWhatsappPhoneNumberOk returns a tuple with the WhatsappPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) GetWhatsappPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		return nil, false
+	}
+	return o.WhatsappPhoneNumber, true
+}
+
+// HasWhatsappPhoneNumber returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPromotedObject) HasWhatsappPhoneNumber() bool {
+	if o != nil && !IsNil(o.WhatsappPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
+func (o *CreateStandaloneAdRequestPromotedObject) SetWhatsappPhoneNumber(v string) {
+	o.WhatsappPhoneNumber = &v
+}
+
 func (o CreateStandaloneAdRequestPromotedObject) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -345,7 +416,48 @@ func (o CreateStandaloneAdRequestPromotedObject) ToMap() (map[string]interface{}
 	if !IsNil(o.ProductSetId) {
 		toSerialize["productSetId"] = o.ProductSetId
 	}
+	if !IsNil(o.OfflineConversionDataSetId) {
+		toSerialize["offlineConversionDataSetId"] = o.OfflineConversionDataSetId
+	}
+	if !IsNil(o.WhatsappPhoneNumber) {
+		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
+	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *CreateStandaloneAdRequestPromotedObject) UnmarshalJSON(data []byte) (err error) {
+	varCreateStandaloneAdRequestPromotedObject := _CreateStandaloneAdRequestPromotedObject{}
+
+	err = json.Unmarshal(data, &varCreateStandaloneAdRequestPromotedObject)
+
+	if err != nil {
+		return err
+	}
+
+	*o = CreateStandaloneAdRequestPromotedObject(varCreateStandaloneAdRequestPromotedObject)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "pixelId")
+		delete(additionalProperties, "customEventType")
+		delete(additionalProperties, "pageId")
+		delete(additionalProperties, "applicationId")
+		delete(additionalProperties, "objectStoreUrl")
+		delete(additionalProperties, "customConversionId")
+		delete(additionalProperties, "productCatalogId")
+		delete(additionalProperties, "productSetId")
+		delete(additionalProperties, "offlineConversionDataSetId")
+		delete(additionalProperties, "whatsappPhoneNumber")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableCreateStandaloneAdRequestPromotedObject struct {

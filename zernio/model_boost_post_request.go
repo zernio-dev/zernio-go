@@ -50,6 +50,8 @@ type BoostPostRequest struct {
 	Tracking             *BoostPostRequestTracking `json:"tracking,omitempty"`
 	// Meta only. Required for housing, employment, credit, or political ads.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
+	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise).
+	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
 	// TikTok-only. Custom destination URL for the Spark Ad. Without this, TikTok Spark Ads have no clickable destination — required for traffic / conversion objectives. Maps to `landing_page_url` on the creative entry of /v2/ad/create/ (TikTok SDK `AdcreateCreatives.landing_page_url`). Ignored on Meta / LinkedIn / Pinterest / X / Google (those infer the destination from the boosted post).
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// TikTok-only. Call-to-action button label on the Spark Ad creative (e.g. `LEARN_MORE`, `SHOP_NOW`, `DOWNLOAD_NOW`, `SIGN_UP`, `WATCH_NOW`). Maps to `call_to_action` on the creative entry of /v2/ad/create/. Pass-through — the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\" reference for the full list.
@@ -590,6 +592,38 @@ func (o *BoostPostRequest) SetSpecialAdCategories(v []string) {
 	o.SpecialAdCategories = v
 }
 
+// GetSpecialAdCategoryCountry returns the SpecialAdCategoryCountry field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetSpecialAdCategoryCountry() []string {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategoryCountry
+}
+
+// GetSpecialAdCategoryCountryOk returns a tuple with the SpecialAdCategoryCountry field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetSpecialAdCategoryCountryOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		return nil, false
+	}
+	return o.SpecialAdCategoryCountry, true
+}
+
+// HasSpecialAdCategoryCountry returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasSpecialAdCategoryCountry() bool {
+	if o != nil && !IsNil(o.SpecialAdCategoryCountry) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategoryCountry gets a reference to the given []string and assigns it to the SpecialAdCategoryCountry field.
+func (o *BoostPostRequest) SetSpecialAdCategoryCountry(v []string) {
+	o.SpecialAdCategoryCountry = v
+}
+
 // GetLinkUrl returns the LinkUrl field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetLinkUrl() string {
 	if o == nil || IsNil(o.LinkUrl) {
@@ -800,6 +834,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SpecialAdCategories) {
 		toSerialize["specialAdCategories"] = o.SpecialAdCategories
+	}
+	if !IsNil(o.SpecialAdCategoryCountry) {
+		toSerialize["specialAdCategoryCountry"] = o.SpecialAdCategoryCountry
 	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl

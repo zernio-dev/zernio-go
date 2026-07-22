@@ -119,6 +119,8 @@ type CreateStandaloneAdRequest struct {
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Meta only. Declares the ad's special category, required for housing, employment, credit, or political/social-issue ads (Meta enforces restricted targeting for these). Note: setting a special category disables income/zip targeting on Meta.
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
+	// Meta (metaads) only. 2-letter ISO country codes the special ad category applies to. Requires specialAdCategories to be set (400 otherwise). Ignored when joining an existing campaign via existingCampaignId (the existing campaign's category/country already governs it).
+	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
 	// Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Meta only. Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already available on `POST /v1/ads/boost`.)
@@ -1869,6 +1871,38 @@ func (o *CreateStandaloneAdRequest) SetSpecialAdCategories(v []string) {
 	o.SpecialAdCategories = v
 }
 
+// GetSpecialAdCategoryCountry returns the SpecialAdCategoryCountry field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetSpecialAdCategoryCountry() []string {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategoryCountry
+}
+
+// GetSpecialAdCategoryCountryOk returns a tuple with the SpecialAdCategoryCountry field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetSpecialAdCategoryCountryOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		return nil, false
+	}
+	return o.SpecialAdCategoryCountry, true
+}
+
+// HasSpecialAdCategoryCountry returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasSpecialAdCategoryCountry() bool {
+	if o != nil && !IsNil(o.SpecialAdCategoryCountry) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategoryCountry gets a reference to the given []string and assigns it to the SpecialAdCategoryCountry field.
+func (o *CreateStandaloneAdRequest) SetSpecialAdCategoryCountry(v []string) {
+	o.SpecialAdCategoryCountry = v
+}
+
 // GetEndDate returns the EndDate field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetEndDate() time.Time {
 	if o == nil || IsNil(o.EndDate) {
@@ -2767,6 +2801,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SpecialAdCategories) {
 		toSerialize["specialAdCategories"] = o.SpecialAdCategories
+	}
+	if !IsNil(o.SpecialAdCategoryCountry) {
+		toSerialize["specialAdCategoryCountry"] = o.SpecialAdCategoryCountry
 	}
 	if !IsNil(o.EndDate) {
 		toSerialize["endDate"] = o.EndDate

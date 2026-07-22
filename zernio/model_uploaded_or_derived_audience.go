@@ -42,15 +42,21 @@ type UploadedOrDerivedAudience struct {
 	Companies []UploadedOrDerivedAudienceCompaniesInner `json:"companies,omitempty"`
 	// Required for website audiences
 	PixelId *string `json:"pixelId,omitempty"`
-	// Required for website audiences
+	// Required for website (max 180) and meta_engagement (max 365) audiences.
 	RetentionDays *int32 `json:"retentionDays,omitempty"`
+	// Required for meta_engagement audiences (Meta only): what people engaged with. `page` = a Facebook Page, `instagram` = an IG professional account, `video` = a video. The source object must be eligible for engagement audiences or Meta rejects with subcode 1713151 (\"Invalid Event Name\"), surfaced verbatim.
+	EngagementSource *string `json:"engagementSource,omitempty"`
+	// Required for meta_engagement: the Page / IG account / video id.
+	SourceId *string `json:"sourceId,omitempty"`
+	// meta_engagement only. The engagement event; defaults per source (page → page_engaged, instagram → ig_business_profile_all, video → video_watched). Ignored when `rule` is provided.
+	Event *string `json:"event,omitempty"`
 	// Required for lookalike audiences
 	SourceAudienceId *string `json:"sourceAudienceId,omitempty"`
 	// 2-letter code, required for lookalike audiences
 	Country *string `json:"country,omitempty"`
 	// Required for lookalike audiences
 	Ratio *float32 `json:"ratio,omitempty"`
-	// Pixel event rule for website audiences (optional)
+	// Optional raw Meta rule, forwarded verbatim: pixel event rule for website audiences, or the engagement rule for meta_engagement (overrides the built rule, e.g. for event/canvas/lead-form sources).
 	Rule map[string]interface{} `json:"rule,omitempty"`
 	// Data source declaration for GDPR compliance (customer_list only)
 	CustomerFileSource *string `json:"customerFileSource,omitempty"`
@@ -463,6 +469,102 @@ func (o *UploadedOrDerivedAudience) SetRetentionDays(v int32) {
 	o.RetentionDays = &v
 }
 
+// GetEngagementSource returns the EngagementSource field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEngagementSource() string {
+	if o == nil || IsNil(o.EngagementSource) {
+		var ret string
+		return ret
+	}
+	return *o.EngagementSource
+}
+
+// GetEngagementSourceOk returns a tuple with the EngagementSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEngagementSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.EngagementSource) {
+		return nil, false
+	}
+	return o.EngagementSource, true
+}
+
+// HasEngagementSource returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEngagementSource() bool {
+	if o != nil && !IsNil(o.EngagementSource) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementSource gets a reference to the given string and assigns it to the EngagementSource field.
+func (o *UploadedOrDerivedAudience) SetEngagementSource(v string) {
+	o.EngagementSource = &v
+}
+
+// GetSourceId returns the SourceId field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetSourceId() string {
+	if o == nil || IsNil(o.SourceId) {
+		var ret string
+		return ret
+	}
+	return *o.SourceId
+}
+
+// GetSourceIdOk returns a tuple with the SourceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetSourceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SourceId) {
+		return nil, false
+	}
+	return o.SourceId, true
+}
+
+// HasSourceId returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasSourceId() bool {
+	if o != nil && !IsNil(o.SourceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceId gets a reference to the given string and assigns it to the SourceId field.
+func (o *UploadedOrDerivedAudience) SetSourceId(v string) {
+	o.SourceId = &v
+}
+
+// GetEvent returns the Event field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEvent() string {
+	if o == nil || IsNil(o.Event) {
+		var ret string
+		return ret
+	}
+	return *o.Event
+}
+
+// GetEventOk returns a tuple with the Event field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEventOk() (*string, bool) {
+	if o == nil || IsNil(o.Event) {
+		return nil, false
+	}
+	return o.Event, true
+}
+
+// HasEvent returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEvent() bool {
+	if o != nil && !IsNil(o.Event) {
+		return true
+	}
+
+	return false
+}
+
+// SetEvent gets a reference to the given string and assigns it to the Event field.
+func (o *UploadedOrDerivedAudience) SetEvent(v string) {
+	o.Event = &v
+}
+
 // GetSourceAudienceId returns the SourceAudienceId field value if set, zero value otherwise.
 func (o *UploadedOrDerivedAudience) GetSourceAudienceId() string {
 	if o == nil || IsNil(o.SourceAudienceId) {
@@ -663,6 +765,15 @@ func (o UploadedOrDerivedAudience) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RetentionDays) {
 		toSerialize["retentionDays"] = o.RetentionDays
+	}
+	if !IsNil(o.EngagementSource) {
+		toSerialize["engagementSource"] = o.EngagementSource
+	}
+	if !IsNil(o.SourceId) {
+		toSerialize["sourceId"] = o.SourceId
+	}
+	if !IsNil(o.Event) {
+		toSerialize["event"] = o.Event
 	}
 	if !IsNil(o.SourceAudienceId) {
 		toSerialize["sourceAudienceId"] = o.SourceAudienceId
