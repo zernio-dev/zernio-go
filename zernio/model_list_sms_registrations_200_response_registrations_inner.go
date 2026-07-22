@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ListSmsRegistrations200ResponseRegistrationsInner type satisfies the MappedNullable interface at compile time
@@ -33,7 +34,9 @@ type ListSmsRegistrations200ResponseRegistrationsInner struct {
 	// TCR campaign id.
 	CampaignId    NullableString `json:"campaignId,omitempty"`
 	DeclineReason NullableString `json:"declineReason,omitempty"`
-	PhoneNumbers  []string       `json:"phoneNumbers,omitempty"`
+	// Toll-free only: when the carrier requested changes (\"Waiting For Customer\"). The request must be resubmitted within 7 days of this timestamp or it expires.
+	TfActionRequiredAt NullableTime `json:"tfActionRequiredAt,omitempty"`
+	PhoneNumbers       []string     `json:"phoneNumbers,omitempty"`
 	// Sole-prop 10DLC only; the OTP step is still pending.
 	AwaitingOtp *bool `json:"awaitingOtp,omitempty"`
 	// Carrier-assigned brand trust score; drives throughput.
@@ -390,6 +393,49 @@ func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetDeclineReason()
 	o.DeclineReason.Unset()
 }
 
+// GetTfActionRequiredAt returns the TfActionRequiredAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetTfActionRequiredAt() time.Time {
+	if o == nil || IsNil(o.TfActionRequiredAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.TfActionRequiredAt.Get()
+}
+
+// GetTfActionRequiredAtOk returns a tuple with the TfActionRequiredAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetTfActionRequiredAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TfActionRequiredAt.Get(), o.TfActionRequiredAt.IsSet()
+}
+
+// HasTfActionRequiredAt returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasTfActionRequiredAt() bool {
+	if o != nil && o.TfActionRequiredAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTfActionRequiredAt gets a reference to the given NullableTime and assigns it to the TfActionRequiredAt field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetTfActionRequiredAt(v time.Time) {
+	o.TfActionRequiredAt.Set(&v)
+}
+
+// SetTfActionRequiredAtNil sets the value for TfActionRequiredAt to be an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetTfActionRequiredAtNil() {
+	o.TfActionRequiredAt.Set(nil)
+}
+
+// UnsetTfActionRequiredAt ensures that no value is present for TfActionRequiredAt, not even an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetTfActionRequiredAt() {
+	o.TfActionRequiredAt.Unset()
+}
+
 // GetPhoneNumbers returns the PhoneNumbers field value if set, zero value otherwise.
 func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetPhoneNumbers() []string {
 	if o == nil || IsNil(o.PhoneNumbers) {
@@ -565,6 +611,9 @@ func (o ListSmsRegistrations200ResponseRegistrationsInner) ToMap() (map[string]i
 	}
 	if o.DeclineReason.IsSet() {
 		toSerialize["declineReason"] = o.DeclineReason.Get()
+	}
+	if o.TfActionRequiredAt.IsSet() {
+		toSerialize["tfActionRequiredAt"] = o.TfActionRequiredAt.Get()
 	}
 	if !IsNil(o.PhoneNumbers) {
 		toSerialize["phoneNumbers"] = o.PhoneNumbers
