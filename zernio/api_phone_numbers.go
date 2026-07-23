@@ -3000,3 +3000,134 @@ func (a *PhoneNumbersAPIService) ValidatePhoneNumberKycAddressExecute(r PhoneNum
 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
+
+type PhoneNumbersAPIViewPhoneNumberKycDocumentRequest struct {
+	ctx        context.Context
+	ApiService *PhoneNumbersAPIService
+	documentId string
+}
+
+func (r PhoneNumbersAPIViewPhoneNumberKycDocumentRequest) Execute() (*os.File, *http.Response, error) {
+	return r.ApiService.ViewPhoneNumberKycDocumentExecute(r)
+}
+
+/*
+ViewPhoneNumberKycDocument View a KYC document on file
+
+Stream a document backing a reusable verification (the `documentId`
+values from GET /v1/phone-numbers/kyc `reusable.options[].details[]`), so
+the account holder can see what's on file before reusing it. Returned
+inline as `application/pdf` (uploads are normalized to PDF). Auth-scoped:
+a document is viewable only when its id is referenced by one of the
+caller's own numbers — otherwise `404`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param documentId The Telnyx document id (from `reusable.options[].details[].documentId`).
+	@return PhoneNumbersAPIViewPhoneNumberKycDocumentRequest
+*/
+func (a *PhoneNumbersAPIService) ViewPhoneNumberKycDocument(ctx context.Context, documentId string) PhoneNumbersAPIViewPhoneNumberKycDocumentRequest {
+	return PhoneNumbersAPIViewPhoneNumberKycDocumentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		documentId: documentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return *os.File
+func (a *PhoneNumbersAPIService) ViewPhoneNumberKycDocumentExecute(r PhoneNumbersAPIViewPhoneNumberKycDocumentRequest) (*os.File, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *os.File
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.ViewPhoneNumberKycDocument")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/kyc/document/{documentId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"documentId"+"}", url.PathEscape(parameterValueToString(r.documentId, "documentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/pdf", "application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}

@@ -563,6 +563,7 @@ func main() {
 | `client.PhoneNumbersAPI.UploadPhoneNumberKycDocument(ctx)` | Upload a KYC document |
 | `client.PhoneNumbersAPI.UploadPhoneNumberPortInDocument(ctx)` | Upload a porting document |
 | `client.PhoneNumbersAPI.ValidatePhoneNumberKycAddress(ctx)` | Pre-validate KYC address |
+| `client.PhoneNumbersAPI.ViewPhoneNumberKycDocument(ctx)` | View a KYC document on file |
 
 ### Reach and Frequency
 | Method | Description |

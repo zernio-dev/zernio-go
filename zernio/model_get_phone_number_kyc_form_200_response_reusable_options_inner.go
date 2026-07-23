@@ -25,8 +25,8 @@ type GetPhoneNumberKycForm200ResponseReusableOptionsInner struct {
 	// Display only — the number this verification was submitted for. Not a selection key.
 	FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
 	// true = group-approved, a new order activates in minutes; false = documents are reused but the order still queues for carrier review (1-3 days).
-	Instant *bool                                                  `json:"instant,omitempty"`
-	Details []GetPhoneNumberKycForm200ResponseReusableDetailsInner `json:"details,omitempty"`
+	Instant *bool                                                              `json:"instant,omitempty"`
+	Details []GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner `json:"details,omitempty"`
 }
 
 // NewGetPhoneNumberKycForm200ResponseReusableOptionsInner instantiates a new GetPhoneNumberKycForm200ResponseReusableOptionsInner object
@@ -143,9 +143,9 @@ func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetInstant(v bool
 }
 
 // GetDetails returns the Details field value if set, zero value otherwise.
-func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetDetails() []GetPhoneNumberKycForm200ResponseReusableDetailsInner {
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetDetails() []GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner {
 	if o == nil || IsNil(o.Details) {
-		var ret []GetPhoneNumberKycForm200ResponseReusableDetailsInner
+		var ret []GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner
 		return ret
 	}
 	return o.Details
@@ -153,7 +153,7 @@ func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetDetails() []Ge
 
 // GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetDetailsOk() ([]GetPhoneNumberKycForm200ResponseReusableDetailsInner, bool) {
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetDetailsOk() ([]GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner, bool) {
 	if o == nil || IsNil(o.Details) {
 		return nil, false
 	}
@@ -169,8 +169,8 @@ func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) HasDetails() bool
 	return false
 }
 
-// SetDetails gets a reference to the given []GetPhoneNumberKycForm200ResponseReusableDetailsInner and assigns it to the Details field.
-func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetDetails(v []GetPhoneNumberKycForm200ResponseReusableDetailsInner) {
+// SetDetails gets a reference to the given []GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner and assigns it to the Details field.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetDetails(v []GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner) {
 	o.Details = v
 }
 
