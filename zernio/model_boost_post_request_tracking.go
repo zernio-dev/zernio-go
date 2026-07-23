@@ -21,7 +21,8 @@ var _ MappedNullable = &BoostPostRequestTracking{}
 // BoostPostRequestTracking Meta only. Tracking specs (pixel, URL tags).
 type BoostPostRequestTracking struct {
 	PixelId *string `json:"pixelId,omitempty"`
-	UrlTags *string `json:"urlTags,omitempty"`
+	// URL parameters appended to the ad link, rendered as `key=value` pairs joined with `&`.
+	UrlTags []BoostPostRequestTrackingUrlTagsInner `json:"urlTags,omitempty"`
 }
 
 // NewBoostPostRequestTracking instantiates a new BoostPostRequestTracking object
@@ -74,17 +75,17 @@ func (o *BoostPostRequestTracking) SetPixelId(v string) {
 }
 
 // GetUrlTags returns the UrlTags field value if set, zero value otherwise.
-func (o *BoostPostRequestTracking) GetUrlTags() string {
+func (o *BoostPostRequestTracking) GetUrlTags() []BoostPostRequestTrackingUrlTagsInner {
 	if o == nil || IsNil(o.UrlTags) {
-		var ret string
+		var ret []BoostPostRequestTrackingUrlTagsInner
 		return ret
 	}
-	return *o.UrlTags
+	return o.UrlTags
 }
 
 // GetUrlTagsOk returns a tuple with the UrlTags field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BoostPostRequestTracking) GetUrlTagsOk() (*string, bool) {
+func (o *BoostPostRequestTracking) GetUrlTagsOk() ([]BoostPostRequestTrackingUrlTagsInner, bool) {
 	if o == nil || IsNil(o.UrlTags) {
 		return nil, false
 	}
@@ -100,9 +101,9 @@ func (o *BoostPostRequestTracking) HasUrlTags() bool {
 	return false
 }
 
-// SetUrlTags gets a reference to the given string and assigns it to the UrlTags field.
-func (o *BoostPostRequestTracking) SetUrlTags(v string) {
-	o.UrlTags = &v
+// SetUrlTags gets a reference to the given []BoostPostRequestTrackingUrlTagsInner and assigns it to the UrlTags field.
+func (o *BoostPostRequestTracking) SetUrlTags(v []BoostPostRequestTrackingUrlTagsInner) {
+	o.UrlTags = v
 }
 
 func (o BoostPostRequestTracking) MarshalJSON() ([]byte, error) {

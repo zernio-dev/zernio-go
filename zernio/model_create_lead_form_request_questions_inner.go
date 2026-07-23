@@ -27,9 +27,9 @@ type CreateLeadFormRequestQuestionsInner struct {
 	// CUSTOM questions only.
 	Key *string `json:"key,omitempty"`
 	// CUSTOM questions only.
-	Label         *string                                           `json:"label,omitempty"`
-	Options       []CreateLeadFormRequestQuestionsInnerOptionsInner `json:"options,omitempty"`
-	InlineContext *string                                           `json:"inline_context,omitempty"`
+	Label         *string                                `json:"label,omitempty"`
+	Options       []BoostPostRequestTrackingUrlTagsInner `json:"options,omitempty"`
+	InlineContext *string                                `json:"inline_context,omitempty"`
 }
 
 type _CreateLeadFormRequestQuestionsInner CreateLeadFormRequestQuestionsInner
@@ -141,9 +141,9 @@ func (o *CreateLeadFormRequestQuestionsInner) SetLabel(v string) {
 }
 
 // GetOptions returns the Options field value if set, zero value otherwise.
-func (o *CreateLeadFormRequestQuestionsInner) GetOptions() []CreateLeadFormRequestQuestionsInnerOptionsInner {
+func (o *CreateLeadFormRequestQuestionsInner) GetOptions() []BoostPostRequestTrackingUrlTagsInner {
 	if o == nil || IsNil(o.Options) {
-		var ret []CreateLeadFormRequestQuestionsInnerOptionsInner
+		var ret []BoostPostRequestTrackingUrlTagsInner
 		return ret
 	}
 	return o.Options
@@ -151,7 +151,7 @@ func (o *CreateLeadFormRequestQuestionsInner) GetOptions() []CreateLeadFormReque
 
 // GetOptionsOk returns a tuple with the Options field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateLeadFormRequestQuestionsInner) GetOptionsOk() ([]CreateLeadFormRequestQuestionsInnerOptionsInner, bool) {
+func (o *CreateLeadFormRequestQuestionsInner) GetOptionsOk() ([]BoostPostRequestTrackingUrlTagsInner, bool) {
 	if o == nil || IsNil(o.Options) {
 		return nil, false
 	}
@@ -167,8 +167,8 @@ func (o *CreateLeadFormRequestQuestionsInner) HasOptions() bool {
 	return false
 }
 
-// SetOptions gets a reference to the given []CreateLeadFormRequestQuestionsInnerOptionsInner and assigns it to the Options field.
-func (o *CreateLeadFormRequestQuestionsInner) SetOptions(v []CreateLeadFormRequestQuestionsInnerOptionsInner) {
+// SetOptions gets a reference to the given []BoostPostRequestTrackingUrlTagsInner and assigns it to the Options field.
+func (o *CreateLeadFormRequestQuestionsInner) SetOptions(v []BoostPostRequestTrackingUrlTagsInner) {
 	o.Options = v
 }
 
