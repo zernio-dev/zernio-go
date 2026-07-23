@@ -558,6 +558,7 @@ func main() {
 | `client.PhoneNumbersAPI.ReleasePhoneNumber(ctx)` | Release phone number |
 | `client.PhoneNumbersAPI.RemediatePhoneNumber(ctx)` | Resubmit a declined number |
 | `client.PhoneNumbersAPI.ReplyToPhoneNumberReviewer(ctx)` | Reply to the regulatory reviewer |
+| `client.PhoneNumbersAPI.RespondToPhoneNumberReviewer(ctx)` | Respond to the regulatory reviewer (message + corrections) |
 | `client.PhoneNumbersAPI.ReviewPhoneNumberKycPacket(ctx)` | Pre-review a KYC packet |
 | `client.PhoneNumbersAPI.SearchAvailablePhoneNumbers(ctx)` | Search available numbers |
 | `client.PhoneNumbersAPI.SubmitPhoneNumberKyc(ctx)` | Submit KYC |
