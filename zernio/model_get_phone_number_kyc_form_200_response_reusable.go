@@ -18,7 +18,7 @@ import (
 // checks if the GetPhoneNumberKycForm200ResponseReusable type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GetPhoneNumberKycForm200ResponseReusable{}
 
-// GetPhoneNumberKycForm200ResponseReusable Present when this account already has an approved verification for the country that can be reused (skip the form). `fromPhoneNumber`/`details` mirror the newest option; `options` lists ALL approved verifications (agencies hold one per end client) — pass the chosen option's `fromPhoneNumber` as `reuseFrom` on POST.
+// GetPhoneNumberKycForm200ResponseReusable Present when this account already has a reusable verification for the country (skip the form). `fromPhoneNumber`/`details` mirror the first option; `options` lists ALL reusable verifications (agencies hold one per end client), approved-first. Pass the chosen option's `id` as `reuseOptionId` on POST. Each option's `instant` says whether it activates in minutes (group-approved) or still queues for carrier review (1-3 days).
 type GetPhoneNumberKycForm200ResponseReusable struct {
 	Available       *bool   `json:"available,omitempty"`
 	FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`

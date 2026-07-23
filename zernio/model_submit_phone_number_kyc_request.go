@@ -30,7 +30,9 @@ type SubmitPhoneNumberKycRequest struct {
 	Quantity *int32 `json:"quantity,omitempty"`
 	// Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
-	// Which approved verification to reuse when several exist: the phone number it was originally approved for (GET reusable.options[].fromPhoneNumber). Omitted = newest. No match = 409.
+	// Which reusable verification to use (GET reusable.options[].id). The unambiguous selection key. Omitted = the approved default. No match = 409.
+	ReuseOptionId *string `json:"reuseOptionId,omitempty"`
+	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications — prefer `reuseOptionId`. Omitted = the approved default. No match = 409.
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
@@ -210,6 +212,38 @@ func (o *SubmitPhoneNumberKycRequest) HasReuse() bool {
 // SetReuse gets a reference to the given bool and assigns it to the Reuse field.
 func (o *SubmitPhoneNumberKycRequest) SetReuse(v bool) {
 	o.Reuse = &v
+}
+
+// GetReuseOptionId returns the ReuseOptionId field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKycRequest) GetReuseOptionId() string {
+	if o == nil || IsNil(o.ReuseOptionId) {
+		var ret string
+		return ret
+	}
+	return *o.ReuseOptionId
+}
+
+// GetReuseOptionIdOk returns a tuple with the ReuseOptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKycRequest) GetReuseOptionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ReuseOptionId) {
+		return nil, false
+	}
+	return o.ReuseOptionId, true
+}
+
+// HasReuseOptionId returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKycRequest) HasReuseOptionId() bool {
+	if o != nil && !IsNil(o.ReuseOptionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReuseOptionId gets a reference to the given string and assigns it to the ReuseOptionId field.
+func (o *SubmitPhoneNumberKycRequest) SetReuseOptionId(v string) {
+	o.ReuseOptionId = &v
 }
 
 // GetReuseFrom returns the ReuseFrom field value if set, zero value otherwise.
@@ -424,6 +458,9 @@ func (o SubmitPhoneNumberKycRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Reuse) {
 		toSerialize["reuse"] = o.Reuse
+	}
+	if !IsNil(o.ReuseOptionId) {
+		toSerialize["reuseOptionId"] = o.ReuseOptionId
 	}
 	if !IsNil(o.ReuseFrom) {
 		toSerialize["reuseFrom"] = o.ReuseFrom

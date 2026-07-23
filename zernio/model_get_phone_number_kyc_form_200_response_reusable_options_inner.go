@@ -20,8 +20,13 @@ var _ MappedNullable = &GetPhoneNumberKycForm200ResponseReusableOptionsInner{}
 
 // GetPhoneNumberKycForm200ResponseReusableOptionsInner struct for GetPhoneNumberKycForm200ResponseReusableOptionsInner
 type GetPhoneNumberKycForm200ResponseReusableOptionsInner struct {
-	FromPhoneNumber *string                                                `json:"fromPhoneNumber,omitempty"`
-	Details         []GetPhoneNumberKycForm200ResponseReusableDetailsInner `json:"details,omitempty"`
+	// Opaque option id — pass as `reuseOptionId` on POST. Stable selection key (a phone number is not unique across verifications).
+	Id *string `json:"id,omitempty"`
+	// Display only — the number this verification was submitted for. Not a selection key.
+	FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
+	// true = group-approved, a new order activates in minutes; false = documents are reused but the order still queues for carrier review (1-3 days).
+	Instant *bool                                                  `json:"instant,omitempty"`
+	Details []GetPhoneNumberKycForm200ResponseReusableDetailsInner `json:"details,omitempty"`
 }
 
 // NewGetPhoneNumberKycForm200ResponseReusableOptionsInner instantiates a new GetPhoneNumberKycForm200ResponseReusableOptionsInner object
@@ -39,6 +44,38 @@ func NewGetPhoneNumberKycForm200ResponseReusableOptionsInner() *GetPhoneNumberKy
 func NewGetPhoneNumberKycForm200ResponseReusableOptionsInnerWithDefaults() *GetPhoneNumberKycForm200ResponseReusableOptionsInner {
 	this := GetPhoneNumberKycForm200ResponseReusableOptionsInner{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetId(v string) {
+	o.Id = &v
 }
 
 // GetFromPhoneNumber returns the FromPhoneNumber field value if set, zero value otherwise.
@@ -71,6 +108,38 @@ func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) HasFromPhoneNumbe
 // SetFromPhoneNumber gets a reference to the given string and assigns it to the FromPhoneNumber field.
 func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetFromPhoneNumber(v string) {
 	o.FromPhoneNumber = &v
+}
+
+// GetInstant returns the Instant field value if set, zero value otherwise.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetInstant() bool {
+	if o == nil || IsNil(o.Instant) {
+		var ret bool
+		return ret
+	}
+	return *o.Instant
+}
+
+// GetInstantOk returns a tuple with the Instant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) GetInstantOk() (*bool, bool) {
+	if o == nil || IsNil(o.Instant) {
+		return nil, false
+	}
+	return o.Instant, true
+}
+
+// HasInstant returns a boolean if a field has been set.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) HasInstant() bool {
+	if o != nil && !IsNil(o.Instant) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstant gets a reference to the given bool and assigns it to the Instant field.
+func (o *GetPhoneNumberKycForm200ResponseReusableOptionsInner) SetInstant(v bool) {
+	o.Instant = &v
 }
 
 // GetDetails returns the Details field value if set, zero value otherwise.
@@ -115,8 +184,14 @@ func (o GetPhoneNumberKycForm200ResponseReusableOptionsInner) MarshalJSON() ([]b
 
 func (o GetPhoneNumberKycForm200ResponseReusableOptionsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
+	}
 	if !IsNil(o.FromPhoneNumber) {
 		toSerialize["fromPhoneNumber"] = o.FromPhoneNumber
+	}
+	if !IsNil(o.Instant) {
+		toSerialize["instant"] = o.Instant
 	}
 	if !IsNil(o.Details) {
 		toSerialize["details"] = o.Details
