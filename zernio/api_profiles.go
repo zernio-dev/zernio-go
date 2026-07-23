@@ -27,10 +27,17 @@ type ProfilesAPICreateProfileRequest struct {
 	ctx                  context.Context
 	ApiService           *ProfilesAPIService
 	createProfileRequest *CreateProfileRequest
+	idempotencyKey       *string
 }
 
 func (r ProfilesAPICreateProfileRequest) CreateProfileRequest(createProfileRequest CreateProfileRequest) ProfilesAPICreateProfileRequest {
 	r.createProfileRequest = &createProfileRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes create retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r ProfilesAPICreateProfileRequest) IdempotencyKey(idempotencyKey string) ProfilesAPICreateProfileRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -41,7 +48,7 @@ func (r ProfilesAPICreateProfileRequest) Execute() (*ProfileCreateResponse, *htt
 /*
 CreateProfile Create profile
 
-Creates a new profile with a name, optional description, and color.
+Creates a new profile with a name, optional description, and color. Names are unique per workspace: a duplicate returns a 409 whose details.existingProfileId carries the id of the existing profile. Send an Idempotency-Key header to make retries safe: a retried create with the same key and body replays the original 201 (same _id) instead of conflicting.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ProfilesAPICreateProfileRequest
@@ -94,6 +101,9 @@ func (a *ProfilesAPIService) CreateProfileExecute(r ProfilesAPICreateProfileRequ
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createProfileRequest
@@ -410,11 +420,32 @@ type ProfilesAPIListProfilesRequest struct {
 	ctx              context.Context
 	ApiService       *ProfilesAPIService
 	includeOverLimit *bool
+	name             *string
+	limit            *int32
+	skip             *int32
 }
 
 // When true, includes over-limit profiles (marked with isOverLimit: true).
 func (r ProfilesAPIListProfilesRequest) IncludeOverLimit(includeOverLimit bool) ProfilesAPIListProfilesRequest {
 	r.includeOverLimit = &includeOverLimit
+	return r
+}
+
+// Exact-match filter on the profile name. Useful to recover a profile id after an ambiguous create (timeout followed by a 409 on retry).
+func (r ProfilesAPIListProfilesRequest) Name(name string) ProfilesAPIListProfilesRequest {
+	r.name = &name
+	return r
+}
+
+// Page size. When limit or skip is present, the response includes total and skip (and echoes limit).
+func (r ProfilesAPIListProfilesRequest) Limit(limit int32) ProfilesAPIListProfilesRequest {
+	r.limit = &limit
+	return r
+}
+
+// Number of profiles to skip, applied after sorting and filtering.
+func (r ProfilesAPIListProfilesRequest) Skip(skip int32) ProfilesAPIListProfilesRequest {
+	r.skip = &skip
 	return r
 }
 
@@ -425,7 +456,7 @@ func (r ProfilesAPIListProfilesRequest) Execute() (*ProfilesListResponse, *http.
 /*
 ListProfiles List profiles
 
-Returns profiles sorted by creation date. Use includeOverLimit=true to include profiles that exceed the plan limit.
+Returns profiles sorted default-first, then by creation date. Filter with name (exact match) and paginate with limit/skip; without those params the full list is returned unchanged. Use includeOverLimit=true to include profiles that exceed the plan limit.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ProfilesAPIListProfilesRequest
@@ -466,6 +497,15 @@ func (a *ProfilesAPIService) ListProfilesExecute(r ProfilesAPIListProfilesReques
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeOverLimit", defaultValue, "form", "")
 		r.includeOverLimit = &defaultValue
 	}
+	if r.name != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "skip", r.skip, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -504,6 +544,17 @@ func (a *ProfilesAPIService) ListProfilesExecute(r ProfilesAPIListProfilesReques
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

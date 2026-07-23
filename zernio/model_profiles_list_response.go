@@ -21,6 +21,12 @@ var _ MappedNullable = &ProfilesListResponse{}
 // ProfilesListResponse struct for ProfilesListResponse
 type ProfilesListResponse struct {
 	Profiles []Profile `json:"profiles,omitempty"`
+	// Total matching profiles across all pages. Present only when limit or skip was passed.
+	Total *int32 `json:"total,omitempty"`
+	// Offset applied. Present only when limit or skip was passed.
+	Skip *int32 `json:"skip,omitempty"`
+	// Echo of the limit query param. Present only when it was passed.
+	Limit *int32 `json:"limit,omitempty"`
 }
 
 // NewProfilesListResponse instantiates a new ProfilesListResponse object
@@ -72,6 +78,102 @@ func (o *ProfilesListResponse) SetProfiles(v []Profile) {
 	o.Profiles = v
 }
 
+// GetTotal returns the Total field value if set, zero value otherwise.
+func (o *ProfilesListResponse) GetTotal() int32 {
+	if o == nil || IsNil(o.Total) {
+		var ret int32
+		return ret
+	}
+	return *o.Total
+}
+
+// GetTotalOk returns a tuple with the Total field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProfilesListResponse) GetTotalOk() (*int32, bool) {
+	if o == nil || IsNil(o.Total) {
+		return nil, false
+	}
+	return o.Total, true
+}
+
+// HasTotal returns a boolean if a field has been set.
+func (o *ProfilesListResponse) HasTotal() bool {
+	if o != nil && !IsNil(o.Total) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotal gets a reference to the given int32 and assigns it to the Total field.
+func (o *ProfilesListResponse) SetTotal(v int32) {
+	o.Total = &v
+}
+
+// GetSkip returns the Skip field value if set, zero value otherwise.
+func (o *ProfilesListResponse) GetSkip() int32 {
+	if o == nil || IsNil(o.Skip) {
+		var ret int32
+		return ret
+	}
+	return *o.Skip
+}
+
+// GetSkipOk returns a tuple with the Skip field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProfilesListResponse) GetSkipOk() (*int32, bool) {
+	if o == nil || IsNil(o.Skip) {
+		return nil, false
+	}
+	return o.Skip, true
+}
+
+// HasSkip returns a boolean if a field has been set.
+func (o *ProfilesListResponse) HasSkip() bool {
+	if o != nil && !IsNil(o.Skip) {
+		return true
+	}
+
+	return false
+}
+
+// SetSkip gets a reference to the given int32 and assigns it to the Skip field.
+func (o *ProfilesListResponse) SetSkip(v int32) {
+	o.Skip = &v
+}
+
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *ProfilesListResponse) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
+
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProfilesListResponse) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
+
+// HasLimit returns a boolean if a field has been set.
+func (o *ProfilesListResponse) HasLimit() bool {
+	if o != nil && !IsNil(o.Limit) {
+		return true
+	}
+
+	return false
+}
+
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *ProfilesListResponse) SetLimit(v int32) {
+	o.Limit = &v
+}
+
 func (o ProfilesListResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +186,15 @@ func (o ProfilesListResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Profiles) {
 		toSerialize["profiles"] = o.Profiles
+	}
+	if !IsNil(o.Total) {
+		toSerialize["total"] = o.Total
+	}
+	if !IsNil(o.Skip) {
+		toSerialize["skip"] = o.Skip
+	}
+	if !IsNil(o.Limit) {
+		toSerialize["limit"] = o.Limit
 	}
 	return toSerialize, nil
 }
