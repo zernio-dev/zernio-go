@@ -20,7 +20,7 @@ var _ MappedNullable = &ListConversionDestinations200ResponseDestinationsInner{}
 
 // ListConversionDestinations200ResponseDestinationsInner struct for ListConversionDestinations200ResponseDestinationsInner
 type ListConversionDestinations200ResponseDestinationsInner struct {
-	// Destination identifier. Meta: pixel ID. Google: conversion action resource name. LinkedIn: numeric conversion rule ID.
+	// Destination identifier. Meta: pixel ID. Google: conversion action resource name. LinkedIn: numeric conversion rule ID. OpenAI Ads: pixel wire id.
 	Id   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
 	// Present when the platform locks event type to the destination (Google conversion actions, LinkedIn conversion rules).

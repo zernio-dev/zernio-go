@@ -26,7 +26,7 @@ type SendConversions200Response struct {
 	// Events rejected (see failures).
 	EventsFailed *int32                                    `json:"eventsFailed,omitempty"`
 	Failures     []SendConversions200ResponseFailuresInner `json:"failures,omitempty"`
-	// Platform trace ID for debugging. fbtrace_id for Meta, requestId for Google. Absent for LinkedIn (LinkedIn's conversionEvents endpoint does not surface a trace ID).
+	// Platform trace ID for debugging. fbtrace_id for Meta, requestId for Google. Absent for LinkedIn (LinkedIn's conversionEvents endpoint does not surface a trace ID) and OpenAI Ads (no trace ID surfaced).
 	TraceId *string `json:"traceId,omitempty"`
 }
 

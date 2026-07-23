@@ -22,12 +22,12 @@ var _ MappedNullable = &SendConversionsRequest{}
 
 // SendConversionsRequest struct for SendConversionsRequest
 type SendConversionsRequest struct {
-	// SocialAccount ID (metaads, googleads, linkedinads, or tiktokads).
+	// SocialAccount ID (metaads, googleads, linkedinads, tiktokads, or openaiads).
 	AccountId string `json:"accountId"`
-	// Platform destination identifier. For Meta, the pixel/dataset ID. For Google, the conversion action resource name. For LinkedIn, the conversion rule ID or full `urn:lla:llaPartnerConversion:{id}` URN.
+	// Platform destination identifier. For Meta, the pixel/dataset ID. For Google, the conversion action resource name. For LinkedIn, the conversion rule ID or full `urn:lla:llaPartnerConversion:{id}` URN. For OpenAI Ads, the pixel wire id.
 	DestinationId string            `json:"destinationId"`
 	Events        []ConversionEvent `json:"events"`
-	// Meta `test_event_code` passthrough. Ignored by Google and LinkedIn.
+	// Meta `test_event_code` passthrough. Ignored by Google, LinkedIn, and OpenAI Ads.
 	TestCode *string                        `json:"testCode,omitempty"`
 	Consent  *SendConversionsRequestConsent `json:"consent,omitempty"`
 }

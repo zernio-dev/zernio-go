@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateTrackingTagRequest{}
 
 // CreateTrackingTagRequest struct for CreateTrackingTagRequest
 type CreateTrackingTagRequest struct {
-	// Meta ad account id, e.g. `act_123456789`.
+	// Meta ad account id, e.g. `act_123456789`. Required by this endpoint but ignored for OpenAI Ads.
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
 }

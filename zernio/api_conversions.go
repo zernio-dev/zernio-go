@@ -325,7 +325,9 @@ CreateConversionDestination Create a conversion destination
 
 Create a new conversion destination on the platform. Supported for
 LinkedIn (conversion rule) and Google Ads (conversion action). Meta
-manages destinations in its own UI and returns 405.
+and OpenAI Ads pixels are created via their own tracking-tags flow
+instead (`POST /v1/accounts/{accountId}/tracking-tags`); this endpoint
+returns 405 for both.
 
 **LinkedIn:** creation is NOT idempotent. A retry creates a second
 destination. Deduplicate before retrying.
@@ -1182,15 +1184,15 @@ func (r ConversionsAPIListConversionDestinationsRequest) Execute() (*ListConvers
 /*
 ListConversionDestinations List conversion destinations
 
-Returns the list of pixels (Meta), conversion actions (Google), or
-conversion rules (LinkedIn) accessible to the connected ads account.
-Use the returned `id` as `destinationId` when posting to
-`POST /v1/ads/conversions`.
+Returns the list of pixels (Meta), conversion actions (Google),
+conversion rules (LinkedIn), or pixels (OpenAI Ads) accessible to the
+connected ads account. Use the returned `id` as `destinationId` when
+posting to `POST /v1/ads/conversions`.
 
 For Google and LinkedIn, each destination's `type` reflects the
 conversion type (PURCHASE, LEAD, SIGN_UP, etc.) — the event type is
-locked to the destination. For Meta, `type` is absent: pixels accept
-any event name per request.
+locked to the destination. For Meta and OpenAI Ads, `type` is absent:
+pixels accept any event name per request.
 
 For LinkedIn, destinations are returned across every sponsored ad
 account the connected token can access; the `adAccountId` field on
@@ -1198,7 +1200,7 @@ each destination identifies the parent ad account and is required for
 subsequent CRUD calls (update, delete, associations, metrics).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId SocialAccount ID (metaads, googleads, linkedinads, or tiktokads).
+	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, or openaiads).
 	@return ConversionsAPIListConversionDestinationsRequest
 */
 func (a *ConversionsAPIService) ListConversionDestinations(ctx context.Context, accountId string) ConversionsAPIListConversionDestinationsRequest {
@@ -1470,6 +1472,7 @@ Supported platforms:
 - Google Ads (`googleads`) via Data Manager API `ingestEvents`
 - LinkedIn (`linkedinads`) via `/rest/conversionEvents`
 - TikTok (`tiktokads`) via the Offline Events API `/offline/batch/` — OFFLINE conversions only
+- OpenAI Ads (`openaiads`) via its Conversions API (a separate host, `bzr.openai.com`)
 
 `destinationId` semantics differ per platform:
 
@@ -1477,10 +1480,15 @@ Supported platforms:
 - Google: conversion action resource name, e.g. `customers/1234567890/conversionActions/987654321`
 - LinkedIn: conversion rule ID or URN, e.g. `104012` or `urn:lla:llaPartnerConversion:104012`
 - TikTok: Offline Event Set ID, e.g. `7057103914977558530`
+- OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/accounts/{accountId}/conversion-destinations`
 
 TikTok notes: this path sends OFFLINE conversions (in-store / CRM / call-center), not web-pixel
 events. Each event must carry an email or phone (TikTok requires at least one). The connected
 TikTok ads account must have granted the Offline Events permission; older grants must reconnect.
+
+OpenAI Ads notes: requires a tracking tag (pixel) to already exist on the account — returns 422
+with code `TRACKING_TAG_REQUIRED` if `POST /v1/accounts/{accountId}/tracking-tags` hasn't been
+called yet.
 
 Callers can list valid destinations via `GET /v1/accounts/{accountId}/conversion-destinations`.
 
@@ -1494,7 +1502,9 @@ rollout (i.e. the OAuth grant must include `rw_conversions`). Older accounts mus
 
 Batching is handled automatically. Meta caps at 1000 events per request and rejects the
 entire batch if any event is malformed. Google caps at 2000. LinkedIn caps at 5000 and is
-also all-or-nothing per chunk.
+also all-or-nothing per chunk. OpenAI Ads caps at 1000 per request; larger submissions are
+split into 1000-event chunks, each all-or-nothing (a malformed event fails every event in
+that chunk, not the whole request).
 
 Dedup: pass a stable `eventId` on every event. Meta and LinkedIn use it to dedupe against
 browser-side pixel/Insight Tag events; Google maps it to `transactionId`.
@@ -1504,6 +1514,7 @@ Per-platform `eventName` semantics:
 - Meta: free-form. Standard names (Purchase, Lead, ...) match Meta's built-in events; custom strings are accepted.
 - Google: ignored. The conversion action's category determines the event type. Send the standard name closest to your action for documentation, but the platform will not branch on it.
 - LinkedIn: ignored. The conversion rule's `type` (LEAD, PURCHASE, etc.) is locked to the destination at rule-creation time. Send the standard name for documentation; LinkedIn does not branch on it.
+- OpenAI Ads: a fixed subset of standard names (Purchase, Lead, AddToCart, ViewContent, InitiateCheckout, CompleteRegistration, Subscribe, StartTrial, Schedule) maps 1:1 onto OpenAI's own event-type enum; any other standard name or custom string is sent as `type: custom` with the name preserved.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPISendConversionsRequest

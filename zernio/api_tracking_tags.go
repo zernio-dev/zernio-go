@@ -176,22 +176,36 @@ func (r TrackingTagsAPICreateTrackingTagRequest) Execute() (*CreateTrackingTag20
 /*
 CreateTrackingTag Create a tracking tag
 
-Creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`
+Meta: creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`
 — `name` is the only input). Returns the created tag including its
 install `code`. The pixel is owned by the Business Manager that owns the
 ad account; a pixel created on a personal (non-BM) ad account ends up
 with `ownerBusinessId: null` and can't be shared with other ad accounts.
 
-Creating a pixel does NOT install it — install the returned `code`
+Creating a Meta pixel does NOT install it — install the returned `code`
 snippet on the site, or send events server-side via
 `POST /v1/ads/conversions`. The check `installed` is derived from
 `lastFiredTime`.
 
-NOT idempotent: each call creates a new pixel. Do not retry blindly on
-timeout. Meta only (platform `metaads`); other platforms return 405.
+OpenAI Ads: creates an OpenAI pixel AND provisions a Conversions API
+key for it in the same call (`adAccountId` is required by this
+endpoint but ignored — one API key maps to exactly one ad account, so
+there's nothing to select). Returns 422 (`FEATURE_NOT_AVAILABLE`) if
+the ad account isn't enabled for pixel management; contact your OpenAI
+partner representative to enable it. There is no delete API for
+OpenAI pixels. If the pixel is created but the Conversions API key
+provisioning then fails, the pixel is left live on OpenAI (it cannot
+be cleaned up) and the error message names the surviving pixel id and
+warns against retrying, since a retry would create a second, orphaned
+pixel.
+
+NOT idempotent on either platform: each call creates a new pixel (and,
+for OpenAI, a new Conversions API key). Do not retry blindly on
+timeout. Meta (platform `metaads`) and OpenAI Ads (platform
+`openaiads`); other platforms return 405.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Meta ads SocialAccount id (platform `metaads`).
+	@param accountId Ads SocialAccount id (platform `metaads` or `openaiads`).
 	@return TrackingTagsAPICreateTrackingTagRequest
 */
 func (a *TrackingTagsAPIService) CreateTrackingTag(ctx context.Context, accountId string) TrackingTagsAPICreateTrackingTagRequest {
@@ -423,7 +437,7 @@ type TrackingTagsAPIGetTrackingTagRequest struct {
 	tagId      string
 }
 
-func (r TrackingTagsAPIGetTrackingTagRequest) Execute() (*CreateTrackingTag201Response, *http.Response, error) {
+func (r TrackingTagsAPIGetTrackingTagRequest) Execute() (*GetTrackingTag200Response, *http.Response, error) {
 	return r.ApiService.GetTrackingTagExecute(r)
 }
 
@@ -432,7 +446,9 @@ GetTrackingTag Get a tracking tag
 
 Returns the full tag record including the base-code `code` snippet,
 `lastFiredTime`, `ownerBusinessId`, `isUnavailable`, etc. Meta only
-(platform `metaads`); other platforms return 405.
+(platform `metaads`); other platforms return 405. OpenAI Ads has no
+get-by-id endpoint, so it 405s here too — use
+`GET /v1/accounts/{accountId}/tracking-tags` (list) instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -450,13 +466,13 @@ func (a *TrackingTagsAPIService) GetTrackingTag(ctx context.Context, accountId s
 
 // Execute executes the request
 //
-//	@return CreateTrackingTag201Response
-func (a *TrackingTagsAPIService) GetTrackingTagExecute(r TrackingTagsAPIGetTrackingTagRequest) (*CreateTrackingTag201Response, *http.Response, error) {
+//	@return GetTrackingTag200Response
+func (a *TrackingTagsAPIService) GetTrackingTagExecute(r TrackingTagsAPIGetTrackingTagRequest) (*GetTrackingTag200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateTrackingTag201Response
+		localVarReturnValue *GetTrackingTag200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.GetTrackingTag")
@@ -819,7 +835,7 @@ type TrackingTagsAPIListTrackingTagsRequest struct {
 	adAccountId *string
 }
 
-// Optional. Scope to one ad account, e.g. &#x60;act_123456789&#x60;.
+// Optional, Meta only. Scope to one ad account, e.g. &#x60;act_123456789&#x60;. Ignored for OpenAI Ads.
 func (r TrackingTagsAPIListTrackingTagsRequest) AdAccountId(adAccountId string) TrackingTagsAPIListTrackingTagsRequest {
 	r.adAccountId = &adAccountId
 	return r
@@ -832,20 +848,23 @@ func (r TrackingTagsAPIListTrackingTagsRequest) Execute() (*ListTrackingTags200R
 /*
 ListTrackingTags List tracking tags
 
-Returns the tracking tags (Meta Pixels) the connected ads account can
-see. Pass `?adAccountId=act_...` to scope the list to a single ad
-account; omit it to list every pixel reachable by the token (the name
-is then suffixed with the ad account it was discovered on, for
-disambiguation). The list view omits `code` — call `getTrackingTag` for
-the install snippet and full detail.
+Returns the tracking tags (Meta Pixels, or OpenAI Ads pixels) the
+connected ads account can see. Pass `?adAccountId=act_...` (Meta only)
+to scope the list to a single ad account; omit it to list every pixel
+reachable by the token (the name is then suffixed with the ad account
+it was discovered on, for disambiguation). The list view omits `code`
+— call `getTrackingTag` for the install snippet and full detail (Meta
+only; OpenAI Ads has no get-by-id endpoint).
 
-Meta only today (platform `metaads`); other platforms return 405. The
-`accountId` must be the Meta *ads* SocialAccount created by the Ads
-add-on connect flow, not a Facebook/Instagram posting account. Get your
-`act_...` ids from `GET /v1/ads/accounts`.
+Meta (platform `metaads`) and OpenAI Ads (platform `openaiads`); other
+platforms return 405. The `accountId` must be the ads SocialAccount
+created by the Ads add-on connect flow (Meta) or the OpenAI Ads
+connect flow, not a Facebook/Instagram posting account. Get your Meta
+`act_...` ids from `GET /v1/ads/accounts`; `adAccountId` is ignored for
+OpenAI Ads (one API key maps to exactly one ad account).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Meta ads SocialAccount id (platform `metaads`).
+	@param accountId Ads SocialAccount id (platform `metaads` or `openaiads`).
 	@return TrackingTagsAPIListTrackingTagsRequest
 */
 func (a *TrackingTagsAPIService) ListTrackingTags(ctx context.Context, accountId string) TrackingTagsAPIListTrackingTagsRequest {
@@ -1205,7 +1224,7 @@ func (r TrackingTagsAPIUpdateTrackingTagRequest) UpdateTrackingTagRequest(update
 	return r
 }
 
-func (r TrackingTagsAPIUpdateTrackingTagRequest) Execute() (*CreateTrackingTag201Response, *http.Response, error) {
+func (r TrackingTagsAPIUpdateTrackingTagRequest) Execute() (*GetTrackingTag200Response, *http.Response, error) {
 	return r.ApiService.UpdateTrackingTagExecute(r)
 }
 
@@ -1239,13 +1258,13 @@ func (a *TrackingTagsAPIService) UpdateTrackingTag(ctx context.Context, accountI
 
 // Execute executes the request
 //
-//	@return CreateTrackingTag201Response
-func (a *TrackingTagsAPIService) UpdateTrackingTagExecute(r TrackingTagsAPIUpdateTrackingTagRequest) (*CreateTrackingTag201Response, *http.Response, error) {
+//	@return GetTrackingTag200Response
+func (a *TrackingTagsAPIService) UpdateTrackingTagExecute(r TrackingTagsAPIUpdateTrackingTagRequest) (*GetTrackingTag200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateTrackingTag201Response
+		localVarReturnValue *GetTrackingTag200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.UpdateTrackingTag")
