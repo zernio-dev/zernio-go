@@ -2119,6 +2119,150 @@ func (a *PhoneNumbersAPIService) RemediatePhoneNumberExecute(r PhoneNumbersAPIRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type PhoneNumbersAPIReplyToPhoneNumberReviewerRequest struct {
+	ctx                               context.Context
+	ApiService                        *PhoneNumbersAPIService
+	id                                string
+	replyToPhoneNumberReviewerRequest *ReplyToPhoneNumberReviewerRequest
+}
+
+func (r PhoneNumbersAPIReplyToPhoneNumberReviewerRequest) ReplyToPhoneNumberReviewerRequest(replyToPhoneNumberReviewerRequest ReplyToPhoneNumberReviewerRequest) PhoneNumbersAPIReplyToPhoneNumberReviewerRequest {
+	r.replyToPhoneNumberReviewerRequest = &replyToPhoneNumberReviewerRequest
+	return r
+}
+
+func (r PhoneNumbersAPIReplyToPhoneNumberReviewerRequest) Execute() (*ReplyToPhoneNumberReviewer200Response, *http.Response, error) {
+	return r.ApiService.ReplyToPhoneNumberReviewerExecute(r)
+}
+
+/*
+ReplyToPhoneNumberReviewer Reply to the regulatory reviewer
+
+Post a free-text reply (with optional file attachments) to the reviewer
+on a number awaiting remediation — for asks the structured form can't
+express (e.g. "is this personal or business?"). Attachments are stored by
+us and their links are added to the reviewer's comment thread (the
+carrier's number order takes no loose files). A reply to a comment-style
+ask moves the number back to "in review"; a reply on a formal decline is
+supplementary and you must still resubmit the fix. Requires text or at
+least one attachment.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id
+	@return PhoneNumbersAPIReplyToPhoneNumberReviewerRequest
+*/
+func (a *PhoneNumbersAPIService) ReplyToPhoneNumberReviewer(ctx context.Context, id string) PhoneNumbersAPIReplyToPhoneNumberReviewerRequest {
+	return PhoneNumbersAPIReplyToPhoneNumberReviewerRequest{
+		ApiService: a,
+		ctx:        ctx,
+		id:         id,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplyToPhoneNumberReviewer200Response
+func (a *PhoneNumbersAPIService) ReplyToPhoneNumberReviewerExecute(r PhoneNumbersAPIReplyToPhoneNumberReviewerRequest) (*ReplyToPhoneNumberReviewer200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplyToPhoneNumberReviewer200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.ReplyToPhoneNumberReviewer")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/{id}/remediate/reply"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replyToPhoneNumberReviewerRequest == nil {
+		return localVarReturnValue, nil, reportError("replyToPhoneNumberReviewerRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replyToPhoneNumberReviewerRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type PhoneNumbersAPIReviewPhoneNumberKycPacketRequest struct {
 	ctx                               context.Context
 	ApiService                        *PhoneNumbersAPIService

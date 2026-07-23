@@ -557,6 +557,7 @@ func main() {
 | `client.PhoneNumbersAPI.PurchasePhoneNumber(ctx)` | Purchase phone number |
 | `client.PhoneNumbersAPI.ReleasePhoneNumber(ctx)` | Release phone number |
 | `client.PhoneNumbersAPI.RemediatePhoneNumber(ctx)` | Resubmit a declined number |
+| `client.PhoneNumbersAPI.ReplyToPhoneNumberReviewer(ctx)` | Reply to the regulatory reviewer |
 | `client.PhoneNumbersAPI.ReviewPhoneNumberKycPacket(ctx)` | Pre-review a KYC packet |
 | `client.PhoneNumbersAPI.SearchAvailablePhoneNumbers(ctx)` | Search available numbers |
 | `client.PhoneNumbersAPI.SubmitPhoneNumberKyc(ctx)` | Submit KYC |
