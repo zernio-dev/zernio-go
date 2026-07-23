@@ -295,6 +295,127 @@ func (a *TrackingTagsAPIService) CreateTrackingTagExecute(r TrackingTagsAPICreat
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type TrackingTagsAPIGetAdTrackingTagsRequest struct {
+	ctx        context.Context
+	ApiService *TrackingTagsAPIService
+	adId       string
+}
+
+func (r TrackingTagsAPIGetAdTrackingTagsRequest) Execute() (*GetAdTrackingTags200Response, *http.Response, error) {
+	return r.ApiService.GetAdTrackingTagsExecute(r)
+}
+
+/*
+GetAdTrackingTags Get ad tracking tags
+
+Unified read of the platform's native click-URL tracking params.
+  - Meta (facebook/instagram): the creative's `url_tags` (and template_url_spec).
+  - Google (googleads): the campaign's `trackingUrlTemplate` + `finalUrlSuffix`.
+    Subject to the Google Ads API access-tier daily quota; bulk audits need Standard access.
+  - LinkedIn (linkedinads): the campaign's Dynamic UTM `dynamicValueParameters` + `customValueParameters`.
+
+Returns 405 for platforms without a click-URL tracking surface (TikTok, X, Pinterest).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Ad id (hex _id, platformAdId, or effective story/media id).
+	@return TrackingTagsAPIGetAdTrackingTagsRequest
+*/
+func (a *TrackingTagsAPIService) GetAdTrackingTags(ctx context.Context, adId string) TrackingTagsAPIGetAdTrackingTagsRequest {
+	return TrackingTagsAPIGetAdTrackingTagsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdTrackingTags200Response
+func (a *TrackingTagsAPIService) GetAdTrackingTagsExecute(r TrackingTagsAPIGetAdTrackingTagsRequest) (*GetAdTrackingTags200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdTrackingTags200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.GetAdTrackingTags")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/tracking-tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type TrackingTagsAPIGetTrackingTagRequest struct {
 	ctx        context.Context
 	ApiService *TrackingTagsAPIService
@@ -906,6 +1027,132 @@ func (a *TrackingTagsAPIService) RemoveTrackingTagSharedAccountExecute(r Trackin
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type TrackingTagsAPIUpdateAdTrackingTagsRequest struct {
+	ctx                         context.Context
+	ApiService                  *TrackingTagsAPIService
+	adId                        string
+	updateAdTrackingTagsRequest *UpdateAdTrackingTagsRequest
+}
+
+func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) UpdateAdTrackingTagsRequest(updateAdTrackingTagsRequest UpdateAdTrackingTagsRequest) TrackingTagsAPIUpdateAdTrackingTagsRequest {
+	r.updateAdTrackingTagsRequest = &updateAdTrackingTagsRequest
+	return r
+}
+
+func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) Execute() (*http.Response, error) {
+	return r.ApiService.UpdateAdTrackingTagsExecute(r)
+}
+
+/*
+UpdateAdTrackingTags Set ad tracking tags
+
+Unified update. Send only the fields for the ad's platform:
+
+  - Meta: `urlTags` (array of {key,value}). Meta creatives are immutable, so this rebuilds the
+    creative and repoints the ad. By DEFAULT we PRESERVE the existing creative verbatim
+    (re-post its object_story_spec + the new url_tags, reusing the image), so you send `urlTags`
+    ALONE — no need to read back headline/body/CTA. `creative` (headline, body, callToAction,
+    linkUrl, imageUrl) is OPTIONAL and only needed to rebuild explicitly, or for SHARE / page-post
+    / dark / asset_feed creatives whose object_story_spec Meta strips (those return 422 asking for
+    `creative`).
+
+  - Google: `trackingUrlTemplate` and/or `finalUrlSuffix` (full template strings; account quota applies).
+
+  - LinkedIn: `dynamicValueParameters` and/or `customValueParameters` (campaign-level Dynamic UTM).
+
+    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+    @param adId
+    @return TrackingTagsAPIUpdateAdTrackingTagsRequest
+*/
+func (a *TrackingTagsAPIService) UpdateAdTrackingTags(ctx context.Context, adId string) TrackingTagsAPIUpdateAdTrackingTagsRequest {
+	return TrackingTagsAPIUpdateAdTrackingTagsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+	}
+}
+
+// Execute executes the request
+func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUpdateAdTrackingTagsRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.UpdateAdTrackingTags")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/tracking-tags"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateAdTrackingTagsRequest == nil {
+		return nil, reportError("updateAdTrackingTagsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateAdTrackingTagsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

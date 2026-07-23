@@ -57,11 +57,17 @@ type APIClient struct {
 
 	AccountsAPI *AccountsAPIService
 
+	AdAccountsAPI *AdAccountsAPIService
+
 	AdAudiencesAPI *AdAudiencesAPIService
 
 	AdCampaignsAPI *AdCampaignsAPIService
 
-	AdsAPI *AdsAPIService
+	AdCreativesAPI *AdCreativesAPIService
+
+	AdInsightsAPI *AdInsightsAPIService
+
+	AdTargetingAPI *AdTargetingAPIService
 
 	AnalyticsAPI *AnalyticsAPIService
 
@@ -76,6 +82,8 @@ type APIClient struct {
 	ConnectAPI *ConnectAPIService
 
 	ContactsAPI *ContactsAPIService
+
+	ConversionsAPI *ConversionsAPIService
 
 	CustomFieldsAPI *CustomFieldsAPIService
 
@@ -103,6 +111,8 @@ type APIClient struct {
 
 	InvitesAPI *InvitesAPIService
 
+	LeadGenAPI *LeadGenAPIService
+
 	LinkedInMentionsAPI *LinkedInMentionsAPIService
 
 	LogsAPI *LogsAPIService
@@ -113,6 +123,8 @@ type APIClient struct {
 
 	MessagesAPI *MessagesAPIService
 
+	MessagingAdsAPI *MessagingAdsAPIService
+
 	PhoneNumbersAPI *PhoneNumbersAPIService
 
 	PostsAPI *PostsAPIService
@@ -120,6 +132,8 @@ type APIClient struct {
 	ProfilesAPI *ProfilesAPIService
 
 	QueueAPI *QueueAPIService
+
+	ReachAndFrequencyAPI *ReachAndFrequencyAPIService
 
 	RedditSearchAPI *RedditSearchAPIService
 
@@ -180,9 +194,12 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.AccountGroupsAPI = (*AccountGroupsAPIService)(&c.common)
 	c.AccountSettingsAPI = (*AccountSettingsAPIService)(&c.common)
 	c.AccountsAPI = (*AccountsAPIService)(&c.common)
+	c.AdAccountsAPI = (*AdAccountsAPIService)(&c.common)
 	c.AdAudiencesAPI = (*AdAudiencesAPIService)(&c.common)
 	c.AdCampaignsAPI = (*AdCampaignsAPIService)(&c.common)
-	c.AdsAPI = (*AdsAPIService)(&c.common)
+	c.AdCreativesAPI = (*AdCreativesAPIService)(&c.common)
+	c.AdInsightsAPI = (*AdInsightsAPIService)(&c.common)
+	c.AdTargetingAPI = (*AdTargetingAPIService)(&c.common)
 	c.AnalyticsAPI = (*AnalyticsAPIService)(&c.common)
 	c.BroadcastsAPI = (*BroadcastsAPIService)(&c.common)
 	c.CallsAPI = (*CallsAPIService)(&c.common)
@@ -190,6 +207,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.CommentsAPI = (*CommentsAPIService)(&c.common)
 	c.ConnectAPI = (*ConnectAPIService)(&c.common)
 	c.ContactsAPI = (*ContactsAPIService)(&c.common)
+	c.ConversionsAPI = (*ConversionsAPIService)(&c.common)
 	c.CustomFieldsAPI = (*CustomFieldsAPIService)(&c.common)
 	c.DiscordAPI = (*DiscordAPIService)(&c.common)
 	c.GMBAttributesAPI = (*GMBAttributesAPIService)(&c.common)
@@ -203,15 +221,18 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.InboxAnalyticsAPI = (*InboxAnalyticsAPIService)(&c.common)
 	c.InstagramAPI = (*InstagramAPIService)(&c.common)
 	c.InvitesAPI = (*InvitesAPIService)(&c.common)
+	c.LeadGenAPI = (*LeadGenAPIService)(&c.common)
 	c.LinkedInMentionsAPI = (*LinkedInMentionsAPIService)(&c.common)
 	c.LogsAPI = (*LogsAPIService)(&c.common)
 	c.MediaAPI = (*MediaAPIService)(&c.common)
 	c.MentionsAPI = (*MentionsAPIService)(&c.common)
 	c.MessagesAPI = (*MessagesAPIService)(&c.common)
+	c.MessagingAdsAPI = (*MessagingAdsAPIService)(&c.common)
 	c.PhoneNumbersAPI = (*PhoneNumbersAPIService)(&c.common)
 	c.PostsAPI = (*PostsAPIService)(&c.common)
 	c.ProfilesAPI = (*ProfilesAPIService)(&c.common)
 	c.QueueAPI = (*QueueAPIService)(&c.common)
+	c.ReachAndFrequencyAPI = (*ReachAndFrequencyAPIService)(&c.common)
 	c.RedditSearchAPI = (*RedditSearchAPIService)(&c.common)
 	c.ReviewsAPI = (*ReviewsAPIService)(&c.common)
 	c.SMSAPI = (*SMSAPIService)(&c.common)

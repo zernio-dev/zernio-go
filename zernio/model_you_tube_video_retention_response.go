@@ -33,6 +33,8 @@ type YouTubeVideoRetentionResponse struct {
 	// Video length in seconds (from YouTube contentDetails.duration)
 	DurationSeconds NullableInt32                                     `json:"durationSeconds,omitempty"`
 	DateRange       *GetGoogleBusinessPerformance200ResponseDateRange `json:"dateRange,omitempty"`
+	// Present only when the range reaches into YouTube's ~3-day processing window: the first date whose numbers are provisional and may still be revised by YouTube.
+	ProvisionalSince *string `json:"provisionalSince,omitempty"`
 	// Up to 100 points covering the video timeline, aggregated over the date range. Empty for videos with very few views.
 	RetentionCurve []YouTubeVideoRetentionResponseRetentionCurveInner `json:"retentionCurve,omitempty"`
 	// Present only when the curve is empty, explaining why
@@ -314,6 +316,38 @@ func (o *YouTubeVideoRetentionResponse) SetDateRange(v GetGoogleBusinessPerforma
 	o.DateRange = &v
 }
 
+// GetProvisionalSince returns the ProvisionalSince field value if set, zero value otherwise.
+func (o *YouTubeVideoRetentionResponse) GetProvisionalSince() string {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		var ret string
+		return ret
+	}
+	return *o.ProvisionalSince
+}
+
+// GetProvisionalSinceOk returns a tuple with the ProvisionalSince field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeVideoRetentionResponse) GetProvisionalSinceOk() (*string, bool) {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		return nil, false
+	}
+	return o.ProvisionalSince, true
+}
+
+// HasProvisionalSince returns a boolean if a field has been set.
+func (o *YouTubeVideoRetentionResponse) HasProvisionalSince() bool {
+	if o != nil && !IsNil(o.ProvisionalSince) {
+		return true
+	}
+
+	return false
+}
+
+// SetProvisionalSince gets a reference to the given string and assigns it to the ProvisionalSince field.
+func (o *YouTubeVideoRetentionResponse) SetProvisionalSince(v string) {
+	o.ProvisionalSince = &v
+}
+
 // GetRetentionCurve returns the RetentionCurve field value if set, zero value otherwise.
 func (o *YouTubeVideoRetentionResponse) GetRetentionCurve() []YouTubeVideoRetentionResponseRetentionCurveInner {
 	if o == nil || IsNil(o.RetentionCurve) {
@@ -440,6 +474,9 @@ func (o YouTubeVideoRetentionResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DateRange) {
 		toSerialize["dateRange"] = o.DateRange
+	}
+	if !IsNil(o.ProvisionalSince) {
+		toSerialize["provisionalSince"] = o.ProvisionalSince
 	}
 	if !IsNil(o.RetentionCurve) {
 		toSerialize["retentionCurve"] = o.RetentionCurve

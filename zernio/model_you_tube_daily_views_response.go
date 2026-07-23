@@ -27,6 +27,8 @@ type YouTubeDailyViewsResponse struct {
 	// Video length in seconds (from YouTube contentDetails.duration)
 	DurationSeconds NullableInt32                                     `json:"durationSeconds,omitempty"`
 	DateRange       *GetGoogleBusinessPerformance200ResponseDateRange `json:"dateRange,omitempty"`
+	// Present only when the range reaches into YouTube's ~3-day processing window: the first date whose numbers are provisional and may still be revised by YouTube.
+	ProvisionalSince *string `json:"provisionalSince,omitempty"`
 	// Sum of views across all days in the range
 	TotalViews *int32                                     `json:"totalViews,omitempty"`
 	DailyViews []YouTubeDailyViewsResponseDailyViewsInner `json:"dailyViews,omitempty"`
@@ -191,6 +193,38 @@ func (o *YouTubeDailyViewsResponse) SetDateRange(v GetGoogleBusinessPerformance2
 	o.DateRange = &v
 }
 
+// GetProvisionalSince returns the ProvisionalSince field value if set, zero value otherwise.
+func (o *YouTubeDailyViewsResponse) GetProvisionalSince() string {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		var ret string
+		return ret
+	}
+	return *o.ProvisionalSince
+}
+
+// GetProvisionalSinceOk returns a tuple with the ProvisionalSince field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeDailyViewsResponse) GetProvisionalSinceOk() (*string, bool) {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		return nil, false
+	}
+	return o.ProvisionalSince, true
+}
+
+// HasProvisionalSince returns a boolean if a field has been set.
+func (o *YouTubeDailyViewsResponse) HasProvisionalSince() bool {
+	if o != nil && !IsNil(o.ProvisionalSince) {
+		return true
+	}
+
+	return false
+}
+
+// SetProvisionalSince gets a reference to the given string and assigns it to the ProvisionalSince field.
+func (o *YouTubeDailyViewsResponse) SetProvisionalSince(v string) {
+	o.ProvisionalSince = &v
+}
+
 // GetTotalViews returns the TotalViews field value if set, zero value otherwise.
 func (o *YouTubeDailyViewsResponse) GetTotalViews() int32 {
 	if o == nil || IsNil(o.TotalViews) {
@@ -351,6 +385,9 @@ func (o YouTubeDailyViewsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DateRange) {
 		toSerialize["dateRange"] = o.DateRange
+	}
+	if !IsNil(o.ProvisionalSince) {
+		toSerialize["provisionalSince"] = o.ProvisionalSince
 	}
 	if !IsNil(o.TotalViews) {
 		toSerialize["totalViews"] = o.TotalViews

@@ -3766,7 +3766,7 @@ func (r AnalyticsAPIGetYouTubeDailyViewsRequest) StartDate(startDate string) Ana
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago (YouTube data latency).
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response), and days YouTube has not processed yet are omitted from dailyViews.
 func (r AnalyticsAPIGetYouTubeDailyViewsRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
 	r.endDate = &endDate
 	return r
@@ -3780,7 +3780,9 @@ func (r AnalyticsAPIGetYouTubeDailyViewsRequest) Execute() (*YouTubeDailyViewsRe
 GetYouTubeDailyViews Get YouTube daily views
 
 Returns daily view counts for a YouTube video including views, watch time, and subscriber changes.
-Requires yt-analytics.readonly scope (re-authorization may be needed). Data has a 2-3 day delay. Max 90 days, defaults to last 30 days.
+Requires yt-analytics.readonly scope (re-authorization may be needed). YouTube finalizes analytics
+with a ~3-day delay; by default only finalized days are returned, and an explicit endDate can reach
+into the delay window (see the endDate parameter). Max 90 days, defaults to last 30 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetYouTubeDailyViewsRequest
@@ -3981,7 +3983,7 @@ func (r AnalyticsAPIGetYouTubeDemographicsRequest) StartDate(startDate string) A
 	return r
 }
 
-// End date in YYYY-MM-DD format. Defaults to 3 days ago (YouTube data latency).
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
 func (r AnalyticsAPIGetYouTubeDemographicsRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
 	r.endDate = &endDate
 	return r
@@ -4195,7 +4197,7 @@ func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) StartDate(startDate string)
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago (YouTube data latency).
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
 func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeVideoRetentionRequest {
 	r.endDate = &endDate
 	return r

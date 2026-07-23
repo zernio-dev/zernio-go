@@ -34,7 +34,9 @@ type YouTubeDemographicsResponse struct {
 	// Object keyed by breakdown dimension (age, gender, country)
 	Demographics map[string][]InstagramAccountInsightsResponseMetricsValueBreakdownsInner `json:"demographics,omitempty"`
 	DateRange    *YouTubeDemographicsResponseDateRange                                    `json:"dateRange,omitempty"`
-	Note         *string                                                                  `json:"note,omitempty"`
+	// Present only when the range reaches into YouTube's ~3-day processing window: the first date whose numbers are provisional and may still be revised by YouTube.
+	ProvisionalSince *string `json:"provisionalSince,omitempty"`
+	Note             *string `json:"note,omitempty"`
 }
 
 // NewYouTubeDemographicsResponse instantiates a new YouTubeDemographicsResponse object
@@ -332,6 +334,38 @@ func (o *YouTubeDemographicsResponse) SetDateRange(v YouTubeDemographicsResponse
 	o.DateRange = &v
 }
 
+// GetProvisionalSince returns the ProvisionalSince field value if set, zero value otherwise.
+func (o *YouTubeDemographicsResponse) GetProvisionalSince() string {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		var ret string
+		return ret
+	}
+	return *o.ProvisionalSince
+}
+
+// GetProvisionalSinceOk returns a tuple with the ProvisionalSince field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubeDemographicsResponse) GetProvisionalSinceOk() (*string, bool) {
+	if o == nil || IsNil(o.ProvisionalSince) {
+		return nil, false
+	}
+	return o.ProvisionalSince, true
+}
+
+// HasProvisionalSince returns a boolean if a field has been set.
+func (o *YouTubeDemographicsResponse) HasProvisionalSince() bool {
+	if o != nil && !IsNil(o.ProvisionalSince) {
+		return true
+	}
+
+	return false
+}
+
+// SetProvisionalSince gets a reference to the given string and assigns it to the ProvisionalSince field.
+func (o *YouTubeDemographicsResponse) SetProvisionalSince(v string) {
+	o.ProvisionalSince = &v
+}
+
 // GetNote returns the Note field value if set, zero value otherwise.
 func (o *YouTubeDemographicsResponse) GetNote() string {
 	if o == nil || IsNil(o.Note) {
@@ -397,6 +431,9 @@ func (o YouTubeDemographicsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DateRange) {
 		toSerialize["dateRange"] = o.DateRange
+	}
+	if !IsNil(o.ProvisionalSince) {
+		toSerialize["provisionalSince"] = o.ProvisionalSince
 	}
 	if !IsNil(o.Note) {
 		toSerialize["note"] = o.Note
