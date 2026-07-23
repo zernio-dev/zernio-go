@@ -20,6 +20,7 @@ var _ MappedNullable = &CreateStandaloneAd200Response{}
 
 // CreateStandaloneAd200Response struct for CreateStandaloneAd200Response
 type CreateStandaloneAd200Response struct {
+	// Always true in a validate-only response.
 	ValidateOnly *bool                                       `json:"validateOnly,omitempty"`
 	Results      []CreateStandaloneAd200ResponseResultsInner `json:"results,omitempty"`
 	Message      *string                                     `json:"message,omitempty"`
