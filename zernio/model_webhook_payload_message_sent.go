@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadMessageSent type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSent{}
 
-// WebhookPayloadMessageSent Webhook payload for message sent events (fired when a message is sent via the API)
+// WebhookPayloadMessageSent Webhook payload for message sent events (fired when a message is sent via the API, or from the WhatsApp Business app on Coexistence numbers)
 type WebhookPayloadMessageSent struct {
 	// Stable webhook event ID
 	Id           string                           `json:"id"`

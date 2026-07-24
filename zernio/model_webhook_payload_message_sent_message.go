@@ -37,6 +37,8 @@ type WebhookPayloadMessageSentMessage struct {
 	Sender      WebhookPayloadMessageSentMessageSender `json:"sender"`
 	SentAt      time.Time                              `json:"sentAt"`
 	IsRead      bool                                   `json:"isRead"`
+	// WhatsApp send origin. whatsapp_business_app when sent from the WhatsApp Business phone app on a Coexistence number; cloud_api when sent through Zernio (dashboard, API, or broadcasts). Absent on non-WhatsApp platforms. This is not the inbox metadata.source lineage field.
+	Source *string `json:"source,omitempty"`
 }
 
 type _WebhookPayloadMessageSentMessage WebhookPayloadMessageSentMessage
@@ -310,6 +312,38 @@ func (o *WebhookPayloadMessageSentMessage) SetIsRead(v bool) {
 	o.IsRead = v
 }
 
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMessage) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMessage) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *WebhookPayloadMessageSentMessage) SetSource(v string) {
+	o.Source = &v
+}
+
 func (o WebhookPayloadMessageSentMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -330,6 +364,9 @@ func (o WebhookPayloadMessageSentMessage) ToMap() (map[string]interface{}, error
 	toSerialize["sender"] = o.Sender
 	toSerialize["sentAt"] = o.SentAt
 	toSerialize["isRead"] = o.IsRead
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
+	}
 	return toSerialize, nil
 }
 
