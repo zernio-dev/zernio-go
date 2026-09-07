@@ -21,9 +21,8 @@ var _ MappedNullable = &GetTikTokCreatorInfo200ResponsePostingLimits{}
 // GetTikTokCreatorInfo200ResponsePostingLimits struct for GetTikTokCreatorInfo200ResponsePostingLimits
 type GetTikTokCreatorInfo200ResponsePostingLimits struct {
 	// Maximum video duration in seconds
-	MaxVideoDurationSec *int32 `json:"maxVideoDurationSec,omitempty"`
-	// Available interaction toggles (comment, duet, stitch) and their defaults
-	InteractionSettings map[string]interface{} `json:"interactionSettings,omitempty"`
+	MaxVideoDurationSec *int32                                                           `json:"maxVideoDurationSec,omitempty"`
+	InteractionSettings *GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings `json:"interactionSettings,omitempty"`
 }
 
 // NewGetTikTokCreatorInfo200ResponsePostingLimits instantiates a new GetTikTokCreatorInfo200ResponsePostingLimits object
@@ -76,19 +75,19 @@ func (o *GetTikTokCreatorInfo200ResponsePostingLimits) SetMaxVideoDurationSec(v 
 }
 
 // GetInteractionSettings returns the InteractionSettings field value if set, zero value otherwise.
-func (o *GetTikTokCreatorInfo200ResponsePostingLimits) GetInteractionSettings() map[string]interface{} {
+func (o *GetTikTokCreatorInfo200ResponsePostingLimits) GetInteractionSettings() GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings {
 	if o == nil || IsNil(o.InteractionSettings) {
-		var ret map[string]interface{}
+		var ret GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings
 		return ret
 	}
-	return o.InteractionSettings
+	return *o.InteractionSettings
 }
 
 // GetInteractionSettingsOk returns a tuple with the InteractionSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetTikTokCreatorInfo200ResponsePostingLimits) GetInteractionSettingsOk() (map[string]interface{}, bool) {
+func (o *GetTikTokCreatorInfo200ResponsePostingLimits) GetInteractionSettingsOk() (*GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings, bool) {
 	if o == nil || IsNil(o.InteractionSettings) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.InteractionSettings, true
 }
@@ -102,9 +101,9 @@ func (o *GetTikTokCreatorInfo200ResponsePostingLimits) HasInteractionSettings() 
 	return false
 }
 
-// SetInteractionSettings gets a reference to the given map[string]interface{} and assigns it to the InteractionSettings field.
-func (o *GetTikTokCreatorInfo200ResponsePostingLimits) SetInteractionSettings(v map[string]interface{}) {
-	o.InteractionSettings = v
+// SetInteractionSettings gets a reference to the given GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings and assigns it to the InteractionSettings field.
+func (o *GetTikTokCreatorInfo200ResponsePostingLimits) SetInteractionSettings(v GetTikTokCreatorInfo200ResponsePostingLimitsInteractionSettings) {
+	o.InteractionSettings = &v
 }
 
 func (o GetTikTokCreatorInfo200ResponsePostingLimits) MarshalJSON() ([]byte, error) {
