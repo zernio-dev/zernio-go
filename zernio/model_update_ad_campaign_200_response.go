@@ -21,13 +21,15 @@ var _ MappedNullable = &UpdateAdCampaign200Response{}
 // UpdateAdCampaign200Response Echoes back only the fields you sent, plus `updated`.
 type UpdateAdCampaign200Response struct {
 	// Local Ad documents mirrored. 0 on the empty-campaign path.
-	Updated              *int32                 `json:"updated,omitempty"`
-	Budget               *AdBudget              `json:"budget,omitempty"`
-	BudgetLevel          *string                `json:"budgetLevel,omitempty"`
-	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
-	BidAmount            *float32               `json:"bidAmount,omitempty"`
-	RoasAverageFloor     *float32               `json:"roasAverageFloor,omitempty"`
-	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
+	Updated          *int32       `json:"updated,omitempty"`
+	Budget           *AdBudget    `json:"budget,omitempty"`
+	BudgetLevel      *string      `json:"budgetLevel,omitempty"`
+	BidStrategy      *BidStrategy `json:"bidStrategy,omitempty"`
+	BidAmount        *float32     `json:"bidAmount,omitempty"`
+	RoasAverageFloor *float32     `json:"roasAverageFloor,omitempty"`
+	// Google only. Echoed back, but NOT mirrored onto local Ad documents (no column for it yet).
+	PortfolioBidStrategyId *string                `json:"portfolioBidStrategyId,omitempty"`
+	PlatformSpecificData   map[string]interface{} `json:"platformSpecificData,omitempty"`
 }
 
 // NewUpdateAdCampaign200Response instantiates a new UpdateAdCampaign200Response object
@@ -239,6 +241,38 @@ func (o *UpdateAdCampaign200Response) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPortfolioBidStrategyId returns the PortfolioBidStrategyId field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetPortfolioBidStrategyId() string {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		var ret string
+		return ret
+	}
+	return *o.PortfolioBidStrategyId
+}
+
+// GetPortfolioBidStrategyIdOk returns a tuple with the PortfolioBidStrategyId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetPortfolioBidStrategyIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		return nil, false
+	}
+	return o.PortfolioBidStrategyId, true
+}
+
+// HasPortfolioBidStrategyId returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasPortfolioBidStrategyId() bool {
+	if o != nil && !IsNil(o.PortfolioBidStrategyId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortfolioBidStrategyId gets a reference to the given string and assigns it to the PortfolioBidStrategyId field.
+func (o *UpdateAdCampaign200Response) SetPortfolioBidStrategyId(v string) {
+	o.PortfolioBidStrategyId = &v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *UpdateAdCampaign200Response) GetPlatformSpecificData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -298,6 +332,9 @@ func (o UpdateAdCampaign200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PortfolioBidStrategyId) {
+		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

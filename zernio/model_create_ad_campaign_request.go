@@ -34,12 +34,14 @@ type CreateAdCampaignRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
-	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level, set the strategy there instead.
+	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level on Meta, set the strategy there instead. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
-	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. Validated here but NOT stored by Meta: the campaign object has no bid_amount field, only bid_strategy lives on it. The amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there.
+	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. On Meta, validated here but NOT stored: the campaign object has no bid_amount field, only bid_strategy lives on it, and the amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there. On Google, stored directly on the campaign's bidding strategy.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Decimal ROAS multiplier (2.0 = 2.0x). Required for LOWEST_COST_WITH_MIN_ROAS.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
+	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
 }
 
 type _CreateAdCampaignRequest CreateAdCampaignRequest
@@ -389,6 +391,38 @@ func (o *CreateAdCampaignRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPortfolioBidStrategyId returns the PortfolioBidStrategyId field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetPortfolioBidStrategyId() string {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		var ret string
+		return ret
+	}
+	return *o.PortfolioBidStrategyId
+}
+
+// GetPortfolioBidStrategyIdOk returns a tuple with the PortfolioBidStrategyId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetPortfolioBidStrategyIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		return nil, false
+	}
+	return o.PortfolioBidStrategyId, true
+}
+
+// HasPortfolioBidStrategyId returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasPortfolioBidStrategyId() bool {
+	if o != nil && !IsNil(o.PortfolioBidStrategyId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortfolioBidStrategyId gets a reference to the given string and assigns it to the PortfolioBidStrategyId field.
+func (o *CreateAdCampaignRequest) SetPortfolioBidStrategyId(v string) {
+	o.PortfolioBidStrategyId = &v
+}
+
 func (o CreateAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -423,6 +457,9 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PortfolioBidStrategyId) {
+		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
 	}
 	return toSerialize, nil
 }

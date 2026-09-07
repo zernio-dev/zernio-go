@@ -304,15 +304,18 @@ func main() {
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
+| `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List Google Ads portfolio bid strategies |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
+| `client.AdCampaignsAPI.CreateBidStrategy(ctx)` | Create a Google Ads portfolio bid strategy |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Live ad-set details incl. learning phase |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
+| `client.AdCampaignsAPI.GetCampaignBidding(ctx)` | Read a campaign's current bidding |
 | `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, and language targeting |
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
@@ -321,6 +324,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
+| `client.AdCampaignsAPI.UpdateBidStrategy(ctx)` | Update a Google Ads portfolio bid strategy |
 | `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |

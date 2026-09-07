@@ -18,15 +18,17 @@ import (
 // checks if the UpdateAdRequestTargeting type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestTargeting{}
 
-// UpdateAdRequestTargeting Meta + TikTok (demographics/interests), Google (keyword edits only), and LinkedIn (geo countries). Pinterest / X return 501.
+// UpdateAdRequestTargeting Meta + TikTok (demographics/interests), Google (keyword and device bid adjustment edits only), and LinkedIn (geo countries). Pinterest / X return 501.
 type UpdateAdRequestTargeting struct {
 	// Google only. The FULL new set of positive keywords for the ad group; live keywords not listed are removed. Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad. Mirrored to GET /v1/ads/keywords immediately.
 	Keywords []UpdateAdRequestTargetingKeywordsInner `json:"keywords,omitempty"`
 	// Google only. Same declarative contract as keywords, for the ad group's negative keywords.
 	NegativeKeywords []UpdateAdRequestTargetingKeywordsInner `json:"negativeKeywords,omitempty"`
-	AgeMin           *int32                                  `json:"ageMin,omitempty"`
-	AgeMax           *int32                                  `json:"ageMax,omitempty"`
-	Countries        []string                                `json:"countries,omitempty"`
+	// Google only. The FULL new set of device criteria for the campaign; devices not listed are excluded. Entries are a device name alone (included, no bid adjustment) or { device, bidModifier }.
+	Devices   []UpdateAdRequestTargetingDevicesInner `json:"devices,omitempty"`
+	AgeMin    *int32                                 `json:"ageMin,omitempty"`
+	AgeMax    *int32                                 `json:"ageMax,omitempty"`
+	Countries []string                               `json:"countries,omitempty"`
 	// Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Meta only. Omit to preserve the existing setting on update. 0 = disabled, 1 = enabled.
@@ -112,6 +114,38 @@ func (o *UpdateAdRequestTargeting) HasNegativeKeywords() bool {
 // SetNegativeKeywords gets a reference to the given []UpdateAdRequestTargetingKeywordsInner and assigns it to the NegativeKeywords field.
 func (o *UpdateAdRequestTargeting) SetNegativeKeywords(v []UpdateAdRequestTargetingKeywordsInner) {
 	o.NegativeKeywords = v
+}
+
+// GetDevices returns the Devices field value if set, zero value otherwise.
+func (o *UpdateAdRequestTargeting) GetDevices() []UpdateAdRequestTargetingDevicesInner {
+	if o == nil || IsNil(o.Devices) {
+		var ret []UpdateAdRequestTargetingDevicesInner
+		return ret
+	}
+	return o.Devices
+}
+
+// GetDevicesOk returns a tuple with the Devices field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestTargeting) GetDevicesOk() ([]UpdateAdRequestTargetingDevicesInner, bool) {
+	if o == nil || IsNil(o.Devices) {
+		return nil, false
+	}
+	return o.Devices, true
+}
+
+// HasDevices returns a boolean if a field has been set.
+func (o *UpdateAdRequestTargeting) HasDevices() bool {
+	if o != nil && !IsNil(o.Devices) {
+		return true
+	}
+
+	return false
+}
+
+// SetDevices gets a reference to the given []UpdateAdRequestTargetingDevicesInner and assigns it to the Devices field.
+func (o *UpdateAdRequestTargeting) SetDevices(v []UpdateAdRequestTargetingDevicesInner) {
+	o.Devices = v
 }
 
 // GetAgeMin returns the AgeMin field value if set, zero value otherwise.
@@ -289,6 +323,9 @@ func (o UpdateAdRequestTargeting) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.NegativeKeywords) {
 		toSerialize["negativeKeywords"] = o.NegativeKeywords
+	}
+	if !IsNil(o.Devices) {
+		toSerialize["devices"] = o.Devices
 	}
 	if !IsNil(o.AgeMin) {
 		toSerialize["ageMin"] = o.AgeMin

@@ -26,13 +26,15 @@ type UpdateAdCampaignRequest struct {
 	Platform string `json:"platform"`
 	// **Meta only.** Zernio SocialAccount id owning the ad account. Needed only for an EMPTY campaign (zero ads); ignored otherwise.
 	AccountId *string `json:"accountId,omitempty"`
-	// **Meta + Google.** On Meta, the campaign default that ad sets inherit unless they override it. On Google, the campaign's own bidding strategy.
+	// **Meta + Google.** On Meta, the campaign default that ad sets inherit unless they override it. On Google, the campaign's own bidding strategy. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
 	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
 	// **Google only.** Whole currency units (USD: 12 = $12.00). Max CPC for LOWEST_COST_WITH_BID_CAP, CPA target for COST_CAP; required for both.
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// **Google only.** Decimal ROAS multiplier (2.0 = 2.0x), required for LOWEST_COST_WITH_MIN_ROAS.
-	RoasAverageFloor *float32                       `json:"roasAverageFloor,omitempty"`
-	Budget           *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
+	// **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
+	PortfolioBidStrategyId *string                        `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
+	Budget                 *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// **Meta only.** Rename the campaign.
 	Name                 *string                                      `json:"name,omitempty"`
 	PlatformSpecificData *UpdateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
@@ -210,6 +212,38 @@ func (o *UpdateAdCampaignRequest) SetRoasAverageFloor(v float32) {
 	o.RoasAverageFloor = &v
 }
 
+// GetPortfolioBidStrategyId returns the PortfolioBidStrategyId field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetPortfolioBidStrategyId() string {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		var ret string
+		return ret
+	}
+	return *o.PortfolioBidStrategyId
+}
+
+// GetPortfolioBidStrategyIdOk returns a tuple with the PortfolioBidStrategyId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetPortfolioBidStrategyIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PortfolioBidStrategyId) {
+		return nil, false
+	}
+	return o.PortfolioBidStrategyId, true
+}
+
+// HasPortfolioBidStrategyId returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasPortfolioBidStrategyId() bool {
+	if o != nil && !IsNil(o.PortfolioBidStrategyId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortfolioBidStrategyId gets a reference to the given string and assigns it to the PortfolioBidStrategyId field.
+func (o *UpdateAdCampaignRequest) SetPortfolioBidStrategyId(v string) {
+	o.PortfolioBidStrategyId = &v
+}
+
 // GetBudget returns the Budget field value if set, zero value otherwise.
 func (o *UpdateAdCampaignRequest) GetBudget() UpdateAdCampaignRequestBudget {
 	if o == nil || IsNil(o.Budget) {
@@ -328,6 +362,9 @@ func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RoasAverageFloor) {
 		toSerialize["roasAverageFloor"] = o.RoasAverageFloor
+	}
+	if !IsNil(o.PortfolioBidStrategyId) {
+		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget

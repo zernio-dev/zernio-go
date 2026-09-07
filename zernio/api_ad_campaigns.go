@@ -598,8 +598,9 @@ CreateAdCampaign Create a standalone campaign
 Creates a campaign WITHOUT its first ad set / ad, on the platform of the given
 `accountId`. Ad sets join it later via `existingCampaignId` on the create endpoints.
 Platform notes: on Meta a budget here is campaign-level (CBO) by definition; omit it
-for ABO (each ad set carries its own budget), and `specialAdCategories` /
-`bidStrategy` are Meta-only (400 elsewhere). Google, X and OpenAI require a budget
+for ABO (each ad set carries its own budget), and `specialAdCategories` is Meta-only
+(400 elsewhere); `bidStrategy` is Meta and Google (400 elsewhere), and Google also
+accepts `portfolioBidStrategyId` instead. Google, X and OpenAI require a budget
 (422 without one; OpenAI accepts only `budgetType: lifetime`, Google only
 `budgetType: daily`). LinkedIn creates the
 campaign GROUP (our campaign level) and rejects a budget, which lives on the
@@ -841,6 +842,139 @@ func (a *AdCampaignsAPIService) CreateAdSetExecute(r AdCampaignsAPICreateAdSetRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPICreateBidStrategyRequest struct {
+	ctx                      context.Context
+	ApiService               *AdCampaignsAPIService
+	createBidStrategyRequest *CreateBidStrategyRequest
+}
+
+func (r AdCampaignsAPICreateBidStrategyRequest) CreateBidStrategyRequest(createBidStrategyRequest CreateBidStrategyRequest) AdCampaignsAPICreateBidStrategyRequest {
+	r.createBidStrategyRequest = &createBidStrategyRequest
+	return r
+}
+
+func (r AdCampaignsAPICreateBidStrategyRequest) Execute() (*CreateBidStrategy201Response, *http.Response, error) {
+	return r.ApiService.CreateBidStrategyExecute(r)
+}
+
+/*
+CreateBidStrategy Create a Google Ads portfolio bid strategy
+
+Creates a standalone bid strategy shared across campaigns. Attach it to a campaign with `portfolioBidStrategyId` on POST /v1/ads/create, PUT /v1/ads/campaigns/{campaignId}, or PUT /v1/ads/ad-sets/{adSetId}. Attaching a strategy aligned to a shared budget fails there with a 400 (Google's `BIDDING_STRATEGY_AND_BUDGET_MUST_BE_ALIGNED`); this is not retryable.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPICreateBidStrategyRequest
+*/
+func (a *AdCampaignsAPIService) CreateBidStrategy(ctx context.Context) AdCampaignsAPICreateBidStrategyRequest {
+	return AdCampaignsAPICreateBidStrategyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateBidStrategy201Response
+func (a *AdCampaignsAPIService) CreateBidStrategyExecute(r AdCampaignsAPICreateBidStrategyRequest) (*CreateBidStrategy201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateBidStrategy201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.CreateBidStrategy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/bid-strategies"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createBidStrategyRequest == nil {
+		return localVarReturnValue, nil, reportError("createBidStrategyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createBidStrategyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2599,6 +2733,162 @@ func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTime
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIGetCampaignBiddingRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	campaignId string
+	accountId  *string
+	platform   *string
+	customerId *string
+}
+
+// Zernio Google Ads SocialAccount id: resolves the customer id + refresh token.
+func (r AdCampaignsAPIGetCampaignBiddingRequest) AccountId(accountId string) AdCampaignsAPIGetCampaignBiddingRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Required: campaign IDs are not globally unique. Only \&quot;google\&quot; is supported today.
+func (r AdCampaignsAPIGetCampaignBiddingRequest) Platform(platform string) AdCampaignsAPIGetCampaignBiddingRequest {
+	r.platform = &platform
+	return r
+}
+
+// Numeric Google Ads customer id (no dashes). Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+func (r AdCampaignsAPIGetCampaignBiddingRequest) CustomerId(customerId string) AdCampaignsAPIGetCampaignBiddingRequest {
+	r.customerId = &customerId
+	return r
+}
+
+func (r AdCampaignsAPIGetCampaignBiddingRequest) Execute() (*GetCampaignBidding200Response, *http.Response, error) {
+	return r.ApiService.GetCampaignBiddingExecute(r)
+}
+
+/*
+GetCampaignBidding Read a campaign's current bidding
+
+Live read of the campaign's bidding strategy on Google, for pre-filling the bid strategy
+block before a PUT to /v1/ads/campaigns/{campaignId}. Google Ads only; `platform` is required
+and rejected when it is anything else, since a `campaignId` is not globally unique.
+
+Maps Google's bidding strategy onto the same triplet PUT accepts: `LOWEST_COST_WITHOUT_CAP`
+(Maximize Conversions, no target), `COST_CAP` + `bidAmount` (Target CPA), `LOWEST_COST_WITH_MIN_ROAS`
++ `roasAverageFloor` (Target ROAS), `LOWEST_COST_WITH_BID_CAP` + `bidAmount` (Maximize Clicks with
+a CPC ceiling). A campaign on a portfolio strategy returns `portfolio` (id + name) and
+`bidSpec.portfolioBidStrategyId` instead of the triplet. Anything else (Manual CPC, Target
+Impression Share, ...) returns `bidSpec: null`; show `biddingStrategyType` as-is.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform campaign id.
+	@return AdCampaignsAPIGetCampaignBiddingRequest
+*/
+func (a *AdCampaignsAPIService) GetCampaignBidding(ctx context.Context, campaignId string) AdCampaignsAPIGetCampaignBiddingRequest {
+	return AdCampaignsAPIGetCampaignBiddingRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetCampaignBidding200Response
+func (a *AdCampaignsAPIService) GetCampaignBiddingExecute(r AdCampaignsAPIGetCampaignBiddingRequest) (*GetCampaignBidding200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetCampaignBidding200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetCampaignBidding")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/bidding"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.platform == nil {
+		return localVarReturnValue, nil, reportError("platform is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIGetCampaignTargetingRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -3720,6 +4010,180 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListBidStrategiesRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	accountId  *string
+	customerId *string
+	fromDate   *string
+	toDate     *string
+}
+
+// Google ads SocialAccount id.
+func (r AdCampaignsAPIListBidStrategiesRequest) AccountId(accountId string) AdCampaignsAPIListBidStrategiesRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+func (r AdCampaignsAPIListBidStrategiesRequest) CustomerId(customerId string) AdCampaignsAPIListBidStrategiesRequest {
+	r.customerId = &customerId
+	return r
+}
+
+// Defaults to 30 days ago.
+func (r AdCampaignsAPIListBidStrategiesRequest) FromDate(fromDate string) AdCampaignsAPIListBidStrategiesRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Defaults to today.
+func (r AdCampaignsAPIListBidStrategiesRequest) ToDate(toDate string) AdCampaignsAPIListBidStrategiesRequest {
+	r.toDate = &toDate
+	return r
+}
+
+func (r AdCampaignsAPIListBidStrategiesRequest) Execute() (*ListBidStrategies200Response, *http.Response, error) {
+	return r.ApiService.ListBidStrategiesExecute(r)
+}
+
+/*
+ListBidStrategies List Google Ads portfolio bid strategies
+
+Bidding strategy report: type, status, campaign count, clicks, cost, cost per conversion, impressions, average CPC and conversions over the date range (default last 30 days). Reads Google's `bidding_strategy` resource live. Draws on the shared Google Ads operations budget.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIListBidStrategiesRequest
+*/
+func (a *AdCampaignsAPIService) ListBidStrategies(ctx context.Context) AdCampaignsAPIListBidStrategiesRequest {
+	return AdCampaignsAPIListBidStrategiesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListBidStrategies200Response
+func (a *AdCampaignsAPIService) ListBidStrategiesExecute(r AdCampaignsAPIListBidStrategiesRequest) (*ListBidStrategies200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListBidStrategies200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListBidStrategies")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/bid-strategies"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIListCampaignNegativeKeywordsRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -4149,11 +4613,12 @@ Per-platform support:
   - **TikTok**: status, budget, targeting (via `/v2/adgroup/update/`), and creative
     (via `/v2/ad/update/` patch-style — `headline` is ignored, `body` becomes `ad_text`).
 
-  - **Google**: status, budget, and KEYWORD edits via `targeting.keywords` /
-    `targeting.negativeKeywords` — each list you send becomes the FULL new set of its
-    kind on the ad group (criteria not in the list are removed); a kind left out is
-    untouched. Any other `targeting` field returns 400: Google cannot mutate broad
-    targeting post-create without recreating the campaign. `creative` returns 501.
+  - **Google**: status, budget, KEYWORD edits via `targeting.keywords` /
+    `targeting.negativeKeywords`, and DEVICE bid adjustments via `targeting.devices`
+    — each list you send becomes the FULL new set of its kind (criteria not in the
+    list are removed); a kind left out is untouched. Any other `targeting` field
+    returns 400: Google cannot mutate broad targeting post-create without recreating
+    the campaign. `creative` returns 501.
 
   - **LinkedIn**: status, budget, targeting (geo countries only, applied to the
     LinkedIn Campaign via PARTIAL_UPDATE), and creative (uploads new media, creates a
@@ -4298,25 +4763,27 @@ func (r AdCampaignsAPIUpdateAdCampaignRequest) Execute() (*UpdateAdCampaign200Re
 /*
 UpdateAdCampaign Update a campaign
 
-Campaign-level edits. Send at least one of `budget`, `bidStrategy`, `name`
-or `platformSpecificData`. An unsupported field is always an error, never a
-silent drop.
+Campaign-level edits. Send at least one of `budget`, `bidStrategy`,
+`portfolioBidStrategyId`, `name` or `platformSpecificData`. An unsupported
+field is always an error, never a silent drop.
 
 | Body field | Meta | Google | Others |
 |---|---|---|---|
 | `bidStrategy` | Yes | Yes | 501 |
 | `bidAmount`, `roasAverageFloor` | 400 — ad-set level | Yes | 400 |
+| `portfolioBidStrategyId` | 400 | Yes | 400 |
 | `budget` (CBO; ABO returns 409) | Yes | 501 | 501 |
 | `name` | Yes | 501 | 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
 
-Google maps the shared enum onto its own strategies: `LOWEST_COST_WITHOUT_CAP`
-to Maximize Clicks, `LOWEST_COST_WITH_BID_CAP` to Maximize Clicks with a max
-CPC (`bidAmount`), `COST_CAP` to Target CPA (`bidAmount`),
-`LOWEST_COST_WITH_MIN_ROAS` to Target ROAS (`roasAverageFloor`). A campaign on
-a PORTFOLIO bidding strategy is rejected: detach it in Google Ads first, since
-it is shared across campaigns.
+On Google: `LOWEST_COST_WITHOUT_CAP` = Maximize Conversions, `COST_CAP` +
+`bidAmount` = Target CPA, `LOWEST_COST_WITH_MIN_ROAS` + `roasAverageFloor` =
+Target ROAS, `LOWEST_COST_WITH_BID_CAP` + `bidAmount` = Maximize Clicks with a
+CPC ceiling; `portfolioBidStrategyId` attaches a portfolio strategy instead
+(exclusive with `bidStrategy`). Setting the standard triplet on a campaign that
+is currently on a PORTFOLIO strategy is rejected: detach it in Google Ads
+first, since it is shared across campaigns.
 
 `accountId` forwards the update straight to Meta for a campaign with zero ads,
 which would otherwise 404; the response then carries `updated: 0`.
@@ -5121,6 +5588,154 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIUpdateBidStrategyRequest struct {
+	ctx                      context.Context
+	ApiService               *AdCampaignsAPIService
+	strategyId               string
+	updateBidStrategyRequest *UpdateBidStrategyRequest
+}
+
+func (r AdCampaignsAPIUpdateBidStrategyRequest) UpdateBidStrategyRequest(updateBidStrategyRequest UpdateBidStrategyRequest) AdCampaignsAPIUpdateBidStrategyRequest {
+	r.updateBidStrategyRequest = &updateBidStrategyRequest
+	return r
+}
+
+func (r AdCampaignsAPIUpdateBidStrategyRequest) Execute() (*UpdateBidStrategy200Response, *http.Response, error) {
+	return r.ApiService.UpdateBidStrategyExecute(r)
+}
+
+/*
+UpdateBidStrategy Update a Google Ads portfolio bid strategy
+
+Renames or retargets a portfolio bid strategy. The strategy's status is output only on Google's side, so it cannot be changed here; remove a strategy in Google Ads. `type` is only needed alongside `targetCpa`/`targetRoas` to disambiguate the field Google writes to (TARGET_CPA and MAXIMIZE_CONVERSIONS both take a target CPA; TARGET_ROAS and MAXIMIZE_CONVERSION_VALUE both take a target ROAS); the strategy's family is otherwise immutable once created.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param strategyId Numeric Google Ads bid strategy id.
+	@return AdCampaignsAPIUpdateBidStrategyRequest
+*/
+func (a *AdCampaignsAPIService) UpdateBidStrategy(ctx context.Context, strategyId string) AdCampaignsAPIUpdateBidStrategyRequest {
+	return AdCampaignsAPIUpdateBidStrategyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		strategyId: strategyId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateBidStrategy200Response
+func (a *AdCampaignsAPIService) UpdateBidStrategyExecute(r AdCampaignsAPIUpdateBidStrategyRequest) (*UpdateBidStrategy200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateBidStrategy200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateBidStrategy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/bid-strategies/{strategyId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"strategyId"+"}", url.PathEscape(parameterValueToString(r.strategyId, "strategyId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateBidStrategyRequest == nil {
+		return localVarReturnValue, nil, reportError("updateBidStrategyRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateBidStrategyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
