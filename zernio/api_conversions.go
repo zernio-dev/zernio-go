@@ -324,8 +324,9 @@ CreateConversionAction Create a website conversion action
 
 Creates a `WEBPAGE` conversion action (category `DEFAULT`) and returns it with
 its tag snippets, read back after creation since Google never returns them on
-the create response itself. Google-only; other platforms return `501`. Requires
-the Ads add-on.
+the create response itself. Invalidates the cached list `GET` on this resource
+would otherwise keep serving. Google-only; other platforms return `501`.
+Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPICreateConversionActionRequest
@@ -1227,6 +1228,11 @@ Google-only; other platforms return `501`. Requires the Ads add-on.
 `customerId` is optional: when omitted, it is resolved from the connection's
 accessible Google Ads customers, and the call fails with `400` when more than
 one is accessible (pass `customerId` to disambiguate).
+
+The list itself is cached for the quota window (1 hour fresh, up to 7 days
+last-good; the cache key does not vary on `type`). The response carries
+`cachedAt` and `stale`, set when a quota-exhausted call falls back to the
+last-good copy instead of a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPIListConversionActionsRequest

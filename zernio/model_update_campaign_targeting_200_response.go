@@ -22,7 +22,10 @@ var _ MappedNullable = &UpdateCampaignTargeting200Response{}
 type UpdateCampaignTargeting200Response struct {
 	CampaignId *string `json:"campaignId,omitempty"`
 	// Which targeting fields were applied.
-	Updated []string `json:"updated,omitempty"`
+	Updated   []string                                        `json:"updated,omitempty"`
+	Devices   []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
+	Locations []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
+	Languages []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
 }
 
 // NewUpdateCampaignTargeting200Response instantiates a new UpdateCampaignTargeting200Response object
@@ -106,6 +109,102 @@ func (o *UpdateCampaignTargeting200Response) SetUpdated(v []string) {
 	o.Updated = v
 }
 
+// GetDevices returns the Devices field value if set, zero value otherwise.
+func (o *UpdateCampaignTargeting200Response) GetDevices() []GetCampaignTargeting200ResponseDevicesInner {
+	if o == nil || IsNil(o.Devices) {
+		var ret []GetCampaignTargeting200ResponseDevicesInner
+		return ret
+	}
+	return o.Devices
+}
+
+// GetDevicesOk returns a tuple with the Devices field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargeting200Response) GetDevicesOk() ([]GetCampaignTargeting200ResponseDevicesInner, bool) {
+	if o == nil || IsNil(o.Devices) {
+		return nil, false
+	}
+	return o.Devices, true
+}
+
+// HasDevices returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasDevices() bool {
+	if o != nil && !IsNil(o.Devices) {
+		return true
+	}
+
+	return false
+}
+
+// SetDevices gets a reference to the given []GetCampaignTargeting200ResponseDevicesInner and assigns it to the Devices field.
+func (o *UpdateCampaignTargeting200Response) SetDevices(v []GetCampaignTargeting200ResponseDevicesInner) {
+	o.Devices = v
+}
+
+// GetLocations returns the Locations field value if set, zero value otherwise.
+func (o *UpdateCampaignTargeting200Response) GetLocations() []GetCampaignTargeting200ResponseLocationsInner {
+	if o == nil || IsNil(o.Locations) {
+		var ret []GetCampaignTargeting200ResponseLocationsInner
+		return ret
+	}
+	return o.Locations
+}
+
+// GetLocationsOk returns a tuple with the Locations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargeting200Response) GetLocationsOk() ([]GetCampaignTargeting200ResponseLocationsInner, bool) {
+	if o == nil || IsNil(o.Locations) {
+		return nil, false
+	}
+	return o.Locations, true
+}
+
+// HasLocations returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasLocations() bool {
+	if o != nil && !IsNil(o.Locations) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocations gets a reference to the given []GetCampaignTargeting200ResponseLocationsInner and assigns it to the Locations field.
+func (o *UpdateCampaignTargeting200Response) SetLocations(v []GetCampaignTargeting200ResponseLocationsInner) {
+	o.Locations = v
+}
+
+// GetLanguages returns the Languages field value if set, zero value otherwise.
+func (o *UpdateCampaignTargeting200Response) GetLanguages() []GetCampaignTargeting200ResponseLanguagesInner {
+	if o == nil || IsNil(o.Languages) {
+		var ret []GetCampaignTargeting200ResponseLanguagesInner
+		return ret
+	}
+	return o.Languages
+}
+
+// GetLanguagesOk returns a tuple with the Languages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargeting200Response) GetLanguagesOk() ([]GetCampaignTargeting200ResponseLanguagesInner, bool) {
+	if o == nil || IsNil(o.Languages) {
+		return nil, false
+	}
+	return o.Languages, true
+}
+
+// HasLanguages returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasLanguages() bool {
+	if o != nil && !IsNil(o.Languages) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguages gets a reference to the given []GetCampaignTargeting200ResponseLanguagesInner and assigns it to the Languages field.
+func (o *UpdateCampaignTargeting200Response) SetLanguages(v []GetCampaignTargeting200ResponseLanguagesInner) {
+	o.Languages = v
+}
+
 func (o UpdateCampaignTargeting200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -121,6 +220,15 @@ func (o UpdateCampaignTargeting200Response) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Updated) {
 		toSerialize["updated"] = o.Updated
+	}
+	if !IsNil(o.Devices) {
+		toSerialize["devices"] = o.Devices
+	}
+	if !IsNil(o.Locations) {
+		toSerialize["locations"] = o.Locations
+	}
+	if !IsNil(o.Languages) {
+		toSerialize["languages"] = o.Languages
 	}
 	return toSerialize, nil
 }

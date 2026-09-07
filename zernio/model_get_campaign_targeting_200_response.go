@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the GetCampaignTargeting200Response type satisfies the MappedNullable interface at compile time
@@ -23,6 +24,10 @@ type GetCampaignTargeting200Response struct {
 	Devices   []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
 	Locations []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
 	Languages []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
+	// When this targeting was fetched from Google. Null when it was never served from cache.
+	CachedAt NullableTime `json:"cachedAt,omitempty"`
+	// True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+	Stale *bool `json:"stale,omitempty"`
 }
 
 // NewGetCampaignTargeting200Response instantiates a new GetCampaignTargeting200Response object
@@ -138,6 +143,81 @@ func (o *GetCampaignTargeting200Response) SetLanguages(v []GetCampaignTargeting2
 	o.Languages = v
 }
 
+// GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetCampaignTargeting200Response) GetCachedAt() time.Time {
+	if o == nil || IsNil(o.CachedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CachedAt.Get()
+}
+
+// GetCachedAtOk returns a tuple with the CachedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetCampaignTargeting200Response) GetCachedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CachedAt.Get(), o.CachedAt.IsSet()
+}
+
+// HasCachedAt returns a boolean if a field has been set.
+func (o *GetCampaignTargeting200Response) HasCachedAt() bool {
+	if o != nil && o.CachedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCachedAt gets a reference to the given NullableTime and assigns it to the CachedAt field.
+func (o *GetCampaignTargeting200Response) SetCachedAt(v time.Time) {
+	o.CachedAt.Set(&v)
+}
+
+// SetCachedAtNil sets the value for CachedAt to be an explicit nil
+func (o *GetCampaignTargeting200Response) SetCachedAtNil() {
+	o.CachedAt.Set(nil)
+}
+
+// UnsetCachedAt ensures that no value is present for CachedAt, not even an explicit nil
+func (o *GetCampaignTargeting200Response) UnsetCachedAt() {
+	o.CachedAt.Unset()
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *GetCampaignTargeting200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCampaignTargeting200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *GetCampaignTargeting200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *GetCampaignTargeting200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
 func (o GetCampaignTargeting200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +236,12 @@ func (o GetCampaignTargeting200Response) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.Languages) {
 		toSerialize["languages"] = o.Languages
+	}
+	if o.CachedAt.IsSet() {
+		toSerialize["cachedAt"] = o.CachedAt.Get()
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
 	}
 	return toSerialize, nil
 }

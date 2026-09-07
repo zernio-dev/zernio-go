@@ -779,9 +779,11 @@ GetAdsSearchTerms Google Ads search terms report
 
 The actual search queries that triggered your ads, with matched-keyword
 status and spend metrics — the raw material for wasted-spend analysis and
-negative-keyword lists. Reads Google's `search_term_view` live; defaults
-to the last 30 days. Rows are ordered by cost, descending. Draws on the
-shared Google Ads operations budget.
+negative-keyword lists. Reads Google's `search_term_view`, cached for
+the quota window; defaults to the last 30 days. Rows are ordered by
+cost, descending. Draws on the shared Google Ads operations budget.
+The response carries `cachedAt` and `stale`, set when a quota-exhausted
+call falls back to the last-good copy instead of a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIGetAdsSearchTermsRequest

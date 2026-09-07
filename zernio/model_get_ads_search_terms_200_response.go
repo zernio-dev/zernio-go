@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the GetAdsSearchTerms200Response type satisfies the MappedNullable interface at compile time
@@ -23,6 +24,10 @@ type GetAdsSearchTerms200Response struct {
 	CustomerId *string                                 `json:"customerId,omitempty"`
 	Data       []GetAdsSearchTerms200ResponseDataInner `json:"data,omitempty"`
 	Paging     *GetAdsSearchTerms200ResponsePaging     `json:"paging,omitempty"`
+	// When this data was fetched from Google. Null when it was never served from cache.
+	CachedAt NullableTime `json:"cachedAt,omitempty"`
+	// True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+	Stale *bool `json:"stale,omitempty"`
 }
 
 // NewGetAdsSearchTerms200Response instantiates a new GetAdsSearchTerms200Response object
@@ -138,6 +143,81 @@ func (o *GetAdsSearchTerms200Response) SetPaging(v GetAdsSearchTerms200ResponseP
 	o.Paging = &v
 }
 
+// GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdsSearchTerms200Response) GetCachedAt() time.Time {
+	if o == nil || IsNil(o.CachedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CachedAt.Get()
+}
+
+// GetCachedAtOk returns a tuple with the CachedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdsSearchTerms200Response) GetCachedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CachedAt.Get(), o.CachedAt.IsSet()
+}
+
+// HasCachedAt returns a boolean if a field has been set.
+func (o *GetAdsSearchTerms200Response) HasCachedAt() bool {
+	if o != nil && o.CachedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCachedAt gets a reference to the given NullableTime and assigns it to the CachedAt field.
+func (o *GetAdsSearchTerms200Response) SetCachedAt(v time.Time) {
+	o.CachedAt.Set(&v)
+}
+
+// SetCachedAtNil sets the value for CachedAt to be an explicit nil
+func (o *GetAdsSearchTerms200Response) SetCachedAtNil() {
+	o.CachedAt.Set(nil)
+}
+
+// UnsetCachedAt ensures that no value is present for CachedAt, not even an explicit nil
+func (o *GetAdsSearchTerms200Response) UnsetCachedAt() {
+	o.CachedAt.Unset()
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *GetAdsSearchTerms200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdsSearchTerms200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *GetAdsSearchTerms200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *GetAdsSearchTerms200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
 func (o GetAdsSearchTerms200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +236,12 @@ func (o GetAdsSearchTerms200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Paging) {
 		toSerialize["paging"] = o.Paging
+	}
+	if o.CachedAt.IsSet() {
+		toSerialize["cachedAt"] = o.CachedAt.Get()
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
 	}
 	return toSerialize, nil
 }

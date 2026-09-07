@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the GetCampaignBidding200Response type satisfies the MappedNullable interface at compile time
@@ -26,7 +27,11 @@ type GetCampaignBidding200Response struct {
 	BiddingStrategyType *string                   `json:"biddingStrategyType,omitempty"`
 	BidSpec             *CampaignBiddingBidSpec   `json:"bidSpec,omitempty"`
 	Portfolio           *CampaignBiddingPortfolio `json:"portfolio,omitempty"`
-	CampaignId          *string                   `json:"campaignId,omitempty"`
+	// When this data was fetched from Google. Null when it was never served from cache.
+	CachedAt *time.Time `json:"cachedAt,omitempty"`
+	// True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+	Stale      *bool   `json:"stale,omitempty"`
+	CampaignId *string `json:"campaignId,omitempty"`
 }
 
 // NewGetCampaignBidding200Response instantiates a new GetCampaignBidding200Response object
@@ -174,6 +179,70 @@ func (o *GetCampaignBidding200Response) SetPortfolio(v CampaignBiddingPortfolio)
 	o.Portfolio = &v
 }
 
+// GetCachedAt returns the CachedAt field value if set, zero value otherwise.
+func (o *GetCampaignBidding200Response) GetCachedAt() time.Time {
+	if o == nil || IsNil(o.CachedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CachedAt
+}
+
+// GetCachedAtOk returns a tuple with the CachedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCampaignBidding200Response) GetCachedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.CachedAt) {
+		return nil, false
+	}
+	return o.CachedAt, true
+}
+
+// HasCachedAt returns a boolean if a field has been set.
+func (o *GetCampaignBidding200Response) HasCachedAt() bool {
+	if o != nil && !IsNil(o.CachedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetCachedAt gets a reference to the given time.Time and assigns it to the CachedAt field.
+func (o *GetCampaignBidding200Response) SetCachedAt(v time.Time) {
+	o.CachedAt = &v
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *GetCampaignBidding200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCampaignBidding200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *GetCampaignBidding200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *GetCampaignBidding200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
 // GetCampaignId returns the CampaignId field value if set, zero value otherwise.
 func (o *GetCampaignBidding200Response) GetCampaignId() string {
 	if o == nil || IsNil(o.CampaignId) {
@@ -227,6 +296,12 @@ func (o GetCampaignBidding200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Portfolio) {
 		toSerialize["portfolio"] = o.Portfolio
+	}
+	if !IsNil(o.CachedAt) {
+		toSerialize["cachedAt"] = o.CachedAt
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
 	}
 	if !IsNil(o.CampaignId) {
 		toSerialize["campaignId"] = o.CampaignId
