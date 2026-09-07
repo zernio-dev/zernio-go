@@ -24,23 +24,29 @@ type CreatePostRequest struct {
 	// Stored on the post for reference/display only. This field is NOT used as the video title when publishing. To set a YouTube video title, use platformSpecificData.title on the youtube platform target (falls back to the first line of content when omitted).
 	Title *string `json:"title,omitempty"`
 	// Post caption/text. Optional when media is attached, all platforms have customContent, every platform entry is an X Article (platformSpecificData.article), or every platform entry is a LinkedIn text-free reshare (platformSpecificData.reshareUrl with no text). Required for other text-only posts.
-	Content    *string     `json:"content,omitempty"`
+	Content *string `json:"content,omitempty"`
+	// Media attached to every platform in the request (a platform entry can override it with `customMedia`). Each entry needs a publicly reachable HTTPS `url`; `type` (image, video, gif, document) is inferred from the URL extension when omitted and a `type` that contradicts the extension is rejected with 400. Upload files with `POST /v1/media/presign` first; per-platform size, duration and format limits are listed on each platform schema.
 	MediaItems []MediaItem `json:"mediaItems,omitempty"`
 	// Target platforms and accounts for this post. Required for non-draft posts (returns 400 if empty). Drafts can omit platforms.
-	Platforms    []CreatePostRequestPlatformsInner `json:"platforms,omitempty"`
-	ScheduledFor *time.Time                        `json:"scheduledFor,omitempty"`
-	PublishNow   *bool                             `json:"publishNow,omitempty"`
+	Platforms []CreatePostRequestPlatformsInner `json:"platforms,omitempty"`
+	// When to publish. Required unless `publishNow` is true, `queuedFromProfile` is set, or the post is a draft. An ISO 8601 value with a `Z` or offset (`2026-01-15T10:00:00Z`, `2026-01-15T11:00:00+01:00`) is taken as-is; a value without one (`2026-01-15T10:00:00` or `2026-01-15 10:00`) is read as local time in `timezone`. A value already in the past is published synchronously in the same request. Ignored when `publishNow` is true.
+	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
+	// Publish to every platform synchronously in this request instead of scheduling; the response then carries each platform result and `platformPostUrl`, with HTTP 207 when some platforms failed. Takes precedence over `scheduledFor`; ignored when `isDraft` is true.
+	PublishNow *bool `json:"publishNow,omitempty"`
 	// When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
-	IsDraft  *bool   `json:"isDraft,omitempty"`
+	IsDraft *bool `json:"isDraft,omitempty"`
+	// IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset. Has no effect on values that already carry one. An unknown name returns 400 when `scheduledFor` is set.
 	Timezone *string `json:"timezone,omitempty"`
 	// Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
 	Tags []string `json:"tags,omitempty"`
 	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags []string `json:"hashtags,omitempty"`
 	// Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
-	Mentions            []string               `json:"mentions,omitempty"`
-	CrosspostingEnabled *bool                  `json:"crosspostingEnabled,omitempty"`
-	Metadata            map[string]interface{} `json:"metadata,omitempty"`
+	Mentions []string `json:"mentions,omitempty"`
+	// Stored on the post and echoed back on reads. Publishing does not branch on it: every entry in `platforms` is published regardless, so treat it as a label for your own tooling.
+	CrosspostingEnabled *bool `json:"crosspostingEnabled,omitempty"`
+	// Free-form key/value pairs of your own, stored on the post and returned on reads and in webhook payloads. Zernio also writes the bookkeeping keys `usageCounted`, `usageRefunded` and `hidden` into this object; do not set them, and they are stripped from webhook payloads.
+	Metadata map[string]interface{} `json:"metadata,omitempty"`
 	// Root-level TikTok settings applied to the TikTok platforms sent in the same request. Merged into each platform's platformSpecificData, with platform-specific settings taking precedence.
 	TiktokSettings *TikTokPlatformData `json:"tiktokSettings,omitempty"`
 	// Root-level Facebook settings applied to the Facebook platforms sent in the same request. Merged into each platform's platformSpecificData.facebookSettings, with platform-specific settings taking precedence.

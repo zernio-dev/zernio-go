@@ -1923,7 +1923,7 @@ Initiate an OAuth connection flow. Returns an authUrl to redirect the user to.
 Standard flow: Zernio hosts the selection UI, then redirects to your redirect_url. Headless mode (headless=true): user is redirected to your redirect_url with OAuth data for custom UI. Use the platform-specific selection endpoints to complete.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param platform Social media platform to connect
+	@param platform Social media platform to connect. `snapchat` is a closed beta with no public release date: it returns 403 `PLATFORM_BETA_RESTRICTED` until the account is approved.
 	@return ConnectAPIGetConnectUrlRequest
 */
 func (a *ConnectAPIService) GetConnectUrl(ctx context.Context, platform string) ConnectAPIGetConnectUrlRequest {

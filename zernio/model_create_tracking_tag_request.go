@@ -25,6 +25,8 @@ type CreateTrackingTagRequest struct {
 	// Meta ad account id, e.g. `act_123456789`. Required by this endpoint but ignored for OpenAI Ads.
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
+	// OpenAI Ads only (ignored by Meta). When set, also provisions a standard conversion event setting wired to the new pixel, so `goal: conversions` ad creates on `POST /v1/ads/create` have an event to reference immediately.
+	DefaultEventType *string `json:"defaultEventType,omitempty"`
 }
 
 type _CreateTrackingTagRequest CreateTrackingTagRequest
@@ -96,6 +98,38 @@ func (o *CreateTrackingTagRequest) SetName(v string) {
 	o.Name = v
 }
 
+// GetDefaultEventType returns the DefaultEventType field value if set, zero value otherwise.
+func (o *CreateTrackingTagRequest) GetDefaultEventType() string {
+	if o == nil || IsNil(o.DefaultEventType) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultEventType
+}
+
+// GetDefaultEventTypeOk returns a tuple with the DefaultEventType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateTrackingTagRequest) GetDefaultEventTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultEventType) {
+		return nil, false
+	}
+	return o.DefaultEventType, true
+}
+
+// HasDefaultEventType returns a boolean if a field has been set.
+func (o *CreateTrackingTagRequest) HasDefaultEventType() bool {
+	if o != nil && !IsNil(o.DefaultEventType) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultEventType gets a reference to the given string and assigns it to the DefaultEventType field.
+func (o *CreateTrackingTagRequest) SetDefaultEventType(v string) {
+	o.DefaultEventType = &v
+}
+
 func (o CreateTrackingTagRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -108,6 +142,9 @@ func (o CreateTrackingTagRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
+	if !IsNil(o.DefaultEventType) {
+		toSerialize["defaultEventType"] = o.DefaultEventType
+	}
 	return toSerialize, nil
 }
 

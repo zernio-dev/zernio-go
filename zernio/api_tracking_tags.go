@@ -200,7 +200,8 @@ warns against retrying, since a retry would create a second, orphaned
 pixel.
 
 NOT idempotent on either platform: each call creates a new pixel (and,
-for OpenAI, a new Conversions API key). Do not retry blindly on
+for OpenAI, a new Conversions API key plus, with `defaultEventType`, a
+new conversion event setting). Do not retry blindly on
 timeout. Meta (platform `metaads`) and OpenAI Ads (platform
 `openaiads`); other platforms return 405.
 

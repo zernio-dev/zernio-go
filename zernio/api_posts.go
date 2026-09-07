@@ -259,6 +259,10 @@ CreatePost Create post
 Create and optionally publish a post. Immediate posts (`publishNow: true`) include `platformPostUrl` in the response.
 Content is optional when media is attached, all platforms have `customContent`, every platform entry is an X Article (`platformSpecificData.article`), or every platform entry is a LinkedIn text-free reshare (`platformSpecificData.reshareUrl` with no text). See each platform's schema for media constraints.
 
+## Scheduling
+
+Pick one of `scheduledFor` (schedule), `publishNow: true` (publish synchronously) or `queuedFromProfile` (next queue slot). With none of them and `isDraft` unset, the post is saved as a draft. `platforms` is required unless the post is a draft. `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published); `publishNow: true` wins over `scheduledFor`. A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
+
 ## Idempotency
 
 Two layers of duplicate-protection apply, so safe-to-retry callers (network blips, n8n / Zapier retries, etc.) don't accidentally double-post.

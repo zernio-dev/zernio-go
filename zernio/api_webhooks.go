@@ -44,7 +44,7 @@ Create a new webhook configuration. Maximum 50 webhooks per user.
 
 `name`, `url` and `events` are required. `url` must be a valid URL and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
 
-Webhooks are automatically disabled after 10 consecutive delivery failures.
+Webhooks are auto-disabled only once the endpoint has had no successful delivery for 3 days AND has either reached 20 consecutive terminal failures (each one an event that exhausted the full retry ladder) or been failing continuously for 3 days. The owner is emailed; re-enable it with `isActive: true`.
 
 A restricted (zrk_) API key can only subscribe to events whose resource group
 the key holds; an event outside the key's groups is rejected with 403, so a
@@ -948,7 +948,7 @@ Update an existing webhook configuration. All fields except `_id` are optional; 
 
 When provided, `name` must be 1-50 characters, `url` must be a valid URL, and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
 
-Webhooks are automatically disabled after 10 consecutive delivery failures.
+Webhooks are auto-disabled only once the endpoint has had no successful delivery for 3 days AND has either reached 20 consecutive terminal failures (each one an event that exhausted the full retry ladder) or been failing continuously for 3 days. The owner is emailed; re-enable it with `isActive: true`.
 
 A restricted (zrk_) API key can only set `events` to events whose resource
 group the key holds; an event outside the key's groups is rejected with 403.
