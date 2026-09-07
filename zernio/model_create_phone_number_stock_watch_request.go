@@ -24,6 +24,8 @@ var _ MappedNullable = &CreatePhoneNumberStockWatchRequest{}
 type CreatePhoneNumberStockWatchRequest struct {
 	// ISO 3166-1 alpha-2 code of a country listed by GET /v1/phone-numbers/countries.
 	Country string `json:"country"`
+	// Narrow the watch to one number type. Omit to be notified when any type in the country is back.
+	NumberType *string `json:"numberType,omitempty"`
 }
 
 type _CreatePhoneNumberStockWatchRequest CreatePhoneNumberStockWatchRequest
@@ -70,6 +72,38 @@ func (o *CreatePhoneNumberStockWatchRequest) SetCountry(v string) {
 	o.Country = v
 }
 
+// GetNumberType returns the NumberType field value if set, zero value otherwise.
+func (o *CreatePhoneNumberStockWatchRequest) GetNumberType() string {
+	if o == nil || IsNil(o.NumberType) {
+		var ret string
+		return ret
+	}
+	return *o.NumberType
+}
+
+// GetNumberTypeOk returns a tuple with the NumberType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberStockWatchRequest) GetNumberTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.NumberType) {
+		return nil, false
+	}
+	return o.NumberType, true
+}
+
+// HasNumberType returns a boolean if a field has been set.
+func (o *CreatePhoneNumberStockWatchRequest) HasNumberType() bool {
+	if o != nil && !IsNil(o.NumberType) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumberType gets a reference to the given string and assigns it to the NumberType field.
+func (o *CreatePhoneNumberStockWatchRequest) SetNumberType(v string) {
+	o.NumberType = &v
+}
+
 func (o CreatePhoneNumberStockWatchRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o CreatePhoneNumberStockWatchRequest) MarshalJSON() ([]byte, error) {
 func (o CreatePhoneNumberStockWatchRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["country"] = o.Country
+	if !IsNil(o.NumberType) {
+		toSerialize["numberType"] = o.NumberType
+	}
 	return toSerialize, nil
 }
 

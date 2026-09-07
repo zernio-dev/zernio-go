@@ -25,9 +25,11 @@ var _ MappedNullable = &PhoneNumberStockWatch{}
 type PhoneNumberStockWatch struct {
 	Id string `json:"id"`
 	// ISO 3166-1 alpha-2.
-	Country     string    `json:"country"`
-	CountryName string    `json:"countryName"`
-	CreatedAt   time.Time `json:"createdAt"`
+	Country     string `json:"country"`
+	CountryName string `json:"countryName"`
+	// The watched number type, or null when the watch covers every type in the country.
+	NumberType NullableString `json:"numberType"`
+	CreatedAt  time.Time      `json:"createdAt"`
 }
 
 type _PhoneNumberStockWatch PhoneNumberStockWatch
@@ -36,11 +38,12 @@ type _PhoneNumberStockWatch PhoneNumberStockWatch
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPhoneNumberStockWatch(id string, country string, countryName string, createdAt time.Time) *PhoneNumberStockWatch {
+func NewPhoneNumberStockWatch(id string, country string, countryName string, numberType NullableString, createdAt time.Time) *PhoneNumberStockWatch {
 	this := PhoneNumberStockWatch{}
 	this.Id = id
 	this.Country = country
 	this.CountryName = countryName
+	this.NumberType = numberType
 	this.CreatedAt = createdAt
 	return &this
 }
@@ -125,6 +128,32 @@ func (o *PhoneNumberStockWatch) SetCountryName(v string) {
 	o.CountryName = v
 }
 
+// GetNumberType returns the NumberType field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *PhoneNumberStockWatch) GetNumberType() string {
+	if o == nil || o.NumberType.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.NumberType.Get()
+}
+
+// GetNumberTypeOk returns a tuple with the NumberType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PhoneNumberStockWatch) GetNumberTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NumberType.Get(), o.NumberType.IsSet()
+}
+
+// SetNumberType sets field value
+func (o *PhoneNumberStockWatch) SetNumberType(v string) {
+	o.NumberType.Set(&v)
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *PhoneNumberStockWatch) GetCreatedAt() time.Time {
 	if o == nil {
@@ -162,6 +191,7 @@ func (o PhoneNumberStockWatch) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["country"] = o.Country
 	toSerialize["countryName"] = o.CountryName
+	toSerialize["numberType"] = o.NumberType.Get()
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil
 }
@@ -174,6 +204,7 @@ func (o *PhoneNumberStockWatch) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"country",
 		"countryName",
+		"numberType",
 		"createdAt",
 	}
 
