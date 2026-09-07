@@ -23,6 +23,143 @@ import (
 // AdCampaignsAPIService AdCampaignsAPI service
 type AdCampaignsAPIService service
 
+type AdCampaignsAPIAddAdKeywordsRequest struct {
+	ctx                  context.Context
+	ApiService           *AdCampaignsAPIService
+	addAdKeywordsRequest *AddAdKeywordsRequest
+}
+
+func (r AdCampaignsAPIAddAdKeywordsRequest) AddAdKeywordsRequest(addAdKeywordsRequest AddAdKeywordsRequest) AdCampaignsAPIAddAdKeywordsRequest {
+	r.addAdKeywordsRequest = &addAdKeywordsRequest
+	return r
+}
+
+func (r AdCampaignsAPIAddAdKeywordsRequest) Execute() (*AddAdKeywords201Response, *http.Response, error) {
+	return r.ApiService.AddAdKeywordsExecute(r)
+}
+
+/*
+AddAdKeywords Add Search keywords to an ad group
+
+Adds one or more keyword criteria to an existing Google Search ad group,
+without touching the keywords already there (unlike the whole-set diff on
+`PUT /v1/ads/{adId}`, `keywords`/`negativeKeywords` in `platformSpecificData`,
+which replaces the set). Set `negative: true` to add ad-group-level negatives
+instead of positive keywords.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIAddAdKeywordsRequest
+*/
+func (a *AdCampaignsAPIService) AddAdKeywords(ctx context.Context) AdCampaignsAPIAddAdKeywordsRequest {
+	return AdCampaignsAPIAddAdKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AddAdKeywords201Response
+func (a *AdCampaignsAPIService) AddAdKeywordsExecute(r AdCampaignsAPIAddAdKeywordsRequest) (*AddAdKeywords201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AddAdKeywords201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.AddAdKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.addAdKeywordsRequest == nil {
+		return localVarReturnValue, nil, reportError("addAdKeywordsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.addAdKeywordsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIAttachCampaignAssetsRequest struct {
 	ctx                         context.Context
 	ApiService                  *AdCampaignsAPIService
@@ -3130,6 +3267,406 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListCampaignNegativeKeywordsRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	campaignId string
+	platform   *string
+}
+
+// Optional and NOT authoritative: the resolved campaign&#39;s own platform decides 200 vs 501, never this hint.
+func (r AdCampaignsAPIListCampaignNegativeKeywordsRequest) Platform(platform string) AdCampaignsAPIListCampaignNegativeKeywordsRequest {
+	r.platform = &platform
+	return r
+}
+
+func (r AdCampaignsAPIListCampaignNegativeKeywordsRequest) Execute() (*ListCampaignNegativeKeywords200Response, *http.Response, error) {
+	return r.ApiService.ListCampaignNegativeKeywordsExecute(r)
+}
+
+/*
+ListCampaignNegativeKeywords List campaign-level negative keywords
+
+Returns the campaign-level negative keywords (`campaign_criterion.negative`),
+distinct from the ad-group-level negatives under `GET /v1/ads/keywords`. Read
+live from Google on every call (not synced to Postgres), and gated by the
+shared Google Ads operations budget like every other on-demand Google surface.
+
+The platform is always discovered from the campaign itself; a non-Google
+campaign returns 501 rather than 404, whether or not `platform` was passed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Platform campaign ID
+	@return AdCampaignsAPIListCampaignNegativeKeywordsRequest
+*/
+func (a *AdCampaignsAPIService) ListCampaignNegativeKeywords(ctx context.Context, campaignId string) AdCampaignsAPIListCampaignNegativeKeywordsRequest {
+	return AdCampaignsAPIListCampaignNegativeKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCampaignNegativeKeywords200Response
+func (a *AdCampaignsAPIService) ListCampaignNegativeKeywordsExecute(r AdCampaignsAPIListCampaignNegativeKeywordsRequest) (*ListCampaignNegativeKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCampaignNegativeKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListCampaignNegativeKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keywords"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIRemoveAdKeywordRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	keywordId  string
+}
+
+func (r AdCampaignsAPIRemoveAdKeywordRequest) Execute() (*RemoveAdKeyword200Response, *http.Response, error) {
+	return r.ApiService.RemoveAdKeywordExecute(r)
+}
+
+/*
+RemoveAdKeyword Remove a Search keyword
+
+Removes one keyword criterion (positive or negative) from its ad group (M.140).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param keywordId Zernio keyword ID (not the Google criterion ID)
+	@return AdCampaignsAPIRemoveAdKeywordRequest
+*/
+func (a *AdCampaignsAPIService) RemoveAdKeyword(ctx context.Context, keywordId string) AdCampaignsAPIRemoveAdKeywordRequest {
+	return AdCampaignsAPIRemoveAdKeywordRequest{
+		ApiService: a,
+		ctx:        ctx,
+		keywordId:  keywordId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return RemoveAdKeyword200Response
+func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdKeywordRequest) (*RemoveAdKeyword200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RemoveAdKeyword200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.RemoveAdKeyword")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords/{keywordId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"keywordId"+"}", url.PathEscape(parameterValueToString(r.keywordId, "keywordId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest struct {
+	ctx                                    context.Context
+	ApiService                             *AdCampaignsAPIService
+	campaignId                             string
+	replaceCampaignNegativeKeywordsRequest *ReplaceCampaignNegativeKeywordsRequest
+}
+
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) ReplaceCampaignNegativeKeywordsRequest(replaceCampaignNegativeKeywordsRequest ReplaceCampaignNegativeKeywordsRequest) AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest {
+	r.replaceCampaignNegativeKeywordsRequest = &replaceCampaignNegativeKeywordsRequest
+	return r
+}
+
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) Execute() (*ReplaceCampaignNegativeKeywords200Response, *http.Response, error) {
+	return r.ApiService.ReplaceCampaignNegativeKeywordsExecute(r)
+}
+
+/*
+ReplaceCampaignNegativeKeywords Replace campaign-level negative keywords
+
+Replaces the FULL set of campaign-level negative keywords (C.270): the desired
+list is diffed against what Google already has, and the difference is applied
+as one `create`/`remove` mutate. Send an empty array to clear every campaign
+negative.
+
+The platform is always discovered from the campaign itself; a non-Google
+campaign returns 501 rather than 404, whether or not `platform` was sent.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Platform campaign ID
+	@return AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest
+*/
+func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywords(ctx context.Context, campaignId string) AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest {
+	return AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceCampaignNegativeKeywords200Response
+func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywordsExecute(r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) (*ReplaceCampaignNegativeKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceCampaignNegativeKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ReplaceCampaignNegativeKeywords")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keywords"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replaceCampaignNegativeKeywordsRequest == nil {
+		return localVarReturnValue, nil, reportError("replaceCampaignNegativeKeywordsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replaceCampaignNegativeKeywordsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIUpdateAdRequest struct {
 	ctx             context.Context
 	ApiService      *AdCampaignsAPIService
@@ -3575,6 +4112,144 @@ func (a *AdCampaignsAPIService) UpdateAdCampaignStatusExecute(r AdCampaignsAPIUp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIUpdateAdKeywordRequest struct {
+	ctx                    context.Context
+	ApiService             *AdCampaignsAPIService
+	keywordId              string
+	updateAdKeywordRequest *UpdateAdKeywordRequest
+}
+
+func (r AdCampaignsAPIUpdateAdKeywordRequest) UpdateAdKeywordRequest(updateAdKeywordRequest UpdateAdKeywordRequest) AdCampaignsAPIUpdateAdKeywordRequest {
+	r.updateAdKeywordRequest = &updateAdKeywordRequest
+	return r
+}
+
+func (r AdCampaignsAPIUpdateAdKeywordRequest) Execute() (*UpdateAdKeyword200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdKeywordExecute(r)
+}
+
+/*
+UpdateAdKeyword Pause or enable a Search keyword
+
+Changes `ad_group_criterion.status` for one keyword criterion (M.140).
+Negative keywords have no status on Google and cannot be paused or enabled.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param keywordId Zernio keyword ID (not the Google criterion ID)
+	@return AdCampaignsAPIUpdateAdKeywordRequest
+*/
+func (a *AdCampaignsAPIService) UpdateAdKeyword(ctx context.Context, keywordId string) AdCampaignsAPIUpdateAdKeywordRequest {
+	return AdCampaignsAPIUpdateAdKeywordRequest{
+		ApiService: a,
+		ctx:        ctx,
+		keywordId:  keywordId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateAdKeyword200Response
+func (a *AdCampaignsAPIService) UpdateAdKeywordExecute(r AdCampaignsAPIUpdateAdKeywordRequest) (*UpdateAdKeyword200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateAdKeyword200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateAdKeyword")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/keywords/{keywordId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"keywordId"+"}", url.PathEscape(parameterValueToString(r.keywordId, "keywordId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateAdKeywordRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdKeywordRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateAdKeywordRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIUpdateAdSetRequest struct {
 	ctx                context.Context
 	ApiService         *AdCampaignsAPIService
@@ -3884,14 +4559,14 @@ func (a *AdCampaignsAPIService) UpdateAdSetStatusExecute(r AdCampaignsAPIUpdateA
 }
 
 type AdCampaignsAPIUpdateAdStatusRequest struct {
-	ctx                   context.Context
-	ApiService            *AdCampaignsAPIService
-	adId                  string
-	updateAdStatusRequest *UpdateAdStatusRequest
+	ctx                    context.Context
+	ApiService             *AdCampaignsAPIService
+	adId                   string
+	updateAdKeywordRequest *UpdateAdKeywordRequest
 }
 
-func (r AdCampaignsAPIUpdateAdStatusRequest) UpdateAdStatusRequest(updateAdStatusRequest UpdateAdStatusRequest) AdCampaignsAPIUpdateAdStatusRequest {
-	r.updateAdStatusRequest = &updateAdStatusRequest
+func (r AdCampaignsAPIUpdateAdStatusRequest) UpdateAdKeywordRequest(updateAdKeywordRequest UpdateAdKeywordRequest) AdCampaignsAPIUpdateAdStatusRequest {
+	r.updateAdKeywordRequest = &updateAdKeywordRequest
 	return r
 }
 
@@ -3947,8 +4622,8 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.updateAdStatusRequest == nil {
-		return localVarReturnValue, nil, reportError("updateAdStatusRequest is required and must be specified")
+	if r.updateAdKeywordRequest == nil {
+		return localVarReturnValue, nil, reportError("updateAdKeywordRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3969,7 +4644,7 @@ func (a *AdCampaignsAPIService) UpdateAdStatusExecute(r AdCampaignsAPIUpdateAdSt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.updateAdStatusRequest
+	localVarPostBody = r.updateAdKeywordRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

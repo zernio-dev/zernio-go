@@ -20,8 +20,8 @@ var _ MappedNullable = &ListAdKeywords200Response{}
 
 // ListAdKeywords200Response struct for ListAdKeywords200Response
 type ListAdKeywords200Response struct {
-	Keywords   []ListAdKeywords200ResponseKeywordsInner `json:"keywords,omitempty"`
-	Pagination *Pagination                              `json:"pagination,omitempty"`
+	Keywords   []AdKeyword `json:"keywords,omitempty"`
+	Pagination *Pagination `json:"pagination,omitempty"`
 }
 
 // NewListAdKeywords200Response instantiates a new ListAdKeywords200Response object
@@ -42,9 +42,9 @@ func NewListAdKeywords200ResponseWithDefaults() *ListAdKeywords200Response {
 }
 
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
-func (o *ListAdKeywords200Response) GetKeywords() []ListAdKeywords200ResponseKeywordsInner {
+func (o *ListAdKeywords200Response) GetKeywords() []AdKeyword {
 	if o == nil || IsNil(o.Keywords) {
-		var ret []ListAdKeywords200ResponseKeywordsInner
+		var ret []AdKeyword
 		return ret
 	}
 	return o.Keywords
@@ -52,7 +52,7 @@ func (o *ListAdKeywords200Response) GetKeywords() []ListAdKeywords200ResponseKey
 
 // GetKeywordsOk returns a tuple with the Keywords field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAdKeywords200Response) GetKeywordsOk() ([]ListAdKeywords200ResponseKeywordsInner, bool) {
+func (o *ListAdKeywords200Response) GetKeywordsOk() ([]AdKeyword, bool) {
 	if o == nil || IsNil(o.Keywords) {
 		return nil, false
 	}
@@ -68,8 +68,8 @@ func (o *ListAdKeywords200Response) HasKeywords() bool {
 	return false
 }
 
-// SetKeywords gets a reference to the given []ListAdKeywords200ResponseKeywordsInner and assigns it to the Keywords field.
-func (o *ListAdKeywords200Response) SetKeywords(v []ListAdKeywords200ResponseKeywordsInner) {
+// SetKeywords gets a reference to the given []AdKeyword and assigns it to the Keywords field.
+func (o *ListAdKeywords200Response) SetKeywords(v []AdKeyword) {
 	o.Keywords = v
 }
 

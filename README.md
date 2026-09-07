@@ -299,6 +299,7 @@ func main() {
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
+| `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
@@ -309,17 +310,21 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
 | `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
+| `client.AdCampaignsAPI.UpdateAdKeyword(ctx)` | Pause or enable a Search keyword |
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
+| `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search keywords to an ad group |
 | `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach extension assets to a Google Search campaign |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 | `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set |
+| `client.AdCampaignsAPI.RemoveAdKeyword(ctx)` | Remove a Search keyword |
+| `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywords(ctx)` | Replace campaign-level negative keywords |
 
 ### Ad Creatives
 | Method | Description |

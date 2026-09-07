@@ -160,10 +160,12 @@ type CreateStandaloneAdRequest struct {
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only
 	CampaignType *string `json:"campaignType,omitempty"`
-	// Google Search only. BROAD-match keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.keywords, which also sets match types.
-	Keywords []string `json:"keywords,omitempty"`
-	// Google Search only; other platforms return 400. BROAD-match negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
-	NegativeKeywords []string `json:"negativeKeywords,omitempty"`
+	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
+	Keywords []KeywordEntry `json:"keywords,omitempty"`
+	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
+	NegativeKeywords []KeywordEntry `json:"negativeKeywords,omitempty"`
+	// Google Search only; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
+	CampaignNegativeKeywords []KeywordEntry `json:"campaignNegativeKeywords,omitempty"`
 	// Google Search RSA only. Extra headlines.
 	AdditionalHeadlines []string `json:"additionalHeadlines,omitempty"`
 	// Google Search RSA only. Extra descriptions.
@@ -2585,9 +2587,9 @@ func (o *CreateStandaloneAdRequest) SetCampaignType(v string) {
 }
 
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetKeywords() []string {
+func (o *CreateStandaloneAdRequest) GetKeywords() []KeywordEntry {
 	if o == nil || IsNil(o.Keywords) {
-		var ret []string
+		var ret []KeywordEntry
 		return ret
 	}
 	return o.Keywords
@@ -2595,7 +2597,7 @@ func (o *CreateStandaloneAdRequest) GetKeywords() []string {
 
 // GetKeywordsOk returns a tuple with the Keywords field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetKeywordsOk() ([]string, bool) {
+func (o *CreateStandaloneAdRequest) GetKeywordsOk() ([]KeywordEntry, bool) {
 	if o == nil || IsNil(o.Keywords) {
 		return nil, false
 	}
@@ -2611,15 +2613,15 @@ func (o *CreateStandaloneAdRequest) HasKeywords() bool {
 	return false
 }
 
-// SetKeywords gets a reference to the given []string and assigns it to the Keywords field.
-func (o *CreateStandaloneAdRequest) SetKeywords(v []string) {
+// SetKeywords gets a reference to the given []KeywordEntry and assigns it to the Keywords field.
+func (o *CreateStandaloneAdRequest) SetKeywords(v []KeywordEntry) {
 	o.Keywords = v
 }
 
 // GetNegativeKeywords returns the NegativeKeywords field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetNegativeKeywords() []string {
+func (o *CreateStandaloneAdRequest) GetNegativeKeywords() []KeywordEntry {
 	if o == nil || IsNil(o.NegativeKeywords) {
-		var ret []string
+		var ret []KeywordEntry
 		return ret
 	}
 	return o.NegativeKeywords
@@ -2627,7 +2629,7 @@ func (o *CreateStandaloneAdRequest) GetNegativeKeywords() []string {
 
 // GetNegativeKeywordsOk returns a tuple with the NegativeKeywords field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetNegativeKeywordsOk() ([]string, bool) {
+func (o *CreateStandaloneAdRequest) GetNegativeKeywordsOk() ([]KeywordEntry, bool) {
 	if o == nil || IsNil(o.NegativeKeywords) {
 		return nil, false
 	}
@@ -2643,9 +2645,41 @@ func (o *CreateStandaloneAdRequest) HasNegativeKeywords() bool {
 	return false
 }
 
-// SetNegativeKeywords gets a reference to the given []string and assigns it to the NegativeKeywords field.
-func (o *CreateStandaloneAdRequest) SetNegativeKeywords(v []string) {
+// SetNegativeKeywords gets a reference to the given []KeywordEntry and assigns it to the NegativeKeywords field.
+func (o *CreateStandaloneAdRequest) SetNegativeKeywords(v []KeywordEntry) {
 	o.NegativeKeywords = v
+}
+
+// GetCampaignNegativeKeywords returns the CampaignNegativeKeywords field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCampaignNegativeKeywords() []KeywordEntry {
+	if o == nil || IsNil(o.CampaignNegativeKeywords) {
+		var ret []KeywordEntry
+		return ret
+	}
+	return o.CampaignNegativeKeywords
+}
+
+// GetCampaignNegativeKeywordsOk returns a tuple with the CampaignNegativeKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCampaignNegativeKeywordsOk() ([]KeywordEntry, bool) {
+	if o == nil || IsNil(o.CampaignNegativeKeywords) {
+		return nil, false
+	}
+	return o.CampaignNegativeKeywords, true
+}
+
+// HasCampaignNegativeKeywords returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCampaignNegativeKeywords() bool {
+	if o != nil && !IsNil(o.CampaignNegativeKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignNegativeKeywords gets a reference to the given []KeywordEntry and assigns it to the CampaignNegativeKeywords field.
+func (o *CreateStandaloneAdRequest) SetCampaignNegativeKeywords(v []KeywordEntry) {
+	o.CampaignNegativeKeywords = v
 }
 
 // GetAdditionalHeadlines returns the AdditionalHeadlines field value if set, zero value otherwise.
@@ -3528,6 +3562,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.NegativeKeywords) {
 		toSerialize["negativeKeywords"] = o.NegativeKeywords
+	}
+	if !IsNil(o.CampaignNegativeKeywords) {
+		toSerialize["campaignNegativeKeywords"] = o.CampaignNegativeKeywords
 	}
 	if !IsNil(o.AdditionalHeadlines) {
 		toSerialize["additionalHeadlines"] = o.AdditionalHeadlines
