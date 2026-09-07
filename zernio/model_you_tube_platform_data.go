@@ -18,7 +18,7 @@ import (
 // checks if the YouTubePlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &YouTubePlatformData{}
 
-// YouTubePlatformData Videos under 3 min auto-detected as Shorts. Custom thumbnails for regular videos only. Scheduled videos are uploaded immediately with the specified visibility.
+// YouTubePlatformData Videos under 3 min auto-detected as Shorts. Custom thumbnails for regular videos only. Scheduled videos are uploaded immediately with the specified visibility. There is no description field here: the video description comes from the post content, or from customContent on this platform target when set, and is truncated to 5000 characters.
 type YouTubePlatformData struct {
 	// Video title. Defaults to first line of content or \"Untitled Video\". Must be ≤ 100 characters.
 	Title *string `json:"title,omitempty"`
