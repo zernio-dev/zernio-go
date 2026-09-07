@@ -67,6 +67,8 @@ type APIClient struct {
 
 	AdInsightsAPI *AdInsightsAPIService
 
+	AdLibraryAPI *AdLibraryAPIService
+
 	AdTargetingAPI *AdTargetingAPIService
 
 	AnalyticsAPI *AnalyticsAPIService
@@ -205,6 +207,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.AdCampaignsAPI = (*AdCampaignsAPIService)(&c.common)
 	c.AdCreativesAPI = (*AdCreativesAPIService)(&c.common)
 	c.AdInsightsAPI = (*AdInsightsAPIService)(&c.common)
+	c.AdLibraryAPI = (*AdLibraryAPIService)(&c.common)
 	c.AdTargetingAPI = (*AdTargetingAPIService)(&c.common)
 	c.AnalyticsAPI = (*AnalyticsAPIService)(&c.common)
 	c.BlogsAPI = (*BlogsAPIService)(&c.common)

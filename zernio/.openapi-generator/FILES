@@ -8,6 +8,7 @@ api_ad_audiences.go
 api_ad_campaigns.go
 api_ad_creatives.go
 api_ad_insights.go
+api_ad_library.go
 api_ad_targeting.go
 api_analytics.go
 api_api_keys.go
@@ -1210,6 +1211,8 @@ model_schedule_broadcast_200_response_broadcast.go
 model_schedule_broadcast_request.go
 model_search_ad_interests_200_response.go
 model_search_ad_interests_200_response_interests_inner.go
+model_search_ad_library_200_response.go
+model_search_ad_library_200_response_paging.go
 model_search_ad_targeting_200_response.go
 model_search_ad_targeting_200_response_results_inner.go
 model_search_available_phone_numbers_200_response.go
