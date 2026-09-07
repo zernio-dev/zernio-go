@@ -112,9 +112,9 @@ type CreateStandaloneAdRequest struct {
 	// Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Postal/ZIP geo targeting. `key` is the platform's postal location ID from /v1/ads/targeting/search?dimension=geo&geoType=zip. Supported on Meta, Google, TikTok, Pinterest, X.
-	Zips []BoostPostRequestTargetingRegionsInner `json:"zips,omitempty"`
+	Zips []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"zips,omitempty"`
 	// DMA / metro-area geo targeting (Meta and TikTok). `key` is the platform's metro ID from /v1/ads/targeting/search?dimension=geo&geoType=metro (TikTok metros appear as type `metro`, e.g. the New York DMA).
-	Metros []BoostPostRequestTargetingRegionsInner `json:"metros,omitempty"`
+	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"metros,omitempty"`
 	// Point-radius (lat/lng) geo targeting. Meta only (custom_locations). Rejected on platforms without radius support.
 	CustomLocations []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok. Each must include id.
@@ -127,7 +127,7 @@ type CreateStandaloneAdRequest struct {
 	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
 	// Normalized household-income tier. Meta and TikTok express all four; Google maps only `top_10`; rejected on LinkedIn, X, and Pinterest. On Meta, income targeting is incompatible with housing/employment/credit `specialAdCategories`.
 	IncomeTier *string `json:"incomeTier,omitempty"`
-	// Language codes restricting the audience by language. On Meta, ISO 639-1 codes (e.g. ['en'], ['de']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"). Unknown codes are rejected. Other ad platforms use their own language-code systems.
+	// e.g. [\"en\",\"es\"]. Google: campaign language targeting (language_constant) using Google's language codes (ISO 639-1, plus variants such as `zh_CN`); unknown codes return 400. On Meta, a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code for a specific one (\"en_GB\", \"pt_BR\", \"zh_TW\"); unknown codes are rejected. Other ad platforms use their own language-code systems.
 	Languages  []string                             `json:"languages,omitempty"`
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
 	// ID of a `saved_targeting` audience (created via POST /v1/ads/audiences). When set, its stored TargetingSpec is expanded as the base targeting; inline fields on this body merge on top. Lets you reuse a named targeting preset without re-sending every field.
@@ -1755,9 +1755,9 @@ func (o *CreateStandaloneAdRequest) SetInterests(v []UpdateAdRequestTargetingInt
 }
 
 // GetZips returns the Zips field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetZips() []BoostPostRequestTargetingRegionsInner {
+func (o *CreateStandaloneAdRequest) GetZips() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner {
 	if o == nil || IsNil(o.Zips) {
-		var ret []BoostPostRequestTargetingRegionsInner
+		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner
 		return ret
 	}
 	return o.Zips
@@ -1765,7 +1765,7 @@ func (o *CreateStandaloneAdRequest) GetZips() []BoostPostRequestTargetingRegions
 
 // GetZipsOk returns a tuple with the Zips field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetZipsOk() ([]BoostPostRequestTargetingRegionsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetZipsOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner, bool) {
 	if o == nil || IsNil(o.Zips) {
 		return nil, false
 	}
@@ -1781,15 +1781,15 @@ func (o *CreateStandaloneAdRequest) HasZips() bool {
 	return false
 }
 
-// SetZips gets a reference to the given []BoostPostRequestTargetingRegionsInner and assigns it to the Zips field.
-func (o *CreateStandaloneAdRequest) SetZips(v []BoostPostRequestTargetingRegionsInner) {
+// SetZips gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner and assigns it to the Zips field.
+func (o *CreateStandaloneAdRequest) SetZips(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner) {
 	o.Zips = v
 }
 
 // GetMetros returns the Metros field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetMetros() []BoostPostRequestTargetingRegionsInner {
+func (o *CreateStandaloneAdRequest) GetMetros() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner {
 	if o == nil || IsNil(o.Metros) {
-		var ret []BoostPostRequestTargetingRegionsInner
+		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner
 		return ret
 	}
 	return o.Metros
@@ -1797,7 +1797,7 @@ func (o *CreateStandaloneAdRequest) GetMetros() []BoostPostRequestTargetingRegio
 
 // GetMetrosOk returns a tuple with the Metros field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetMetrosOk() ([]BoostPostRequestTargetingRegionsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetMetrosOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner, bool) {
 	if o == nil || IsNil(o.Metros) {
 		return nil, false
 	}
@@ -1813,8 +1813,8 @@ func (o *CreateStandaloneAdRequest) HasMetros() bool {
 	return false
 }
 
-// SetMetros gets a reference to the given []BoostPostRequestTargetingRegionsInner and assigns it to the Metros field.
-func (o *CreateStandaloneAdRequest) SetMetros(v []BoostPostRequestTargetingRegionsInner) {
+// SetMetros gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner and assigns it to the Metros field.
+func (o *CreateStandaloneAdRequest) SetMetros(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner) {
 	o.Metros = v
 }
 

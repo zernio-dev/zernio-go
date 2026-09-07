@@ -262,6 +262,7 @@ func main() {
 ### Ad Accounts
 | Method | Description |
 |--------|-------------|
+| `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account-level callout extensions |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdAccountsAPI.ListAdLabels(ctx)` | Ad labels |
 | `client.AdAccountsAPI.ListAdStudies(ctx)` | A/B tests and lift studies |
@@ -282,6 +283,8 @@ func main() {
 | `client.AdAccountsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
 | `client.AdAccountsAPI.UpdateValueRuleSet(ctx)` | Replace a value rule set |
 | `client.AdAccountsAPI.DeleteValueRuleSet(ctx)` | Delete a value rule set |
+| `client.AdAccountsAPI.AddAccountCallouts(ctx)` | Add account-level callout extensions |
+| `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove an account-level callout extension |
 
 ### Ad Audiences
 | Method | Description |
@@ -299,15 +302,18 @@ func main() {
 |--------|-------------|
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
+| `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
+| `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Live ad-set details incl. learning phase |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
+| `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, and language targeting |
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
 | `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
@@ -315,6 +321,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
+| `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
@@ -456,8 +463,10 @@ func main() {
 ### Conversions
 | Method | Description |
 |--------|-------------|
+| `client.ConversionsAPI.ListConversionActions(ctx)` | List conversion actions and their tag snippets |
 | `client.ConversionsAPI.ListConversionAssociations(ctx)` | List associated campaigns |
 | `client.ConversionsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
+| `client.ConversionsAPI.CreateConversionAction(ctx)` | Create a website conversion action |
 | `client.ConversionsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
 | `client.ConversionsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.ConversionsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
