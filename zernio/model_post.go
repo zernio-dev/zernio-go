@@ -30,7 +30,8 @@ type Post struct {
 	Platforms    []PlatformTarget `json:"platforms,omitempty"`
 	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
 	Timezone     *string          `json:"timezone,omitempty"`
-	Status       *string          `json:"status,omitempty"`
+	// `cancelled` is set by DELETE /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts.
+	Status *string `json:"status,omitempty"`
 	// YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
 	Tags []string `json:"tags,omitempty"`
 	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.

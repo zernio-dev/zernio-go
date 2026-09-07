@@ -31,7 +31,7 @@ type PlatformTarget struct {
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 	// The platform-specific options stored on this target, echoed back as they were sent. Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out, because a response is not guaranteed to match exactly one of those variants and generated clients that pick a variant by structure reject the entire response when it doesn't. Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here, and the key is omitted rather than sent as an empty object.
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
-	// Platform-specific status: pending, publishing, published, failed
+	// Platform-specific status: pending, processing, uploading, published, failed, cancelled (removed from the platform via DELETE /v1/posts/{postId}/unpublish)
 	Status *string `json:"status,omitempty"`
 	// The native post ID on the platform (populated after successful publish)
 	PlatformPostId *string `json:"platformPostId,omitempty"`

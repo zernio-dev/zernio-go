@@ -249,7 +249,7 @@ func (r PostsAPICreatePostRequest) XRequestId(xRequestId string) PostsAPICreateP
 	return r
 }
 
-func (r PostsAPICreatePostRequest) Execute() (*PostCreateResponse, *http.Response, error) {
+func (r PostsAPICreatePostRequest) Execute() (*CreatePost200Response, *http.Response, error) {
 	return r.ApiService.CreatePostExecute(r)
 }
 
@@ -291,13 +291,13 @@ func (a *PostsAPIService) CreatePost(ctx context.Context) PostsAPICreatePostRequ
 
 // Execute executes the request
 //
-//	@return PostCreateResponse
-func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*PostCreateResponse, *http.Response, error) {
+//	@return CreatePost200Response
+func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*CreatePost200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *PostCreateResponse
+		localVarReturnValue *CreatePost200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PostsAPIService.CreatePost")

@@ -4677,6 +4677,172 @@ func (a *ConnectAPIService) ListPinterestBoardsForSelectionExecute(r ConnectAPIL
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIListSlackChannelsRequest struct {
+	ctx              context.Context
+	ApiService       *ConnectAPIService
+	profileId        *string
+	pendingDataToken *string
+	accountId        *string
+	redirectUrl      *string
+}
+
+// Zernio profile the channel account will belong to. Must match the profile the OAuth flow was started on when &#x60;pendingDataToken&#x60; is used.
+func (r ConnectAPIListSlackChannelsRequest) ProfileId(profileId string) ConnectAPIListSlackChannelsRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Nonce from the OAuth redirect (first connect).
+func (r ConnectAPIListSlackChannelsRequest) PendingDataToken(pendingDataToken string) ConnectAPIListSlackChannelsRequest {
+	r.pendingDataToken = &pendingDataToken
+	return r
+}
+
+// Existing active Slack account (yours or a team member&#39;s) whose workspace token is reused.
+func (r ConnectAPIListSlackChannelsRequest) AccountId(accountId string) ConnectAPIListSlackChannelsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Start-OAuth mode only: where to send the user after the connect completes. &#x60;redirectUrl&#x60; is accepted as an alias.
+func (r ConnectAPIListSlackChannelsRequest) RedirectUrl(redirectUrl string) ConnectAPIListSlackChannelsRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIListSlackChannelsRequest) Execute() (*ListSlackChannels200Response, *http.Response, error) {
+	return r.ApiService.ListSlackChannelsExecute(r)
+}
+
+/*
+ListSlackChannels List Slack channels for the channel picker
+
+Serves the channel picker of the Slack connect flow. Slack's OAuth installs the bot into a
+workspace, not a channel, so after the redirect the caller lists the workspace's channels
+here and finalizes one with `POST /v1/connect/slack`. Served by a dedicated route that
+shadows `GET /v1/connect/{platform}` for `slack`.
+
+Send exactly one of `pendingDataToken` (first connect: the nonce from the OAuth redirect,
+bound to the same `profileId`) or `accountId` (add another channel to a workspace already
+connected: the existing Slack account's workspace token is reused, no re-OAuth). With
+neither, the endpoint behaves like `GET /v1/connect/{platform}` and returns `authUrl` and
+`state` to start the OAuth flow.
+
+Channels are read live from Slack (`conversations.list`, public and private, archived
+excluded, up to 2,000). `isMember` says whether the Zernio bot is already in the channel:
+a public channel is joined automatically on finalize, a private one must be invited
+(`/invite @Zernio`) first.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIListSlackChannelsRequest
+*/
+func (a *ConnectAPIService) ListSlackChannels(ctx context.Context) ConnectAPIListSlackChannelsRequest {
+	return ConnectAPIListSlackChannelsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListSlackChannels200Response
+func (a *ConnectAPIService) ListSlackChannelsExecute(r ConnectAPIListSlackChannelsRequest) (*ListSlackChannels200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListSlackChannels200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ListSlackChannels")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/slack"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.pendingDataToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pendingDataToken", r.pendingDataToken, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIListSnapchatProfilesRequest struct {
 	ctx           context.Context
 	ApiService    *ConnectAPIService

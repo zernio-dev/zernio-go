@@ -194,6 +194,7 @@ func main() {
 | `client.ConnectAPI.ListInstagramPages(ctx)` | List Pages with a linked Instagram account |
 | `client.ConnectAPI.ListLinkedInOrganizations(ctx)` | List LinkedIn orgs |
 | `client.ConnectAPI.ListPinterestBoardsForSelection(ctx)` | List Pinterest boards |
+| `client.ConnectAPI.ListSlackChannels(ctx)` | List Slack channels for the channel picker |
 | `client.ConnectAPI.ListSnapchatProfiles(ctx)` | List Snapchat profiles |
 | `client.ConnectAPI.ListWhatsAppPhoneNumbers(ctx)` | List numbers for selection |
 | `client.ConnectAPI.CreatePinterestBoard(ctx)` | Create Pinterest board |

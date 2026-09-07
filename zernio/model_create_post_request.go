@@ -35,6 +35,8 @@ type CreatePostRequest struct {
 	PublishNow *bool `json:"publishNow,omitempty"`
 	// When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
 	IsDraft *bool `json:"isDraft,omitempty"`
+	// TikTok only. Preview whether each `tiktok` entry in `platforms` could publish right now under the TikTok Direct Post daily limits, without creating, scheduling or publishing anything: no post is persisted and no upload slot is claimed, so it can be repeated freely. The request still goes through auth, the payment gate and body validation, then returns HTTP 200 with `{ dryRun: true, canPublish, tiktok: [...] }` instead of 201. Only `tiktok` entries are evaluated; other platforms in the body are ignored, and a body with no `tiktok` entry is rejected with 400 `invalid_field_value` on `platforms`. An entry with `platformSpecificData.tiktokSettings.draft: true` (Creator Inbox upload) is not subject to the limit and always reports `canPublish: true`.
+	DryRun *bool `json:"dryRun,omitempty"`
 	// IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset. Has no effect on values that already carry one. An unknown name returns 400 when `scheduledFor` is set.
 	Timezone *string `json:"timezone,omitempty"`
 	// Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
@@ -68,6 +70,8 @@ func NewCreatePostRequest() *CreatePostRequest {
 	this.PublishNow = &publishNow
 	var isDraft bool = false
 	this.IsDraft = &isDraft
+	var dryRun bool = false
+	this.DryRun = &dryRun
 	var timezone string = "UTC"
 	this.Timezone = &timezone
 	var crosspostingEnabled bool = true
@@ -84,6 +88,8 @@ func NewCreatePostRequestWithDefaults() *CreatePostRequest {
 	this.PublishNow = &publishNow
 	var isDraft bool = false
 	this.IsDraft = &isDraft
+	var dryRun bool = false
+	this.DryRun = &dryRun
 	var timezone string = "UTC"
 	this.Timezone = &timezone
 	var crosspostingEnabled bool = true
@@ -313,6 +319,38 @@ func (o *CreatePostRequest) HasIsDraft() bool {
 // SetIsDraft gets a reference to the given bool and assigns it to the IsDraft field.
 func (o *CreatePostRequest) SetIsDraft(v bool) {
 	o.IsDraft = &v
+}
+
+// GetDryRun returns the DryRun field value if set, zero value otherwise.
+func (o *CreatePostRequest) GetDryRun() bool {
+	if o == nil || IsNil(o.DryRun) {
+		var ret bool
+		return ret
+	}
+	return *o.DryRun
+}
+
+// GetDryRunOk returns a tuple with the DryRun field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePostRequest) GetDryRunOk() (*bool, bool) {
+	if o == nil || IsNil(o.DryRun) {
+		return nil, false
+	}
+	return o.DryRun, true
+}
+
+// HasDryRun returns a boolean if a field has been set.
+func (o *CreatePostRequest) HasDryRun() bool {
+	if o != nil && !IsNil(o.DryRun) {
+		return true
+	}
+
+	return false
+}
+
+// SetDryRun gets a reference to the given bool and assigns it to the DryRun field.
+func (o *CreatePostRequest) SetDryRun(v bool) {
+	o.DryRun = &v
 }
 
 // GetTimezone returns the Timezone field value if set, zero value otherwise.
@@ -697,6 +735,9 @@ func (o CreatePostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsDraft) {
 		toSerialize["isDraft"] = o.IsDraft
+	}
+	if !IsNil(o.DryRun) {
+		toSerialize["dryRun"] = o.DryRun
 	}
 	if !IsNil(o.Timezone) {
 		toSerialize["timezone"] = o.Timezone

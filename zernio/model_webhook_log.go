@@ -27,7 +27,7 @@ type WebhookLog struct {
 	WebhookId *string `json:"webhookId,omitempty"`
 	// Name of the webhook configuration at delivery time
 	WebhookName *string `json:"webhookName,omitempty"`
-	// Stable webhook event ID (correlates to the delivered payload)
+	// Stable webhook event ID: the payload `id`, also sent as the X-Zernio-Event-Id header. Shared by every attempt and redelivery of the same event.
 	EventId *string `json:"eventId,omitempty"`
 	// Event type that triggered the delivery (e.g. post.published)
 	Event *string `json:"event,omitempty"`
