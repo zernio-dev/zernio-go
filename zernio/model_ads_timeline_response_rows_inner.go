@@ -35,7 +35,9 @@ type AdsTimelineResponseRowsInner struct {
 	// Cost per 1000 impressions in native currency.
 	Cpm *float32 `json:"cpm,omitempty"`
 	// Sum of conversion events over the range. Fractional values are normal (attribution splitting + Google modeled conversions). Meta: events matching the campaign optimization goal. Google: tracked conversions. X / LinkedIn: reported website/lead conversions (added 2026-07).
-	Conversions       *float32 `json:"conversions,omitempty"`
+	Conversions *float32 `json:"conversions,omitempty"`
+	// All conversions, including actions excluded from the Conversions column (Google metrics.all_conversions). 0 on platforms without the concept.
+	AllConversions    *float32 `json:"allConversions,omitempty"`
 	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 	// Per-action-type counts merged across all ads on this day. Keys are platform-native action types.
 	Actions map[string]float32 `json:"actions,omitempty"`
@@ -384,6 +386,38 @@ func (o *AdsTimelineResponseRowsInner) SetConversions(v float32) {
 	o.Conversions = &v
 }
 
+// GetAllConversions returns the AllConversions field value if set, zero value otherwise.
+func (o *AdsTimelineResponseRowsInner) GetAllConversions() float32 {
+	if o == nil || IsNil(o.AllConversions) {
+		var ret float32
+		return ret
+	}
+	return *o.AllConversions
+}
+
+// GetAllConversionsOk returns a tuple with the AllConversions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdsTimelineResponseRowsInner) GetAllConversionsOk() (*float32, bool) {
+	if o == nil || IsNil(o.AllConversions) {
+		return nil, false
+	}
+	return o.AllConversions, true
+}
+
+// HasAllConversions returns a boolean if a field has been set.
+func (o *AdsTimelineResponseRowsInner) HasAllConversions() bool {
+	if o != nil && !IsNil(o.AllConversions) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllConversions gets a reference to the given float32 and assigns it to the AllConversions field.
+func (o *AdsTimelineResponseRowsInner) SetAllConversions(v float32) {
+	o.AllConversions = &v
+}
+
 // GetCostPerConversion returns the CostPerConversion field value if set, zero value otherwise.
 func (o *AdsTimelineResponseRowsInner) GetCostPerConversion() float32 {
 	if o == nil || IsNil(o.CostPerConversion) {
@@ -583,6 +617,9 @@ func (o AdsTimelineResponseRowsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Conversions) {
 		toSerialize["conversions"] = o.Conversions
+	}
+	if !IsNil(o.AllConversions) {
+		toSerialize["allConversions"] = o.AllConversions
 	}
 	if !IsNil(o.CostPerConversion) {
 		toSerialize["costPerConversion"] = o.CostPerConversion

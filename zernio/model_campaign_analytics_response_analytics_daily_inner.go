@@ -35,6 +35,8 @@ type CampaignAnalyticsResponseAnalyticsDailyInner struct {
 	Engagement *int32   `json:"engagement,omitempty"`
 	// Count of conversion events over the requested date range. FRACTIONAL: attribution splits one conversion across touchpoints and Google additionally reports modeled conversions, so values like 0.347 are normal. Meta: events matching the campaign's promoted_object.custom_event_type (PURCHASE, LEAD, etc.). Google: the account's tracked conversions. X and LinkedIn: their reported website/lead conversions (added 2026-07). 0 for non-conversion campaigns or when no events have fired.
 	Conversions *float32 `json:"conversions,omitempty"`
+	// All conversions, including actions excluded from the Conversions column (Google metrics.all_conversions). 0 on platforms without the concept.
+	AllConversions *float32 `json:"allConversions,omitempty"`
 	// Derived spend / conversions in the same currency as spend. 0 when conversions is 0.
 	CostPerConversion *float32 `json:"costPerConversion,omitempty"`
 	// Per-action-type counts summed over the date range, keyed by the platform's action-type names. Meta: raw Insights action_type keys (link_click, offsite_conversion.fb_pixel_purchase, onsite_conversion.lead_grouped, ...) — both engagement and conversion events. TikTok: pixel conversions (purchase, add_to_cart, initiate_checkout, view_content, complete_payment, lead) plus the paid-engagement family (follow, post_reaction for paid likes, comment, share) — follow is how FOLLOWERS-goal campaigns report their result. X: conversion types (purchase, sign_up, site_visit, download, custom). LinkedIn: conversion types (post_click, post_view, lead_gen). Google returns {} (its per-action names aren't synced per ad). Empty object when no actions are reported. NOTE: keys differ by platform, so branch on the ad's platform when interpreting them.
@@ -389,6 +391,38 @@ func (o *CampaignAnalyticsResponseAnalyticsDailyInner) HasConversions() bool {
 // SetConversions gets a reference to the given float32 and assigns it to the Conversions field.
 func (o *CampaignAnalyticsResponseAnalyticsDailyInner) SetConversions(v float32) {
 	o.Conversions = &v
+}
+
+// GetAllConversions returns the AllConversions field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalyticsDailyInner) GetAllConversions() float32 {
+	if o == nil || IsNil(o.AllConversions) {
+		var ret float32
+		return ret
+	}
+	return *o.AllConversions
+}
+
+// GetAllConversionsOk returns a tuple with the AllConversions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalyticsDailyInner) GetAllConversionsOk() (*float32, bool) {
+	if o == nil || IsNil(o.AllConversions) {
+		return nil, false
+	}
+	return o.AllConversions, true
+}
+
+// HasAllConversions returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalyticsDailyInner) HasAllConversions() bool {
+	if o != nil && !IsNil(o.AllConversions) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllConversions gets a reference to the given float32 and assigns it to the AllConversions field.
+func (o *CampaignAnalyticsResponseAnalyticsDailyInner) SetAllConversions(v float32) {
+	o.AllConversions = &v
 }
 
 // GetCostPerConversion returns the CostPerConversion field value if set, zero value otherwise.
@@ -1259,6 +1293,9 @@ func (o CampaignAnalyticsResponseAnalyticsDailyInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Conversions) {
 		toSerialize["conversions"] = o.Conversions
+	}
+	if !IsNil(o.AllConversions) {
+		toSerialize["allConversions"] = o.AllConversions
 	}
 	if !IsNil(o.CostPerConversion) {
 		toSerialize["costPerConversion"] = o.CostPerConversion
