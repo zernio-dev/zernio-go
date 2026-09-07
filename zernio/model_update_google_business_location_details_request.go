@@ -12,7 +12,6 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -31,7 +30,8 @@ type UpdateGoogleBusinessLocationDetailsRequest struct {
 	PhoneNumbers *GetGoogleBusinessLocationDetails200ResponsePhoneNumbers `json:"phoneNumbers,omitempty"`
 	Categories   *UpdateGoogleBusinessLocationDetailsRequestCategories    `json:"categories,omitempty"`
 	// Services offered by the business. Use updateMask='serviceItems' to update.
-	ServiceItems []GetGoogleBusinessLocationDetails200ResponseServiceItemsInner `json:"serviceItems,omitempty"`
+	ServiceItems         []GetGoogleBusinessLocationDetails200ResponseServiceItemsInner `json:"serviceItems,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _UpdateGoogleBusinessLocationDetailsRequest UpdateGoogleBusinessLocationDetailsRequest
@@ -334,6 +334,11 @@ func (o UpdateGoogleBusinessLocationDetailsRequest) ToMap() (map[string]interfac
 	if !IsNil(o.ServiceItems) {
 		toSerialize["serviceItems"] = o.ServiceItems
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -361,15 +366,27 @@ func (o *UpdateGoogleBusinessLocationDetailsRequest) UnmarshalJSON(data []byte) 
 
 	varUpdateGoogleBusinessLocationDetailsRequest := _UpdateGoogleBusinessLocationDetailsRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUpdateGoogleBusinessLocationDetailsRequest)
+	err = json.Unmarshal(data, &varUpdateGoogleBusinessLocationDetailsRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = UpdateGoogleBusinessLocationDetailsRequest(varUpdateGoogleBusinessLocationDetailsRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "updateMask")
+		delete(additionalProperties, "regularHours")
+		delete(additionalProperties, "specialHours")
+		delete(additionalProperties, "profile")
+		delete(additionalProperties, "websiteUri")
+		delete(additionalProperties, "phoneNumbers")
+		delete(additionalProperties, "categories")
+		delete(additionalProperties, "serviceItems")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }
