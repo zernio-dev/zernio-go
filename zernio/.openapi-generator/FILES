@@ -1109,6 +1109,8 @@ model_post_analytics.go
 model_post_create_response.go
 model_post_delete_response.go
 model_post_get_response.go
+model_post_publish_incomplete_response.go
+model_post_publish_incomplete_response_platform_results_inner.go
 model_post_retry_response.go
 model_post_update_response.go
 model_post_user_id.go
@@ -1186,6 +1188,7 @@ model_respond_to_sms_registration_review_200_response.go
 model_respond_to_sms_registration_review_request.go
 model_restore_workflow_version_200_response.go
 model_restore_workflow_version_200_response_workflow.go
+model_retry_post_207_response.go
 model_retweet_post_200_response.go
 model_retweet_post_request.go
 model_reuse_sms_registration_for_number_200_response.go
