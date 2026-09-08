@@ -24,7 +24,7 @@ type MetaLeadFormPlatformDataContextCard struct {
 	Content    []string `json:"content,omitempty"`
 	Style      *string  `json:"style,omitempty"`
 	ButtonText *string  `json:"buttonText,omitempty"`
-	// Direct public JPEG or PNG image URL, up to 5 MB. Redirects, Ad Image hashes and IDs are not supported.
+	// Direct public JPEG or PNG image URL, up to 5 MB. Uploaded as an unpublished Page photo and attached to the form. Redirects, Ad Image hashes and IDs are not supported.
 	CoverPhoto *string `json:"coverPhoto,omitempty"`
 }
 
