@@ -20,8 +20,10 @@ var _ MappedNullable = &SendInboxMessage200Response{}
 
 // SendInboxMessage200Response struct for SendInboxMessage200Response
 type SendInboxMessage200Response struct {
-	Success *bool                            `json:"success,omitempty"`
-	Data    *SendInboxMessage200ResponseData `json:"data,omitempty"`
+	Success *bool `json:"success,omitempty"`
+	// Present when a successful send ignored replyTo on Instagram or Facebook Messenger. The message was sent without a quote; do not retry it to apply the reply.
+	Warnings []SendInboxMessage200ResponseWarningsInner `json:"warnings,omitempty"`
+	Data     *SendInboxMessage200ResponseData           `json:"data,omitempty"`
 }
 
 // NewSendInboxMessage200Response instantiates a new SendInboxMessage200Response object
@@ -73,6 +75,38 @@ func (o *SendInboxMessage200Response) SetSuccess(v bool) {
 	o.Success = &v
 }
 
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *SendInboxMessage200Response) GetWarnings() []SendInboxMessage200ResponseWarningsInner {
+	if o == nil || IsNil(o.Warnings) {
+		var ret []SendInboxMessage200ResponseWarningsInner
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage200Response) GetWarningsOk() ([]SendInboxMessage200ResponseWarningsInner, bool) {
+	if o == nil || IsNil(o.Warnings) {
+		return nil, false
+	}
+	return o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *SendInboxMessage200Response) HasWarnings() bool {
+	if o != nil && !IsNil(o.Warnings) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarnings gets a reference to the given []SendInboxMessage200ResponseWarningsInner and assigns it to the Warnings field.
+func (o *SendInboxMessage200Response) SetWarnings(v []SendInboxMessage200ResponseWarningsInner) {
+	o.Warnings = v
+}
+
 // GetData returns the Data field value if set, zero value otherwise.
 func (o *SendInboxMessage200Response) GetData() SendInboxMessage200ResponseData {
 	if o == nil || IsNil(o.Data) {
@@ -117,6 +151,9 @@ func (o SendInboxMessage200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Success) {
 		toSerialize["success"] = o.Success
+	}
+	if !IsNil(o.Warnings) {
+		toSerialize["warnings"] = o.Warnings
 	}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data
