@@ -24,8 +24,10 @@ var _ MappedNullable = &UpdateWhatsAppTemplateByIdRequest{}
 type UpdateWhatsAppTemplateByIdRequest struct {
 	// WhatsApp social account ID
 	AccountId string `json:"accountId"`
-	// Updated template components
-	Components []WhatsAppTemplateComponent `json:"components"`
+	// Updated template components. Optional when only message_send_ttl_seconds changes; at least one of the two is required.
+	Components []WhatsAppTemplateComponent `json:"components,omitempty"`
+	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 
 type _UpdateWhatsAppTemplateByIdRequest UpdateWhatsAppTemplateByIdRequest
@@ -34,10 +36,9 @@ type _UpdateWhatsAppTemplateByIdRequest UpdateWhatsAppTemplateByIdRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateWhatsAppTemplateByIdRequest(accountId string, components []WhatsAppTemplateComponent) *UpdateWhatsAppTemplateByIdRequest {
+func NewUpdateWhatsAppTemplateByIdRequest(accountId string) *UpdateWhatsAppTemplateByIdRequest {
 	this := UpdateWhatsAppTemplateByIdRequest{}
 	this.AccountId = accountId
-	this.Components = components
 	return &this
 }
 
@@ -73,28 +74,68 @@ func (o *UpdateWhatsAppTemplateByIdRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
-// GetComponents returns the Components field value
+// GetComponents returns the Components field value if set, zero value otherwise.
 func (o *UpdateWhatsAppTemplateByIdRequest) GetComponents() []WhatsAppTemplateComponent {
-	if o == nil {
+	if o == nil || IsNil(o.Components) {
 		var ret []WhatsAppTemplateComponent
 		return ret
 	}
-
 	return o.Components
 }
 
-// GetComponentsOk returns a tuple with the Components field value
+// GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UpdateWhatsAppTemplateByIdRequest) GetComponentsOk() ([]WhatsAppTemplateComponent, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Components) {
 		return nil, false
 	}
 	return o.Components, true
 }
 
-// SetComponents sets field value
+// HasComponents returns a boolean if a field has been set.
+func (o *UpdateWhatsAppTemplateByIdRequest) HasComponents() bool {
+	if o != nil && !IsNil(o.Components) {
+		return true
+	}
+
+	return false
+}
+
+// SetComponents gets a reference to the given []WhatsAppTemplateComponent and assigns it to the Components field.
 func (o *UpdateWhatsAppTemplateByIdRequest) SetComponents(v []WhatsAppTemplateComponent) {
 	o.Components = v
+}
+
+// GetMessageSendTtlSeconds returns the MessageSendTtlSeconds field value if set, zero value otherwise.
+func (o *UpdateWhatsAppTemplateByIdRequest) GetMessageSendTtlSeconds() int32 {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MessageSendTtlSeconds
+}
+
+// GetMessageSendTtlSecondsOk returns a tuple with the MessageSendTtlSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateWhatsAppTemplateByIdRequest) GetMessageSendTtlSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		return nil, false
+	}
+	return o.MessageSendTtlSeconds, true
+}
+
+// HasMessageSendTtlSeconds returns a boolean if a field has been set.
+func (o *UpdateWhatsAppTemplateByIdRequest) HasMessageSendTtlSeconds() bool {
+	if o != nil && !IsNil(o.MessageSendTtlSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageSendTtlSeconds gets a reference to the given int32 and assigns it to the MessageSendTtlSeconds field.
+func (o *UpdateWhatsAppTemplateByIdRequest) SetMessageSendTtlSeconds(v int32) {
+	o.MessageSendTtlSeconds = &v
 }
 
 func (o UpdateWhatsAppTemplateByIdRequest) MarshalJSON() ([]byte, error) {
@@ -108,7 +149,12 @@ func (o UpdateWhatsAppTemplateByIdRequest) MarshalJSON() ([]byte, error) {
 func (o UpdateWhatsAppTemplateByIdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
-	toSerialize["components"] = o.Components
+	if !IsNil(o.Components) {
+		toSerialize["components"] = o.Components
+	}
+	if !IsNil(o.MessageSendTtlSeconds) {
+		toSerialize["message_send_ttl_seconds"] = o.MessageSendTtlSeconds
+	}
 	return toSerialize, nil
 }
 
@@ -118,7 +164,6 @@ func (o *UpdateWhatsAppTemplateByIdRequest) UnmarshalJSON(data []byte) (err erro
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"accountId",
-		"components",
 	}
 
 	allProperties := make(map[string]interface{})

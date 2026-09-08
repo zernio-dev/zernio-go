@@ -40,6 +40,8 @@ type CreateWhatsAppTemplateRequest struct {
 	LibraryTemplateBodyInputs map[string]interface{} `json:"library_template_body_inputs,omitempty"`
 	// Optional button customizations for library templates. Each item specifies button type and configuration (e.g., URL, phone number, quick reply).
 	LibraryTemplateButtonInputs []CreateWhatsAppTemplateRequestLibraryTemplateButtonInputsInner `json:"library_template_button_inputs,omitempty"`
+	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 
 type _CreateWhatsAppTemplateRequest CreateWhatsAppTemplateRequest
@@ -321,6 +323,38 @@ func (o *CreateWhatsAppTemplateRequest) SetLibraryTemplateButtonInputs(v []Creat
 	o.LibraryTemplateButtonInputs = v
 }
 
+// GetMessageSendTtlSeconds returns the MessageSendTtlSeconds field value if set, zero value otherwise.
+func (o *CreateWhatsAppTemplateRequest) GetMessageSendTtlSeconds() int32 {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MessageSendTtlSeconds
+}
+
+// GetMessageSendTtlSecondsOk returns a tuple with the MessageSendTtlSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWhatsAppTemplateRequest) GetMessageSendTtlSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		return nil, false
+	}
+	return o.MessageSendTtlSeconds, true
+}
+
+// HasMessageSendTtlSeconds returns a boolean if a field has been set.
+func (o *CreateWhatsAppTemplateRequest) HasMessageSendTtlSeconds() bool {
+	if o != nil && !IsNil(o.MessageSendTtlSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageSendTtlSeconds gets a reference to the given int32 and assigns it to the MessageSendTtlSeconds field.
+func (o *CreateWhatsAppTemplateRequest) SetMessageSendTtlSeconds(v int32) {
+	o.MessageSendTtlSeconds = &v
+}
+
 func (o CreateWhatsAppTemplateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -349,6 +383,9 @@ func (o CreateWhatsAppTemplateRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LibraryTemplateButtonInputs) {
 		toSerialize["library_template_button_inputs"] = o.LibraryTemplateButtonInputs
+	}
+	if !IsNil(o.MessageSendTtlSeconds) {
+		toSerialize["message_send_ttl_seconds"] = o.MessageSendTtlSeconds
 	}
 	return toSerialize, nil
 }

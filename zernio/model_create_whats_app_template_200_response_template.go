@@ -26,6 +26,8 @@ type CreateWhatsAppTemplate200ResponseTemplate struct {
 	Status   *string `json:"status,omitempty"`
 	Category *string `json:"category,omitempty"`
 	Language *string `json:"language,omitempty"`
+	// Echoed when supplied on the request.
+	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 
 // NewCreateWhatsAppTemplate200ResponseTemplate instantiates a new CreateWhatsAppTemplate200ResponseTemplate object
@@ -205,6 +207,38 @@ func (o *CreateWhatsAppTemplate200ResponseTemplate) SetLanguage(v string) {
 	o.Language = &v
 }
 
+// GetMessageSendTtlSeconds returns the MessageSendTtlSeconds field value if set, zero value otherwise.
+func (o *CreateWhatsAppTemplate200ResponseTemplate) GetMessageSendTtlSeconds() int32 {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MessageSendTtlSeconds
+}
+
+// GetMessageSendTtlSecondsOk returns a tuple with the MessageSendTtlSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWhatsAppTemplate200ResponseTemplate) GetMessageSendTtlSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		return nil, false
+	}
+	return o.MessageSendTtlSeconds, true
+}
+
+// HasMessageSendTtlSeconds returns a boolean if a field has been set.
+func (o *CreateWhatsAppTemplate200ResponseTemplate) HasMessageSendTtlSeconds() bool {
+	if o != nil && !IsNil(o.MessageSendTtlSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageSendTtlSeconds gets a reference to the given int32 and assigns it to the MessageSendTtlSeconds field.
+func (o *CreateWhatsAppTemplate200ResponseTemplate) SetMessageSendTtlSeconds(v int32) {
+	o.MessageSendTtlSeconds = &v
+}
+
 func (o CreateWhatsAppTemplate200ResponseTemplate) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -229,6 +263,9 @@ func (o CreateWhatsAppTemplate200ResponseTemplate) ToMap() (map[string]interface
 	}
 	if !IsNil(o.Language) {
 		toSerialize["language"] = o.Language
+	}
+	if !IsNil(o.MessageSendTtlSeconds) {
+		toSerialize["message_send_ttl_seconds"] = o.MessageSendTtlSeconds
 	}
 	return toSerialize, nil
 }

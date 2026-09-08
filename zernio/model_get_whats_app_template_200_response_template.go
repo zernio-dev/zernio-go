@@ -28,6 +28,8 @@ type GetWhatsAppTemplate200ResponseTemplate struct {
 	// The variant actually returned.
 	Language   *string                  `json:"language,omitempty"`
 	Components []map[string]interface{} `json:"components,omitempty"`
+	// Only when a custom TTL is set; absent while the category default applies.
+	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 	// Only when status is REJECTED.
 	RejectedReason *string `json:"rejected_reason,omitempty"`
 	// Post-approval quality (GREEN/YELLOW/RED), when Meta reports one.
@@ -243,6 +245,38 @@ func (o *GetWhatsAppTemplate200ResponseTemplate) SetComponents(v []map[string]in
 	o.Components = v
 }
 
+// GetMessageSendTtlSeconds returns the MessageSendTtlSeconds field value if set, zero value otherwise.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetMessageSendTtlSeconds() int32 {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MessageSendTtlSeconds
+}
+
+// GetMessageSendTtlSecondsOk returns a tuple with the MessageSendTtlSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) GetMessageSendTtlSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		return nil, false
+	}
+	return o.MessageSendTtlSeconds, true
+}
+
+// HasMessageSendTtlSeconds returns a boolean if a field has been set.
+func (o *GetWhatsAppTemplate200ResponseTemplate) HasMessageSendTtlSeconds() bool {
+	if o != nil && !IsNil(o.MessageSendTtlSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageSendTtlSeconds gets a reference to the given int32 and assigns it to the MessageSendTtlSeconds field.
+func (o *GetWhatsAppTemplate200ResponseTemplate) SetMessageSendTtlSeconds(v int32) {
+	o.MessageSendTtlSeconds = &v
+}
+
 // GetRejectedReason returns the RejectedReason field value if set, zero value otherwise.
 func (o *GetWhatsAppTemplate200ResponseTemplate) GetRejectedReason() string {
 	if o == nil || IsNil(o.RejectedReason) {
@@ -334,6 +368,9 @@ func (o GetWhatsAppTemplate200ResponseTemplate) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Components) {
 		toSerialize["components"] = o.Components
+	}
+	if !IsNil(o.MessageSendTtlSeconds) {
+		toSerialize["message_send_ttl_seconds"] = o.MessageSendTtlSeconds
 	}
 	if !IsNil(o.RejectedReason) {
 		toSerialize["rejected_reason"] = o.RejectedReason

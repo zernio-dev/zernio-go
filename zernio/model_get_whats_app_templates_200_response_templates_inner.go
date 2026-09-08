@@ -21,12 +21,14 @@ var _ MappedNullable = &GetWhatsAppTemplates200ResponseTemplatesInner{}
 // GetWhatsAppTemplates200ResponseTemplatesInner struct for GetWhatsAppTemplates200ResponseTemplatesInner
 type GetWhatsAppTemplates200ResponseTemplatesInner struct {
 	// WhatsApp template ID
-	Id         *string                  `json:"id,omitempty"`
-	Name       *string                  `json:"name,omitempty"`
-	Status     *string                  `json:"status,omitempty"`
-	Category   *string                  `json:"category,omitempty"`
-	Language   *string                  `json:"language,omitempty"`
-	Components []map[string]interface{} `json:"components,omitempty"`
+	Id       *string `json:"id,omitempty"`
+	Name     *string `json:"name,omitempty"`
+	Status   *string `json:"status,omitempty"`
+	Category *string `json:"category,omitempty"`
+	Language *string `json:"language,omitempty"`
+	// Only when a custom TTL is set; absent while the category default applies.
+	MessageSendTtlSeconds *int32                   `json:"message_send_ttl_seconds,omitempty"`
+	Components            []map[string]interface{} `json:"components,omitempty"`
 }
 
 // NewGetWhatsAppTemplates200ResponseTemplatesInner instantiates a new GetWhatsAppTemplates200ResponseTemplatesInner object
@@ -206,6 +208,38 @@ func (o *GetWhatsAppTemplates200ResponseTemplatesInner) SetLanguage(v string) {
 	o.Language = &v
 }
 
+// GetMessageSendTtlSeconds returns the MessageSendTtlSeconds field value if set, zero value otherwise.
+func (o *GetWhatsAppTemplates200ResponseTemplatesInner) GetMessageSendTtlSeconds() int32 {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.MessageSendTtlSeconds
+}
+
+// GetMessageSendTtlSecondsOk returns a tuple with the MessageSendTtlSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetWhatsAppTemplates200ResponseTemplatesInner) GetMessageSendTtlSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MessageSendTtlSeconds) {
+		return nil, false
+	}
+	return o.MessageSendTtlSeconds, true
+}
+
+// HasMessageSendTtlSeconds returns a boolean if a field has been set.
+func (o *GetWhatsAppTemplates200ResponseTemplatesInner) HasMessageSendTtlSeconds() bool {
+	if o != nil && !IsNil(o.MessageSendTtlSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageSendTtlSeconds gets a reference to the given int32 and assigns it to the MessageSendTtlSeconds field.
+func (o *GetWhatsAppTemplates200ResponseTemplatesInner) SetMessageSendTtlSeconds(v int32) {
+	o.MessageSendTtlSeconds = &v
+}
+
 // GetComponents returns the Components field value if set, zero value otherwise.
 func (o *GetWhatsAppTemplates200ResponseTemplatesInner) GetComponents() []map[string]interface{} {
 	if o == nil || IsNil(o.Components) {
@@ -262,6 +296,9 @@ func (o GetWhatsAppTemplates200ResponseTemplatesInner) ToMap() (map[string]inter
 	}
 	if !IsNil(o.Language) {
 		toSerialize["language"] = o.Language
+	}
+	if !IsNil(o.MessageSendTtlSeconds) {
+		toSerialize["message_send_ttl_seconds"] = o.MessageSendTtlSeconds
 	}
 	if !IsNil(o.Components) {
 		toSerialize["components"] = o.Components
