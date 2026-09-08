@@ -22,8 +22,10 @@ var _ MappedNullable = &CommentAutomationTemplate{}
 
 // CommentAutomationTemplate A Meta generic template (product card) sent as the automation's first DM. It REPLACES the plain `dmMessage` bubble: a Meta message carries one body shape, and a comment gets exactly one private reply, so the card and the text cannot both be delivered. Put your selling copy in `subtitle`. Mutually exclusive with `buttons` (sending both is a 400). Works on both the `comment` and `story_reply` triggers. Up to 10 elements, rendered as a horizontally swipeable carousel. Rendering confirmed on the Instagram and Messenger mobile apps.
 type CommentAutomationTemplate struct {
-	Type     string                             `json:"type"`
-	Elements []CommentAutomationTemplateElement `json:"elements"`
+	Type string `json:"type"`
+	// Facebook only. How Messenger renders each element imageUrl: horizontal (1.91:1, the default) or square (1:1). Instagram has no such setting, so an Instagram automation carrying it is a 400.
+	ImageAspectRatio *string                            `json:"imageAspectRatio,omitempty"`
+	Elements         []CommentAutomationTemplateElement `json:"elements"`
 }
 
 type _CommentAutomationTemplate CommentAutomationTemplate
@@ -71,6 +73,38 @@ func (o *CommentAutomationTemplate) SetType(v string) {
 	o.Type = v
 }
 
+// GetImageAspectRatio returns the ImageAspectRatio field value if set, zero value otherwise.
+func (o *CommentAutomationTemplate) GetImageAspectRatio() string {
+	if o == nil || IsNil(o.ImageAspectRatio) {
+		var ret string
+		return ret
+	}
+	return *o.ImageAspectRatio
+}
+
+// GetImageAspectRatioOk returns a tuple with the ImageAspectRatio field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommentAutomationTemplate) GetImageAspectRatioOk() (*string, bool) {
+	if o == nil || IsNil(o.ImageAspectRatio) {
+		return nil, false
+	}
+	return o.ImageAspectRatio, true
+}
+
+// HasImageAspectRatio returns a boolean if a field has been set.
+func (o *CommentAutomationTemplate) HasImageAspectRatio() bool {
+	if o != nil && !IsNil(o.ImageAspectRatio) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageAspectRatio gets a reference to the given string and assigns it to the ImageAspectRatio field.
+func (o *CommentAutomationTemplate) SetImageAspectRatio(v string) {
+	o.ImageAspectRatio = &v
+}
+
 // GetElements returns the Elements field value
 func (o *CommentAutomationTemplate) GetElements() []CommentAutomationTemplateElement {
 	if o == nil {
@@ -106,6 +140,9 @@ func (o CommentAutomationTemplate) MarshalJSON() ([]byte, error) {
 func (o CommentAutomationTemplate) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["type"] = o.Type
+	if !IsNil(o.ImageAspectRatio) {
+		toSerialize["imageAspectRatio"] = o.ImageAspectRatio
+	}
 	toSerialize["elements"] = o.Elements
 	return toSerialize, nil
 }
