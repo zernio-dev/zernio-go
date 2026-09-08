@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateAdAccountRequest{}
 
 // UpdateAdAccountRequest struct for UpdateAdAccountRequest
 type UpdateAdAccountRequest struct {
-	// Social account ID (metaads, or a facebook/instagram posting account)
+	// Account ID (metaads, or a facebook/instagram posting account)
 	AccountId string `json:"accountId"`
 	// Meta ad account ID (act_...)
 	AdAccountId string `json:"adAccountId"`

@@ -26,9 +26,9 @@ type CheckPhoneNumberPortability200ResponseResultsInner struct {
 	FastPortable *bool `json:"fastPortable,omitempty"`
 	// Line type when known (mobile, landline, voip…). A US/CA mobile number requires the transfer PIN at submit.
 	LineType NullableString `json:"lineType,omitempty"`
-	// ISO country of the number — pass it to GET /v1/phone-numbers/port-in/requirements for international numbers.
+	// ISO country of the number. Pass it to GET /v1/phone-numbers/port-in/requirements for international numbers.
 	CountryCode NullableString `json:"countryCode,omitempty"`
-	// Carrier number-type classification (local, mobile, national, toll_free…) — the numberType for the requirements endpoint.
+	// Carrier number-type classification (local, mobile, national, toll_free…), the numberType for the requirements endpoint.
 	PhoneNumberType NullableString `json:"phoneNumberType,omitempty"`
 	// Carrier reason when not portable; null when portable.
 	NotPortableReason NullableString `json:"notPortableReason,omitempty"`

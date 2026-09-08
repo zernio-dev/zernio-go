@@ -18,7 +18,7 @@ import (
 // checks if the BillingSnapshot type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BillingSnapshot{}
 
-// BillingSnapshot Account billing state — plan, cycle, balance, spend caps, and payment / access status. Returned by `GET /v1/billing`.
+// BillingSnapshot Account billing state: plan, cycle, balance, spend caps, and payment / access status. Returned by `GET /v1/billing`.
 type BillingSnapshot struct {
 	BillingSystem *string              `json:"billingSystem,omitempty"`
 	Plan          *BillingSnapshotPlan `json:"plan,omitempty"`

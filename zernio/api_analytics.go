@@ -58,7 +58,7 @@ func (r AnalyticsAPIGetAnalyticsRequest) ProfileId(profileId string) AnalyticsAP
 	return r
 }
 
-// Filter by social account ID
+// Filter by account ID
 func (r AnalyticsAPIGetAnalyticsRequest) AccountId(accountId string) AnalyticsAPIGetAnalyticsRequest {
 	r.accountId = &accountId
 	return r
@@ -396,7 +396,7 @@ back its last few seconds of writes, so that a row can never become visible
 behind a cursor you have already advanced past. A read issued the instant an
 `analytics.synced` webhook lands will therefore often return an empty page for
 that account. Do not read an empty page as "nothing changed": poll again with the
-SAME cursor you just used rather than advancing.
+SAME cursor you last used rather than advancing.
 
 **Repeats inside one instant.** A sync cycle occasionally records the same post
 twice at the same feed position. When that happens the feed delivers one of those
@@ -621,7 +621,7 @@ func (r AnalyticsAPIGetBestTimeToPostRequest) ProfileId(profileId string) Analyt
 	return r
 }
 
-// Filter by social account ID. Omit for all accounts.
+// Filter by account ID. Omit for all accounts.
 func (r AnalyticsAPIGetBestTimeToPostRequest) AccountId(accountId string) AnalyticsAPIGetBestTimeToPostRequest {
 	r.accountId = &accountId
 	return r
@@ -788,7 +788,7 @@ func (r AnalyticsAPIGetContentDecayRequest) ProfileId(profileId string) Analytic
 	return r
 }
 
-// Filter by social account ID. Omit for all accounts.
+// Filter by account ID. Omit for all accounts.
 func (r AnalyticsAPIGetContentDecayRequest) AccountId(accountId string) AnalyticsAPIGetContentDecayRequest {
 	r.accountId = &accountId
 	return r
@@ -959,7 +959,7 @@ func (r AnalyticsAPIGetDailyMetricsRequest) ProfileId(profileId string) Analytic
 	return r
 }
 
-// Filter by social account ID
+// Filter by account ID
 func (r AnalyticsAPIGetDailyMetricsRequest) AccountId(accountId string) AnalyticsAPIGetDailyMetricsRequest {
 	r.accountId = &accountId
 	return r
@@ -1493,7 +1493,7 @@ GetFacebookPostReactions Get Facebook post reactions
 Returns the reaction breakdown for a Facebook Page post: a count per reaction type
 plus the overall total.
 
-The whole breakdown is fetched in a single Graph call. Note that the post analytics
+The whole breakdown is fetched in a single Graph call. The post analytics
 endpoint reports only an aggregate reaction count (surfaced there as `likes`), so use
 this endpoint when you need per-type counts.
 
@@ -1648,7 +1648,7 @@ func (r AnalyticsAPIGetFollowerStatsRequest) Execute() (*FollowerStatsResponse, 
 /*
 GetFollowerStats Get follower stats
 
-Returns follower count history and growth metrics for connected social accounts.
+Returns follower count history and growth metrics for connected accounts.
 Requires analytics add-on subscription. Follower counts are refreshed once per day.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1815,7 +1815,7 @@ func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) Execute() (*GetGoogleBu
 }
 
 /*
-GetGoogleBusinessPerformance Get GBP performance metrics
+GetGoogleBusinessPerformance Get Google Business Profile performance metrics
 
 Returns daily performance metrics for a Google Business Profile location.
 Metrics include impressions (Maps/Search, desktop/mobile), website clicks,
@@ -1996,7 +1996,7 @@ func (r AnalyticsAPIGetGoogleBusinessSearchKeywordsRequest) Execute() (*GetGoogl
 }
 
 /*
-GetGoogleBusinessSearchKeywords Get GBP search keywords
+GetGoogleBusinessSearchKeywords Get Google Business Profile search keywords
 
 Returns search keywords that triggered impressions for a Google Business Profile location.
 Data is aggregated monthly. Keywords below a minimum impression threshold set by Google are excluded.
@@ -3654,7 +3654,7 @@ func (r AnalyticsAPIGetPostingFrequencyRequest) ProfileId(profileId string) Anal
 	return r
 }
 
-// Filter by social account ID. Omit for all accounts.
+// Filter by account ID. Omit for all accounts.
 func (r AnalyticsAPIGetPostingFrequencyRequest) AccountId(accountId string) AnalyticsAPIGetPostingFrequencyRequest {
 	r.accountId = &accountId
 	return r
@@ -4852,16 +4852,16 @@ func (r AnalyticsAPISyncExternalPostsRequest) Execute() (*SyncExternalPosts200Re
 /*
 SyncExternalPosts Sync an external post
 
-Fetch an account's latest external posts (published directly on the platform, not through Zernio) on demand, so a just-published post is retrievable within seconds instead of waiting for the background sync (which refreshes each account at most every ~90 minutes).
+Fetch an account's latest external posts (published directly on the platform, not through Zernio) on demand, so a newly published post is retrievable within seconds instead of waiting for the background sync (which refreshes each account at most every ~90 minutes).
 
 Primary use case: verifying a submitted post. When a user publishes on the platform and immediately pastes the post URL into your app, call this with `accountId` plus `url` (or `postId`) to confirm the post exists and return its metadata.
 
 Behavior:
 - We check our stored copy first and return immediately if the post is already known (no platform call).
 - Otherwise we fetch the account's latest posts live from the platform, then match and return the submitted post.
-- Requests are debounced per account (~15s): if the account was just synced, the live fetch is skipped.
+- Requests are debounced per account (~15s): if the account was synced inside that window, the live fetch is skipped.
 
-`accountId` is required — a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business, and LinkedIn organization accounts).
+`accountId` is required, because a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business Profile, and LinkedIn organization accounts).
 
 LinkedIn personal profiles: LinkedIn has no listing API for personal profiles, so a `url` is REQUIRED and imports that single post. Pass any LinkedIn post URL (`linkedin.com/posts/…`, `linkedin.com/feed/update/urn:li:activity:…`) or a `urn:li:share:…` / `urn:li:ugcPost:…` URN. Works for posts published outside Zernio and before the account was connected, any age; the post must be authored by the connected member. Imported posts return full analytics (impressions, reach, reactions, comments, reshares, saves) and keep refreshing on the background analytics cycle, but carry no content/media (LinkedIn does not expose them for personal profiles).
 

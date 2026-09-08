@@ -18,7 +18,7 @@ import (
 // checks if the CreateStandaloneAd201ResponseOneOf type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreateStandaloneAd201ResponseOneOf{}
 
-// CreateStandaloneAd201ResponseOneOf Multi-creative shape — N ads returned sharing platformCampaignId / platformAdSetId.
+// CreateStandaloneAd201ResponseOneOf Multi-creative shape: N ads returned sharing platformCampaignId / platformAdSetId.
 type CreateStandaloneAd201ResponseOneOf struct {
 	Ads                []Ad    `json:"ads,omitempty"`
 	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`

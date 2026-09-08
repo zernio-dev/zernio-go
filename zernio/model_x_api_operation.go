@@ -22,9 +22,9 @@ var _ MappedNullable = &XApiOperation{}
 type XApiOperation struct {
 	// Internal operation key. Matches keys in `xApiCallsByOperation`.
 	Operation *string `json:"operation,omitempty"`
-	// Metronome `event_type` emitted when this operation runs.
+	// Metering `event_type` emitted when this operation runs.
 	EventType *string `json:"eventType,omitempty"`
-	// Human-readable label shown on Metronome invoices.
+	// Human-readable label shown on invoices.
 	DisplayName     *string  `json:"displayName,omitempty"`
 	PricePerCallUsd *float32 `json:"pricePerCallUsd,omitempty"`
 	// Per-call price in cents. Fractional values are intentional.

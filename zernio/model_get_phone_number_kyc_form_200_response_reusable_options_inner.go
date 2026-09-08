@@ -20,9 +20,9 @@ var _ MappedNullable = &GetPhoneNumberKycForm200ResponseReusableOptionsInner{}
 
 // GetPhoneNumberKycForm200ResponseReusableOptionsInner struct for GetPhoneNumberKycForm200ResponseReusableOptionsInner
 type GetPhoneNumberKycForm200ResponseReusableOptionsInner struct {
-	// Opaque option id — pass as `reuseOptionId` on POST. Stable selection key (a phone number is not unique across verifications).
+	// Opaque option id. Pass as `reuseOptionId` on POST. Stable selection key (a phone number is not unique across verifications).
 	Id *string `json:"id,omitempty"`
-	// Display only — the number this verification was submitted for. Not a selection key.
+	// Display only. The number this verification was submitted for. Not a selection key.
 	FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
 	// true = group-approved, a new order activates in minutes; false = documents are reused but the order still queues for carrier review (1-3 days).
 	Instant *bool                                                              `json:"instant,omitempty"`

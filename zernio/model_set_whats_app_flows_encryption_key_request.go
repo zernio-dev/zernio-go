@@ -22,7 +22,7 @@ var _ MappedNullable = &SetWhatsAppFlowsEncryptionKeyRequest{}
 
 // SetWhatsAppFlowsEncryptionKeyRequest struct for SetWhatsAppFlowsEncryptionKeyRequest
 type SetWhatsAppFlowsEncryptionKeyRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// RSA public key in PEM format. Rejected if it is a private key or not a valid RSA public key PEM.
 	BusinessPublicKey string `json:"businessPublicKey"`

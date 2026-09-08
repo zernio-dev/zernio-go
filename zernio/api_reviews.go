@@ -42,7 +42,7 @@ func (r ReviewsAPIDeleteInboxReviewReplyRequest) Execute() (*DeleteInboxReviewRe
 /*
 DeleteInboxReviewReply Delete review reply
 
-Delete a reply to a review (Google Business only). Requires accountId in request body.
+Delete a reply to a review (Google Business Profile only). Requires accountId in request body.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param reviewId
@@ -210,7 +210,7 @@ func (r ReviewsAPIListInboxReviewsRequest) Cursor(cursor string) ReviewsAPIListI
 	return r
 }
 
-// Filter by specific social account ID
+// Filter by specific account ID
 func (r ReviewsAPIListInboxReviewsRequest) AccountId(accountId string) ReviewsAPIListInboxReviewsRequest {
 	r.accountId = &accountId
 	return r
@@ -223,8 +223,8 @@ func (r ReviewsAPIListInboxReviewsRequest) Execute() (*ListInboxReviews200Respon
 /*
 ListInboxReviews List reviews
 
-Fetch reviews from all connected Facebook Pages and Google Business accounts. Aggregates data with filtering and sorting options.
-Supported platforms: Facebook, Google Business.
+Fetch reviews from all connected Facebook Pages and Google Business Profile accounts. Aggregates data with filtering and sorting options.
+Supported platforms: Facebook, Google Business Profile.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ReviewsAPIListInboxReviewsRequest
@@ -410,7 +410,7 @@ retrying with the same key, and treat a missing reply as inconclusive
 rather than as proof nothing was sent.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param reviewId Review ID (URL-encoded for Google Business)
+	@param reviewId Review ID (URL-encoded for Google Business Profile)
 	@return ReviewsAPIReplyToInboxReviewRequest
 */
 func (a *ReviewsAPIService) ReplyToInboxReview(ctx context.Context, reviewId string) ReviewsAPIReplyToInboxReviewRequest {

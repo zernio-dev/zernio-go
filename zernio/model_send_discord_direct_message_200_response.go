@@ -25,7 +25,7 @@ type SendDiscordDirectMessage200Response struct {
 	MessageId *string `json:"messageId,omitempty"`
 	// DM channel snowflake (Discord auto-creates one per recipient pair)
 	ChannelId *string `json:"channelId,omitempty"`
-	// Direct link to the message — uses Discord's @me path for DMs
+	// Direct link to the message, using Discord's @me path for DMs
 	Url       *string                                       `json:"url,omitempty"`
 	Timestamp *time.Time                                    `json:"timestamp,omitempty"`
 	Recipient *SendDiscordDirectMessage200ResponseRecipient `json:"recipient,omitempty"`

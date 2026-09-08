@@ -18,9 +18,9 @@ import (
 // checks if the UsageMetering type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageMetering{}
 
-// UsageMetering Billed spend by product family over a window, from Metronome's invoice breakdown (the CHARGE view). Returned by `GET /v1/usage`.
+// UsageMetering Billed spend by product family over a window, from the usage-based invoice breakdown (the CHARGE view). Returned by `GET /v1/usage`.
 type UsageMetering struct {
-	// False for legacy Stripe accounts (no Metronome invoice to split); `days` and `totals` are then empty/zero.
+	// False for legacy Stripe accounts (no usage-based invoice to split); `days` and `totals` are then empty/zero.
 	Supported   *bool   `json:"supported,omitempty"`
 	Granularity *string `json:"granularity,omitempty"`
 	// One row per bucket. Empty when `granularity=total`. `date` is a UTC date (month buckets use the 1st).

@@ -22,9 +22,9 @@ var _ MappedNullable = &WebhookPayloadLeadAccount{}
 
 // WebhookPayloadLeadAccount struct for WebhookPayloadLeadAccount
 type WebhookPayloadLeadAccount struct {
-	// Social account ID (the facebook account owning the Page)
+	// Account ID (the facebook account owning the Page)
 	Id string `json:"id"`
-	// Social account ID (same as id); canonical field for account filtering.
+	// Account ID (same as id); canonical field for account filtering.
 	AccountId *string `json:"accountId,omitempty"`
 	Platform  string  `json:"platform"`
 }

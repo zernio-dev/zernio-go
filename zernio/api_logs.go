@@ -104,7 +104,7 @@ func (r LogsAPIListLogsRequest) Event(event string) LogsAPIListLogsRequest {
 	return r
 }
 
-// Correlation ID — returns every log spawned by a single API request
+// Correlation ID. Returns every log spawned by a single API request
 func (r LogsAPIListLogsRequest) RequestId(requestId string) LogsAPIListLogsRequest {
 	r.requestId = &requestId
 	return r

@@ -24,7 +24,7 @@ type AdTreeCampaign struct {
 	PlatformCampaignId *string `json:"platformCampaignId,omitempty"`
 	Platform           *string `json:"platform,omitempty"`
 	CampaignName       *string `json:"campaignName,omitempty"`
-	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across every ad in the campaign. Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced) — a campaign created empty and populated later will show its first ad's time, not the campaign's. Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
+	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across every ad in the campaign. Not the platform campaign's own creation time (Meta's `Campaign.created_time` etc. is not synced). A campaign created empty and populated later will show its first ad's time, not the campaign's. Usable for sorting \"most recently created\" without the numeric-campaign-id heuristic. Same source as `AdTreeAdSet.createdTime` and `Ad.platformCreatedAt`; mirrors `AdCampaign.earliestAd`.
 	CreatedTime NullableTime `json:"createdTime,omitempty"`
 	// Delivery status derived from child ad statuses. Distinct from `reviewStatus`, which reflects the platform-side review state.
 	Status *AdStatus `json:"status,omitempty"`
@@ -41,7 +41,7 @@ type AdTreeCampaign struct {
 	CampaignBudget *AdBudget `json:"campaignBudget,omitempty"`
 	// Canonical CBO/ABO indicator. `campaign` = CBO (Advantage Campaign Budget, budget lives on the campaign). `adset` = ABO (budget lives on each ad set). Route budget updates to the matching Meta entity.
 	BudgetLevel NullableString `json:"budgetLevel,omitempty"`
-	// Meta-only. Mirrors Campaign.is_budget_schedule_enabled — true when the campaign uses budget scheduling (time-based budget changes). Independent of CBO/ABO.
+	// Meta-only. Mirrors Campaign.is_budget_schedule_enabled: true when the campaign uses budget scheduling (time-based budget changes). Independent of CBO/ABO.
 	IsBudgetScheduleEnabled *bool `json:"isBudgetScheduleEnabled,omitempty"`
 	// ISO 4217 currency code (e.g. USD, EUR, CLP, JPY) for all budget amounts in this campaign node. Budgets are NOT normalized to USD.
 	Currency            NullableString `json:"currency,omitempty"`
@@ -60,11 +60,11 @@ type AdTreeCampaign struct {
 	BidStrategy NullableBidStrategy `json:"bidStrategy,omitempty"`
 	// Representative bid for the campaign, bubbled up from the top-spending ad set (whole currency units). Meta: populated when the ad-set bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. LinkedIn: the campaign unitCost, which has no bidStrategy gate and where 0 is a real, delivery-stopping value rather than unset.
 	BidAmount NullableFloat32 `json:"bidAmount,omitempty"`
-	// Representative ROAS floor for the campaign — bubbled up from the top-spending ad set. Decimal multiplier (2.0 = 2.0x).
+	// Representative ROAS floor for the campaign, bubbled up from the top-spending ad set. Decimal multiplier (2.0 = 2.0x).
 	RoasAverageFloor NullableFloat32            `json:"roasAverageFloor,omitempty"`
 	PromotedObject   *AdTreeAdSetPromotedObject `json:"promotedObject,omitempty"`
 	AdSets           []AdTreeAdSet              `json:"adSets,omitempty"`
-	// Per-day metric series for this campaign. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` (any `dailyLevel`). This is the per-campaign daily trend — summing its additive fields reproduces the campaign `metrics` total, except `reach`: on Meta the range total is de-duplicated, so daily reach does not sum to it.
+	// Per-day metric series for this campaign. Present only when `GET /v1/ads/tree` is called with `timeIncrement=1` (any `dailyLevel`). This is the per-campaign daily trend. Summing its additive fields reproduces the campaign `metrics` total, except `reach`: on Meta the range total is de-duplicated, so daily reach does not sum to it.
 	Daily []AdDailyMetrics `json:"daily,omitempty"`
 }
 

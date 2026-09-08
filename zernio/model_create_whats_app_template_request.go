@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateWhatsAppTemplateRequest{}
 
 // CreateWhatsAppTemplateRequest struct for CreateWhatsAppTemplateRequest
 type CreateWhatsAppTemplateRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Template name (lowercase, letters/numbers/underscores, must start with a letter)
 	Name string `json:"name" validate:"regexp=^[a-z][a-z0-9_]*$"`

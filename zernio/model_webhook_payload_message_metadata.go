@@ -18,8 +18,10 @@ import (
 // checks if the WebhookPayloadMessageMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadata{}
 
-// WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, or a quote-reply to an earlier message)
+// WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, a quote-reply to an earlier message, or a WhatsApp inbound that Meta Business Agent is answering)
 type WebhookPayloadMessageMetadata struct {
+	// WhatsApp only. true when this inbound arrived while Meta Business Agent held the conversation: the agent answers it, and Zernio only observes. Sending a reply takes control back. See conversation.control_changed.
+	Standby *bool `json:"standby,omitempty"`
 	// Raw platform envelope id (WhatsApp `context.id`; Instagram and Facebook Messenger `reply_to.mid`) of the message this one is a quote-reply to, forwarded verbatim. It may not equal the stored id of that message (see `quotedMessage.platformMessageId`). On outgoing messages the same field appears on `message.sent`, but only on some surfaces: see WebhookPayloadMessageSent.metadata.quotedMessageId.
 	QuotedMessageId *string                                     `json:"quotedMessageId,omitempty"`
 	QuotedMessage   *WebhookPayloadMessageMetadataQuotedMessage `json:"quotedMessage,omitempty"`
@@ -54,7 +56,7 @@ type WebhookPayloadMessageMetadata struct {
 	IsStoryMention *bool                                     `json:"isStoryMention,omitempty"`
 	Referral       *WebhookPayloadMessageMetadataReferral    `json:"referral,omitempty"`
 	Unsupported    *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
-	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render (a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag). Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details): this field has no error envelope, just the boolean. Absence means \"not flagged\", never \"checked and renderable\".
+	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render (a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag). Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details): this field has no error envelope, only the boolean. Absence means \"not flagged\", never \"checked and renderable\".
 	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
 }
 
@@ -73,6 +75,38 @@ func NewWebhookPayloadMessageMetadata() *WebhookPayloadMessageMetadata {
 func NewWebhookPayloadMessageMetadataWithDefaults() *WebhookPayloadMessageMetadata {
 	this := WebhookPayloadMessageMetadata{}
 	return &this
+}
+
+// GetStandby returns the Standby field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetStandby() bool {
+	if o == nil || IsNil(o.Standby) {
+		var ret bool
+		return ret
+	}
+	return *o.Standby
+}
+
+// GetStandbyOk returns a tuple with the Standby field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetStandbyOk() (*bool, bool) {
+	if o == nil || IsNil(o.Standby) {
+		return nil, false
+	}
+	return o.Standby, true
+}
+
+// HasStandby returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasStandby() bool {
+	if o != nil && !IsNil(o.Standby) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandby gets a reference to the given bool and assigns it to the Standby field.
+func (o *WebhookPayloadMessageMetadata) SetStandby(v bool) {
+	o.Standby = &v
 }
 
 // GetQuotedMessageId returns the QuotedMessageId field value if set, zero value otherwise.
@@ -757,6 +791,9 @@ func (o WebhookPayloadMessageMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Standby) {
+		toSerialize["standby"] = o.Standby
+	}
 	if !IsNil(o.QuotedMessageId) {
 		toSerialize["quotedMessageId"] = o.QuotedMessageId
 	}

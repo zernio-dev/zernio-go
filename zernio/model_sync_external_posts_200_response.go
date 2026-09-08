@@ -21,7 +21,7 @@ var _ MappedNullable = &SyncExternalPosts200Response{}
 // SyncExternalPosts200Response struct for SyncExternalPosts200Response
 type SyncExternalPosts200Response struct {
 	Synced *SyncExternalPosts200ResponseSynced `json:"synced,omitempty"`
-	// Present only when a locator (`url`/`postId`) was provided — whether the post was found.
+	// Present only when a locator (`url`/`postId`) was provided: whether the post was found.
 	Found *bool `json:"found,omitempty"`
 	// The matched external post, or null when not found. Present only when a locator was provided.
 	Post NullableExternalPostSummary `json:"post,omitempty"`

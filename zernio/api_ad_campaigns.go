@@ -180,7 +180,7 @@ func (r AdCampaignsAPIAttachCampaignAssetsRequest) Execute() (*AttachCampaignAss
 AttachCampaignAssets Attach extension assets to a Google Search campaign
 
 Attach sitelinks, callouts and/or structured snippets to an already-existing Google
-Search campaign — the same builders POST /v1/ads/create uses, but without rebuilding
+Search campaign. These are the same builders POST /v1/ads/create uses, but without rebuilding
 the hierarchy. At least one of sitelinks, callouts or structuredSnippets is required.
 
 Google-only. Other platforms have no equivalent extension surface and return 501.
@@ -1025,7 +1025,17 @@ func (r AdCampaignsAPICreateStandaloneAdRequest) Execute() (*CreateStandaloneAd2
 /*
 CreateStandaloneAd Create standalone ad
 
-Creates a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X/Twitter, LinkedIn, and OpenAI Ads (ChatGPT Ads). Supports three mutually-exclusive request shapes selected by the body, a legacy single-creative shape (all platforms, default), a Meta-only multi-creative shape via the creatives array (one ad set with N ads sharing budget and targeting), and an attach shape via adSetId that adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, TikTok, and LinkedIn; on LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted). Per-platform required fields, budget minimums, and video-ad rules are documented on each property below. LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`); supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
+Create a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, and OpenAI Ads (ChatGPT Ads).
+
+Three mutually-exclusive request shapes are selected by the body:
+
+- Legacy single-creative shape (all platforms, the default).
+- Meta-only multi-creative shape via the creatives array: one ad set with N ads sharing budget and targeting.
+- Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
+
+Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
+
+LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
 
 **Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
@@ -1701,9 +1711,9 @@ Per-platform implementation:
     any Group / Campaign / Creative whose source is `ACTIVE` gets its
     clone activated too. Duplicating an ACTIVE campaign with
     `INHERITED_FROM_SOURCE` starts a second front of spend the moment
-    the clone activates — the safe default is `PAUSED`.
+    the clone activates. The safe default is `PAUSED`.
 
-The new hierarchy is asynchronous to materialize in our DB — we
+The new hierarchy is asynchronous to materialize in our DB, and we
 trigger sync discovery automatically. Set `syncAfter: false` to
 skip and poll `/v1/ads/tree` on your own cadence.
 
@@ -1846,7 +1856,7 @@ DuplicateAdSet Duplicate an ad set
 Duplicates an ad set, including its ads and creatives by default (`deepCopy: true`),
 via Meta's native `POST /{adset-id}/copies`. The copy is created paused so callers can
 review before launching. `campaignId` retargets the copy into another campaign; omitted
-= the source's own campaign. The new hierarchy materializes asynchronously — sync
+= the source's own campaign. The new hierarchy materializes asynchronously, and sync
 discovery is triggered automatically (`syncAfter: false` to skip).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2118,7 +2128,7 @@ func (r AdCampaignsAPIGetAdSetDetailsRequest) Execute() (*GetAdSetDetails200Resp
 GetAdSetDetails Live ad-set details incl. learning phase
 
 Reads the ad set live from Meta, returned verbatim. The default projection includes
-`learning_stage_info` (learning-phase status: LEARNING / SUCCESS / FAIL / WAIVING — Meta
+`learning_stage_info` (learning-phase status: LEARNING / SUCCESS / FAIL / WAIVING; Meta
 omits its `status` key on paused ad sets), delivery settings, budgets, schedule and
 targeting. `fields` is a raw-passthrough override; unknown fields return Meta's 400
 verbatim.
@@ -2264,7 +2274,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) Limit(limit int32) AdCampaignsAPIGetAdTr
 	return r
 }
 
-// &#x60;all&#x60; (default) returns both Zernio-created ads and those discovered from the platform&#39;s ad manager — matches the web UI&#39;s default view. Pass &#x60;zernio&#x60; to restrict to isExternal&#x3D;false only. Status is NOT filtered by default — use the &#x60;status&#x60; param for that.
+// &#x60;all&#x60; (default) returns both Zernio-created ads and those discovered from the platform&#39;s ad manager. Matches the web UI&#39;s default view. Pass &#x60;zernio&#x60; to restrict to isExternal&#x3D;false only. Status is NOT filtered by default; use the &#x60;status&#x60; param for that.
 func (r AdCampaignsAPIGetAdTreeRequest) Source(source string) AdCampaignsAPIGetAdTreeRequest {
 	r.source = &source
 	return r
@@ -2281,19 +2291,19 @@ func (r AdCampaignsAPIGetAdTreeRequest) Status(status AdStatus) AdCampaignsAPIGe
 	return r
 }
 
-// One or more platform ad account IDs to scope the tree to (agency profiles connect a whole Business Manager but a workspace usually cares about a subset). Comma-separate for multiple (&#x60;?adAccountId&#x3D;act_1,act_2,act_3&#x60;); single value keeps its old shape. Max 50 accounts per request; the plural aliases &#x60;adAccountIds&#x60; and &#x60;platformAdAccountIds&#x60; are rejected with a 400 to stop them from silently returning the unfiltered fleet.
+// One or more platform ad account IDs to scope the tree to (agency profiles connect a whole Business Manager but a team usually cares about a subset). Comma-separate for multiple (&#x60;?adAccountId&#x3D;act_1,act_2,act_3&#x60;); single value keeps its old shape. Max 50 accounts per request; the plural aliases &#x60;adAccountIds&#x60; and &#x60;platformAdAccountIds&#x60; are rejected with a 400 to stop them from silently returning the unfiltered fleet.
 func (r AdCampaignsAPIGetAdTreeRequest) AdAccountId(adAccountId string) AdCampaignsAPIGetAdTreeRequest {
 	r.adAccountId = &adAccountId
 	return r
 }
 
-// Meta only: Facebook Page ID. Prunes the tree to ads whose creative is backed by this Page — campaigns and ad sets with no ad on the Page drop out, and rolled-up metrics cover only the Page&#39;s ads. Mirrors the same filter on /v1/ads and /v1/ads/campaigns.
+// Meta only: Facebook Page ID. Prunes the tree to ads whose creative is backed by this Page: campaigns and ad sets with no ad on the Page drop out, and rolled-up metrics cover only the Page&#39;s ads. Mirrors the same filter on /v1/ads and /v1/ads/campaigns.
 func (r AdCampaignsAPIGetAdTreeRequest) PageId(pageId string) AdCampaignsAPIGetAdTreeRequest {
 	r.pageId = &pageId
 	return r
 }
 
-// Social account ID
+// Account ID
 func (r AdCampaignsAPIGetAdTreeRequest) AccountId(accountId string) AdCampaignsAPIGetAdTreeRequest {
 	r.accountId = &accountId
 	return r
@@ -2305,13 +2315,13 @@ func (r AdCampaignsAPIGetAdTreeRequest) ProfileId(profileId string) AdCampaignsA
 	return r
 }
 
-// Restrict the tree to a single campaign by its platform campaign id (the id the platform assigns, e.g. Meta&#39;s numeric campaign id). Filters the campaign set itself, so it works regardless of account size and pagination — pass this when you already hold a campaign id instead of paging the tree to find it. Mirrors the &#x60;campaignId&#x60; filter on GET /v1/ads.
+// Restrict the tree to a single campaign by its platform campaign id (the id the platform assigns, e.g. Meta&#39;s numeric campaign id). Filters the campaign set itself, so it works regardless of account size and pagination. Pass this when you already hold a campaign id instead of paging the tree to find it. Mirrors the &#x60;campaignId&#x60; filter on GET /v1/ads.
 func (r AdCampaignsAPIGetAdTreeRequest) CampaignId(campaignId string) AdCampaignsAPIGetAdTreeRequest {
 	r.campaignId = &campaignId
 	return r
 }
 
-// Start of the METRICS date range (YYYY-MM-DD). On its own it affects only the spend/impression numbers overlaid on each node, not which campaigns are returned — pass &#x60;hasDelivery&#x60; or &#x60;minSpend&#x60; to also filter the campaign set to this window. Defaults to 90 days ago.
+// Start of the METRICS date range (YYYY-MM-DD). On its own it affects only the spend/impression numbers overlaid on each node, not which campaigns are returned. Pass &#x60;hasDelivery&#x60; or &#x60;minSpend&#x60; to also filter the campaign set to this window. Defaults to 90 days ago.
 func (r AdCampaignsAPIGetAdTreeRequest) FromDate(fromDate string) AdCampaignsAPIGetAdTreeRequest {
 	r.fromDate = &fromDate
 	return r
@@ -2323,7 +2333,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) ToDate(toDate string) AdCampaignsAPIGetA
 	return r
 }
 
-// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60; — spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window, so a campaign that spent then and is paused today is still returned. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns.
+// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60;: spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window, so a campaign that spent then and is paused today is still returned. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns.
 func (r AdCampaignsAPIGetAdTreeRequest) HasDelivery(hasDelivery bool) AdCampaignsAPIGetAdTreeRequest {
 	r.hasDelivery = &hasDelivery
 	return r
@@ -2347,7 +2357,7 @@ func (r AdCampaignsAPIGetAdTreeRequest) TimeIncrement(timeIncrement int32) AdCam
 	return r
 }
 
-// Which tree levels get the &#x60;daily[]&#x60; series when &#x60;timeIncrement&#x3D;1&#x60;. &#x60;campaign&#x60; (default) attaches it on campaign nodes only — the common per-campaign-trend case, and the smallest payload. &#x60;adset&#x60; adds it on ad sets too; &#x60;ad&#x60; adds it on every ad in &#x60;ads[]&#x60; as well (heaviest — a long range × up to 100 ads per ad set). Scope with &#x60;campaignId&#x60; to keep &#x60;ad&#x60;-level responses small. Ignored when &#x60;timeIncrement&#x60; is unset.
+// Which tree levels get the &#x60;daily[]&#x60; series when &#x60;timeIncrement&#x3D;1&#x60;. &#x60;campaign&#x60; (default) attaches it on campaign nodes only: the common per-campaign-trend case, and the smallest payload. &#x60;adset&#x60; adds it on ad sets too; &#x60;ad&#x60; adds it on every ad in &#x60;ads[]&#x60; as well (heaviest: a long range × up to 100 ads per ad set). Scope with &#x60;campaignId&#x60; to keep &#x60;ad&#x60;-level responses small. Ignored when &#x60;timeIncrement&#x60; is unset.
 func (r AdCampaignsAPIGetAdTreeRequest) DailyLevel(dailyLevel string) AdCampaignsAPIGetAdTreeRequest {
 	r.dailyLevel = &dailyLevel
 	return r
@@ -2556,7 +2566,7 @@ type AdCampaignsAPIGetAdsTimelineRequest struct {
 	platform    *string
 }
 
-// Social account ID. Sibling-expanded to its linked posting↔ads pair.
+// Account ID. Sibling-expanded to its linked posting↔ads pair.
 func (r AdCampaignsAPIGetAdsTimelineRequest) AccountId(accountId string) AdCampaignsAPIGetAdsTimelineRequest {
 	r.accountId = &accountId
 	return r
@@ -2594,13 +2604,13 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) Execute() (*AdsTimelineResponse, *h
 GetAdsTimeline Get daily account metrics
 
 Returns daily aggregate metrics across all ads in a SocialAccount as a single
-time series — one row per calendar day in the requested range. Use this for
+time series, one row per calendar day in the requested range. Use this for
 dashboards that draw a daily-spend or daily-conversions chart, instead of
 calling `/v1/ads/tree` once per day.
 
 `accountId` is required. The lookup is sibling-expanded so passing the `metaads`
 ID also includes ads under the linked `facebook` / `instagram` posting account
-(and vice-versa) — same convention as `/v1/ads/tree` and `/v1/ads`.
+(and vice-versa), the same convention as `/v1/ads/tree` and `/v1/ads`.
 
 Date range defaults to the last 90 days. Capped at 730 days. Ranges older
 than the ingested history return a `202` immediately with the covered part
@@ -3056,7 +3066,7 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	minSpend     *float32
 }
 
-// Meta only. Campaign reads aggregate over ad documents, so a campaign with ZERO ads is normally invisible here — the state the two-step create (campaign, then ads via &#x60;existingCampaignId&#x60;) leaves behind whenever Meta rejects the ad step. Set true to list those too, with &#x60;adCount: 0&#x60; and zeroed metrics. Requires &#x60;accountId&#x60; and &#x60;adAccountId&#x60;, since an empty campaign has no ad row to resolve a token or ad account from.
+// Meta only. Campaign reads aggregate over ad documents, so a campaign with ZERO ads is normally invisible here, the state the two-step create (campaign, then ads via &#x60;existingCampaignId&#x60;) leaves behind whenever Meta rejects the ad step. Set true to list those too, with &#x60;adCount: 0&#x60; and zeroed metrics. Requires &#x60;accountId&#x60; and &#x60;adAccountId&#x60;, since an empty campaign has no ad row to resolve a token or ad account from.
 func (r AdCampaignsAPIListAdCampaignsRequest) IncludeEmpty(includeEmpty bool) AdCampaignsAPIListAdCampaignsRequest {
 	r.includeEmpty = &includeEmpty
 	return r
@@ -3073,7 +3083,7 @@ func (r AdCampaignsAPIListAdCampaignsRequest) Limit(limit int32) AdCampaignsAPIL
 	return r
 }
 
-// &#x60;all&#x60; (default) returns both Zernio-created ads and those discovered from the platform&#39;s ad manager — matches the web UI&#39;s default view. Pass &#x60;zernio&#x60; to restrict to isExternal&#x3D;false only. Status is NOT filtered by default — use the &#x60;status&#x60; param for that.
+// &#x60;all&#x60; (default) returns both Zernio-created ads and those discovered from the platform&#39;s ad manager. Matches the web UI&#39;s default view. Pass &#x60;zernio&#x60; to restrict to isExternal&#x3D;false only. Status is NOT filtered by default; use the &#x60;status&#x60; param for that.
 func (r AdCampaignsAPIListAdCampaignsRequest) Source(source string) AdCampaignsAPIListAdCampaignsRequest {
 	r.source = &source
 	return r
@@ -3102,7 +3112,7 @@ func (r AdCampaignsAPIListAdCampaignsRequest) PageId(pageId string) AdCampaignsA
 	return r
 }
 
-// Social account ID
+// Account ID
 func (r AdCampaignsAPIListAdCampaignsRequest) AccountId(accountId string) AdCampaignsAPIListAdCampaignsRequest {
 	r.accountId = &accountId
 	return r
@@ -3126,7 +3136,7 @@ func (r AdCampaignsAPIListAdCampaignsRequest) ToDate(toDate string) AdCampaignsA
 	return r
 }
 
-// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60; — spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns. Mirrors the same filter on /v1/ads/tree.
+// Return only campaigns that delivered between &#x60;fromDate&#x60; and &#x60;toDate&#x60;: spend above zero, or impressions served at zero spend. Unlike &#x60;status&#x60;, which reads a campaign&#39;s CURRENT state, this filters on what happened inside the window. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns. Mirrors the same filter on /v1/ads/tree.
 func (r AdCampaignsAPIListAdCampaignsRequest) HasDelivery(hasDelivery bool) AdCampaignsAPIListAdCampaignsRequest {
 	r.hasDelivery = &hasDelivery
 	return r
@@ -3338,7 +3348,7 @@ func (r AdCampaignsAPIListAdKeywordsRequest) Limit(limit int32) AdCampaignsAPILi
 	return r
 }
 
-// Social account ID
+// Account ID
 func (r AdCampaignsAPIListAdKeywordsRequest) AccountId(accountId string) AdCampaignsAPIListAdKeywordsRequest {
 	r.accountId = &accountId
 	return r
@@ -3566,7 +3576,7 @@ type AdCampaignsAPIListAdSetsRequest struct {
 	platform   *string
 }
 
-// Social account ID
+// Account ID
 func (r AdCampaignsAPIListAdSetsRequest) AccountId(accountId string) AdCampaignsAPIListAdSetsRequest {
 	r.accountId = &accountId
 	return r
@@ -3593,7 +3603,7 @@ ListAdSets List ad sets
 Ad sets (Google ad groups) synced for the connection, optionally
 filtered by platform and campaignId. Reads the `ad_sets` table
 directly, independent of the `ads` rollup GET /v1/ads/tree uses, so a
-just-created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
+newly created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
 Google only) is visible here even though it is invisible in the tree
 until an ad joins it via `existingAdGroupId`. Returns at most 500
 rows, newest first.
@@ -3763,7 +3773,7 @@ func (r AdCampaignsAPIListAdsRequest) Platform(platform string) AdCampaignsAPILi
 	return r
 }
 
-// Social account ID
+// Account ID
 func (r AdCampaignsAPIListAdsRequest) AccountId(accountId string) AdCampaignsAPIListAdsRequest {
 	r.accountId = &accountId
 	return r
@@ -3842,7 +3852,7 @@ If no date range is provided, defaults to the last 90 days. Date range is capped
 
 To find the Zernio ad behind a comment you see in Meta Business Manager, filter by
 platformAdId (the Meta ad ID), effectiveObjectStoryId (Facebook), or
-effectiveInstagramMediaId (Instagram) — those are the post/media the ad's engagement
+effectiveInstagramMediaId (Instagram). Those are the post/media the ad's engagement
 lives on, and are also returned on each ad's `creative` object. Then call
 GET /v1/ads/{adId}/comments with the returned ad id.
 
@@ -4615,10 +4625,10 @@ are propagated to the platform.
 Per-platform support:
   - **Meta** (Facebook + Instagram): all fields supported.
   - **TikTok**: status, budget, targeting (via `/v2/adgroup/update/`), and creative
-    (via `/v2/ad/update/` patch-style — `headline` is ignored, `body` becomes `ad_text`).
+    (via `/v2/ad/update/` patch-style: `headline` is ignored, `body` becomes `ad_text`).
   - **Google**: status, budget, KEYWORD edits via `targeting.keywords` /
-    `targeting.negativeKeywords`, and DEVICE bid adjustments via `targeting.devices`
-    — each list you send becomes the FULL new set of its kind (criteria not in the
+    `targeting.negativeKeywords`, and DEVICE bid adjustments via `targeting.devices`.
+    Each list you send becomes the FULL new set of its kind (criteria not in the
     list are removed); a kind left out is untouched. Any other `targeting` field
     returns 400: Google cannot mutate broad targeting post-create without recreating
     the campaign. `creative` returns 501.
@@ -4797,7 +4807,7 @@ field is always an error, never a silent drop.
 | Body field | Meta | Google | Others |
 |---|---|---|---|
 | `bidStrategy` | Yes | Yes | 501 |
-| `bidAmount`, `roasAverageFloor` | 400 — ad-set level | Yes | 400 |
+| `bidAmount`, `roasAverageFloor` | 400 (ad-set level) | Yes | 400 |
 | `portfolioBidStrategyId` | 400 | Yes | 400 |
 | `budget` (CBO; ABO returns 409) | Yes | 501 | 501 |
 | `name` | Yes | 501 | 501 |
@@ -4948,7 +4958,7 @@ does not block resuming its campaign. The echoed `status` is the confirmation th
 `updated` / `skipped` describe only the ads whose own stored status CHANGED alongside it, so
 `updated: 0` is a normal successful response, not a no-op. Ads are skipped when they are in a terminal
 status (rejected, completed, cancelled), already in the target state, or switched on but not yet
-delivering — the last group keeps its `pending_review` / `error` status until the platform reports what
+delivering. The last group keeps its `pending_review` / `error` status until the platform reports what
 it became. `skippedReasons` names which case applies.
 
 On Meta this flips the campaign only. An ad set paused in its own right stays paused, so pair this with
@@ -5251,7 +5261,7 @@ incompatible combinations (e.g. a billingEvent the optimization goal
 doesn't allow) surface as 400s from Meta.
 
 When updating `budget` on an ABO campaign: if the parent campaign is
-CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH — route to
+CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH. Route to
 PUT /v1/ads/campaigns/{campaignId} instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -5384,7 +5394,7 @@ status toggle and prefer a symmetric URL to
 /v1/ads/campaigns/{campaignId}/status.
 
 On Meta and LinkedIn this writes the ad set's own on/off switch
-(Meta: `configured_status`), whatever delivery status its ads report —
+(Meta: `configured_status`), whatever delivery status its ads report:
 an ad still in review does not block resuming its ad set. The echoed
 `status` is the confirmation that it landed. Where the platform has no
 ad-set switch (TikTok and others) the toggle is emulated by flipping the
@@ -5524,7 +5534,7 @@ func (r AdCampaignsAPIUpdateAdStatusRequest) Execute() (*UpdateAdStatus200Respon
 /*
 UpdateAdStatus Pause or resume a single ad
 
-Ad-scoped pause/resume — touches ONLY this ad, never its parent ad set or
+Ad-scoped pause/resume: touches ONLY this ad, never its parent ad set or
 campaign (so sibling ads keep running). Thin wrapper over the `status`
 field of PUT /v1/ads/{adId}, for callers that want a URL symmetric to
 /v1/ads/campaigns/{campaignId}/status and /v1/ads/ad-sets/{adSetId}/status.

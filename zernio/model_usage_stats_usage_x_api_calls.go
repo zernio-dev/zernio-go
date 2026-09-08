@@ -18,7 +18,7 @@ import (
 // checks if the UsageStatsUsageXApiCalls type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageStatsUsageXApiCalls{}
 
-// UsageStatsUsageXApiCalls **Deprecated.** Legacy 3-tier aggregate. Operations outside the three historical prices ($0.005/$0.010/$0.015) — notably the $0.200 \"Posts with URL\" tier added April 2026 — are silently excluded from this shape. Use `xApiCallsByOperation` instead; it captures every tier and is the source of truth for per-operation call counts.
+// UsageStatsUsageXApiCalls **Deprecated.** Legacy 3-tier aggregate. Operations outside the three historical prices ($0.005/$0.010/$0.015), notably the $0.200 \"Posts with URL\" tier added April 2026, are silently excluded from this shape. Use `xApiCallsByOperation` instead; it captures every tier and is the source of truth for per-operation call counts.
 type UsageStatsUsageXApiCalls struct {
 	// Calls at $0.005 per call (reads, lists, bookmarks, content manage, etc.)
 	XApi005 *int32 `json:"x_api_005,omitempty"`

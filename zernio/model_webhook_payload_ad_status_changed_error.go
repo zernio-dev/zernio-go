@@ -22,11 +22,11 @@ var _ MappedNullable = &WebhookPayloadAdStatusChangedError{}
 
 // WebhookPayloadAdStatusChangedError Optional. Present on most `WITH_ISSUES` events, carrying the platform's error diagnostics. May be absent on some `WITH_ISSUES` events (Meta does not always include diagnostics). Always absent for any other `status.raw` value. Always null-check before reading.
 type WebhookPayloadAdStatusChangedError struct {
-	// Platform-native error code, forwarded verbatim. For Meta this is `error_code` as a string. Use as the stable discriminator — `summary` and `message` are localized.
+	// Platform-native error code, forwarded verbatim. For Meta this is `error_code` as a string. Use as the stable discriminator, since `summary` and `message` are localized.
 	Code string `json:"code"`
-	// Short human-readable summary (Meta `error_summary`). Localized to the ad-account owner's Meta locale — display only, do not match on it.
+	// Short human-readable summary (Meta `error_summary`). Localized to the ad-account owner's Meta locale. Display only, do not match on it.
 	Summary *string `json:"summary,omitempty"`
-	// Full human-readable error message (Meta `error_message`). Localized — display only.
+	// Full human-readable error message (Meta `error_message`). Localized, display only.
 	Message *string `json:"message,omitempty"`
 }
 

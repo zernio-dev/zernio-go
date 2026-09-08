@@ -28,7 +28,7 @@ type AdsTimelineResponseRowsInner struct {
 	Reach      *int32 `json:"reach,omitempty"`
 	Clicks     *int32 `json:"clicks,omitempty"`
 	Engagement *int32 `json:"engagement,omitempty"`
-	// Click-through rate as a percentage (0–100).
+	// Click-through rate as a percentage (0 to 100).
 	Ctr *float32 `json:"ctr,omitempty"`
 	// Cost per click in native currency.
 	Cpc *float32 `json:"cpc,omitempty"`

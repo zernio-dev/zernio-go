@@ -21,7 +21,7 @@ var _ MappedNullable = &ListAdAudiences200ResponseAudiencesInner{}
 // ListAdAudiences200ResponseAudiencesInner struct for ListAdAudiences200ResponseAudiencesInner
 type ListAdAudiences200ResponseAudiencesInner struct {
 	Id NullableString `json:"id,omitempty"`
-	// Social account the audience was created against. Returned for saved_targeting items.
+	// Account the audience was created against. Returned for saved_targeting items.
 	AccountId          *string `json:"accountId,omitempty"`
 	PlatformAudienceId *string `json:"platformAudienceId,omitempty"`
 	Name               *string `json:"name,omitempty"`

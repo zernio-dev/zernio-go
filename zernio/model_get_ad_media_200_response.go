@@ -21,7 +21,7 @@ var _ MappedNullable = &GetAdMedia200Response{}
 // GetAdMedia200Response struct for GetAdMedia200Response
 type GetAdMedia200Response struct {
 	AdId *string `json:"adId,omitempty"`
-	// 'facebook' or 'instagram' — only Meta is supported for now.
+	// 'facebook' or 'instagram'. Only Meta is supported for now.
 	Platform *string                           `json:"platform,omitempty"`
 	Media    []GetAdMedia200ResponseMediaInner `json:"media,omitempty"`
 }

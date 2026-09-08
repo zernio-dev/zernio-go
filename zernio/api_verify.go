@@ -43,7 +43,7 @@ func (r VerifyAPICheckVerificationRequest) Execute() (*CheckVerification200Respo
 CheckVerification Check a verification code
 
 Verify the code the user typed. Wrong, expired, and exhausted codes
-answer 200 with `valid: false` and the settled `status` — only an
+answer 200 with `valid: false` and the settled `status`. Only an
 unknown id is a 404. A correct code consumes the verification
 (single-use, `status: approved`) and fires the `verification.approved`
 webhook; the 5th wrong attempt settles it as `max_attempts_reached`

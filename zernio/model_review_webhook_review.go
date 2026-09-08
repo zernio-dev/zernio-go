@@ -23,7 +23,7 @@ var _ MappedNullable = &ReviewWebhookReview{}
 
 // ReviewWebhookReview Review data shared by review.new and review.updated payloads.
 type ReviewWebhookReview struct {
-	// Platform review ID (e.g. \"accounts/123/locations/456/reviews/789\" for Google Business).
+	// Platform review ID (e.g. \"accounts/123/locations/456/reviews/789\" for Google Business Profile).
 	Id string `json:"id"`
 	// Platform the review originated on. Currently Google Business Profile only.
 	Platform string `json:"platform"`

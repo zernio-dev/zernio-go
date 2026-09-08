@@ -32,7 +32,7 @@ type MentionsAPIListInboxMentionsRequest struct {
 	cursor     *string
 }
 
-// Filter by social account ID
+// Filter by account ID
 func (r MentionsAPIListInboxMentionsRequest) AccountId(accountId string) MentionsAPIListInboxMentionsRequest {
 	r.accountId = &accountId
 	return r
@@ -222,7 +222,7 @@ Two shapes, selected by whether `commentId` is present:
 
 Story mentions are not supported by Instagram's API.
 
-Note that `GET /v1/inbox/mentions` currently returns LinkedIn mentions only and does
+`GET /v1/inbox/mentions` currently returns LinkedIn mentions only and does
 not surface Instagram mentions. Source `mediaId` and `commentId` from Instagram's
 `comments` webhook, which is where mention notifications are delivered for accounts
 connected through Instagram Login.

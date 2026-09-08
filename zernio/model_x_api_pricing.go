@@ -18,10 +18,10 @@ import (
 // checks if the XApiPricing type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &XApiPricing{}
 
-// XApiPricing Canonical X/Twitter API pricing table. Zernio passes X API costs through at exact rates with zero markup, so every call you make has a known per-unit price. Use this payload alongside `/v1/usage-stats` (which returns per-operation call counts via `xApiCallsByOperation`) to compute exact cost attribution by X action.
+// XApiPricing Canonical X API pricing table. Zernio passes X API costs through at exact rates with zero markup, so every call you make has a known per-unit price. Use this payload alongside `/v1/usage-stats` (which returns per-operation call counts via `xApiCallsByOperation`) to compute exact cost attribution by X action.
 type XApiPricing struct {
 	Currency *string `json:"currency,omitempty"`
-	// Always 0% — Zernio does not mark up X API rates.
+	// Always 0%, because Zernio does not mark up X API rates.
 	Markup *string `json:"markup,omitempty"`
 	Source *string `json:"source,omitempty"`
 	// Date the prices were last verified against X's published rates.

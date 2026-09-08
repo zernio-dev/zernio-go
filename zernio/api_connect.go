@@ -41,12 +41,12 @@ func (r ConnectAPIAssignGoogleBusinessLocationRequest) Execute() (*AssignGoogleB
 }
 
 /*
-AssignGoogleBusinessLocation Assign GBP location to another profile
+AssignGoogleBusinessLocation Assign Google Business Profile location to another profile
 
-Connect a Google Business location onto a DIFFERENT profile by reusing the OAuth grant from an already-connected GBP account — no browser, no re-authorization. Built for agencies whose single Google account has manager access to many client locations and who run one profile per client: connect one location the normal way (browser OAuth), then bulk-assign the rest onto each client's profile via this endpoint. The path `accountId` is a SOURCE connected GBP account (the token holder); the body `profileId` is the TARGET profile. Returns 409 if the target profile already has a Google Business connection (switch its location with PUT gmb-locations instead).
+Connect a Google Business Profile location onto a DIFFERENT profile by reusing the OAuth grant from an already-connected Google Business Profile account, with no browser and no re-authorization. Built for agencies whose single Google account has manager access to many client locations and who run one profile per client: connect one location the normal way (browser OAuth), then bulk-assign the rest onto each client's profile via this endpoint. The path `accountId` is a SOURCE connected Google Business Profile account (the token holder); the body `profileId` is the TARGET profile. Returns 409 if the target profile already has a Google Business Profile connection (switch its location with PUT gmb-locations instead).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId A source connected GBP account whose OAuth grant is reused.
+	@param accountId A source connected Google Business Profile account whose OAuth grant is reused.
 	@return ConnectAPIAssignGoogleBusinessLocationRequest
 */
 func (a *ConnectAPIService) AssignGoogleBusinessLocation(ctx context.Context, accountId string) ConnectAPIAssignGoogleBusinessLocationRequest {
@@ -609,13 +609,13 @@ func (r ConnectAPIConnectAdsRequest) ProfileId(profileId string) ConnectAPIConne
 	return r
 }
 
-// Existing SocialAccount ID. Required for &#x60;twitter&#x60; (X Ads). Optional for &#x60;tiktok&#x60; — omit to enter ads-only mode (no TikTok posting account linked; ad creation uses a Brand Identity instead of a TT_USER). Ignored for same-token (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) and standalone (&#x60;googleads&#x60;) platforms.
+// Existing SocialAccount ID. Required for &#x60;twitter&#x60; (X Ads). Optional for &#x60;tiktok&#x60;: omit to enter ads-only mode (no TikTok posting account linked; ad creation uses a Brand Identity instead of a TT_USER). Ignored for same-token (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) and standalone (&#x60;googleads&#x60;) platforms.
 func (r ConnectAPIConnectAdsRequest) AccountId(accountId string) ConnectAPIConnectAdsRequest {
 	r.accountId = &accountId
 	return r
 }
 
-// Custom URL the browser is sent to once the OAuth flow finishes. Honored on every ads platform, including the separate-token (&#x60;tiktok&#x60;, &#x60;twitter&#x60;) and standalone (&#x60;googleads&#x60;) flows. MUST be an absolute http(s) URL or a custom app scheme for mobile deeplinks (e.g. myapp://callback); a relative path is rejected with 400 INVALID_REDIRECT_URL. On success &#x60;tiktok&#x60;, &#x60;twitter&#x60; and &#x60;googleads&#x60; land on the URL unchanged, while the same-token platforms (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) append &#x60;connected&#x60;, &#x60;profileId&#x60;, &#x60;accountId&#x60;, &#x60;username&#x60; and, on API-key calls, &#x60;connect_token&#x60;. On failure the same error contract applies as on GET /v1/connect/{platform}: &#x60;error&#x60; and &#x60;platform&#x60; are always appended, other params are optional, and the value list there is not exhaustive. Note that on the tiktok, twitter and googleads flows &#x60;platform&#x60; carries the ads platform id (&#x60;tiktokads&#x60;, &#x60;xads&#x60;, &#x60;googleads&#x60;), not the value used in the request path. When omitted, the browser lands on the Zernio dashboard.
+// Custom URL the browser is sent to once the OAuth flow finishes. Honored on every ads platform, including the separate-token (&#x60;tiktok&#x60;, &#x60;twitter&#x60;) and standalone (&#x60;googleads&#x60;) flows. MUST be an absolute http(s) URL or a custom app scheme for mobile deeplinks (e.g. myapp://callback); a relative path is rejected with 400 INVALID_REDIRECT_URL. On success &#x60;tiktok&#x60;, &#x60;twitter&#x60; and &#x60;googleads&#x60; land on the URL unchanged, while the same-token platforms (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) append &#x60;connected&#x60;, &#x60;profileId&#x60;, &#x60;accountId&#x60;, &#x60;username&#x60; and, on API-key calls, &#x60;connect_token&#x60;. On failure the same error contract applies as on GET /v1/connect/{platform}: &#x60;error&#x60; and &#x60;platform&#x60; are always appended, other params are optional, and the value list there is not exhaustive. On the tiktok, twitter and googleads flows &#x60;platform&#x60; carries the ads platform id (&#x60;tiktokads&#x60;, &#x60;xads&#x60;, &#x60;googleads&#x60;), not the value used in the request path. When omitted, the browser lands on the Zernio dashboard.
 func (r ConnectAPIConnectAdsRequest) RedirectUrl(redirectUrl string) ConnectAPIConnectAdsRequest {
 	r.redirectUrl = &redirectUrl
 	return r
@@ -654,16 +654,17 @@ ConnectAds Connect ads for a platform
 
 Unified ads connection endpoint. Creates a dedicated ads SocialAccount for the specified platform.
 
-Same-token platforms (facebook, instagram, linkedin, pinterest): the ads SocialAccount
+**Same-token platforms (facebook, instagram, linkedin, pinterest).** The ads SocialAccount
 (metaads, linkedinads, pinterestads) reuses the OAuth token of the parent posting account,
 but only when an active parent exists and, for facebook and instagram, its stored token
 carries ads_management and ads_read (linkedin and pinterest need no extra scope). In that
-case no extra OAuth happens and the response is alreadyConnected: true. When no such parent
-exists, or the scopes are missing, the endpoint returns an authUrl and a full OAuth round
-trip is required. When a parent exists but carries no token usable for ad accounts, the call
-fails with 400 RECONNECT_REQUIRED. Independently of the branch, the call can return 403
-ADS_ADDON_REQUIRED without the ads add-on and 402 PAYMENT_REQUIRED when the billing gate is
-closed.
+case no extra OAuth happens and the response is alreadyConnected: true.
+
+When no such parent exists, or the scopes are missing, the endpoint returns an authUrl and a
+full OAuth round trip is required. When a parent exists but carries no token usable for ad
+accounts, the call fails with 400 RECONNECT_REQUIRED. Independently of the branch, the call
+can return 403 ADS_ADDON_REQUIRED without the ads add-on and 402 PAYMENT_REQUIRED when the
+billing gate is closed.
 
 Meta Ads prerequisite: connecting Meta Ads (via facebook or instagram) requires a Facebook
 Page. Not because the ad account is read through a Page, but because both parent posting
@@ -673,11 +674,15 @@ Without a Page there is no parent account to inherit a token from. A user who ma
 Facebook Page cannot complete this connection, and the facebook flow ends with
 error=no_facebook_pages.
 
-Separate-token platforms (tiktok, twitter): Starts the platform-specific marketing API OAuth flow and creates an ads SocialAccount (tiktokads, xads) with its own token. If the ads account already exists, returns alreadyConnected: true.
-  - tiktok: accountId is OPTIONAL. With accountId, the new tiktokads account links to that posting account (parentAccountId set) — Spark Ads + standalone ads using the posting TT_USER identity become available. Without accountId, ads-only mode kicks in: the new tiktokads account has parentAccountId=null and standalone ads use a synthetic CUSTOMIZED_USER ("Brand Identity"); Spark Ads are unavailable because TikTok requires a posting account for them. The Brand Identity is configured separately via PATCH /v1/connect/tiktok-ads (or inline on POST /v1/ads/create via the brandIdentity field).
-  - twitter (X Ads): accountId is REQUIRED. There's no ads-only mode — tweets need to be authored by a real X user.
+**Separate-token platforms (tiktok, twitter).** Starts the platform-specific marketing API
+OAuth flow and creates an ads SocialAccount (tiktokads, xads) with its own token. If the ads
+account already exists, returns alreadyConnected: true.
+  - tiktok: accountId is OPTIONAL. With accountId, the new tiktokads account links to that posting account (parentAccountId set), so Spark Ads + standalone ads using the posting TT_USER identity become available. Without accountId, ads-only mode kicks in: the new tiktokads account has parentAccountId=null and standalone ads use a synthetic CUSTOMIZED_USER ("Brand Identity"); Spark Ads are unavailable because TikTok requires a posting account for them. The Brand Identity is configured separately via PATCH /v1/connect/tiktok-ads (or inline on POST /v1/ads/create via the brandIdentity field).
+  - twitter (X Ads): accountId is REQUIRED. There's no ads-only mode, because tweets need to be authored by a real X user.
 
-Standalone platforms (googleads): Starts the Google Ads OAuth flow and creates a standalone ads SocialAccount (googleads) with no parent. If the account already exists, returns alreadyConnected: true.
+**Standalone platforms (googleads).** Starts the Google Ads OAuth flow and creates a
+standalone ads SocialAccount (googleads) with no parent. If the account already exists,
+returns alreadyConnected: true.
 
 Ads accounts appear as regular SocialAccount documents with ads platform values (e.g., metaads, tiktokads) in GET /v1/accounts.
 
@@ -1631,7 +1636,22 @@ func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) Execute() (*http.Respons
 /*
 ConnectWhatsAppEmbeddedSignup Connect WhatsApp from Embedded Signup
 
-Exchange the authorization code Meta Embedded Signup returns to your browser SDK. This is the headless completion path for WhatsApp: the code never passes through a redirect_uri, so POST /v1/connect/{platform} cannot accept it.
+Finish a WhatsApp connection started with Meta's Embedded Signup in your own page (Facebook
+JavaScript SDK). The code never passes through a `redirect_url`, so `POST /v1/connect/{platform}`
+cannot accept it.
+
+The flow: call `GET /v1/connect/whatsapp/sdk-config`, run `FB.login` with that `configId`,
+`response_type: 'code'`, `override_default_response_type: true` and
+`extras: { sessionInfoVersion: '3' }`, read `waba_id` and `phone_number_id` from the
+`WA_EMBEDDED_SIGNUP` message event Meta posts to your window, then send the `code` from the
+login response here together with those ids.
+
+Always forward `wabaId` and `phoneNumberId`: Zernio connects exactly that number and no picker is
+shown. Without them Zernio falls back to the first number of the first WhatsApp Business Account the
+token can reach, which may not be the one the user picked.
+
+The Zernio Meta app must list the domain that hosts the popup before `FB.login` will open there.
+Available on request: send the domains to support.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIConnectWhatsAppEmbeddedSignupRequest
@@ -2214,7 +2234,7 @@ func (r ConnectAPIGetGmbLocationsRequest) Execute() (*GetGmbLocations200Response
 }
 
 /*
-GetGmbLocations List GBP locations
+GetGmbLocations List Google Business Profile locations
 
 Returns Google Business Profile locations the connected account can access, plus the currently selected location. The list is bounded (see hasMore); for accounts that own many locations, use the search or filter query params to find a specific one instead of loading them all, or raise limit to enumerate an account with more than 100 locations.
 
@@ -2467,7 +2487,7 @@ GetPendingOAuthData Get pending OAuth data
 
 Fetch pending OAuth data for headless mode using the pendingDataToken from the redirect URL.
 
-**Scope**: This endpoint is used for LinkedIn organizations, Google Business locations, Slack channels, Snapchat profiles, and Pinterest boards, where the selection list is too large to fit in URL params. The redirect carries a `pendingDataToken` instead of the full payload; the response includes the corresponding selection array (e.g. `boards` for Pinterest). WhatsApp, Facebook and other platforms pass selection state directly via URL query params on the redirect (`profileId`, `tempToken`, `step`), no pending record is created, so this endpoint will return 404 for those flows. Use the platform-specific selection endpoint instead (e.g. `/v1/connect/whatsapp/select-phone-number`).
+**Scope**: This endpoint is used for LinkedIn organizations, Google Business Profile locations, Slack channels, Snapchat profiles, and Pinterest boards, where the selection list is too large to fit in URL params. The redirect carries a `pendingDataToken` instead of the full payload; the response includes the corresponding selection array (e.g. `boards` for Pinterest). WhatsApp, Facebook and other platforms pass selection state directly via URL query params on the redirect (`profileId`, `tempToken`, `step`), no pending record is created, so this endpoint will return 404 for those flows. Use the platform-specific selection endpoint instead (e.g. `/v1/connect/whatsapp/select-phone-number`).
 
 Reading the token does not consume it, so this fetch is repeatable until the token expires 1 hour after issuance. Completing the platform selection deletes the pending record, so the token stops working from then on. No authentication required.
 
@@ -3349,6 +3369,125 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetWhatsAppSdkConfigRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+}
+
+func (r ConnectAPIGetWhatsAppSdkConfigRequest) Execute() (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppSdkConfigExecute(r)
+}
+
+/*
+GetWhatsAppSdkConfig Get Embedded Signup SDK config
+
+The public values needed to run Meta's Embedded Signup inside your own page with the
+Facebook JavaScript SDK instead of the redirect flow: pass `appId` and `graphApiVersion`
+to `FB.init`, and `configId` as `config_id` to `FB.login`. The popup then reports the
+WhatsApp Business Account and phone number the user picked through the
+`WA_EMBEDDED_SIGNUP` message event, and you finish the connection with
+`POST /v1/connect/whatsapp/embedded-signup`. Because the number comes back from the popup,
+the user never sees a second number picker.
+
+Available on request: `FB.login` only opens on HTTPS domains listed in the Zernio Meta app, so
+send the domains that will host the popup to support before going live.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetWhatsAppSdkConfigRequest
+*/
+func (a *ConnectAPIService) GetWhatsAppSdkConfig(ctx context.Context) ConnectAPIGetWhatsAppSdkConfigRequest {
+	return ConnectAPIGetWhatsAppSdkConfigRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppSdkConfig200Response
+func (a *ConnectAPIService) GetWhatsAppSdkConfigExecute(r ConnectAPIGetWhatsAppSdkConfigRequest) (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppSdkConfig200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWhatsAppSdkConfig")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/whatsapp/sdk-config"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetYoutubeCaptionsRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -3679,7 +3818,7 @@ HandleOAuthCallback Complete OAuth callback
 
 Exchange the OAuth authorization code for tokens and connect the account to the specified profile.
 
-Facebook, Google Business, Snapchat and WhatsApp are not accepted here: their account identity is a destination chosen after OAuth, which this single-shot exchange cannot do. Connect them through the redirect flow from `GET /v1/connect/{platform}`, or, for WhatsApp Embedded Signup, through `POST /v1/connect/whatsapp/embedded-signup`.
+Facebook, Google Business Profile, Snapchat and WhatsApp are not accepted here: their account identity is a destination chosen after OAuth, which this single-shot exchange cannot do. Connect them through the redirect flow from `GET /v1/connect/{platform}`, or, for WhatsApp Embedded Signup, through `POST /v1/connect/whatsapp/embedded-signup`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param platform Social platform to complete the connect for. Discord, Slack and Telegram are absent because they are served by their own dedicated routes, documented separately.
@@ -4109,9 +4248,9 @@ func (r ConnectAPIListGoogleBusinessLocationsRequest) Execute() (*ListGoogleBusi
 }
 
 /*
-ListGoogleBusinessLocations List GBP locations
+ListGoogleBusinessLocations List Google Business Profile locations
 
-For headless flows. Returns the list of GBP locations the user can manage. Use pendingDataToken (from the OAuth callback redirect) to list locations without consuming the token, so it remains available for select-location. Use X-Connect-Token header if connecting via API key.
+For headless flows. Returns the list of Google Business Profile locations the user can manage. Use pendingDataToken (from the OAuth callback redirect) to list locations without consuming the token, so it remains available for select-location. Use X-Connect-Token header if connecting via API key.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIListGoogleBusinessLocationsRequest
@@ -4426,7 +4565,7 @@ func (r ConnectAPIListLinkedInOrganizationsRequest) Execute() (*ListLinkedInOrga
 /*
 ListLinkedInOrganizations List LinkedIn orgs
 
-Fetch full LinkedIn organization details (logos, vanity names, websites) for custom UI. No authentication required, just the tempToken from OAuth.
+Fetch full LinkedIn organization details (logos, vanity names, websites) for custom UI. No authentication required, only the tempToken from OAuth.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIListLinkedInOrganizationsRequest
@@ -5320,9 +5459,9 @@ func (r ConnectAPISelectGoogleBusinessLocationRequest) Execute() (*SelectGoogleB
 }
 
 /*
-SelectGoogleBusinessLocation Select GBP location
+SelectGoogleBusinessLocation Select Google Business Profile location
 
-Complete the headless GBP flow by saving the user's selected location. The pendingDataToken is returned in your redirect URL after OAuth completes (step=select_location). Tokens and profile data are stored server-side, so only the pendingDataToken is needed here. Use X-Connect-Token header if connecting via API key.
+Complete the headless Google Business Profile flow by saving the user's selected location. The pendingDataToken is returned in your redirect URL after OAuth completes (step=select_location). Tokens and profile data are stored server-side, so only the pendingDataToken is needed here. Use X-Connect-Token header if connecting via API key.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPISelectGoogleBusinessLocationRequest
@@ -6241,9 +6380,9 @@ func (r ConnectAPIUpdateGmbLocationRequest) Execute() (*UpdateGmbLocation200Resp
 }
 
 /*
-UpdateGmbLocation Update GBP location
+UpdateGmbLocation Update Google Business Profile location
 
-Switch which GBP location is active for a connected account.
+Switch which Google Business Profile location is active for a connected account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

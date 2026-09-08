@@ -198,7 +198,7 @@ func (r GMBPlaceActionsAPIDeleteGoogleBusinessPlaceActionRequest) Execute() (*De
 /*
 DeleteGoogleBusinessPlaceAction Delete action link
 
-Deletes a place action link (e.g. booking or ordering URL) from a GBP location.
+Deletes a place action link (e.g. booking or ordering URL) from a Google Business Profile location.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

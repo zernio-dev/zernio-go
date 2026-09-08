@@ -20,7 +20,7 @@ import (
 // checks if the ConversionDestination type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ConversionDestination{}
 
-// ConversionDestination A discoverable conversion destination on an ad platform — a Meta pixel, Google conversion action, or LinkedIn conversion rule. Returned by `listConversionDestinations`, `getConversionDestination`, `createConversionDestination`, and `updateConversionDestination`.
+// ConversionDestination A discoverable conversion destination on an ad platform: a Meta pixel, Google conversion action, or LinkedIn conversion rule. Returned by `listConversionDestinations`, `getConversionDestination`, `createConversionDestination`, and `updateConversionDestination`.
 type ConversionDestination struct {
 	// Platform-native identifier. Pass back as `destinationId` on event send and as the path segment on CRUD endpoints.
 	Id   string `json:"id"`

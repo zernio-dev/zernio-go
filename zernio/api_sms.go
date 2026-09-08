@@ -178,7 +178,7 @@ func (r SMSAPICreateSmsSenderIdRequest) Execute() (*CreateSmsSenderId200Response
 /*
 CreateSmsSenderId Create an alphanumeric sender ID
 
-Registers an alphanumeric sender ID (e.g. `ZERNIO`) — a branded `from`
+Registers an alphanumeric sender ID (e.g. `ZERNIO`), a branded `from`
 for one-way international SMS. No phone number purchase or carrier
 registration is needed; once created, pass it as `from` on
 `POST /v1/sms/messages`.
@@ -188,7 +188,7 @@ letter). Sends cannot reach the US, Canada, or Puerto Rico, are
 text-only, and recipients cannot reply. Sender IDs that impersonate
 well-known brands or institutions are rejected. Names are not
 exclusive: the same sender ID can be registered by any number of
-workspaces. Creating the same sender ID again is a no-op
+teams. Creating the same sender ID again is a no-op
 (re-activates it after a delete).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -319,8 +319,8 @@ DeactivateSmsRegistration Deactivate a brand/campaign registration
 
 Terminates the campaign with the carrier registry so the recurring
 monthly campaign fee stops (carriers bill the first 3 months of a
-campaign regardless). Numbers covered by it can no longer SEND texts —
-receiving is unaffected — until they're registered under a new brand.
+campaign regardless). Numbers covered by it can no longer SEND texts
+(receiving is unaffected) until they're registered under a new brand.
 Irreversible: a deactivated campaign cannot be restored; texting again
 later requires a new registration (new one-time and review fees).
 Idempotent.
@@ -577,7 +577,7 @@ func (r SMSAPIDisableSmsOnNumberRequest) Execute() (*DisableSmsOnNumber200Respon
 DisableSmsOnNumber Disable SMS on a number
 
 Turns off SMS for the number (deactivates its SMS account). The carrier
-registration is untouched, so re-enabling later just reactivates it,
+registration is untouched, so re-enabling later reactivates it,
 with no re-registration.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -701,7 +701,7 @@ returns `notReady: true` (try again once provisioning finishes).
 US numbers additionally need a carrier registration before messages
 deliver; the response tells you which path applies:
   - `alreadyRegistered: true`: a prior registration still covers this
-    number; SMS was simply reactivated.
+    number; SMS was reactivated.
   - `reusable` set: you have an approved registration this number can
     join in one click via
     `POST /v1/phone-numbers/{id}/sms/reuse-registration`
@@ -1082,7 +1082,7 @@ type SMSAPIListSmsRegistrationsRequest struct {
 	includeDeactivated *bool
 }
 
-// Deactivated (terminated) registrations are hidden by default — pass true to include them.
+// Deactivated (terminated) registrations are hidden by default. Pass true to include them.
 func (r SMSAPIListSmsRegistrationsRequest) IncludeDeactivated(includeDeactivated bool) SMSAPIListSmsRegistrationsRequest {
 	r.includeDeactivated = &includeDeactivated
 	return r
@@ -1597,7 +1597,7 @@ func (r SMSAPIRequestSmsSenderIdLimitIncreaseRequest) Execute() (*RequestSmsSend
 /*
 RequestSmsSenderIdLimitIncrease Request a higher sender ID daily limit
 
-Asks support to raise the workspace's daily sender-ID message cap.
+Asks support to raise the team's daily sender-ID message cap.
 There is no self-serve raise: the request (desired cap + use case) is
 reviewed manually, usually within a business day.
 
@@ -1728,7 +1728,7 @@ func (r SMSAPIResendSmsRegistrationOtpRequest) Execute() (*ResendSmsRegistration
 ResendSmsRegistrationOtp Re-send the sole-prop OTP
 
 Re-sends the sole-proprietor verification PIN to the brand's mobile
-number — use it when the original code expired or never arrived. Only
+number. Use it when the original code expired or never arrived. Only
 valid while the registration is pending and awaiting its OTP; rate
 limited to one send per minute.
 
@@ -1854,7 +1854,7 @@ RespondToSmsRegistrationReview Reply to a change request
 Replies to a reviewer change request on a registration in
 `changes_requested` state: a note, hosted document URLs (from
 `POST /v1/sms/opt-in-proof`), or both, sent together. The registration
-returns to `requested` (back in review) — no need to resubmit the
+returns to `requested` (back in review), and you do not need to resubmit the
 whole registration. To change the submitted brand/campaign fields
 themselves, resubmit via `POST /v1/sms/registrations` with
 `resubmitRequestId` instead.
@@ -2561,7 +2561,7 @@ UploadSmsOptInProof Upload opt-in form proof for an appeal
 
 Hosts a screenshot (or PDF) of your SMS opt-in form and returns its
 public URL. Carrier reviewers reject campaigns whose consent can't be
-verified and ask for a "link/screenshot of the opt-in form" — the
+verified and ask for a "link/screenshot of the opt-in form". The
 registry has no attachment field, so include the returned URL inside
 the `messageFlow` you submit with the appeal
 (`POST /v1/sms/registrations/{id}/appeal`).
@@ -2705,7 +2705,7 @@ UploadSmsOptInProofFile Upload opt-in form proof
 
 Hosts a screenshot (or PDF) of your SMS opt-in form and returns its
 public URL. Include that URL in the campaign's `messageFlow` (the
-opt-in workflow text) — the carrier registry has no attachment field,
+opt-in workflow text). The carrier registry has no attachment field,
 so reviewers verify consent by opening links in that answer. Works
 before a registration exists (use it when registering) and for
 appeals. `/v1/sms/registrations/{id}/opt-in-proof` is an alias.

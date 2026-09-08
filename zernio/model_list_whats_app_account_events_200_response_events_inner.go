@@ -22,7 +22,7 @@ var _ MappedNullable = &ListWhatsAppAccountEvents200ResponseEventsInner{}
 // ListWhatsAppAccountEvents200ResponseEventsInner struct for ListWhatsAppAccountEvents200ResponseEventsInner
 type ListWhatsAppAccountEvents200ResponseEventsInner struct {
 	Id *string `json:"id,omitempty"`
-	// WhatsApp social account the event belongs to
+	// WhatsApp account the event belongs to
 	AccountId *string `json:"accountId,omitempty"`
 	// Event kind, e.g. template_approved, template_rejected, account_restricted, account_disconnected
 	Type      *string        `json:"type,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &BlockWhatsAppUsersRequest{}
 
 // BlockWhatsAppUsersRequest struct for BlockWhatsAppUsersRequest
 type BlockWhatsAppUsersRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Phone numbers (E.164, e.g. \"+16505551234\") or WhatsApp user IDs to block.
 	Users []string `json:"users"`

@@ -43,7 +43,7 @@ func (r GMBFoodMenusAPIGetGoogleBusinessFoodMenusRequest) Execute() (*GetGoogleB
 /*
 GetGoogleBusinessFoodMenus Get food menus
 
-Returns food menus for a GBP location including sections, items, pricing, and dietary info. Only for locations with food menu support.
+Returns food menus for a Google Business Profile location including sections, items, pricing, and dietary info. Only for locations with food menu support.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The Zernio account ID (from /v1/accounts)
@@ -217,7 +217,7 @@ func (r GMBFoodMenusAPIUpdateGoogleBusinessFoodMenusRequest) Execute() (*GetGoog
 /*
 UpdateGoogleBusinessFoodMenus Update food menus
 
-Updates food menus for a GBP location. Send the full menus array. Use updateMask for partial updates.
+Updates food menus for a Google Business Profile location. Send the full menus array. Use updateMask for partial updates.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The Zernio account ID (from /v1/accounts)

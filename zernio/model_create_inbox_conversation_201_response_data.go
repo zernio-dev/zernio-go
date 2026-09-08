@@ -24,11 +24,11 @@ type CreateInboxConversation201ResponseData struct {
 	MessageId *string `json:"messageId,omitempty"`
 	// Platform conversation ID (dm_conversation_id). For WhatsApp, this is Zernio's internal conversation id (24-character hex) which matches the id returned by the list-conversations endpoint and the conversationId in the message.received and conversation.started webhooks; use it to correlate the created thread with inbound events.
 	ConversationId *string `json:"conversationId,omitempty"`
-	// Twitter numeric user ID of the recipient
+	// X numeric user ID of the recipient
 	ParticipantId *string `json:"participantId,omitempty"`
 	// Display name of the recipient
 	ParticipantName NullableString `json:"participantName,omitempty"`
-	// Twitter username of the recipient
+	// X username of the recipient
 	ParticipantUsername NullableString `json:"participantUsername,omitempty"`
 }
 

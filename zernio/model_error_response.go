@@ -28,7 +28,7 @@ type ErrorResponse struct {
 	Code *string `json:"code,omitempty"`
 	// The request field that caused the error, when applicable.
 	Param *string `json:"param,omitempty"`
-	// Upstream platform (e.g. meta, google, tiktok) — present when type is platform_error.
+	// Upstream platform (e.g. meta, google, tiktok), present when type is platform_error.
 	Platform *string `json:"platform,omitempty"`
 	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
 	PlatformError map[string]interface{} `json:"platformError,omitempty"`

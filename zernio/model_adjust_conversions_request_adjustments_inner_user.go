@@ -18,7 +18,7 @@ import (
 // checks if the AdjustConversionsRequestAdjustmentsInnerUser type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdjustConversionsRequestAdjustmentsInnerUser{}
 
-// AdjustConversionsRequestAdjustmentsInnerUser ENHANCEMENT only — first-party identifiers (hashed server-side). At least one of email/phone required.
+// AdjustConversionsRequestAdjustmentsInnerUser ENHANCEMENT only. First-party identifiers (hashed server-side). At least one of email/phone required.
 type AdjustConversionsRequestAdjustmentsInnerUser struct {
 	Email *string `json:"email,omitempty"`
 	Phone *string `json:"phone,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &UploadWhatsAppFlowJsonRequest{}
 
 // UploadWhatsAppFlowJsonRequest struct for UploadWhatsAppFlowJsonRequest
 type UploadWhatsAppFlowJsonRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string                                `json:"accountId"`
 	FlowJson  UploadWhatsAppFlowJsonRequestFlowJson `json:"flow_json"`
 }

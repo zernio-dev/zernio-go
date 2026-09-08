@@ -21,7 +21,7 @@ var _ MappedNullable = &EnableSmsOnNumber200Response{}
 // EnableSmsOnNumber200Response struct for EnableSmsOnNumber200Response
 type EnableSmsOnNumber200Response struct {
 	Enabled *bool `json:"enabled,omitempty"`
-	// The SMS social account ID (present when enabled).
+	// The SMS account ID (present when enabled).
 	Id          *string `json:"id,omitempty"`
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 	// False for US numbers until their registration is approved.

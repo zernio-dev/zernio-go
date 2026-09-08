@@ -19,7 +19,7 @@ import (
 // checks if the DiscordScheduledEvent type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &DiscordScheduledEvent{}
 
-// DiscordScheduledEvent Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints. Fields below are the subset Zernio consumes — Discord may return more (e.g. creator, image hash) which we pass through verbatim.
+// DiscordScheduledEvent Discord guild scheduled event. Returned by /v1/discord/guilds/{guildId}/events endpoints. Fields below are the subset Zernio consumes. Discord may return more (e.g. creator, image hash) which we pass through verbatim.
 type DiscordScheduledEvent struct {
 	// Event snowflake ID
 	Id      *string `json:"id,omitempty"`
@@ -32,7 +32,7 @@ type DiscordScheduledEvent struct {
 	ScheduledStartTime *time.Time     `json:"scheduled_start_time,omitempty"`
 	// Required for external events; optional for voice/stage.
 	ScheduledEndTime NullableTime `json:"scheduled_end_time,omitempty"`
-	// Always 2 (GUILD_ONLY) — Discord deprecated PUBLIC events.
+	// Always 2 (GUILD_ONLY). Discord deprecated PUBLIC events.
 	PrivacyLevel *int32 `json:"privacy_level,omitempty"`
 	// 1=SCHEDULED, 2=ACTIVE, 3=COMPLETED, 4=CANCELED
 	Status *int32 `json:"status,omitempty"`

@@ -22,9 +22,9 @@ var _ MappedNullable = &WebhookPayloadCommentAccount{}
 
 // WebhookPayloadCommentAccount struct for WebhookPayloadCommentAccount
 type WebhookPayloadCommentAccount struct {
-	// Social account ID
+	// Account ID
 	Id string `json:"id"`
-	// Social account ID (same as id); canonical field for account filtering.
+	// Account ID (same as id); canonical field for account filtering.
 	AccountId *string `json:"accountId,omitempty"`
 	Platform  string  `json:"platform"`
 	Username  string  `json:"username"`

@@ -22,9 +22,9 @@ var _ MappedNullable = &FollowUserRequest{}
 
 // FollowUserRequest struct for FollowUserRequest
 type FollowUserRequest struct {
-	// The social account ID
+	// The account ID
 	AccountId string `json:"accountId"`
-	// The Twitter ID of the user to follow
+	// The X ID of the user to follow
 	TargetUserId string `json:"targetUserId"`
 }
 

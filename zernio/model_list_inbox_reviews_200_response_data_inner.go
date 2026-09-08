@@ -21,25 +21,25 @@ var _ MappedNullable = &ListInboxReviews200ResponseDataInner{}
 
 // ListInboxReviews200ResponseDataInner struct for ListInboxReviews200ResponseDataInner
 type ListInboxReviews200ResponseDataInner struct {
-	// Review identifier. For Google Business this is the full review resource name (accounts/{accountId}/locations/{locationId}/reviews/{reviewId}), so it also encodes the location.
+	// Review identifier. For Google Business Profile this is the full review resource name (accounts/{accountId}/locations/{locationId}/reviews/{reviewId}), so it also encodes the location.
 	Id              *string `json:"id,omitempty"`
 	Platform        *string `json:"platform,omitempty"`
 	AccountId       *string `json:"accountId,omitempty"`
 	AccountUsername *string `json:"accountUsername,omitempty"`
-	// Bare GBP location id the review belongs to. Google Business only; absent for other platforms.
+	// Bare Google Business Profile location id the review belongs to. Google Business Profile only; absent for other platforms.
 	LocationId *string `json:"locationId,omitempty"`
-	// Human-readable GBP location display name. Google Business only; absent for other platforms.
+	// Human-readable Google Business Profile location display name. Google Business Profile only; absent for other platforms.
 	LocationName NullableString                                `json:"locationName,omitempty"`
 	Reviewer     *ListInboxReviews200ResponseDataInnerReviewer `json:"reviewer,omitempty"`
 	Rating       *int32                                        `json:"rating,omitempty"`
 	Text         *string                                       `json:"text,omitempty"`
 	Created      *time.Time                                    `json:"created,omitempty"`
 	Replied      *bool                                         `json:"hasReply,omitempty"`
-	// Whether the review has at least one photo. Google Business only; always false for other platforms.
+	// Whether the review has at least one photo. Google Business Profile only; always false for other platforms.
 	PhotosPresent *bool `json:"hasPhotos,omitempty"`
-	// Number of photos attached to the review (photos only; videos are not counted). Google Business only; 0 for other platforms.
+	// Number of photos attached to the review (photos only; videos are not counted). Google Business Profile only; 0 for other platforms.
 	PhotoCount *int32 `json:"photoCount,omitempty"`
-	// Photos attached to the review. Google Business only; always an empty array for other platforms.
+	// Photos attached to the review. Google Business Profile only; always an empty array for other platforms.
 	Photos    []ListInboxReviews200ResponseDataInnerPhotosInner `json:"photos,omitempty"`
 	Reply     *ListInboxReviews200ResponseDataInnerReply        `json:"reply,omitempty"`
 	ReviewUrl NullableString                                    `json:"reviewUrl,omitempty"`

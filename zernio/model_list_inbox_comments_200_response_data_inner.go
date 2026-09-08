@@ -25,7 +25,7 @@ type ListInboxComments200ResponseDataInner struct {
 	Platform        *string `json:"platform,omitempty"`
 	AccountId       *string `json:"accountId,omitempty"`
 	AccountUsername *string `json:"accountUsername,omitempty"`
-	// The post text/caption. On ad rows (isAd: true) this is the AD NAME, not the underlying post's caption — the creative text isn't exposed here.
+	// The post text/caption. On ad rows (isAd: true) this is the AD NAME, not the underlying post's caption. The creative text isn't exposed here.
 	Content *string `json:"content,omitempty"`
 	// Post media thumbnail. On ad rows this is the ad creative thumbnail.
 	Picture NullableString `json:"picture,omitempty"`
@@ -41,9 +41,9 @@ type ListInboxComments200ResponseDataInner struct {
 	Subreddit NullableString `json:"subreddit,omitempty"`
 	// True when this row is an ad (boosted/dark post). `platform` is then the placement (facebook = the Page dark post / instagram = the IG media), `id` is `{adId}:{placement}`, and the thread is at GET /v1/ads/{adId}/comments?placement={placement}.
 	IsAd *bool `json:"isAd,omitempty"`
-	// Internal Zernio ad id — only on ad rows.
+	// Internal Zernio ad id, only on ad rows.
 	AdId *string `json:"adId,omitempty"`
-	// Which side of the ad this row's comments are on — only on ad rows.
+	// Which side of the ad this row's comments are on, only on ad rows.
 	Placement *string `json:"placement,omitempty"`
 }
 

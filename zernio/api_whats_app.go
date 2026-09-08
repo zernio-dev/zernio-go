@@ -32,7 +32,7 @@ type WhatsAppAPIAddWhatsAppGroupParticipantsRequest struct {
 	addWhatsAppGroupParticipantsRequest *AddWhatsAppGroupParticipantsRequest
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIAddWhatsAppGroupParticipantsRequest) AccountId(accountId string) WhatsAppAPIAddWhatsAppGroupParticipantsRequest {
 	r.accountId = &accountId
 	return r
@@ -181,7 +181,7 @@ type WhatsAppAPIApproveWhatsAppGroupJoinRequestsRequest struct {
 	removeWhatsAppGroupParticipantsRequest *RemoveWhatsAppGroupParticipantsRequest
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIApproveWhatsAppGroupJoinRequestsRequest) AccountId(accountId string) WhatsAppAPIApproveWhatsAppGroupJoinRequestsRequest {
 	r.accountId = &accountId
 	return r
@@ -478,7 +478,7 @@ Creates (or fetches, if one already exists) the Meta dataset that
 Click-to-WhatsApp ad events are reported against via the Conversions
 API, and persists its ID on the account as `metadata.metaCapiDatasetId`.
 
-The call is GET-first idempotent — a WABA can only own one CTWA
+The call is GET-first idempotent: a WABA can only own one CTWA
 dataset, so a second call after a successful provision is a safe no-op
 that returns the same ID with `created: false`.
 
@@ -730,7 +730,7 @@ type WhatsAppAPICreateWhatsAppGroupInviteLinkRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPICreateWhatsAppGroupInviteLinkRequest) AccountId(accountId string) WhatsAppAPICreateWhatsAppGroupInviteLinkRequest {
 	r.accountId = &accountId
 	return r
@@ -998,7 +998,7 @@ type WhatsAppAPIDeleteWhatsAppGroupChatRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIDeleteWhatsAppGroupChatRequest) AccountId(accountId string) WhatsAppAPIDeleteWhatsAppGroupChatRequest {
 	r.accountId = &accountId
 	return r
@@ -1148,7 +1148,7 @@ type WhatsAppAPIDeleteWhatsAppTemplateRequest struct {
 	language     *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIDeleteWhatsAppTemplateRequest) AccountId(accountId string) WhatsAppAPIDeleteWhatsAppTemplateRequest {
 	r.accountId = &accountId
 	return r
@@ -1310,7 +1310,7 @@ type WhatsAppAPIDeleteWhatsAppTemplateByIdRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIDeleteWhatsAppTemplateByIdRequest) AccountId(accountId string) WhatsAppAPIDeleteWhatsAppTemplateByIdRequest {
 	r.accountId = &accountId
 	return r
@@ -1708,7 +1708,7 @@ type WhatsAppAPIGetWhatsAppBlockedUsersRequest struct {
 	after      *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppBlockedUsersRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppBlockedUsersRequest {
 	r.accountId = &accountId
 	return r
@@ -1850,7 +1850,7 @@ type WhatsAppAPIGetWhatsAppBusinessProfileRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppBusinessProfileRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppBusinessProfileRequest {
 	r.accountId = &accountId
 	return r
@@ -1972,7 +1972,7 @@ type WhatsAppAPIGetWhatsAppDatasetRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppDatasetRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppDatasetRequest {
 	r.accountId = &accountId
 	return r
@@ -1987,7 +1987,7 @@ GetWhatsAppDataset Get CTWA conversions dataset
 
 Returns the Meta Click-to-WhatsApp conversions dataset currently linked
 to the WhatsApp account, if one has been provisioned. Reads only from
-the stored `metadata.metaCapiDatasetId` — never hits Meta, never
+the stored `metadata.metaCapiDatasetId`, never hits Meta, never
 creates a dataset. Use this to detect whether `POST /v1/whatsapp/conversions`
 is configured for an account.
 
@@ -2098,7 +2098,7 @@ type WhatsAppAPIGetWhatsAppDisplayNameRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppDisplayNameRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppDisplayNameRequest {
 	r.accountId = &accountId
 	return r
@@ -2222,7 +2222,7 @@ type WhatsAppAPIGetWhatsAppGroupChatRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppGroupChatRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppGroupChatRequest {
 	r.accountId = &accountId
 	return r
@@ -2516,7 +2516,7 @@ type WhatsAppAPIGetWhatsAppTemplateRequest struct {
 	language     *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppTemplateRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplateRequest {
 	r.accountId = &accountId
 	return r
@@ -2680,7 +2680,7 @@ type WhatsAppAPIGetWhatsAppTemplateByIdRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppTemplateByIdRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplateByIdRequest {
 	r.accountId = &accountId
 	return r
@@ -2820,7 +2820,7 @@ type WhatsAppAPIGetWhatsAppTemplatesRequest struct {
 	status     *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsAppTemplatesRequest) AccountId(accountId string) WhatsAppAPIGetWhatsAppTemplatesRequest {
 	r.accountId = &accountId
 	return r
@@ -2970,7 +2970,7 @@ type WhatsAppAPIGetWhatsappBusinessUsernameRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsappBusinessUsernameRequest) AccountId(accountId string) WhatsAppAPIGetWhatsappBusinessUsernameRequest {
 	r.accountId = &accountId
 	return r
@@ -3093,7 +3093,7 @@ type WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest) AccountId(accountId string) WhatsAppAPIGetWhatsappBusinessUsernameSuggestionsRequest {
 	r.accountId = &accountId
 	return r
@@ -3217,7 +3217,7 @@ type WhatsAppAPIListWhatsAppAccountEventsRequest struct {
 	limit      *int32
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIListWhatsAppAccountEventsRequest) AccountId(accountId string) WhatsAppAPIListWhatsAppAccountEventsRequest {
 	r.accountId = &accountId
 	return r
@@ -3370,7 +3370,7 @@ type WhatsAppAPIListWhatsAppConversionsRequest struct {
 	limit      *int32
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIListWhatsAppConversionsRequest) AccountId(accountId string) WhatsAppAPIListWhatsAppConversionsRequest {
 	r.accountId = &accountId
 	return r
@@ -3517,7 +3517,7 @@ type WhatsAppAPIListWhatsAppGroupChatsRequest struct {
 	after      *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIListWhatsAppGroupChatsRequest) AccountId(accountId string) WhatsAppAPIListWhatsAppGroupChatsRequest {
 	r.accountId = &accountId
 	return r
@@ -3675,7 +3675,7 @@ type WhatsAppAPIListWhatsAppGroupJoinRequestsRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIListWhatsAppGroupJoinRequestsRequest) AccountId(accountId string) WhatsAppAPIListWhatsAppGroupJoinRequestsRequest {
 	r.accountId = &accountId
 	return r
@@ -3941,7 +3941,7 @@ type WhatsAppAPIRejectWhatsAppGroupJoinRequestsRequest struct {
 	removeWhatsAppGroupParticipantsRequest *RemoveWhatsAppGroupParticipantsRequest
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIRejectWhatsAppGroupJoinRequestsRequest) AccountId(accountId string) WhatsAppAPIRejectWhatsAppGroupJoinRequestsRequest {
 	r.accountId = &accountId
 	return r
@@ -4090,7 +4090,7 @@ type WhatsAppAPIRemoveWhatsAppGroupParticipantsRequest struct {
 	removeWhatsAppGroupParticipantsRequest *RemoveWhatsAppGroupParticipantsRequest
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIRemoveWhatsAppGroupParticipantsRequest) AccountId(accountId string) WhatsAppAPIRemoveWhatsAppGroupParticipantsRequest {
 	r.accountId = &accountId
 	return r
@@ -4891,7 +4891,7 @@ type WhatsAppAPIUpdateWhatsAppGroupChatRequest struct {
 	updateWhatsAppGroupChatRequest *UpdateWhatsAppGroupChatRequest
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIUpdateWhatsAppGroupChatRequest) AccountId(accountId string) WhatsAppAPIUpdateWhatsAppGroupChatRequest {
 	r.accountId = &accountId
 	return r
@@ -5358,7 +5358,7 @@ type WhatsAppAPIUploadWhatsAppProfilePhotoRequest struct {
 	file       *os.File
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppAPIUploadWhatsAppProfilePhotoRequest) AccountId(accountId string) WhatsAppAPIUploadWhatsAppProfilePhotoRequest {
 	r.accountId = &accountId
 	return r
@@ -5382,7 +5382,7 @@ Uses Meta's resumable upload API under the hood: creates an upload session,
 uploads the image bytes, then updates the business profile with the resulting handle.
 
 Provide the image either as a binary upload (`multipart/form-data` with `file`)
-or as a download URL (`application/json` with `url`) — with a URL we fetch the
+or as a download URL (`application/json` with `url`). With a URL we fetch the
 image server-side and upload the bytes for you. Meta's profile-photo API is
 bytes-only, so there is no direct URL passthrough. JPEG/PNG, max 5MB either way.
 

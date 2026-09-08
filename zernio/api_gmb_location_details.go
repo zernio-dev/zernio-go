@@ -50,7 +50,7 @@ func (r GMBLocationDetailsAPIGetGoogleBusinessLocationDetailsRequest) Execute() 
 /*
 GetGoogleBusinessLocationDetails Get location details
 
-Returns detailed GBP location info (hours, description, phone, website, categories, services). Use readMask to request specific fields.
+Returns detailed Google Business Profile location info (hours, description, phone, website, categories, services). Use readMask to request specific fields.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The Zernio account ID (from /v1/accounts)
@@ -205,7 +205,7 @@ func (r GMBLocationDetailsAPIUpdateGoogleBusinessLocationDetailsRequest) Execute
 /*
 UpdateGoogleBusinessLocationDetails Update location details
 
-Updates GBP location details. The updateMask field is required and specifies which fields to update.
+Updates Google Business Profile location details. The updateMask field is required and specifies which fields to update.
 This endpoint proxies Google's Business Information API locations.patch, so any valid updateMask field is supported.
 Common fields: regularHours, specialHours, profile.description, websiteUri, phoneNumbers, categories, serviceItems.
 

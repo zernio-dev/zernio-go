@@ -28,7 +28,7 @@ type SelectGoogleBusinessLocation200ResponseAccount struct {
 	IsActive    *bool   `json:"isActive,omitempty"`
 	// Human-readable location display name, NOT a resource name. Do not use it to build API paths.
 	SelectedLocationName *string `json:"selectedLocationName,omitempty"`
-	// Bare GBP location id. Combine with the GBP account id as accounts/{gbpAccountId}/locations/{selectedLocationId} to form the location resource names that gmb-reviews/batch expects in locationNames.
+	// Bare Google Business Profile location id. Combine with the Google Business Profile account id as accounts/{gbpAccountId}/locations/{selectedLocationId} to form the location resource names that gmb-reviews/batch expects in locationNames.
 	SelectedLocationId *string `json:"selectedLocationId,omitempty"`
 }
 

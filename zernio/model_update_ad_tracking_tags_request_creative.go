@@ -20,7 +20,7 @@ import (
 // checks if the UpdateAdTrackingTagsRequestCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdTrackingTagsRequestCreative{}
 
-// UpdateAdTrackingTagsRequestCreative Meta only. OPTIONAL — omit to preserve the existing creative verbatim (default). Provide it only to rebuild the creative explicitly, or for creatives whose object_story_spec Meta strips.
+// UpdateAdTrackingTagsRequestCreative Meta only. OPTIONAL: omit to preserve the existing creative verbatim (default). Provide it only to rebuild the creative explicitly, or for creatives whose object_story_spec Meta strips.
 type UpdateAdTrackingTagsRequestCreative struct {
 	Headline     string  `json:"headline"`
 	Body         string  `json:"body"`

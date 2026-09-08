@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateWhatsAppDisplayNameRequest{}
 
 // UpdateWhatsAppDisplayNameRequest struct for UpdateWhatsAppDisplayNameRequest
 type UpdateWhatsAppDisplayNameRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// New display name (must follow WhatsApp naming guidelines)
 	DisplayName string `json:"displayName"`

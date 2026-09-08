@@ -778,7 +778,7 @@ func (r AdInsightsAPIGetAdsSearchTermsRequest) Execute() (*GetAdsSearchTerms200R
 GetAdsSearchTerms Google Ads search terms report
 
 The actual search queries that triggered your ads, with matched-keyword
-status and spend metrics — the raw material for wasted-spend analysis and
+status and spend metrics, the raw material for wasted-spend analysis and
 negative-keyword lists. Reads Google's `search_term_view`, cached for
 the quota window; defaults to the last 30 days. Rows are ordered by
 cost, descending. Draws on the shared Google Ads operations budget.
@@ -1495,7 +1495,7 @@ func (r AdInsightsAPIQueryAdInsightsRequest) AccountId(accountId string) AdInsig
 	return r
 }
 
-// Meta only (required there): insights node — act_&lt;n&gt;, campaign id, ad set id or ad id.
+// Meta only (required there): insights node (act_&lt;n&gt;, campaign id, ad set id or ad id).
 func (r AdInsightsAPIQueryAdInsightsRequest) ObjectId(objectId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.objectId = &objectId
 	return r

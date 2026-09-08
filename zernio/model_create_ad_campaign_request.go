@@ -30,7 +30,7 @@ type CreateAdCampaignRequest struct {
 	// Mapped to the ODAX objective (same mapping as POST /v1/ads/create).
 	Goal                string   `json:"goal"`
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
-	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents — Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
+	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`

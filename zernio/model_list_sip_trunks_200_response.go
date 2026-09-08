@@ -21,7 +21,7 @@ var _ MappedNullable = &ListSipTrunks200Response{}
 // ListSipTrunks200Response struct for ListSipTrunks200Response
 type ListSipTrunks200Response struct {
 	Trunks []ListSipTrunks200ResponseTrunksInner `json:"trunks,omitempty"`
-	// Whether this workspace can create SIP trunks. Managing existing trunks always works.
+	// Whether this team can create SIP trunks. Managing existing trunks always works.
 	Enabled *bool `json:"enabled,omitempty"`
 }
 

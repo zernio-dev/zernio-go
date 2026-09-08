@@ -22,7 +22,7 @@ var _ MappedNullable = &SetWhatsappBusinessUsernameRequest{}
 
 // SetWhatsappBusinessUsernameRequest struct for SetWhatsappBusinessUsernameRequest
 type SetWhatsappBusinessUsernameRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Desired username. Letters, digits, period, and underscore only. Must contain at least one letter. No leading, trailing, or consecutive periods. No www prefix. No domain TLD suffix.
 	Username string `json:"username"`

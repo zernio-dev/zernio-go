@@ -22,7 +22,7 @@ var _ MappedNullable = &GetPhoneNumberKycForm200ResponseReusable{}
 type GetPhoneNumberKycForm200ResponseReusable struct {
 	Available       *bool   `json:"available,omitempty"`
 	FromPhoneNumber *string `json:"fromPhoneNumber,omitempty"`
-	// Human-readable summary of the verification on file (field labels + values, plus the address as one line). Best-effort — may be empty if the provider lookup fails.
+	// Human-readable summary of the verification on file (field labels + values, plus the address as one line). Best-effort. May be empty if the provider lookup fails.
 	Details []GetPhoneNumberKycForm200ResponseReusableDetailsInner `json:"details,omitempty"`
 	// One entry per distinct approved verification, newest first.
 	Options []GetPhoneNumberKycForm200ResponseReusableOptionsInner `json:"options,omitempty"`

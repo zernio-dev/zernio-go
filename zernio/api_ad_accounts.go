@@ -330,7 +330,7 @@ editing the budget by hand on the day. Same target rule as the GET: exactly one 
 
 Two Meta constraints worth knowing before you call it. `timeStart` / `timeEnd` must
 fall on a 15-minute boundary, and a campaign cannot mix `ABSOLUTE` and `MULTIPLIER`
-across its schedules — the second type is rejected with "Can't mix your budget scaling
+across its schedules; the second type is rejected with "Can't mix your budget scaling
 selection". Window rules (must sit inside the campaign's run dates, minimum lead time,
 no overlap) are Meta's and its message is forwarded verbatim.
 
@@ -897,7 +897,7 @@ identifiers are read from the ad record (persisted during sync) with a Marketing
 fallback for ads that predate the field.
 
 For Instagram-placed comments, the Instagram account that runs the ad must be connected
-to Zernio — those comments are read through that account's token. If no connected
+to Zernio, because those comments are read through that account's token. If no connected
 Instagram account on the profile can read the ad's media, the call returns
 ads_connection_required (the Facebook side, if any, is still readable via ?placement=facebook).
 
@@ -1234,7 +1234,7 @@ type AdAccountsAPIGetDsaDefaultsRequest struct {
 	adAccountId *string
 }
 
-// Social account ID (metaads, or a facebook/instagram posting account)
+// Account ID (metaads, or a facebook/instagram posting account)
 func (r AdAccountsAPIGetDsaDefaultsRequest) AccountId(accountId string) AdAccountsAPIGetDsaDefaultsRequest {
 	r.accountId = &accountId
 	return r
@@ -1369,7 +1369,7 @@ type AdAccountsAPIGetDsaRecommendationsRequest struct {
 	adAccountId *string
 }
 
-// Social account ID (metaads, or a facebook/instagram posting account)
+// Account ID (metaads, or a facebook/instagram posting account)
 func (r AdAccountsAPIGetDsaRecommendationsRequest) AccountId(accountId string) AdAccountsAPIGetDsaRecommendationsRequest {
 	r.accountId = &accountId
 	return r
@@ -1803,7 +1803,7 @@ type AdAccountsAPIListAdAccountsRequest struct {
 	limit       *int32
 }
 
-// Social account ID
+// Account ID
 func (r AdAccountsAPIListAdAccountsRequest) AccountId(accountId string) AdAccountsAPIListAdAccountsRequest {
 	r.accountId = &accountId
 	return r
@@ -1828,7 +1828,7 @@ func (r AdAccountsAPIListAdAccountsRequest) Execute() (*ListAdAccounts200Respons
 /*
 ListAdAccounts List ad accounts
 
-Returns the platform ad accounts available for the given social account (e.g. Meta ad
+Returns the platform ad accounts available for the given account (e.g. Meta ad
 accounts, TikTok advertiser IDs, Google Ads customer IDs).
 
 For TikTok agencies: enumerates every advertiser under every Business Center the token

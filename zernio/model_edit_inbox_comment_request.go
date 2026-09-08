@@ -22,7 +22,7 @@ var _ MappedNullable = &EditInboxCommentRequest{}
 
 // EditInboxCommentRequest struct for EditInboxCommentRequest
 type EditInboxCommentRequest struct {
-	// The social account ID
+	// The account ID
 	AccountId string `json:"accountId"`
 	// Only Reddit supports editing a comment
 	Platform string `json:"platform"`

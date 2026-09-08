@@ -38,10 +38,10 @@ GetBilling Account billing snapshot (plan, cycle, balance, caps, status)
 The billing "wallet/statement" view: current plan, billing cycle,
 accrued balance + remaining credits this period, spend caps, and
 payment / access status. This is the billing half of the legacy
-`/v1/usage-stats` snapshot — the per-product consumption half is metering
+`/v1/usage-stats` snapshot. The per-product consumption half is metering
 and lives on `GET /v1/usage`.
 
-Usage-based (Metronome) accounts get a populated `balance`; legacy Stripe
+Accounts on usage-based billing get a populated `balance`; legacy Stripe
 accounts get `balance: null` plus a deprecated `legacy.limits` block and,
 when payment-blocked, `status.openInvoiceUrl` / `status.declineReason`.
 
@@ -514,7 +514,7 @@ func (r UsageAPIGetUsageRequest) To(to string) UsageAPIGetUsageRequest {
 	return r
 }
 
-// Bucketing of the &#x60;days&#x60; series: &#x60;day&#x60; (one row per UTC day), &#x60;month&#x60; (one row per calendar month, dated to the 1st), or &#x60;total&#x60; (no series — read &#x60;totals&#x60;). Does not affect &#x60;totals&#x60;.
+// Bucketing of the &#x60;days&#x60; series: &#x60;day&#x60; (one row per UTC day), &#x60;month&#x60; (one row per calendar month, dated to the 1st), or &#x60;total&#x60; (no series, read &#x60;totals&#x60;). Does not affect &#x60;totals&#x60;.
 func (r UsageAPIGetUsageRequest) Granularity(granularity string) UsageAPIGetUsageRequest {
 	r.granularity = &granularity
 	return r
@@ -526,7 +526,7 @@ func (r UsageAPIGetUsageRequest) GroupBy(groupBy string) UsageAPIGetUsageRequest
 	return r
 }
 
-// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this profile&#39;s attributed share. Mutually exclusive with &#x60;accountId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;profile&#x60;; 404 when the profile is not in your workspace (or outside a scoped key&#39;s profiles).
+// Metering mode (pair with &#x60;range&#x60;). Project the payload onto this profile&#39;s attributed share. Mutually exclusive with &#x60;accountId&#x60;, and &#x60;groupBy&#x60; (if given) must be &#x60;profile&#x60;; 404 when the profile is not in your team (or outside a scoped key&#39;s profiles).
 func (r UsageAPIGetUsageRequest) ProfileId(profileId string) UsageAPIGetUsageRequest {
 	r.profileId = &profileId
 	return r
@@ -545,20 +545,20 @@ func (r UsageAPIGetUsageRequest) Execute() (*GetUsage200Response, *http.Response
 /*
 GetUsage Usage snapshot (default) or billed-spend metering (with params)
 
-Dual-mode endpoint, selected by query params — fully backward
+Dual-mode endpoint, selected by query params, and fully backward
 compatible:
 
 **Without metering params (the default):** the plan / quota / usage
-snapshot — plan name, billing period, limits, usage counts, access
+snapshot: plan name, billing period, limits, usage counts, access
 state. Identical to `GET /v1/usage-stats`. Existing integrations keep
 working unchanged.
 
-**With `range`, `granularity`, `from`, or `to`:** usage METERING —
+**With `range`, `granularity`, `from`, or `to`:** usage METERING:
 billed spend (USD) by product family (`accounts`, `numbers`, `calls`,
 `sms`, `dlc`, `xApi`, `credits`, `other`) over the window, at
-`day` / `month` / `total` granularity, from Metronome's invoice
-breakdown (the CHARGE view — always reconciles with what gets billed).
-Also served at `GET /v1/usage/daily`. Usage-based accounts only —
+`day` / `month` / `total` granularity, from the usage-based invoice
+breakdown (the CHARGE view, which always reconciles with what gets billed).
+Also served at `GET /v1/usage/daily`. Usage-based accounts only:
 legacy Stripe accounts get `{ "supported": false, "days": [] }`.
 
 **Attribution (metering mode):** `groupBy=profile|account` adds an
@@ -567,7 +567,7 @@ assembled from your own records and pro-rated against the invoice so
 `sum(groups) + unattributed` equals `totals` exactly. `profileId` /
 `accountId` instead project the whole payload (`days`, `totals`,
 `lineItems`) onto that one group; `peaks`, `callUsage` and `tax` are
-then `null` (workspace-level facts). Projected `days` spread the
+then `null` (team-level facts). Projected `days` spread the
 group's period share over each day (usage is attributed per period,
 not per day). Profile-scoped API keys and members only see their
 profiles' groups (`attribution.restricted: true`, with `totals`
@@ -748,13 +748,13 @@ The response shape depends on the account's `billingSystem`:
 
   - Stripe users: per-period `usage.uploads` / `usage.profiles` counters.
 
-  - Metronome (usage-based) users: `usage.connectedAccounts`,
-    `usage.xApiCallsByOperation` (per-operation X API call counts —
+  - Usage-based billing users: `usage.connectedAccounts`,
+    `usage.xApiCallsByOperation` (per-operation X API call counts;
     resolve keys via `GET /v1/billing/x-pricing`), plus a `spend`
     block with `currentPeriodCents`, `xSpendCents`, and
     `xSpendLimitCents`. The legacy `usage.xApiCalls` 3-tier
     aggregate is still emitted for back-compat but excludes the
-    $0.200 URL tier and any future tiers — new clients should
+    $0.200 URL tier and any future tiers, so new clients should
     consume `xApiCallsByOperation` only.
 
     @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -881,17 +881,17 @@ func (r UsageAPIGetXApiPricingRequest) Execute() (*XApiPricing, *http.Response, 
 }
 
 /*
-GetXApiPricing Get X/Twitter API pricing table
+GetXApiPricing Get X API pricing table
 
-Returns Zernio's canonical X/Twitter API pricing table. Each X action has its
-own Metronome product and its own rate, and Zernio passes X API costs through
+Returns Zernio's canonical X API pricing table. Each X action has its
+own billing product and its own rate, and Zernio passes X API costs through
 at exact rates with zero markup.
 
 The response is identical for every authenticated user (pricing is universal),
 so it is safe to cache on the client for the duration of a billing period.
 
 To compute your own per-operation spend, pair this endpoint with
-`GET /v1/usage-stats` — that endpoint returns `usage.xApiCallsByOperation`
+`GET /v1/usage-stats`, which returns `usage.xApiCallsByOperation`
 keyed by the same `operation` field you get here.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

@@ -25,7 +25,7 @@ type CustomConversion struct {
 	// Meta's rule, parsed back from the string Meta stores.
 	Rule            map[string]interface{} `json:"rule,omitempty"`
 	CustomEventType NullableString         `json:"customEventType,omitempty"`
-	// Meta's event_source_id — the pixel the rule reads from.
+	// Meta's event_source_id, the pixel the rule reads from.
 	PixelId    NullableString `json:"pixelId,omitempty"`
 	IsArchived *bool          `json:"isArchived,omitempty"`
 }

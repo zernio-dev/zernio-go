@@ -22,7 +22,7 @@ var _ MappedNullable = &EditInboxMessageRequest{}
 
 // EditInboxMessageRequest struct for EditInboxMessageRequest
 type EditInboxMessageRequest struct {
-	// Social account ID
+	// Account ID
 	AccountId string `json:"accountId"`
 	// New message text
 	Text        *string                             `json:"text,omitempty"`

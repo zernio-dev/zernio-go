@@ -22,7 +22,7 @@ var _ MappedNullable = &ReplyToMentionRequest{}
 
 // ReplyToMentionRequest struct for ReplyToMentionRequest
 type ReplyToMentionRequest struct {
-	// The Instagram social account ID
+	// The Instagram account ID
 	AccountId string `json:"accountId"`
 	// The ID of the media the account was mentioned in
 	MediaId string `json:"mediaId"`

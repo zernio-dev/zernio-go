@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateWhatsAppTemplateByIdRequest{}
 
 // UpdateWhatsAppTemplateByIdRequest struct for UpdateWhatsAppTemplateByIdRequest
 type UpdateWhatsAppTemplateByIdRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Updated template components. Optional when only message_send_ttl_seconds changes; at least one of the two is required.
 	Components []WhatsAppTemplateComponent `json:"components,omitempty"`

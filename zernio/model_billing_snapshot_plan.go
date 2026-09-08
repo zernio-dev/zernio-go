@@ -22,7 +22,7 @@ var _ MappedNullable = &BillingSnapshotPlan{}
 type BillingSnapshotPlan struct {
 	Name         *string `json:"name,omitempty"`
 	IsUsageBased *bool   `json:"isUsageBased,omitempty"`
-	// True when the key belongs to an account with an active paid billing relationship (Stripe subscription, Metronome enrollment, or Shopify-managed billing).
+	// True when the key belongs to an account with an active paid billing relationship (Stripe subscription, usage-based billing, or Shopify-managed billing).
 	IsPaid *bool `json:"isPaid,omitempty"`
 }
 

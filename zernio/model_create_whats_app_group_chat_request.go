@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateWhatsAppGroupChatRequest{}
 
 // CreateWhatsAppGroupChatRequest struct for CreateWhatsAppGroupChatRequest
 type CreateWhatsAppGroupChatRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Group name (max 128 characters)
 	Subject string `json:"subject"`

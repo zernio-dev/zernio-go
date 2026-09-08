@@ -22,11 +22,11 @@ var _ MappedNullable = &AttachCampaignAssetsRequest{}
 
 // AttachCampaignAssetsRequest struct for AttachCampaignAssetsRequest
 type AttachCampaignAssetsRequest struct {
-	// Zernio Google Ads SocialAccount id — resolves the customer id + refresh token.
+	// Zernio Google Ads SocialAccount id. Resolves the customer id + refresh token.
 	AccountId string `json:"accountId"`
 	// Numeric Google Ads customer id. Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
 	CustomerId *string `json:"customerId,omitempty"`
-	// See POST /v1/ads/create sitelinks — same shape.
+	// See POST /v1/ads/create sitelinks, same shape.
 	Sitelinks          []AttachCampaignAssetsRequestSitelinksInner          `json:"sitelinks,omitempty"`
 	Callouts           []string                                             `json:"callouts,omitempty"`
 	StructuredSnippets []AttachCampaignAssetsRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`

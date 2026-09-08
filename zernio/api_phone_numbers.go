@@ -437,7 +437,7 @@ func (r PhoneNumbersAPICreatePhoneNumberKycLinkRequest) Execute() (*CreatePhoneN
 CreatePhoneNumberKycLink Create a hosted KYC link
 
 Create a single-use, 7-day hosted KYC link that your end customer
-completes WITHOUT a Zernio login — useful when the person who holds the
+completes WITHOUT a Zernio login. Useful when the person who holds the
 ID and address is not your team. They fill the regulated verification on
 a Zernio-hosted page; the number provisions under YOUR account once they
 submit. Only regulated (KYC) countries are valid: a country that does not
@@ -445,7 +445,7 @@ require KYC returns 400.
 
 White-label the page with `branding` (your company name, logo, brand
 color). Supply `redirect_url` to send the end customer back to your own
-site after a successful submit (completion params are appended — see
+site after a successful submit (completion params are appended; see
 below). Listen for the `whatsapp.number.kyc_submitted` webhook to react
 when the form is completed.
 
@@ -577,7 +577,7 @@ supports messaging).
 
 Run the portability check (POST /v1/phone-numbers/port-in/check) and
 upload the two documents (POST /v1/phone-numbers/port-in/documents)
-first — uploaded documents must be attached to an order within 30
+first. Uploaded documents must be attached to an order within 30
 minutes or the carrier deletes them, so upload right before this call.
 The carrier may split the numbers into several orders (by country,
 number type, losing carrier); `orders` carries per-order results, and a
@@ -987,7 +987,7 @@ Retrieve the current status of a purchased phone number. Poll this to
 track Meta pre-verification (US sync path) and, for regulated (Tier 3/4)
 numbers, the async lifecycle: pending_regulatory → active (or
 regulatory_declined). When a regulated number has an Onfido ID step,
-`onfidoVerificationUrl` appears here once the order is placed — forward
+`onfidoVerificationUrl` appears here once the order is placed. Forward
 it to the end user. (Or subscribe to the whatsapp.number.* webhooks
 instead of polling.)
 
@@ -1376,7 +1376,7 @@ func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) Country(country 
 	return r
 }
 
-// The portability check&#39;s phoneNumberType — requirements differ by type.
+// The portability check&#39;s phoneNumberType. Requirements differ by type.
 func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) NumberType(numberType string) PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest {
 	r.numberType = &numberType
 	return r
@@ -1390,7 +1390,7 @@ func (r PhoneNumbersAPIGetPhoneNumberPortInRequirementsRequest) Execute() (*GetP
 GetPhoneNumberPortInRequirements Country porting requirements
 
 The country-specific information a port-in needs BEYOND the LOA,
-invoice, and account/address details — e.g. an ID copy, proof of
+invoice, and account/address details, such as an ID copy, proof of
 address, a tax id, or a porting code. Call it after the portability
 check (which returns each number's `countryCode` and
 `phoneNumberType`), render the fields, and pass the collected values as
@@ -1536,7 +1536,7 @@ GetPhoneNumberRemediation Get declined requirements
 
 For a number in `regulatory_declined`, returns ONLY the requirements the
 reviewer flagged declined, as a form spec (same shape as the KYC form GET).
-The customer fixes just those — Telnyx supports correcting a declined
+The customer fixes only those, because Telnyx supports correcting a declined
 requirement group and re-submitting it (no new number/group). Falls back
 to the full spec if the provider exposes no per-requirement flags.
 
@@ -1980,7 +1980,7 @@ type PhoneNumbersAPIListPhoneNumbersRequest struct {
 	profileId  *string
 }
 
-// Filter by status (by default excludes released numbers). NOTE: &#x60;status&#x3D;pending_regulatory&#x60; returns the \&quot;provisioning\&quot; view — numbers still in review PLUS recently-declined (last 30 days) ones, so a failed registration surfaces (with &#x60;regulatoryDeclineReason&#x60;) instead of silently disappearing. Declined numbers can be re-submitted via POST /v1/phone-numbers/{id}/remediate. &#x60;verifying&#x60; is the short-lived state after the number is provisioned on our side while WhatsApp confirms the activation code; the number is not billed until it reaches &#x60;active&#x60;.
+// Filter by status (by default excludes released numbers). NOTE: &#x60;status&#x3D;pending_regulatory&#x60; returns the \&quot;provisioning\&quot; view: numbers still in review PLUS recently-declined (last 30 days) ones, so a failed registration surfaces (with &#x60;regulatoryDeclineReason&#x60;) instead of silently disappearing. Declined numbers can be re-submitted via POST /v1/phone-numbers/{id}/remediate. &#x60;verifying&#x60; is the short-lived state after the number is provisioned on our side while WhatsApp confirms the activation code; the number is not billed until it reaches &#x60;active&#x60;.
 func (r PhoneNumbersAPIListPhoneNumbersRequest) Status(status string) PhoneNumbersAPIListPhoneNumbersRequest {
 	r.status = &status
 	return r
@@ -2264,7 +2264,7 @@ func (r PhoneNumbersAPIReleasePhoneNumberRequest) Execute() (*ReleasePhoneNumber
 ReleasePhoneNumber Release phone number
 
 Release a purchased phone number. This will:
-1. Disconnect any linked WhatsApp social account
+1. Disconnect any linked WhatsApp account
 2. Decrement the Stripe subscription quantity (or cancel if last number)
 3. Release the number from Telnyx
 4. Mark the number as released
@@ -2403,7 +2403,7 @@ Submit corrected values/documents for the declined requirement(s). We
 PATCH them onto the SAME requirement group and re-submit it for approval;
 the number goes `regulatory_declined` → `pending_regulatory`. No new
 number and no new billing. Body shape matches the KYC submit (values /
-documents / address) — send only the corrected fields.
+documents / address). Send only the corrected fields.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -2530,7 +2530,7 @@ func (r PhoneNumbersAPIReplyToPhoneNumberReviewerRequest) Execute() (*ReplyToPho
 ReplyToPhoneNumberReviewer Reply to the regulatory reviewer
 
 Post a free-text reply (with optional file attachments) to the reviewer
-on a number awaiting remediation — for asks the structured form can't
+on a number awaiting remediation, for asks the structured form can't
 express (e.g. "is this personal or business?"). Attachments are stored by
 us and their links are added to the reviewer's comment thread (the
 carrier's number order takes no loose files). A reply to a comment-style
@@ -3149,7 +3149,7 @@ reason; fix it via POST /v1/phone-numbers/{id}/remediate.
 
 Before submitting, call GET /v1/phone-numbers/availability to
 check the country has deliverable inventory and, for geographic-match
-countries, which area the address must be in — otherwise the submission
+countries, which area the address must be in. Otherwise the submission
 can pass review yet never be assignable a number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -3699,7 +3699,7 @@ values from GET /v1/phone-numbers/kyc `reusable.options[].details[]`), so
 the account holder can see what's on file before reusing it. Returned
 inline as `application/pdf` (uploads are normalized to PDF). Auth-scoped:
 a document is viewable only when its id is referenced by one of the
-caller's own numbers — otherwise `404`.
+caller's own numbers. Otherwise `404`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param documentId The Telnyx document id (from `reusable.options[].details[].documentId`).

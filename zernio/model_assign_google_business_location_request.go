@@ -24,9 +24,9 @@ var _ MappedNullable = &AssignGoogleBusinessLocationRequest{}
 type AssignGoogleBusinessLocationRequest struct {
 	// Target profile to connect the location onto.
 	ProfileId string `json:"profileId"`
-	// The Google Business location ID to assign (e.g. \"locations/123\").
+	// The Google Business Profile location ID to assign (e.g. \"locations/123\").
 	SelectedLocationId string `json:"selectedLocationId"`
-	// Optional but recommended. The Google Business Account resource name (\"accounts/123\") that owns the location (from GET gmb-locations). When provided the location is resolved directly instead of by enumerating the account, required for accounts with many locations.
+	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the location (from GET gmb-locations). When provided the location is resolved directly instead of by enumerating the account, required for accounts with many locations.
 	GoogleAccountId *string `json:"googleAccountId,omitempty"`
 }
 

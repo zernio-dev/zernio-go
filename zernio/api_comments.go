@@ -526,9 +526,9 @@ func (r CommentsAPIHideInboxCommentRequest) Execute() (*HideInboxComment200Respo
 /*
 HideInboxComment Hide comment
 
-Hide a comment on a post. Supported by Facebook, Instagram, Threads, and X/Twitter.
+Hide a comment on a post. Supported by Facebook, Instagram, Threads, and X.
 Hidden comments are only visible to the commenter and page admin.
-For X/Twitter, the reply must belong to a conversation started by the authenticated user.
+For X, the reply must belong to a conversation started by the authenticated user.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -658,7 +658,7 @@ func (r CommentsAPILikeInboxCommentRequest) Execute() (*LikeInboxComment200Respo
 /*
 LikeInboxComment Like comment
 
-Like or upvote a comment on a post. Supported platforms: Facebook, Twitter/X,
+Like or upvote a comment on a post. Supported platforms: Facebook, X,
 Bluesky, Reddit, LinkedIn, and Instagram in limited release (see below). For
 Bluesky, the cid (content identifier) is
 required in the request body. For LinkedIn, pass the composite comment URN returned
@@ -810,7 +810,7 @@ func (r CommentsAPILikePostRequest) Execute() (*LikePost200Response, *http.Respo
 LikePost Like post
 
 Like (or react to) a post as a connected account. Supported platforms: LinkedIn,
-Twitter/X, Facebook, YouTube, Bluesky, and Instagram in limited release (see below).
+X, Facebook, YouTube, Bluesky, and Instagram in limited release (see below).
 Threads, TikTok and Pinterest
 expose no like endpoint in their APIs and return 400. Reddit returns 400 too,
 pointing at `POST /v1/accounts/{accountId}/reddit-vote`, which covers upvote,
@@ -1020,7 +1020,7 @@ func (r CommentsAPIListInboxCommentsRequest) Cursor(cursor string) CommentsAPILi
 	return r
 }
 
-// Filter by specific social account ID
+// Filter by specific account ID
 func (r CommentsAPIListInboxCommentsRequest) AccountId(accountId string) CommentsAPIListInboxCommentsRequest {
 	r.accountId = &accountId
 	return r
@@ -1040,7 +1040,7 @@ window. Do not poll this endpoint for real-time updates: subscribe to the
 `comment.received` webhook, which fires for every new comment across your posts and
 carries the post reference needed to keep this list current.
 
-For users with the Ads add-on (Metronome plans always qualify), the user's Meta ads
+For users with the Ads add-on (accounts on usage-based billing always qualify), the user's Meta ads
 (boosted/dark posts) are included too. There's one row per (ad, placement-with-comments):
 an ad that runs on both Facebook feed and Instagram feed produces up to two rows (the
 Page dark post and the IG media have separate comment threads), each flagged
@@ -1384,7 +1384,7 @@ func (r CommentsAPISendPrivateReplyToCommentRequest) Execute() (*SendPrivateRepl
 /*
 SendPrivateReplyToComment Send private reply
 
-Send a private message to the author of a comment. Supported on Instagram and Facebook only.
+Send a direct message to the author of a comment. Supported on Instagram and Facebook only.
 One reply per comment, must be sent within 7 days. Optionally attach interactive elements:
 `quickReplies` (chips above the keyboard, max 13) or `buttons` (1-3 inline postback/url
 buttons rendered in the same bubble via Meta's button_template). Chips do not render in
@@ -1544,7 +1544,7 @@ The request must be authorized by the owner of the channel or video the comment
 belongs to. You cannot moderate comments on videos you do not own.
 
 This is distinct from `POST /v1/inbox/comments/{postId}/{commentId}/hide`, which
-covers Facebook, Instagram, Threads, and X/Twitter and does not apply to YouTube.
+covers Facebook, Instagram, Threads, and X and does not apply to YouTube.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -1674,7 +1674,7 @@ func (r CommentsAPIUnhideInboxCommentRequest) Execute() (*HideInboxComment200Res
 /*
 UnhideInboxComment Unhide comment
 
-Unhide a previously hidden comment. Supported by Facebook, Instagram, Threads, and X/Twitter.
+Unhide a previously hidden comment. Supported by Facebook, Instagram, Threads, and X.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -1810,7 +1810,7 @@ func (r CommentsAPIUnlikeInboxCommentRequest) Execute() (*UnlikeInboxComment200R
 /*
 UnlikeInboxComment Unlike comment
 
-Remove a like from a comment. Supported platforms: Facebook, Twitter/X, Bluesky,
+Remove a like from a comment. Supported platforms: Facebook, X, Bluesky,
 Reddit, LinkedIn, and Instagram in limited release. For Bluesky, the likeUri query
 parameter is required. Instagram has the same limited release, Facebook Login,
 `instagram_manage_engagement` and burst-limit constraints as liking.
@@ -1951,7 +1951,7 @@ func (r CommentsAPIUnlikePostRequest) Execute() (*UnlikePost200Response, *http.R
 /*
 UnlikePost Unlike post
 
-Remove this account's like from a post. Supported platforms: LinkedIn, Twitter/X,
+Remove this account's like from a post. Supported platforms: LinkedIn, X,
 Facebook, YouTube, Bluesky, and Instagram in limited release. On YouTube this clears
 the rating. Instagram has the same limited release, Facebook Login,
 `instagram_manage_engagement` and burst-limit constraints as liking. For Bluesky,

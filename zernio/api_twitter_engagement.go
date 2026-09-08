@@ -165,7 +165,7 @@ func (r TwitterEngagementAPIFollowUserRequest) Execute() (*FollowUser200Response
 /*
 FollowUser Follow a user
 
-Follow a user on X/Twitter.
+Follow a user on X.
 Requires the follows.write OAuth scope.
 For protected accounts, a follow request is sent instead (pending_follow will be true).
 
@@ -278,7 +278,7 @@ type TwitterEngagementAPIGetTweetRequest struct {
 	id         *string
 }
 
-// The social account ID whose X token is used for the lookup
+// The account ID whose X token is used for the lookup
 func (r TwitterEngagementAPIGetTweetRequest) AccountId(accountId string) TwitterEngagementAPIGetTweetRequest {
 	r.accountId = &accountId
 	return r
@@ -691,7 +691,7 @@ type TwitterEngagementAPISearchTweetsRequest struct {
 	sortOrder  *string
 }
 
-// The social account ID
+// The account ID
 func (r TwitterEngagementAPISearchTweetsRequest) AccountId(accountId string) TwitterEngagementAPISearchTweetsRequest {
 	r.accountId = &accountId
 	return r
@@ -754,7 +754,7 @@ SearchTweets Search recent tweets
 Search public tweets from the last 7 days matching an X search query, e.g. to discover tweets to reply to.
 The query string is passed through to X unchanged and supports X's search operators
 (`from:user`, `-is:retweet`, `is:reply`, `lang:en`, `"exact phrase"`, `conversation_id:123`, boolean `OR`, ...).
-Note that standalone operators like `is:` / `has:` / `lang:` must be combined with a keyword or `from:` clause.
+Standalone operators like `is:` / `has:` / `lang:` must be combined with a keyword or `from:` clause.
 
 To reply to a found tweet, pass its `id` as the twitter platform entry's `platformSpecificData.replyToTweetId` when creating a post.
 
@@ -1044,7 +1044,7 @@ func (r TwitterEngagementAPIUnfollowUserRequest) AccountId(accountId string) Twi
 	return r
 }
 
-// The Twitter ID of the user to unfollow
+// The X ID of the user to unfollow
 func (r TwitterEngagementAPIUnfollowUserRequest) TargetUserId(targetUserId string) TwitterEngagementAPIUnfollowUserRequest {
 	r.targetUserId = &targetUserId
 	return r
@@ -1057,7 +1057,7 @@ func (r TwitterEngagementAPIUnfollowUserRequest) Execute() (*UnfollowUser200Resp
 /*
 UnfollowUser Unfollow a user
 
-Unfollow a user on X/Twitter.
+Unfollow a user on X.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return TwitterEngagementAPIUnfollowUserRequest

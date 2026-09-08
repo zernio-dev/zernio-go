@@ -26,7 +26,7 @@ type UpdatePostMetadataRequest struct {
 	Platform string `json:"platform"`
 	// YouTube video ID (required for direct mode, ignored for post-based mode)
 	VideoId *string `json:"videoId,omitempty"`
-	// Zernio social account ID (required for direct mode, ignored for post-based mode)
+	// Zernio account ID (required for direct mode, ignored for post-based mode)
 	AccountId *string `json:"accountId,omitempty"`
 	// New video title (max 100 characters for YouTube)
 	Title *string `json:"title,omitempty"`

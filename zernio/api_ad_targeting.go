@@ -455,7 +455,7 @@ func (r AdTargetingAPISearchAdInterestsRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// Social account ID
+// Account ID
 func (r AdTargetingAPISearchAdInterestsRequest) AccountId(accountId string) AdTargetingAPISearchAdInterestsRequest {
 	r.accountId = &accountId
 	return r
@@ -593,7 +593,7 @@ type AdTargetingAPISearchAdTargetingRequest struct {
 	limit       *int32
 }
 
-// Social account ID (a connected account on the target ad platform).
+// Account ID (a connected account on the target ad platform).
 func (r AdTargetingAPISearchAdTargetingRequest) AccountId(accountId string) AdTargetingAPISearchAdTargetingRequest {
 	r.accountId = &accountId
 	return r
@@ -641,22 +641,28 @@ the `TargetingSpec` (`countries`/`regions`/`cities`/`zips`/`metros` geo keys, an
 `interests`/`behaviors` entity ids) on `POST /v1/ads/create`,
 `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences.
 
-The `dimension` param selects what is searched, `geo` (locations, further scoped
-by `geoType`), `interest`, `behavior`, `income`, `language` (Google-only), or the
-Meta-only work demographics `workPosition`, `workEmployer` and `workIndustry` (their
-ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`). Availability
-of each dimension varies by platform (e.g. behaviours are Meta/TikTok only).
+The `dimension` param selects what is searched:
+
+  - `geo`: locations, further scoped by `geoType`
+  - `interest`
+  - `behavior`
+  - `income`
+  - `language`: Google-only
+  - `workPosition`, `workEmployer`, `workIndustry`: the Meta-only work demographics, whose
+    ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`
+
+Availability of each dimension varies by platform (e.g. behaviours are Meta/TikTok only).
 Work industries are a fixed ~30-entry Meta catalog with no server-side query,
 so `workIndustry` matching, ranking and `limit` happen in Zernio. `language`
 is likewise a fixed, checked-in table of Google's targetable
 `language_constant` rows (id, ISO code, name) matched by name or code, capped
 at 20, with no network call; its ids feed `TargetingSpec.languages`.
-Results are normalized
-across platforms into a single shape, so the same client code consumes Meta,
-TikTok, LinkedIn, X, Pinterest, and Google results.
+
+Results are normalized across platforms into a single shape, so the same client code
+consumes Meta, TikTok, LinkedIn, X, Pinterest, and Google results.
 
 TikTok geo searches return every matching level in one list (`type` is
-`country`, `region`, `city`, `district`, or `metro` for DMA areas) —
+`country`, `region`, `city`, `district`, or `metro` for DMA areas), and
 `geoType` is not applied. Results are scoped to the advertiser's targetable
 markets, and every id is usable in `regions`/`cities`/`metros` keys on
 `POST /v1/ads/create`.
@@ -684,15 +690,19 @@ regions) with no server-side query or pagination, so matching, ranking and the
 `limit` cutoff all happen in Zernio; the catalog is independent of any ad account
 and results never carry `audienceSize`. Names come back localized to the connected
 Pinterest account's language (there is no way to force a locale), so match against
-whatever language that account returns. `geoType` routes to a different catalog:
-`country` and `metro_area` read the locations catalog (`type` is `country` or
-`metro`); `region` reads the regions catalog (`type` is `region`, its id a
-`regions[].key` on `POST /v1/ads/create`); `all` and the default `city` merge both
-catalogs with honest per-entry `type`s, since Pinterest has no city-level catalog
-and `city` is an alias for `all`, not a literal city search. `zip`, `subcity`,
-`neighborhood`, `place` and `geo_market` return a 400: Pinterest exposes no
-postal-code catalog, pass postal codes directly as `targeting.zips: [{ key }]` on
-`POST /v1/ads/create`.
+whatever language that account returns.
+
+`geoType` routes to a different Pinterest catalog:
+
+  - `country` and `metro_area` read the locations catalog (`type` is `country` or `metro`)
+  - `region` reads the regions catalog (`type` is `region`, its id a `regions[].key` on
+    `POST /v1/ads/create`)
+  - `all` and the default `city` merge both catalogs with honest per-entry `type`s, since
+    Pinterest has no city-level catalog and `city` is an alias for `all`, not a literal
+    city search
+  - `zip`, `subcity`, `neighborhood`, `place` and `geo_market` return a 400: Pinterest
+    exposes no postal-code catalog, pass postal codes directly as
+    `targeting.zips: [{ key }]` on `POST /v1/ads/create`
 
 For geo queries, `q` should contain only the locality name (e.g. `"Amsterdam"`,
 not `"Amsterdam, NL"`). Use `countryCode` to disambiguate.

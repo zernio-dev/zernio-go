@@ -23,7 +23,7 @@ var _ MappedNullable = &UpdateGmbLocationRequest{}
 // UpdateGmbLocationRequest struct for UpdateGmbLocationRequest
 type UpdateGmbLocationRequest struct {
 	SelectedLocationId string `json:"selectedLocationId"`
-	// Optional but recommended. The Google Business Account resource name (\"accounts/123\") that owns the new location (from GET gmb-locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations. Named `googleAccountId` to disambiguate from the path `accountId` (the Zernio account). The legacy field name `accountId` is still accepted for backwards compatibility.
+	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the new location (from GET gmb-locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts with many locations. Named `googleAccountId` to disambiguate from the path `accountId` (the Zernio account). The legacy field name `accountId` is still accepted for backwards compatibility.
 	GoogleAccountId *string `json:"googleAccountId,omitempty"`
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateWhatsAppBusinessProfileRequest{}
 
 // UpdateWhatsAppBusinessProfileRequest struct for UpdateWhatsAppBusinessProfileRequest
 type UpdateWhatsAppBusinessProfileRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Short business description (max 139 characters)
 	About *string `json:"about,omitempty"`

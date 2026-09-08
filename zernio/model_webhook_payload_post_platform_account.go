@@ -20,7 +20,7 @@ import (
 // checks if the WebhookPayloadPostPlatformAccount type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadPostPlatformAccount{}
 
-// WebhookPayloadPostPlatformAccount The connected social account the platform-write went through.
+// WebhookPayloadPostPlatformAccount The connected account the platform-write went through.
 type WebhookPayloadPostPlatformAccount struct {
 	AccountId   string  `json:"accountId"`
 	Platform    string  `json:"platform"`

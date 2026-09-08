@@ -18,7 +18,7 @@ import (
 // checks if the GetInboxPostComments200ResponseMetaAdComments type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GetInboxPostComments200ResponseMetaAdComments{}
 
-// GetInboxPostComments200ResponseMetaAdComments (Facebook/Instagram only) Present when this post has no organic comments but is a boosted post — the engagement lives on the ad. Use the ad-comments endpoint instead.
+// GetInboxPostComments200ResponseMetaAdComments (Facebook/Instagram only) Present when this post has no organic comments but is a boosted post: the engagement lives on the ad. Use the ad-comments endpoint instead.
 type GetInboxPostComments200ResponseMetaAdComments struct {
 	// Internal Zernio ad ID
 	AdId *string `json:"adId,omitempty"`

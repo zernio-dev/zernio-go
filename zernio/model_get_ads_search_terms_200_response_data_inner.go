@@ -21,7 +21,7 @@ var _ MappedNullable = &GetAdsSearchTerms200ResponseDataInner{}
 // GetAdsSearchTerms200ResponseDataInner struct for GetAdsSearchTerms200ResponseDataInner
 type GetAdsSearchTerms200ResponseDataInner struct {
 	SearchTerm NullableString `json:"searchTerm,omitempty"`
-	// ADDED / EXCLUDED / ADDED_EXCLUDED / NONE — whether the term is already a keyword or a negative.
+	// ADDED / EXCLUDED / ADDED_EXCLUDED / NONE: whether the term is already a keyword or a negative.
 	Status NullableString `json:"status,omitempty"`
 	// How the term matched (BROAD, PHRASE, EXACT, NEAR_PHRASE, NEAR_EXACT).
 	MatchType    NullableString `json:"matchType,omitempty"`

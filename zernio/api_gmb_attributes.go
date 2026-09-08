@@ -35,7 +35,7 @@ type GMBAttributesAPIGetGmbAttributeMetadataRequest struct {
 	pageToken    *string
 }
 
-// GBP location ID (e.g. \&quot;6257659026299438786\&quot;). If omitted, uses the account&#39;s stored selectedLocationId. Mutually exclusive with categoryName.
+// Google Business Profile location ID (e.g. \&quot;6257659026299438786\&quot;). If omitted, uses the account&#39;s stored selectedLocationId. Mutually exclusive with categoryName.
 func (r GMBAttributesAPIGetGmbAttributeMetadataRequest) LocationId(locationId string) GMBAttributesAPIGetGmbAttributeMetadataRequest {
 	r.locationId = &locationId
 	return r
@@ -252,7 +252,7 @@ func (r GMBAttributesAPIGetGoogleBusinessAttributesRequest) Execute() (*GetGoogl
 /*
 GetGoogleBusinessAttributes Get attributes
 
-Returns GBP location attributes (amenities, services, accessibility, payment types). Available attributes vary by business category.
+Returns Google Business Profile location attributes (amenities, services, accessibility, payment types). Available attributes vary by business category.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

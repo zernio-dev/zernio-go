@@ -22,7 +22,7 @@ var _ MappedNullable = &XApiOperationTriggeredByInner{}
 type XApiOperationTriggeredByInner struct {
 	// Zernio platform method name.
 	Method *string `json:"method,omitempty"`
-	// When the method actually bills the user:   * `always` — every call is metered   * `analytics_optin` — only when the X account has analytics enabled   * `inbox_optin` — only when the X account has inbox sync enabled   * `absorbed` — Zernio eats the cost, never billed
+	// When the method actually bills the user:   * `always`: every call is metered   * `analytics_optin`: only when the X account has analytics enabled   * `inbox_optin`: only when the X account has inbox sync enabled   * `absorbed`: Zernio eats the cost, never billed
 	Metering *string `json:"metering,omitempty"`
 }
 

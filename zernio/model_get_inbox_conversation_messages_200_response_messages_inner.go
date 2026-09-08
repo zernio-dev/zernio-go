@@ -29,7 +29,7 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	Message        *string        `json:"message,omitempty"`
 	SenderId       *string        `json:"senderId,omitempty"`
 	SenderName     NullableString `json:"senderName,omitempty"`
-	// X/Twitter verified badge type. Only present for Twitter/X messages.
+	// X verified badge type. Only present for X messages.
 	SenderVerifiedType NullableString                                                         `json:"senderVerifiedType,omitempty"`
 	Direction          *string                                                                `json:"direction,omitempty"`
 	CreatedAt          *time.Time                                                             `json:"createdAt,omitempty"`

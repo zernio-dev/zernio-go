@@ -173,7 +173,7 @@ func (r ConversionsAPIAdjustConversionsRequest) Execute() (*AdjustConversions200
 /*
 AdjustConversions Adjust uploaded conversions
 
-Adjust conversions that were previously uploaded via `POST /v1/ads/conversions` —
+Adjust conversions that were previously uploaded via `POST /v1/ads/conversions`:
 retract them, restate their value, or enhance them with first-party data. Requires
 the Ads add-on.
 
@@ -184,14 +184,14 @@ endpoint returns `405` for those platforms.
 
 Adjustment types:
 
-- `RETRACTION` — remove the conversion entirely (refund, chargeback, cancelled order, churn).
-- `RESTATEMENT` — change the conversion's value (upgrade / downgrade / partial refund). Send the corrected **total** value in `restatementValue` (not a delta).
-- `ENHANCEMENT` — attach first-party identifiers (hashed email / phone) to an existing conversion (enhanced conversions applied after the fact).
+- `RETRACTION`: remove the conversion entirely (refund, chargeback, cancelled order, churn).
+- `RESTATEMENT`: change the conversion's value (upgrade / downgrade / partial refund). Send the corrected **total** value in `restatementValue` (not a delta).
+- `ENHANCEMENT`: attach first-party identifiers (hashed email / phone) to an existing conversion (enhanced conversions applied after the fact).
 
 Identifying the original conversion (per adjustment):
 
-- `orderId` — the transaction ID you sent as `eventId` on the original conversion. Recommended, and **required** for `ENHANCEMENT`.
-- or `gclid` + `conversionTime` — the click ID and the original conversion's time (unix seconds). Not available for `ENHANCEMENT`.
+- `orderId`: the transaction ID you sent as `eventId` on the original conversion. Recommended, and **required** for `ENHANCEMENT`.
+- or `gclid` + `conversionTime`: the click ID and the original conversion's time (unix seconds). Not available for `ENHANCEMENT`.
 
 `destinationId` is the conversion action resource name, e.g.
 `customers/1234567890/conversionActions/987654321` (same value you send to
@@ -634,7 +634,7 @@ func (r ConversionsAPIDeleteConversionDestinationRequest) Execute() (*http.Respo
 DeleteConversionDestination Delete a conversion destination
 
 LinkedIn-only today. LinkedIn does not expose hard-delete on conversion
-rules — what their UI calls "delete" is the same `enabled: false` flip
+rules; what their UI calls "delete" is the same `enabled: false` flip
 we apply here. The rule remains fetchable via GET with
 `status: 'inactive'`; the unified discovery endpoint hides it by
 default.
@@ -1384,7 +1384,7 @@ func (r ConversionsAPIListConversionAssociationsRequest) Execute() (*ListConvers
 ListConversionAssociations List associated campaigns
 
 LinkedIn-only today. Returns the campaigns currently associated with
-this conversion rule. Note that auto-association on rule creation
+this conversion rule. Auto-association on rule creation
 runs once at create time; campaigns created after the rule still need
 explicit association.
 
@@ -1514,7 +1514,7 @@ connected ads account. Use the returned `id` as `destinationId` when
 posting to `POST /v1/ads/conversions`.
 
 For Google and LinkedIn, each destination's `type` reflects the
-conversion type (PURCHASE, LEAD, SIGN_UP, etc.) — the event type is
+conversion type (PURCHASE, LEAD, SIGN_UP, etc.), and the event type is
 locked to the destination. For Meta and OpenAI Ads, `type` is absent:
 pixels accept any event name per request.
 
@@ -1795,7 +1795,7 @@ Supported platforms:
 - Meta (`metaads`) via Graph API
 - Google Ads (`googleads`) via Data Manager API `ingestEvents`
 - LinkedIn (`linkedinads`) via `/rest/conversionEvents`
-- TikTok (`tiktokads`) via the Offline Events API `/offline/batch/` — OFFLINE conversions only
+- TikTok (`tiktokads`) via the Offline Events API `/offline/batch/` (OFFLINE conversions only)
 - OpenAI Ads (`openaiads`) via its Conversions API (a separate host, `bzr.openai.com`)
 
 `destinationId` semantics differ per platform:
@@ -1810,7 +1810,7 @@ TikTok notes: this path sends OFFLINE conversions (in-store / CRM / call-center)
 events. Each event must carry an email or phone (TikTok requires at least one). The connected
 TikTok ads account must have granted the Offline Events permission; older grants must reconnect.
 
-OpenAI Ads notes: requires a tracking tag (pixel) to already exist on the account — returns 422
+OpenAI Ads notes: requires a tracking tag (pixel) to already exist on the account. Returns 422
 with code `TRACKING_TAG_REQUIRED` if `POST /v1/accounts/{accountId}/tracking-tags` hasn't been
 called yet.
 
@@ -1965,7 +1965,7 @@ UpdateConversionDestination Update a conversion destination
 Partial-update a conversion rule. LinkedIn-only today. Whitelisted
 fields: `name`, `enabled`, attribution windows, `valueType`, `value`,
 `attributionType`. The rule's `type` and parent ad account are
-intentionally not exposed for update — recreate the rule if those
+intentionally not exposed for update. Recreate the rule if those
 need to change.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

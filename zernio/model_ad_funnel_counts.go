@@ -18,9 +18,9 @@ import (
 // checks if the AdFunnelCounts type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdFunnelCounts{}
 
-// AdFunnelCounts Named conversion-funnel steps, resolved from the same data as `actions` so you never have to parse action-type strings yourself.  Meta reports one event under several action types at once (`offsite_conversion.fb_pixel_purchase`, `omni_purchase`, `purchase`, …). Each field below takes the FIRST family member present rather than summing them, which is what makes these counts safe to add up — summing the raw `actions` keys yourself double or triple counts. The same priority order backs `conversions`, so a purchase-optimised campaign reports the identical number in `conversions` and `funnel.purchases`.  Every field is 0 when that step never fired. Populated for Meta ads; other platforms report a different action taxonomy and generally leave these at 0 (read `actions` for those). At ad-set and campaign level each step is summed from its per-ad values.
+// AdFunnelCounts Named conversion-funnel steps, resolved from the same data as `actions` so you never have to parse action-type strings yourself.  Meta reports one event under several action types at once (`offsite_conversion.fb_pixel_purchase`, `omni_purchase`, `purchase`, …). Each field below takes the FIRST family member present rather than summing them, which is what makes these counts safe to add up. Summing the raw `actions` keys yourself double or triple counts. The same priority order backs `conversions`, so a purchase-optimised campaign reports the identical number in `conversions` and `funnel.purchases`.  Every field is 0 when that step never fired. Populated for Meta ads; other platforms report a different action taxonomy and generally leave these at 0 (read `actions` for those). At ad-set and campaign level each step is summed from its per-ad values.
 type AdFunnelCounts struct {
-	// Landing page views — the visitor actually loaded the destination, unlike a link click. Meta `landing_page_view`.
+	// Landing page views: the visitor actually loaded the destination, unlike a link click. Meta `landing_page_view`.
 	LandingPageViews *int32 `json:"landingPageViews,omitempty"`
 	// Content views (Meta `ViewContent` pixel event).
 	ContentViews *int32 `json:"contentViews,omitempty"`
@@ -36,13 +36,13 @@ type AdFunnelCounts struct {
 	PaymentInfoAdds *int32 `json:"paymentInfoAdds,omitempty"`
 	// Purchases (Meta `Purchase` pixel event). Pair with `purchaseValue` for revenue.
 	Purchases *int32 `json:"purchases,omitempty"`
-	// Leads, from either the website pixel or an instant form — whichever the ad uses.
+	// Leads, from either the website pixel or an instant form, whichever the ad uses.
 	Leads *int32 `json:"leads,omitempty"`
 	// Completed registrations (Meta `CompleteRegistration` pixel event).
 	RegistrationsCompleted *int32 `json:"registrationsCompleted,omitempty"`
 	// Mobile app installs attributed to the ad.
 	AppInstalls *int32 `json:"appInstalls,omitempty"`
-	// Messaging conversations started within 7 days — the headline metric for click-to-WhatsApp and click-to-Messenger ads.
+	// Messaging conversations started within 7 days, the headline metric for click-to-WhatsApp and click-to-Messenger ads.
 	MessagingConversationsStarted *int32 `json:"messagingConversationsStarted,omitempty"`
 	// Messaging threads where the person sent a first reply.
 	MessagingFirstReplies *int32 `json:"messagingFirstReplies,omitempty"`

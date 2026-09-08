@@ -21,7 +21,7 @@ var _ MappedNullable = &ListPhoneNumbers200Response{}
 // ListPhoneNumbers200Response struct for ListPhoneNumbers200Response
 type ListPhoneNumbers200Response struct {
 	Numbers []ListPhoneNumbers200ResponseNumbersInner `json:"numbers,omitempty"`
-	// Connected (bring-your-own) WhatsApp numbers — your own WABA numbers linked via Embedded Signup. Not provisioned or billed by Zernio, so they are not in `numbers`; `accountId` is the social-account id used by the messaging and inbox endpoints. Included only on the default and `status=active` views.
+	// Connected (bring-your-own) WhatsApp numbers: your own WABA numbers linked via Embedded Signup. Not provisioned or billed by Zernio, so they are not in `numbers`; `accountId` is the social-account id used by the messaging and inbox endpoints. Included only on the default and `status=active` views.
 	Connected []ListPhoneNumbers200ResponseConnectedInner `json:"connected,omitempty"`
 	Sandbox   *ListPhoneNumbers200ResponseSandbox         `json:"sandbox,omitempty"`
 }

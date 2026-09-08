@@ -177,19 +177,28 @@ func (r MessagesAPICreateInboxConversationRequest) Execute() (*CreateInboxConver
 /*
 CreateInboxConversation Create conversation
 
-Initiate a new direct message conversation with a specified user. If a conversation already exists with the recipient, the message is added to the existing thread.
+Start a direct message conversation with a user. If a conversation with that recipient already exists, the message is added to the existing thread.
 
-Supported platforms: X/Twitter, Bluesky, Reddit, WhatsApp, SMS, and Slack. Other platforms return PLATFORM_NOT_SUPPORTED.
+Supported platforms: X, Bluesky, Reddit, WhatsApp, SMS, and Slack. Other platforms return PLATFORM_NOT_SUPPORTED.
 
-Slack: pass a workspace member id as participantId (list them with GET /v1/accounts/{accountId}/slack-members). Zernio opens the DM channel with that member and sends the message; the thread then behaves like any other Slack conversation in the inbox. The member must belong to the connected workspace.
+**Slack.** Pass a workspace member id as participantId (list them with GET /v1/accounts/{accountId}/slack-members). Zernio opens the DM channel with that member and sends the message; the thread then behaves like any other Slack conversation in the inbox. The member must belong to the connected workspace.
 
-WhatsApp: this is the endpoint for sending an approved template message to a phone number. Provide templateName, templateLanguage, and templateParams (variable values for the text header, body and dynamic URL buttons, in that order), with the recipient phone in participantId. A template is required because WhatsApp does not permit freeform messages to open a conversation; a missing template returns TEMPLATE_REQUIRED. Templates with media headers (image, video, document) are handled automatically: Zernio reads the approved template definition and fills the header at send time with the template's approved sample asset. To send a DIFFERENT asset per message (e.g. a distinct invoice PDF for each recipient), pass the headerMedia field with a public link (or a Meta media id); it overrides the sample for that send. A template whose approved header format is LOCATION has no header asset to reconstruct at all: Meta only accepts the location at send time, so pass headerLocation (latitude and longitude required) whenever such a template is sent; headerMedia and headerLocation cannot both be supplied. A button that carries its own value at send time (a copy-code button holding a Pix payment code or a coupon, a flow token) is sent with templateButtonParams, addressed by the button's index; templateParams covers text variables and dynamic URL buttons only. Calling this for a number you already have a thread with simply sends the template into that thread, which also makes it the way to re-engage a contact after the 24-hour customer-service window has closed. Once the recipient replies (opening the 24h window), send freeform messages with the send-message endpoint (POST /v1/inbox/conversations/{conversationId}/messages). Template fields are accepted on the JSON body only, not on multipart requests. Alternatively, WhatsApp Business Accounts eligible for Meta Direct Send can open a conversation with a business-initiated utility text message and no template: pass category: 'utility' together with message (and no templateName). See the category field below.
+**WhatsApp.** This is the endpoint for sending an approved template message to a phone number. Provide templateName, templateLanguage, and templateParams (variable values for the text header, body and dynamic URL buttons, in that order), with the recipient phone in participantId. A template is required because WhatsApp does not permit freeform messages to open a conversation; a missing template returns TEMPLATE_REQUIRED.
 
-DM eligibility (X/Twitter): Before sending, the endpoint checks if the recipient accepts DMs from your account (via the receives_your_dm field). If not, a 422 error with code DM_NOT_ALLOWED is returned. You can skip this check with skipDmCheck: true if you have already verified eligibility.
+- Templates with media headers (image, video, document) are handled automatically: Zernio reads the approved template definition and fills the header at send time with the template's approved sample asset. To send a DIFFERENT asset per message (e.g. a distinct invoice PDF for each recipient), pass the headerMedia field with a public link (or a Meta media id); it overrides the sample for that send.
+- A template whose approved header format is LOCATION has no header asset to reconstruct at all: Meta only accepts the location at send time, so pass headerLocation (latitude and longitude required) whenever such a template is sent; headerMedia and headerLocation cannot both be supplied.
+- A button that carries its own value at send time (a copy-code button holding a Pix payment code or a coupon, a flow token) is sent with templateButtonParams, addressed by the button's index; templateParams covers text variables and dynamic URL buttons only.
+- Template fields are accepted on the JSON body only, not on multipart requests.
 
-X API tier requirement: DM write endpoints require X API Pro tier ($5,000/month) or Enterprise access. This applies to BYOK (Bring Your Own Key) users who provide their own X API credentials.
+For a number you already have a thread with, this sends the template into that thread, which also makes it the way to re-engage a contact after the 24-hour customer-service window has closed. Once the recipient replies (opening the 24h window), send freeform messages with the send-message endpoint (POST /v1/inbox/conversations/{conversationId}/messages).
 
-Rate limits (X/Twitter only): X's DM API enforces 200 requests per 15 minutes, 1,000 per 24 hours per connected X account, and 15,000 per 24 hours per X developer app (shared across all DM endpoints). These limits do NOT apply to other platforms. WhatsApp sends are governed by Meta's per-number messaging tiers (unique business-initiated conversations per 24 hours) and per-number throughput instead.
+Alternatively, WhatsApp Business Accounts eligible for Meta Direct Send can open a conversation with a business-initiated utility text message and no template: pass category: 'utility' together with message (and no templateName). See the category field below.
+
+**DM eligibility (X).** Before sending, the endpoint checks if the recipient accepts DMs from your account (via the receives_your_dm field). If not, a 422 error with code DM_NOT_ALLOWED is returned. You can skip this check with skipDmCheck: true if you have already verified eligibility.
+
+**X API tier requirement.** DM write endpoints require X API Pro tier ($5,000/month) or Enterprise access. This applies to BYOK (Bring Your Own Key) users who provide their own X API credentials.
+
+**Rate limits (X only).** X's DM API enforces 200 requests per 15 minutes, 1,000 per 24 hours per connected X account, and 15,000 per 24 hours per X developer app (shared across all DM endpoints). These limits do NOT apply to other platforms. WhatsApp sends are governed by Meta's per-number messaging tiers (unique business-initiated conversations per 24 hours) and per-number throughput instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagesAPICreateInboxConversationRequest
@@ -344,7 +353,7 @@ type MessagesAPIDeleteInboxMessageRequest struct {
 	accountId      *string
 }
 
-// Social account ID
+// Account ID
 func (r MessagesAPIDeleteInboxMessageRequest) AccountId(accountId string) MessagesAPIDeleteInboxMessageRequest {
 	r.accountId = &accountId
 	return r
@@ -359,7 +368,7 @@ DeleteInboxMessage Delete message
 
 Delete a message from a conversation. Platform support varies:
 - Telegram: Full delete (bot's own messages anytime, others if admin)
-- X/Twitter: Full delete (own DM events only)
+- X: Full delete (own DM events only)
 - Bluesky: Delete for self only (recipient still sees it)
 - Reddit: Delete from sender's view only
 - Facebook, Instagram, WhatsApp: Not supported (returns 400)
@@ -609,7 +618,7 @@ type MessagesAPIGetInboxConversationRequest struct {
 	accountId      *string
 }
 
-// The social account ID
+// The account ID
 func (r MessagesAPIGetInboxConversationRequest) AccountId(accountId string) MessagesAPIGetInboxConversationRequest {
 	r.accountId = &accountId
 	return r
@@ -738,7 +747,7 @@ type MessagesAPIGetInboxConversationMessagesRequest struct {
 	sortOrder      *string
 }
 
-// Social account ID
+// Account ID
 func (r MessagesAPIGetInboxConversationMessagesRequest) AccountId(accountId string) MessagesAPIGetInboxConversationMessagesRequest {
 	r.accountId = &accountId
 	return r
@@ -756,7 +765,7 @@ func (r MessagesAPIGetInboxConversationMessagesRequest) Cursor(cursor string) Me
 	return r
 }
 
-// Order of returned messages. Default &#x60;asc&#x60; (oldest first, chat style). Twitter, Instagram, Telegram, WhatsApp and Reddit honor this order across cursor pages. For Facebook and Bluesky, only intra-page ordering is affected — pages always walk newest→oldest. See &#x60;sortOrderApplied&#x60; in the response.
+// Order of returned messages. Default &#x60;asc&#x60; (oldest first, chat style). X, Instagram, Telegram, WhatsApp and Reddit honor this order across cursor pages. For Facebook and Bluesky, only intra-page ordering is affected. Pages always walk newest→oldest. See &#x60;sortOrderApplied&#x60; in the response.
 func (r MessagesAPIGetInboxConversationMessagesRequest) SortOrder(sortOrder string) MessagesAPIGetInboxConversationMessagesRequest {
 	r.sortOrder = &sortOrder
 	return r
@@ -778,9 +787,9 @@ do not parse or construct it client-side.
 
 Sort order: defaults to `asc` (oldest first, chat style). For the
 "show me the latest messages" pattern, pass `?sortOrder=desc&limit=N`.
-Twitter, Instagram, Telegram, WhatsApp and Reddit honor the requested
+X, Instagram, Telegram, WhatsApp and Reddit honor the requested
 order from the local message store. For Facebook and Bluesky, the
-upstream APIs only return newest-first and have no order parameter —
+upstream APIs only return newest-first and have no order parameter, so
 sort order is best-effort and only reverses items within a single page
 (pages still walk newest→oldest). The response field `sortOrderApplied`
 tells you what was actually applied.
@@ -797,7 +806,7 @@ most recent messages per conversation: a longer thread keeps its newest
 the account was connected are unaffected. Replayed messages are stored
 as already read and emit no webhooks.
 
-Twitter/X limitation: X's encrypted "X Chat" messages are not accessible via the API. Conversations where the other participant uses encrypted X Chat may only show your outgoing messages. See the list conversations endpoint for more details.
+X limitation: X's encrypted "X Chat" messages are not accessible via the API. Conversations where the other participant uses encrypted X Chat may only show your outgoing messages. See the list conversations endpoint for more details.
 
 This endpoint is read-only and does NOT mark messages as read or send
 read receipts. To mark a conversation read (and send WhatsApp blue ticks
@@ -945,7 +954,7 @@ type MessagesAPIGetMessageAttachmentRequest struct {
 	format         *string
 }
 
-// Social account ID. Required: without it the request returns 400 missing_required_field.
+// Account ID. Required: without it the request returns 400 missing_required_field.
 func (r MessagesAPIGetMessageAttachmentRequest) AccountId(accountId string) MessagesAPIGetMessageAttachmentRequest {
 	r.accountId = &accountId
 	return r
@@ -977,7 +986,7 @@ you read a message over REST.
 **Webhook payloads do not carry `refreshUrl`**, so a webhook-driven
 integration builds this URL itself. Every piece is in the event:
 `message.conversationId`, `message.platformMessageId`, the attachment's
-zero-based position, and `account.accountId`. Note that **`accountId` is a
+zero-based position, and `account.accountId`. **`accountId` is a
 required query parameter**; omitting it returns `400`
 `missing_required_field`, which is the same requirement
 `GET /v1/whatsapp/media/{mediaId}` has.
@@ -1170,7 +1179,7 @@ func (r MessagesAPIListInboxConversationsRequest) Cursor(cursor string) Messages
 	return r
 }
 
-// Filter by specific social account ID
+// Filter by specific account ID
 func (r MessagesAPIListInboxConversationsRequest) AccountId(accountId string) MessagesAPIListInboxConversationsRequest {
 	r.accountId = &accountId
 	return r
@@ -1184,11 +1193,16 @@ func (r MessagesAPIListInboxConversationsRequest) Execute() (*ListInboxConversat
 ListInboxConversations List conversations
 
 Fetch conversations (DMs) from all connected messaging accounts in a single API call. Supports filtering by profile and platform. Results are aggregated and deduplicated.
-Supported platforms: Facebook, Instagram, Twitter/X, Bluesky, Reddit, Telegram.
 
-Twitter/X limitation: X has replaced traditional DMs with encrypted "X Chat" for many accounts. Messages sent or received through encrypted X Chat are not accessible via X's API (the /2/dm_events endpoint only returns legacy unencrypted DMs). This means some Twitter/X conversations may show only outgoing messages or appear empty. This is an X platform limitation that affects all third-party applications. See X's docs on encrypted messaging for more details.
+Supported platforms: Facebook, Instagram, X, Bluesky, Reddit, Telegram.
 
-Instagram and Facebook pre-connect history: when one of these accounts is connected, Zernio replays the DM history the account already holds on Meta, so conversations that began before the account was connected appear here. Up to 500 conversations per account are replayed. The replay runs in the background and can finish after a listing you have already taken, and replayed conversations keep their original lastMessageAt, so they sort into date order rather than appearing at the top. If you mirror this endpoint into your own store, re-run the sweep rather than relying on a single pass at connect time. Replayed history emits no webhooks and is stored as already read, so it never affects unread counts. Threads that Meta refuses to serve are skipped, and an account whose Instagram "connected tools" message access is turned off is not replayed at all.
+**X limitation.** X has replaced traditional DMs with encrypted "X Chat" for many accounts. Messages sent or received through encrypted X Chat are not accessible via X's API (the /2/dm_events endpoint only returns legacy unencrypted DMs). This means some X conversations may show only outgoing messages or appear empty. This is an X platform limitation that affects all third-party applications. See X's docs on encrypted messaging for more details.
+
+**Instagram and Facebook pre-connect history.** When one of these accounts is connected, Zernio replays the DM history the account already holds on Meta, so conversations that began before the account was connected appear here. Up to 500 conversations per account are replayed.
+
+- The replay runs in the background and can finish after a listing you have already taken, and replayed conversations keep their original lastMessageAt, so they sort into date order rather than appearing at the top. If you mirror this endpoint into your own store, re-run the sweep rather than relying on a single pass at connect time.
+- Replayed history emits no webhooks and is stored as already read, so it never affects unread counts.
+- Threads that Meta refuses to serve are skipped, and an account whose Instagram "connected tools" message access is turned off is not replayed at all.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagesAPIListInboxConversationsRequest
@@ -1458,7 +1472,7 @@ type MessagesAPIRemoveMessageReactionRequest struct {
 	accountId      *string
 }
 
-// Social account ID
+// Account ID
 func (r MessagesAPIRemoveMessageReactionRequest) AccountId(accountId string) MessagesAPIRemoveMessageReactionRequest {
 	r.accountId = &accountId
 	return r
@@ -1621,7 +1635,7 @@ func (r MessagesAPISearchInboxConversationsRequest) Platform(platform string) Me
 	return r
 }
 
-// Filter by specific social account ID
+// Filter by specific account ID
 func (r MessagesAPISearchInboxConversationsRequest) AccountId(accountId string) MessagesAPISearchInboxConversationsRequest {
 	r.accountId = &accountId
 	return r
@@ -1653,7 +1667,7 @@ Search your conversations two ways at once, and get back the matching conversati
 
 A conversation that matches both ways is returned once, carrying its message matches.
 
-Only platforms whose messages are stored by Zernio are searchable: WhatsApp, SMS, Telegram, Facebook, Instagram, Twitter/X and Reddit. Bluesky conversations are fetched live from the platform and cannot be searched; those accounts are listed in meta.accountsSkipped.
+Only platforms whose messages are stored by Zernio are searchable: WhatsApp, SMS, Telegram, Facebook, Instagram, X and Reddit. Bluesky conversations are fetched live from the platform and cannot be searched; those accounts are listed in meta.accountsSkipped.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagesAPISearchInboxConversationsRequest
@@ -2115,6 +2129,148 @@ func (a *MessagesAPIService) SendTypingIndicatorExecute(r MessagesAPISendTypingI
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type MessagesAPISetConversationThreadControlRequest struct {
+	ctx                                 context.Context
+	ApiService                          *MessagesAPIService
+	conversationId                      string
+	setConversationThreadControlRequest *SetConversationThreadControlRequest
+}
+
+func (r MessagesAPISetConversationThreadControlRequest) SetConversationThreadControlRequest(setConversationThreadControlRequest SetConversationThreadControlRequest) MessagesAPISetConversationThreadControlRequest {
+	r.setConversationThreadControlRequest = &setConversationThreadControlRequest
+	return r
+}
+
+func (r MessagesAPISetConversationThreadControlRequest) Execute() (*SetConversationThreadControl200Response, *http.Response, error) {
+	return r.ApiService.SetConversationThreadControlExecute(r)
+}
+
+/*
+SetConversationThreadControl Hand a conversation to or from Meta Business Agent
+
+WhatsApp only, on numbers with Meta Business Agent enabled. Wraps Meta's thread control:
+- `release`: hand the conversation back to the agent so it resumes answering. You must currently hold control (sending any message takes it implicitly).
+- `take`: take control before sending anything, so the agent stops replying while an operator reads the thread. Meta accepts this only from the business configured as the number's escalation partner; other apps take control by sending a message.
+- `pass`: transfer control to the number's configured escalation partner, or to the agent with `target: ai_agent`.
+
+The conversation's `threadControl` follows the result; a `conversation.control_changed` webhook fires when Meta later reports the change.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param conversationId The conversation ID
+	@return MessagesAPISetConversationThreadControlRequest
+*/
+func (a *MessagesAPIService) SetConversationThreadControl(ctx context.Context, conversationId string) MessagesAPISetConversationThreadControlRequest {
+	return MessagesAPISetConversationThreadControlRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		conversationId: conversationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SetConversationThreadControl200Response
+func (a *MessagesAPIService) SetConversationThreadControlExecute(r MessagesAPISetConversationThreadControlRequest) (*SetConversationThreadControl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SetConversationThreadControl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.SetConversationThreadControl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/conversations/{conversationId}/thread-control"
+	localVarPath = strings.Replace(localVarPath, "{"+"conversationId"+"}", url.PathEscape(parameterValueToString(r.conversationId, "conversationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setConversationThreadControlRequest == nil {
+		return localVarReturnValue, nil, reportError("setConversationThreadControlRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setConversationThreadControlRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type MessagesAPIUpdateInboxConversationRequest struct {
 	ctx                            context.Context
 	ApiService                     *MessagesAPIService
@@ -2274,7 +2430,7 @@ Files are stored in temporary storage and auto-delete after 7 days.
 Maximum file size is 25MB.
 
 Unlike /v1/media/upload (which uses upload tokens for end-user flows),
-this endpoint uses standard Bearer token authentication for programmatic use.
+this endpoint takes your API key in the Authorization header, for programmatic use.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagesAPIUploadMediaDirectRequest

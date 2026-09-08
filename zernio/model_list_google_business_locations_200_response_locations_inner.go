@@ -24,7 +24,7 @@ type ListGoogleBusinessLocations200ResponseLocationsInner struct {
 	Id *string `json:"id,omitempty"`
 	// Business name
 	Name *string `json:"name,omitempty"`
-	// Google Business Account ID
+	// Google Business Profile Account ID
 	AccountId *string `json:"accountId,omitempty"`
 	// Account name
 	AccountName *string `json:"accountName,omitempty"`

@@ -22,7 +22,7 @@ var _ MappedNullable = &CallRecord{}
 // CallRecord One call on a number you own, either channel. `channel` tells you which lane it took: `whatsapp` (WhatsApp Business Calling) or `pstn` (a regular phone call). List endpoints omit `transcript`; use `lastTranscriptSnippet` for a preview and the detail endpoint for the full transcript.
 type CallRecord struct {
 	Id *string `json:"_id,omitempty"`
-	// Owning social account. The unified /v1/calls/{id} detail + recording endpoints work for any channel; the channel-specific endpoints remain for account-scoped access.
+	// Owning account. The unified /v1/calls/{id} detail + recording endpoints work for any channel; the channel-specific endpoints remain for account-scoped access.
 	AccountId *string `json:"accountId,omitempty"`
 	// Inbox conversation with the counterparty, when one exists.
 	ConversationId NullableString `json:"conversationId,omitempty"`
@@ -58,7 +58,7 @@ type CallRecord struct {
 	TransferredAt   NullableTime `json:"transferredAt,omitempty"`
 	DurationSeconds *int32       `json:"durationSeconds,omitempty"`
 	EndReason       *string      `json:"endReason,omitempty"`
-	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, not_found, time_limit) — the actual motive when endReason is a coarse bucket.
+	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, not_found, time_limit). The actual motive when endReason is a coarse bucket.
 	HangupCause NullableString `json:"hangupCause,omitempty"`
 	// SIP response code that ended the call, when SIP-signalled (e.g. '403', '488'). The real failure reason for SIP legs.
 	SipHangupCause NullableString `json:"sipHangupCause,omitempty"`

@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadPostPlatformPlatform type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadPostPlatformPlatform{}
 
-// WebhookPayloadPostPlatformPlatform The specific platform that just transitioned to a terminal state.
+// WebhookPayloadPostPlatformPlatform The specific platform that transitioned to a terminal state.
 type WebhookPayloadPostPlatformPlatform struct {
 	// Platform name (e.g. `twitter`, `tiktok`, `instagram`).
 	Name string `json:"name"`

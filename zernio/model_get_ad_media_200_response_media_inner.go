@@ -21,7 +21,7 @@ var _ MappedNullable = &GetAdMedia200ResponseMediaInner{}
 // GetAdMedia200ResponseMediaInner struct for GetAdMedia200ResponseMediaInner
 type GetAdMedia200ResponseMediaInner struct {
 	Type *string `json:"type,omitempty"`
-	// Direct file URL (signed; short-lived — see description).
+	// Direct file URL (signed; short-lived, see description).
 	Url *string `json:"url,omitempty"`
 	// Video poster URL (videos only).
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`

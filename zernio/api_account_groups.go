@@ -41,7 +41,7 @@ func (r AccountGroupsAPICreateAccountGroupRequest) Execute() (*CreateAccountGrou
 /*
 CreateAccountGroup Create group
 
-Creates a new account group with a name and a list of social account IDs.
+Creates a new account group with a name and a list of account IDs.
 Accounts can belong to different profiles; the caller must have access to
 every account's profile. Group names must be unique per user.
 

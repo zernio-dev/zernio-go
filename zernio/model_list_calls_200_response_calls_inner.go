@@ -22,7 +22,7 @@ var _ MappedNullable = &ListCalls200ResponseCallsInner{}
 // ListCalls200ResponseCallsInner struct for ListCalls200ResponseCallsInner
 type ListCalls200ResponseCallsInner struct {
 	Id *string `json:"_id,omitempty"`
-	// Owning social account. The unified /v1/calls/{id} detail + recording endpoints work for any channel; the channel-specific endpoints remain for account-scoped access.
+	// Owning account. The unified /v1/calls/{id} detail + recording endpoints work for any channel; the channel-specific endpoints remain for account-scoped access.
 	AccountId *string `json:"accountId,omitempty"`
 	// Inbox conversation with the counterparty, when one exists.
 	ConversationId *string `json:"conversationId,omitempty"`
@@ -58,7 +58,7 @@ type ListCalls200ResponseCallsInner struct {
 	TransferredAt   *time.Time `json:"transferredAt,omitempty"`
 	DurationSeconds *int32     `json:"durationSeconds,omitempty"`
 	EndReason       *string    `json:"endReason,omitempty"`
-	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, not_found, time_limit) — the actual motive when endReason is a coarse bucket.
+	// Raw carrier hangup cause behind endReason (e.g. normal_clearing, not_found, time_limit). The actual motive when endReason is a coarse bucket.
 	HangupCause *string `json:"hangupCause,omitempty"`
 	// SIP response code that ended the call, when SIP-signalled (e.g. '403', '488'). The real failure reason for SIP legs.
 	SipHangupCause *string `json:"sipHangupCause,omitempty"`

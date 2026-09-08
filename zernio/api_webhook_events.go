@@ -141,7 +141,7 @@ func (r WebhookEventsAPIOnAccountConnectedRequest) Execute() (*http.Response, er
 /*
 OnAccountConnected Account connected event
 
-Fired when a social account is successfully connected.
+Fired when a account is successfully connected.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnAccountConnectedRequest
@@ -240,7 +240,7 @@ func (r WebhookEventsAPIOnAccountDisconnectedRequest) Execute() (*http.Response,
 /*
 OnAccountDisconnected Account disconnected event
 
-Fired when a connected social account becomes disconnected.
+Fired when a connected account becomes disconnected.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnAccountDisconnectedRequest
@@ -354,7 +354,7 @@ Subscribed to two Meta `ad_account` webhook fields:
 `AD_SET`, or `AD`. Creative-level events are not forwarded.
 
 Branch on `status.raw` to handle each transition; use `error.code` (when
-present) as the stable discriminator — `error.summary` and `error.message`
+present) as the stable discriminator, since `error.summary` and `error.message`
 are localized to the ad-account owner's Meta locale.
 
 The `error` block is optional. It's present on most `WITH_ISSUES`
@@ -1066,6 +1066,110 @@ func (a *WebhookEventsAPIService) OnCommentReceivedExecute(r WebhookEventsAPIOnC
 	return localVarHTTPResponse, nil
 }
 
+type WebhookEventsAPIOnConversationControlChangedRequest struct {
+	ctx                                      context.Context
+	ApiService                               *WebhookEventsAPIService
+	webhookPayloadConversationControlChanged *WebhookPayloadConversationControlChanged
+}
+
+func (r WebhookEventsAPIOnConversationControlChangedRequest) WebhookPayloadConversationControlChanged(webhookPayloadConversationControlChanged WebhookPayloadConversationControlChanged) WebhookEventsAPIOnConversationControlChangedRequest {
+	r.webhookPayloadConversationControlChanged = &webhookPayloadConversationControlChanged
+	return r
+}
+
+func (r WebhookEventsAPIOnConversationControlChangedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnConversationControlChangedExecute(r)
+}
+
+/*
+OnConversationControlChanged Conversation control changed event
+
+WhatsApp only. Fired when control of a conversation moves between Meta Business Agent
+and your app (Meta's `messaging_handovers`), or when the agent is first seen answering
+a thread. While `control.owner` is `ai_agent`, inbound messages arrive on
+`message.received` with `metadata.standby: true` and the agent's replies on
+`message.sent` with `source: meta_business_agent`. Sending any message takes control
+back; release it with `POST /v1/inbox/conversations/{conversationId}/thread-control`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnConversationControlChangedRequest
+*/
+func (a *WebhookEventsAPIService) OnConversationControlChanged(ctx context.Context) WebhookEventsAPIOnConversationControlChangedRequest {
+	return WebhookEventsAPIOnConversationControlChangedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnConversationControlChangedExecute(r WebhookEventsAPIOnConversationControlChangedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnConversationControlChanged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/conversation.control_changed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadConversationControlChanged == nil {
+		return nil, reportError("webhookPayloadConversationControlChanged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadConversationControlChanged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type WebhookEventsAPIOnConversationStartedRequest struct {
 	ctx                               context.Context
 	ApiService                        *WebhookEventsAPIService
@@ -1086,7 +1190,7 @@ OnConversationStarted Conversation started event
 
 Fired once when a new conversation begins between one of your connected accounts and a
 contact, in either direction. Works across every DM platform (Instagram, Messenger/Facebook,
-Telegram, WhatsApp, Twitter, Reddit, Bluesky). Naturally deduped — a given conversation
+Telegram, WhatsApp, X, Reddit, Bluesky). Naturally deduped: a given conversation
 only fires this event the very first time it appears.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2818,8 +2922,8 @@ func (r WebhookEventsAPIOnPostPlatformFailedRequest) Execute() (*http.Response, 
 OnPostPlatformFailed Post platform failed event
 
 Fired once per platform target inside a post as that platform fails
-permanently. Temporary/retryable failures do NOT fire this event —
-only permanent ones, so retry loops stay quiet. The envelope event
+permanently. Temporary/retryable failures do NOT fire this event,
+only permanent ones do, so retry loops stay quiet. The envelope event
 (`post.failed` / `post.partial`) fires separately AFTER all
 platforms have terminated.
 
@@ -2921,7 +3025,7 @@ func (r WebhookEventsAPIOnPostPlatformPublishedRequest) Execute() (*http.Respons
 OnPostPlatformPublished Post platform published event
 
 Fired once per platform target inside a post as that platform finishes
-publishing successfully. Does NOT wait for the post-level rollup —
+publishing successfully. Does NOT wait for the post-level rollup, so
 consumers building incremental UIs get notified immediately, even
 when other platforms on the same post are still processing.
 The envelope event (`post.published` / `post.partial`) fires
@@ -4463,7 +4567,7 @@ func (r WebhookEventsAPIOnWhatsAppNumberActivatedRequest) Execute() (*http.Respo
 /*
 OnWhatsAppNumberActivated WhatsApp number activated event
 
-Fired when a purchased WhatsApp number becomes active and usable — both
+Fired when a purchased WhatsApp number becomes active and usable. Both
 the synchronous (Tier 1/2) path and the asynchronous regulated (Tier
 3/4) path land here. Lets integrators react without polling
 GET /v1/phone-numbers.

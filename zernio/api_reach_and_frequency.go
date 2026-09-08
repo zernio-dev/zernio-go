@@ -164,7 +164,7 @@ func (r ReachAndFrequencyAPICreateRfPredictionRequest) Execute() (*CreateRfPredi
 /*
 CreateRfPrediction Create a Reach & Frequency prediction
 
-Creates an R&F prediction — a QUOTE, nothing is bought and no ad entities are created.
+Creates an R&F prediction. This is a QUOTE, nothing is bought and no ad entities are created.
 Provide a date range plus exactly one of `budgetAmount` (Meta predicts reach) or `reach`
 (Meta predicts the budget). The response carries the estimate and its allowed bounds
 (min/max budget and reach). Predictions expire on their own; to buy, reserve one via
@@ -431,7 +431,7 @@ func (r ReachAndFrequencyAPIReserveRfPredictionRequest) Execute() (*ReserveRfPre
 ReserveRfPrediction Reserve a Reach & Frequency prediction
 
 Locks the quoted price + inventory until the returned `expiresAt` and mints a NEW
-prediction id — pass that RESERVED id (not the original) as `rfPredictionId` on
+prediction id. Pass that RESERVED id (not the original) as `rfPredictionId` on
 POST /v1/ads/create. Release an unused reservation via DELETE.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

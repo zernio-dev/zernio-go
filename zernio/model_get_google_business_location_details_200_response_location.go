@@ -20,7 +20,7 @@ var _ MappedNullable = &GetGoogleBusinessLocationDetails200ResponseLocation{}
 
 // GetGoogleBusinessLocationDetails200ResponseLocation Compact public-facing summary derived from Google's `metadata`. Useful for surfacing the \"leave a review\" URL (e.g. behind a QR code) without parsing the raw block. Always populated regardless of readMask. For unverified or new locations Google omits placeId/reviewUrl/mapsUri, so those return as null and `isVerified` is false.
 type GetGoogleBusinessLocationDetails200ResponseLocation struct {
-	// Business name as set in GBP
+	// Business name as set in Google Business Profile
 	Name NullableString `json:"name,omitempty"`
 	// Google Maps Place ID for this location
 	PlaceId NullableString `json:"placeId,omitempty"`

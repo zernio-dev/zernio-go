@@ -18,7 +18,7 @@ import (
 // checks if the ListSmsSenderIds200ResponseBudget type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListSmsSenderIds200ResponseBudget{}
 
-// ListSmsSenderIds200ResponseBudget Workspace-wide daily sending budget, shared by every sender ID (resets midnight UTC).
+// ListSmsSenderIds200ResponseBudget Team-wide daily sending budget, shared by every sender ID (resets midnight UTC).
 type ListSmsSenderIds200ResponseBudget struct {
 	// Daily message cap (raisable via `/v1/sms/sender-ids/limit-request`).
 	Cap *int32 `json:"cap,omitempty"`

@@ -20,13 +20,13 @@ import (
 // checks if the StartSmsRegistrationRequestCampaign type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StartSmsRegistrationRequestCampaign{}
 
-// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. The opt-in/opt-out/help auto-responses (`optinMessage`, `optoutMessage`, `helpMessage`) are optional: when omitted, a compliant, brand-named template with the carrier-required disclosures is generated for you. If you do send them, they must name the registered brand and carry the disclosures — submissions that don't are rewritten to the compliant template before the campaign is filed.
+// StartSmsRegistrationRequestCampaign Required for 10DLC. What you'll send and how recipients opt in/out. The opt-in/opt-out/help auto-responses (`optinMessage`, `optoutMessage`, `helpMessage`) are optional: when omitted, a compliant, brand-named template with the carrier-required disclosures is generated for you. If you do send them, they must name the registered brand and carry the disclosures. Submissions that don't are rewritten to the compliant template before the campaign is filed.
 type StartSmsRegistrationRequestCampaign struct {
 	Usecase string `json:"usecase"`
 	// The concrete kinds of messages a MIXED campaign sends (the carrier registry requires 2-5, and reviewers match them against the sample messages). Omitted: a default pair is applied for MIXED.
 	SubUsecases []string `json:"subUsecases,omitempty"`
 	Description string   `json:"description"`
-	// How a recipient ends up receiving your messages (the opt-in flow). Include a link to the page or form where they opt in — carrier reviewers reject campaigns whose consent they can't verify.
+	// How a recipient ends up receiving your messages (the opt-in flow). Include a link to the page or form where they opt in, because carrier reviewers reject campaigns whose consent they can't verify.
 	MessageFlow string `json:"messageFlow"`
 	Sample1     string `json:"sample1"`
 	// Second example message; carriers require two distinct samples, so it must differ from sample1.

@@ -22,7 +22,7 @@ var _ MappedNullable = &SendTypingIndicatorRequest{}
 
 // SendTypingIndicatorRequest struct for SendTypingIndicatorRequest
 type SendTypingIndicatorRequest struct {
-	// Social account ID
+	// Account ID
 	AccountId string `json:"accountId"`
 }
 

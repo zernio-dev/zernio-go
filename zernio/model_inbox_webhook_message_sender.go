@@ -29,13 +29,13 @@ type InboxWebhookMessageSender struct {
 	Name      *string `json:"name,omitempty"`
 	Username  *string `json:"username,omitempty"`
 	Picture   *string `json:"picture,omitempty"`
-	// WhatsApp only. Sender's phone number in E.164 format (with leading `+`).  **Nullable during the BSUID rollout (April 2026+).** WhatsApp users who adopt a username can message businesses without exposing a phone number — this field is omitted for them. Match by `businessScopedUserId` instead. See `docs/whatsapp-bsuid-migration.md`.
+	// WhatsApp only. Sender's phone number in E.164 format (with leading `+`).  **Nullable during the BSUID rollout (April 2026+).** WhatsApp users who adopt a username can message businesses without exposing a phone number, so this field is omitted for them. Match by `businessScopedUserId` instead. See `docs/whatsapp-bsuid-migration.md`.
 	PhoneNumber NullableString `json:"phoneNumber,omitempty"`
-	// WhatsApp only. Business-scoped user ID (BSUID) — Meta's canonical identifier for a WhatsApp user within your business. Present when Meta includes it in the inbound payload (rollout in progress since early April 2026). **Recommended primary identity anchor** going forward; fall back to `phoneNumber` only when this field is absent.
+	// WhatsApp only. Business-scoped user ID (BSUID), Meta's canonical identifier for a WhatsApp user within your business. Present when Meta includes it in the inbound payload (rollout in progress since early April 2026). **Recommended primary identity anchor** going forward; fall back to `phoneNumber` only when this field is absent.
 	BusinessScopedUserId *string `json:"businessScopedUserId,omitempty"`
 	// WhatsApp only. Parent BSUID for businesses with linked business portfolios. Omitted for standalone portfolios.
 	ParentBusinessScopedUserId *string `json:"parentBusinessScopedUserId,omitempty"`
-	// WhatsApp only. User's WhatsApp username (e.g. `@jane`). Not a stable identifier — users can change it. Useful for display, not recommended as an identity anchor.
+	// WhatsApp only. User's WhatsApp username (e.g. `@jane`). Not a stable identifier, because users can change it. Useful for display, not recommended as an identity anchor.
 	WhatsappUsername *string                                             `json:"whatsappUsername,omitempty"`
 	InstagramProfile *WebhookPayloadCommentCommentAuthorInstagramProfile `json:"instagramProfile,omitempty"`
 }

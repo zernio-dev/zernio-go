@@ -44,7 +44,7 @@ func (r DiscordAPIAddDiscordMemberRoleRequest) Execute() (*AddDiscordMemberRole2
 /*
 AddDiscordMemberRole Assign a role to a guild member
 
-Assign one role to one member. Idempotent on Discord's side — re-running
+Assign one role to one member. Idempotent on Discord's side: re-running
 on a member who already has the role is a 204 no-op.
 
 Path shape mirrors Discord's own API (`PUT /guilds/{guild}/members/{user}/roles/{role}`)
@@ -331,15 +331,15 @@ CreateDiscordScheduledEvent Create a Discord scheduled event
 Create a guild scheduled event. Three event types, selected via the
 discriminator on `entity.type`:
 
-  - `external` — off-platform (Zoom, in-person, livestream). Requires
+  - `external`: off-platform (Zoom, in-person, livestream). Requires
     both `location` and `endsAt`. Most common type for scheduler
     integrations.
-  - `voice` — hosted in a Discord voice channel. Requires `channelId`.
-  - `stage` — hosted in a Discord stage channel. Requires `channelId`.
+  - `voice`: hosted in a Discord voice channel. Requires `channelId`.
+  - `stage`: hosted in a Discord stage channel. Requires `channelId`.
 
 Bot needs MANAGE_EVENTS in the guild. Existing installs (pre-events
 PR) need a re-invite OR a server admin manually granting the
-permission — see route header for details.
+permission. See route header for details.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param guildId
@@ -1947,7 +1947,7 @@ Returns all roles in a Discord guild. Useful for building role-mention
 pickers, role-permission UIs, or finding the role ID before calling
 the role-assign endpoint.
 
-Roles are returned unordered — sort client-side by `position` if you
+Roles are returned unordered. Sort client-side by `position` if you
 need Discord's UI ordering.
 
 Caller must pass `accountId` of a Discord SocialAccount bound to this
@@ -2215,7 +2215,7 @@ func (r DiscordAPIListDiscordScheduledEventsRequest) Execute() (*ListDiscordSche
 ListDiscordScheduledEvents List Discord scheduled events
 
 Return all scheduled events in the guild. Events are distinct from
-messages — they appear in the server's Events panel and Discord
+messages: they appear in the server's Events panel and Discord
 auto-notifies interested members ahead of start time.
 
 Pass `withUserCount=true` to include `user_count` (number of members
@@ -2351,13 +2351,13 @@ PinDiscordMessage Pin a Discord message
 Pin a specific message in a channel. Path shape mirrors Discord's own
 API (`PUT /channels/{cid}/pins/{mid}`).
 
-Idempotent — re-pinning an already-pinned message is a 204 no-op.
+Idempotent: re-pinning an already-pinned message is a 204 no-op.
 
 Constraints:
 
   - Bot needs MANAGE_MESSAGES in the channel.
 
-  - 50-pin cap per channel — hitting it returns 400 (Discord-side).
+  - 50-pin cap per channel: hitting it returns 400 (Discord-side).
     Caller should unpin one first.
 
     @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2488,7 +2488,7 @@ func (r DiscordAPIRemoveDiscordMemberRoleRequest) Execute() (*RemoveDiscordMembe
 /*
 RemoveDiscordMemberRole Remove a role from a guild member
 
-Remove one role from one member. Idempotent — removing a role the
+Remove one role from one member. Idempotent: removing a role the
 member doesn't have returns 204 no-op.
 
 Same permission + hierarchy constraints as the PUT counterpart.
@@ -2781,7 +2781,7 @@ func (r DiscordAPISendDiscordDirectMessageRequest) Execute() (*SendDiscordDirect
 SendDiscordDirectMessage Send a Discord Direct Message
 
 Send a 1:1 Direct Message from the bot to a Discord user (by snowflake ID).
-Supports the same payload shape as channel posts — content, embeds, media
+Supports the same payload shape as channel posts: content, embeds, media
 attachments, and TTS.
 
 Constraints (Discord platform limits):
@@ -2920,7 +2920,7 @@ func (r DiscordAPIUnpinDiscordMessageRequest) Execute() (*UnpinDiscordMessage200
 UnpinDiscordMessage Unpin a Discord message
 
 Unpin a message. Same MANAGE_MESSAGES permission requirement as pin.
-Idempotent — unpinning a non-pinned message is a 204 no-op.
+Idempotent: unpinning a non-pinned message is a 204 no-op.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param channelId
@@ -3050,7 +3050,7 @@ func (r DiscordAPIUpdateDiscordScheduledEventRequest) Execute() (*CreateDiscordS
 UpdateDiscordScheduledEvent Update a Discord scheduled event
 
 Patch any subset of fields. Passing `status: 'cancelled'` is how you
-cancel an event — Discord doesn't have a dedicated cancel endpoint,
+cancel an event. Discord doesn't have a dedicated cancel endpoint,
 it's a status transition.
 
 Most status transitions Discord enforces (you can't go SCHEDULED →

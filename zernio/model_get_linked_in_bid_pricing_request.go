@@ -22,7 +22,7 @@ var _ MappedNullable = &GetLinkedInBidPricingRequest{}
 
 // GetLinkedInBidPricingRequest struct for GetLinkedInBidPricingRequest
 type GetLinkedInBidPricingRequest struct {
-	// Zernio social account ID (LinkedIn).
+	// Zernio account ID (LinkedIn).
 	AccountId string `json:"accountId"`
 	// LinkedIn ad account ID (numeric).
 	AdAccountId string `json:"adAccountId"`

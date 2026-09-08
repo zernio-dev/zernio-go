@@ -170,7 +170,7 @@ func (r AdCreativesAPIDeleteAdCreativeRequest) Execute() (*DeleteAdCreative200Re
 DeleteAdCreative Delete a creative
 
 Deletes a creative from the library. Meta only allows deleting creatives not referenced
-by any ad — otherwise its 400 surfaces verbatim.
+by any ad; otherwise its 400 surfaces verbatim.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param creativeId Platform creative id
@@ -712,7 +712,7 @@ video's Meta id when available.
 
 Reads Meta live rather than the stored creative blob because Meta's signed fbcdn
 URLs carry an `oe=<hex>` expiration (image_url ~24 h, video source ~12 d). Treat
-URLs as short-lived — re-fetch this endpoint before serving or downloading assets
+URLs as short-lived: re-fetch this endpoint before serving or downloading assets
 instead of caching URLs beyond that window.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -948,7 +948,7 @@ type AdCreativesAPIListAdCatalogProductSetsRequest struct {
 	accountId  *string
 }
 
-// A facebook, instagram, or metaads social account ID
+// A facebook, instagram, or metaads account ID
 func (r AdCreativesAPIListAdCatalogProductSetsRequest) AccountId(accountId string) AdCreativesAPIListAdCatalogProductSetsRequest {
 	r.accountId = &accountId
 	return r
@@ -961,7 +961,7 @@ func (r AdCreativesAPIListAdCatalogProductSetsRequest) Execute() (*ListAdCatalog
 /*
 ListAdCatalogProductSets List a catalog's product sets
 
-Lists a Meta product catalog's product sets — the unit a catalog ad promotes. Pass the chosen set as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
+Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -1085,7 +1085,7 @@ type AdCreativesAPIListAdCatalogsRequest struct {
 	adAccountId *string
 }
 
-// A facebook, instagram, or metaads social account ID
+// A facebook, instagram, or metaads account ID
 func (r AdCreativesAPIListAdCatalogsRequest) AccountId(accountId string) AdCreativesAPIListAdCatalogsRequest {
 	r.accountId = &accountId
 	return r
@@ -1104,7 +1104,7 @@ func (r AdCreativesAPIListAdCatalogsRequest) Execute() (*ListAdCatalogs200Respon
 /*
 ListAdCatalogs List Meta product catalogs
 
-Lists the Meta product catalogs reachable from an ad account (owned + agency-shared catalogs of the ad account's business), for Advantage+ catalog ads (`goal: catalog_sales` on POST /v1/ads/create — e.g. vehicle inventory catalogs). Read-only; uses scopes customers already granted (no reconnect needed). Catalog contents (items, feeds) are managed in Meta Commerce Manager, not through this API.
+Lists the Meta product catalogs reachable from an ad account (owned + agency-shared catalogs of the ad account's business), for Advantage+ catalog ads (`goal: catalog_sales` on POST /v1/ads/create, e.g. vehicle inventory catalogs). Read-only; uses scopes customers already granted (no reconnect needed). Catalog contents (items, feeds) are managed in Meta Commerce Manager, not through this API.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPIListAdCatalogsRequest
@@ -1617,7 +1617,7 @@ playable MP4); `fields` is a raw-passthrough override. Any `id` here is reusable
 
 `source` lets you PLAY a video before picking it, which a poster frame alone can't settle
 when several videos share a first frame. It is a signed CDN URL that EXPIRES, so treat it
-as good for preview at selection time only — never persist it, re-list to get a fresh one.
+as good for preview at selection time only. Never persist it; re-list to get a fresh one.
 
 This is the only way to reach a video uploaded OUTSIDE Zernio (Ads Manager, another
 tool); videos we uploaded also come back as `creative.videoId` on GET /v1/ads.
@@ -1774,7 +1774,7 @@ func (r AdCreativesAPIUpdateAdCreativeRequest) Execute() (*UpdateAdCreative200Re
 /*
 UpdateAdCreative Rename a creative
 
-Renames a creative. Creatives are immutable on Meta beyond `name` — for content changes
+Renames a creative. Creatives are immutable on Meta beyond `name`. For content changes
 create a new creative (POST /v1/ads/creatives) and swap it onto the ad
 (PUT /v1/ads/{adId} with `creative`).
 
@@ -1901,7 +1901,7 @@ func (r AdCreativesAPIUploadAdImageRequest) Execute() (*UploadAdImage201Response
 /*
 UploadAdImage Upload an ad image from base64
 
-Uploads raw image bytes to the Meta ad account's image library — for callers whose
+Uploads raw image bytes to the Meta ad account's image library, for callers whose
 creatives aren't hosted at a public URL. Returns the image `hash` (Meta's identifier for
 the asset) and the Meta-hosted `url`, which can be used directly as `imageUrl` on the
 create endpoints. Max 30 MB decoded.
@@ -2032,7 +2032,7 @@ before an ad exists.
 
 Accepts either an https `videoUrl` we download server-side (SSRF-guarded) or raw
 `videoBase64` bytes; exactly one is required. `videoBase64` is capped by Vercel's body
-limit — around 4.5 MB payload in practice, so larger videos must come via `videoUrl`.
+limit, around 4.5 MB payload in practice, so larger videos must come via `videoUrl`.
 
 Returns the Meta `video.id` (reusable wherever `video.id` is accepted) plus Meta's
 auto-generated poster URL when available. The endpoint waits until Meta reports the

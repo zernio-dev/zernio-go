@@ -24,7 +24,7 @@ var _ MappedNullable = &UpdateConversionDestinationRequest{}
 type UpdateConversionDestinationRequest struct {
 	AdAccountId string  `json:"adAccountId"`
 	Name        *string `json:"name,omitempty"`
-	// Setting `false` is equivalent to calling DELETE — the rule will appear as `inactive` afterwards.
+	// Setting `false` is equivalent to calling DELETE: the rule will appear as `inactive` afterwards.
 	Enabled         *bool   `json:"enabled,omitempty"`
 	AttributionType *string `json:"attributionType,omitempty"`
 	// 365 only allowed for LEAD, PURCHASE, ADD_TO_CART, QUALIFIED_LEAD, SUBMIT_APPLICATION rule types.

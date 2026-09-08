@@ -44,7 +44,7 @@ CreateWhatsAppSandboxSession Start a sandbox activation
 Creates (or refreshes) a pending sandbox session for the given phone and
 immediately fires the verified sandbox template from the shared sandbox
 number to that phone. The session activates when the phone owner replies
-to that WhatsApp message — the reply itself is proof of ownership.
+to that WhatsApp message: the reply itself is proof of ownership.
 
 One phone per user: if the caller already has a non-expired session for
 a DIFFERENT phone, the request is rejected with `invalid_field_value`
@@ -173,8 +173,8 @@ DeleteWhatsAppSandboxSession Revoke a sandbox session
 
 Hard-deletes the session. The user loses the ability to send to that
 phone via the sandbox until they re-activate it. Existing conversations
-and messages already exchanged with that phone are untouched —
-revocation only blocks FUTURE sends.
+and messages already exchanged with that phone are untouched.
+Revocation only blocks FUTURE sends.
 
 Sessions belonging to other users cannot be revoked; the response is
 the same 400 as "session not found" so existence isn't leaked.

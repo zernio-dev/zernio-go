@@ -22,7 +22,7 @@ var _ MappedNullable = &RetweetPostRequest{}
 
 // RetweetPostRequest struct for RetweetPostRequest
 type RetweetPostRequest struct {
-	// The social account ID
+	// The account ID
 	AccountId string `json:"accountId"`
 	// The ID of the tweet to retweet
 	TweetId string `json:"tweetId"`

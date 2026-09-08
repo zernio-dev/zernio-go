@@ -23,7 +23,7 @@ var _ MappedNullable = &SavedTargetingAudience{}
 // SavedTargetingAudience A reusable, stored TargetingSpec. No member upload step, no adAccountId, the spec is the audience. Reference it later via `savedTargetingId` on POST /v1/ads/create.
 type SavedTargetingAudience struct {
 	Type string `json:"type"`
-	// Social account ID on the target ad platform.
+	// Account ID on the target ad platform.
 	AccountId   string  `json:"accountId"`
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`

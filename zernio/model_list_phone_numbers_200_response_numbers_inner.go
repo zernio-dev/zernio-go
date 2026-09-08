@@ -25,13 +25,13 @@ type ListPhoneNumbers200ResponseNumbersInner struct {
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 	Country     *string `json:"country,omitempty"`
 	Status      *string `json:"status,omitempty"`
-	// For regulated numbers, who it's registered for (company or person) — set from the submitted KYC.
+	// For regulated numbers, who it's registered for (company or person), set from the submitted KYC.
 	RegistrantName NullableString `json:"registrantName,omitempty"`
 	// Present once the number order has been placed (i.e. the requirement group was approved). Absent while still in identity review.
 	TelnyxOrderId NullableString `json:"telnyxOrderId,omitempty"`
 	// What this number bills each month, in cents. Stamped when the number was bought, so an existing number keeps its price when the rate card changes.
 	MonthlyCents *int32 `json:"monthlyCents,omitempty"`
-	// False for numbers you brought yourself (connected via Meta embedded signup) — they live on your own carrier, so SMS/Calls can't be enabled on them.
+	// False for numbers you brought yourself (connected via Meta embedded signup). They live on your own carrier, so SMS/Calls can't be enabled on them.
 	HostedByZernio *bool `json:"hostedByZernio,omitempty"`
 	// SIP trunk the number is attached to; null when not trunked. While attached, enabling Calls or WhatsApp calling, requesting WhatsApp verification, and releasing the number all return 409.
 	SipTrunkId             NullableString         `json:"sipTrunkId,omitempty"`
@@ -39,7 +39,7 @@ type ListPhoneNumbers200ResponseNumbersInner struct {
 	ProvisionedAt          *time.Time             `json:"provisionedAt,omitempty"`
 	MetaPreverifiedId      *string                `json:"metaPreverifiedId,omitempty"`
 	MetaVerificationStatus *string                `json:"metaVerificationStatus,omitempty"`
-	// For regulated (Tier 3/4) numbers with an Onfido ID-verification step — the link to forward to the end user. Set once the order is placed; null otherwise. Poll this field after submitting KYC.
+	// For regulated (Tier 3/4) numbers with an Onfido ID-verification step: the link to forward to the end user. Set once the order is placed; null otherwise. Poll this field after submitting KYC.
 	OnfidoVerificationUrl NullableString `json:"onfidoVerificationUrl,omitempty"`
 	EndUserFirstName      NullableString `json:"endUserFirstName,omitempty"`
 	EndUserLastName       NullableString `json:"endUserLastName,omitempty"`

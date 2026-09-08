@@ -33,7 +33,7 @@ type WorkflowExecutionEvent struct {
 	DurationMs NullableInt32 `json:"durationMs,omitempty"`
 	// Failure detail; present on `node_failed` and `execution_exited`
 	ErrorMessage NullableString `json:"errorMessage,omitempty"`
-	// Per-node-type payload. Shape varies — see WorkflowNode `type`. Examples:   `send_message` → `{ messageType, text, recipient }`,   `webhook` → `{ url, method, statusCode, responseTimeMs, responsePreview }`,   `ai` → `{ model, provider, inputTokens, outputTokens, responsePreview }`,   `condition` → `{ matchedHandle, rulesEvaluated }`,   `a_b_split` → `{ percentage, chosen }`.
+	// Per-node-type payload. Shape varies; see WorkflowNode `type`. Examples:   `send_message` → `{ messageType, text, recipient }`,   `webhook` → `{ url, method, statusCode, responseTimeMs, responsePreview }`,   `ai` → `{ model, provider, inputTokens, outputTokens, responsePreview }`,   `condition` → `{ matchedHandle, rulesEvaluated }`,   `a_b_split` → `{ percentage, chosen }`.
 	Meta map[string]interface{} `json:"meta,omitempty"`
 	// Event timestamp (UTC)
 	At *time.Time `json:"at,omitempty"`

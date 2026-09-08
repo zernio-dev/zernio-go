@@ -20,7 +20,7 @@ import (
 // checks if the TrackingTag type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TrackingTag{}
 
-// TrackingTag A platform measurement tag — the thing you create, install on a website, send events to, and target ads against. On Meta this is a Pixel (`kind: pixel`). The shape is platform-neutral so other platforms (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without changing the contract; platform-specific fields are simply absent where a platform has no equivalent. Returned by `listTrackingTags`, `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
+// TrackingTag A platform measurement tag: the thing you create, install on a website, send events to, and target ads against. On Meta this is a Pixel (`kind: pixel`). The shape is platform-neutral so other platforms (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without changing the contract; platform-specific fields are absent where a platform has no equivalent. Returned by `listTrackingTags`, `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
 type TrackingTag struct {
 	// Platform-native tag id. Meta: numeric pixel id, as a string.
 	Id       string `json:"id"`
@@ -36,11 +36,11 @@ type TrackingTag struct {
 	LastFiredTime NullableInt32 `json:"lastFiredTime,omitempty"`
 	// Whether the tag is in a broken/unavailable state (Meta `is_unavailable`).
 	IsUnavailable *bool `json:"isUnavailable,omitempty"`
-	// Convenience flag derived from `lastFiredTime` — has the tag ever fired.
+	// Convenience flag derived from `lastFiredTime`: has the tag ever fired.
 	Installed *bool `json:"installed,omitempty"`
 	// Unix seconds the tag was created.
 	CreationTime *int32 `json:"creationTime,omitempty"`
-	// Business Manager id that owns the tag, or `null` when the tag lives on a personal (non-BM) ad account — such tags can't be shared with other ad accounts.
+	// Business Manager id that owns the tag, or `null` when the tag lives on a personal (non-BM) ad account. Such tags can't be shared with other ad accounts.
 	OwnerBusinessId NullableString `json:"ownerBusinessId,omitempty"`
 	// Ad account id (`act_...`) that owns the tag, when reported.
 	OwnerAdAccountId *string `json:"ownerAdAccountId,omitempty"`

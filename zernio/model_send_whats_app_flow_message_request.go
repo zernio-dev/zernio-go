@@ -22,7 +22,7 @@ var _ MappedNullable = &SendWhatsAppFlowMessageRequest{}
 
 // SendWhatsAppFlowMessageRequest struct for SendWhatsAppFlowMessageRequest
 type SendWhatsAppFlowMessageRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Recipient phone number (E.164 format, e.g. +1234567890)
 	To string `json:"to"`

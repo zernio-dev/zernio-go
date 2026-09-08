@@ -25,7 +25,7 @@ var _ MappedNullable = &GetAdComments200ResponseMeta{}
 type GetAdComments200ResponseMeta struct {
 	// Which side these comments are on (same as `placement`).
 	Platform string `json:"platform"`
-	// The placement these comments are for — useful when you didn't pass ?placement= and want to know which one you got.
+	// The placement these comments are for, useful when you didn't pass ?placement= and want to know which one you got.
 	Placement string `json:"placement"`
 	// Internal Zernio ad ID.
 	AdId string `json:"adId"`
@@ -33,15 +33,15 @@ type GetAdComments200ResponseMeta struct {
 	PlatformAdId string `json:"platformAdId"`
 	// Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 	EffectiveStoryId string `json:"effectiveStoryId"`
-	// Facebook-only. The connected Facebook Page SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
+	// Facebook-only. The connected Facebook Page SocialAccount these comments were read through. Pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
 	FacebookAccountId NullableString `json:"facebookAccountId,omitempty"`
 	// Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
 	InstagramUserId *string `json:"instagramUserId,omitempty"`
 	// Instagram-only. Public permalink of the boosted IG post (creative.instagram_permalink_url).
 	InstagramPermalink *string `json:"instagramPermalink,omitempty"`
-	// Instagram-only. The connected Instagram SocialAccount these comments were read through — pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete.
+	// Instagram-only. The connected Instagram SocialAccount these comments were read through. Pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete.
 	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
-	// Social account ID (ads SocialAccount).
+	// Account ID (ads SocialAccount).
 	AccountId   string    `json:"accountId"`
 	LastUpdated time.Time `json:"lastUpdated"`
 }

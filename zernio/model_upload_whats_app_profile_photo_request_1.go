@@ -22,7 +22,7 @@ var _ MappedNullable = &UploadWhatsAppProfilePhotoRequest1{}
 
 // UploadWhatsAppProfilePhotoRequest1 struct for UploadWhatsAppProfilePhotoRequest1
 type UploadWhatsAppProfilePhotoRequest1 struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// Publicly reachable https URL of the image (JPEG or PNG, max 5MB, recommended 640x640). Fetched server-side; must resolve directly without redirects.
 	Url string `json:"url"`

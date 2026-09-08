@@ -22,7 +22,7 @@ var _ MappedNullable = &LikeInboxCommentRequest{}
 
 // LikeInboxCommentRequest struct for LikeInboxCommentRequest
 type LikeInboxCommentRequest struct {
-	// The social account ID
+	// The account ID
 	AccountId string `json:"accountId"`
 	// (LinkedIn only) Reaction to create. Defaults to LIKE; ignored on other platforms.
 	ReactionType *string `json:"reactionType,omitempty"`

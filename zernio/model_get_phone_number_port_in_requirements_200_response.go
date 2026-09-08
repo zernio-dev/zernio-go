@@ -22,7 +22,7 @@ var _ MappedNullable = &GetPhoneNumberPortInRequirements200Response{}
 type GetPhoneNumberPortInRequirements200Response struct {
 	Country    *string `json:"country,omitempty"`
 	NumberType *string `json:"numberType,omitempty"`
-	// false when the combination includes a step that can't be completed through the API (e.g. an in-person identity verification) — porting it needs support.
+	// false when the combination includes a step that can't be completed through the API (e.g. an in-person identity verification). Porting it needs support.
 	Supported *bool                                                    `json:"supported,omitempty"`
 	Fields    []GetPhoneNumberPortInRequirements200ResponseFieldsInner `json:"fields,omitempty"`
 }

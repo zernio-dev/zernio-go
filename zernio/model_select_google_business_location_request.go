@@ -24,9 +24,9 @@ var _ MappedNullable = &SelectGoogleBusinessLocationRequest{}
 type SelectGoogleBusinessLocationRequest struct {
 	// Profile ID from your connection flow
 	ProfileId string `json:"profileId"`
-	// The Google Business location ID selected by the user
+	// The Google Business Profile location ID selected by the user
 	LocationId string `json:"locationId"`
-	// Optional but recommended. The Google Business Account resource name (\"accounts/123\") that owns the selected location (returned per-location by GET /v1/connect/googlebusiness/locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts that own many locations. Omit only for small accounts.
+	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the selected location (returned per-location by GET /v1/connect/googlebusiness/locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts that own many locations. Omit only for small accounts.
 	AccountId *string `json:"accountId,omitempty"`
 	// Token from the OAuth callback redirect (pendingDataToken query param). Tokens and profile data are retrieved server-side from this token.
 	PendingDataToken string `json:"pendingDataToken"`

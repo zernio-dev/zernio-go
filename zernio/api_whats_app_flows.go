@@ -153,7 +153,7 @@ type WhatsAppFlowsAPIDeleteWhatsAppFlowRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIDeleteWhatsAppFlowRequest) AccountId(accountId string) WhatsAppFlowsAPIDeleteWhatsAppFlowRequest {
 	r.accountId = &accountId
 	return r
@@ -407,7 +407,7 @@ type WhatsAppFlowsAPIGetWhatsAppFlowRequest struct {
 	fields     *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIGetWhatsAppFlowRequest) AccountId(accountId string) WhatsAppFlowsAPIGetWhatsAppFlowRequest {
 	r.accountId = &accountId
 	return r
@@ -542,7 +542,7 @@ type WhatsAppFlowsAPIGetWhatsAppFlowJsonRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIGetWhatsAppFlowJsonRequest) AccountId(accountId string) WhatsAppFlowsAPIGetWhatsAppFlowJsonRequest {
 	r.accountId = &accountId
 	return r
@@ -669,7 +669,7 @@ type WhatsAppFlowsAPIGetWhatsAppFlowPreviewRequest struct {
 	invalidate *bool
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIGetWhatsAppFlowPreviewRequest) AccountId(accountId string) WhatsAppFlowsAPIGetWhatsAppFlowPreviewRequest {
 	r.accountId = &accountId
 	return r
@@ -805,7 +805,7 @@ type WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest) AccountId(accountId string) WhatsAppFlowsAPIGetWhatsAppFlowsEncryptionKeyRequest {
 	r.accountId = &accountId
 	return r
@@ -957,7 +957,7 @@ type WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest struct {
 	limit      *int32
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest) AccountId(accountId string) WhatsAppFlowsAPIListWhatsAppFlowResponsesRequest {
 	r.accountId = &accountId
 	return r
@@ -984,7 +984,7 @@ ListWhatsAppFlowResponses List flow responses
 
 List the responses customers submitted when completing a flow (parsed from the
 nfm_reply messages received via webhook), newest first. Scope to a single flow
-with `flowId` — this matches responses whose flow_token carries the `<flowId>:`
+with `flowId`, which matches responses whose flow_token carries the `<flowId>:`
 prefix that Zernio stamps on auto-generated tokens at send time. Responses sent
 with a custom integrator-supplied flow_token are not attributed to a flow.
 
@@ -1106,7 +1106,7 @@ type WhatsAppFlowsAPIListWhatsAppFlowVersionsRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIListWhatsAppFlowVersionsRequest) AccountId(accountId string) WhatsAppFlowsAPIListWhatsAppFlowVersionsRequest {
 	r.accountId = &accountId
 	return r
@@ -1121,7 +1121,7 @@ ListWhatsAppFlowVersions List flow versions
 
 List the flow's version history (the clone lineage Zernio tracks, since Meta has no
 native versioning), newest version first. Each entry is enriched with the version's
-live name and status from Meta. A flow with no lineage returns just itself as version 1.
+live name and status from Meta. A flow with no lineage returns only itself as version 1.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param flowId Flow ID
@@ -1233,7 +1233,7 @@ type WhatsAppFlowsAPIListWhatsAppFlowsRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppFlowsAPIListWhatsAppFlowsRequest) AccountId(accountId string) WhatsAppFlowsAPIListWhatsAppFlowsRequest {
 	r.accountId = &accountId
 	return r

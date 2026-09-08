@@ -49,7 +49,7 @@ func (r InboxAnalyticsAPIGetInboxConversationAnalyticsRequest) Execute() (*GetIn
 GetInboxConversationAnalytics Get conversation analytics
 
 Per-conversation inbox analytics. The inbox analog of
-/v1/analytics/post-timeline — one conversation, daily totals,
+/v1/analytics/post-timeline: one conversation, daily totals,
 source mix.
 
 The {conversationId} path param accepts EITHER the Mongo `_id` of
@@ -255,7 +255,7 @@ func (r InboxAnalyticsAPIGetInboxHeatmapRequest) Execute() (*GetInboxHeatmap200R
 GetInboxHeatmap Get day × hour heatmap
 
 Day-of-week × hour-of-day breakdown of inbox messages. Buckets are
-sparse — only cells with at least one event are returned; clients
+sparse: only cells with at least one event are returned; clients
 zero-fill the rest to render the full 7×24 grid. The `dow` field
 follows ClickHouse's `toDayOfWeek` convention (1 = Monday … 7 =
 Sunday). Max date range is 365 days.
@@ -448,7 +448,7 @@ as both summary statistics and a fixed-bucket histogram suited
 for the analytics page's TTR chart.
 
 `sampleSize` reflects only conversations that received AND got a
-reply in the window — received-but-never-answered conversations
+reply in the window. Received-but-never-answered conversations
 are excluded. Compare against /v1/analytics/inbox/volume's
 `summary.received` to compute reply rate.
 
@@ -819,9 +819,9 @@ func (r InboxAnalyticsAPIGetInboxTopAccountsRequest) Execute() (*GetInboxTopAcco
 /*
 GetInboxTopAccounts Get top accounts by inbox volume
 
-Leaderboard of social accounts by inbox message volume. Decorates
+Leaderboard of accounts by inbox message volume. Decorates
 each row with display labels from the live SocialAccount record
-(so the UI shows username + displayName, not just an ID). Accounts
+(so the UI shows username + displayName, not only an ID). Accounts
 that no longer map to a SocialAccount surface as "(disconnected)"
 so the row stays visible. Max date range is 365 days.
 
@@ -1233,7 +1233,7 @@ func (r InboxAnalyticsAPIListInboxConversationAnalyticsRequest) Execute() (*List
 ListInboxConversationAnalytics List conversation analytics
 
 Per-conversation listing with per-row totals + first/last message
-timestamps. The inbox analog of GET /v1/analytics (posts listing) —
+timestamps. The inbox analog of GET /v1/analytics (posts listing):
 same filter shape, same pagination, same sort/order semantics.
 Use as the entry point for the per-conversation analytics drawer
 at /v1/analytics/inbox/conversations/{conversationId}.

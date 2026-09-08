@@ -32,7 +32,7 @@ type PinterestPlatformData struct {
 	CoverImageUrl *string `json:"coverImageUrl,omitempty"`
 	// Optional key frame time in seconds for derived video cover
 	CoverImageKeyFrameTime *int32 `json:"coverImageKeyFrameTime,omitempty"`
-	// When true, the Pin is created with Pinterest's AI_MODIFIED disclosure (ai_disclosures), which shows an \"AI modified\" label. Applies to image and video Pins. Pinterest offers no \"not AI\" value, so false simply omits the disclosure. Pinterest may still label a Pin on its own detection.
+	// When true, the Pin is created with Pinterest's AI_MODIFIED disclosure (ai_disclosures), which shows an \"AI modified\" label. Applies to image and video Pins. Pinterest offers no \"not AI\" value, so false omits the disclosure. Pinterest may still label a Pin on its own detection.
 	IsAiGenerated *bool `json:"isAiGenerated,omitempty"`
 }
 

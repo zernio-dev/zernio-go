@@ -22,7 +22,7 @@ var _ MappedNullable = &AppealSmsRegistrationRequest{}
 
 // AppealSmsRegistrationRequest struct for AppealSmsRegistrationRequest
 type AppealSmsRegistrationRequest struct {
-	// Goes verbatim to the carrier reviewer — address the decline reason directly.
+	// Goes verbatim to the carrier reviewer. Address the decline reason directly.
 	AppealReason string `json:"appealReason"`
 	// Corrected opt-in flow; include a link to the opt-in page/form.
 	MessageFlow *string `json:"messageFlow,omitempty"`

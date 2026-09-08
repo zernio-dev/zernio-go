@@ -25,7 +25,7 @@ type GetInboxPostComments200ResponseCommentsInnerFrom struct {
 	Username *string        `json:"username,omitempty"`
 	Picture  NullableString `json:"picture,omitempty"`
 	IsOwner  *bool          `json:"isOwner,omitempty"`
-	// X/Twitter verified badge type. Only present for Twitter/X comments.
+	// X verified badge type. Only present for X comments.
 	VerifiedType NullableString `json:"verifiedType,omitempty"`
 }
 

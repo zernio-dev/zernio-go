@@ -19,7 +19,7 @@ import (
 // checks if the ListDiscordPinnedMessages200ResponseDataInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListDiscordPinnedMessages200ResponseDataInner{}
 
-// ListDiscordPinnedMessages200ResponseDataInner Raw Discord Message object — see DiscordPlatformData for embed/attachment shapes.
+// ListDiscordPinnedMessages200ResponseDataInner Raw Discord Message object. See DiscordPlatformData for embed/attachment shapes.
 type ListDiscordPinnedMessages200ResponseDataInner struct {
 	Id          *string                  `json:"id,omitempty"`
 	ChannelId   *string                  `json:"channel_id,omitempty"`

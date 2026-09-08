@@ -24,7 +24,7 @@ var _ MappedNullable = &SyncExternalPostsRequest{}
 type SyncExternalPostsRequest struct {
 	// SocialAccount ID whose posts to sync. Must be connected to Zernio.
 	AccountId string `json:"accountId"`
-	// The post URL to locate. Optional. Provide `url` or `postId` to return a specific post; omit both to just refresh and return the account's recent posts.
+	// The post URL to locate. Optional. Provide `url` or `postId` to return a specific post; omit both to refresh and return the account's recent posts.
 	Url *string `json:"url,omitempty"`
 	// The platform post/media/video id to locate, as an alternative to `url`. Optional.
 	PostId *string `json:"postId,omitempty"`

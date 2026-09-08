@@ -20,15 +20,15 @@ import (
 // checks if the CreatePhoneNumberPortInRequestEndUser type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CreatePhoneNumberPortInRequestEndUser{}
 
-// CreatePhoneNumberPortInRequestEndUser End-user / current-carrier account info that authorizes the port. The losing carrier matches every field against its records and rejects the whole port on a mismatch — enter values exactly as they appear on the carrier bill.
+// CreatePhoneNumberPortInRequestEndUser End-user / current-carrier account info that authorizes the port. The losing carrier matches every field against its records and rejects the whole port on a mismatch, so enter values exactly as they appear on the carrier bill.
 type CreatePhoneNumberPortInRequestEndUser struct {
 	// Account holder / business name, as on the carrier account.
 	EntityName string `json:"entityName"`
-	// Full name (first + last) of the person authorizing the port — must match the LOA signature.
+	// Full name (first + last) of the person authorizing the port, which must match the LOA signature.
 	AuthPersonName string `json:"authPersonName"`
 	// Phone number on the losing carrier's bill. Defaults to the ported number itself on single-number orders. Validated as a real phone number when present.
 	BillingPhoneNumber *string `json:"billingPhoneNumber,omitempty"`
-	// Account number with the losing carrier — required (carriers reject ports without it; on prepaid mobile plans it is often the phone number itself).
+	// Account number with the losing carrier. Required (carriers reject ports without it; on prepaid mobile plans it is often the phone number itself).
 	AccountNumber string `json:"accountNumber"`
 	// Transfer PIN. Required for US/CA mobile numbers (wireless carriers reject PIN-less ports). Forwarded to the carrier, never stored. International porting codes (e.g. the UK PAC) go through `requirements` instead.
 	PinPasscode *string `json:"pinPasscode,omitempty"`

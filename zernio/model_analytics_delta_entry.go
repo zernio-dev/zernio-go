@@ -25,7 +25,7 @@ var _ MappedNullable = &AnalyticsDeltaEntry{}
 type AnalyticsDeltaEntry struct {
 	// External post ID. The same identifier as `posts[]._id` in GET /v1/analytics.
 	PostId string `json:"postId"`
-	// Social account this post was published through
+	// Account this post was published through
 	AccountId string `json:"accountId"`
 	// Profile the account belongs to
 	ProfileId string `json:"profileId"`

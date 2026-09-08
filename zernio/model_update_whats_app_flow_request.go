@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateWhatsAppFlowRequest{}
 
 // UpdateWhatsAppFlowRequest struct for UpdateWhatsAppFlowRequest
 type UpdateWhatsAppFlowRequest struct {
-	// WhatsApp social account ID
+	// WhatsApp account ID
 	AccountId string `json:"accountId"`
 	// New flow name
 	Name       *string  `json:"name,omitempty"`

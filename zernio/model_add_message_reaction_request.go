@@ -22,7 +22,7 @@ var _ MappedNullable = &AddMessageReactionRequest{}
 
 // AddMessageReactionRequest struct for AddMessageReactionRequest
 type AddMessageReactionRequest struct {
-	// Social account ID
+	// Account ID
 	AccountId string `json:"accountId"`
 	// Emoji character (e.g. \"👍\", \"❤️\")
 	Emoji string `json:"emoji"`

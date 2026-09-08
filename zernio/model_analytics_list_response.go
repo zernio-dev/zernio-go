@@ -23,7 +23,7 @@ type AnalyticsListResponse struct {
 	Overview   *AnalyticsOverview                `json:"overview,omitempty"`
 	Posts      []AnalyticsListResponsePostsInner `json:"posts,omitempty"`
 	Pagination *Pagination                       `json:"pagination,omitempty"`
-	// Connected social accounts (followerCount and followersLastUpdated only included if user has analytics add-on)
+	// Connected accounts (followerCount and followersLastUpdated only included if user has analytics add-on)
 	Accounts []SocialAccount `json:"accounts,omitempty"`
 	// Whether user has analytics add-on access
 	HasAnalyticsAccess *bool `json:"hasAnalyticsAccess,omitempty"`

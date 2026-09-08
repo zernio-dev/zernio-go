@@ -19,7 +19,7 @@ import (
 // checks if the UsageStats type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageStats{}
 
-// UsageStats Plan and usage stats. The response shape depends on `billingSystem`:   * Stripe users (default): per-period counters like `usage.uploads` and     `usage.profiles` are returned, scoped by the plan's `limits`.   * Metronome users (usage-based): `limits` are unlimited (-1). The     `usage` block carries connected-account and per-X-operation counts,     and the `spend` block carries current-period costs plus the X cap.
+// UsageStats Plan and usage stats. The response shape depends on `billingSystem`:   * Stripe users (default): per-period counters like `usage.uploads` and     `usage.profiles` are returned, scoped by the plan's `limits`.   * Usage-based billing users: `limits` are unlimited (-1). The     `usage` block carries connected-account and per-X-operation counts,     and the `spend` block carries current-period costs plus the X cap.
 type UsageStats struct {
 	// Which billing system the account is on. Shape of `usage`/`spend` differs.
 	BillingSystem *string    `json:"billingSystem,omitempty"`
@@ -34,7 +34,7 @@ type UsageStats struct {
 	CustomerId NullableString `json:"customerId,omitempty"`
 	// True if this is a team member; limits/usage reflect the account owner.
 	IsInvitedUser *bool `json:"isInvitedUser,omitempty"`
-	// Stripe-only. Always false for Metronome users.
+	// Stripe-only. Always false for accounts on usage-based billing.
 	AutoUpgradeEnabled *bool                        `json:"autoUpgradeEnabled,omitempty"`
 	Limits             *BillingSnapshotLegacyLimits `json:"limits,omitempty"`
 	Usage              *UsageStatsUsage             `json:"usage,omitempty"`

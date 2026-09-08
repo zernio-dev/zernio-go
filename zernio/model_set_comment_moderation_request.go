@@ -22,7 +22,7 @@ var _ MappedNullable = &SetCommentModerationRequest{}
 
 // SetCommentModerationRequest struct for SetCommentModerationRequest
 type SetCommentModerationRequest struct {
-	// The social account ID
+	// The account ID
 	AccountId string `json:"accountId"`
 	// Only YouTube supports comment moderation
 	Platform string `json:"platform"`

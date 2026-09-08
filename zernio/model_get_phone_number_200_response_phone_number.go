@@ -27,7 +27,7 @@ type GetPhoneNumber200ResponsePhoneNumber struct {
 	Country                *string `json:"country,omitempty"`
 	MetaPreverifiedId      *string `json:"metaPreverifiedId,omitempty"`
 	MetaVerificationStatus *string `json:"metaVerificationStatus,omitempty"`
-	// For a regulated number with an Onfido ID step — the link to forward to the end user. Appears once the order is placed; null otherwise.
+	// For a regulated number with an Onfido ID step: the link to forward to the end user. Appears once the order is placed; null otherwise.
 	OnfidoVerificationUrl NullableString `json:"onfidoVerificationUrl,omitempty"`
 	EndUserFirstName      NullableString `json:"endUserFirstName,omitempty"`
 	EndUserLastName       NullableString `json:"endUserLastName,omitempty"`

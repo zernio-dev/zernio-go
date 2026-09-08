@@ -1091,7 +1091,7 @@ same way as the POST/PATCH/DELETE below (full read-write on one
 sub-resource). Encrypted secrets are never returned; only a boolean
 saying whether a SIP password is stored. The account-scoped read
 (`GET /v1/whatsapp/calling?accountId=`) remains for callers that only
-know the social account id, and additionally carries account-level
+know the account id, and additionally carries account-level
 extras (billing eligibility, current-period spend).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1200,7 +1200,7 @@ type WhatsAppCallingAPIGetWhatsAppCallingConfigRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppCallingAPIGetWhatsAppCallingConfigRequest) AccountId(accountId string) WhatsAppCallingAPIGetWhatsAppCallingConfigRequest {
 	r.accountId = &accountId
 	return r

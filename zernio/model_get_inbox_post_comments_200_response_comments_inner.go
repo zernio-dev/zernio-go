@@ -39,7 +39,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	CanDelete      *bool `json:"canDelete,omitempty"`
 	// Whether this comment can be hidden (Facebook, Instagram, Threads)
 	CanHide *bool `json:"canHide,omitempty"`
-	// Whether this comment can be liked (Facebook, Twitter/X, Bluesky, Reddit)
+	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit)
 	CanLike *bool `json:"canLike,omitempty"`
 	// Whether the comment is currently hidden
 	IsHidden *bool `json:"isHidden,omitempty"`
@@ -49,7 +49,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	LikeUri NullableString `json:"likeUri,omitempty"`
 	// Bluesky content identifier
 	Cid NullableString `json:"cid,omitempty"`
-	// ID of the parent comment. Present on entries inside replies[] for Facebook, Instagram and X/Twitter. On X/Twitter it is also present on top-level entries, where it holds the ID of the post replied to. Omitted entirely (key absent, not null) on top-level Facebook and Instagram entries and on every other platform, which express the parent relationship only through replies[] nesting.
+	// ID of the parent comment. Present on entries inside replies[] for Facebook, Instagram and X. On X it is also present on top-level entries, where it holds the ID of the post replied to. Omitted entirely (key absent, not null) on top-level Facebook and Instagram entries and on every other platform, which express the parent relationship only through replies[] nesting.
 	ParentId NullableString `json:"parentId,omitempty"`
 	// Bluesky root post URI
 	RootUri NullableString `json:"rootUri,omitempty"`

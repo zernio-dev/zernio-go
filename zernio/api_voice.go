@@ -192,8 +192,8 @@ through `termination.uri` with the digest credentials.
 
 The `digestPassword` is returned only by this call (and by
 rotate-credentials); store it immediately. Attach any number of numbers
-to a trunk. Several trunks may point at the same host — each carries its
-own credentials and spend cap, so separate destination workspaces (e.g.
+to a trunk. Several trunks may point at the same host. Each carries its
+own credentials and spend cap, so separate destinations (e.g.
 an agency's clients) stay isolated.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -471,7 +471,7 @@ session (token + credential) the browser registers with the
 `POST /v1/voice/calls/web/dial` with the returned `credentialId` to
 place the call. The split avoids bridging to a browser that has not
 finished registering. The token lives ~1 hour (it must outlive the
-whole call, not just the handshake).
+whole call, not only the handshake).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPICreateVoiceWebSessionRequest

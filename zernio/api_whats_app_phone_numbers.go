@@ -204,7 +204,7 @@ Deprecated alias of `/v1/phone-numbers/kyc/share`; same contract. New
 integrations should use that path.
 
 Create a single-use, 7-day hosted KYC link that your end customer
-completes WITHOUT a Zernio login — useful when the person who holds the
+completes WITHOUT a Zernio login. Useful when the person who holds the
 ID and address is not your team. They fill the regulated verification on
 a Zernio-hosted page; the number provisions under YOUR account once they
 submit. Only regulated (KYC) countries are valid: a country that does not
@@ -212,7 +212,7 @@ require KYC returns 400.
 
 White-label the page with `branding` (your company name, logo, brand
 color). Supply `redirect_url` to send the end customer back to your own
-site after a successful submit (completion params are appended — see
+site after a successful submit (completion params are appended; see
 below). Listen for the `whatsapp.number.kyc_submitted` webhook to react
 when the form is completed.
 
@@ -327,7 +327,7 @@ type WhatsAppPhoneNumbersAPIGetWhatsAppNumberInfoRequest struct {
 	accountId  *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppPhoneNumbersAPIGetWhatsAppNumberInfoRequest) AccountId(accountId string) WhatsAppPhoneNumbersAPIGetWhatsAppNumberInfoRequest {
 	r.accountId = &accountId
 	return r
@@ -605,7 +605,7 @@ integrations should use that path.
 
 For a number in `regulatory_declined`, returns ONLY the requirements the
 reviewer flagged declined, as a form spec (same shape as the KYC form GET).
-The customer fixes just those — Telnyx supports correcting a declined
+The customer fixes only those, because Telnyx supports correcting a declined
 requirement group and re-submitting it (no new number/group). Falls back
 to the full spec if the provider exposes no per-requirement flags.
 
@@ -733,7 +733,7 @@ Retrieve the current status of a purchased phone number. Poll this to
 track Meta pre-verification (US sync path) and, for regulated (Tier 3/4)
 numbers, the async lifecycle: pending_regulatory → active (or
 regulatory_declined). When a regulated number has an Onfido ID step,
-`onfidoVerificationUrl` appears here once the order is placed — forward
+`onfidoVerificationUrl` appears here once the order is placed. Forward
 it to the end user. (Or subscribe to the whatsapp.number.* webhooks
 instead of polling.)
 
@@ -858,7 +858,7 @@ type WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest struct {
 	profileId  *string
 }
 
-// Filter by status (by default excludes released numbers). NOTE: &#x60;status&#x3D;pending_regulatory&#x60; returns the \&quot;provisioning\&quot; view — numbers still in review PLUS recently-declined (last 30 days) ones, so a failed registration surfaces (with &#x60;regulatoryDeclineReason&#x60;) instead of silently disappearing. Declined numbers can be re-submitted via POST /v1/whatsapp/phone-numbers/{id}/remediate. &#x60;verifying&#x60; is the short-lived state after the number is provisioned on our side while WhatsApp confirms the activation code; the number is not billed until it reaches &#x60;active&#x60;.
+// Filter by status (by default excludes released numbers). NOTE: &#x60;status&#x3D;pending_regulatory&#x60; returns the \&quot;provisioning\&quot; view: numbers still in review PLUS recently-declined (last 30 days) ones, so a failed registration surfaces (with &#x60;regulatoryDeclineReason&#x60;) instead of silently disappearing. Declined numbers can be re-submitted via POST /v1/whatsapp/phone-numbers/{id}/remediate. &#x60;verifying&#x60; is the short-lived state after the number is provisioned on our side while WhatsApp confirms the activation code; the number is not billed until it reaches &#x60;active&#x60;.
 func (r WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest) Status(status string) WhatsAppPhoneNumbersAPIGetWhatsAppPhoneNumbersRequest {
 	r.status = &status
 	return r
@@ -882,7 +882,7 @@ integrations should use that path.
 
 List all WhatsApp phone numbers purchased by the authenticated user.
 By default, released numbers are excluded. Connected (bring-your-own)
-numbers are returned in the separate `connected` array — they are not
+numbers are returned in the separate `connected` array. They are not
 billed and have no provisioning lifecycle.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1149,7 +1149,7 @@ enabled) and, once WhatsApp is connected, the `whatsapp` account. They all
 carry a profileId and this endpoint moves them together.
 
 Use this instead of `PATCH /v1/accounts/{accountId}`: that one moves the
-social account only and leaves the number itself pinned to its original
+account only and leaves the number itself pinned to its original
 profile, which splits the number across two profiles. Connecting a
 Zernio-provisioned number from any profile but its own is rejected with a
 `409` (`WHATSAPP_NUMBER_PINNED_TO_PROFILE`). This endpoint is how you
@@ -1444,7 +1444,7 @@ Deprecated alias of `/v1/phone-numbers/{id}`; same contract. New
 integrations should use that path.
 
 Release a purchased phone number. This will:
-1. Disconnect any linked WhatsApp social account
+1. Disconnect any linked WhatsApp account
 2. Decrement the Stripe subscription quantity (or cancel if last number)
 3. Release the number from Telnyx
 4. Mark the number as released
@@ -1590,7 +1590,7 @@ Submit corrected values/documents for the declined requirement(s). We
 PATCH them onto the SAME requirement group and re-submit it for approval;
 the number goes `regulatory_declined` → `pending_regulatory`. No new
 number and no new billing. Body shape matches the KYC submit (values /
-documents / address) — send only the corrected fields.
+documents / address). Send only the corrected fields.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id
@@ -1922,7 +1922,7 @@ reason; fix it via POST /v1/whatsapp/phone-numbers/{id}/remediate.
 
 Before submitting, call GET /v1/whatsapp/phone-numbers/availability to
 check the country has deliverable inventory and, for geographic-match
-countries, which area the address must be in — otherwise the submission
+countries, which area the address must be in. Otherwise the submission
 can pass review yet never be assignable a number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

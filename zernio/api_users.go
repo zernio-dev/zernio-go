@@ -160,7 +160,7 @@ func (r UsersAPIListUsersRequest) Execute() (*ListUsers200Response, *http.Respon
 /*
 ListUsers List users
 
-Returns all users in the workspace including roles and profile access. Also returns the currentUserId of the caller.
+Returns all users in the team including roles and profile access. Also returns the currentUserId of the caller.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return UsersAPIListUsersRequest

@@ -26,7 +26,7 @@ type AccountWithFollowerStatsAllOfAccountStats struct {
 	MediaCount *float32 `json:"mediaCount,omitempty"`
 	// Total videos (YouTube, TikTok)
 	VideoCount *float32 `json:"videoCount,omitempty"`
-	// Total tweets (X/Twitter)
+	// Total tweets (X)
 	TweetCount *float32 `json:"tweetCount,omitempty"`
 	// Total posts (Bluesky)
 	PostsCount *float32 `json:"postsCount,omitempty"`
@@ -38,7 +38,7 @@ type AccountWithFollowerStatsAllOfAccountStats struct {
 	LikesCount *float32 `json:"likesCount,omitempty"`
 	// Monthly profile views (Pinterest)
 	MonthlyViews *float32 `json:"monthlyViews,omitempty"`
-	// Lists the user appears on (X/Twitter)
+	// Lists the user appears on (X)
 	ListedCount *float32 `json:"listedCount,omitempty"`
 	// Total boards (Pinterest)
 	BoardCount *float32 `json:"boardCount,omitempty"`

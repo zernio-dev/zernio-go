@@ -28,7 +28,7 @@ type GetInboxConversation200ResponseData struct {
 	Status          *string `json:"status,omitempty"`
 	ParticipantName *string `json:"participantName,omitempty"`
 	ParticipantId   *string `json:"participantId,omitempty"`
-	// X/Twitter verified badge type. Only present for Twitter/X conversations.
+	// X verified badge type. Only present for X conversations.
 	ParticipantVerifiedType NullableString                                              `json:"participantVerifiedType,omitempty"`
 	LastMessage             *string                                                     `json:"lastMessage,omitempty"`
 	LastMessageAt           *time.Time                                                  `json:"lastMessageAt,omitempty"`

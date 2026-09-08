@@ -22,7 +22,7 @@ var _ MappedNullable = &UpdateInboxConversationRequest{}
 
 // UpdateInboxConversationRequest struct for UpdateInboxConversationRequest
 type UpdateInboxConversationRequest struct {
-	// Social account ID
+	// Account ID
 	AccountId string `json:"accountId"`
 	Status    string `json:"status"`
 }

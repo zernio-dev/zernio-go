@@ -18,7 +18,7 @@ import (
 // checks if the AdEngagementCounts type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdEngagementCounts{}
 
-// AdEngagementCounts The single `engagement` total split into the interactions behind it.  Note that `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Populated for Meta and, since 2026-08, TikTok (`reactions` = paid likes, `comments`, `shares`; TikTok's `follow` count lives in `actions.follow`, not here). Other platforms leave these at 0. TikTok history note: paused TikTok ads are not re-synced, so campaigns that ended before the rollout keep 0s here.
+// AdEngagementCounts The single `engagement` total split into the interactions behind it.  `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Populated for Meta and, since 2026-08, TikTok (`reactions` = paid likes, `comments`, `shares`; TikTok's `follow` count lives in `actions.follow`, not here). Other platforms leave these at 0. TikTok history note: paused TikTok ads are not re-synced, so campaigns that ended before the rollout keep 0s here.
 type AdEngagementCounts struct {
 	// Meta's own post-engagement total (`post_engagement`). Meta-only.
 	PostEngagement *int32 `json:"postEngagement,omitempty"`

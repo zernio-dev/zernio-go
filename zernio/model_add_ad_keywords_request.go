@@ -22,7 +22,7 @@ var _ MappedNullable = &AddAdKeywordsRequest{}
 
 // AddAdKeywordsRequest struct for AddAdKeywordsRequest
 type AddAdKeywordsRequest struct {
-	// Social account ID (Google Ads)
+	// Account ID (Google Ads)
 	AccountId string `json:"accountId"`
 	// Google ad group ID to add the keywords to
 	AdSetId  string                              `json:"adSetId"`

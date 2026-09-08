@@ -22,7 +22,7 @@ var _ MappedNullable = &ReviewWebhookReviewReviewer{}
 
 // ReviewWebhookReviewReviewer struct for ReviewWebhookReviewReviewer
 type ReviewWebhookReviewReviewer struct {
-	// Platform reviewer ID. Null when the platform does not expose it (common on Google Business anonymous reviews).
+	// Platform reviewer ID. Null when the platform does not expose it (common on Google Business Profile anonymous reviews).
 	Id           NullableString `json:"id"`
 	Name         string         `json:"name"`
 	ProfileImage NullableString `json:"profileImage"`

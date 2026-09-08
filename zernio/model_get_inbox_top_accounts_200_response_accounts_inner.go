@@ -30,7 +30,7 @@ type GetInboxTopAccounts200ResponseAccountsInner struct {
 	Total                 *int32  `json:"total,omitempty"`
 	Conversations         *int32  `json:"conversations,omitempty"`
 	MedianResponseSeconds *int32  `json:"medianResponseSeconds,omitempty"`
-	// Distinguishes 'instant replies' from 'no replies at all' so a zero medianResponseSeconds with repliedCount=0 renders as '—' instead of '0s'
+	// Distinguishes 'instant replies' from 'no replies at all' so a zero medianResponseSeconds with repliedCount=0 renders as an em dash instead of '0s'
 	RepliedCount *int32 `json:"repliedCount,omitempty"`
 }
 

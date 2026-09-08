@@ -27,16 +27,16 @@ type AdjustConversionsRequestAdjustmentsInner struct {
 	AdjustmentTime float32 `json:"adjustmentTime"`
 	// Transaction ID of the original conversion (the `eventId` you sent). Recommended; required for ENHANCEMENT.
 	OrderId *string `json:"orderId,omitempty"`
-	// Alternative key — the original click ID. Pair with `conversionTime`. Not valid for ENHANCEMENT.
+	// Alternative key. The original click ID. Pair with `conversionTime`. Not valid for ENHANCEMENT.
 	Gclid *string `json:"gclid,omitempty"`
 	// The original conversion's time, unix seconds. Required when identifying by `gclid`.
 	ConversionTime *float32 `json:"conversionTime,omitempty"`
-	// RESTATEMENT only — the corrected TOTAL conversion value.
+	// RESTATEMENT only. The corrected TOTAL conversion value.
 	RestatementValue *float32 `json:"restatementValue,omitempty"`
-	// RESTATEMENT only — ISO 4217 currency for `restatementValue`.
+	// RESTATEMENT only. ISO 4217 currency for `restatementValue`.
 	Currency *string                                       `json:"currency,omitempty"`
 	User     *AdjustConversionsRequestAdjustmentsInnerUser `json:"user,omitempty"`
-	// ENHANCEMENT only — the original conversion's user agent (improves match quality).
+	// ENHANCEMENT only. The original conversion's user agent (improves match quality).
 	UserAgent *string `json:"userAgent,omitempty"`
 }
 

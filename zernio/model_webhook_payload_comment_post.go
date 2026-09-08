@@ -26,7 +26,7 @@ type WebhookPayloadCommentPost struct {
 	Id NullableString `json:"id"`
 	// Platform's post ID
 	PlatformPostId string `json:"platformPostId"`
-	// Post text, from our synced copy — no platform call is made on the comment path, so null when the post was never synced.
+	// Post text, from our synced copy. No platform call is made on the comment path, so null when the post was never synced.
 	Content NullableString `json:"content"`
 	// Post thumbnail or first media item URL. Platform CDN URLs expire, fetch promptly.
 	ImageUrl NullableString `json:"imageUrl"`

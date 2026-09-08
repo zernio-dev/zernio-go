@@ -256,26 +256,47 @@ func (r PostsAPICreatePostRequest) Execute() (*CreatePost200Response, *http.Resp
 /*
 CreatePost Create post
 
-Create and optionally publish a post. Immediate posts (`publishNow: true`) include `platformPostUrl` in the response.
-Content is optional when media is attached, all platforms have `customContent`, every platform entry is an X Article (`platformSpecificData.article`), or every platform entry is a LinkedIn text-free reshare (`platformSpecificData.reshareUrl` with no text). See each platform's schema for media constraints.
+Create a post, and optionally publish it in the same request. A post published immediately (`publishNow: true`) comes back with `platformPostUrl` in the response.
+
+`content` is optional in four cases:
+
+- media is attached
+- all platforms have `customContent`
+- every platform entry is an X Article (`platformSpecificData.article`)
+- every platform entry is a LinkedIn text-free reshare (`platformSpecificData.reshareUrl` with no text)
+
+See each platform's schema for media constraints.
 
 ## Scheduling
 
-Pick one of `scheduledFor` (schedule), `publishNow: true` (publish synchronously) or `queuedFromProfile` (next queue slot). With none of them and `isDraft` unset, the post is saved as a draft. `platforms` is required unless the post is a draft. `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published); `publishNow: true` wins over `scheduledFor`. A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
+Pick one of:
+
+- `scheduledFor`: publish at the scheduled time
+- `publishNow: true`: publish synchronously, inside this request
+- `queuedFromProfile`: publish in the profile's next queue slot
+
+With none of them and `isDraft` unset, the post is saved as a draft. `platforms` is required unless the post is a draft.
+
+Precedence: `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published), and `publishNow: true` wins over `scheduledFor`. A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
 
 ## Idempotency
 
 Two layers of duplicate-protection apply, so safe-to-retry callers (network blips, n8n / Zapier retries, etc.) don't accidentally double-post.
 
 **1. Same-request idempotency (5-minute window).**
-Pass an `x-request-id` header to mark a logical request. If a second request arrives with the same `x-request-id` while the first is in-flight (or within ~5 minutes of completion), we return **HTTP 200** with the original post in the `existingPost` field — no new post is created. The official Zernio SDKs auto-generate a unique `x-request-id` per call. If you're using a generic HTTP client (curl, n8n's HTTP node, Zapier, custom code), either:
-- Set a unique `x-request-id` per logical call (recommended — UUIDv4 is fine)
-- Or simply omit the header — we'll treat each request as new
+Pass an `x-request-id` header to mark a logical request. If a second request arrives with the same `x-request-id` while the first is in-flight (or within ~5 minutes of completion), we return **HTTP 200** with the original post in the `existingPost` field, and no new post is created.
+
+The official Zernio SDKs auto-generate a unique `x-request-id` per call. On a generic HTTP client (curl, n8n's HTTP node, Zapier, custom code), either:
+
+- Set a unique `x-request-id` per logical call (recommended, UUIDv4 is fine)
+- Or omit the header, and we'll treat each request as new
 
 **Common pitfall**: if your workflow tool uses a single execution-level request ID and reuses it across multiple HTTP nodes (e.g. one ID for the whole run, shared across 6 different platform calls), every call after the first will look like a retry of the first and return its post. Generate a fresh ID per node.
 
 **2. Content-hash dedup (24-hour window).**
-Independently, we hash `(platform, accountId, content + media URLs)` and reject duplicates within 24 hours with **HTTP 409**. This catches genuine "same content posted twice to the same account" cases regardless of `x-request-id`. Returns `error`, `accountId`, `platform`, and `existingPostId` so you can find the original. To intentionally re-post identical content within 24h, change something (the caption, the media, the account) — the dedup is keyed on the full content fingerprint.
+Independently, we hash `(platform, accountId, content + media URLs)` and reject duplicates within 24 hours with **HTTP 409**. This catches genuine "same content posted twice to the same account" cases regardless of `x-request-id`. The response carries `error`, `accountId`, `platform`, and `existingPostId` so you can find the original.
+
+To intentionally re-post identical content within 24h, change something (the caption, the media, the account), because the dedup is keyed on the full content fingerprint.
 
 Order: same-`x-request-id` retries (200) are checked first; if no idempotency match, the content-hash dedup (409) runs.
 
@@ -593,13 +614,13 @@ func (r PostsAPIEditPostRequest) Execute() (*EditPost200Response, *http.Response
 /*
 EditPost Edit published post
 
-Edit the text of an already-published post. Supported on X (Twitter), Discord,
+Edit the text of an already-published post. Supported on X, Discord,
 Facebook, Reddit, LinkedIn, Telegram, Pinterest, Google Business Profile, YouTube,
 and Slack. When a post was published to several accounts on the same platform,
 pass `accountId` to pick which account's copy to edit (the first entry is edited
 otherwise). Each platform enforces its own rules:
 
-**X (Twitter)**
+**X**
 - Connected X account must have an active X Premium subscription
 - Must be within 1 hour of original publish time
 - Maximum 5 edits per tweet (enforced by X)
@@ -1018,7 +1039,7 @@ func (r PostsAPIListPostsRequest) SortBy(sortBy string) PostsAPIListPostsRequest
 	return r
 }
 
-// Filter posts to those published via a specific social account (24-char hex ObjectId).
+// Filter posts to those published via a specific account (24-char hex ObjectId).
 func (r PostsAPIListPostsRequest) AccountId(accountId string) PostsAPIListPostsRequest {
 	r.accountId = &accountId
 	return r
@@ -1743,7 +1764,7 @@ Two modes:
  1. Post-based (video published through Zernio): pass the Zernio postId in the URL and platform in the body.
 
  2. Direct video ID (video uploaded outside Zernio, e.g. directly to YouTube): use _ as the postId,
-    and pass videoId + accountId + platform in the body. The accountId is the Zernio social account ID
+    and pass videoId + accountId + platform in the body. The accountId is the Zernio account ID
     for the connected YouTube channel.
 
     @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

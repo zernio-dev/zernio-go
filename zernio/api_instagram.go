@@ -296,10 +296,10 @@ GetInstagramStoryInsights Get Instagram story insights
 Returns metrics for a single story. The `source` field discriminates
 between three states:
 
-  - `live` — fetched from Meta in real time (story is still active)
-  - `cached` — fetched from a persisted `story_insights` webhook payload
+  - `live`: fetched from Meta in real time (story is still active)
+  - `cached`: fetched from a persisted `story_insights` webhook payload
     (story has expired but we received its final-state metrics from Meta)
-  - `unavailable` — story has expired and we never received its webhook
+  - `unavailable`: story has expired and we never received its webhook
     payload (for example, the account connected after the story expired)
 
 Meta can report an expired story as an empty successful result rather

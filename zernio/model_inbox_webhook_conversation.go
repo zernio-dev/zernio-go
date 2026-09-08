@@ -29,7 +29,7 @@ type InboxWebhookConversation struct {
 	ParticipantUsername    *string `json:"participantUsername,omitempty"`
 	ParticipantPicture     *string `json:"participantPicture,omitempty"`
 	Status                 string  `json:"status"`
-	// Zernio CRM Contact ID for the participant, when one exists. Resolved by joining `participantId` to the ContactChannel collection. Best-effort: omitted when no channel matches or `participantId` is absent. Lets integrators join any inbox webhook back to the CRM Contact without needing to look at the sender — which matters for outgoing and delivery-status events whose sender is the business.
+	// Zernio CRM Contact ID for the participant, when one exists. Resolved by joining `participantId` to the ContactChannel collection. Best-effort: omitted when no channel matches or `participantId` is absent. Lets integrators join any inbox webhook back to the CRM Contact without needing to look at the sender, which matters for outgoing and delivery-status events whose sender is the business.
 	ContactId *string `json:"contactId,omitempty"`
 }
 

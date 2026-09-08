@@ -22,7 +22,7 @@ var _ MappedNullable = &GetPhoneNumberKycForm200ResponseReusableOptionsInnerDeta
 type GetPhoneNumberKycForm200ResponseReusableOptionsInnerDetailsInner struct {
 	Label *string `json:"label,omitempty"`
 	Value *string `json:"value,omitempty"`
-	// Present on document rows — the Telnyx document id. GET /v1/whatsapp/phone-numbers/kyc/document/{documentId} streams it (auth-scoped, inline PDF).
+	// Present on document rows: the Telnyx document id. GET /v1/whatsapp/phone-numbers/kyc/document/{documentId} streams it (auth-scoped, inline PDF).
 	DocumentId *string `json:"documentId,omitempty"`
 }
 

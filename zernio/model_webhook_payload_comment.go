@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadComment type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadComment{}
 
-// WebhookPayloadComment Webhook payload for comment received events (Instagram, Facebook, Twitter/X, YouTube, LinkedIn, Bluesky, Reddit)
+// WebhookPayloadComment Webhook payload for comment received events (Instagram, Facebook, X, YouTube, LinkedIn, Bluesky, Reddit)
 type WebhookPayloadComment struct {
 	// Stable webhook event ID
 	Id      string                       `json:"id"`

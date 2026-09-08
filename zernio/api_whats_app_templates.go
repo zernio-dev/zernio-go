@@ -30,7 +30,7 @@ type WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest struct {
 	language   *string
 }
 
-// WhatsApp social account ID
+// WhatsApp account ID
 func (r WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest) AccountId(accountId string) WhatsAppTemplatesAPIGetWhatsAppLibraryTemplateRequest {
 	r.accountId = &accountId
 	return r

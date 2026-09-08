@@ -176,20 +176,20 @@ func (r TrackingTagsAPICreateTrackingTagRequest) Execute() (*CreateTrackingTag20
 /*
 CreateTrackingTag Create a tracking tag
 
-Meta: creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`
-— `name` is the only input). Returns the created tag including its
+Meta: creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`,
+where `name` is the only input). Returns the created tag including its
 install `code`. The pixel is owned by the Business Manager that owns the
 ad account; a pixel created on a personal (non-BM) ad account ends up
 with `ownerBusinessId: null` and can't be shared with other ad accounts.
 
-Creating a Meta pixel does NOT install it — install the returned `code`
+Creating a Meta pixel does NOT install it. Install the returned `code`
 snippet on the site, or send events server-side via
 `POST /v1/ads/conversions`. The check `installed` is derived from
 `lastFiredTime`.
 
 OpenAI Ads: creates an OpenAI pixel AND provisions a Conversions API
 key for it in the same call (`adAccountId` is required by this
-endpoint but ignored — one API key maps to exactly one ad account, so
+endpoint but ignored: one API key maps to exactly one ad account, so
 there's nothing to select). Returns 422 (`FEATURE_NOT_AVAILABLE`) if
 the ad account isn't enabled for pixel management; contact your OpenAI
 partner representative to enable it. There is no delete API for
@@ -453,7 +453,7 @@ GetTrackingTag Get a tracking tag
 Returns the full tag record including the base-code `code` snippet,
 `lastFiredTime`, `ownerBusinessId`, `isUnavailable`, etc. Meta only
 (platform `metaads`); other platforms return 405. OpenAI Ads has no
-get-by-id endpoint, so it 405s here too — use
+get-by-id endpoint, so it 405s here too. Use
 `GET /v1/accounts/{accountId}/tracking-tags` (list) instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -595,7 +595,7 @@ func (r TrackingTagsAPIGetTrackingTagStatsRequest) Execute() (*GetTrackingTagSta
 GetTrackingTagStats Get aggregated event stats
 
 Returns aggregated event counts for the pixel (`GET /{pixel_id}/stats`).
-Rows are passed through from Meta as-is — their shape depends on the
+Rows are passed through from Meta as-is; their shape depends on the
 `aggregation` requested. Meta only (platform `metaads`); other platforms
 return 405.
 
@@ -858,8 +858,8 @@ Returns the tracking tags (Meta Pixels, or OpenAI Ads pixels) the
 connected ads account can see. Pass `?adAccountId=act_...` (Meta only)
 to scope the list to a single ad account; omit it to list every pixel
 reachable by the token (the name is then suffixed with the ad account
-it was discovered on, for disambiguation). The list view omits `code`
-— call `getTrackingTag` for the install snippet and full detail (Meta
+it was discovered on, for disambiguation). The list view omits `code`.
+Call `getTrackingTag` for the install snippet and full detail (Meta
 only; OpenAI Ads has no get-by-id endpoint).
 
 Meta (platform `metaads`) and OpenAI Ads (platform `openaiads`); other
@@ -1115,7 +1115,7 @@ Unified update. Send only the fields for the ad's platform:
   - Meta: `urlTags` (array of {key,value}). Meta creatives are immutable, so this rebuilds the
     creative and repoints the ad. By DEFAULT we PRESERVE the existing creative verbatim
     (re-post its object_story_spec + the new url_tags, reusing the image), so you send `urlTags`
-    ALONE — no need to read back headline/body/CTA. `creative` (headline, body, callToAction,
+    ALONE, with no need to read back headline/body/CTA. `creative` (headline, body, callToAction,
     linkUrl, imageUrl) is OPTIONAL and only needed to rebuild explicitly, or for SHARE / page-post
     / dark / asset_feed creatives whose object_story_spec Meta strips (those return 422 asking for
     `creative`).
@@ -1243,7 +1243,7 @@ Partial-update a pixel. Whitelisted fields: `name` (rename),
 Returns the re-fetched canonical tag. Meta only (platform `metaads`);
 other platforms return 405.
 
-There is no DELETE — Meta has no API to delete a pixel. To stop using
+There is no DELETE: Meta has no API to delete a pixel. To stop using
 one, unshare it from your ad accounts (`DELETE
 .../tracking-tags/{tagId}/shared-accounts`) or disable it in Events
 Manager.

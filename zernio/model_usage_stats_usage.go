@@ -19,7 +19,7 @@ import (
 // checks if the UsageStatsUsage type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageStatsUsage{}
 
-// UsageStatsUsage Per-period usage counts. Fields present depend on `billingSystem`: Stripe returns `uploads` / `profiles` / `lastReset`; Metronome returns `connectedAccounts` / `xApiCalls` / `xApiCallsByOperation`.
+// UsageStatsUsage Per-period usage counts. Fields present depend on `billingSystem`: Stripe returns `uploads` / `profiles` / `lastReset`; usage-based billing returns `connectedAccounts` / `xApiCalls` / `xApiCallsByOperation`.
 type UsageStatsUsage struct {
 	// Stripe users only. Uploads consumed in the current period.
 	Uploads *int32 `json:"uploads,omitempty"`
@@ -27,11 +27,11 @@ type UsageStatsUsage struct {
 	Profiles *int32 `json:"profiles,omitempty"`
 	// Stripe users only.
 	LastReset *time.Time `json:"lastReset,omitempty"`
-	// Metronome users only. Accounts currently connected across the team.
+	// Usage-based billing only. Accounts currently connected across the team.
 	ConnectedAccounts *int32 `json:"connectedAccounts,omitempty"`
 	// Deprecated
 	XApiCalls *UsageStatsUsageXApiCalls `json:"xApiCalls,omitempty"`
-	// Metronome users only. Per-operation X API call counts keyed by operation (e.g. `posts_read`, `content_create`, `content_create_with_url`). Resolve each key to price and metadata via `GET /v1/billing/x-pricing`. This is the canonical source — covers every price tier including the $0.200 URL tier that `xApiCalls` excludes.
+	// Usage-based billing only. Per-operation X API call counts keyed by operation (e.g. `posts_read`, `content_create`, `content_create_with_url`). Resolve each key to price and metadata via `GET /v1/billing/x-pricing`. This is the canonical source: it covers every price tier including the $0.200 URL tier that `xApiCalls` excludes.
 	XApiCallsByOperation map[string]int32 `json:"xApiCallsByOperation,omitempty"`
 }
 

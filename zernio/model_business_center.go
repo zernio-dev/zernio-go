@@ -18,13 +18,13 @@ import (
 // checks if the BusinessCenter type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BusinessCenter{}
 
-// BusinessCenter TikTok Business Center entity. Returned by `GET /v1/ads/business-centers`. BCs are TikTok's agency container — one BC owns N advertisers (ad accounts). Most solo advertisers don't have one; the agency token uses BCs to roll up multi-client access.
+// BusinessCenter TikTok Business Center entity. Returned by `GET /v1/ads/business-centers`. BCs are TikTok's agency container: one BC owns N advertisers (ad accounts). Most solo advertisers don't have one; the agency token uses BCs to roll up multi-client access.
 type BusinessCenter struct {
 	// Business Center ID
 	BcId *string `json:"bcId,omitempty"`
 	// Display name set by the BC owner
 	Name *string `json:"name,omitempty"`
-	// Number of advertisers reachable under this BC for the calling token. `null` when the BC asset walk returned empty or failed (typical for agency apps without full BC asset read scope) — distinct from `0`, which would imply the BC genuinely has no advertisers.
+	// Number of advertisers reachable under this BC for the calling token. `null` when the BC asset walk returned empty or failed (typical for agency apps without full BC asset read scope), distinct from `0`, which would imply the BC genuinely has no advertisers.
 	AdvertiserCount NullableInt32 `json:"advertiserCount,omitempty"`
 }
 

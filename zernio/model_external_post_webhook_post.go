@@ -27,7 +27,7 @@ type ExternalPostWebhookPost struct {
 	Id string `json:"id"`
 	// Platform the post lives on (e.g. \"googlebusiness\").
 	Platform string `json:"platform"`
-	// Zernio social account ID the post belongs to.
+	// Zernio account ID the post belongs to.
 	AccountId string `json:"accountId"`
 	// Direct URL to the post on the platform, when available.
 	Url NullableString `json:"url"`
@@ -46,7 +46,7 @@ type ExternalPostWebhookPost struct {
 	IsSharedToFeed *bool `json:"isSharedToFeed,omitempty"`
 	// Instagram only: audio type of the media (MUSIC or ORIGINAL_SOUND). Absent when the platform did not report it.
 	MediaAudioType *string `json:"mediaAudioType,omitempty"`
-	// Always \"external\" — distinguishes these from Zernio-originated post.* events.
+	// Always \"external\". Distinguishes these from Zernio-originated post.* events.
 	Source string `json:"source"`
 	// Detection time of deletion. Present on post.external.deleted; null/absent otherwise.
 	DeletedAt NullableTime `json:"deletedAt,omitempty"`

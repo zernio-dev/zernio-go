@@ -36,7 +36,7 @@ func (r AccountsAPIDeleteAccountRequest) Execute() (*DeleteAccountGroup200Respon
 /*
 DeleteAccount Disconnect account
 
-Disconnects and removes a connected social account. Repeating the call for an account already disconnected returns 404, the account stays in its 1h grace window and the disconnect is not re-run.
+Disconnects and removes a connected account. Repeating the call for an account already disconnected returns 404, the account stays in its 1h grace window and the disconnect is not re-run.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -755,7 +755,7 @@ func (r AccountsAPIGetFollowerStatsRequest) Execute() (*FollowerStatsResponse, *
 /*
 GetFollowerStats Get follower stats
 
-Returns follower count history and growth metrics for connected social accounts.
+Returns follower count history and growth metrics for connected accounts.
 Requires analytics add-on subscription. Follower counts are refreshed once per day.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1397,7 +1397,7 @@ func (r AccountsAPIListAccountsRequest) Execute() (*AccountsListResponse, *http.
 /*
 ListAccounts List accounts
 
-Returns connected social accounts. Only includes accounts within the plan limit by default. Follower data requires analytics add-on.
+Returns connected accounts. Only includes accounts within the plan limit by default. Follower data requires analytics add-on.
 Supports optional server-side pagination via page/limit params. When omitted, returns all accounts (backward-compatible).
 page and limit must be supplied together; out-of-range page/limit values are rejected with 400 rather than silently clamped.
 
@@ -1549,7 +1549,7 @@ func (r AccountsAPIMoveAccountToProfileRequest) Execute() (*MoveAccountToProfile
 /*
 MoveAccountToProfile Move account to another profile
 
-Moves a connected social account to a different profile owned by the same
+Moves a connected account to a different profile owned by the same
 user. The target profile must belong to the same user as the account.
 
 For API keys restricted to specific profiles, BOTH the source account's
@@ -1680,11 +1680,11 @@ func (r AccountsAPIUpdateAccountRequest) Execute() (*UpdateAccount200Response, *
 /*
 UpdateAccount Update account
 
-Updates a connected social account's display name or username override.
+Updates a connected account's display name or username override.
 
-For X/Twitter accounts on usage-based billing, also accepts an `xCapabilities`
+For X accounts on usage-based billing, also accepts an `xCapabilities`
 object to toggle background API operations that incur X API pass-through costs.
-Both fields are opt-in (default `false`) — when off, no analytics syncs or DM
+Both fields are opt-in (default `false`). When off, no analytics syncs or DM
 polling are performed for that account, and no API call is metered for those
 operations. Publishing and deleting posts are always available regardless of
 these toggles. Setting `xCapabilities` on a non-X account returns 400.

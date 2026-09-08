@@ -18,9 +18,9 @@ import (
 // checks if the GoogleBusinessPlatformData type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GoogleBusinessPlatformData{}
 
-// GoogleBusinessPlatformData Text and single image only (no videos). Supports STANDARD, EVENT, OFFER, and ALERT post types. Posts appear on GBP, Google Search, and Maps. Use locationId for multi-location posting. Schedule dates accept both ISO 8601 strings (e.g. '2026-04-15T09:00:00Z') and Google's native {year, month, day} objects.
+// GoogleBusinessPlatformData Text and single image only (no videos). Supports STANDARD, EVENT, OFFER, and ALERT post types. Posts appear on Google Business Profile, Google Search, and Maps. Use locationId for multi-location posting. Schedule dates accept both ISO 8601 strings (e.g. '2026-04-15T09:00:00Z') and Google's native {year, month, day} objects.
 type GoogleBusinessPlatformData struct {
-	// Target GBP location ID (e.g. \"locations/123456789\"). If omitted, uses the default location. Use GET /v1/accounts/{id}/gmb-locations to list locations.
+	// Target Google Business Profile location ID (e.g. \"locations/123456789\"). If omitted, uses the default location. Use GET /v1/accounts/{id}/gmb-locations to list locations.
 	LocationId *string `json:"locationId,omitempty"`
 	// BCP 47 language code (e.g. \"en\", \"de\", \"es\"). Auto-detected if omitted. Set explicitly for short or mixed-language posts.
 	LanguageCode *string `json:"languageCode,omitempty"`

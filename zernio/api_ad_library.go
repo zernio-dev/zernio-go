@@ -50,7 +50,7 @@ func (r AdLibraryAPISearchAdLibraryRequest) Platform(platform string) AdLibraryA
 	return r
 }
 
-// Zernio SocialAccount id. Required for LinkedIn (linkedin / linkedinads: its token searches). Optional for Meta, where any facebook / instagram / metaads account just selects the platform.
+// Zernio SocialAccount id. Required for LinkedIn (linkedin / linkedinads: its token searches). Optional for Meta, where any facebook / instagram / metaads account only selects the platform.
 func (r AdLibraryAPISearchAdLibraryRequest) AccountId(accountId string) AdLibraryAPISearchAdLibraryRequest {
 	r.accountId = &accountId
 	return r

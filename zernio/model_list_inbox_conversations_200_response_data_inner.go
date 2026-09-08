@@ -29,13 +29,15 @@ type ListInboxConversations200ResponseDataInner struct {
 	ParticipantId      *string        `json:"participantId,omitempty"`
 	ParticipantName    *string        `json:"participantName,omitempty"`
 	ParticipantPicture NullableString `json:"participantPicture,omitempty"`
-	// X/Twitter verified badge type. Only present for Twitter/X conversations.
+	// X verified badge type. Only present for X conversations.
 	ParticipantVerifiedType NullableString `json:"participantVerifiedType,omitempty"`
 	LastMessage             *string        `json:"lastMessage,omitempty"`
 	UpdatedTime             *time.Time     `json:"updatedTime,omitempty"`
 	Status                  *string        `json:"status,omitempty"`
 	// Number of unread messages
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
+	// WhatsApp only, present once Meta Business Agent has touched the thread. ai_agent: the agent answers and new inbound arrive flagged metadata.standby; app: you hold control; other: another partner app does. Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
+	ThreadControl *string `json:"threadControl,omitempty"`
 	// Direct link to open the conversation on the platform (if available)
 	Url              NullableString                                              `json:"url,omitempty"`
 	InstagramProfile *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
@@ -476,6 +478,38 @@ func (o *ListInboxConversations200ResponseDataInner) UnsetUnreadCount() {
 	o.UnreadCount.Unset()
 }
 
+// GetThreadControl returns the ThreadControl field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetThreadControl() string {
+	if o == nil || IsNil(o.ThreadControl) {
+		var ret string
+		return ret
+	}
+	return *o.ThreadControl
+}
+
+// GetThreadControlOk returns a tuple with the ThreadControl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetThreadControlOk() (*string, bool) {
+	if o == nil || IsNil(o.ThreadControl) {
+		return nil, false
+	}
+	return o.ThreadControl, true
+}
+
+// HasThreadControl returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasThreadControl() bool {
+	if o != nil && !IsNil(o.ThreadControl) {
+		return true
+	}
+
+	return false
+}
+
+// SetThreadControl gets a reference to the given string and assigns it to the ThreadControl field.
+func (o *ListInboxConversations200ResponseDataInner) SetThreadControl(v string) {
+	o.ThreadControl = &v
+}
+
 // GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxConversations200ResponseDataInner) GetUrl() string {
 	if o == nil || IsNil(o.Url.Get()) {
@@ -628,6 +662,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if o.UnreadCount.IsSet() {
 		toSerialize["unreadCount"] = o.UnreadCount.Get()
+	}
+	if !IsNil(o.ThreadControl) {
+		toSerialize["threadControl"] = o.ThreadControl
 	}
 	if o.Url.IsSet() {
 		toSerialize["url"] = o.Url.Get()

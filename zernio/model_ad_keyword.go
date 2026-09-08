@@ -22,7 +22,7 @@ var _ MappedNullable = &AdKeyword{}
 // AdKeyword struct for AdKeyword
 type AdKeyword struct {
 	Id *string `json:"id,omitempty"`
-	// Social account ID owning the sync
+	// Account ID owning the sync
 	AccountId *string `json:"accountId,omitempty"`
 	ProfileId *string `json:"profileId,omitempty"`
 	Platform  *string `json:"platform,omitempty"`

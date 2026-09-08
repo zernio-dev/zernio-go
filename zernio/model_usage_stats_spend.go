@@ -18,13 +18,13 @@ import (
 // checks if the UsageStatsSpend type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageStatsSpend{}
 
-// UsageStatsSpend Metronome users only. Current-period spend summary.
+// UsageStatsSpend Usage-based billing only. Current-period spend summary.
 type UsageStatsSpend struct {
 	// Total current-period spend in cents (all products combined).
 	CurrentPeriodCents *int32 `json:"currentPeriodCents,omitempty"`
 	// Free-tier credit remaining in cents. Applied before any charge.
 	CreditsRemainingCents *int32 `json:"creditsRemainingCents,omitempty"`
-	// Current-period X/Twitter API spend in cents, summed from `xApiCallsByOperation` × per-operation prices. Tier-agnostic (covers every price including the $0.200 URL tier). Rounded up for conservative enforcement against `xSpendLimitCents`.
+	// Current-period X API spend in cents, summed from `xApiCallsByOperation` × per-operation prices. Tier-agnostic (covers every price including the $0.200 URL tier). Rounded up for conservative enforcement against `xSpendLimitCents`.
 	XSpendCents *int32 `json:"xSpendCents,omitempty"`
 	// Monthly X spend cap set by the account owner, or null if no cap. When current X spend hits this cap, analytics and inbox sync are auto-paused for X accounts. Publishing is never blocked by this cap.
 	XSpendLimitCents NullableInt32 `json:"xSpendLimitCents,omitempty"`

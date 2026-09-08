@@ -198,7 +198,7 @@ func (r GMBMediaAPIDeleteGoogleBusinessMediaRequest) Execute() (*DeleteGoogleBus
 /*
 DeleteGoogleBusinessMedia Delete photo
 
-Deletes a photo or media item from a GBP location.
+Deletes a photo or media item from a Google Business Profile location.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

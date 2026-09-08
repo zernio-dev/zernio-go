@@ -31,7 +31,7 @@ type StartSmsRegistrationRequest struct {
 	MessagingBrandName *string `json:"messagingBrandName,omitempty"`
 	// Raw dashboard-wizard answers, stored only to prefill edit-and-resubmit. API integrators can omit.
 	WizardValues map[string]string `json:"wizardValues,omitempty"`
-	// Resubmit a registration that was returned for changes — updates it in place instead of creating a new one.
+	// Resubmit a registration that was returned for changes. Updates it in place instead of creating a new one.
 	ResubmitRequestId *string                              `json:"resubmitRequestId,omitempty"`
 	TollFree          *StartSmsRegistrationRequestTollFree `json:"tollFree,omitempty"`
 }
