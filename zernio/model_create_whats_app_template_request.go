@@ -40,7 +40,7 @@ type CreateWhatsAppTemplateRequest struct {
 	LibraryTemplateBodyInputs map[string]interface{} `json:"library_template_body_inputs,omitempty"`
 	// Optional button customizations for library templates. Each item specifies button type and configuration (e.g., URL, phone number, quick reply).
 	LibraryTemplateButtonInputs []CreateWhatsAppTemplateRequestLibraryTemplateButtonInputsInner `json:"library_template_button_inputs,omitempty"`
-	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+	// Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 (create only) keeps the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
 	MessageSendTtlSeconds *int32 `json:"message_send_ttl_seconds,omitempty"`
 }
 
