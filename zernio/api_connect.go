@@ -1063,7 +1063,7 @@ func (a *ConnectAPIService) ConnectDiscordChannelExecute(r ConnectAPIConnectDisc
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1193,7 +1193,7 @@ func (a *ConnectAPIService) ConnectOpenAIAdsCredentialsExecute(r ConnectAPIConne
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1334,7 +1334,7 @@ func (a *ConnectAPIService) ConnectShopifyWithTokenExecute(r ConnectAPIConnectSh
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1475,7 +1475,7 @@ func (a *ConnectAPIService) ConnectSlackChannelExecute(r ConnectAPIConnectSlackC
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1636,22 +1636,7 @@ func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) Execute() (*http.Respons
 /*
 ConnectWhatsAppEmbeddedSignup Connect WhatsApp from Embedded Signup
 
-Finish a WhatsApp connection started with Meta's Embedded Signup in your own page (Facebook
-JavaScript SDK). The code never passes through a `redirect_url`, so `POST /v1/connect/{platform}`
-cannot accept it.
-
-The flow: call `GET /v1/connect/whatsapp/sdk-config`, run `FB.login` with that `configId`,
-`response_type: 'code'`, `override_default_response_type: true` and
-`extras: { sessionInfoVersion: '3' }`, read `waba_id` and `phone_number_id` from the
-`WA_EMBEDDED_SIGNUP` message event Meta posts to your window, then send the `code` from the
-login response here together with those ids.
-
-Always forward `wabaId` and `phoneNumberId`: Zernio connects exactly that number and no picker is
-shown. Without them Zernio falls back to the first number of the first WhatsApp Business Account the
-token can reach, which may not be the one the user picked.
-
-The Zernio Meta app must list the domain that hosts the popup before `FB.login` will open there.
-Available on request: send the domains to support.
+Exchange the authorization code Meta Embedded Signup returns to your browser SDK. This is the headless completion path for WhatsApp: the code never passes through a redirect_uri, so POST /v1/connect/{platform} cannot accept it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIConnectWhatsAppEmbeddedSignupRequest
@@ -1749,7 +1734,7 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2052,7 +2037,7 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3099,7 +3084,7 @@ func (a *ConnectAPIService) GetShopifyConnectUrlExecute(r ConnectAPIGetShopifyCo
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -3353,125 +3338,6 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ConnectAPIGetWhatsAppSdkConfigRequest struct {
-	ctx        context.Context
-	ApiService *ConnectAPIService
-}
-
-func (r ConnectAPIGetWhatsAppSdkConfigRequest) Execute() (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
-	return r.ApiService.GetWhatsAppSdkConfigExecute(r)
-}
-
-/*
-GetWhatsAppSdkConfig Get Embedded Signup SDK config
-
-The public values needed to run Meta's Embedded Signup inside your own page with the
-Facebook JavaScript SDK instead of the redirect flow: pass `appId` and `graphApiVersion`
-to `FB.init`, and `configId` as `config_id` to `FB.login`. The popup then reports the
-WhatsApp Business Account and phone number the user picked through the
-`WA_EMBEDDED_SIGNUP` message event, and you finish the connection with
-`POST /v1/connect/whatsapp/embedded-signup`. Because the number comes back from the popup,
-the user never sees a second number picker.
-
-Available on request: `FB.login` only opens on HTTPS domains listed in the Zernio Meta app, so
-send the domains that will host the popup to support before going live.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ConnectAPIGetWhatsAppSdkConfigRequest
-*/
-func (a *ConnectAPIService) GetWhatsAppSdkConfig(ctx context.Context) ConnectAPIGetWhatsAppSdkConfigRequest {
-	return ConnectAPIGetWhatsAppSdkConfigRequest{
-		ApiService: a,
-		ctx:        ctx,
-	}
-}
-
-// Execute executes the request
-//
-//	@return GetWhatsAppSdkConfig200Response
-func (a *ConnectAPIService) GetWhatsAppSdkConfigExecute(r ConnectAPIGetWhatsAppSdkConfigRequest) (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodGet
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *GetWhatsAppSdkConfig200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWhatsAppSdkConfig")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/connect/whatsapp/sdk-config"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3908,7 +3774,7 @@ func (a *ConnectAPIService) HandleOAuthCallbackExecute(r ConnectAPIHandleOAuthCa
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -5703,7 +5569,7 @@ func (a *ConnectAPIService) SelectInstagramAccountExecute(r ConnectAPISelectInst
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
-			var v InlineObject1
+			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

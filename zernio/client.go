@@ -77,6 +77,8 @@ type APIClient struct {
 
 	BroadcastsAPI *BroadcastsAPIService
 
+	BusinessAgentAPI *BusinessAgentAPIService
+
 	CallsAPI *CallsAPIService
 
 	CommentAutomationsAPI *CommentAutomationsAPIService
@@ -212,6 +214,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.AnalyticsAPI = (*AnalyticsAPIService)(&c.common)
 	c.BlogsAPI = (*BlogsAPIService)(&c.common)
 	c.BroadcastsAPI = (*BroadcastsAPIService)(&c.common)
+	c.BusinessAgentAPI = (*BusinessAgentAPIService)(&c.common)
 	c.CallsAPI = (*CallsAPIService)(&c.common)
 	c.CommentAutomationsAPI = (*CommentAutomationsAPIService)(&c.common)
 	c.CommentsAPI = (*CommentsAPIService)(&c.common)

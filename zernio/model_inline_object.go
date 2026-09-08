@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the InlineObject type satisfies the MappedNullable interface at compile time
@@ -20,18 +22,18 @@ var _ MappedNullable = &InlineObject{}
 
 // InlineObject struct for InlineObject
 type InlineObject struct {
-	Error *string `json:"error,omitempty"`
-	Code  *string `json:"code,omitempty"`
-	// The resource group the key needs for this operation. Absent on admin-plane and unclassified-path denials.
-	RequiredGroup *string `json:"required_group,omitempty"`
+	Success bool `json:"success"`
 }
+
+type _InlineObject InlineObject
 
 // NewInlineObject instantiates a new InlineObject object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInlineObject() *InlineObject {
+func NewInlineObject(success bool) *InlineObject {
 	this := InlineObject{}
+	this.Success = success
 	return &this
 }
 
@@ -43,100 +45,28 @@ func NewInlineObjectWithDefaults() *InlineObject {
 	return &this
 }
 
-// GetError returns the Error field value if set, zero value otherwise.
-func (o *InlineObject) GetError() string {
-	if o == nil || IsNil(o.Error) {
-		var ret string
+// GetSuccess returns the Success field value
+func (o *InlineObject) GetSuccess() bool {
+	if o == nil {
+		var ret bool
 		return ret
 	}
-	return *o.Error
+
+	return o.Success
 }
 
-// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// GetSuccessOk returns a tuple with the Success field value
 // and a boolean to check if the value has been set.
-func (o *InlineObject) GetErrorOk() (*string, bool) {
-	if o == nil || IsNil(o.Error) {
+func (o *InlineObject) GetSuccessOk() (*bool, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Error, true
+	return &o.Success, true
 }
 
-// HasError returns a boolean if a field has been set.
-func (o *InlineObject) HasError() bool {
-	if o != nil && !IsNil(o.Error) {
-		return true
-	}
-
-	return false
-}
-
-// SetError gets a reference to the given string and assigns it to the Error field.
-func (o *InlineObject) SetError(v string) {
-	o.Error = &v
-}
-
-// GetCode returns the Code field value if set, zero value otherwise.
-func (o *InlineObject) GetCode() string {
-	if o == nil || IsNil(o.Code) {
-		var ret string
-		return ret
-	}
-	return *o.Code
-}
-
-// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject) GetCodeOk() (*string, bool) {
-	if o == nil || IsNil(o.Code) {
-		return nil, false
-	}
-	return o.Code, true
-}
-
-// HasCode returns a boolean if a field has been set.
-func (o *InlineObject) HasCode() bool {
-	if o != nil && !IsNil(o.Code) {
-		return true
-	}
-
-	return false
-}
-
-// SetCode gets a reference to the given string and assigns it to the Code field.
-func (o *InlineObject) SetCode(v string) {
-	o.Code = &v
-}
-
-// GetRequiredGroup returns the RequiredGroup field value if set, zero value otherwise.
-func (o *InlineObject) GetRequiredGroup() string {
-	if o == nil || IsNil(o.RequiredGroup) {
-		var ret string
-		return ret
-	}
-	return *o.RequiredGroup
-}
-
-// GetRequiredGroupOk returns a tuple with the RequiredGroup field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InlineObject) GetRequiredGroupOk() (*string, bool) {
-	if o == nil || IsNil(o.RequiredGroup) {
-		return nil, false
-	}
-	return o.RequiredGroup, true
-}
-
-// HasRequiredGroup returns a boolean if a field has been set.
-func (o *InlineObject) HasRequiredGroup() bool {
-	if o != nil && !IsNil(o.RequiredGroup) {
-		return true
-	}
-
-	return false
-}
-
-// SetRequiredGroup gets a reference to the given string and assigns it to the RequiredGroup field.
-func (o *InlineObject) SetRequiredGroup(v string) {
-	o.RequiredGroup = &v
+// SetSuccess sets field value
+func (o *InlineObject) SetSuccess(v bool) {
+	o.Success = v
 }
 
 func (o InlineObject) MarshalJSON() ([]byte, error) {
@@ -149,16 +79,45 @@ func (o InlineObject) MarshalJSON() ([]byte, error) {
 
 func (o InlineObject) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Error) {
-		toSerialize["error"] = o.Error
-	}
-	if !IsNil(o.Code) {
-		toSerialize["code"] = o.Code
-	}
-	if !IsNil(o.RequiredGroup) {
-		toSerialize["required_group"] = o.RequiredGroup
-	}
+	toSerialize["success"] = o.Success
 	return toSerialize, nil
+}
+
+func (o *InlineObject) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"success",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varInlineObject := _InlineObject{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varInlineObject)
+
+	if err != nil {
+		return err
+	}
+
+	*o = InlineObject(varInlineObject)
+
+	return err
 }
 
 type NullableInlineObject struct {

@@ -22,14 +22,13 @@ var _ MappedNullable = &ConnectWhatsAppEmbeddedSignupRequest{}
 
 // ConnectWhatsAppEmbeddedSignupRequest struct for ConnectWhatsAppEmbeddedSignupRequest
 type ConnectWhatsAppEmbeddedSignupRequest struct {
-	// Authorization code from the FB.login response (authResponse.code)
+	// Authorization code from the WA_EMBEDDED_SIGNUP postMessage
 	Code      string `json:"code"`
 	ProfileId string `json:"profileId"`
-	// waba_id from the WA_EMBEDDED_SIGNUP message event
-	WabaId *string `json:"wabaId,omitempty"`
-	// phone_number_id from the WA_EMBEDDED_SIGNUP message event. With wabaId it skips the number picker.
+	// WhatsApp Business Account id, when the SDK reported one
+	WabaId        *string `json:"wabaId,omitempty"`
 	PhoneNumberId *string `json:"phoneNumberId,omitempty"`
-	// Set when the popup ended with the FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING event, so the number stays live in the WhatsApp Business app
+	// Number is also live in the WhatsApp Business app
 	IsCoexistence *bool `json:"isCoexistence,omitempty"`
 	// Rejects the connect when Meta returns a different number
 	ExpectedPhoneNumber *string `json:"expectedPhoneNumber,omitempty"`
