@@ -25,6 +25,7 @@ type AdLibraryAPIService service
 type AdLibraryAPISearchAdLibraryRequest struct {
 	ctx        context.Context
 	ApiService *AdLibraryAPIService
+	platform   *string
 	accountId  *string
 	q          *string
 	pageIds    *string
@@ -43,7 +44,13 @@ type AdLibraryAPISearchAdLibraryRequest struct {
 	after      *string
 }
 
-// Zernio SocialAccount id (facebook / instagram / metaads for Meta, linkedin / linkedinads for LinkedIn). Its token is the one that searches.
+// Which archive to search. &#x60;meta&#x60; needs no accountId. Required unless accountId is given.
+func (r AdLibraryAPISearchAdLibraryRequest) Platform(platform string) AdLibraryAPISearchAdLibraryRequest {
+	r.platform = &platform
+	return r
+}
+
+// Zernio SocialAccount id. Required for LinkedIn (linkedin / linkedinads: its token searches). Optional for Meta, where any facebook / instagram / metaads account just selects the platform.
 func (r AdLibraryAPISearchAdLibraryRequest) AccountId(accountId string) AdLibraryAPISearchAdLibraryRequest {
 	r.accountId = &accountId
 	return r
@@ -146,19 +153,18 @@ func (r AdLibraryAPISearchAdLibraryRequest) Execute() (*SearchAdLibrary200Respon
 /*
 SearchAdLibrary Search the public Ad Library
 
-Competitor and market research over the platform's public ad archive, searched with the
-customer's own connected token (no extra scope): Meta's Ad Library (`GET /ads_archive`) for
-a `facebook` / `instagram` / `metaads` account, LinkedIn's Ad Library (`GET /rest/adLibrary`)
-for a `linkedin` / `linkedinads` account. Rows are returned in the platform's raw shape under
-`data`; `paging.after` is an opaque cursor on both (`null` when exhausted).
+Competitor and market research over the public ad archives. Meta's Ad Library
+(`GET /ads_archive`) is searched with Zernio's own developer access, so `platform=meta` needs
+no connected account at all. LinkedIn's Ad Library (`GET /rest/adLibrary`) runs on a connected
+`linkedin` / `linkedinads` account, passed as `accountId`. Passing a Meta account as `accountId`
+also selects Meta. Rows are returned in the platform's raw shape under `data`; `paging.after`
+is an opaque cursor on both (`null` when exhausted).
 
 **Meta coverage.** Political and social-issue ads are searchable worldwide. Every other ad is
 in the archive only if it was delivered to the EU or UK within the last year, so a US-only
 commercial advertiser is invisible. Spend, impressions and demographics are political-only
-fields and are left out of the default projection; request them via `fields`. Meta serves the
-archive only to people who confirmed their identity and location at facebook.com/ID: until the
-Facebook user behind the connection has done so, the call fails with
-`meta_identity_confirmation_required` (403).
+fields and are left out of the default projection; request them via `fields`. All customers
+share Zernio's Meta quota, so a `429` means back off for a minute.
 
 **LinkedIn coverage.** Ads served after June 1 2023, worldwide, kept for a year after their
 last impression. EU-delivered ads carry impression ranges and the disclosed targeting facets.
@@ -200,11 +206,13 @@ func (a *AdLibraryAPIService) SearchAdLibraryExecute(r AdLibraryAPISearchAdLibra
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.accountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
 	if r.q != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "q", r.q, "form", "")
 	}
