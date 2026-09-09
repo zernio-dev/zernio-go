@@ -963,6 +963,11 @@ per dimension, no per-ad fan-out), so an agency dashboard gets campaign-level ag
 without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
 `platform` when a campaign id could be ambiguous across platforms. If no date range is provided,
 defaults to the last 90 days. Date range is capped at 730 days max.
+Google adds searchImpressionShare, searchBudgetLostImpressionShare,
+searchRankLostImpressionShare, searchTopImpressionShare and searchAbsoluteTopImpressionShare
+under analytics.summary for the requested inclusive range. These ratios are queried
+together without daily segmentation and cached for 10 minutes. Unavailable values are
+null. analytics.impressionShareCache reports cachedAt and stale independently of synced metrics.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign id (platformCampaignId).
@@ -1081,6 +1086,7 @@ func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCam
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

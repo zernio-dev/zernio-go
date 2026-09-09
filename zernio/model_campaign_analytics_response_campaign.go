@@ -25,6 +25,8 @@ type CampaignAnalyticsResponseCampaign struct {
 	Platform *string        `json:"platform,omitempty"`
 	// Effective campaign status (ACTIVE when any child ad is active).
 	Status NullableString `json:"status,omitempty"`
+	// Google only. Latest synced campaign budget, or null before sync.
+	Budget NullableAdCampaignBudget `json:"budget,omitempty"`
 	// ISO 4217 code of the ad account (e.g. USD, THB). All money values in `summary` and `daily` are in this currency.
 	Currency NullableString `json:"currency,omitempty"`
 }
@@ -196,6 +198,49 @@ func (o *CampaignAnalyticsResponseCampaign) UnsetStatus() {
 	o.Status.Unset()
 }
 
+// GetBudget returns the Budget field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CampaignAnalyticsResponseCampaign) GetBudget() AdCampaignBudget {
+	if o == nil || IsNil(o.Budget.Get()) {
+		var ret AdCampaignBudget
+		return ret
+	}
+	return *o.Budget.Get()
+}
+
+// GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CampaignAnalyticsResponseCampaign) GetBudgetOk() (*AdCampaignBudget, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Budget.Get(), o.Budget.IsSet()
+}
+
+// HasBudget returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseCampaign) HasBudget() bool {
+	if o != nil && o.Budget.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBudget gets a reference to the given NullableAdCampaignBudget and assigns it to the Budget field.
+func (o *CampaignAnalyticsResponseCampaign) SetBudget(v AdCampaignBudget) {
+	o.Budget.Set(&v)
+}
+
+// SetBudgetNil sets the value for Budget to be an explicit nil
+func (o *CampaignAnalyticsResponseCampaign) SetBudgetNil() {
+	o.Budget.Set(nil)
+}
+
+// UnsetBudget ensures that no value is present for Budget, not even an explicit nil
+func (o *CampaignAnalyticsResponseCampaign) UnsetBudget() {
+	o.Budget.Unset()
+}
+
 // GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CampaignAnalyticsResponseCampaign) GetCurrency() string {
 	if o == nil || IsNil(o.Currency.Get()) {
@@ -260,6 +305,9 @@ func (o CampaignAnalyticsResponseCampaign) ToMap() (map[string]interface{}, erro
 	}
 	if o.Status.IsSet() {
 		toSerialize["status"] = o.Status.Get()
+	}
+	if o.Budget.IsSet() {
+		toSerialize["budget"] = o.Budget.Get()
 	}
 	if o.Currency.IsSet() {
 		toSerialize["currency"] = o.Currency.Get()

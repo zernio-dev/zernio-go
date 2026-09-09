@@ -20,7 +20,7 @@ import (
 // checks if the UpdateAdCampaignRequestBudget type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdCampaignRequestBudget{}
 
-// UpdateAdCampaignRequestBudget **Meta only.** The CBO budget.
+// UpdateAdCampaignRequestBudget Meta CBO or Google daily campaign budget, in whole currency units.
 type UpdateAdCampaignRequestBudget struct {
 	// Budget amount in the ad account's currency
 	Amount float32 `json:"amount"`

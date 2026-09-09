@@ -21,12 +21,12 @@ var _ MappedNullable = &UpdateAdCampaign200Response{}
 // UpdateAdCampaign200Response Echoes back only the fields you sent, plus `updated`.
 type UpdateAdCampaign200Response struct {
 	// Local Ad documents mirrored. 0 on the empty-campaign path.
-	Updated          *int32       `json:"updated,omitempty"`
-	Budget           *AdBudget    `json:"budget,omitempty"`
-	BudgetLevel      *string      `json:"budgetLevel,omitempty"`
-	BidStrategy      *BidStrategy `json:"bidStrategy,omitempty"`
-	BidAmount        *float32     `json:"bidAmount,omitempty"`
-	RoasAverageFloor *float32     `json:"roasAverageFloor,omitempty"`
+	Updated          *int32            `json:"updated,omitempty"`
+	Budget           *AdCampaignBudget `json:"budget,omitempty"`
+	BudgetLevel      *string           `json:"budgetLevel,omitempty"`
+	BidStrategy      *BidStrategy      `json:"bidStrategy,omitempty"`
+	BidAmount        *float32          `json:"bidAmount,omitempty"`
+	RoasAverageFloor *float32          `json:"roasAverageFloor,omitempty"`
 	// Google only. Echoed back, but NOT mirrored onto local Ad documents (no column for it yet).
 	PortfolioBidStrategyId *string                `json:"portfolioBidStrategyId,omitempty"`
 	PlatformSpecificData   map[string]interface{} `json:"platformSpecificData,omitempty"`
@@ -82,9 +82,9 @@ func (o *UpdateAdCampaign200Response) SetUpdated(v int32) {
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *UpdateAdCampaign200Response) GetBudget() AdBudget {
+func (o *UpdateAdCampaign200Response) GetBudget() AdCampaignBudget {
 	if o == nil || IsNil(o.Budget) {
-		var ret AdBudget
+		var ret AdCampaignBudget
 		return ret
 	}
 	return *o.Budget
@@ -92,7 +92,7 @@ func (o *UpdateAdCampaign200Response) GetBudget() AdBudget {
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAdCampaign200Response) GetBudgetOk() (*AdBudget, bool) {
+func (o *UpdateAdCampaign200Response) GetBudgetOk() (*AdCampaignBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
@@ -108,8 +108,8 @@ func (o *UpdateAdCampaign200Response) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given AdBudget and assigns it to the Budget field.
-func (o *UpdateAdCampaign200Response) SetBudget(v AdBudget) {
+// SetBudget gets a reference to the given AdCampaignBudget and assigns it to the Budget field.
+func (o *UpdateAdCampaign200Response) SetBudget(v AdCampaignBudget) {
 	o.Budget = &v
 }
 

@@ -33,8 +33,10 @@ type UpdateAdCampaignRequest struct {
 	// **Google only.** Decimal ROAS multiplier (2.0 = 2.0x), required for LOWEST_COST_WITH_MIN_ROAS.
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
-	PortfolioBidStrategyId *string                        `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
-	Budget                 *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Google only. Explicitly allow changing a shared campaign budget, affecting every campaign that uses it. Does not bypass an unknown sharing state.
+	AllowSharedBudgetUpdate *bool                          `json:"allowSharedBudgetUpdate,omitempty"`
+	Budget                  *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// **Meta only.** Rename the campaign.
 	Name                 *string                                      `json:"name,omitempty"`
 	PlatformSpecificData *UpdateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
@@ -49,6 +51,8 @@ type _UpdateAdCampaignRequest UpdateAdCampaignRequest
 func NewUpdateAdCampaignRequest(platform string) *UpdateAdCampaignRequest {
 	this := UpdateAdCampaignRequest{}
 	this.Platform = platform
+	var allowSharedBudgetUpdate bool = false
+	this.AllowSharedBudgetUpdate = &allowSharedBudgetUpdate
 	return &this
 }
 
@@ -57,6 +61,8 @@ func NewUpdateAdCampaignRequest(platform string) *UpdateAdCampaignRequest {
 // but it doesn't guarantee that properties required by API are set
 func NewUpdateAdCampaignRequestWithDefaults() *UpdateAdCampaignRequest {
 	this := UpdateAdCampaignRequest{}
+	var allowSharedBudgetUpdate bool = false
+	this.AllowSharedBudgetUpdate = &allowSharedBudgetUpdate
 	return &this
 }
 
@@ -244,6 +250,38 @@ func (o *UpdateAdCampaignRequest) SetPortfolioBidStrategyId(v string) {
 	o.PortfolioBidStrategyId = &v
 }
 
+// GetAllowSharedBudgetUpdate returns the AllowSharedBudgetUpdate field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetAllowSharedBudgetUpdate() bool {
+	if o == nil || IsNil(o.AllowSharedBudgetUpdate) {
+		var ret bool
+		return ret
+	}
+	return *o.AllowSharedBudgetUpdate
+}
+
+// GetAllowSharedBudgetUpdateOk returns a tuple with the AllowSharedBudgetUpdate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetAllowSharedBudgetUpdateOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllowSharedBudgetUpdate) {
+		return nil, false
+	}
+	return o.AllowSharedBudgetUpdate, true
+}
+
+// HasAllowSharedBudgetUpdate returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasAllowSharedBudgetUpdate() bool {
+	if o != nil && !IsNil(o.AllowSharedBudgetUpdate) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowSharedBudgetUpdate gets a reference to the given bool and assigns it to the AllowSharedBudgetUpdate field.
+func (o *UpdateAdCampaignRequest) SetAllowSharedBudgetUpdate(v bool) {
+	o.AllowSharedBudgetUpdate = &v
+}
+
 // GetBudget returns the Budget field value if set, zero value otherwise.
 func (o *UpdateAdCampaignRequest) GetBudget() UpdateAdCampaignRequestBudget {
 	if o == nil || IsNil(o.Budget) {
@@ -365,6 +403,9 @@ func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PortfolioBidStrategyId) {
 		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
+	}
+	if !IsNil(o.AllowSharedBudgetUpdate) {
+		toSerialize["allowSharedBudgetUpdate"] = o.AllowSharedBudgetUpdate
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget

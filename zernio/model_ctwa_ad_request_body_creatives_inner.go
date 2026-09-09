@@ -12,35 +12,33 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the CtwaAdRequestBodyCreativesInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CtwaAdRequestBodyCreativesInner{}
 
-// CtwaAdRequestBodyCreativesInner Each entry must also include exactly one of `imageUrl` or `video`.
+// CtwaAdRequestBodyCreativesInner Supply headline, body, and image/video, or exactly one existing post reference. References cannot be combined with fresh creative fields.
 type CtwaAdRequestBodyCreativesInner struct {
-	Headline string `json:"headline"`
+	// Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+	ExistingPostId *string `json:"existingPostId,omitempty"`
+	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
+	ObjectStoryId *string `json:"objectStoryId,omitempty" validate:"regexp=^\\\\d+_\\\\d+$"`
+	Headline      *string `json:"headline,omitempty"`
 	// Primary text shown above the image / video.
-	Body string `json:"body"`
-	// Image asset. Mutually exclusive with this entry's `video`. Required if `video` is not supplied.
+	Body *string `json:"body,omitempty"`
+	// Image asset. Mutually exclusive with this entry's `video`. Required if neither `video` nor an existing post reference is supplied.
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 }
 
-type _CtwaAdRequestBodyCreativesInner CtwaAdRequestBodyCreativesInner
-
 // NewCtwaAdRequestBodyCreativesInner instantiates a new CtwaAdRequestBodyCreativesInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCtwaAdRequestBodyCreativesInner(headline string, body string) *CtwaAdRequestBodyCreativesInner {
+func NewCtwaAdRequestBodyCreativesInner() *CtwaAdRequestBodyCreativesInner {
 	this := CtwaAdRequestBodyCreativesInner{}
-	this.Headline = headline
-	this.Body = body
 	return &this
 }
 
@@ -52,52 +50,132 @@ func NewCtwaAdRequestBodyCreativesInnerWithDefaults() *CtwaAdRequestBodyCreative
 	return &this
 }
 
-// GetHeadline returns the Headline field value
-func (o *CtwaAdRequestBodyCreativesInner) GetHeadline() string {
-	if o == nil {
+// GetExistingPostId returns the ExistingPostId field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetExistingPostId() string {
+	if o == nil || IsNil(o.ExistingPostId) {
 		var ret string
 		return ret
 	}
-
-	return o.Headline
+	return *o.ExistingPostId
 }
 
-// GetHeadlineOk returns a tuple with the Headline field value
+// GetExistingPostIdOk returns a tuple with the ExistingPostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyCreativesInner) GetExistingPostIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExistingPostId) {
+		return nil, false
+	}
+	return o.ExistingPostId, true
+}
+
+// HasExistingPostId returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasExistingPostId() bool {
+	if o != nil && !IsNil(o.ExistingPostId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExistingPostId gets a reference to the given string and assigns it to the ExistingPostId field.
+func (o *CtwaAdRequestBodyCreativesInner) SetExistingPostId(v string) {
+	o.ExistingPostId = &v
+}
+
+// GetObjectStoryId returns the ObjectStoryId field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetObjectStoryId() string {
+	if o == nil || IsNil(o.ObjectStoryId) {
+		var ret string
+		return ret
+	}
+	return *o.ObjectStoryId
+}
+
+// GetObjectStoryIdOk returns a tuple with the ObjectStoryId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyCreativesInner) GetObjectStoryIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ObjectStoryId) {
+		return nil, false
+	}
+	return o.ObjectStoryId, true
+}
+
+// HasObjectStoryId returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasObjectStoryId() bool {
+	if o != nil && !IsNil(o.ObjectStoryId) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectStoryId gets a reference to the given string and assigns it to the ObjectStoryId field.
+func (o *CtwaAdRequestBodyCreativesInner) SetObjectStoryId(v string) {
+	o.ObjectStoryId = &v
+}
+
+// GetHeadline returns the Headline field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetHeadline() string {
+	if o == nil || IsNil(o.Headline) {
+		var ret string
+		return ret
+	}
+	return *o.Headline
+}
+
+// GetHeadlineOk returns a tuple with the Headline field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CtwaAdRequestBodyCreativesInner) GetHeadlineOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Headline) {
 		return nil, false
 	}
-	return &o.Headline, true
+	return o.Headline, true
 }
 
-// SetHeadline sets field value
+// HasHeadline returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasHeadline() bool {
+	if o != nil && !IsNil(o.Headline) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadline gets a reference to the given string and assigns it to the Headline field.
 func (o *CtwaAdRequestBodyCreativesInner) SetHeadline(v string) {
-	o.Headline = v
+	o.Headline = &v
 }
 
-// GetBody returns the Body field value
+// GetBody returns the Body field value if set, zero value otherwise.
 func (o *CtwaAdRequestBodyCreativesInner) GetBody() string {
-	if o == nil {
+	if o == nil || IsNil(o.Body) {
 		var ret string
 		return ret
 	}
-
-	return o.Body
+	return *o.Body
 }
 
-// GetBodyOk returns a tuple with the Body field value
+// GetBodyOk returns a tuple with the Body field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CtwaAdRequestBodyCreativesInner) GetBodyOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Body) {
 		return nil, false
 	}
-	return &o.Body, true
+	return o.Body, true
 }
 
-// SetBody sets field value
+// HasBody returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasBody() bool {
+	if o != nil && !IsNil(o.Body) {
+		return true
+	}
+
+	return false
+}
+
+// SetBody gets a reference to the given string and assigns it to the Body field.
 func (o *CtwaAdRequestBodyCreativesInner) SetBody(v string) {
-	o.Body = v
+	o.Body = &v
 }
 
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
@@ -206,8 +284,18 @@ func (o CtwaAdRequestBodyCreativesInner) MarshalJSON() ([]byte, error) {
 
 func (o CtwaAdRequestBodyCreativesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["headline"] = o.Headline
-	toSerialize["body"] = o.Body
+	if !IsNil(o.ExistingPostId) {
+		toSerialize["existingPostId"] = o.ExistingPostId
+	}
+	if !IsNil(o.ObjectStoryId) {
+		toSerialize["objectStoryId"] = o.ObjectStoryId
+	}
+	if !IsNil(o.Headline) {
+		toSerialize["headline"] = o.Headline
+	}
+	if !IsNil(o.Body) {
+		toSerialize["body"] = o.Body
+	}
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
 	}
@@ -218,44 +306,6 @@ func (o CtwaAdRequestBodyCreativesInner) ToMap() (map[string]interface{}, error)
 		toSerialize["welcomeMessage"] = o.WelcomeMessage
 	}
 	return toSerialize, nil
-}
-
-func (o *CtwaAdRequestBodyCreativesInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"headline",
-		"body",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varCtwaAdRequestBodyCreativesInner := _CtwaAdRequestBodyCreativesInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCtwaAdRequestBodyCreativesInner)
-
-	if err != nil {
-		return err
-	}
-
-	*o = CtwaAdRequestBodyCreativesInner(varCtwaAdRequestBodyCreativesInner)
-
-	return err
 }
 
 type NullableCtwaAdRequestBodyCreativesInner struct {

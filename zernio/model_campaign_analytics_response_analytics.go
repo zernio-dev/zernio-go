@@ -20,9 +20,10 @@ var _ MappedNullable = &CampaignAnalyticsResponseAnalytics{}
 
 // CampaignAnalyticsResponseAnalytics struct for CampaignAnalyticsResponseAnalytics
 type CampaignAnalyticsResponseAnalytics struct {
-	Summary    *AdMetrics                                     `json:"summary,omitempty"`
-	Daily      []CampaignAnalyticsResponseAnalyticsDailyInner `json:"daily,omitempty"`
-	Breakdowns map[string][]map[string]interface{}            `json:"breakdowns,omitempty"`
+	Summary              *CampaignAnalyticsResponseAnalyticsSummary              `json:"summary,omitempty"`
+	ImpressionShareCache *CampaignAnalyticsResponseAnalyticsImpressionShareCache `json:"impressionShareCache,omitempty"`
+	Daily                []CampaignAnalyticsResponseAnalyticsDailyInner          `json:"daily,omitempty"`
+	Breakdowns           map[string][]map[string]interface{}                     `json:"breakdowns,omitempty"`
 }
 
 // NewCampaignAnalyticsResponseAnalytics instantiates a new CampaignAnalyticsResponseAnalytics object
@@ -43,9 +44,9 @@ func NewCampaignAnalyticsResponseAnalyticsWithDefaults() *CampaignAnalyticsRespo
 }
 
 // GetSummary returns the Summary field value if set, zero value otherwise.
-func (o *CampaignAnalyticsResponseAnalytics) GetSummary() AdMetrics {
+func (o *CampaignAnalyticsResponseAnalytics) GetSummary() CampaignAnalyticsResponseAnalyticsSummary {
 	if o == nil || IsNil(o.Summary) {
-		var ret AdMetrics
+		var ret CampaignAnalyticsResponseAnalyticsSummary
 		return ret
 	}
 	return *o.Summary
@@ -53,7 +54,7 @@ func (o *CampaignAnalyticsResponseAnalytics) GetSummary() AdMetrics {
 
 // GetSummaryOk returns a tuple with the Summary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CampaignAnalyticsResponseAnalytics) GetSummaryOk() (*AdMetrics, bool) {
+func (o *CampaignAnalyticsResponseAnalytics) GetSummaryOk() (*CampaignAnalyticsResponseAnalyticsSummary, bool) {
 	if o == nil || IsNil(o.Summary) {
 		return nil, false
 	}
@@ -69,9 +70,41 @@ func (o *CampaignAnalyticsResponseAnalytics) HasSummary() bool {
 	return false
 }
 
-// SetSummary gets a reference to the given AdMetrics and assigns it to the Summary field.
-func (o *CampaignAnalyticsResponseAnalytics) SetSummary(v AdMetrics) {
+// SetSummary gets a reference to the given CampaignAnalyticsResponseAnalyticsSummary and assigns it to the Summary field.
+func (o *CampaignAnalyticsResponseAnalytics) SetSummary(v CampaignAnalyticsResponseAnalyticsSummary) {
 	o.Summary = &v
+}
+
+// GetImpressionShareCache returns the ImpressionShareCache field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetImpressionShareCache() CampaignAnalyticsResponseAnalyticsImpressionShareCache {
+	if o == nil || IsNil(o.ImpressionShareCache) {
+		var ret CampaignAnalyticsResponseAnalyticsImpressionShareCache
+		return ret
+	}
+	return *o.ImpressionShareCache
+}
+
+// GetImpressionShareCacheOk returns a tuple with the ImpressionShareCache field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetImpressionShareCacheOk() (*CampaignAnalyticsResponseAnalyticsImpressionShareCache, bool) {
+	if o == nil || IsNil(o.ImpressionShareCache) {
+		return nil, false
+	}
+	return o.ImpressionShareCache, true
+}
+
+// HasImpressionShareCache returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasImpressionShareCache() bool {
+	if o != nil && !IsNil(o.ImpressionShareCache) {
+		return true
+	}
+
+	return false
+}
+
+// SetImpressionShareCache gets a reference to the given CampaignAnalyticsResponseAnalyticsImpressionShareCache and assigns it to the ImpressionShareCache field.
+func (o *CampaignAnalyticsResponseAnalytics) SetImpressionShareCache(v CampaignAnalyticsResponseAnalyticsImpressionShareCache) {
+	o.ImpressionShareCache = &v
 }
 
 // GetDaily returns the Daily field value if set, zero value otherwise.
@@ -150,6 +183,9 @@ func (o CampaignAnalyticsResponseAnalytics) ToMap() (map[string]interface{}, err
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Summary) {
 		toSerialize["summary"] = o.Summary
+	}
+	if !IsNil(o.ImpressionShareCache) {
+		toSerialize["impressionShareCache"] = o.ImpressionShareCache
 	}
 	if !IsNil(o.Daily) {
 		toSerialize["daily"] = o.Daily

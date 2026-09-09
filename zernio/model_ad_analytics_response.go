@@ -21,9 +21,9 @@ var _ MappedNullable = &AdAnalyticsResponse{}
 // AdAnalyticsResponse struct for AdAnalyticsResponse
 type AdAnalyticsResponse struct {
 	// Present and true while historical data is being backfilled.
-	BackfillPending *bool                               `json:"backfillPending,omitempty"`
-	Ad              *AdAnalyticsResponseAd              `json:"ad,omitempty"`
-	Analytics       *CampaignAnalyticsResponseAnalytics `json:"analytics,omitempty"`
+	BackfillPending *bool                         `json:"backfillPending,omitempty"`
+	Ad              *AdAnalyticsResponseAd        `json:"ad,omitempty"`
+	Analytics       *AdAnalyticsResponseAnalytics `json:"analytics,omitempty"`
 }
 
 // NewAdAnalyticsResponse instantiates a new AdAnalyticsResponse object
@@ -108,9 +108,9 @@ func (o *AdAnalyticsResponse) SetAd(v AdAnalyticsResponseAd) {
 }
 
 // GetAnalytics returns the Analytics field value if set, zero value otherwise.
-func (o *AdAnalyticsResponse) GetAnalytics() CampaignAnalyticsResponseAnalytics {
+func (o *AdAnalyticsResponse) GetAnalytics() AdAnalyticsResponseAnalytics {
 	if o == nil || IsNil(o.Analytics) {
-		var ret CampaignAnalyticsResponseAnalytics
+		var ret AdAnalyticsResponseAnalytics
 		return ret
 	}
 	return *o.Analytics
@@ -118,7 +118,7 @@ func (o *AdAnalyticsResponse) GetAnalytics() CampaignAnalyticsResponseAnalytics 
 
 // GetAnalyticsOk returns a tuple with the Analytics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdAnalyticsResponse) GetAnalyticsOk() (*CampaignAnalyticsResponseAnalytics, bool) {
+func (o *AdAnalyticsResponse) GetAnalyticsOk() (*AdAnalyticsResponseAnalytics, bool) {
 	if o == nil || IsNil(o.Analytics) {
 		return nil, false
 	}
@@ -134,8 +134,8 @@ func (o *AdAnalyticsResponse) HasAnalytics() bool {
 	return false
 }
 
-// SetAnalytics gets a reference to the given CampaignAnalyticsResponseAnalytics and assigns it to the Analytics field.
-func (o *AdAnalyticsResponse) SetAnalytics(v CampaignAnalyticsResponseAnalytics) {
+// SetAnalytics gets a reference to the given AdAnalyticsResponseAnalytics and assigns it to the Analytics field.
+func (o *AdAnalyticsResponse) SetAnalytics(v AdAnalyticsResponseAnalytics) {
 	o.Analytics = &v
 }
 

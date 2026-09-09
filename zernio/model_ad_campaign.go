@@ -33,8 +33,10 @@ type AdCampaign struct {
 	// Platform-reported campaign issues (Meta `issues_info[]`).
 	CampaignIssuesInfo []map[string]interface{} `json:"campaignIssuesInfo,omitempty"`
 	AdCount            *int32                   `json:"adCount,omitempty"`
-	Budget             *AdBudget                `json:"budget,omitempty"`
-	CampaignBudget     *AdBudget                `json:"campaignBudget,omitempty"`
+	// Effective budget. Google metadata arrives after the next successful sync.
+	Budget NullableAdCampaignBudget `json:"budget,omitempty"`
+	// Campaign-level budget. Null for ad-set budgets.
+	CampaignBudget NullableAdCampaignBudget `json:"campaignBudget,omitempty"`
 	// Canonical CBO/ABO indicator. See AdTreeCampaign.budgetLevel.
 	BudgetLevel NullableString `json:"budgetLevel,omitempty"`
 	// Meta-only. Mirrors Campaign.is_budget_schedule_enabled.
@@ -363,68 +365,90 @@ func (o *AdCampaign) SetAdCount(v int32) {
 	o.AdCount = &v
 }
 
-// GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *AdCampaign) GetBudget() AdBudget {
-	if o == nil || IsNil(o.Budget) {
-		var ret AdBudget
+// GetBudget returns the Budget field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCampaign) GetBudget() AdCampaignBudget {
+	if o == nil || IsNil(o.Budget.Get()) {
+		var ret AdCampaignBudget
 		return ret
 	}
-	return *o.Budget
+	return *o.Budget.Get()
 }
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdCampaign) GetBudgetOk() (*AdBudget, bool) {
-	if o == nil || IsNil(o.Budget) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCampaign) GetBudgetOk() (*AdCampaignBudget, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Budget, true
+	return o.Budget.Get(), o.Budget.IsSet()
 }
 
 // HasBudget returns a boolean if a field has been set.
 func (o *AdCampaign) HasBudget() bool {
-	if o != nil && !IsNil(o.Budget) {
+	if o != nil && o.Budget.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetBudget gets a reference to the given AdBudget and assigns it to the Budget field.
-func (o *AdCampaign) SetBudget(v AdBudget) {
-	o.Budget = &v
+// SetBudget gets a reference to the given NullableAdCampaignBudget and assigns it to the Budget field.
+func (o *AdCampaign) SetBudget(v AdCampaignBudget) {
+	o.Budget.Set(&v)
 }
 
-// GetCampaignBudget returns the CampaignBudget field value if set, zero value otherwise.
-func (o *AdCampaign) GetCampaignBudget() AdBudget {
-	if o == nil || IsNil(o.CampaignBudget) {
-		var ret AdBudget
+// SetBudgetNil sets the value for Budget to be an explicit nil
+func (o *AdCampaign) SetBudgetNil() {
+	o.Budget.Set(nil)
+}
+
+// UnsetBudget ensures that no value is present for Budget, not even an explicit nil
+func (o *AdCampaign) UnsetBudget() {
+	o.Budget.Unset()
+}
+
+// GetCampaignBudget returns the CampaignBudget field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCampaign) GetCampaignBudget() AdCampaignBudget {
+	if o == nil || IsNil(o.CampaignBudget.Get()) {
+		var ret AdCampaignBudget
 		return ret
 	}
-	return *o.CampaignBudget
+	return *o.CampaignBudget.Get()
 }
 
 // GetCampaignBudgetOk returns a tuple with the CampaignBudget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdCampaign) GetCampaignBudgetOk() (*AdBudget, bool) {
-	if o == nil || IsNil(o.CampaignBudget) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCampaign) GetCampaignBudgetOk() (*AdCampaignBudget, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CampaignBudget, true
+	return o.CampaignBudget.Get(), o.CampaignBudget.IsSet()
 }
 
 // HasCampaignBudget returns a boolean if a field has been set.
 func (o *AdCampaign) HasCampaignBudget() bool {
-	if o != nil && !IsNil(o.CampaignBudget) {
+	if o != nil && o.CampaignBudget.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCampaignBudget gets a reference to the given AdBudget and assigns it to the CampaignBudget field.
-func (o *AdCampaign) SetCampaignBudget(v AdBudget) {
-	o.CampaignBudget = &v
+// SetCampaignBudget gets a reference to the given NullableAdCampaignBudget and assigns it to the CampaignBudget field.
+func (o *AdCampaign) SetCampaignBudget(v AdCampaignBudget) {
+	o.CampaignBudget.Set(&v)
+}
+
+// SetCampaignBudgetNil sets the value for CampaignBudget to be an explicit nil
+func (o *AdCampaign) SetCampaignBudgetNil() {
+	o.CampaignBudget.Set(nil)
+}
+
+// UnsetCampaignBudget ensures that no value is present for CampaignBudget, not even an explicit nil
+func (o *AdCampaign) UnsetCampaignBudget() {
+	o.CampaignBudget.Unset()
 }
 
 // GetBudgetLevel returns the BudgetLevel field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1093,11 +1117,11 @@ func (o AdCampaign) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AdCount) {
 		toSerialize["adCount"] = o.AdCount
 	}
-	if !IsNil(o.Budget) {
-		toSerialize["budget"] = o.Budget
+	if o.Budget.IsSet() {
+		toSerialize["budget"] = o.Budget.Get()
 	}
-	if !IsNil(o.CampaignBudget) {
-		toSerialize["campaignBudget"] = o.CampaignBudget
+	if o.CampaignBudget.IsSet() {
+		toSerialize["campaignBudget"] = o.CampaignBudget.Get()
 	}
 	if o.BudgetLevel.IsSet() {
 		toSerialize["budgetLevel"] = o.BudgetLevel.Get()

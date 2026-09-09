@@ -38,8 +38,10 @@ type BoostPostRequest struct {
 	Budget  *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
 	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
-	// Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Lead ads force ON_AD and ignore this.
+	// Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Messaging destinations imply their matching CTA and require goal engagement. Lead ads use ON_AD; combining an instant form with a messaging destination is rejected.
 	DestinationType *string `json:"destinationType,omitempty"`
+	// Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP destinationType or WHATSAPP_MESSAGE callToAction.
+	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// ISO 4217 currency code matching the ad account's currency. Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
 	Currency  *string                    `json:"currency,omitempty"`
 	Schedule  *BoostPostRequestSchedule  `json:"schedule,omitempty"`
@@ -65,9 +67,9 @@ type BoostPostRequest struct {
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Beneficiary/payer entity IDs for regionalRegulatedCategories. Values are numeric IDs from Meta verification. Keys vary by category (e.g. universal_beneficiary / universal_payer for BRAZIL_REGULATION and THAILAND_UNIVERSAL). If omitted, Meta uses Ads Manager defaults when configured.
 	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
-	// Destination URL for the CTA button. Send it together with `callToAction`.  **Meta**: adds a top-level `call_to_action` to the post-reference creative. This is what gives a `traffic` boost a clickable destination without replacing the creative and losing the post's social proof. Ignored when `leadGenFormId` is set, which supplies its own destination. Live-verified against a Page-post creative.  **TikTok**: maps to `landing_page_url` on the Spark Ad creative (`AdcreateCreatives.landing_page_url`); Spark Ads have no clickable destination without it.  Ignored on LinkedIn / Pinterest / X / Google, which infer the destination from the boosted post.
+	// Website URL for non-messaging CTA buttons. Send it with `callToAction`. Omit for messaging boosts.  **Meta**: adds a top-level `call_to_action` to the post-reference creative. This is what gives a `traffic` boost a clickable destination without replacing the creative and losing the post's social proof. Ignored when `leadGenFormId` is set, which supplies its own destination. Live-verified against a Page-post creative.  **TikTok**: maps to `landing_page_url` on the Spark Ad creative (`AdcreateCreatives.landing_page_url`); Spark Ads have no clickable destination without it.  Ignored on LinkedIn / Pinterest / X / Google, which infer the destination from the boosted post.
 	LinkUrl *string `json:"linkUrl,omitempty"`
-	// CTA button label. Send it together with `linkUrl`: a CTA without a destination produces a button that goes nowhere, so sending one alone is a 400.  **Meta**: the CTA enum of POST /v1/ads/create plus `VIEW_INSTAGRAM_PROFILE`, which is accepted on boost only. For that value `linkUrl` is typically the Instagram profile URL.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
+	// CTA button label. Non-messaging CTAs require `linkUrl`. WHATSAPP_MESSAGE, MESSAGE_PAGE, and INSTAGRAM_MESSAGE do not require a URL and reject linkUrl.  **Meta**: the CTA enum of POST /v1/ads/create plus `VIEW_INSTAGRAM_PROFILE`, `WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, and `INSTAGRAM_MESSAGE`. VIEW_INSTAGRAM_PROFILE requires linkUrl; the messaging CTAs select their destination automatically.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
 	CallToAction *string `json:"callToAction,omitempty"`
 	// TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator Spark Ads: the advertiser can boost a video owned by a DIFFERENT TikTok account. Without this, boosts are limited to videos owned by the same account running the ads (same-BC creators only). The creator generates the code in their TikTok app's Promote settings and shares it with the advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
 	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
@@ -79,7 +81,7 @@ type BoostPostRequest struct {
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
 	Status *string `json:"status,omitempty"`
-	// Meta only. Explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. The value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
+	// Meta only. Explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
 
@@ -392,6 +394,38 @@ func (o *BoostPostRequest) HasDestinationType() bool {
 // SetDestinationType gets a reference to the given string and assigns it to the DestinationType field.
 func (o *BoostPostRequest) SetDestinationType(v string) {
 	o.DestinationType = &v
+}
+
+// GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetWhatsappPhoneNumber() string {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappPhoneNumber
+}
+
+// GetWhatsappPhoneNumberOk returns a tuple with the WhatsappPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetWhatsappPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		return nil, false
+	}
+	return o.WhatsappPhoneNumber, true
+}
+
+// HasWhatsappPhoneNumber returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasWhatsappPhoneNumber() bool {
+	if o != nil && !IsNil(o.WhatsappPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
+func (o *BoostPostRequest) SetWhatsappPhoneNumber(v string) {
+	o.WhatsappPhoneNumber = &v
 }
 
 // GetCurrency returns the Currency field value if set, zero value otherwise.
@@ -1106,6 +1140,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DestinationType) {
 		toSerialize["destinationType"] = o.DestinationType
+	}
+	if !IsNil(o.WhatsappPhoneNumber) {
+		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
 	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency

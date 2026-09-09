@@ -328,8 +328,20 @@ ad set instead, so that ad set keeps its learning phase. It then owns
 `adSetId` is a 400 rather than a silent drop. `budget` is required only
 without `adSetId`.
 
-`instagramAccountId`, `destinationType` and `adSetId` are Meta-only and
-return 400 on other platforms.
+`instagramAccountId`, `destinationType`, `whatsappPhoneNumber` and `adSetId`
+are Meta-only and return 400 on other platforms.
+
+**Messaging boosts (Meta).** Use `goal: engagement` with
+`callToAction: WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, or `INSTAGRAM_MESSAGE`.
+The CTA implies WHATSAPP, MESSENGER, or INSTAGRAM_DIRECT respectively;
+`destinationType` alone also selects the matching CTA. Omit `linkUrl`.
+The campaign uses OUTCOME_ENGAGEMENT and the ad set uses CONVERSATIONS
+with the promoted Page. Optional `whatsappPhoneNumber` selects a number
+already paired with that Page. Conflicting CTA/destination, instant form,
+goal, or optimizationGoal inputs return 400. Attach requires the target
+ad set destination to match. Existing post references preserve social proof;
+an Instagram reel rejected by Meta is not re-uploaded as a new post for
+a messaging boost.
 
 **Retries.** Boosts are NOT idempotent and can take minutes when Meta requires re-hosting an
 Instagram video, so do not retry on client timeout. Send an
@@ -3158,6 +3170,8 @@ ListAdCampaigns List campaigns
 Returns campaigns as virtual aggregations over ad documents grouped by platform campaign ID.
 Metrics (spend, impressions, clicks, etc.) are summed across all ads in each campaign.
 Campaign status is derived from child ad statuses (active > pending_review > paused > error > completed > cancelled > rejected).
+Google campaign budgets include amountMicros, explicitlyShared, resourceName and
+deliveryMethod after the next successful sync. This endpoint does not fetch Google live.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdCampaignsRequest
@@ -4198,6 +4212,152 @@ func (a *AdCampaignsAPIService) ListBidStrategiesExecute(r AdCampaignsAPIListBid
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListCampaignNegativeKeywordListsRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	campaignId string
+	platform   *string
+}
+
+func (r AdCampaignsAPIListCampaignNegativeKeywordListsRequest) Platform(platform string) AdCampaignsAPIListCampaignNegativeKeywordListsRequest {
+	r.platform = &platform
+	return r
+}
+
+func (r AdCampaignsAPIListCampaignNegativeKeywordListsRequest) Execute() (*ListAdNegativeKeywordLists200Response, *http.Response, error) {
+	return r.ApiService.ListCampaignNegativeKeywordListsExecute(r)
+}
+
+/*
+ListCampaignNegativeKeywordLists List campaign negative lists
+
+Returns shared negative keyword lists attached to the campaign, separate from campaign-level negative keywords. Google Ads shared negative keyword lists (shared_set type NEGATIVE_KEYWORDS). Reads are cached for 10 minutes; quota exhaustion may return the last successful result for up to 7 days with stale=true. Customer selection is limited to this connection and its account scope.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId
+	@return AdCampaignsAPIListCampaignNegativeKeywordListsRequest
+*/
+func (a *AdCampaignsAPIService) ListCampaignNegativeKeywordLists(ctx context.Context, campaignId string) AdCampaignsAPIListCampaignNegativeKeywordListsRequest {
+	return AdCampaignsAPIListCampaignNegativeKeywordListsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdNegativeKeywordLists200Response
+func (a *AdCampaignsAPIService) ListCampaignNegativeKeywordListsExecute(r AdCampaignsAPIListCampaignNegativeKeywordListsRequest) (*ListAdNegativeKeywordLists200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdNegativeKeywordLists200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListCampaignNegativeKeywordLists")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keyword-lists"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIListCampaignNegativeKeywordsRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -4432,6 +4592,154 @@ func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdK
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest struct {
+	ctx                                        context.Context
+	ApiService                                 *AdCampaignsAPIService
+	campaignId                                 string
+	replaceCampaignNegativeKeywordListsRequest *ReplaceCampaignNegativeKeywordListsRequest
+}
+
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) ReplaceCampaignNegativeKeywordListsRequest(replaceCampaignNegativeKeywordListsRequest ReplaceCampaignNegativeKeywordListsRequest) AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest {
+	r.replaceCampaignNegativeKeywordListsRequest = &replaceCampaignNegativeKeywordListsRequest
+	return r
+}
+
+func (r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) Execute() (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	return r.ApiService.ReplaceCampaignNegativeKeywordListsExecute(r)
+}
+
+/*
+ReplaceCampaignNegativeKeywordLists Replace campaign negative lists
+
+Sets the full desired set of shared negative keyword list associations on this campaign. Send listIds=[] to detach all negative keyword lists. Only campaign_shared_set links are changed; the lists and their keywords are preserved. Every list must belong to the campaign customer and have type NEGATIVE_KEYWORDS.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId
+	@return AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest
+*/
+func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywordLists(ctx context.Context, campaignId string) AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest {
+	return AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplaceAdNegativeKeywordListKeywords200Response
+func (a *AdCampaignsAPIService) ReplaceCampaignNegativeKeywordListsExecute(r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) (*ReplaceAdNegativeKeywordListKeywords200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplaceAdNegativeKeywordListKeywords200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ReplaceCampaignNegativeKeywordLists")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/negative-keyword-lists"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replaceCampaignNegativeKeywordListsRequest == nil {
+		return localVarReturnValue, nil, reportError("replaceCampaignNegativeKeywordListsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replaceCampaignNegativeKeywordListsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -4811,7 +5119,7 @@ field is always an error, never a silent drop.
 | `bidStrategy` | Yes | Yes | 501 |
 | `bidAmount`, `roasAverageFloor` | 400 (ad-set level) | Yes | 400 |
 | `portfolioBidStrategyId` | 400 | Yes | 400 |
-| `budget` (CBO; ABO returns 409) | Yes | 501 | 501 |
+| `budget` (CBO; ABO returns 409) | Yes | Daily only | 501 |
 | `name` | Yes | 501 | 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
@@ -4823,6 +5131,10 @@ CPC ceiling; `portfolioBidStrategyId` attaches a portfolio strategy instead
 (exclusive with `bidStrategy`). Setting the standard triplet on a campaign that
 is currently on a PORTFOLIO strategy is rejected: detach it in Google Ads
 first, since it is shared across campaigns.
+
+Google budget updates read the current budget before mutation. Shared budgets return
+409 unless allowSharedBudgetUpdate=true is explicitly supplied, because the change
+affects every campaign using that budget. Unknown sharing state also returns 409.
 
 `accountId` forwards the update straight to Meta for a campaign with zero ads,
 which would otherwise 404; the response then carries `updated: 0`.

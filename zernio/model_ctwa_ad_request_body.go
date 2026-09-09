@@ -21,7 +21,7 @@ import (
 // checks if the CtwaAdRequestBody type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CtwaAdRequestBody{}
 
-// CtwaAdRequestBody In addition to the `required` list, the request must use EXACTLY ONE of the two shapes:  - Single-creative: `headline`, `body`, and one of   `imageUrl` / `video` (mutually exclusive). - Multi-creative: a non-empty `creatives[]` array. Top-level   `headline` / `body` / `imageUrl` / `video` must NOT be set   on this shape.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.
+// CtwaAdRequestBody In addition to the `required` list, the request must use EXACTLY ONE of the two shapes:  - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`,   OR `existingPostId` / `objectStoryId` to reuse an organic post. - Multi-creative: a non-empty `creatives[]` array. Top-level   creative fields must NOT be set on this shape.  Existing post references work on messaging and CTWA only (not call ads). They cannot be combined with each other or with headline, body, imageUrl, video, or welcomeMessage. No media is uploaded and the organic post is retained. Fresh creatives still require headline, body, and image or video.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.
 type CtwaAdRequestBody struct {
 	// Facebook or Instagram SocialAccount ID.
 	AccountId string `json:"accountId"`
@@ -29,15 +29,21 @@ type CtwaAdRequestBody struct {
 	AdAccountId string `json:"adAccountId"`
 	// Ad display name. Used to derive campaign / ad set names. On the multi-creative shape, each ad's Meta name gets a \" #N\" suffix (1-indexed) so Ads Manager shows them as a numbered batch.
 	Name string `json:"name"`
+	// Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+	ExistingPostId *string `json:"existingPostId,omitempty"`
+	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
+	ObjectStoryId *string `json:"objectStoryId,omitempty" validate:"regexp=^\\\\d+_\\\\d+$"`
+	// WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Attach requests do not change the existing ad set.
+	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Headline *string `json:"headline,omitempty"`
 	// Primary text shown above the image / video. Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Body *string `json:"body,omitempty"`
-	// Image asset for single-creative shape. Mutually exclusive with `video` and with `creatives[]`. Required on the single-creative shape if `video` is not supplied.
+	// Image asset for single-creative shape. Mutually exclusive with `video` and with `creatives[]`. Required on the single-creative shape if neither `video` nor an existing post reference is supplied.
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
-	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry must supply its own headline, body, and exactly one of `imageUrl` / `video`.
+	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or an existingPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
 	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests`, `audienceId` and `campaignStatus` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
 	AdSetId *string `json:"adSetId,omitempty"`
@@ -183,6 +189,102 @@ func (o *CtwaAdRequestBody) GetNameOk() (*string, bool) {
 // SetName sets field value
 func (o *CtwaAdRequestBody) SetName(v string) {
 	o.Name = v
+}
+
+// GetExistingPostId returns the ExistingPostId field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetExistingPostId() string {
+	if o == nil || IsNil(o.ExistingPostId) {
+		var ret string
+		return ret
+	}
+	return *o.ExistingPostId
+}
+
+// GetExistingPostIdOk returns a tuple with the ExistingPostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetExistingPostIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExistingPostId) {
+		return nil, false
+	}
+	return o.ExistingPostId, true
+}
+
+// HasExistingPostId returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasExistingPostId() bool {
+	if o != nil && !IsNil(o.ExistingPostId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExistingPostId gets a reference to the given string and assigns it to the ExistingPostId field.
+func (o *CtwaAdRequestBody) SetExistingPostId(v string) {
+	o.ExistingPostId = &v
+}
+
+// GetObjectStoryId returns the ObjectStoryId field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetObjectStoryId() string {
+	if o == nil || IsNil(o.ObjectStoryId) {
+		var ret string
+		return ret
+	}
+	return *o.ObjectStoryId
+}
+
+// GetObjectStoryIdOk returns a tuple with the ObjectStoryId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetObjectStoryIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ObjectStoryId) {
+		return nil, false
+	}
+	return o.ObjectStoryId, true
+}
+
+// HasObjectStoryId returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasObjectStoryId() bool {
+	if o != nil && !IsNil(o.ObjectStoryId) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectStoryId gets a reference to the given string and assigns it to the ObjectStoryId field.
+func (o *CtwaAdRequestBody) SetObjectStoryId(v string) {
+	o.ObjectStoryId = &v
+}
+
+// GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetWhatsappPhoneNumber() string {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappPhoneNumber
+}
+
+// GetWhatsappPhoneNumberOk returns a tuple with the WhatsappPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetWhatsappPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		return nil, false
+	}
+	return o.WhatsappPhoneNumber, true
+}
+
+// HasWhatsappPhoneNumber returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasWhatsappPhoneNumber() bool {
+	if o != nil && !IsNil(o.WhatsappPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
+func (o *CtwaAdRequestBody) SetWhatsappPhoneNumber(v string) {
+	o.WhatsappPhoneNumber = &v
 }
 
 // GetHeadline returns the Headline field value if set, zero value otherwise.
@@ -1254,6 +1356,15 @@ func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
+	if !IsNil(o.ExistingPostId) {
+		toSerialize["existingPostId"] = o.ExistingPostId
+	}
+	if !IsNil(o.ObjectStoryId) {
+		toSerialize["objectStoryId"] = o.ObjectStoryId
+	}
+	if !IsNil(o.WhatsappPhoneNumber) {
+		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
+	}
 	if !IsNil(o.Headline) {
 		toSerialize["headline"] = o.Headline
 	}
