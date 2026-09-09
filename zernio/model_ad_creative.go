@@ -57,7 +57,9 @@ type AdCreative struct {
 	// Google Ads description
 	GoogleDescription *string `json:"googleDescription,omitempty"`
 	// Destination URL
-	LinkUrl              *string `json:"linkUrl,omitempty"`
+	LinkUrl *string `json:"linkUrl,omitempty"`
+	// Explicit E.164 WhatsApp number supplied when creating a Meta boost or messaging ad. Absent when omitted by the caller or on older records.
+	WhatsappPhoneNumber  *string `json:"whatsappPhoneNumber,omitempty"`
 	PinterestImageUrl    *string `json:"pinterestImageUrl,omitempty"`
 	PinterestTitle       *string `json:"pinterestTitle,omitempty"`
 	PinterestDescription *string `json:"pinterestDescription,omitempty"`
@@ -809,6 +811,38 @@ func (o *AdCreative) SetLinkUrl(v string) {
 	o.LinkUrl = &v
 }
 
+// GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
+func (o *AdCreative) GetWhatsappPhoneNumber() string {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappPhoneNumber
+}
+
+// GetWhatsappPhoneNumberOk returns a tuple with the WhatsappPhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetWhatsappPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappPhoneNumber) {
+		return nil, false
+	}
+	return o.WhatsappPhoneNumber, true
+}
+
+// HasWhatsappPhoneNumber returns a boolean if a field has been set.
+func (o *AdCreative) HasWhatsappPhoneNumber() bool {
+	if o != nil && !IsNil(o.WhatsappPhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
+func (o *AdCreative) SetWhatsappPhoneNumber(v string) {
+	o.WhatsappPhoneNumber = &v
+}
+
 // GetPinterestImageUrl returns the PinterestImageUrl field value if set, zero value otherwise.
 func (o *AdCreative) GetPinterestImageUrl() string {
 	if o == nil || IsNil(o.PinterestImageUrl) {
@@ -971,6 +1005,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl
+	}
+	if !IsNil(o.WhatsappPhoneNumber) {
+		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
 	}
 	if !IsNil(o.PinterestImageUrl) {
 		toSerialize["pinterestImageUrl"] = o.PinterestImageUrl
