@@ -25,6 +25,7 @@ var _ MappedNullable = &CreateMessagingAdRequest{}
 type CreateMessagingAdRequest struct {
 	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
+	Tracking         *AdTracking       `json:"tracking,omitempty"`
 	// Facebook or Instagram SocialAccount ID.
 	AccountId string `json:"accountId"`
 	// Meta ad account ID, e.g. `act_123456789`.
@@ -154,6 +155,38 @@ func (o *CreateMessagingAdRequest) HasCreativeFeatures() bool {
 // SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
 func (o *CreateMessagingAdRequest) SetCreativeFeatures(v map[string]string) {
 	o.CreativeFeatures = v
+}
+
+// GetTracking returns the Tracking field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetTracking() AdTracking {
+	if o == nil || IsNil(o.Tracking) {
+		var ret AdTracking
+		return ret
+	}
+	return *o.Tracking
+}
+
+// GetTrackingOk returns a tuple with the Tracking field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetTrackingOk() (*AdTracking, bool) {
+	if o == nil || IsNil(o.Tracking) {
+		return nil, false
+	}
+	return o.Tracking, true
+}
+
+// HasTracking returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasTracking() bool {
+	if o != nil && !IsNil(o.Tracking) {
+		return true
+	}
+
+	return false
+}
+
+// SetTracking gets a reference to the given AdTracking and assigns it to the Tracking field.
+func (o *CreateMessagingAdRequest) SetTracking(v AdTracking) {
+	o.Tracking = &v
 }
 
 // GetAccountId returns the AccountId field value
@@ -1416,6 +1449,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
+	if !IsNil(o.Tracking) {
+		toSerialize["tracking"] = o.Tracking
 	}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId

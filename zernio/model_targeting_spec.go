@@ -20,6 +20,10 @@ var _ MappedNullable = &TargetingSpec{}
 
 // TargetingSpec Normalized, platform-agnostic ad-targeting spec. Every field is optional, an empty object targets the platform's default broadest audience. Field names are camelCase and identical across `POST /v1/ads/create` (the `targeting` object), `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences, so a spec resolved once can be reused verbatim.  Entity ids (`regions[].key`, `cities[].key`, `zips[].key`, `metros[].key`, `interests[].id`, `behaviors[].id`) are the platform's opaque identifiers resolved via `GET /v1/ads/targeting/search`. A spec is therefore meaningful only for the platform it was built against, except the portable fields (`countries`, `ageMin`/`ageMax`, `gender`, `incomeTier`, `languages`) which carry across platforms. Fields a platform cannot honour are rejected at create time with `INVALID_FIELD_VALUE` naming the offending field (not silently dropped).
 type TargetingSpec struct {
+	// Meta only. Operating systems and version ranges, such as iOS_ver_14.0_and_above or Android. Emitted as user_os. May also be supplied inside targeting.
+	UserOs []string `json:"userOs,omitempty"`
+	// Meta only. Device models such as iPhone. Emitted as user_device. May also be supplied inside targeting.
+	UserDevice []string `json:"userDevice,omitempty"`
 	// ISO 3166-1 alpha-2 country codes (e.g. ['US']).
 	Countries []string `json:"countries,omitempty"`
 	// Region/state targeting. `key` is the platform location ID from /v1/ads/targeting/search?dimension=geo&geoType=region.
@@ -82,6 +86,70 @@ func NewTargetingSpec() *TargetingSpec {
 func NewTargetingSpecWithDefaults() *TargetingSpec {
 	this := TargetingSpec{}
 	return &this
+}
+
+// GetUserOs returns the UserOs field value if set, zero value otherwise.
+func (o *TargetingSpec) GetUserOs() []string {
+	if o == nil || IsNil(o.UserOs) {
+		var ret []string
+		return ret
+	}
+	return o.UserOs
+}
+
+// GetUserOsOk returns a tuple with the UserOs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetUserOsOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserOs) {
+		return nil, false
+	}
+	return o.UserOs, true
+}
+
+// HasUserOs returns a boolean if a field has been set.
+func (o *TargetingSpec) HasUserOs() bool {
+	if o != nil && !IsNil(o.UserOs) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserOs gets a reference to the given []string and assigns it to the UserOs field.
+func (o *TargetingSpec) SetUserOs(v []string) {
+	o.UserOs = v
+}
+
+// GetUserDevice returns the UserDevice field value if set, zero value otherwise.
+func (o *TargetingSpec) GetUserDevice() []string {
+	if o == nil || IsNil(o.UserDevice) {
+		var ret []string
+		return ret
+	}
+	return o.UserDevice
+}
+
+// GetUserDeviceOk returns a tuple with the UserDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetUserDeviceOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserDevice) {
+		return nil, false
+	}
+	return o.UserDevice, true
+}
+
+// HasUserDevice returns a boolean if a field has been set.
+func (o *TargetingSpec) HasUserDevice() bool {
+	if o != nil && !IsNil(o.UserDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserDevice gets a reference to the given []string and assigns it to the UserDevice field.
+func (o *TargetingSpec) SetUserDevice(v []string) {
+	o.UserDevice = v
 }
 
 // GetCountries returns the Countries field value if set, zero value otherwise.
@@ -830,6 +898,12 @@ func (o TargetingSpec) MarshalJSON() ([]byte, error) {
 
 func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.UserOs) {
+		toSerialize["userOs"] = o.UserOs
+	}
+	if !IsNil(o.UserDevice) {
+		toSerialize["userDevice"] = o.UserDevice
+	}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries
 	}

@@ -602,7 +602,7 @@ func (r AdCampaignsAPICreateAdCampaignRequest) IdempotencyKey(idempotencyKey str
 	return r
 }
 
-func (r AdCampaignsAPICreateAdCampaignRequest) Execute() (*CreateAdCampaign201Response, *http.Response, error) {
+func (r AdCampaignsAPICreateAdCampaignRequest) Execute() (*CreateAdCampaign200Response, *http.Response, error) {
 	return r.ApiService.CreateAdCampaignExecute(r)
 }
 
@@ -636,13 +636,13 @@ func (a *AdCampaignsAPIService) CreateAdCampaign(ctx context.Context) AdCampaign
 
 // Execute executes the request
 //
-//	@return CreateAdCampaign201Response
-func (a *AdCampaignsAPIService) CreateAdCampaignExecute(r AdCampaignsAPICreateAdCampaignRequest) (*CreateAdCampaign201Response, *http.Response, error) {
+//	@return CreateAdCampaign200Response
+func (a *AdCampaignsAPIService) CreateAdCampaignExecute(r AdCampaignsAPICreateAdCampaignRequest) (*CreateAdCampaign200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateAdCampaign201Response
+		localVarReturnValue *CreateAdCampaign200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.CreateAdCampaign")

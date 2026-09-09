@@ -23,16 +23,22 @@ var _ MappedNullable = &GetAdComments200ResponseMeta{}
 
 // GetAdComments200ResponseMeta struct for GetAdComments200ResponseMeta
 type GetAdComments200ResponseMeta struct {
-	// Which side these comments are on (same as `placement`).
+	// Platform of the comments.
 	Platform string `json:"platform"`
 	// The placement these comments are for, useful when you didn't pass ?placement= and want to know which one you got.
-	Placement string `json:"placement"`
+	Placement *string `json:"placement,omitempty"`
 	// Internal Zernio ad ID.
 	AdId string `json:"adId"`
-	// Meta ad ID.
-	PlatformAdId string `json:"platformAdId"`
+	// Platform ad ID.
+	PlatformAdId *string `json:"platformAdId,omitempty"`
 	// Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
-	EffectiveStoryId string `json:"effectiveStoryId"`
+	EffectiveStoryId *string `json:"effectiveStoryId,omitempty"`
+	// TikTok-only video item ID. Null when the ad and comments do not expose it.
+	TiktokItemId NullableString `json:"tiktokItemId,omitempty"`
+	// TikTok-only resolved start date.
+	Since *string `json:"since,omitempty"`
+	// TikTok-only resolved end date.
+	Until *string `json:"until,omitempty"`
 	// Facebook-only. The connected Facebook Page SocialAccount these comments were read through. Pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
 	FacebookAccountId NullableString `json:"facebookAccountId,omitempty"`
 	// Instagram-only. The Instagram-scoped business ID that owns the boosted media (creative.instagram_user_id).
@@ -52,13 +58,10 @@ type _GetAdComments200ResponseMeta GetAdComments200ResponseMeta
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetAdComments200ResponseMeta(platform string, placement string, adId string, platformAdId string, effectiveStoryId string, accountId string, lastUpdated time.Time) *GetAdComments200ResponseMeta {
+func NewGetAdComments200ResponseMeta(platform string, adId string, accountId string, lastUpdated time.Time) *GetAdComments200ResponseMeta {
 	this := GetAdComments200ResponseMeta{}
 	this.Platform = platform
-	this.Placement = placement
 	this.AdId = adId
-	this.PlatformAdId = platformAdId
-	this.EffectiveStoryId = effectiveStoryId
 	this.AccountId = accountId
 	this.LastUpdated = lastUpdated
 	return &this
@@ -96,28 +99,36 @@ func (o *GetAdComments200ResponseMeta) SetPlatform(v string) {
 	o.Platform = v
 }
 
-// GetPlacement returns the Placement field value
+// GetPlacement returns the Placement field value if set, zero value otherwise.
 func (o *GetAdComments200ResponseMeta) GetPlacement() string {
-	if o == nil {
+	if o == nil || IsNil(o.Placement) {
 		var ret string
 		return ret
 	}
-
-	return o.Placement
+	return *o.Placement
 }
 
-// GetPlacementOk returns a tuple with the Placement field value
+// GetPlacementOk returns a tuple with the Placement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *GetAdComments200ResponseMeta) GetPlacementOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Placement) {
 		return nil, false
 	}
-	return &o.Placement, true
+	return o.Placement, true
 }
 
-// SetPlacement sets field value
+// HasPlacement returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasPlacement() bool {
+	if o != nil && !IsNil(o.Placement) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlacement gets a reference to the given string and assigns it to the Placement field.
 func (o *GetAdComments200ResponseMeta) SetPlacement(v string) {
-	o.Placement = v
+	o.Placement = &v
 }
 
 // GetAdId returns the AdId field value
@@ -144,52 +155,175 @@ func (o *GetAdComments200ResponseMeta) SetAdId(v string) {
 	o.AdId = v
 }
 
-// GetPlatformAdId returns the PlatformAdId field value
+// GetPlatformAdId returns the PlatformAdId field value if set, zero value otherwise.
 func (o *GetAdComments200ResponseMeta) GetPlatformAdId() string {
-	if o == nil {
+	if o == nil || IsNil(o.PlatformAdId) {
 		var ret string
 		return ret
 	}
-
-	return o.PlatformAdId
+	return *o.PlatformAdId
 }
 
-// GetPlatformAdIdOk returns a tuple with the PlatformAdId field value
+// GetPlatformAdIdOk returns a tuple with the PlatformAdId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *GetAdComments200ResponseMeta) GetPlatformAdIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PlatformAdId) {
 		return nil, false
 	}
-	return &o.PlatformAdId, true
+	return o.PlatformAdId, true
 }
 
-// SetPlatformAdId sets field value
+// HasPlatformAdId returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasPlatformAdId() bool {
+	if o != nil && !IsNil(o.PlatformAdId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformAdId gets a reference to the given string and assigns it to the PlatformAdId field.
 func (o *GetAdComments200ResponseMeta) SetPlatformAdId(v string) {
-	o.PlatformAdId = v
+	o.PlatformAdId = &v
 }
 
-// GetEffectiveStoryId returns the EffectiveStoryId field value
+// GetEffectiveStoryId returns the EffectiveStoryId field value if set, zero value otherwise.
 func (o *GetAdComments200ResponseMeta) GetEffectiveStoryId() string {
-	if o == nil {
+	if o == nil || IsNil(o.EffectiveStoryId) {
 		var ret string
 		return ret
 	}
-
-	return o.EffectiveStoryId
+	return *o.EffectiveStoryId
 }
 
-// GetEffectiveStoryIdOk returns a tuple with the EffectiveStoryId field value
+// GetEffectiveStoryIdOk returns a tuple with the EffectiveStoryId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *GetAdComments200ResponseMeta) GetEffectiveStoryIdOk() (*string, bool) {
+	if o == nil || IsNil(o.EffectiveStoryId) {
+		return nil, false
+	}
+	return o.EffectiveStoryId, true
+}
+
+// HasEffectiveStoryId returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasEffectiveStoryId() bool {
+	if o != nil && !IsNil(o.EffectiveStoryId) {
+		return true
+	}
+
+	return false
+}
+
+// SetEffectiveStoryId gets a reference to the given string and assigns it to the EffectiveStoryId field.
+func (o *GetAdComments200ResponseMeta) SetEffectiveStoryId(v string) {
+	o.EffectiveStoryId = &v
+}
+
+// GetTiktokItemId returns the TiktokItemId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdComments200ResponseMeta) GetTiktokItemId() string {
+	if o == nil || IsNil(o.TiktokItemId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.TiktokItemId.Get()
+}
+
+// GetTiktokItemIdOk returns a tuple with the TiktokItemId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdComments200ResponseMeta) GetTiktokItemIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.EffectiveStoryId, true
+	return o.TiktokItemId.Get(), o.TiktokItemId.IsSet()
 }
 
-// SetEffectiveStoryId sets field value
-func (o *GetAdComments200ResponseMeta) SetEffectiveStoryId(v string) {
-	o.EffectiveStoryId = v
+// HasTiktokItemId returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasTiktokItemId() bool {
+	if o != nil && o.TiktokItemId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTiktokItemId gets a reference to the given NullableString and assigns it to the TiktokItemId field.
+func (o *GetAdComments200ResponseMeta) SetTiktokItemId(v string) {
+	o.TiktokItemId.Set(&v)
+}
+
+// SetTiktokItemIdNil sets the value for TiktokItemId to be an explicit nil
+func (o *GetAdComments200ResponseMeta) SetTiktokItemIdNil() {
+	o.TiktokItemId.Set(nil)
+}
+
+// UnsetTiktokItemId ensures that no value is present for TiktokItemId, not even an explicit nil
+func (o *GetAdComments200ResponseMeta) UnsetTiktokItemId() {
+	o.TiktokItemId.Unset()
+}
+
+// GetSince returns the Since field value if set, zero value otherwise.
+func (o *GetAdComments200ResponseMeta) GetSince() string {
+	if o == nil || IsNil(o.Since) {
+		var ret string
+		return ret
+	}
+	return *o.Since
+}
+
+// GetSinceOk returns a tuple with the Since field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdComments200ResponseMeta) GetSinceOk() (*string, bool) {
+	if o == nil || IsNil(o.Since) {
+		return nil, false
+	}
+	return o.Since, true
+}
+
+// HasSince returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasSince() bool {
+	if o != nil && !IsNil(o.Since) {
+		return true
+	}
+
+	return false
+}
+
+// SetSince gets a reference to the given string and assigns it to the Since field.
+func (o *GetAdComments200ResponseMeta) SetSince(v string) {
+	o.Since = &v
+}
+
+// GetUntil returns the Until field value if set, zero value otherwise.
+func (o *GetAdComments200ResponseMeta) GetUntil() string {
+	if o == nil || IsNil(o.Until) {
+		var ret string
+		return ret
+	}
+	return *o.Until
+}
+
+// GetUntilOk returns a tuple with the Until field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdComments200ResponseMeta) GetUntilOk() (*string, bool) {
+	if o == nil || IsNil(o.Until) {
+		return nil, false
+	}
+	return o.Until, true
+}
+
+// HasUntil returns a boolean if a field has been set.
+func (o *GetAdComments200ResponseMeta) HasUntil() bool {
+	if o != nil && !IsNil(o.Until) {
+		return true
+	}
+
+	return false
+}
+
+// SetUntil gets a reference to the given string and assigns it to the Until field.
+func (o *GetAdComments200ResponseMeta) SetUntil(v string) {
+	o.Until = &v
 }
 
 // GetFacebookAccountId returns the FacebookAccountId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -390,10 +524,25 @@ func (o GetAdComments200ResponseMeta) MarshalJSON() ([]byte, error) {
 func (o GetAdComments200ResponseMeta) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
-	toSerialize["placement"] = o.Placement
+	if !IsNil(o.Placement) {
+		toSerialize["placement"] = o.Placement
+	}
 	toSerialize["adId"] = o.AdId
-	toSerialize["platformAdId"] = o.PlatformAdId
-	toSerialize["effectiveStoryId"] = o.EffectiveStoryId
+	if !IsNil(o.PlatformAdId) {
+		toSerialize["platformAdId"] = o.PlatformAdId
+	}
+	if !IsNil(o.EffectiveStoryId) {
+		toSerialize["effectiveStoryId"] = o.EffectiveStoryId
+	}
+	if o.TiktokItemId.IsSet() {
+		toSerialize["tiktokItemId"] = o.TiktokItemId.Get()
+	}
+	if !IsNil(o.Since) {
+		toSerialize["since"] = o.Since
+	}
+	if !IsNil(o.Until) {
+		toSerialize["until"] = o.Until
+	}
 	if o.FacebookAccountId.IsSet() {
 		toSerialize["facebookAccountId"] = o.FacebookAccountId.Get()
 	}
@@ -417,10 +566,7 @@ func (o *GetAdComments200ResponseMeta) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"platform",
-		"placement",
 		"adId",
-		"platformAdId",
-		"effectiveStoryId",
 		"accountId",
 		"lastUpdated",
 	}

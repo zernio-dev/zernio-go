@@ -28,7 +28,14 @@ type CreateAdCampaignRequest struct {
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
 	// Mapped to the ODAX objective (same mapping as POST /v1/ads/create).
-	Goal                string   `json:"goal"`
+	Goal string `json:"goal"`
+	// Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
+	IsSkadnetworkAttribution *bool             `json:"isSkadnetworkAttribution,omitempty"`
+	PromotedObject           *AdPromotedObject `json:"promotedObject,omitempty"`
+	// Meta only. SKAdNetwork app promotion requires AUCTION.
+	BuyingType *string `json:"buyingType,omitempty"`
+	// Meta only. Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED.
+	ValidateOnly        *bool    `json:"validateOnly,omitempty"`
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
@@ -165,6 +172,134 @@ func (o *CreateAdCampaignRequest) GetGoalOk() (*string, bool) {
 // SetGoal sets field value
 func (o *CreateAdCampaignRequest) SetGoal(v string) {
 	o.Goal = v
+}
+
+// GetIsSkadnetworkAttribution returns the IsSkadnetworkAttribution field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetIsSkadnetworkAttribution() bool {
+	if o == nil || IsNil(o.IsSkadnetworkAttribution) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSkadnetworkAttribution
+}
+
+// GetIsSkadnetworkAttributionOk returns a tuple with the IsSkadnetworkAttribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetIsSkadnetworkAttributionOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSkadnetworkAttribution) {
+		return nil, false
+	}
+	return o.IsSkadnetworkAttribution, true
+}
+
+// HasIsSkadnetworkAttribution returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasIsSkadnetworkAttribution() bool {
+	if o != nil && !IsNil(o.IsSkadnetworkAttribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSkadnetworkAttribution gets a reference to the given bool and assigns it to the IsSkadnetworkAttribution field.
+func (o *CreateAdCampaignRequest) SetIsSkadnetworkAttribution(v bool) {
+	o.IsSkadnetworkAttribution = &v
+}
+
+// GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetPromotedObject() AdPromotedObject {
+	if o == nil || IsNil(o.PromotedObject) {
+		var ret AdPromotedObject
+		return ret
+	}
+	return *o.PromotedObject
+}
+
+// GetPromotedObjectOk returns a tuple with the PromotedObject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetPromotedObjectOk() (*AdPromotedObject, bool) {
+	if o == nil || IsNil(o.PromotedObject) {
+		return nil, false
+	}
+	return o.PromotedObject, true
+}
+
+// HasPromotedObject returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasPromotedObject() bool {
+	if o != nil && !IsNil(o.PromotedObject) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotedObject gets a reference to the given AdPromotedObject and assigns it to the PromotedObject field.
+func (o *CreateAdCampaignRequest) SetPromotedObject(v AdPromotedObject) {
+	o.PromotedObject = &v
+}
+
+// GetBuyingType returns the BuyingType field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetBuyingType() string {
+	if o == nil || IsNil(o.BuyingType) {
+		var ret string
+		return ret
+	}
+	return *o.BuyingType
+}
+
+// GetBuyingTypeOk returns a tuple with the BuyingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetBuyingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.BuyingType) {
+		return nil, false
+	}
+	return o.BuyingType, true
+}
+
+// HasBuyingType returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasBuyingType() bool {
+	if o != nil && !IsNil(o.BuyingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetBuyingType gets a reference to the given string and assigns it to the BuyingType field.
+func (o *CreateAdCampaignRequest) SetBuyingType(v string) {
+	o.BuyingType = &v
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *CreateAdCampaignRequest) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
 }
 
 // GetSpecialAdCategories returns the SpecialAdCategories field value if set, zero value otherwise.
@@ -437,6 +572,18 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
 	toSerialize["goal"] = o.Goal
+	if !IsNil(o.IsSkadnetworkAttribution) {
+		toSerialize["isSkadnetworkAttribution"] = o.IsSkadnetworkAttribution
+	}
+	if !IsNil(o.PromotedObject) {
+		toSerialize["promotedObject"] = o.PromotedObject
+	}
+	if !IsNil(o.BuyingType) {
+		toSerialize["buyingType"] = o.BuyingType
+	}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
+	}
 	if !IsNil(o.SpecialAdCategories) {
 		toSerialize["specialAdCategories"] = o.SpecialAdCategories
 	}

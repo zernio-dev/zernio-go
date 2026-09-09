@@ -31,8 +31,8 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Exact ad set name. Overrides the default `<name> - Ad Set`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry.)
 	AdSetName *string `json:"adSetName,omitempty"`
 	// Meta only. Exact ad name (the single-creative ad object's name). Overrides the default, which is `name`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry instead.)
-	AdName   *string                            `json:"adName,omitempty"`
-	Tracking *CreateStandaloneAdRequestTracking `json:"tracking,omitempty"`
+	AdName   *string     `json:"adName,omitempty"`
+	Tracking *AdTracking `json:"tracking,omitempty"`
 	// Required on legacy and multi-creative shapes; the attach shape inherits it from the ad set. Available goals vary by platform.  **Meta** - `conversions`: OUTCOME_SALES. Requires `promotedObject.pixelId` and `promotedObject.customEventType` with a commerce event such as PURCHASE or START_TRIAL, or `promotedObject.customConversionId` to optimise against a Custom Conversion, or `customEventType: OTHER` + `customEventStr` to optimise against a pixel custom event. - `lead_conversion`: OUTCOME_LEADS optimizing website pixel leads. Same pixel and event fields, but with a leads-class event such as LEAD, SUBMIT_APPLICATION, SCHEDULE or CONTACT (or `promotedObject.customConversionId` to optimise against a Custom Conversion instead). Meta gates conversion events by objective, so leads-class events are rejected under `conversions`. - `lead_generation`: OUTCOME_LEADS with instant forms. Requires `leadGenFormId`. `promotedObject.pageId` is optional and auto-filled from the connected Page. - `app_promotion`: requires `promotedObject.applicationId` and `promotedObject.objectStoreUrl`. - `catalog_sales`: Advantage+ catalog ads, for example vehicle inventory. Requires `promotedObject.productSetId`, `promotedObject.pixelId` and `promotedObject.customEventType`. Builds a catalog TEMPLATE creative from the copy fields, which may carry template tags like {{product.name}} or {{vehicle.make}}. No imageUrl or video is sent; Meta renders the visuals per catalog item. Discover catalogs via GET /v1/ads/catalogs and product sets via GET /v1/ads/catalogs/{catalogId}/product-sets. Single shape only, no creatives[], adSetId, dynamicCreative or placementAssets. - `page_likes`: Page Likes conversion location under OUTCOME_ENGAGEMENT (destination_type ON_PAGE, optimization PAGE_LIKES). `promotedObject.pageId` is optional and auto-filled from the connected Page. The creative CTA is fixed to LIKE_PAGE targeting that Page; headline / body / linkUrl / callToAction / imageUrl / video are all optional (Meta derives the link and the Like button from the Page).  **TikTok** - `conversions`: website-conversion ad group. Requires `promotedObject.pixelId`, your TikTok Pixel ID. Accepts an optional `promotedObject.customEventType` with a TikTok optimization_event code your pixel tracks (newer pixels use e.g. SHOPPING for purchase events; legacy pixels use ON_WEB_ORDER, INITIATE_ORDER, ON_WEB_REGISTER or FORM). To inherit pixel and event from an existing ad group, pass `adSetId` instead.  **LinkedIn** - `engagement`, `traffic`, `awareness` and `video_views` create standalone Direct Sponsored Content ads. `traffic` requires `linkUrl`; `video_views` requires `video`. - `lead_generation`: requires `leadGenFormId` (an adForm ID from POST /v1/ads/lead-forms). The campaign objective is set to MAX_LEAD and the creative's `leadgenCallToAction` destination is set to `urn:li:adForm:{id}`. - `job_applicants` requires a `platformSpecificData.jobs` creative. - For `conversions` on LinkedIn, or to promote an existing post, use POST /v1/ads/boost.  **OpenAI Ads** - Only `traffic`, `awareness`, and `conversions` are supported (other goals return 400). Maps to OpenAI's `bidding_type` (clicks, impressions, conversions respectively). `conversions` requires an active conversion event setting on the account; create a tracking tag with `defaultEventType` via the tracking-tags API (`POST /v1/accounts/{accountId}/tracking-tags`), or configure a conversion event in OpenAI Ads Manager, or the request returns 422.
 	Goal *string `json:"goal,omitempty"`
 	// Meta only. Explicit ad-set `optimization_goal` (e.g. `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `REACH`, `IMPRESSIONS`, `OFFSITE_CONVERSIONS`, `THRUPLAY`, `LEAD_GENERATION`). Overrides the default derived from `goal` (e.g. `traffic` defaults to `LINK_CLICKS`). Forwarded verbatim to Meta, which validates compatibility with the campaign objective and rejects incompatible combinations.
@@ -48,7 +48,7 @@ type CreateStandaloneAdRequest struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
-	// Meta only, single standalone shape only (no creatives[], adSetId, or RESERVED). Dry-run: each node runs Meta's execution_options validate_only and NOTHING is created or persisted. Children need real parents, so a fresh tree validates the campaign + creative (the ad set needs its campaign to exist, so pass existingCampaignId to validate it too; the ad itself is never validatable pre-create). A Meta validation failure returns the 400 verbatim; success returns 200 with per-node results instead of an ad.
+	// Meta only. Validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
@@ -207,8 +207,16 @@ type CreateStandaloneAdRequest struct {
 	// TikTok only. Forces the identity attribution on the ad:    - `TT_USER`: the posting account's open_id (real @username     branding). Requires a connected TikTok posting account     on the same profile.   - `CUSTOMIZED_USER`: synthetic Brand Identity (display     name + avatar). Requires a configured Brand Identity     (cached on the `tiktokads` SocialAccount via     `PATCH /v1/connect/tiktok-ads`) or an inline     `brandIdentity` to create one on the fly.  When omitted, defaults to `TT_USER` if a posting account is connected on this profile, else `CUSTOMIZED_USER`. Spark Ads (`POST /v1/ads/boost`) always use `TT_USER` regardless of this field, because TikTok requires the original organic post's author identity for Spark.
 	IdentityType *string `json:"identityType,omitempty"`
 	// TikTok only. Creates the ad as a TikTok Upgraded Smart+ campaign: TikTok automates targeting, bidding and delivery. Supports goals `conversions` (Smart+ Web Conversions), `lead_generation` (Smart+ Lead Generation with a website form on `linkUrl`; TikTok Instant Forms not supported) and `app_promotion` (Smart+ App installs; the ad's destination is the app store, so `linkUrl` is not used). The web goals require `promotedObject.pixelId` AND `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` instead. Targeting works like on any TikTok ad (defaults to `countries: [\"US\"]` when omitted); TikTok automates delivery within it. The budget lives on the Smart+ campaign (Campaign Budget Optimization); a `lifetime` budget additionally requires `endDate`. Cannot be combined with `adSetId`.
-	SmartPlus      *bool                                    `json:"smartPlus,omitempty"`
-	PromotedObject *CreateStandaloneAdRequestPromotedObject `json:"promotedObject,omitempty"`
+	SmartPlus *bool `json:"smartPlus,omitempty"`
+	// Meta only. Operating systems and version ranges, such as iOS_ver_14.0_and_above or Android. Emitted as user_os. May also be supplied inside targeting.
+	UserOs []string `json:"userOs,omitempty"`
+	// Meta only. Device models such as iPhone. Emitted as user_device. May also be supplied inside targeting.
+	UserDevice []string `json:"userDevice,omitempty"`
+	// Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
+	IsSkadnetworkAttribution *bool `json:"isSkadnetworkAttribution,omitempty"`
+	// Meta ad-set attribution. Required as SKADNETWORK for iOS 14+ app promotion or a SKAdNetwork campaign. Requires AUCTION buying. Standalone Meta ad-set creation is not supported; use this field on /v1/ads/create.
+	CampaignAttribution *string           `json:"campaignAttribution,omitempty"`
+	PromotedObject      *AdPromotedObject `json:"promotedObject,omitempty"`
 }
 
 type _CreateStandaloneAdRequest CreateStandaloneAdRequest
@@ -414,9 +422,9 @@ func (o *CreateStandaloneAdRequest) SetAdName(v string) {
 }
 
 // GetTracking returns the Tracking field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetTracking() CreateStandaloneAdRequestTracking {
+func (o *CreateStandaloneAdRequest) GetTracking() AdTracking {
 	if o == nil || IsNil(o.Tracking) {
-		var ret CreateStandaloneAdRequestTracking
+		var ret AdTracking
 		return ret
 	}
 	return *o.Tracking
@@ -424,7 +432,7 @@ func (o *CreateStandaloneAdRequest) GetTracking() CreateStandaloneAdRequestTrack
 
 // GetTrackingOk returns a tuple with the Tracking field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetTrackingOk() (*CreateStandaloneAdRequestTracking, bool) {
+func (o *CreateStandaloneAdRequest) GetTrackingOk() (*AdTracking, bool) {
 	if o == nil || IsNil(o.Tracking) {
 		return nil, false
 	}
@@ -440,8 +448,8 @@ func (o *CreateStandaloneAdRequest) HasTracking() bool {
 	return false
 }
 
-// SetTracking gets a reference to the given CreateStandaloneAdRequestTracking and assigns it to the Tracking field.
-func (o *CreateStandaloneAdRequest) SetTracking(v CreateStandaloneAdRequestTracking) {
+// SetTracking gets a reference to the given AdTracking and assigns it to the Tracking field.
+func (o *CreateStandaloneAdRequest) SetTracking(v AdTracking) {
 	o.Tracking = &v
 }
 
@@ -3366,10 +3374,138 @@ func (o *CreateStandaloneAdRequest) SetSmartPlus(v bool) {
 	o.SmartPlus = &v
 }
 
+// GetUserOs returns the UserOs field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetUserOs() []string {
+	if o == nil || IsNil(o.UserOs) {
+		var ret []string
+		return ret
+	}
+	return o.UserOs
+}
+
+// GetUserOsOk returns a tuple with the UserOs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetUserOsOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserOs) {
+		return nil, false
+	}
+	return o.UserOs, true
+}
+
+// HasUserOs returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasUserOs() bool {
+	if o != nil && !IsNil(o.UserOs) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserOs gets a reference to the given []string and assigns it to the UserOs field.
+func (o *CreateStandaloneAdRequest) SetUserOs(v []string) {
+	o.UserOs = v
+}
+
+// GetUserDevice returns the UserDevice field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetUserDevice() []string {
+	if o == nil || IsNil(o.UserDevice) {
+		var ret []string
+		return ret
+	}
+	return o.UserDevice
+}
+
+// GetUserDeviceOk returns a tuple with the UserDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetUserDeviceOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserDevice) {
+		return nil, false
+	}
+	return o.UserDevice, true
+}
+
+// HasUserDevice returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasUserDevice() bool {
+	if o != nil && !IsNil(o.UserDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserDevice gets a reference to the given []string and assigns it to the UserDevice field.
+func (o *CreateStandaloneAdRequest) SetUserDevice(v []string) {
+	o.UserDevice = v
+}
+
+// GetIsSkadnetworkAttribution returns the IsSkadnetworkAttribution field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetIsSkadnetworkAttribution() bool {
+	if o == nil || IsNil(o.IsSkadnetworkAttribution) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSkadnetworkAttribution
+}
+
+// GetIsSkadnetworkAttributionOk returns a tuple with the IsSkadnetworkAttribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetIsSkadnetworkAttributionOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSkadnetworkAttribution) {
+		return nil, false
+	}
+	return o.IsSkadnetworkAttribution, true
+}
+
+// HasIsSkadnetworkAttribution returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasIsSkadnetworkAttribution() bool {
+	if o != nil && !IsNil(o.IsSkadnetworkAttribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSkadnetworkAttribution gets a reference to the given bool and assigns it to the IsSkadnetworkAttribution field.
+func (o *CreateStandaloneAdRequest) SetIsSkadnetworkAttribution(v bool) {
+	o.IsSkadnetworkAttribution = &v
+}
+
+// GetCampaignAttribution returns the CampaignAttribution field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCampaignAttribution() string {
+	if o == nil || IsNil(o.CampaignAttribution) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignAttribution
+}
+
+// GetCampaignAttributionOk returns a tuple with the CampaignAttribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCampaignAttributionOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignAttribution) {
+		return nil, false
+	}
+	return o.CampaignAttribution, true
+}
+
+// HasCampaignAttribution returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCampaignAttribution() bool {
+	if o != nil && !IsNil(o.CampaignAttribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignAttribution gets a reference to the given string and assigns it to the CampaignAttribution field.
+func (o *CreateStandaloneAdRequest) SetCampaignAttribution(v string) {
+	o.CampaignAttribution = &v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetPromotedObject() CreateStandaloneAdRequestPromotedObject {
+func (o *CreateStandaloneAdRequest) GetPromotedObject() AdPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
-		var ret CreateStandaloneAdRequestPromotedObject
+		var ret AdPromotedObject
 		return ret
 	}
 	return *o.PromotedObject
@@ -3377,7 +3513,7 @@ func (o *CreateStandaloneAdRequest) GetPromotedObject() CreateStandaloneAdReques
 
 // GetPromotedObjectOk returns a tuple with the PromotedObject field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetPromotedObjectOk() (*CreateStandaloneAdRequestPromotedObject, bool) {
+func (o *CreateStandaloneAdRequest) GetPromotedObjectOk() (*AdPromotedObject, bool) {
 	if o == nil || IsNil(o.PromotedObject) {
 		return nil, false
 	}
@@ -3393,8 +3529,8 @@ func (o *CreateStandaloneAdRequest) HasPromotedObject() bool {
 	return false
 }
 
-// SetPromotedObject gets a reference to the given CreateStandaloneAdRequestPromotedObject and assigns it to the PromotedObject field.
-func (o *CreateStandaloneAdRequest) SetPromotedObject(v CreateStandaloneAdRequestPromotedObject) {
+// SetPromotedObject gets a reference to the given AdPromotedObject and assigns it to the PromotedObject field.
+func (o *CreateStandaloneAdRequest) SetPromotedObject(v AdPromotedObject) {
 	o.PromotedObject = &v
 }
 
@@ -3695,6 +3831,18 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SmartPlus) {
 		toSerialize["smartPlus"] = o.SmartPlus
+	}
+	if !IsNil(o.UserOs) {
+		toSerialize["userOs"] = o.UserOs
+	}
+	if !IsNil(o.UserDevice) {
+		toSerialize["userDevice"] = o.UserDevice
+	}
+	if !IsNil(o.IsSkadnetworkAttribution) {
+		toSerialize["isSkadnetworkAttribution"] = o.IsSkadnetworkAttribution
+	}
+	if !IsNil(o.CampaignAttribution) {
+		toSerialize["campaignAttribution"] = o.CampaignAttribution
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject

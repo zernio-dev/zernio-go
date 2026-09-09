@@ -731,6 +731,164 @@ func (a *AdAccountsAPIService) CreateValueRuleSetExecute(r AdAccountsAPICreateVa
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPIDeleteAdCommentRequest struct {
+	ctx        context.Context
+	ApiService *AdAccountsAPIService
+	adId       string
+	commentId  string
+	since      *string
+	until      *string
+}
+
+// Start date of the comment lookup window. Defaults to 30 days before until.
+func (r AdAccountsAPIDeleteAdCommentRequest) Since(since string) AdAccountsAPIDeleteAdCommentRequest {
+	r.since = &since
+	return r
+}
+
+// End date of the comment lookup window. Defaults to today in UTC.
+func (r AdAccountsAPIDeleteAdCommentRequest) Until(until string) AdAccountsAPIDeleteAdCommentRequest {
+	r.until = &until
+	return r
+}
+
+func (r AdAccountsAPIDeleteAdCommentRequest) Execute() (*ReplyToAdComment200Response, *http.Response, error) {
+	return r.ApiService.DeleteAdCommentExecute(r)
+}
+
+/*
+DeleteAdComment Delete an ad comment
+
+Delete your own TikTok ad comment or reply. TikTok must return can_delete=true for the comment. Other users' comments can be hidden instead.
+
+Requires Ads access. The ad is resolved within the caller's accessible profiles.
+Before moderation, Zernio verifies that the comment belongs to this ad using
+TikTok's ad-group comment listing. The default search window is the last 30 days.
+Use since/until for older comments, with at most 30 days between the dates.
+Lookups scan at most 2,000 ad-group comments; narrow the date window if exceeded.
+Meta returns 501 feature_not_available with guidance to use the existing inbox
+comment endpoints and the account/post IDs from GET /v1/ads/{adId}/comments.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Internal Zernio ad ID or indexed platform ad ID.
+	@param commentId TikTok comment ID from the ad comment listing.
+	@return AdAccountsAPIDeleteAdCommentRequest
+*/
+func (a *AdAccountsAPIService) DeleteAdComment(ctx context.Context, adId string, commentId string) AdAccountsAPIDeleteAdCommentRequest {
+	return AdAccountsAPIDeleteAdCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplyToAdComment200Response
+func (a *AdAccountsAPIService) DeleteAdCommentExecute(r AdAccountsAPIDeleteAdCommentRequest) (*ReplyToAdComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplyToAdComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.DeleteAdComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/comments/{commentId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIDeleteAdNegativeKeywordListRequest struct {
 	ctx        context.Context
 	ApiService *AdAccountsAPIService
@@ -1166,6 +1324,8 @@ type AdAccountsAPIGetAdCommentsRequest struct {
 	adId       string
 	placement  *string
 	limit      *int32
+	since      *string
+	until      *string
 	cursor     *string
 }
 
@@ -1177,6 +1337,18 @@ func (r AdAccountsAPIGetAdCommentsRequest) Placement(placement string) AdAccount
 
 func (r AdAccountsAPIGetAdCommentsRequest) Limit(limit int32) AdAccountsAPIGetAdCommentsRequest {
 	r.limit = &limit
+	return r
+}
+
+// TikTok-only start date. Defaults to 30 days before until. Maximum window is 30 days.
+func (r AdAccountsAPIGetAdCommentsRequest) Since(since string) AdAccountsAPIGetAdCommentsRequest {
+	r.since = &since
+	return r
+}
+
+// TikTok-only end date. Defaults to today in UTC.
+func (r AdAccountsAPIGetAdCommentsRequest) Until(until string) AdAccountsAPIGetAdCommentsRequest {
+	r.until = &until
 	return r
 }
 
@@ -1210,19 +1382,30 @@ to Zernio, because those comments are read through that account's token. If no c
 Instagram account on the profile can read the ad's media, the call returns
 ads_connection_required (the Facebook side, if any, is still readable via ?placement=facebook).
 
-Meta-only for now. Other ad platforms (TikTok, LinkedIn, Pinterest, Google, X)
-are not wired to this endpoint and return feature_not_available.
+TikTok uses the connected TikTok Ads advertiser token and supports both paid video
+ads and Spark Ads. `since` and `until` select a date window of at most 30 days;
+the default is the last 30 days. TikTok searches by ad group, so Zernio filters
+each page to this ad. A page can be empty while `pagination.hasMore` is true.
+Reuse `pagination.cursor` with the same `limit`; the cursor retains the date window.
+`placement` is Meta-only and returns a 400 for TikTok.
+
+TikTok returns replies as separate comments with `parentId`; nested reply fetching
+is not supported. `canReply` requires a first-level comment and an identity with
+comment-management permission. `canDelete` reflects TikTok's own-comment deletion
+capability. `canHide` is supported and `canLike` is false. Use the ad comment
+reply, hide and delete operations below to moderate TikTok comments.
+Other platforms return feature_not_available.
 
 Requires the Ads add-on. Response shape matches GET /v1/inbox/comments/{postId}.
 
 The `{adId}` path segment accepts any identifier dialect Zernio indexes for the ad:
-Zernio internal `_id` (24-char hex), Meta's numeric `platformAdId` (the value shipped in
+Zernio internal `_id` (24-char hex), the numeric `platformAdId` (the value shipped in
 `comment.received` webhooks as `comment.ad.id`), or the creative's
 `effective_object_story_id` / `effective_instagram_media_id`. Caller doesn't need a
 translation step.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param adId Internal Zernio ad ID (ObjectId).
+	@param adId Internal Zernio ad ID or indexed platform ad/post ID.
 	@return AdAccountsAPIGetAdCommentsRequest
 */
 func (a *AdAccountsAPIService) GetAdComments(ctx context.Context, adId string) AdAccountsAPIGetAdCommentsRequest {
@@ -1265,6 +1448,12 @@ func (a *AdAccountsAPIService) GetAdCommentsExecute(r AdAccountsAPIGetAdComments
 		var defaultValue int32 = 25
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
+	}
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
 	}
 	if r.cursor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
@@ -1976,6 +2165,172 @@ func (a *AdAccountsAPIService) GetDsaRecommendationsExecute(r AdAccountsAPIGetDs
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPIGetIosFourteenCampaignLimitsRequest struct {
+	ctx           context.Context
+	ApiService    *AdAccountsAPIService
+	accountId     *string
+	adAccountId   *string
+	applicationId *string
+}
+
+// Zernio Meta Ads or Facebook SocialAccount ID.
+func (r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) AccountId(accountId string) AdAccountsAPIGetIosFourteenCampaignLimitsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account ID including the act_ prefix.
+func (r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) AdAccountId(adAccountId string) AdAccountsAPIGetIosFourteenCampaignLimitsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta application ID from advertisable-applications.
+func (r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) ApplicationId(applicationId string) AdAccountsAPIGetIosFourteenCampaignLimitsRequest {
+	r.applicationId = &applicationId
+	return r
+}
+
+func (r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) Execute() (*GetIosFourteenCampaignLimits200Response, *http.Response, error) {
+	return r.ApiService.GetIosFourteenCampaignLimitsExecute(r)
+}
+
+/*
+GetIosFourteenCampaignLimits Get iOS 14 campaign limits
+
+Reads Meta iOS 14 campaign limits for an application on an ad account. applicationId is sent as Meta app_id. This read does not establish that the application is configured for iOS promotion.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPIGetIosFourteenCampaignLimitsRequest
+*/
+func (a *AdAccountsAPIService) GetIosFourteenCampaignLimits(ctx context.Context) AdAccountsAPIGetIosFourteenCampaignLimitsRequest {
+	return AdAccountsAPIGetIosFourteenCampaignLimitsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetIosFourteenCampaignLimits200Response
+func (a *AdAccountsAPIService) GetIosFourteenCampaignLimitsExecute(r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) (*GetIosFourteenCampaignLimits200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetIosFourteenCampaignLimits200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.GetIosFourteenCampaignLimits")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ios-fourteen-campaign-limits"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+	if r.applicationId == nil {
+		return localVarReturnValue, nil, reportError("applicationId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "applicationId", r.applicationId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIGetValueRuleSetRequest struct {
 	ctx            context.Context
 	ApiService     *AdAccountsAPIService
@@ -2081,6 +2436,175 @@ func (a *AdAccountsAPIService) GetValueRuleSetExecute(r AdAccountsAPIGetValueRul
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIHideAdCommentRequest struct {
+	ctx                  context.Context
+	ApiService           *AdAccountsAPIService
+	adId                 string
+	commentId            string
+	hideAdCommentRequest *HideAdCommentRequest
+	since                *string
+	until                *string
+}
+
+func (r AdAccountsAPIHideAdCommentRequest) HideAdCommentRequest(hideAdCommentRequest HideAdCommentRequest) AdAccountsAPIHideAdCommentRequest {
+	r.hideAdCommentRequest = &hideAdCommentRequest
+	return r
+}
+
+// Start date of the comment lookup window. Defaults to 30 days before until.
+func (r AdAccountsAPIHideAdCommentRequest) Since(since string) AdAccountsAPIHideAdCommentRequest {
+	r.since = &since
+	return r
+}
+
+// End date of the comment lookup window. Defaults to today in UTC.
+func (r AdAccountsAPIHideAdCommentRequest) Until(until string) AdAccountsAPIHideAdCommentRequest {
+	r.until = &until
+	return r
+}
+
+func (r AdAccountsAPIHideAdCommentRequest) Execute() (*HideAdComment200Response, *http.Response, error) {
+	return r.ApiService.HideAdCommentExecute(r)
+}
+
+/*
+HideAdComment Hide or unhide an ad comment
+
+Hide or restore a TikTok ad comment. Send hidden=true to hide it or hidden=false to make it public again.
+
+Requires Ads access. The ad is resolved within the caller's accessible profiles.
+Before moderation, Zernio verifies that the comment belongs to this ad using
+TikTok's ad-group comment listing. The default search window is the last 30 days.
+Use since/until for older comments, with at most 30 days between the dates.
+Lookups scan at most 2,000 ad-group comments; narrow the date window if exceeded.
+Meta returns 501 feature_not_available with guidance to use the existing inbox
+comment endpoints and the account/post IDs from GET /v1/ads/{adId}/comments.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Internal Zernio ad ID or indexed platform ad ID.
+	@param commentId TikTok comment ID from the ad comment listing.
+	@return AdAccountsAPIHideAdCommentRequest
+*/
+func (a *AdAccountsAPIService) HideAdComment(ctx context.Context, adId string, commentId string) AdAccountsAPIHideAdCommentRequest {
+	return AdAccountsAPIHideAdCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return HideAdComment200Response
+func (a *AdAccountsAPIService) HideAdCommentExecute(r AdAccountsAPIHideAdCommentRequest) (*HideAdComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *HideAdComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.HideAdComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/comments/{commentId}/hide"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.hideAdCommentRequest == nil {
+		return localVarReturnValue, nil, reportError("hideAdCommentRequest is required and must be specified")
+	}
+
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.hideAdCommentRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
@@ -3056,6 +3580,316 @@ func (a *AdAccountsAPIService) ListAdsBusinessCentersExecute(r AdAccountsAPIList
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPIListAdsInstagramAccountsRequest struct {
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Zernio Meta Ads or Facebook SocialAccount ID.
+func (r AdAccountsAPIListAdsInstagramAccountsRequest) AccountId(accountId string) AdAccountsAPIListAdsInstagramAccountsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account ID including the act_ prefix.
+func (r AdAccountsAPIListAdsInstagramAccountsRequest) AdAccountId(adAccountId string) AdAccountsAPIListAdsInstagramAccountsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdAccountsAPIListAdsInstagramAccountsRequest) Execute() (*ListAdsInstagramAccounts200Response, *http.Response, error) {
+	return r.ApiService.ListAdsInstagramAccountsExecute(r)
+}
+
+/*
+ListAdsInstagramAccounts List Instagram ad identities
+
+Discovers identities through connected_instagram_accounts, Page linkage and Page-backed identities, with a best-effort business fallback. Business permission errors do not fail discovery. The resolved object uses the same profile-scoped resolver as ad creation; null means no identity was resolved. Format-specific observed-actor fallbacks at creative creation are not predicted.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPIListAdsInstagramAccountsRequest
+*/
+func (a *AdAccountsAPIService) ListAdsInstagramAccounts(ctx context.Context) AdAccountsAPIListAdsInstagramAccountsRequest {
+	return AdAccountsAPIListAdsInstagramAccountsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdsInstagramAccounts200Response
+func (a *AdAccountsAPIService) ListAdsInstagramAccountsExecute(r AdAccountsAPIListAdsInstagramAccountsRequest) (*ListAdsInstagramAccounts200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdsInstagramAccounts200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListAdsInstagramAccounts")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/instagram-accounts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIListAdvertisableApplicationsRequest struct {
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Zernio Meta Ads or Facebook SocialAccount ID.
+func (r AdAccountsAPIListAdvertisableApplicationsRequest) AccountId(accountId string) AdAccountsAPIListAdvertisableApplicationsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account ID including the act_ prefix.
+func (r AdAccountsAPIListAdvertisableApplicationsRequest) AdAccountId(adAccountId string) AdAccountsAPIListAdvertisableApplicationsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdAccountsAPIListAdvertisableApplicationsRequest) Execute() (*ListAdvertisableApplications200Response, *http.Response, error) {
+	return r.ApiService.ListAdvertisableApplicationsExecute(r)
+}
+
+/*
+ListAdvertisableApplications List advertisable apps
+
+Lists applications available to a Meta ad account, their supported platforms and unmodified object store URLs. A listed app still needs a configured mobile platform and store URL to run install promotion.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPIListAdvertisableApplicationsRequest
+*/
+func (a *AdAccountsAPIService) ListAdvertisableApplications(ctx context.Context) AdAccountsAPIListAdvertisableApplicationsRequest {
+	return AdAccountsAPIListAdvertisableApplicationsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdvertisableApplications200Response
+func (a *AdAccountsAPIService) ListAdvertisableApplicationsExecute(r AdAccountsAPIListAdvertisableApplicationsRequest) (*ListAdvertisableApplications200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdvertisableApplications200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ListAdvertisableApplications")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/advertisable-applications"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIListCustomConversionsRequest struct {
 	ctx         context.Context
 	ApiService  *AdAccountsAPIService
@@ -3941,6 +4775,175 @@ func (a *AdAccountsAPIService) ReplaceAdNegativeKeywordListKeywordsExecute(r AdA
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPIReplyToAdCommentRequest struct {
+	ctx                     context.Context
+	ApiService              *AdAccountsAPIService
+	adId                    string
+	commentId               string
+	replyToAdCommentRequest *ReplyToAdCommentRequest
+	since                   *string
+	until                   *string
+}
+
+func (r AdAccountsAPIReplyToAdCommentRequest) ReplyToAdCommentRequest(replyToAdCommentRequest ReplyToAdCommentRequest) AdAccountsAPIReplyToAdCommentRequest {
+	r.replyToAdCommentRequest = &replyToAdCommentRequest
+	return r
+}
+
+// Start date of the comment lookup window. Defaults to 30 days before until.
+func (r AdAccountsAPIReplyToAdCommentRequest) Since(since string) AdAccountsAPIReplyToAdCommentRequest {
+	r.since = &since
+	return r
+}
+
+// End date of the comment lookup window. Defaults to today in UTC.
+func (r AdAccountsAPIReplyToAdCommentRequest) Until(until string) AdAccountsAPIReplyToAdCommentRequest {
+	r.until = &until
+	return r
+}
+
+func (r AdAccountsAPIReplyToAdCommentRequest) Execute() (*ReplyToAdComment200Response, *http.Response, error) {
+	return r.ApiService.ReplyToAdCommentExecute(r)
+}
+
+/*
+ReplyToAdComment Reply to an ad comment
+
+Reply to a first-level TikTok ad comment. Requires a TT_USER or CUSTOMIZED_USER identity with comment-management permission. Replies to replies are rejected. The response commentId identifies the new reply. This operation is not idempotent; do not blindly retry an uncertain response.
+
+Requires Ads access. The ad is resolved within the caller's accessible profiles.
+Before moderation, Zernio verifies that the comment belongs to this ad using
+TikTok's ad-group comment listing. The default search window is the last 30 days.
+Use since/until for older comments, with at most 30 days between the dates.
+Lookups scan at most 2,000 ad-group comments; narrow the date window if exceeded.
+Meta returns 501 feature_not_available with guidance to use the existing inbox
+comment endpoints and the account/post IDs from GET /v1/ads/{adId}/comments.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adId Internal Zernio ad ID or indexed platform ad ID.
+	@param commentId TikTok comment ID from the ad comment listing.
+	@return AdAccountsAPIReplyToAdCommentRequest
+*/
+func (a *AdAccountsAPIService) ReplyToAdComment(ctx context.Context, adId string, commentId string) AdAccountsAPIReplyToAdCommentRequest {
+	return AdAccountsAPIReplyToAdCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adId:       adId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ReplyToAdComment200Response
+func (a *AdAccountsAPIService) ReplyToAdCommentExecute(r AdAccountsAPIReplyToAdCommentRequest) (*ReplyToAdComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReplyToAdComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.ReplyToAdComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/{adId}/comments/{commentId}/reply"
+	localVarPath = strings.Replace(localVarPath, "{"+"adId"+"}", url.PathEscape(parameterValueToString(r.adId, "adId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.replyToAdCommentRequest == nil {
+		return localVarReturnValue, nil, reportError("replyToAdCommentRequest is required and must be specified")
+	}
+
+	if r.since != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
+	}
+	if r.until != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "until", r.until, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.replyToAdCommentRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
