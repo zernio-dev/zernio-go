@@ -50,7 +50,7 @@ customer_list only. A LinkedIn `company_list` audience takes company rows, not p
 `POST /v1/ads/audiences/{audienceId}/companies`. This endpoint 422s for every other audience type.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param audienceId
+	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
 	@return AdAudiencesAPIAddUsersToAdAudienceRequest
 */
 func (a *AdAudiencesAPIService) AddUsersToAdAudience(ctx context.Context, audienceId string) AdAudiencesAPIAddUsersToAdAudienceRequest {
@@ -443,7 +443,7 @@ GetAdAudience Get audience details
 Returns the local audience record and fresh data from Meta (if available).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param audienceId
+	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
 	@return AdAudiencesAPIGetAdAudienceRequest
 */
 func (a *AdAudiencesAPIService) GetAdAudience(ctx context.Context, audienceId string) AdAudiencesAPIGetAdAudienceRequest {
@@ -745,7 +745,7 @@ The initial list is sent with `companies` on `POST /v1/ads/audiences`; this endp
 every change after that.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param audienceId
+	@param audienceId The Zernio audience id (the id field of GET /v1/ads/audiences), not the platform segment id.
 	@return AdAudiencesAPIReplaceAdAudienceCompaniesRequest
 */
 func (a *AdAudiencesAPIService) ReplaceAdAudienceCompanies(ctx context.Context, audienceId string) AdAudiencesAPIReplaceAdAudienceCompaniesRequest {

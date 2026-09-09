@@ -21,8 +21,8 @@ var _ MappedNullable = &GetAdAudience200Response{}
 // GetAdAudience200Response struct for GetAdAudience200Response
 type GetAdAudience200Response struct {
 	Audience map[string]interface{} `json:"audience,omitempty"`
-	// Fresh data from Meta API
-	MetaData map[string]interface{} `json:"metaData,omitempty"`
+	// Fresh data from the platform API
+	PlatformData map[string]interface{} `json:"platformData,omitempty"`
 }
 
 // NewGetAdAudience200Response instantiates a new GetAdAudience200Response object
@@ -74,37 +74,37 @@ func (o *GetAdAudience200Response) SetAudience(v map[string]interface{}) {
 	o.Audience = v
 }
 
-// GetMetaData returns the MetaData field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GetAdAudience200Response) GetMetaData() map[string]interface{} {
+// GetPlatformData returns the PlatformData field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdAudience200Response) GetPlatformData() map[string]interface{} {
 	if o == nil {
 		var ret map[string]interface{}
 		return ret
 	}
-	return o.MetaData
+	return o.PlatformData
 }
 
-// GetMetaDataOk returns a tuple with the MetaData field value if set, nil otherwise
+// GetPlatformDataOk returns a tuple with the PlatformData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GetAdAudience200Response) GetMetaDataOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.MetaData) {
+func (o *GetAdAudience200Response) GetPlatformDataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PlatformData) {
 		return map[string]interface{}{}, false
 	}
-	return o.MetaData, true
+	return o.PlatformData, true
 }
 
-// HasMetaData returns a boolean if a field has been set.
-func (o *GetAdAudience200Response) HasMetaData() bool {
-	if o != nil && !IsNil(o.MetaData) {
+// HasPlatformData returns a boolean if a field has been set.
+func (o *GetAdAudience200Response) HasPlatformData() bool {
+	if o != nil && !IsNil(o.PlatformData) {
 		return true
 	}
 
 	return false
 }
 
-// SetMetaData gets a reference to the given map[string]interface{} and assigns it to the MetaData field.
-func (o *GetAdAudience200Response) SetMetaData(v map[string]interface{}) {
-	o.MetaData = v
+// SetPlatformData gets a reference to the given map[string]interface{} and assigns it to the PlatformData field.
+func (o *GetAdAudience200Response) SetPlatformData(v map[string]interface{}) {
+	o.PlatformData = v
 }
 
 func (o GetAdAudience200Response) MarshalJSON() ([]byte, error) {
@@ -120,8 +120,8 @@ func (o GetAdAudience200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Audience) {
 		toSerialize["audience"] = o.Audience
 	}
-	if o.MetaData != nil {
-		toSerialize["metaData"] = o.MetaData
+	if o.PlatformData != nil {
+		toSerialize["platformData"] = o.PlatformData
 	}
 	return toSerialize, nil
 }
