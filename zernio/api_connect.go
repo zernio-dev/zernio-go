@@ -1622,6 +1622,7 @@ type ConnectAPIConnectWhatsAppEmbeddedSignupRequest struct {
 	ctx                                  context.Context
 	ApiService                           *ConnectAPIService
 	connectWhatsAppEmbeddedSignupRequest *ConnectWhatsAppEmbeddedSignupRequest
+	xConnectToken                        *string
 }
 
 func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) ConnectWhatsAppEmbeddedSignupRequest(connectWhatsAppEmbeddedSignupRequest ConnectWhatsAppEmbeddedSignupRequest) ConnectAPIConnectWhatsAppEmbeddedSignupRequest {
@@ -1629,14 +1630,25 @@ func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) ConnectWhatsAppEmbeddedS
 	return r
 }
 
-func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) Execute() (*http.Response, error) {
+// Connect token issued by the hosted signup flow, accepted instead of an API key.
+func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) XConnectToken(xConnectToken string) ConnectAPIConnectWhatsAppEmbeddedSignupRequest {
+	r.xConnectToken = &xConnectToken
+	return r
+}
+
+func (r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) Execute() (*ConnectWhatsAppEmbeddedSignup200Response, *http.Response, error) {
 	return r.ApiService.ConnectWhatsAppEmbeddedSignupExecute(r)
 }
 
 /*
 ConnectWhatsAppEmbeddedSignup Connect WhatsApp from Embedded Signup
 
-Exchange the authorization code Meta Embedded Signup returns to your browser SDK. This is the headless completion path for WhatsApp: the code never passes through a redirect_uri, so POST /v1/connect/{platform} cannot accept it.
+Exchange the authorization code Meta's Embedded Signup popup returned. This is the call the Zernio-hosted
+signup page makes after the popup closes (`GET /v1/connect/whatsapp?signup=hosted`), sending the `wabaId`
+and `phoneNumberId` Meta reported so exactly the chosen number is connected; when both are omitted the
+first number the token can see is used. The code never passes through a `redirect_uri`, so
+`POST /v1/connect/{platform}` cannot accept it. Authenticates with an API key, or with the connect token
+the hosted flow issues (`X-Connect-Token` header).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIConnectWhatsAppEmbeddedSignupRequest
@@ -1649,16 +1661,19 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignup(ctx context.Context) C
 }
 
 // Execute executes the request
-func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) (*http.Response, error) {
+//
+//	@return ConnectWhatsAppEmbeddedSignup200Response
+func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPIConnectWhatsAppEmbeddedSignupRequest) (*ConnectWhatsAppEmbeddedSignup200Response, *http.Response, error) {
 	var (
-		localVarHTTPMethod = http.MethodPost
-		localVarPostBody   interface{}
-		formFiles          []formFile
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectWhatsAppEmbeddedSignup200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectWhatsAppEmbeddedSignup")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/connect/whatsapp/embedded-signup"
@@ -1667,7 +1682,7 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.connectWhatsAppEmbeddedSignupRequest == nil {
-		return nil, reportError("connectWhatsAppEmbeddedSignupRequest is required and must be specified")
+		return localVarReturnValue, nil, reportError("connectWhatsAppEmbeddedSignupRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1687,23 +1702,26 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.xConnectToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Connect-Token", r.xConnectToken, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.connectWhatsAppEmbeddedSignupRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1716,38 +1734,47 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
 			var v InlineObject2
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ConnectAPICreatePinterestBoardRequest struct {
@@ -1877,14 +1904,18 @@ func (a *ConnectAPIService) CreatePinterestBoardExecute(r ConnectAPICreatePinter
 }
 
 type ConnectAPIGetConnectUrlRequest struct {
-	ctx         context.Context
-	ApiService  *ConnectAPIService
-	platform    string
-	profileId   *string
-	redirectUrl *string
-	headless    *bool
-	loginMethod *string
-	onboarding  *string
+	ctx          context.Context
+	ApiService   *ConnectAPIService
+	platform     string
+	profileId    *string
+	redirectUrl  *string
+	headless     *bool
+	loginMethod  *string
+	onboarding   *string
+	signup       *string
+	brandName    *string
+	primaryColor *string
+	language     *string
 }
 
 // Your Zernio profile ID (get from /v1/profiles). For WhatsApp, a Zernio-provisioned number can only be connected on the profile it was provisioned to; connecting from any other profile is rejected with a 409.
@@ -1914,6 +1945,30 @@ func (r ConnectAPIGetConnectUrlRequest) LoginMethod(loginMethod string) ConnectA
 // WhatsApp only. Ignored for every other platform. Controls which screen Meta&#39;s Embedded Signup popup shows.  If omitted, the connection defaults to coexistence (same as &#x60;business_app&#x60; below), preserving existing behavior for numbers already on the WhatsApp Business app.  &#x60;api&#x60;: standard Embedded Signup, showing Meta&#39;s WABA/number picker. Use this to connect a phone number already on Cloud API elsewhere.  &#x60;business_app&#x60;: coexistence, i.e. &#39;Connect existing WhatsApp Business app&#39; (a number shared between Cloud API and the consumer WhatsApp Business app).
 func (r ConnectAPIGetConnectUrlRequest) Onboarding(onboarding string) ConnectAPIGetConnectUrlRequest {
 	r.onboarding = &onboarding
+	return r
+}
+
+// WhatsApp only. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; on any other platform.  &#x60;hosted&#x60;: &#x60;authUrl&#x60; points at a Zernio-hosted page on zernio.com instead of Meta&#39;s OAuth dialog, and the response carries &#x60;authUrl&#x60; only (no &#x60;state&#x60;). That page opens Meta&#39;s Embedded Signup popup itself, so it learns which WhatsApp Business Account and number the user picked inside the popup and connects exactly that one. Use it when your users&#39; Facebook logins manage several WhatsApp accounts: on the default redirect flow Meta only returns an authorization code, so when that login can see more than one number the user lands on Zernio&#39;s number picker and has to choose again. Nothing to embed on your side and no domain setup: send the user to &#x60;authUrl&#x60;, and they come back to &#x60;redirect_url&#x60; with the same params as the redirect flow. Success: &#x60;connected&#x3D;whatsapp&#x60;, &#x60;profileId&#x60;, &#x60;accountId&#x60;, &#x60;username&#x60; (plus &#x60;connect_token&#x60; for API-key callers). Failure: &#x60;error&#x60; and &#x60;platform&#x3D;whatsapp&#x60;, with the same values and extras as the redirect flow (&#x60;one_whatsapp_per_profile&#x60;, &#x60;whatsapp_number_already_connected&#x60; and &#x60;whatsapp_number_pinned_to_profile&#x60; with &#x60;is_user_fixable&#x3D;true&#x60;; &#x60;payment_required&#x60; with &#x60;reason&#x60; and &#x60;dashboard_url&#x60;; &#x60;whatsapp_error&#x60; with &#x60;error_message&#x60; when Meta reported one), plus two of its own: &#x60;connection_cancelled&#x60; when the popup was closed before finishing (&#x60;error_message&#x60; carries Meta&#39;s last reported step or error when there is one) and &#x60;session_expired&#x60; when the user took longer than the 60 minute window the hosted page is valid for; restart the flow with a new call in that case. &#x60;onboarding&#x60; is carried through and a pre-verified Zernio-provisioned number is attached like on the redirect flow. &#x60;headless&#x60; has no effect here because there is no selection step left to hand you. When a previously disconnected account for this profile can simply be re-enabled, this endpoint re-enables it and returns the account directly instead of a URL, exactly like the redirect flow. The page shows the same guidance as the Zernio dashboard: a pre-verified Zernio-provisioned number is called out by name (\&quot;choose it in Meta&#39;s list, no code will be asked\&quot;), coexistence and standard signups get their explainer video, and a step-by-step follow-along checklist stays visible while Meta&#39;s popup is open. Skin it with &#x60;brandName&#x60;, &#x60;primaryColor&#x60; and &#x60;language&#x60; below.
+func (r ConnectAPIGetConnectUrlRequest) Signup(signup string) ConnectAPIGetConnectUrlRequest {
+	r.signup = &signup
+	return r
+}
+
+// Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): name shown in the page title (\&quot;Connect your WhatsApp number to &lt;brandName&gt;\&quot;) instead of Zernio. The Zernio logo stays: the page is co-branded, not white-label. Trimmed; 1 to 60 characters. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; without &#x60;signup&#x3D;hosted&#x60;. Stored on the signup session at issue time, so the page URL cannot change it.
+func (r ConnectAPIGetConnectUrlRequest) BrandName(brandName string) ConnectAPIGetConnectUrlRequest {
+	r.brandName = &brandName
+	return r
+}
+
+// Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): hex colour (&#x60;#RRGGBB&#x60;) for the primary button and step accents. Validated server-side; anything else is a 400 &#x60;INVALID_FIELD_VALUE&#x60;. Rejected without &#x60;signup&#x3D;hosted&#x60;.
+func (r ConnectAPIGetConnectUrlRequest) PrimaryColor(primaryColor string) ConnectAPIGetConnectUrlRequest {
+	r.primaryColor = &primaryColor
+	return r
+}
+
+// Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): language of the page and its follow-along guide. Explainer videos stay in English. Default &#x60;en&#x60;. Rejected without &#x60;signup&#x3D;hosted&#x60;.
+func (r ConnectAPIGetConnectUrlRequest) Language(language string) ConnectAPIGetConnectUrlRequest {
+	r.language = &language
 	return r
 }
 
@@ -1985,6 +2040,18 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.onboarding != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "onboarding", r.onboarding, "form", "")
+	}
+	if r.signup != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "signup", r.signup, "form", "")
+	}
+	if r.brandName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "brandName", r.brandName, "form", "")
+	}
+	if r.primaryColor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "primaryColor", r.primaryColor, "form", "")
+	}
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3338,6 +3405,129 @@ func (a *ConnectAPIService) GetTelegramConnectStatusExecute(r ConnectAPIGetTeleg
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetWhatsAppSdkConfigRequest struct {
+	ctx           context.Context
+	ApiService    *ConnectAPIService
+	xConnectToken *string
+}
+
+// Connect token issued by the hosted signup flow, accepted instead of an API key.
+func (r ConnectAPIGetWhatsAppSdkConfigRequest) XConnectToken(xConnectToken string) ConnectAPIGetWhatsAppSdkConfigRequest {
+	r.xConnectToken = &xConnectToken
+	return r
+}
+
+func (r ConnectAPIGetWhatsAppSdkConfigRequest) Execute() (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppSdkConfigExecute(r)
+}
+
+/*
+GetWhatsAppSdkConfig Get Embedded Signup SDK config
+
+The Meta app id and Embedded Signup configuration id the Zernio-hosted signup page uses to open Meta's
+popup. Integrators do not need this endpoint: start the hosted flow with
+`GET /v1/connect/whatsapp?signup=hosted` and send the user to the returned `authUrl`. Authenticates with
+an API key or with the connect token the hosted flow issues (`X-Connect-Token` header).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetWhatsAppSdkConfigRequest
+*/
+func (a *ConnectAPIService) GetWhatsAppSdkConfig(ctx context.Context) ConnectAPIGetWhatsAppSdkConfigRequest {
+	return ConnectAPIGetWhatsAppSdkConfigRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppSdkConfig200Response
+func (a *ConnectAPIService) GetWhatsAppSdkConfigExecute(r ConnectAPIGetWhatsAppSdkConfigRequest) (*GetWhatsAppSdkConfig200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppSdkConfig200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWhatsAppSdkConfig")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/whatsapp/sdk-config"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.xConnectToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Connect-Token", r.xConnectToken, "simple", "")
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

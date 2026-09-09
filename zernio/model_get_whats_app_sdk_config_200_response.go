@@ -22,12 +22,11 @@ var _ MappedNullable = &GetWhatsAppSdkConfig200Response{}
 
 // GetWhatsAppSdkConfig200Response struct for GetWhatsAppSdkConfig200Response
 type GetWhatsAppSdkConfig200Response struct {
-	// Meta app id for FB.init
+	// Meta app id
 	AppId string `json:"appId"`
-	// Embedded Signup configuration id for the config_id option of FB.login
-	ConfigId string `json:"configId"`
-	// Graph API version to pass to FB.init (for example v22.0)
-	GraphApiVersion string `json:"graphApiVersion"`
+	// Embedded Signup configuration id
+	ConfigId string                                  `json:"configId"`
+	Branding GetWhatsAppSdkConfig200ResponseBranding `json:"branding"`
 }
 
 type _GetWhatsAppSdkConfig200Response GetWhatsAppSdkConfig200Response
@@ -36,11 +35,11 @@ type _GetWhatsAppSdkConfig200Response GetWhatsAppSdkConfig200Response
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetWhatsAppSdkConfig200Response(appId string, configId string, graphApiVersion string) *GetWhatsAppSdkConfig200Response {
+func NewGetWhatsAppSdkConfig200Response(appId string, configId string, branding GetWhatsAppSdkConfig200ResponseBranding) *GetWhatsAppSdkConfig200Response {
 	this := GetWhatsAppSdkConfig200Response{}
 	this.AppId = appId
 	this.ConfigId = configId
-	this.GraphApiVersion = graphApiVersion
+	this.Branding = branding
 	return &this
 }
 
@@ -100,28 +99,28 @@ func (o *GetWhatsAppSdkConfig200Response) SetConfigId(v string) {
 	o.ConfigId = v
 }
 
-// GetGraphApiVersion returns the GraphApiVersion field value
-func (o *GetWhatsAppSdkConfig200Response) GetGraphApiVersion() string {
+// GetBranding returns the Branding field value
+func (o *GetWhatsAppSdkConfig200Response) GetBranding() GetWhatsAppSdkConfig200ResponseBranding {
 	if o == nil {
-		var ret string
+		var ret GetWhatsAppSdkConfig200ResponseBranding
 		return ret
 	}
 
-	return o.GraphApiVersion
+	return o.Branding
 }
 
-// GetGraphApiVersionOk returns a tuple with the GraphApiVersion field value
+// GetBrandingOk returns a tuple with the Branding field value
 // and a boolean to check if the value has been set.
-func (o *GetWhatsAppSdkConfig200Response) GetGraphApiVersionOk() (*string, bool) {
+func (o *GetWhatsAppSdkConfig200Response) GetBrandingOk() (*GetWhatsAppSdkConfig200ResponseBranding, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.GraphApiVersion, true
+	return &o.Branding, true
 }
 
-// SetGraphApiVersion sets field value
-func (o *GetWhatsAppSdkConfig200Response) SetGraphApiVersion(v string) {
-	o.GraphApiVersion = v
+// SetBranding sets field value
+func (o *GetWhatsAppSdkConfig200Response) SetBranding(v GetWhatsAppSdkConfig200ResponseBranding) {
+	o.Branding = v
 }
 
 func (o GetWhatsAppSdkConfig200Response) MarshalJSON() ([]byte, error) {
@@ -136,7 +135,7 @@ func (o GetWhatsAppSdkConfig200Response) ToMap() (map[string]interface{}, error)
 	toSerialize := map[string]interface{}{}
 	toSerialize["appId"] = o.AppId
 	toSerialize["configId"] = o.ConfigId
-	toSerialize["graphApiVersion"] = o.GraphApiVersion
+	toSerialize["branding"] = o.Branding
 	return toSerialize, nil
 }
 
@@ -147,7 +146,7 @@ func (o *GetWhatsAppSdkConfig200Response) UnmarshalJSON(data []byte) (err error)
 	requiredProperties := []string{
 		"appId",
 		"configId",
-		"graphApiVersion",
+		"branding",
 	}
 
 	allProperties := make(map[string]interface{})

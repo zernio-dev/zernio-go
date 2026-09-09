@@ -32,6 +32,10 @@ type ConnectWhatsAppEmbeddedSignupRequest struct {
 	IsCoexistence *bool `json:"isCoexistence,omitempty"`
 	// Rejects the connect when Meta returns a different number
 	ExpectedPhoneNumber *string `json:"expectedPhoneNumber,omitempty"`
+	// Hosted signup page only. When present, the response also carries `redirectUrl`, the URL the user should land on, with the outcome mapped exactly like the redirect flow (success params, or `error` and `platform` with the same values). Must be an absolute http(s) URL or a custom app scheme.
+	RedirectUrl *string `json:"redirectUrl,omitempty"`
+	// Hosted signup page only. Append the connect token to the success redirect, as the redirect flow does for API-key callers.
+	EchoConnectToken *bool `json:"echoConnectToken,omitempty"`
 }
 
 type _ConnectWhatsAppEmbeddedSignupRequest ConnectWhatsAppEmbeddedSignupRequest
@@ -231,6 +235,70 @@ func (o *ConnectWhatsAppEmbeddedSignupRequest) SetExpectedPhoneNumber(v string) 
 	o.ExpectedPhoneNumber = &v
 }
 
+// GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) GetRedirectUrl() string {
+	if o == nil || IsNil(o.RedirectUrl) {
+		var ret string
+		return ret
+	}
+	return *o.RedirectUrl
+}
+
+// GetRedirectUrlOk returns a tuple with the RedirectUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) GetRedirectUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.RedirectUrl) {
+		return nil, false
+	}
+	return o.RedirectUrl, true
+}
+
+// HasRedirectUrl returns a boolean if a field has been set.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) HasRedirectUrl() bool {
+	if o != nil && !IsNil(o.RedirectUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetRedirectUrl gets a reference to the given string and assigns it to the RedirectUrl field.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) SetRedirectUrl(v string) {
+	o.RedirectUrl = &v
+}
+
+// GetEchoConnectToken returns the EchoConnectToken field value if set, zero value otherwise.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) GetEchoConnectToken() bool {
+	if o == nil || IsNil(o.EchoConnectToken) {
+		var ret bool
+		return ret
+	}
+	return *o.EchoConnectToken
+}
+
+// GetEchoConnectTokenOk returns a tuple with the EchoConnectToken field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) GetEchoConnectTokenOk() (*bool, bool) {
+	if o == nil || IsNil(o.EchoConnectToken) {
+		return nil, false
+	}
+	return o.EchoConnectToken, true
+}
+
+// HasEchoConnectToken returns a boolean if a field has been set.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) HasEchoConnectToken() bool {
+	if o != nil && !IsNil(o.EchoConnectToken) {
+		return true
+	}
+
+	return false
+}
+
+// SetEchoConnectToken gets a reference to the given bool and assigns it to the EchoConnectToken field.
+func (o *ConnectWhatsAppEmbeddedSignupRequest) SetEchoConnectToken(v bool) {
+	o.EchoConnectToken = &v
+}
+
 func (o ConnectWhatsAppEmbeddedSignupRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -254,6 +322,12 @@ func (o ConnectWhatsAppEmbeddedSignupRequest) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.ExpectedPhoneNumber) {
 		toSerialize["expectedPhoneNumber"] = o.ExpectedPhoneNumber
+	}
+	if !IsNil(o.RedirectUrl) {
+		toSerialize["redirectUrl"] = o.RedirectUrl
+	}
+	if !IsNil(o.EchoConnectToken) {
+		toSerialize["echoConnectToken"] = o.EchoConnectToken
 	}
 	return toSerialize, nil
 }
