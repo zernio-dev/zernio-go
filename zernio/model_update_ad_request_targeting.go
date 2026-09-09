@@ -18,7 +18,7 @@ import (
 // checks if the UpdateAdRequestTargeting type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestTargeting{}
 
-// UpdateAdRequestTargeting Meta + TikTok (demographics/interests), Google (keyword and device bid adjustment edits only), and LinkedIn (geo countries). Pinterest / X return 501.
+// UpdateAdRequestTargeting Meta + TikTok (demographics/interests), Google (keyword and device bid adjustment edits only), and LinkedIn (countries or regions required). Pinterest / X return 501.
 type UpdateAdRequestTargeting struct {
 	// Google only. The FULL desired set of positive keywords for the entire ad group. Omit to leave positives unchanged; [] removes all positives. Negatives are independent. Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad; an omitted matchType also defaults to BROAD. Matching case-insensitive text AND match type retains the existing criterion ID, status, bid overrides, labels and history without a mutation. A changed text or match type uses remove/create, without transferring the old criterion's attributes or history. See Google keyword replacement above for an EXACT-to-BROAD example. Mirrored to GET /v1/ads/keywords immediately.
 	Keywords []UpdateAdRequestTargetingKeywordsInner `json:"keywords,omitempty"`

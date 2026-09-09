@@ -4632,9 +4632,11 @@ Per-platform support:
     list are removed); a kind left out is untouched. Any other `targeting` field
     returns 400: Google cannot mutate broad targeting post-create without recreating
     the campaign. `creative` returns 501.
-  - **LinkedIn**: status, budget, targeting (geo countries only, applied to the
-    LinkedIn Campaign via PARTIAL_UPDATE), and creative (uploads new media, creates a
-    replacement inline creative on the same campaign, pauses the old one).
+  - **LinkedIn**: status, budget, targeting (countries or regions, excludedLocations (countries),
+    the B2B facets, and audience segments; applied to the LinkedIn Campaign via
+    PARTIAL_UPDATE, and REPLACES the campaign's entire targetingCriteria, not a merge),
+    and creative (uploads new media, creates a replacement inline creative on the same
+    campaign, pauses the old one).
   - **Pinterest / X / OpenAI Ads**: status + budget only. Sending
     `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
     OpenAI Ads budget is lifetime-only (see `budget.type` below).

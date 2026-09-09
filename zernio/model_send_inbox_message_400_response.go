@@ -21,8 +21,12 @@ var _ MappedNullable = &SendInboxMessage400Response{}
 // SendInboxMessage400Response struct for SendInboxMessage400Response
 type SendInboxMessage400Response struct {
 	Error *string `json:"error,omitempty"`
-	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own.
-	Code          *string                                                     `json:"code,omitempty"`
+	// Present on Meta pass-through rejections: platform_error when Meta rejected the send (see platform/platformError below), invalid_request_error for validation failures.
+	Type *string `json:"type,omitempty"`
+	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own; platform_api_error means Meta itself rejected the send (see platformError).
+	Code *string `json:"code,omitempty"`
+	// Present alongside code platform_api_error. The platform that rejected the send (e.g. instagram, facebook).
+	Platform      *string                                                     `json:"platform,omitempty"`
 	PlatformError *SendInboxMessage200ResponseDataPartialFailurePlatformError `json:"platformError,omitempty"`
 }
 
@@ -75,6 +79,38 @@ func (o *SendInboxMessage400Response) SetError(v string) {
 	o.Error = &v
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *SendInboxMessage400Response) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage400Response) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *SendInboxMessage400Response) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *SendInboxMessage400Response) SetType(v string) {
+	o.Type = &v
+}
+
 // GetCode returns the Code field value if set, zero value otherwise.
 func (o *SendInboxMessage400Response) GetCode() string {
 	if o == nil || IsNil(o.Code) {
@@ -105,6 +141,38 @@ func (o *SendInboxMessage400Response) HasCode() bool {
 // SetCode gets a reference to the given string and assigns it to the Code field.
 func (o *SendInboxMessage400Response) SetCode(v string) {
 	o.Code = &v
+}
+
+// GetPlatform returns the Platform field value if set, zero value otherwise.
+func (o *SendInboxMessage400Response) GetPlatform() string {
+	if o == nil || IsNil(o.Platform) {
+		var ret string
+		return ret
+	}
+	return *o.Platform
+}
+
+// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage400Response) GetPlatformOk() (*string, bool) {
+	if o == nil || IsNil(o.Platform) {
+		return nil, false
+	}
+	return o.Platform, true
+}
+
+// HasPlatform returns a boolean if a field has been set.
+func (o *SendInboxMessage400Response) HasPlatform() bool {
+	if o != nil && !IsNil(o.Platform) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatform gets a reference to the given string and assigns it to the Platform field.
+func (o *SendInboxMessage400Response) SetPlatform(v string) {
+	o.Platform = &v
 }
 
 // GetPlatformError returns the PlatformError field value if set, zero value otherwise.
@@ -152,8 +220,14 @@ func (o SendInboxMessage400Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
 	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.Platform) {
+		toSerialize["platform"] = o.Platform
 	}
 	if !IsNil(o.PlatformError) {
 		toSerialize["platformError"] = o.PlatformError
