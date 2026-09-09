@@ -23,6 +23,8 @@ var _ MappedNullable = &CtwaAdRequestBody{}
 
 // CtwaAdRequestBody In addition to the `required` list, the request must use EXACTLY ONE of the two shapes:  - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`,   OR `existingPostId` / `objectStoryId` to reuse an organic post. - Multi-creative: a non-empty `creatives[]` array. Top-level   creative fields must NOT be set on this shape.  Existing post references work on messaging and CTWA only (not call ads). They cannot be combined with each other or with headline, body, imageUrl, video, or welcomeMessage. No media is uploaded and the organic post is retained. Fresh creatives still require headline, body, and image or video.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.
 type CtwaAdRequestBody struct {
+	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Facebook or Instagram SocialAccount ID.
 	AccountId string `json:"accountId"`
 	// Meta ad account ID, e.g. `act_123456789`.
@@ -117,6 +119,38 @@ func NewCtwaAdRequestBody(accountId string, adAccountId string, name string) *Ct
 func NewCtwaAdRequestBodyWithDefaults() *CtwaAdRequestBody {
 	this := CtwaAdRequestBody{}
 	return &this
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *CtwaAdRequestBody) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
 }
 
 // GetAccountId returns the AccountId field value
@@ -1353,6 +1387,9 @@ func (o CtwaAdRequestBody) MarshalJSON() ([]byte, error) {
 
 func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name

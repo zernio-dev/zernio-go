@@ -22,7 +22,9 @@ var _ MappedNullable = &CreateAdCreative201Response{}
 type CreateAdCreative201Response struct {
 	AdAccountId *string `json:"adAccountId,omitempty"`
 	// Platform creative id, reusable via existingCreativeId.
-	CreativeId *string `json:"creativeId,omitempty"`
+	CreativeId      *string              `json:"creativeId,omitempty"`
+	Promotion       *MetaPromotion       `json:"promotion,omitempty"`
+	PromotionStatus *MetaPromotionStatus `json:"promotionStatus,omitempty"`
 }
 
 // NewCreateAdCreative201Response instantiates a new CreateAdCreative201Response object
@@ -106,6 +108,70 @@ func (o *CreateAdCreative201Response) SetCreativeId(v string) {
 	o.CreativeId = &v
 }
 
+// GetPromotion returns the Promotion field value if set, zero value otherwise.
+func (o *CreateAdCreative201Response) GetPromotion() MetaPromotion {
+	if o == nil || IsNil(o.Promotion) {
+		var ret MetaPromotion
+		return ret
+	}
+	return *o.Promotion
+}
+
+// GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreative201Response) GetPromotionOk() (*MetaPromotion, bool) {
+	if o == nil || IsNil(o.Promotion) {
+		return nil, false
+	}
+	return o.Promotion, true
+}
+
+// HasPromotion returns a boolean if a field has been set.
+func (o *CreateAdCreative201Response) HasPromotion() bool {
+	if o != nil && !IsNil(o.Promotion) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
+func (o *CreateAdCreative201Response) SetPromotion(v MetaPromotion) {
+	o.Promotion = &v
+}
+
+// GetPromotionStatus returns the PromotionStatus field value if set, zero value otherwise.
+func (o *CreateAdCreative201Response) GetPromotionStatus() MetaPromotionStatus {
+	if o == nil || IsNil(o.PromotionStatus) {
+		var ret MetaPromotionStatus
+		return ret
+	}
+	return *o.PromotionStatus
+}
+
+// GetPromotionStatusOk returns a tuple with the PromotionStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreative201Response) GetPromotionStatusOk() (*MetaPromotionStatus, bool) {
+	if o == nil || IsNil(o.PromotionStatus) {
+		return nil, false
+	}
+	return o.PromotionStatus, true
+}
+
+// HasPromotionStatus returns a boolean if a field has been set.
+func (o *CreateAdCreative201Response) HasPromotionStatus() bool {
+	if o != nil && !IsNil(o.PromotionStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotionStatus gets a reference to the given MetaPromotionStatus and assigns it to the PromotionStatus field.
+func (o *CreateAdCreative201Response) SetPromotionStatus(v MetaPromotionStatus) {
+	o.PromotionStatus = &v
+}
+
 func (o CreateAdCreative201Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -121,6 +187,12 @@ func (o CreateAdCreative201Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CreativeId) {
 		toSerialize["creativeId"] = o.CreativeId
+	}
+	if !IsNil(o.Promotion) {
+		toSerialize["promotion"] = o.Promotion
+	}
+	if !IsNil(o.PromotionStatus) {
+		toSerialize["promotionStatus"] = o.PromotionStatus
 	}
 	return toSerialize, nil
 }

@@ -22,6 +22,8 @@ var _ MappedNullable = &BoostPostRequest{}
 
 // BoostPostRequest struct for BoostPostRequest
 type BoostPostRequest struct {
+	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an enhancement; use the separate promotion field for an explicit offer. The deprecated standard_enhancements bundle is rejected by Meta.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Zernio post ID (provide this or platformPostId)
 	PostId *string `json:"postId,omitempty"`
 	// Platform post ID (alternative to postId)
@@ -106,6 +108,38 @@ func NewBoostPostRequest(accountId string, adAccountId string, name string, goal
 func NewBoostPostRequestWithDefaults() *BoostPostRequest {
 	this := BoostPostRequest{}
 	return &this
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *BoostPostRequest) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
 }
 
 // GetPostId returns the PostId field value if set, zero value otherwise.
@@ -1119,6 +1153,9 @@ func (o BoostPostRequest) MarshalJSON() ([]byte, error) {
 
 func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
 	if !IsNil(o.PostId) {
 		toSerialize["postId"] = o.PostId
 	}

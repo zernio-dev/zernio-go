@@ -42,8 +42,9 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
 	BuyingType *string `json:"buyingType,omitempty"`
 	// Meta only. The RESERVED prediction id the R&F ad set runs on (reserving mints a new id, so pass that one). Requires buyingType RESERVED.
-	RfPredictionId *string `json:"rfPredictionId,omitempty"`
-	// Meta only. Advantage+ creative enhancements: a partial map of Meta creative feature keys (snake_case, e.g. enhance_cta, image_brightness_and_contrast, text_optimizations) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Meta validates the keys; unspecified features default to OPT_OUT. The legacy standard_enhancements bundle is deprecated by Meta and rejected.
+	RfPredictionId *string        `json:"rfPredictionId,omitempty"`
+	Promotion      *MetaPromotion `json:"promotion,omitempty"`
+	// Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an enhancement; an explicit offer uses promotion.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
@@ -87,7 +88,7 @@ type CreateStandaloneAdRequest struct {
 	Video    *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	// Meta-only. When present, switches to the multi-creative shape: creates 1 campaign + 1 ad set + N ads (one per entry here). Top-level `headline` / `body` / `imageUrl` / `linkUrl` / `callToAction` are ignored in this mode. Mutually exclusive with `adSetId`.
 	Creatives []CreateStandaloneAdRequestCreativesInner `json:"creatives,omitempty"`
-	// When present, switches to the attach shape: adds one new ad to this existing ad set without creating a new campaign. Budget, targeting, goal, schedule, AND bid strategy are inherited from the ad set on Meta, and passing `bidStrategy` in attach mode returns 400. To change an existing ad set's bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive with `creatives[]`.  The attached ad takes the full single-creative surface: `headline`/`body`/`description`/`callToAction` plus either `imageUrl`/`video` OR `placementAssets` (its own per-placement Feed/Story assets) OR `translations`/`defaultLocale` (its own per-locale asset feed, Meta only), and `leadGenFormId` when the target is a lead ad set (the parent must be ON_AD, true for ad sets created via goal `lead_generation`; Meta rejects a formless ad there, so pass the form on EVERY attached ad). This is the way to build N full ads sharing one ad set: create the first ad via the normal shape, then attach the rest one call each.  Supported on Meta (facebook, instagram), Google Ads, TikTok, and LinkedIn. On TikTok the `adSetId` is the ad group ID; the new ad inherits the ad group's bid + budget + targeting. On LinkedIn the `adSetId` is the LinkedIn Campaign ID (numeric); we attach a new Creative to that Campaign, so the Campaign's `platformSpecificData` bidding, targeting, budget and schedule are inherited (passing those fields returns 400).  On Google Ads the `adSetId` is the AD GROUP id. `goal` is still REQUIRED even though budget and targeting are inherited from the ad group. Send `campaignType: \"search\"` to attach into a Search ad group, including one created by `POST /v1/ads/ad-sets` (always SEARCH_STANDARD): without it the request is treated as Display and requires `images.landscape` + `images.square` + `businessName`, and the resulting display creative does not match a Search ad group. `budgetAmount`/`budgetType` and bidding fields (`bidStrategy`, `bidAmount`, `portfolioBidStrategyId`) return 400 on this shape; the ad group already owns them.
+	// When present, switches to the attach shape: adds one new ad to this existing ad set without creating a new campaign. Budget, targeting, goal, schedule, AND bid strategy are inherited from the ad set on Meta, and passing `bidStrategy` in attach mode returns 400. To change an existing ad set's bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive with `creatives[]`. `dynamicCreative` returns 400 in attach mode: create a new dynamic ad set by omitting `adSetId` instead.  The attached ad takes the full single-creative surface: `headline`/`body`/`description`/`callToAction` plus either `imageUrl`/`video` OR `placementAssets` (its own per-placement Feed/Story assets) OR `translations`/`defaultLocale` (its own per-locale asset feed, Meta only), and `leadGenFormId` when the target is a lead ad set (the parent must be ON_AD, true for ad sets created via goal `lead_generation`; Meta rejects a formless ad there, so pass the form on EVERY attached ad). This is the way to build N full ads sharing one ad set: create the first ad via the normal shape, then attach the rest one call each.  Supported on Meta (facebook, instagram), Google Ads, TikTok, and LinkedIn. On TikTok the `adSetId` is the ad group ID; the new ad inherits the ad group's bid + budget + targeting. On LinkedIn the `adSetId` is the LinkedIn Campaign ID (numeric); we attach a new Creative to that Campaign, so the Campaign's `platformSpecificData` bidding, targeting, budget and schedule are inherited (passing those fields returns 400).  On Google Ads the `adSetId` is the AD GROUP id. `goal` is still REQUIRED even though budget and targeting are inherited from the ad group. Send `campaignType: \"search\"` to attach into a Search ad group, including one created by `POST /v1/ads/ad-sets` (always SEARCH_STANDARD): without it the request is treated as Display and requires `images.landscape` + `images.square` + `businessName`, and the resulting display creative does not match a Search ad group. `budgetAmount`/`budgetType` and bidding fields (`bidStrategy`, `bidAmount`, `portfolioBidStrategyId`) return 400 on this shape; the ad group already owns them.
 	AdSetId *string `json:"adSetId,omitempty"`
 	// Meta, Google Ads, and LinkedIn. On Meta: add the new ad set under this EXISTING campaign instead of creating a new one (multi-ad-set audience testing). The new ad set's budget is matched to the campaign's mode automatically: for a CBO campaign (campaign-level budget) omit `budgetAmount`/`budgetType`, since the campaign owns the budget; for an ABO campaign pass them (they go on the new ad set). On LinkedIn: create a new Campaign (and its Creative) under this EXISTING CampaignGroup. On Google Ads: create a new ad group under this EXISTING campaign; the new ad group inherits the campaign's budget, so omit `budgetAmount`/`budgetType` (and any bidding field), or the request returns 400. On failure only the entities we authored are cleaned up; the pre-existing parent is left untouched and is never (re)activated. Mutually exclusive with `adSetId` and `creatives[]`.
 	ExistingCampaignId *string `json:"existingCampaignId,omitempty"`
@@ -602,6 +603,38 @@ func (o *CreateStandaloneAdRequest) HasRfPredictionId() bool {
 // SetRfPredictionId gets a reference to the given string and assigns it to the RfPredictionId field.
 func (o *CreateStandaloneAdRequest) SetRfPredictionId(v string) {
 	o.RfPredictionId = &v
+}
+
+// GetPromotion returns the Promotion field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetPromotion() MetaPromotion {
+	if o == nil || IsNil(o.Promotion) {
+		var ret MetaPromotion
+		return ret
+	}
+	return *o.Promotion
+}
+
+// GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetPromotionOk() (*MetaPromotion, bool) {
+	if o == nil || IsNil(o.Promotion) {
+		return nil, false
+	}
+	return o.Promotion, true
+}
+
+// HasPromotion returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasPromotion() bool {
+	if o != nil && !IsNil(o.Promotion) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
+func (o *CreateStandaloneAdRequest) SetPromotion(v MetaPromotion) {
+	o.Promotion = &v
 }
 
 // GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
@@ -3404,6 +3437,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RfPredictionId) {
 		toSerialize["rfPredictionId"] = o.RfPredictionId
+	}
+	if !IsNil(o.Promotion) {
+		toSerialize["promotion"] = o.Promotion
 	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures

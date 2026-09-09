@@ -1047,6 +1047,16 @@ Three mutually-exclusive request shapes are selected by the body:
 - Meta-only multi-creative shape via the creatives array: one ad set with N ads sharing budget and targeting.
 - Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, Google Ads, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
 
+Meta accepts `promotion` and `creativeFeatures` on the single and attach shapes and
+as defaults for `creatives[]`. An item replaces the whole feature map; its `promotion`
+replaces the default offer, and `promotion: null` disables that default for the item.
+Reusing `existingCreativeId` uses the existing creative settings instead of new settings.
+Requested settings are persisted for lists, exports, and default ad-detail reads.
+Only ads supplied a `promotion` receive live readback; multi-create batches those reads
+in groups of up to 50 IDs without per-ad fallback. Inspect `ad.creative.promotionStatus` (or
+`ads[].creative.promotionStatus`). `not_returned` means Meta omitted the metadata;
+successful creation does not by itself prove the offer was applied or will display.
+
 Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
 LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
@@ -1570,7 +1580,9 @@ DuplicateAd Duplicate an ad
 Duplicates a single ad via Meta's native `POST /{ad-id}/copies`. The copy is created
 paused. `adSetId` retargets the copy into another ad set; omitted = the source's own ad
 set. Accepts the Zernio ad id or the platform ad id. Sync discovery is triggered
-automatically (`syncAfter: false` to skip).
+automatically (`syncAfter: false` to skip). Creative settings returned by Meta,
+including explicit promotion metadata and creativeFeatures, are preserved when the
+native copy requires a creative rebuild. Metadata Meta does not return cannot be recovered.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad ID or platform ad ID
@@ -1982,9 +1994,16 @@ func (a *AdCampaignsAPIService) DuplicateAdSetExecute(r AdCampaignsAPIDuplicateA
 }
 
 type AdCampaignsAPIGetAdRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	adId       string
+	ctx              context.Context
+	ApiService       *AdCampaignsAPIService
+	adId             string
+	refreshPromotion *bool
+}
+
+// Meta only. Read current promotion metadata from Meta and include promotionStatus. Omit for stored creative settings with no promotion-specific Graph call.
+func (r AdCampaignsAPIGetAdRequest) RefreshPromotion(refreshPromotion bool) AdCampaignsAPIGetAdRequest {
+	r.refreshPromotion = &refreshPromotion
+	return r
 }
 
 func (r AdCampaignsAPIGetAdRequest) Execute() (*GetAd200Response, *http.Response, error) {
@@ -2003,6 +2022,11 @@ The `{adId}` path segment accepts any identifier dialect Zernio indexes for the 
 - the creative's `effective_instagram_media_id` (Instagram side)
 
 Any of the four resolve to the same ad. Caller doesn't need a translation step.
+By default, creative.promotion and creative.creativeFeatures contain stored requested
+settings, which do not confirm platform application. With `refreshPromotion=true`,
+Meta promotion metadata is read live and exposed as `ad.creative.promotion`
+with `promotionStatus`. Only `applied` confirms an offer; `not_returned` means the
+creative read succeeded without promotion metadata, and `unavailable` means it failed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs. See description for details.
@@ -2039,6 +2063,13 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.refreshPromotion != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "refreshPromotion", r.refreshPromotion, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "refreshPromotion", defaultValue, "form", "")
+		r.refreshPromotion = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2077,6 +2108,17 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

@@ -45,7 +45,11 @@ Creates a creative in the library WITHOUT an ad, reusable on the create endpoint
 `existingCreativeId`. Provide exactly one of `imageUrl` (uploaded server-side),
 `imageHash` (from POST /v1/ads/images or the library list), or `carouselCards` (2-10
 hand-built cards). The Page (and linked Instagram account, when present) is resolved
-from `accountId` as the story actor.
+from `accountId` as the story actor. `promotion` configures an explicit offer separately
+from Advantage+ `creativeFeatures`. Only when `promotion` is supplied does the response
+read the creative back from Meta;
+`promotionStatus: not_returned` means Meta accepted creation but omitted promotion
+metadata, so the requested offer is not confirmed as applied.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPICreateAdCreativeRequest
@@ -961,7 +965,7 @@ func (r AdCreativesAPIListAdCatalogProductSetsRequest) Execute() (*ListAdCatalog
 /*
 ListAdCatalogProductSets List a catalog's product sets
 
-Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
+Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set id, not the parent catalog id, as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`. Creation verifies set visibility and returns 400 for a catalog id or an inaccessible set.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)

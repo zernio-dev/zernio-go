@@ -18,8 +18,11 @@ import (
 // checks if the UpdateAdRequestCreative type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateAdRequestCreative{}
 
-// UpdateAdRequestCreative Replace or patch the ad's creative. Meta, TikTok, and LinkedIn.  - **Meta**: patch-style. Pass any subset: fields you omit are preserved from the   live creative, including media (`image_hash`/`video_id` are reused, no re-upload)   and `url_tags`. Sending the full set (`headline`, `body`, `callToAction`,   `linkUrl`, `imageUrl`) rebuilds the creative from scratch instead. Partial   patching reads the live `object_story_spec`, which Meta strips on SHARE /   page-post / dark / asset_feed creatives. Those return 422 asking for the full   set. A `videoUrl`/`videoId` on an image creative is a type change and also   needs the full set. `existingCreativeId` repoints the ad at a creative from   GET /v1/ads/creatives and ignores every other field. Meta creatives are   immutable, so any change creates a new creative and repoints the ad; the old   creative is retained on the ad account for historical reporting. - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives   have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes   `landing_page_url`; `videoUrl` triggers a fresh upload. `description`, `videoId`   and `existingCreativeId` are Meta-only and return 400. - **LinkedIn**: requires new media (image via `imageUrl` or video via `videoUrl`);   a text-only creative update returns 400. Uploads the media, creates a new inline   media creative on the same campaign, and pauses the old creative (best-effort).   The old creative is retained for historical reporting. `videoId` and   `existingCreativeId` are Meta-only and return 400.
+// UpdateAdRequestCreative Replace or patch the ad's creative. Meta, TikTok, and LinkedIn.  - **Meta**: patch-style. Pass any subset: fields you omit are preserved from the   live creative, including media (`image_hash`/`video_id` are reused, no re-upload)   and `url_tags`. Sending the full set (`headline`, `body`, `callToAction`,   `linkUrl`, `imageUrl`) rebuilds the creative from scratch instead. Partial   patching reads the live `object_story_spec`, which Meta strips on SHARE /   page-post / dark / asset_feed creatives. Those return 422 asking for the full   set. A `videoUrl`/`videoId` on an image creative is a type change and also   needs the full set. `existingCreativeId` repoints the ad at a creative from   GET /v1/ads/creatives and ignores every other field. Meta creatives are   immutable, so any change creates a new creative and repoints the ad; the old   creative is retained on the ad account for historical reporting.   `promotion` and `creativeFeatures` are Meta-only. Omitted settings are   preserved from the live creative, including full rebuilds. Send   `promotion: null` to remove the explicit offer from the replacement.   A supplied creativeFeatures map overrides individual existing keys. - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives   have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes   `landing_page_url`; `videoUrl` triggers a fresh upload. `description`, `videoId`   and `existingCreativeId` are Meta-only and return 400. - **LinkedIn**: requires new media (image via `imageUrl` or video via `videoUrl`);   a text-only creative update returns 400. Uploads the media, creates a new inline   media creative on the same campaign, and pauses the old creative (best-effort).   The old creative is retained for historical reporting. `videoId` and   `existingCreativeId` are Meta-only and return 400.
 type UpdateAdRequestCreative struct {
+	Promotion *MetaPromotion `json:"promotion,omitempty"`
+	// Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an enhancement; use the separate promotion field for an explicit offer. The deprecated standard_enhancements bundle is rejected by Meta.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta and LinkedIn (TikTok has no headline slot)
 	Headline *string `json:"headline,omitempty"`
 	Body     *string `json:"body,omitempty"`
@@ -50,6 +53,70 @@ func NewUpdateAdRequestCreative() *UpdateAdRequestCreative {
 func NewUpdateAdRequestCreativeWithDefaults() *UpdateAdRequestCreative {
 	this := UpdateAdRequestCreative{}
 	return &this
+}
+
+// GetPromotion returns the Promotion field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetPromotion() MetaPromotion {
+	if o == nil || IsNil(o.Promotion) {
+		var ret MetaPromotion
+		return ret
+	}
+	return *o.Promotion
+}
+
+// GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetPromotionOk() (*MetaPromotion, bool) {
+	if o == nil || IsNil(o.Promotion) {
+		return nil, false
+	}
+	return o.Promotion, true
+}
+
+// HasPromotion returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasPromotion() bool {
+	if o != nil && !IsNil(o.Promotion) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
+func (o *UpdateAdRequestCreative) SetPromotion(v MetaPromotion) {
+	o.Promotion = &v
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *UpdateAdRequestCreative) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
 }
 
 // GetHeadline returns the Headline field value if set, zero value otherwise.
@@ -350,6 +417,12 @@ func (o UpdateAdRequestCreative) MarshalJSON() ([]byte, error) {
 
 func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Promotion) {
+		toSerialize["promotion"] = o.Promotion
+	}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
 	if !IsNil(o.Headline) {
 		toSerialize["headline"] = o.Headline
 	}

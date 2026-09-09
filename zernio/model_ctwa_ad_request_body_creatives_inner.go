@@ -24,7 +24,9 @@ type CtwaAdRequestBodyCreativesInner struct {
 	ExistingPostId *string `json:"existingPostId,omitempty"`
 	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
 	ObjectStoryId *string `json:"objectStoryId,omitempty" validate:"regexp=^\\\\d+_\\\\d+$"`
-	Headline      *string `json:"headline,omitempty"`
+	// Replaces the top-level creativeFeatures map for this item. Omit to inherit; an empty object clears inherited enrollment choices.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
+	Headline         *string           `json:"headline,omitempty"`
 	// Primary text shown above the image / video.
 	Body *string `json:"body,omitempty"`
 	// Image asset. Mutually exclusive with this entry's `video`. Required if neither `video` nor an existing post reference is supplied.
@@ -112,6 +114,38 @@ func (o *CtwaAdRequestBodyCreativesInner) HasObjectStoryId() bool {
 // SetObjectStoryId gets a reference to the given string and assigns it to the ObjectStoryId field.
 func (o *CtwaAdRequestBodyCreativesInner) SetObjectStoryId(v string) {
 	o.ObjectStoryId = &v
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyCreativesInner) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *CtwaAdRequestBodyCreativesInner) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
 }
 
 // GetHeadline returns the Headline field value if set, zero value otherwise.
@@ -289,6 +323,9 @@ func (o CtwaAdRequestBodyCreativesInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.ObjectStoryId) {
 		toSerialize["objectStoryId"] = o.ObjectStoryId
+	}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
 	}
 	if !IsNil(o.Headline) {
 		toSerialize["headline"] = o.Headline

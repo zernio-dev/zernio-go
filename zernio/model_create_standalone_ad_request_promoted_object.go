@@ -34,9 +34,9 @@ type CreateStandaloneAdRequestPromotedObject struct {
 	ObjectStoreUrl *string `json:"objectStoreUrl,omitempty"`
 	// Custom Conversion ID, when optimising against one instead of a standard event. Accepted alone by this API, without `pixelId` or `customEventType`. If `pixelId` is also sent, `customEventType` is still required on the promoted_object (Meta rejects `pixel_id` without `custom_event_type`, error_subcode 1885014).
 	CustomConversionId *string `json:"customConversionId,omitempty"`
-	// Catalog ID for catalog/Advantage+ Shopping campaigns.
+	// Optional catalog ID. If supplied with productSetId, the set must belong to this catalog. A catalog ID cannot replace productSetId.
 	ProductCatalogId *string `json:"productCatalogId,omitempty"`
-	// Product Set ID inside the catalog.
+	// Meta product SET ID from GET /v1/ads/catalogs/{catalogId}/product-sets. Zernio checks that the token can read the set and its product_catalog before creation. A catalog ID or inaccessible set returns a precise 400 naming promotedObject.productSetId. A mismatch with productCatalogId names promotedObject.productCatalogId.
 	ProductSetId *string `json:"productSetId,omitempty"`
 	// Meta only. Offline event set (dataset) to optimise toward. Post-merger these are datasets: the id is the dataset id (for pixel-backed datasets, the pixel id).
 	OfflineConversionDataSetId *string `json:"offlineConversionDataSetId,omitempty"`

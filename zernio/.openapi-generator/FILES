@@ -1179,6 +1179,8 @@ model_media_upload_response.go
 model_meta_ads_platform_data.go
 model_meta_lead_form_platform_data.go
 model_meta_lead_form_platform_data_context_card.go
+model_meta_promotion.go
+model_meta_promotion_status.go
 model_money.go
 model_money_amount.go
 model_move_account_to_profile_200_response.go

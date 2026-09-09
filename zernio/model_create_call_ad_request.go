@@ -23,6 +23,8 @@ var _ MappedNullable = &CreateCallAdRequest{}
 
 // CreateCallAdRequest struct for CreateCallAdRequest
 type CreateCallAdRequest struct {
+	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
+	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Facebook or Instagram SocialAccount ID.
 	AccountId string `json:"accountId"`
 	// Meta ad account ID, e.g. `act_123456789`.
@@ -123,6 +125,38 @@ func NewCreateCallAdRequest(accountId string, adAccountId string, name string, p
 func NewCreateCallAdRequestWithDefaults() *CreateCallAdRequest {
 	this := CreateCallAdRequest{}
 	return &this
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *CreateCallAdRequest) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
 }
 
 // GetAccountId returns the AccountId field value
@@ -1407,6 +1441,9 @@ func (o CreateCallAdRequest) MarshalJSON() ([]byte, error) {
 
 func (o CreateCallAdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
