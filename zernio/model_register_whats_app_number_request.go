@@ -20,7 +20,7 @@ var _ MappedNullable = &RegisterWhatsAppNumberRequest{}
 
 // RegisterWhatsAppNumberRequest struct for RegisterWhatsAppNumberRequest
 type RegisterWhatsAppNumberRequest struct {
-	// The 6-digit two-step verification PIN set on the number. Omit it only if the number has no PIN of its own.
+	// The 6-digit two-step verification PIN set on the number. Omitting it applies Zernio's managed default registration PIN, the same one every Embedded Signup connect sets automatically.
 	Pin *string `json:"pin,omitempty" validate:"regexp=^\\\\d{6}$"`
 }
 

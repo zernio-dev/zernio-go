@@ -29,7 +29,7 @@ type CreateCommentAutomationRequest struct {
 	Trigger *string `json:"trigger,omitempty"`
 	// Platform media/post ID (or story media id when trigger=story_reply). Omit for an account-wide (any-post / any-story) automation.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
-	// Zernio post ID. Required only when also targeting a specific post via platformPostId.
+	// Zernio post ID. Optional and never required. Use it INSTEAD of platformPostId to bind a per-post automation to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. For a post already live on the platform, pass platformPostId alone and omit this.
 	PostId *string `json:"postId,omitempty"`
 	// Post content snippet for display
 	PostTitle *string `json:"postTitle,omitempty"`
