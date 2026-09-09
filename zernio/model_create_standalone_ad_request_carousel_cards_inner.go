@@ -24,7 +24,7 @@ var _ MappedNullable = &CreateStandaloneAdRequestCarouselCardsInner{}
 type CreateStandaloneAdRequestCarouselCardsInner struct {
 	// Card image; uploaded to the ad account and referenced by hash.
 	ImageUrl string `json:"imageUrl"`
-	// Card destination URL. Defaults to the top-level linkUrl.
+	// Card destination URL. Defaults to the top-level linkUrl, or Meta's lead-form link when leadGenFormId is set and neither is provided.
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// Card headline, shown below the card image.
 	Headline *string `json:"headline,omitempty"`

@@ -741,7 +741,7 @@ func (r AdCampaignsAPICreateAdSetRequest) Execute() (*CreateAdSet201Response, *h
 CreateAdSet Create a standalone ad group
 
 Google Ads compliance row C.190: creates an ad group WITHOUT an ad,
-under an existing campaign. Ads join it later via `existingAdGroupId`
+under an existing campaign. Ads join it later via `adSetId`
 on POST /v1/ads/create. Google only; every other platform returns 501.
 
 Created `PAUSED` unless `status: ACTIVE`. The new ad group has no ad
@@ -1031,7 +1031,7 @@ Three mutually-exclusive request shapes are selected by the body:
 
 - Legacy single-creative shape (all platforms, the default).
 - Meta-only multi-creative shape via the creatives array: one ad set with N ads sharing budget and targeting.
-- Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
+- Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, Google Ads, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
 
 Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
@@ -3605,7 +3605,7 @@ filtered by platform and campaignId. Reads the `ad_sets` table
 directly, independent of the `ads` rollup GET /v1/ads/tree uses, so a
 newly created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
 Google only) is visible here even though it is invisible in the tree
-until an ad joins it via `existingAdGroupId`. Returns at most 500
+until an ad joins it via `adSetId` on POST /v1/ads/create. Returns at most 500
 rows, newest first.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
