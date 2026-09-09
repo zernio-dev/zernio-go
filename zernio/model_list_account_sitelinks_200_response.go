@@ -16,38 +16,38 @@ import (
 	"time"
 )
 
-// checks if the ListAccountCallouts200Response type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ListAccountCallouts200Response{}
+// checks if the ListAccountSitelinks200Response type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ListAccountSitelinks200Response{}
 
-// ListAccountCallouts200Response struct for ListAccountCallouts200Response
-type ListAccountCallouts200Response struct {
-	CustomerId *string                                       `json:"customerId,omitempty"`
-	Callouts   []ListAccountCallouts200ResponseCalloutsInner `json:"callouts,omitempty"`
+// ListAccountSitelinks200Response struct for ListAccountSitelinks200Response
+type ListAccountSitelinks200Response struct {
+	CustomerId *string                                         `json:"customerId,omitempty"`
+	Sitelinks  []ListAccountSitelinks200ResponseSitelinksInner `json:"sitelinks,omitempty"`
 	// Time of the cached Google read. Null when no cache was used.
 	CachedAt NullableTime `json:"cachedAt,omitempty"`
 	// True when exhausted quota required returning the last successful read.
 	Stale *bool `json:"stale,omitempty"`
 }
 
-// NewListAccountCallouts200Response instantiates a new ListAccountCallouts200Response object
+// NewListAccountSitelinks200Response instantiates a new ListAccountSitelinks200Response object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListAccountCallouts200Response() *ListAccountCallouts200Response {
-	this := ListAccountCallouts200Response{}
+func NewListAccountSitelinks200Response() *ListAccountSitelinks200Response {
+	this := ListAccountSitelinks200Response{}
 	return &this
 }
 
-// NewListAccountCallouts200ResponseWithDefaults instantiates a new ListAccountCallouts200Response object
+// NewListAccountSitelinks200ResponseWithDefaults instantiates a new ListAccountSitelinks200Response object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewListAccountCallouts200ResponseWithDefaults() *ListAccountCallouts200Response {
-	this := ListAccountCallouts200Response{}
+func NewListAccountSitelinks200ResponseWithDefaults() *ListAccountSitelinks200Response {
+	this := ListAccountSitelinks200Response{}
 	return &this
 }
 
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
-func (o *ListAccountCallouts200Response) GetCustomerId() string {
+func (o *ListAccountSitelinks200Response) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
 		return ret
@@ -57,7 +57,7 @@ func (o *ListAccountCallouts200Response) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAccountCallouts200Response) GetCustomerIdOk() (*string, bool) {
+func (o *ListAccountSitelinks200Response) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
 	}
@@ -65,7 +65,7 @@ func (o *ListAccountCallouts200Response) GetCustomerIdOk() (*string, bool) {
 }
 
 // HasCustomerId returns a boolean if a field has been set.
-func (o *ListAccountCallouts200Response) HasCustomerId() bool {
+func (o *ListAccountSitelinks200Response) HasCustomerId() bool {
 	if o != nil && !IsNil(o.CustomerId) {
 		return true
 	}
@@ -74,44 +74,44 @@ func (o *ListAccountCallouts200Response) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
-func (o *ListAccountCallouts200Response) SetCustomerId(v string) {
+func (o *ListAccountSitelinks200Response) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
 
-// GetCallouts returns the Callouts field value if set, zero value otherwise.
-func (o *ListAccountCallouts200Response) GetCallouts() []ListAccountCallouts200ResponseCalloutsInner {
-	if o == nil || IsNil(o.Callouts) {
-		var ret []ListAccountCallouts200ResponseCalloutsInner
+// GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
+func (o *ListAccountSitelinks200Response) GetSitelinks() []ListAccountSitelinks200ResponseSitelinksInner {
+	if o == nil || IsNil(o.Sitelinks) {
+		var ret []ListAccountSitelinks200ResponseSitelinksInner
 		return ret
 	}
-	return o.Callouts
+	return o.Sitelinks
 }
 
-// GetCalloutsOk returns a tuple with the Callouts field value if set, nil otherwise
+// GetSitelinksOk returns a tuple with the Sitelinks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAccountCallouts200Response) GetCalloutsOk() ([]ListAccountCallouts200ResponseCalloutsInner, bool) {
-	if o == nil || IsNil(o.Callouts) {
+func (o *ListAccountSitelinks200Response) GetSitelinksOk() ([]ListAccountSitelinks200ResponseSitelinksInner, bool) {
+	if o == nil || IsNil(o.Sitelinks) {
 		return nil, false
 	}
-	return o.Callouts, true
+	return o.Sitelinks, true
 }
 
-// HasCallouts returns a boolean if a field has been set.
-func (o *ListAccountCallouts200Response) HasCallouts() bool {
-	if o != nil && !IsNil(o.Callouts) {
+// HasSitelinks returns a boolean if a field has been set.
+func (o *ListAccountSitelinks200Response) HasSitelinks() bool {
+	if o != nil && !IsNil(o.Sitelinks) {
 		return true
 	}
 
 	return false
 }
 
-// SetCallouts gets a reference to the given []ListAccountCallouts200ResponseCalloutsInner and assigns it to the Callouts field.
-func (o *ListAccountCallouts200Response) SetCallouts(v []ListAccountCallouts200ResponseCalloutsInner) {
-	o.Callouts = v
+// SetSitelinks gets a reference to the given []ListAccountSitelinks200ResponseSitelinksInner and assigns it to the Sitelinks field.
+func (o *ListAccountSitelinks200Response) SetSitelinks(v []ListAccountSitelinks200ResponseSitelinksInner) {
+	o.Sitelinks = v
 }
 
 // GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ListAccountCallouts200Response) GetCachedAt() time.Time {
+func (o *ListAccountSitelinks200Response) GetCachedAt() time.Time {
 	if o == nil || IsNil(o.CachedAt.Get()) {
 		var ret time.Time
 		return ret
@@ -122,7 +122,7 @@ func (o *ListAccountCallouts200Response) GetCachedAt() time.Time {
 // GetCachedAtOk returns a tuple with the CachedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ListAccountCallouts200Response) GetCachedAtOk() (*time.Time, bool) {
+func (o *ListAccountSitelinks200Response) GetCachedAtOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -130,7 +130,7 @@ func (o *ListAccountCallouts200Response) GetCachedAtOk() (*time.Time, bool) {
 }
 
 // HasCachedAt returns a boolean if a field has been set.
-func (o *ListAccountCallouts200Response) HasCachedAt() bool {
+func (o *ListAccountSitelinks200Response) HasCachedAt() bool {
 	if o != nil && o.CachedAt.IsSet() {
 		return true
 	}
@@ -139,22 +139,22 @@ func (o *ListAccountCallouts200Response) HasCachedAt() bool {
 }
 
 // SetCachedAt gets a reference to the given NullableTime and assigns it to the CachedAt field.
-func (o *ListAccountCallouts200Response) SetCachedAt(v time.Time) {
+func (o *ListAccountSitelinks200Response) SetCachedAt(v time.Time) {
 	o.CachedAt.Set(&v)
 }
 
 // SetCachedAtNil sets the value for CachedAt to be an explicit nil
-func (o *ListAccountCallouts200Response) SetCachedAtNil() {
+func (o *ListAccountSitelinks200Response) SetCachedAtNil() {
 	o.CachedAt.Set(nil)
 }
 
 // UnsetCachedAt ensures that no value is present for CachedAt, not even an explicit nil
-func (o *ListAccountCallouts200Response) UnsetCachedAt() {
+func (o *ListAccountSitelinks200Response) UnsetCachedAt() {
 	o.CachedAt.Unset()
 }
 
 // GetStale returns the Stale field value if set, zero value otherwise.
-func (o *ListAccountCallouts200Response) GetStale() bool {
+func (o *ListAccountSitelinks200Response) GetStale() bool {
 	if o == nil || IsNil(o.Stale) {
 		var ret bool
 		return ret
@@ -164,7 +164,7 @@ func (o *ListAccountCallouts200Response) GetStale() bool {
 
 // GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAccountCallouts200Response) GetStaleOk() (*bool, bool) {
+func (o *ListAccountSitelinks200Response) GetStaleOk() (*bool, bool) {
 	if o == nil || IsNil(o.Stale) {
 		return nil, false
 	}
@@ -172,7 +172,7 @@ func (o *ListAccountCallouts200Response) GetStaleOk() (*bool, bool) {
 }
 
 // HasStale returns a boolean if a field has been set.
-func (o *ListAccountCallouts200Response) HasStale() bool {
+func (o *ListAccountSitelinks200Response) HasStale() bool {
 	if o != nil && !IsNil(o.Stale) {
 		return true
 	}
@@ -181,11 +181,11 @@ func (o *ListAccountCallouts200Response) HasStale() bool {
 }
 
 // SetStale gets a reference to the given bool and assigns it to the Stale field.
-func (o *ListAccountCallouts200Response) SetStale(v bool) {
+func (o *ListAccountSitelinks200Response) SetStale(v bool) {
 	o.Stale = &v
 }
 
-func (o ListAccountCallouts200Response) MarshalJSON() ([]byte, error) {
+func (o ListAccountSitelinks200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -193,13 +193,13 @@ func (o ListAccountCallouts200Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ListAccountCallouts200Response) ToMap() (map[string]interface{}, error) {
+func (o ListAccountSitelinks200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
 	}
-	if !IsNil(o.Callouts) {
-		toSerialize["callouts"] = o.Callouts
+	if !IsNil(o.Sitelinks) {
+		toSerialize["sitelinks"] = o.Sitelinks
 	}
 	if o.CachedAt.IsSet() {
 		toSerialize["cachedAt"] = o.CachedAt.Get()
@@ -210,38 +210,38 @@ func (o ListAccountCallouts200Response) ToMap() (map[string]interface{}, error) 
 	return toSerialize, nil
 }
 
-type NullableListAccountCallouts200Response struct {
-	value *ListAccountCallouts200Response
+type NullableListAccountSitelinks200Response struct {
+	value *ListAccountSitelinks200Response
 	isSet bool
 }
 
-func (v NullableListAccountCallouts200Response) Get() *ListAccountCallouts200Response {
+func (v NullableListAccountSitelinks200Response) Get() *ListAccountSitelinks200Response {
 	return v.value
 }
 
-func (v *NullableListAccountCallouts200Response) Set(val *ListAccountCallouts200Response) {
+func (v *NullableListAccountSitelinks200Response) Set(val *ListAccountSitelinks200Response) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableListAccountCallouts200Response) IsSet() bool {
+func (v NullableListAccountSitelinks200Response) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableListAccountCallouts200Response) Unset() {
+func (v *NullableListAccountSitelinks200Response) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableListAccountCallouts200Response(val *ListAccountCallouts200Response) *NullableListAccountCallouts200Response {
-	return &NullableListAccountCallouts200Response{value: val, isSet: true}
+func NewNullableListAccountSitelinks200Response(val *ListAccountSitelinks200Response) *NullableListAccountSitelinks200Response {
+	return &NullableListAccountSitelinks200Response{value: val, isSet: true}
 }
 
-func (v NullableListAccountCallouts200Response) MarshalJSON() ([]byte, error) {
+func (v NullableListAccountSitelinks200Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableListAccountCallouts200Response) UnmarshalJSON(src []byte) error {
+func (v *NullableListAccountSitelinks200Response) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

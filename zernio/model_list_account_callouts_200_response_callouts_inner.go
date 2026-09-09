@@ -21,9 +21,8 @@ var _ MappedNullable = &ListAccountCallouts200ResponseCalloutsInner{}
 // ListAccountCallouts200ResponseCalloutsInner struct for ListAccountCallouts200ResponseCalloutsInner
 type ListAccountCallouts200ResponseCalloutsInner struct {
 	AssetId *string `json:"assetId,omitempty"`
+	Status  *string `json:"status,omitempty"`
 	Text    *string `json:"text,omitempty"`
-	// customer_asset.status, e.g. ENABLED, REMOVED, PAUSED.
-	Status *string `json:"status,omitempty"`
 }
 
 // NewListAccountCallouts200ResponseCalloutsInner instantiates a new ListAccountCallouts200ResponseCalloutsInner object
@@ -75,38 +74,6 @@ func (o *ListAccountCallouts200ResponseCalloutsInner) SetAssetId(v string) {
 	o.AssetId = &v
 }
 
-// GetText returns the Text field value if set, zero value otherwise.
-func (o *ListAccountCallouts200ResponseCalloutsInner) GetText() string {
-	if o == nil || IsNil(o.Text) {
-		var ret string
-		return ret
-	}
-	return *o.Text
-}
-
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ListAccountCallouts200ResponseCalloutsInner) GetTextOk() (*string, bool) {
-	if o == nil || IsNil(o.Text) {
-		return nil, false
-	}
-	return o.Text, true
-}
-
-// HasText returns a boolean if a field has been set.
-func (o *ListAccountCallouts200ResponseCalloutsInner) HasText() bool {
-	if o != nil && !IsNil(o.Text) {
-		return true
-	}
-
-	return false
-}
-
-// SetText gets a reference to the given string and assigns it to the Text field.
-func (o *ListAccountCallouts200ResponseCalloutsInner) SetText(v string) {
-	o.Text = &v
-}
-
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *ListAccountCallouts200ResponseCalloutsInner) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -139,6 +106,38 @@ func (o *ListAccountCallouts200ResponseCalloutsInner) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetText returns the Text field value if set, zero value otherwise.
+func (o *ListAccountCallouts200ResponseCalloutsInner) GetText() string {
+	if o == nil || IsNil(o.Text) {
+		var ret string
+		return ret
+	}
+	return *o.Text
+}
+
+// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAccountCallouts200ResponseCalloutsInner) GetTextOk() (*string, bool) {
+	if o == nil || IsNil(o.Text) {
+		return nil, false
+	}
+	return o.Text, true
+}
+
+// HasText returns a boolean if a field has been set.
+func (o *ListAccountCallouts200ResponseCalloutsInner) HasText() bool {
+	if o != nil && !IsNil(o.Text) {
+		return true
+	}
+
+	return false
+}
+
+// SetText gets a reference to the given string and assigns it to the Text field.
+func (o *ListAccountCallouts200ResponseCalloutsInner) SetText(v string) {
+	o.Text = &v
+}
+
 func (o ListAccountCallouts200ResponseCalloutsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -152,11 +151,11 @@ func (o ListAccountCallouts200ResponseCalloutsInner) ToMap() (map[string]interfa
 	if !IsNil(o.AssetId) {
 		toSerialize["assetId"] = o.AssetId
 	}
-	if !IsNil(o.Text) {
-		toSerialize["text"] = o.Text
-	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.Text) {
+		toSerialize["text"] = o.Text
 	}
 	return toSerialize, nil
 }

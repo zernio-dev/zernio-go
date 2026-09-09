@@ -22,12 +22,11 @@ var _ MappedNullable = &AddAccountCalloutsRequest{}
 
 // AddAccountCalloutsRequest struct for AddAccountCalloutsRequest
 type AddAccountCalloutsRequest struct {
-	// Zernio SocialAccount id owning the Google Ads connection.
-	AccountId string `json:"accountId"`
-	// Numeric Google Ads customer id. Only required when the connection has more than one.
-	CustomerId *string `json:"customerId,omitempty"`
-	// Callout text, 1-25 characters each; up to 20 per request (Google's CalloutAsset limits).
-	Callouts []string `json:"callouts"`
+	// Zernio Google Ads connection id.
+	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
+	// Google customer id without dashes. Required when the connection has multiple customers.
+	CustomerId *string  `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
+	Callouts   []string `json:"callouts"`
 }
 
 type _AddAccountCalloutsRequest AddAccountCalloutsRequest

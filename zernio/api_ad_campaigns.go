@@ -160,6 +160,154 @@ func (a *AdCampaignsAPIService) AddAdKeywordsExecute(r AdCampaignsAPIAddAdKeywor
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIAttachAdGroupAssetsRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdCampaignsAPIService
+	adSetId                     string
+	attachCampaignAssetsRequest *AttachCampaignAssetsRequest
+}
+
+func (r AdCampaignsAPIAttachAdGroupAssetsRequest) AttachCampaignAssetsRequest(attachCampaignAssetsRequest AttachCampaignAssetsRequest) AdCampaignsAPIAttachAdGroupAssetsRequest {
+	r.attachCampaignAssetsRequest = &attachCampaignAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIAttachAdGroupAssetsRequest) Execute() (*AttachAdGroupAssets201Response, *http.Response, error) {
+	return r.ApiService.AttachAdGroupAssetsExecute(r)
+}
+
+/*
+AttachAdGroupAssets Attach ad-group assets
+
+Creates and attaches sitelinks, callouts and structured snippets in one Google mutation.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adSetId Numeric Google platform id.
+	@return AdCampaignsAPIAttachAdGroupAssetsRequest
+*/
+func (a *AdCampaignsAPIService) AttachAdGroupAssets(ctx context.Context, adSetId string) AdCampaignsAPIAttachAdGroupAssetsRequest {
+	return AdCampaignsAPIAttachAdGroupAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adSetId:    adSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AttachAdGroupAssets201Response
+func (a *AdCampaignsAPIService) AttachAdGroupAssetsExecute(r AdCampaignsAPIAttachAdGroupAssetsRequest) (*AttachAdGroupAssets201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AttachAdGroupAssets201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.AttachAdGroupAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ad-sets/{adSetId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"adSetId"+"}", url.PathEscape(parameterValueToString(r.adSetId, "adSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.attachCampaignAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("attachCampaignAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.attachCampaignAssetsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIAttachCampaignAssetsRequest struct {
 	ctx                         context.Context
 	ApiService                  *AdCampaignsAPIService
@@ -177,19 +325,12 @@ func (r AdCampaignsAPIAttachCampaignAssetsRequest) Execute() (*AttachCampaignAss
 }
 
 /*
-AttachCampaignAssets Attach extension assets to a Google Search campaign
+AttachCampaignAssets Attach campaign assets
 
-Attach sitelinks, callouts and/or structured snippets to an already-existing Google
-Search campaign. These are the same builders POST /v1/ads/create uses, but without rebuilding
-the hierarchy. At least one of sitelinks, callouts or structuredSnippets is required.
-
-Google-only. Other platforms have no equivalent extension surface and return 501.
-
-Approval status is Google-async; poll `asset.policy_summary` after review. Assets
-stay in the account library even if the campaign is later deleted.
+Creates and attaches sitelinks, callouts and structured snippets in one Google mutation.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param campaignId Numeric Google platform campaign id.
+	@param campaignId Numeric Google platform id.
 	@return AdCampaignsAPIAttachCampaignAssetsRequest
 */
 func (a *AdCampaignsAPIService) AttachCampaignAssets(ctx context.Context, campaignId string) AdCampaignsAPIAttachCampaignAssetsRequest {
@@ -267,7 +408,29 @@ func (a *AdCampaignsAPIService) AttachCampaignAssetsExecute(r AdCampaignsAPIAtta
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2014,6 +2177,11 @@ func (r AdCampaignsAPIGetAdRequest) Execute() (*GetAd200Response, *http.Response
 GetAd Get ad details
 
 Returns an ad with its creative, targeting, status, and performance metrics.
+Google Search ads include current creative.headlines, creative.descriptions and creative.finalUrls,
+preserving pinnedField. Top-level cachedAt and stale report cache freshness. Google mutations invalidate this read.
+RSA enrichment requires a stored advertisingChannelType of SEARCH. Ads with an unknown or other channel
+return their stored details without a Google read. If RSA enrichment fails, the stored ad is returned
+with HTTP 200 and without cache metadata.
 
 The `{adId}` path segment accepts any identifier dialect Zernio indexes for the ad:
 - the Zernio internal `_id` (24-char hex)
@@ -3379,6 +3547,162 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListAdGroupAssetsRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	adSetId    string
+	accountId  *string
+	customerId *string
+}
+
+func (r AdCampaignsAPIListAdGroupAssetsRequest) AccountId(accountId string) AdCampaignsAPIListAdGroupAssetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdCampaignsAPIListAdGroupAssetsRequest) CustomerId(customerId string) AdCampaignsAPIListAdGroupAssetsRequest {
+	r.customerId = &customerId
+	return r
+}
+
+func (r AdCampaignsAPIListAdGroupAssetsRequest) Execute() (*ListAdGroupAssets200Response, *http.Response, error) {
+	return r.ApiService.ListAdGroupAssetsExecute(r)
+}
+
+/*
+ListAdGroupAssets List ad-group assets
+
+Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adSetId Numeric Google platform id.
+	@return AdCampaignsAPIListAdGroupAssetsRequest
+*/
+func (a *AdCampaignsAPIService) ListAdGroupAssets(ctx context.Context, adSetId string) AdCampaignsAPIListAdGroupAssetsRequest {
+	return AdCampaignsAPIListAdGroupAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adSetId:    adSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListAdGroupAssets200Response
+func (a *AdCampaignsAPIService) ListAdGroupAssetsExecute(r AdCampaignsAPIListAdGroupAssetsRequest) (*ListAdGroupAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListAdGroupAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListAdGroupAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ad-sets/{adSetId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"adSetId"+"}", url.PathEscape(parameterValueToString(r.adSetId, "adSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIListAdKeywordsRequest struct {
 	ctx         context.Context
 	ApiService  *AdCampaignsAPIService
@@ -4256,6 +4580,162 @@ func (a *AdCampaignsAPIService) ListBidStrategiesExecute(r AdCampaignsAPIListBid
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIListCampaignAssetsRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	campaignId string
+	accountId  *string
+	customerId *string
+}
+
+func (r AdCampaignsAPIListCampaignAssetsRequest) AccountId(accountId string) AdCampaignsAPIListCampaignAssetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r AdCampaignsAPIListCampaignAssetsRequest) CustomerId(customerId string) AdCampaignsAPIListCampaignAssetsRequest {
+	r.customerId = &customerId
+	return r
+}
+
+func (r AdCampaignsAPIListCampaignAssetsRequest) Execute() (*ListCampaignAssets200Response, *http.Response, error) {
+	return r.ApiService.ListCampaignAssetsExecute(r)
+}
+
+/*
+ListCampaignAssets List campaign assets
+
+Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform id.
+	@return AdCampaignsAPIListCampaignAssetsRequest
+*/
+func (a *AdCampaignsAPIService) ListCampaignAssets(ctx context.Context, campaignId string) AdCampaignsAPIListCampaignAssetsRequest {
+	return AdCampaignsAPIListCampaignAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCampaignAssets200Response
+func (a *AdCampaignsAPIService) ListCampaignAssetsExecute(r AdCampaignsAPIListCampaignAssetsRequest) (*ListCampaignAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCampaignAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListCampaignAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIListCampaignNegativeKeywordListsRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -4535,6 +5015,154 @@ func (a *AdCampaignsAPIService) ListCampaignNegativeKeywordsExecute(r AdCampaign
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIRemoveAdGroupAssetsRequest struct {
+	ctx                        context.Context
+	ApiService                 *AdCampaignsAPIService
+	adSetId                    string
+	removeAdGroupAssetsRequest *RemoveAdGroupAssetsRequest
+}
+
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) RemoveAdGroupAssetsRequest(removeAdGroupAssetsRequest RemoveAdGroupAssetsRequest) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.removeAdGroupAssetsRequest = &removeAdGroupAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) Execute() (*RemoveCampaignAssets200Response, *http.Response, error) {
+	return r.ApiService.RemoveAdGroupAssetsExecute(r)
+}
+
+/*
+RemoveAdGroupAssets Remove ad-group assets
+
+Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adSetId Numeric Google platform id.
+	@return AdCampaignsAPIRemoveAdGroupAssetsRequest
+*/
+func (a *AdCampaignsAPIService) RemoveAdGroupAssets(ctx context.Context, adSetId string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	return AdCampaignsAPIRemoveAdGroupAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adSetId:    adSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return RemoveCampaignAssets200Response
+func (a *AdCampaignsAPIService) RemoveAdGroupAssetsExecute(r AdCampaignsAPIRemoveAdGroupAssetsRequest) (*RemoveCampaignAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RemoveCampaignAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.RemoveAdGroupAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ad-sets/{adSetId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"adSetId"+"}", url.PathEscape(parameterValueToString(r.adSetId, "adSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.removeAdGroupAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("removeAdGroupAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.removeAdGroupAssetsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIRemoveAdKeywordRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -4636,6 +5264,154 @@ func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdK
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIRemoveCampaignAssetsRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdCampaignsAPIService
+	campaignId                  string
+	removeCampaignAssetsRequest *RemoveCampaignAssetsRequest
+}
+
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) RemoveCampaignAssetsRequest(removeCampaignAssetsRequest RemoveCampaignAssetsRequest) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.removeCampaignAssetsRequest = &removeCampaignAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) Execute() (*RemoveCampaignAssets200Response, *http.Response, error) {
+	return r.ApiService.RemoveCampaignAssetsExecute(r)
+}
+
+/*
+RemoveCampaignAssets Remove campaign assets
+
+Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform id.
+	@return AdCampaignsAPIRemoveCampaignAssetsRequest
+*/
+func (a *AdCampaignsAPIService) RemoveCampaignAssets(ctx context.Context, campaignId string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	return AdCampaignsAPIRemoveCampaignAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return RemoveCampaignAssets200Response
+func (a *AdCampaignsAPIService) RemoveCampaignAssetsExecute(r AdCampaignsAPIRemoveCampaignAssetsRequest) (*RemoveCampaignAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RemoveCampaignAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.RemoveCampaignAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.removeCampaignAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("removeCampaignAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.removeCampaignAssetsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -4983,7 +5759,11 @@ Per-platform support:
     Each list you send becomes the FULL new set of its kind (criteria not in the
     list are removed); a kind left out is untouched. Any other `targeting` field
     returns 400: Google cannot mutate broad targeting post-create without recreating
-    the campaign. `creative` returns 501.
+    the campaign. RSA text updates use top-level `headlines`, `descriptions` and `finalUrls`.
+    Each supplied array replaces the full list; omit a field to preserve it. Use 3-15 headlines
+    (1-30 characters) and 2-4 descriptions (1-90 characters). Omit an asset to remove it;
+    omit pinnedField on an included asset to unpin it. Updates do not pad or truncate text.
+    The legacy creative fields remain unsupported for Google.
   - **LinkedIn**: status, budget, targeting (countries or regions, excludedLocations (countries),
     the B2B facets, and audience segments; applied to the LinkedIn Campaign via
     PARTIAL_UPDATE, and REPLACES the campaign's entire targetingCriteria, not a merge),
@@ -5402,6 +6182,154 @@ func (a *AdCampaignsAPIService) UpdateAdCampaignStatusExecute(r AdCampaignsAPIUp
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIUpdateAdGroupAssetsRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdCampaignsAPIService
+	adSetId                     string
+	updateCampaignAssetsRequest *UpdateCampaignAssetsRequest
+}
+
+func (r AdCampaignsAPIUpdateAdGroupAssetsRequest) UpdateCampaignAssetsRequest(updateCampaignAssetsRequest UpdateCampaignAssetsRequest) AdCampaignsAPIUpdateAdGroupAssetsRequest {
+	r.updateCampaignAssetsRequest = &updateCampaignAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIUpdateAdGroupAssetsRequest) Execute() (*UpdateCampaignAssets200Response, *http.Response, error) {
+	return r.ApiService.UpdateAdGroupAssetsExecute(r)
+}
+
+/*
+UpdateAdGroupAssets Update ad-group assets
+
+Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param adSetId Numeric Google platform id.
+	@return AdCampaignsAPIUpdateAdGroupAssetsRequest
+*/
+func (a *AdCampaignsAPIService) UpdateAdGroupAssets(ctx context.Context, adSetId string) AdCampaignsAPIUpdateAdGroupAssetsRequest {
+	return AdCampaignsAPIUpdateAdGroupAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		adSetId:    adSetId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateCampaignAssets200Response
+func (a *AdCampaignsAPIService) UpdateAdGroupAssetsExecute(r AdCampaignsAPIUpdateAdGroupAssetsRequest) (*UpdateCampaignAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateCampaignAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateAdGroupAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/ad-sets/{adSetId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"adSetId"+"}", url.PathEscape(parameterValueToString(r.adSetId, "adSetId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateCampaignAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("updateCampaignAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateCampaignAssetsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -6086,6 +7014,154 @@ func (a *AdCampaignsAPIService) UpdateBidStrategyExecute(r AdCampaignsAPIUpdateB
 	}
 	// body params
 	localVarPostBody = r.updateBidStrategyRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIUpdateCampaignAssetsRequest struct {
+	ctx                         context.Context
+	ApiService                  *AdCampaignsAPIService
+	campaignId                  string
+	updateCampaignAssetsRequest *UpdateCampaignAssetsRequest
+}
+
+func (r AdCampaignsAPIUpdateCampaignAssetsRequest) UpdateCampaignAssetsRequest(updateCampaignAssetsRequest UpdateCampaignAssetsRequest) AdCampaignsAPIUpdateCampaignAssetsRequest {
+	r.updateCampaignAssetsRequest = &updateCampaignAssetsRequest
+	return r
+}
+
+func (r AdCampaignsAPIUpdateCampaignAssetsRequest) Execute() (*UpdateCampaignAssets200Response, *http.Response, error) {
+	return r.ApiService.UpdateCampaignAssetsExecute(r)
+}
+
+/*
+UpdateCampaignAssets Update campaign assets
+
+Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform id.
+	@return AdCampaignsAPIUpdateCampaignAssetsRequest
+*/
+func (a *AdCampaignsAPIService) UpdateCampaignAssets(ctx context.Context, campaignId string) AdCampaignsAPIUpdateCampaignAssetsRequest {
+	return AdCampaignsAPIUpdateCampaignAssetsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateCampaignAssets200Response
+func (a *AdCampaignsAPIService) UpdateCampaignAssetsExecute(r AdCampaignsAPIUpdateCampaignAssetsRequest) (*UpdateCampaignAssets200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateCampaignAssets200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateCampaignAssets")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/assets"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateCampaignAssetsRequest == nil {
+		return localVarReturnValue, nil, reportError("updateCampaignAssetsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateCampaignAssetsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

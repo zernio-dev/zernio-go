@@ -20,6 +20,12 @@ var _ MappedNullable = &AdCreative{}
 
 // AdCreative Platform-specific creative data. Fields vary by platform.
 type AdCreative struct {
+	// Google RSA only. Replaces the complete headline list. No padding or truncation on update.
+	Headlines []GoogleRsaHeadline `json:"headlines,omitempty"`
+	// Google RSA only. Replaces the complete description list. No padding or truncation on update.
+	Descriptions []GoogleRsaDescription `json:"descriptions,omitempty"`
+	// Google RSA only. Replaces final URLs. Omitted lists stay unchanged.
+	FinalUrls []string `json:"finalUrls,omitempty"`
 	// Primary thumbnail/image URL
 	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 	// Alternative image URL
@@ -83,6 +89,102 @@ func NewAdCreative() *AdCreative {
 func NewAdCreativeWithDefaults() *AdCreative {
 	this := AdCreative{}
 	return &this
+}
+
+// GetHeadlines returns the Headlines field value if set, zero value otherwise.
+func (o *AdCreative) GetHeadlines() []GoogleRsaHeadline {
+	if o == nil || IsNil(o.Headlines) {
+		var ret []GoogleRsaHeadline
+		return ret
+	}
+	return o.Headlines
+}
+
+// GetHeadlinesOk returns a tuple with the Headlines field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetHeadlinesOk() ([]GoogleRsaHeadline, bool) {
+	if o == nil || IsNil(o.Headlines) {
+		return nil, false
+	}
+	return o.Headlines, true
+}
+
+// HasHeadlines returns a boolean if a field has been set.
+func (o *AdCreative) HasHeadlines() bool {
+	if o != nil && !IsNil(o.Headlines) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadlines gets a reference to the given []GoogleRsaHeadline and assigns it to the Headlines field.
+func (o *AdCreative) SetHeadlines(v []GoogleRsaHeadline) {
+	o.Headlines = v
+}
+
+// GetDescriptions returns the Descriptions field value if set, zero value otherwise.
+func (o *AdCreative) GetDescriptions() []GoogleRsaDescription {
+	if o == nil || IsNil(o.Descriptions) {
+		var ret []GoogleRsaDescription
+		return ret
+	}
+	return o.Descriptions
+}
+
+// GetDescriptionsOk returns a tuple with the Descriptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetDescriptionsOk() ([]GoogleRsaDescription, bool) {
+	if o == nil || IsNil(o.Descriptions) {
+		return nil, false
+	}
+	return o.Descriptions, true
+}
+
+// HasDescriptions returns a boolean if a field has been set.
+func (o *AdCreative) HasDescriptions() bool {
+	if o != nil && !IsNil(o.Descriptions) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescriptions gets a reference to the given []GoogleRsaDescription and assigns it to the Descriptions field.
+func (o *AdCreative) SetDescriptions(v []GoogleRsaDescription) {
+	o.Descriptions = v
+}
+
+// GetFinalUrls returns the FinalUrls field value if set, zero value otherwise.
+func (o *AdCreative) GetFinalUrls() []string {
+	if o == nil || IsNil(o.FinalUrls) {
+		var ret []string
+		return ret
+	}
+	return o.FinalUrls
+}
+
+// GetFinalUrlsOk returns a tuple with the FinalUrls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetFinalUrlsOk() ([]string, bool) {
+	if o == nil || IsNil(o.FinalUrls) {
+		return nil, false
+	}
+	return o.FinalUrls, true
+}
+
+// HasFinalUrls returns a boolean if a field has been set.
+func (o *AdCreative) HasFinalUrls() bool {
+	if o != nil && !IsNil(o.FinalUrls) {
+		return true
+	}
+
+	return false
+}
+
+// SetFinalUrls gets a reference to the given []string and assigns it to the FinalUrls field.
+func (o *AdCreative) SetFinalUrls(v []string) {
+	o.FinalUrls = v
 }
 
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1016,6 +1118,15 @@ func (o AdCreative) MarshalJSON() ([]byte, error) {
 
 func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Headlines) {
+		toSerialize["headlines"] = o.Headlines
+	}
+	if !IsNil(o.Descriptions) {
+		toSerialize["descriptions"] = o.Descriptions
+	}
+	if !IsNil(o.FinalUrls) {
+		toSerialize["finalUrls"] = o.FinalUrls
+	}
 	if o.ThumbnailUrl.IsSet() {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()
 	}

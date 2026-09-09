@@ -20,16 +20,15 @@ import (
 // checks if the AttachCampaignAssetsRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AttachCampaignAssetsRequest{}
 
-// AttachCampaignAssetsRequest struct for AttachCampaignAssetsRequest
+// AttachCampaignAssetsRequest Provide at least one of sitelinks, callouts or structuredSnippets. Sitelink description1 and description2 must be supplied together.
 type AttachCampaignAssetsRequest struct {
-	// Zernio Google Ads SocialAccount id. Resolves the customer id + refresh token.
-	AccountId string `json:"accountId"`
-	// Numeric Google Ads customer id. Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
-	CustomerId *string `json:"customerId,omitempty"`
-	// See POST /v1/ads/create sitelinks, same shape.
-	Sitelinks          []AttachCampaignAssetsRequestSitelinksInner          `json:"sitelinks,omitempty"`
-	Callouts           []string                                             `json:"callouts,omitempty"`
-	StructuredSnippets []AttachCampaignAssetsRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
+	// Zernio Google Ads connection id.
+	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
+	// Google customer id without dashes. Required when the connection has multiple customers.
+	CustomerId         *string                   `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
+	Sitelinks          []GoogleSitelink          `json:"sitelinks,omitempty"`
+	Callouts           []string                  `json:"callouts,omitempty"`
+	StructuredSnippets []GoogleStructuredSnippet `json:"structuredSnippets,omitempty"`
 }
 
 type _AttachCampaignAssetsRequest AttachCampaignAssetsRequest
@@ -109,9 +108,9 @@ func (o *AttachCampaignAssetsRequest) SetCustomerId(v string) {
 }
 
 // GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
-func (o *AttachCampaignAssetsRequest) GetSitelinks() []AttachCampaignAssetsRequestSitelinksInner {
+func (o *AttachCampaignAssetsRequest) GetSitelinks() []GoogleSitelink {
 	if o == nil || IsNil(o.Sitelinks) {
-		var ret []AttachCampaignAssetsRequestSitelinksInner
+		var ret []GoogleSitelink
 		return ret
 	}
 	return o.Sitelinks
@@ -119,7 +118,7 @@ func (o *AttachCampaignAssetsRequest) GetSitelinks() []AttachCampaignAssetsReque
 
 // GetSitelinksOk returns a tuple with the Sitelinks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AttachCampaignAssetsRequest) GetSitelinksOk() ([]AttachCampaignAssetsRequestSitelinksInner, bool) {
+func (o *AttachCampaignAssetsRequest) GetSitelinksOk() ([]GoogleSitelink, bool) {
 	if o == nil || IsNil(o.Sitelinks) {
 		return nil, false
 	}
@@ -135,8 +134,8 @@ func (o *AttachCampaignAssetsRequest) HasSitelinks() bool {
 	return false
 }
 
-// SetSitelinks gets a reference to the given []AttachCampaignAssetsRequestSitelinksInner and assigns it to the Sitelinks field.
-func (o *AttachCampaignAssetsRequest) SetSitelinks(v []AttachCampaignAssetsRequestSitelinksInner) {
+// SetSitelinks gets a reference to the given []GoogleSitelink and assigns it to the Sitelinks field.
+func (o *AttachCampaignAssetsRequest) SetSitelinks(v []GoogleSitelink) {
 	o.Sitelinks = v
 }
 
@@ -173,9 +172,9 @@ func (o *AttachCampaignAssetsRequest) SetCallouts(v []string) {
 }
 
 // GetStructuredSnippets returns the StructuredSnippets field value if set, zero value otherwise.
-func (o *AttachCampaignAssetsRequest) GetStructuredSnippets() []AttachCampaignAssetsRequestStructuredSnippetsInner {
+func (o *AttachCampaignAssetsRequest) GetStructuredSnippets() []GoogleStructuredSnippet {
 	if o == nil || IsNil(o.StructuredSnippets) {
-		var ret []AttachCampaignAssetsRequestStructuredSnippetsInner
+		var ret []GoogleStructuredSnippet
 		return ret
 	}
 	return o.StructuredSnippets
@@ -183,7 +182,7 @@ func (o *AttachCampaignAssetsRequest) GetStructuredSnippets() []AttachCampaignAs
 
 // GetStructuredSnippetsOk returns a tuple with the StructuredSnippets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AttachCampaignAssetsRequest) GetStructuredSnippetsOk() ([]AttachCampaignAssetsRequestStructuredSnippetsInner, bool) {
+func (o *AttachCampaignAssetsRequest) GetStructuredSnippetsOk() ([]GoogleStructuredSnippet, bool) {
 	if o == nil || IsNil(o.StructuredSnippets) {
 		return nil, false
 	}
@@ -199,8 +198,8 @@ func (o *AttachCampaignAssetsRequest) HasStructuredSnippets() bool {
 	return false
 }
 
-// SetStructuredSnippets gets a reference to the given []AttachCampaignAssetsRequestStructuredSnippetsInner and assigns it to the StructuredSnippets field.
-func (o *AttachCampaignAssetsRequest) SetStructuredSnippets(v []AttachCampaignAssetsRequestStructuredSnippetsInner) {
+// SetStructuredSnippets gets a reference to the given []GoogleStructuredSnippet and assigns it to the StructuredSnippets field.
+func (o *AttachCampaignAssetsRequest) SetStructuredSnippets(v []GoogleStructuredSnippet) {
 	o.StructuredSnippets = v
 }
 

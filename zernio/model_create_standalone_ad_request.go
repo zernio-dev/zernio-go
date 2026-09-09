@@ -167,16 +167,16 @@ type CreateStandaloneAdRequest struct {
 	NegativeKeywords []KeywordEntry `json:"negativeKeywords,omitempty"`
 	// Google Search only; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
 	CampaignNegativeKeywords []KeywordEntry `json:"campaignNegativeKeywords,omitempty"`
-	// Google Search RSA only. Extra headlines.
-	AdditionalHeadlines []string `json:"additionalHeadlines,omitempty"`
-	// Google Search RSA only. Extra descriptions.
-	AdditionalDescriptions []string `json:"additionalDescriptions,omitempty"`
+	// Google Search RSA only. Extra text assets as strings or objects with text and optional pinnedField. Existing string input remains supported. The effective create lists, including primary text and deduplication, must contain 3-15 headlines and 2-4 descriptions; excess entries return 400.
+	AdditionalHeadlines []CreateStandaloneAdRequestAdditionalHeadlinesInner `json:"additionalHeadlines,omitempty"`
+	// Google Search RSA only. Extra text assets as strings or objects with text and optional pinnedField. Existing string input remains supported. The effective create lists, including primary text and deduplication, must contain 3-15 headlines and 2-4 descriptions; excess entries return 400.
+	AdditionalDescriptions []CreateStandaloneAdRequestAdditionalDescriptionsInner `json:"additionalDescriptions,omitempty"`
 	// Google Search only. Sitelink assets to create and attach at the campaign level. Each entry becomes an Asset (with sitelink_asset + Asset.final_urls) plus a CampaignAsset link (field_type SITELINK). Approval is async: Google reviews assets after creation; poll asset.policy_summary later to read the verdict. Google requires at least two sitelinks to surface them on an ad; four or more is Google's own recommendation for maximum visibility. The response's creative.sitelinks[] echoes each input plus its Google resourceName.
-	Sitelinks []AttachCampaignAssetsRequestSitelinksInner `json:"sitelinks,omitempty"`
+	Sitelinks []CreateStandaloneAdRequestSitelinksInner `json:"sitelinks,omitempty"`
 	// Google Search only. Short callout texts (max 25 chars each) that appear as non-clickable annotations under the ad, e.g. \"Free shipping\", \"24/7 support\". Each becomes one Asset (`callout_asset`) plus a CampaignAsset link with field_type CALLOUT. Response's creative.callouts[] echoes each input plus its Google resourceName.
 	Callouts []string `json:"callouts,omitempty"`
 	// Google Search only. Structured snippets: one header from Google's predefined list plus 3-10 values (max 25 chars each). Each becomes one Asset (`structured_snippet_asset`) plus a CampaignAsset link with field_type STRUCTURED_SNIPPET.
-	StructuredSnippets []AttachCampaignAssetsRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
+	StructuredSnippets []CreateStandaloneAdRequestStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
 	// Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set, mapping 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos surface as a Meta 400. Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
@@ -2726,9 +2726,9 @@ func (o *CreateStandaloneAdRequest) SetCampaignNegativeKeywords(v []KeywordEntry
 }
 
 // GetAdditionalHeadlines returns the AdditionalHeadlines field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetAdditionalHeadlines() []string {
+func (o *CreateStandaloneAdRequest) GetAdditionalHeadlines() []CreateStandaloneAdRequestAdditionalHeadlinesInner {
 	if o == nil || IsNil(o.AdditionalHeadlines) {
-		var ret []string
+		var ret []CreateStandaloneAdRequestAdditionalHeadlinesInner
 		return ret
 	}
 	return o.AdditionalHeadlines
@@ -2736,7 +2736,7 @@ func (o *CreateStandaloneAdRequest) GetAdditionalHeadlines() []string {
 
 // GetAdditionalHeadlinesOk returns a tuple with the AdditionalHeadlines field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetAdditionalHeadlinesOk() ([]string, bool) {
+func (o *CreateStandaloneAdRequest) GetAdditionalHeadlinesOk() ([]CreateStandaloneAdRequestAdditionalHeadlinesInner, bool) {
 	if o == nil || IsNil(o.AdditionalHeadlines) {
 		return nil, false
 	}
@@ -2752,15 +2752,15 @@ func (o *CreateStandaloneAdRequest) HasAdditionalHeadlines() bool {
 	return false
 }
 
-// SetAdditionalHeadlines gets a reference to the given []string and assigns it to the AdditionalHeadlines field.
-func (o *CreateStandaloneAdRequest) SetAdditionalHeadlines(v []string) {
+// SetAdditionalHeadlines gets a reference to the given []CreateStandaloneAdRequestAdditionalHeadlinesInner and assigns it to the AdditionalHeadlines field.
+func (o *CreateStandaloneAdRequest) SetAdditionalHeadlines(v []CreateStandaloneAdRequestAdditionalHeadlinesInner) {
 	o.AdditionalHeadlines = v
 }
 
 // GetAdditionalDescriptions returns the AdditionalDescriptions field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetAdditionalDescriptions() []string {
+func (o *CreateStandaloneAdRequest) GetAdditionalDescriptions() []CreateStandaloneAdRequestAdditionalDescriptionsInner {
 	if o == nil || IsNil(o.AdditionalDescriptions) {
-		var ret []string
+		var ret []CreateStandaloneAdRequestAdditionalDescriptionsInner
 		return ret
 	}
 	return o.AdditionalDescriptions
@@ -2768,7 +2768,7 @@ func (o *CreateStandaloneAdRequest) GetAdditionalDescriptions() []string {
 
 // GetAdditionalDescriptionsOk returns a tuple with the AdditionalDescriptions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetAdditionalDescriptionsOk() ([]string, bool) {
+func (o *CreateStandaloneAdRequest) GetAdditionalDescriptionsOk() ([]CreateStandaloneAdRequestAdditionalDescriptionsInner, bool) {
 	if o == nil || IsNil(o.AdditionalDescriptions) {
 		return nil, false
 	}
@@ -2784,15 +2784,15 @@ func (o *CreateStandaloneAdRequest) HasAdditionalDescriptions() bool {
 	return false
 }
 
-// SetAdditionalDescriptions gets a reference to the given []string and assigns it to the AdditionalDescriptions field.
-func (o *CreateStandaloneAdRequest) SetAdditionalDescriptions(v []string) {
+// SetAdditionalDescriptions gets a reference to the given []CreateStandaloneAdRequestAdditionalDescriptionsInner and assigns it to the AdditionalDescriptions field.
+func (o *CreateStandaloneAdRequest) SetAdditionalDescriptions(v []CreateStandaloneAdRequestAdditionalDescriptionsInner) {
 	o.AdditionalDescriptions = v
 }
 
 // GetSitelinks returns the Sitelinks field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetSitelinks() []AttachCampaignAssetsRequestSitelinksInner {
+func (o *CreateStandaloneAdRequest) GetSitelinks() []CreateStandaloneAdRequestSitelinksInner {
 	if o == nil || IsNil(o.Sitelinks) {
-		var ret []AttachCampaignAssetsRequestSitelinksInner
+		var ret []CreateStandaloneAdRequestSitelinksInner
 		return ret
 	}
 	return o.Sitelinks
@@ -2800,7 +2800,7 @@ func (o *CreateStandaloneAdRequest) GetSitelinks() []AttachCampaignAssetsRequest
 
 // GetSitelinksOk returns a tuple with the Sitelinks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetSitelinksOk() ([]AttachCampaignAssetsRequestSitelinksInner, bool) {
+func (o *CreateStandaloneAdRequest) GetSitelinksOk() ([]CreateStandaloneAdRequestSitelinksInner, bool) {
 	if o == nil || IsNil(o.Sitelinks) {
 		return nil, false
 	}
@@ -2816,8 +2816,8 @@ func (o *CreateStandaloneAdRequest) HasSitelinks() bool {
 	return false
 }
 
-// SetSitelinks gets a reference to the given []AttachCampaignAssetsRequestSitelinksInner and assigns it to the Sitelinks field.
-func (o *CreateStandaloneAdRequest) SetSitelinks(v []AttachCampaignAssetsRequestSitelinksInner) {
+// SetSitelinks gets a reference to the given []CreateStandaloneAdRequestSitelinksInner and assigns it to the Sitelinks field.
+func (o *CreateStandaloneAdRequest) SetSitelinks(v []CreateStandaloneAdRequestSitelinksInner) {
 	o.Sitelinks = v
 }
 
@@ -2854,9 +2854,9 @@ func (o *CreateStandaloneAdRequest) SetCallouts(v []string) {
 }
 
 // GetStructuredSnippets returns the StructuredSnippets field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetStructuredSnippets() []AttachCampaignAssetsRequestStructuredSnippetsInner {
+func (o *CreateStandaloneAdRequest) GetStructuredSnippets() []CreateStandaloneAdRequestStructuredSnippetsInner {
 	if o == nil || IsNil(o.StructuredSnippets) {
-		var ret []AttachCampaignAssetsRequestStructuredSnippetsInner
+		var ret []CreateStandaloneAdRequestStructuredSnippetsInner
 		return ret
 	}
 	return o.StructuredSnippets
@@ -2864,7 +2864,7 @@ func (o *CreateStandaloneAdRequest) GetStructuredSnippets() []AttachCampaignAsse
 
 // GetStructuredSnippetsOk returns a tuple with the StructuredSnippets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetStructuredSnippetsOk() ([]AttachCampaignAssetsRequestStructuredSnippetsInner, bool) {
+func (o *CreateStandaloneAdRequest) GetStructuredSnippetsOk() ([]CreateStandaloneAdRequestStructuredSnippetsInner, bool) {
 	if o == nil || IsNil(o.StructuredSnippets) {
 		return nil, false
 	}
@@ -2880,8 +2880,8 @@ func (o *CreateStandaloneAdRequest) HasStructuredSnippets() bool {
 	return false
 }
 
-// SetStructuredSnippets gets a reference to the given []AttachCampaignAssetsRequestStructuredSnippetsInner and assigns it to the StructuredSnippets field.
-func (o *CreateStandaloneAdRequest) SetStructuredSnippets(v []AttachCampaignAssetsRequestStructuredSnippetsInner) {
+// SetStructuredSnippets gets a reference to the given []CreateStandaloneAdRequestStructuredSnippetsInner and assigns it to the StructuredSnippets field.
+func (o *CreateStandaloneAdRequest) SetStructuredSnippets(v []CreateStandaloneAdRequestStructuredSnippetsInner) {
 	o.StructuredSnippets = v
 }
 

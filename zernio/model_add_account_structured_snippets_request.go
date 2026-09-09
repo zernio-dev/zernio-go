@@ -17,41 +17,41 @@ import (
 	"fmt"
 )
 
-// checks if the RemoveAccountCalloutRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &RemoveAccountCalloutRequest{}
+// checks if the AddAccountStructuredSnippetsRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AddAccountStructuredSnippetsRequest{}
 
-// RemoveAccountCalloutRequest struct for RemoveAccountCalloutRequest
-type RemoveAccountCalloutRequest struct {
+// AddAccountStructuredSnippetsRequest struct for AddAccountStructuredSnippetsRequest
+type AddAccountStructuredSnippetsRequest struct {
 	// Zernio Google Ads connection id.
 	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
 	// Google customer id without dashes. Required when the connection has multiple customers.
-	CustomerId *string `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
-	AssetId    string  `json:"assetId" validate:"regexp=^\\\\d+$"`
+	CustomerId         *string                   `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
+	StructuredSnippets []GoogleStructuredSnippet `json:"structuredSnippets"`
 }
 
-type _RemoveAccountCalloutRequest RemoveAccountCalloutRequest
+type _AddAccountStructuredSnippetsRequest AddAccountStructuredSnippetsRequest
 
-// NewRemoveAccountCalloutRequest instantiates a new RemoveAccountCalloutRequest object
+// NewAddAccountStructuredSnippetsRequest instantiates a new AddAccountStructuredSnippetsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRemoveAccountCalloutRequest(accountId string, assetId string) *RemoveAccountCalloutRequest {
-	this := RemoveAccountCalloutRequest{}
+func NewAddAccountStructuredSnippetsRequest(accountId string, structuredSnippets []GoogleStructuredSnippet) *AddAccountStructuredSnippetsRequest {
+	this := AddAccountStructuredSnippetsRequest{}
 	this.AccountId = accountId
-	this.AssetId = assetId
+	this.StructuredSnippets = structuredSnippets
 	return &this
 }
 
-// NewRemoveAccountCalloutRequestWithDefaults instantiates a new RemoveAccountCalloutRequest object
+// NewAddAccountStructuredSnippetsRequestWithDefaults instantiates a new AddAccountStructuredSnippetsRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRemoveAccountCalloutRequestWithDefaults() *RemoveAccountCalloutRequest {
-	this := RemoveAccountCalloutRequest{}
+func NewAddAccountStructuredSnippetsRequestWithDefaults() *AddAccountStructuredSnippetsRequest {
+	this := AddAccountStructuredSnippetsRequest{}
 	return &this
 }
 
 // GetAccountId returns the AccountId field value
-func (o *RemoveAccountCalloutRequest) GetAccountId() string {
+func (o *AddAccountStructuredSnippetsRequest) GetAccountId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -62,7 +62,7 @@ func (o *RemoveAccountCalloutRequest) GetAccountId() string {
 
 // GetAccountIdOk returns a tuple with the AccountId field value
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetAccountIdOk() (*string, bool) {
+func (o *AddAccountStructuredSnippetsRequest) GetAccountIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,12 +70,12 @@ func (o *RemoveAccountCalloutRequest) GetAccountIdOk() (*string, bool) {
 }
 
 // SetAccountId sets field value
-func (o *RemoveAccountCalloutRequest) SetAccountId(v string) {
+func (o *AddAccountStructuredSnippetsRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
-func (o *RemoveAccountCalloutRequest) GetCustomerId() string {
+func (o *AddAccountStructuredSnippetsRequest) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
 		return ret
@@ -85,7 +85,7 @@ func (o *RemoveAccountCalloutRequest) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetCustomerIdOk() (*string, bool) {
+func (o *AddAccountStructuredSnippetsRequest) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
 	}
@@ -93,7 +93,7 @@ func (o *RemoveAccountCalloutRequest) GetCustomerIdOk() (*string, bool) {
 }
 
 // HasCustomerId returns a boolean if a field has been set.
-func (o *RemoveAccountCalloutRequest) HasCustomerId() bool {
+func (o *AddAccountStructuredSnippetsRequest) HasCustomerId() bool {
 	if o != nil && !IsNil(o.CustomerId) {
 		return true
 	}
@@ -102,35 +102,35 @@ func (o *RemoveAccountCalloutRequest) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
-func (o *RemoveAccountCalloutRequest) SetCustomerId(v string) {
+func (o *AddAccountStructuredSnippetsRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
 
-// GetAssetId returns the AssetId field value
-func (o *RemoveAccountCalloutRequest) GetAssetId() string {
+// GetStructuredSnippets returns the StructuredSnippets field value
+func (o *AddAccountStructuredSnippetsRequest) GetStructuredSnippets() []GoogleStructuredSnippet {
 	if o == nil {
-		var ret string
+		var ret []GoogleStructuredSnippet
 		return ret
 	}
 
-	return o.AssetId
+	return o.StructuredSnippets
 }
 
-// GetAssetIdOk returns a tuple with the AssetId field value
+// GetStructuredSnippetsOk returns a tuple with the StructuredSnippets field value
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetAssetIdOk() (*string, bool) {
+func (o *AddAccountStructuredSnippetsRequest) GetStructuredSnippetsOk() ([]GoogleStructuredSnippet, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.AssetId, true
+	return o.StructuredSnippets, true
 }
 
-// SetAssetId sets field value
-func (o *RemoveAccountCalloutRequest) SetAssetId(v string) {
-	o.AssetId = v
+// SetStructuredSnippets sets field value
+func (o *AddAccountStructuredSnippetsRequest) SetStructuredSnippets(v []GoogleStructuredSnippet) {
+	o.StructuredSnippets = v
 }
 
-func (o RemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
+func (o AddAccountStructuredSnippetsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -138,23 +138,23 @@ func (o RemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o RemoveAccountCalloutRequest) ToMap() (map[string]interface{}, error) {
+func (o AddAccountStructuredSnippetsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
 	}
-	toSerialize["assetId"] = o.AssetId
+	toSerialize["structuredSnippets"] = o.StructuredSnippets
 	return toSerialize, nil
 }
 
-func (o *RemoveAccountCalloutRequest) UnmarshalJSON(data []byte) (err error) {
+func (o *AddAccountStructuredSnippetsRequest) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"accountId",
-		"assetId",
+		"structuredSnippets",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -171,53 +171,53 @@ func (o *RemoveAccountCalloutRequest) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varRemoveAccountCalloutRequest := _RemoveAccountCalloutRequest{}
+	varAddAccountStructuredSnippetsRequest := _AddAccountStructuredSnippetsRequest{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRemoveAccountCalloutRequest)
+	err = decoder.Decode(&varAddAccountStructuredSnippetsRequest)
 
 	if err != nil {
 		return err
 	}
 
-	*o = RemoveAccountCalloutRequest(varRemoveAccountCalloutRequest)
+	*o = AddAccountStructuredSnippetsRequest(varAddAccountStructuredSnippetsRequest)
 
 	return err
 }
 
-type NullableRemoveAccountCalloutRequest struct {
-	value *RemoveAccountCalloutRequest
+type NullableAddAccountStructuredSnippetsRequest struct {
+	value *AddAccountStructuredSnippetsRequest
 	isSet bool
 }
 
-func (v NullableRemoveAccountCalloutRequest) Get() *RemoveAccountCalloutRequest {
+func (v NullableAddAccountStructuredSnippetsRequest) Get() *AddAccountStructuredSnippetsRequest {
 	return v.value
 }
 
-func (v *NullableRemoveAccountCalloutRequest) Set(val *RemoveAccountCalloutRequest) {
+func (v *NullableAddAccountStructuredSnippetsRequest) Set(val *AddAccountStructuredSnippetsRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRemoveAccountCalloutRequest) IsSet() bool {
+func (v NullableAddAccountStructuredSnippetsRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRemoveAccountCalloutRequest) Unset() {
+func (v *NullableAddAccountStructuredSnippetsRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRemoveAccountCalloutRequest(val *RemoveAccountCalloutRequest) *NullableRemoveAccountCalloutRequest {
-	return &NullableRemoveAccountCalloutRequest{value: val, isSet: true}
+func NewNullableAddAccountStructuredSnippetsRequest(val *AddAccountStructuredSnippetsRequest) *NullableAddAccountStructuredSnippetsRequest {
+	return &NullableAddAccountStructuredSnippetsRequest{value: val, isSet: true}
 }
 
-func (v NullableRemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
+func (v NullableAddAccountStructuredSnippetsRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRemoveAccountCalloutRequest) UnmarshalJSON(src []byte) error {
+func (v *NullableAddAccountStructuredSnippetsRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

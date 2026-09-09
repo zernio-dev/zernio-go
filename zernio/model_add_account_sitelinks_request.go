@@ -17,41 +17,41 @@ import (
 	"fmt"
 )
 
-// checks if the RemoveAccountCalloutRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &RemoveAccountCalloutRequest{}
+// checks if the AddAccountSitelinksRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AddAccountSitelinksRequest{}
 
-// RemoveAccountCalloutRequest struct for RemoveAccountCalloutRequest
-type RemoveAccountCalloutRequest struct {
+// AddAccountSitelinksRequest struct for AddAccountSitelinksRequest
+type AddAccountSitelinksRequest struct {
 	// Zernio Google Ads connection id.
 	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
 	// Google customer id without dashes. Required when the connection has multiple customers.
-	CustomerId *string `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
-	AssetId    string  `json:"assetId" validate:"regexp=^\\\\d+$"`
+	CustomerId *string          `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
+	Sitelinks  []GoogleSitelink `json:"sitelinks"`
 }
 
-type _RemoveAccountCalloutRequest RemoveAccountCalloutRequest
+type _AddAccountSitelinksRequest AddAccountSitelinksRequest
 
-// NewRemoveAccountCalloutRequest instantiates a new RemoveAccountCalloutRequest object
+// NewAddAccountSitelinksRequest instantiates a new AddAccountSitelinksRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRemoveAccountCalloutRequest(accountId string, assetId string) *RemoveAccountCalloutRequest {
-	this := RemoveAccountCalloutRequest{}
+func NewAddAccountSitelinksRequest(accountId string, sitelinks []GoogleSitelink) *AddAccountSitelinksRequest {
+	this := AddAccountSitelinksRequest{}
 	this.AccountId = accountId
-	this.AssetId = assetId
+	this.Sitelinks = sitelinks
 	return &this
 }
 
-// NewRemoveAccountCalloutRequestWithDefaults instantiates a new RemoveAccountCalloutRequest object
+// NewAddAccountSitelinksRequestWithDefaults instantiates a new AddAccountSitelinksRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRemoveAccountCalloutRequestWithDefaults() *RemoveAccountCalloutRequest {
-	this := RemoveAccountCalloutRequest{}
+func NewAddAccountSitelinksRequestWithDefaults() *AddAccountSitelinksRequest {
+	this := AddAccountSitelinksRequest{}
 	return &this
 }
 
 // GetAccountId returns the AccountId field value
-func (o *RemoveAccountCalloutRequest) GetAccountId() string {
+func (o *AddAccountSitelinksRequest) GetAccountId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -62,7 +62,7 @@ func (o *RemoveAccountCalloutRequest) GetAccountId() string {
 
 // GetAccountIdOk returns a tuple with the AccountId field value
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetAccountIdOk() (*string, bool) {
+func (o *AddAccountSitelinksRequest) GetAccountIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,12 +70,12 @@ func (o *RemoveAccountCalloutRequest) GetAccountIdOk() (*string, bool) {
 }
 
 // SetAccountId sets field value
-func (o *RemoveAccountCalloutRequest) SetAccountId(v string) {
+func (o *AddAccountSitelinksRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
-func (o *RemoveAccountCalloutRequest) GetCustomerId() string {
+func (o *AddAccountSitelinksRequest) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
 		return ret
@@ -85,7 +85,7 @@ func (o *RemoveAccountCalloutRequest) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetCustomerIdOk() (*string, bool) {
+func (o *AddAccountSitelinksRequest) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
 	}
@@ -93,7 +93,7 @@ func (o *RemoveAccountCalloutRequest) GetCustomerIdOk() (*string, bool) {
 }
 
 // HasCustomerId returns a boolean if a field has been set.
-func (o *RemoveAccountCalloutRequest) HasCustomerId() bool {
+func (o *AddAccountSitelinksRequest) HasCustomerId() bool {
 	if o != nil && !IsNil(o.CustomerId) {
 		return true
 	}
@@ -102,35 +102,35 @@ func (o *RemoveAccountCalloutRequest) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
-func (o *RemoveAccountCalloutRequest) SetCustomerId(v string) {
+func (o *AddAccountSitelinksRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
 
-// GetAssetId returns the AssetId field value
-func (o *RemoveAccountCalloutRequest) GetAssetId() string {
+// GetSitelinks returns the Sitelinks field value
+func (o *AddAccountSitelinksRequest) GetSitelinks() []GoogleSitelink {
 	if o == nil {
-		var ret string
+		var ret []GoogleSitelink
 		return ret
 	}
 
-	return o.AssetId
+	return o.Sitelinks
 }
 
-// GetAssetIdOk returns a tuple with the AssetId field value
+// GetSitelinksOk returns a tuple with the Sitelinks field value
 // and a boolean to check if the value has been set.
-func (o *RemoveAccountCalloutRequest) GetAssetIdOk() (*string, bool) {
+func (o *AddAccountSitelinksRequest) GetSitelinksOk() ([]GoogleSitelink, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.AssetId, true
+	return o.Sitelinks, true
 }
 
-// SetAssetId sets field value
-func (o *RemoveAccountCalloutRequest) SetAssetId(v string) {
-	o.AssetId = v
+// SetSitelinks sets field value
+func (o *AddAccountSitelinksRequest) SetSitelinks(v []GoogleSitelink) {
+	o.Sitelinks = v
 }
 
-func (o RemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
+func (o AddAccountSitelinksRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -138,23 +138,23 @@ func (o RemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o RemoveAccountCalloutRequest) ToMap() (map[string]interface{}, error) {
+func (o AddAccountSitelinksRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
 	}
-	toSerialize["assetId"] = o.AssetId
+	toSerialize["sitelinks"] = o.Sitelinks
 	return toSerialize, nil
 }
 
-func (o *RemoveAccountCalloutRequest) UnmarshalJSON(data []byte) (err error) {
+func (o *AddAccountSitelinksRequest) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"accountId",
-		"assetId",
+		"sitelinks",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -171,53 +171,53 @@ func (o *RemoveAccountCalloutRequest) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varRemoveAccountCalloutRequest := _RemoveAccountCalloutRequest{}
+	varAddAccountSitelinksRequest := _AddAccountSitelinksRequest{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRemoveAccountCalloutRequest)
+	err = decoder.Decode(&varAddAccountSitelinksRequest)
 
 	if err != nil {
 		return err
 	}
 
-	*o = RemoveAccountCalloutRequest(varRemoveAccountCalloutRequest)
+	*o = AddAccountSitelinksRequest(varAddAccountSitelinksRequest)
 
 	return err
 }
 
-type NullableRemoveAccountCalloutRequest struct {
-	value *RemoveAccountCalloutRequest
+type NullableAddAccountSitelinksRequest struct {
+	value *AddAccountSitelinksRequest
 	isSet bool
 }
 
-func (v NullableRemoveAccountCalloutRequest) Get() *RemoveAccountCalloutRequest {
+func (v NullableAddAccountSitelinksRequest) Get() *AddAccountSitelinksRequest {
 	return v.value
 }
 
-func (v *NullableRemoveAccountCalloutRequest) Set(val *RemoveAccountCalloutRequest) {
+func (v *NullableAddAccountSitelinksRequest) Set(val *AddAccountSitelinksRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRemoveAccountCalloutRequest) IsSet() bool {
+func (v NullableAddAccountSitelinksRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRemoveAccountCalloutRequest) Unset() {
+func (v *NullableAddAccountSitelinksRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRemoveAccountCalloutRequest(val *RemoveAccountCalloutRequest) *NullableRemoveAccountCalloutRequest {
-	return &NullableRemoveAccountCalloutRequest{value: val, isSet: true}
+func NewNullableAddAccountSitelinksRequest(val *AddAccountSitelinksRequest) *NullableAddAccountSitelinksRequest {
+	return &NullableAddAccountSitelinksRequest{value: val, isSet: true}
 }
 
-func (v NullableRemoveAccountCalloutRequest) MarshalJSON() ([]byte, error) {
+func (v NullableAddAccountSitelinksRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRemoveAccountCalloutRequest) UnmarshalJSON(src []byte) error {
+func (v *NullableAddAccountSitelinksRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

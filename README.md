@@ -263,7 +263,9 @@ func main() {
 ### Ad Accounts
 | Method | Description |
 |--------|-------------|
-| `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account-level callout extensions |
+| `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account callouts |
+| `client.AdAccountsAPI.ListAccountSitelinks(ctx)` | List account sitelinks |
+| `client.AdAccountsAPI.ListAccountStructuredSnippets(ctx)` | List account snippets |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdAccountsAPI.ListAdLabels(ctx)` | Ad labels |
 | `client.AdAccountsAPI.ListAdNegativeKeywordLists(ctx)` | List negative keyword lists |
@@ -287,15 +289,22 @@ func main() {
 | `client.AdAccountsAPI.GetDsaRecommendations(ctx)` | List DSA beneficiary/payor suggestions |
 | `client.AdAccountsAPI.GetIosFourteenCampaignLimits(ctx)` | Get iOS 14 campaign limits |
 | `client.AdAccountsAPI.GetValueRuleSet(ctx)` | Read a value rule set |
+| `client.AdAccountsAPI.UpdateAccountCallouts(ctx)` | Update account callouts |
+| `client.AdAccountsAPI.UpdateAccountSitelinks(ctx)` | Update account sitelinks |
+| `client.AdAccountsAPI.UpdateAccountStructuredSnippets(ctx)` | Update account snippets |
 | `client.AdAccountsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
 | `client.AdAccountsAPI.UpdateAdNegativeKeywordList(ctx)` | Rename a negative keyword list |
 | `client.AdAccountsAPI.UpdateValueRuleSet(ctx)` | Replace a value rule set |
 | `client.AdAccountsAPI.DeleteAdComment(ctx)` | Delete an ad comment |
 | `client.AdAccountsAPI.DeleteAdNegativeKeywordList(ctx)` | Delete a negative keyword list |
 | `client.AdAccountsAPI.DeleteValueRuleSet(ctx)` | Delete a value rule set |
-| `client.AdAccountsAPI.AddAccountCallouts(ctx)` | Add account-level callout extensions |
+| `client.AdAccountsAPI.AddAccountCallouts(ctx)` | Add account callouts |
+| `client.AdAccountsAPI.AddAccountSitelinks(ctx)` | Add account sitelinks |
+| `client.AdAccountsAPI.AddAccountStructuredSnippets(ctx)` | Add account snippets |
 | `client.AdAccountsAPI.HideAdComment(ctx)` | Hide or unhide an ad comment |
-| `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove an account-level callout extension |
+| `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove account callout |
+| `client.AdAccountsAPI.RemoveAccountSitelink(ctx)` | Remove account sitelink |
+| `client.AdAccountsAPI.RemoveAccountStructuredSnippet(ctx)` | Remove account snippet |
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
 
@@ -314,10 +323,12 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AdCampaignsAPI.ListAdCampaigns(ctx)` | List campaigns |
+| `client.AdCampaignsAPI.ListAdGroupAssets(ctx)` | List ad-group assets |
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
 | `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List Google Ads portfolio bid strategies |
+| `client.AdCampaignsAPI.ListCampaignAssets(ctx)` | List campaign assets |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
@@ -334,22 +345,27 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
 | `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
+| `client.AdCampaignsAPI.UpdateAdGroupAssets(ctx)` | Update ad-group assets |
 | `client.AdCampaignsAPI.UpdateAdKeyword(ctx)` | Pause or enable a Search keyword |
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
 | `client.AdCampaignsAPI.UpdateBidStrategy(ctx)` | Update a Google Ads portfolio bid strategy |
+| `client.AdCampaignsAPI.UpdateCampaignAssets(ctx)` | Update campaign assets |
 | `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
 | `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search keywords to an ad group |
-| `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach extension assets to a Google Search campaign |
+| `client.AdCampaignsAPI.AttachAdGroupAssets(ctx)` | Attach ad-group assets |
+| `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach campaign assets |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 | `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set |
+| `client.AdCampaignsAPI.RemoveAdGroupAssets(ctx)` | Remove ad-group assets |
 | `client.AdCampaignsAPI.RemoveAdKeyword(ctx)` | Remove a Search keyword |
+| `client.AdCampaignsAPI.RemoveCampaignAssets(ctx)` | Remove campaign assets |
 | `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywordLists(ctx)` | Replace campaign negative lists |
 | `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywords(ctx)` | Replace campaign-level negative keywords |
 

@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the GetAd200Response type satisfies the MappedNullable interface at compile time
@@ -21,6 +22,10 @@ var _ MappedNullable = &GetAd200Response{}
 // GetAd200Response struct for GetAd200Response
 type GetAd200Response struct {
 	Ad *Ad `json:"ad,omitempty"`
+	// Google RSA details cache timestamp.
+	CachedAt NullableTime `json:"cachedAt,omitempty"`
+	// Whether Google RSA details use the last successful cached response.
+	Stale *bool `json:"stale,omitempty"`
 }
 
 // NewGetAd200Response instantiates a new GetAd200Response object
@@ -72,6 +77,81 @@ func (o *GetAd200Response) SetAd(v Ad) {
 	o.Ad = &v
 }
 
+// GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAd200Response) GetCachedAt() time.Time {
+	if o == nil || IsNil(o.CachedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CachedAt.Get()
+}
+
+// GetCachedAtOk returns a tuple with the CachedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAd200Response) GetCachedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CachedAt.Get(), o.CachedAt.IsSet()
+}
+
+// HasCachedAt returns a boolean if a field has been set.
+func (o *GetAd200Response) HasCachedAt() bool {
+	if o != nil && o.CachedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCachedAt gets a reference to the given NullableTime and assigns it to the CachedAt field.
+func (o *GetAd200Response) SetCachedAt(v time.Time) {
+	o.CachedAt.Set(&v)
+}
+
+// SetCachedAtNil sets the value for CachedAt to be an explicit nil
+func (o *GetAd200Response) SetCachedAtNil() {
+	o.CachedAt.Set(nil)
+}
+
+// UnsetCachedAt ensures that no value is present for CachedAt, not even an explicit nil
+func (o *GetAd200Response) UnsetCachedAt() {
+	o.CachedAt.Unset()
+}
+
+// GetStale returns the Stale field value if set, zero value otherwise.
+func (o *GetAd200Response) GetStale() bool {
+	if o == nil || IsNil(o.Stale) {
+		var ret bool
+		return ret
+	}
+	return *o.Stale
+}
+
+// GetStaleOk returns a tuple with the Stale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAd200Response) GetStaleOk() (*bool, bool) {
+	if o == nil || IsNil(o.Stale) {
+		return nil, false
+	}
+	return o.Stale, true
+}
+
+// HasStale returns a boolean if a field has been set.
+func (o *GetAd200Response) HasStale() bool {
+	if o != nil && !IsNil(o.Stale) {
+		return true
+	}
+
+	return false
+}
+
+// SetStale gets a reference to the given bool and assigns it to the Stale field.
+func (o *GetAd200Response) SetStale(v bool) {
+	o.Stale = &v
+}
+
 func (o GetAd200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +164,12 @@ func (o GetAd200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Ad) {
 		toSerialize["ad"] = o.Ad
+	}
+	if o.CachedAt.IsSet() {
+		toSerialize["cachedAt"] = o.CachedAt.Get()
+	}
+	if !IsNil(o.Stale) {
+		toSerialize["stale"] = o.Stale
 	}
 	return toSerialize, nil
 }
