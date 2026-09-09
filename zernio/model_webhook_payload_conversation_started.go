@@ -24,10 +24,10 @@ var _ MappedNullable = &WebhookPayloadConversationStarted{}
 // WebhookPayloadConversationStarted Fired once when a new conversation begins, in either direction. A conversation starts the first time an account and a contact exchange a message on any DM platform (Instagram, Messenger/Facebook, Telegram, WhatsApp, X, Reddit, Bluesky, SMS). Platform-agnostic: one subscription covers every DM platform.
 type WebhookPayloadConversationStarted struct {
 	// Stable webhook event ID
-	Id           string                                        `json:"id"`
-	Event        string                                        `json:"event"`
-	Conversation WebhookPayloadConversationStartedConversation `json:"conversation"`
-	Account      InboxWebhookAccount                           `json:"account"`
+	Id           string                         `json:"id"`
+	Event        string                         `json:"event"`
+	Conversation InboxWebhookConversationDetail `json:"conversation"`
+	Account      InboxWebhookAccount            `json:"account"`
 	// When the conversation document was created.
 	StartedAt time.Time `json:"startedAt"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
@@ -40,7 +40,7 @@ type _WebhookPayloadConversationStarted WebhookPayloadConversationStarted
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadConversationStarted(id string, event string, conversation WebhookPayloadConversationStartedConversation, account InboxWebhookAccount, startedAt time.Time, timestamp time.Time) *WebhookPayloadConversationStarted {
+func NewWebhookPayloadConversationStarted(id string, event string, conversation InboxWebhookConversationDetail, account InboxWebhookAccount, startedAt time.Time, timestamp time.Time) *WebhookPayloadConversationStarted {
 	this := WebhookPayloadConversationStarted{}
 	this.Id = id
 	this.Event = event
@@ -108,9 +108,9 @@ func (o *WebhookPayloadConversationStarted) SetEvent(v string) {
 }
 
 // GetConversation returns the Conversation field value
-func (o *WebhookPayloadConversationStarted) GetConversation() WebhookPayloadConversationStartedConversation {
+func (o *WebhookPayloadConversationStarted) GetConversation() InboxWebhookConversationDetail {
 	if o == nil {
-		var ret WebhookPayloadConversationStartedConversation
+		var ret InboxWebhookConversationDetail
 		return ret
 	}
 
@@ -119,7 +119,7 @@ func (o *WebhookPayloadConversationStarted) GetConversation() WebhookPayloadConv
 
 // GetConversationOk returns a tuple with the Conversation field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadConversationStarted) GetConversationOk() (*WebhookPayloadConversationStartedConversation, bool) {
+func (o *WebhookPayloadConversationStarted) GetConversationOk() (*InboxWebhookConversationDetail, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -127,7 +127,7 @@ func (o *WebhookPayloadConversationStarted) GetConversationOk() (*WebhookPayload
 }
 
 // SetConversation sets field value
-func (o *WebhookPayloadConversationStarted) SetConversation(v WebhookPayloadConversationStartedConversation) {
+func (o *WebhookPayloadConversationStarted) SetConversation(v InboxWebhookConversationDetail) {
 	o.Conversation = v
 }
 

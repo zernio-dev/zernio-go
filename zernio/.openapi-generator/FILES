@@ -277,7 +277,6 @@ model_connect_whats_app_embedded_signup_request.go
 model_connected.go
 model_connected_account.go
 model_connected_app.go
-model_conversation.go
 model_conversion_action.go
 model_conversion_action_tag_snippets_inner.go
 model_conversion_destination.go
@@ -907,6 +906,7 @@ model_inbox_message_edit_attachment.go
 model_inbox_message_edit_history_entry.go
 model_inbox_webhook_account.go
 model_inbox_webhook_conversation.go
+model_inbox_webhook_conversation_detail.go
 model_inbox_webhook_message.go
 model_inbox_webhook_message_attachments_inner.go
 model_inbox_webhook_message_sender.go
@@ -1758,7 +1758,6 @@ model_webhook_payload_comment_post.go
 model_webhook_payload_conversation_control_changed.go
 model_webhook_payload_conversation_control_changed_control.go
 model_webhook_payload_conversation_started.go
-model_webhook_payload_conversation_started_conversation.go
 model_webhook_payload_external_post.go
 model_webhook_payload_lead.go
 model_webhook_payload_lead_account.go

@@ -26,7 +26,7 @@ type WebhookPayloadConversationControlChanged struct {
 	// Stable webhook event ID
 	Id           string                                          `json:"id"`
 	Event        string                                          `json:"event"`
-	Conversation WebhookPayloadConversationStartedConversation   `json:"conversation"`
+	Conversation InboxWebhookConversationDetail                  `json:"conversation"`
 	Account      InboxWebhookAccount                             `json:"account"`
 	Control      WebhookPayloadConversationControlChangedControl `json:"control"`
 	ChangedAt    time.Time                                       `json:"changedAt"`
@@ -40,7 +40,7 @@ type _WebhookPayloadConversationControlChanged WebhookPayloadConversationControl
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadConversationControlChanged(id string, event string, conversation WebhookPayloadConversationStartedConversation, account InboxWebhookAccount, control WebhookPayloadConversationControlChangedControl, changedAt time.Time, timestamp time.Time) *WebhookPayloadConversationControlChanged {
+func NewWebhookPayloadConversationControlChanged(id string, event string, conversation InboxWebhookConversationDetail, account InboxWebhookAccount, control WebhookPayloadConversationControlChangedControl, changedAt time.Time, timestamp time.Time) *WebhookPayloadConversationControlChanged {
 	this := WebhookPayloadConversationControlChanged{}
 	this.Id = id
 	this.Event = event
@@ -109,9 +109,9 @@ func (o *WebhookPayloadConversationControlChanged) SetEvent(v string) {
 }
 
 // GetConversation returns the Conversation field value
-func (o *WebhookPayloadConversationControlChanged) GetConversation() WebhookPayloadConversationStartedConversation {
+func (o *WebhookPayloadConversationControlChanged) GetConversation() InboxWebhookConversationDetail {
 	if o == nil {
-		var ret WebhookPayloadConversationStartedConversation
+		var ret InboxWebhookConversationDetail
 		return ret
 	}
 
@@ -120,7 +120,7 @@ func (o *WebhookPayloadConversationControlChanged) GetConversation() WebhookPayl
 
 // GetConversationOk returns a tuple with the Conversation field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadConversationControlChanged) GetConversationOk() (*WebhookPayloadConversationStartedConversation, bool) {
+func (o *WebhookPayloadConversationControlChanged) GetConversationOk() (*InboxWebhookConversationDetail, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -128,7 +128,7 @@ func (o *WebhookPayloadConversationControlChanged) GetConversationOk() (*Webhook
 }
 
 // SetConversation sets field value
-func (o *WebhookPayloadConversationControlChanged) SetConversation(v WebhookPayloadConversationStartedConversation) {
+func (o *WebhookPayloadConversationControlChanged) SetConversation(v InboxWebhookConversationDetail) {
 	o.Conversation = v
 }
 
