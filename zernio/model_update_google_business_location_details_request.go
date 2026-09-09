@@ -30,8 +30,21 @@ type UpdateGoogleBusinessLocationDetailsRequest struct {
 	PhoneNumbers *GetGoogleBusinessLocationDetails200ResponsePhoneNumbers `json:"phoneNumbers,omitempty"`
 	Categories   *UpdateGoogleBusinessLocationDetailsRequestCategories    `json:"categories,omitempty"`
 	// Services offered by the business. Use updateMask='serviceItems' to update.
-	ServiceItems         []GetGoogleBusinessLocationDetails200ResponseServiceItemsInner `json:"serviceItems,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ServiceItems []GetGoogleBusinessLocationDetails200ResponseServiceItemsInner `json:"serviceItems,omitempty"`
+	// Business name. Use updateMask='title'.
+	Title *string `json:"title,omitempty"`
+	// External store identifier, unique within the account. Use updateMask='storeCode'.
+	StoreCode *string `json:"storeCode,omitempty"`
+	// Free-form, internal-only labels for grouping (1-255 characters each). Use updateMask='labels'.
+	Labels            []string                                                     `json:"labels,omitempty"`
+	StorefrontAddress *UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress `json:"storefrontAddress,omitempty"`
+	ServiceArea       *UpdateGoogleBusinessLocationDetailsRequestServiceArea       `json:"serviceArea,omitempty"`
+	OpenInfo          *UpdateGoogleBusinessLocationDetailsRequestOpenInfo          `json:"openInfo,omitempty"`
+	// Additional hours for specific services (delivery, drive-through, etc.). Use updateMask='moreHours'.
+	MoreHours                 []UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner           `json:"moreHours,omitempty"`
+	Latlng                    *UpdateGoogleBusinessLocationDetailsRequestLatlng                    `json:"latlng,omitempty"`
+	AdWordsLocationExtensions *UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions `json:"adWordsLocationExtensions,omitempty"`
+	AdditionalProperties      map[string]interface{}
 }
 
 type _UpdateGoogleBusinessLocationDetailsRequest UpdateGoogleBusinessLocationDetailsRequest
@@ -302,6 +315,294 @@ func (o *UpdateGoogleBusinessLocationDetailsRequest) SetServiceItems(v []GetGoog
 	o.ServiceItems = v
 }
 
+// GetTitle returns the Title field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetTitle() string {
+	if o == nil || IsNil(o.Title) {
+		var ret string
+		return ret
+	}
+	return *o.Title
+}
+
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetTitleOk() (*string, bool) {
+	if o == nil || IsNil(o.Title) {
+		return nil, false
+	}
+	return o.Title, true
+}
+
+// HasTitle returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasTitle() bool {
+	if o != nil && !IsNil(o.Title) {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle gets a reference to the given string and assigns it to the Title field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetTitle(v string) {
+	o.Title = &v
+}
+
+// GetStoreCode returns the StoreCode field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetStoreCode() string {
+	if o == nil || IsNil(o.StoreCode) {
+		var ret string
+		return ret
+	}
+	return *o.StoreCode
+}
+
+// GetStoreCodeOk returns a tuple with the StoreCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetStoreCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.StoreCode) {
+		return nil, false
+	}
+	return o.StoreCode, true
+}
+
+// HasStoreCode returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasStoreCode() bool {
+	if o != nil && !IsNil(o.StoreCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetStoreCode gets a reference to the given string and assigns it to the StoreCode field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetStoreCode(v string) {
+	o.StoreCode = &v
+}
+
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetLabels() []string {
+	if o == nil || IsNil(o.Labels) {
+		var ret []string
+		return ret
+	}
+	return o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetLabelsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given []string and assigns it to the Labels field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetLabels(v []string) {
+	o.Labels = v
+}
+
+// GetStorefrontAddress returns the StorefrontAddress field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetStorefrontAddress() UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress {
+	if o == nil || IsNil(o.StorefrontAddress) {
+		var ret UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress
+		return ret
+	}
+	return *o.StorefrontAddress
+}
+
+// GetStorefrontAddressOk returns a tuple with the StorefrontAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetStorefrontAddressOk() (*UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress, bool) {
+	if o == nil || IsNil(o.StorefrontAddress) {
+		return nil, false
+	}
+	return o.StorefrontAddress, true
+}
+
+// HasStorefrontAddress returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasStorefrontAddress() bool {
+	if o != nil && !IsNil(o.StorefrontAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetStorefrontAddress gets a reference to the given UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress and assigns it to the StorefrontAddress field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetStorefrontAddress(v UpdateGoogleBusinessLocationDetailsRequestStorefrontAddress) {
+	o.StorefrontAddress = &v
+}
+
+// GetServiceArea returns the ServiceArea field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetServiceArea() UpdateGoogleBusinessLocationDetailsRequestServiceArea {
+	if o == nil || IsNil(o.ServiceArea) {
+		var ret UpdateGoogleBusinessLocationDetailsRequestServiceArea
+		return ret
+	}
+	return *o.ServiceArea
+}
+
+// GetServiceAreaOk returns a tuple with the ServiceArea field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetServiceAreaOk() (*UpdateGoogleBusinessLocationDetailsRequestServiceArea, bool) {
+	if o == nil || IsNil(o.ServiceArea) {
+		return nil, false
+	}
+	return o.ServiceArea, true
+}
+
+// HasServiceArea returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasServiceArea() bool {
+	if o != nil && !IsNil(o.ServiceArea) {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceArea gets a reference to the given UpdateGoogleBusinessLocationDetailsRequestServiceArea and assigns it to the ServiceArea field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetServiceArea(v UpdateGoogleBusinessLocationDetailsRequestServiceArea) {
+	o.ServiceArea = &v
+}
+
+// GetOpenInfo returns the OpenInfo field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetOpenInfo() UpdateGoogleBusinessLocationDetailsRequestOpenInfo {
+	if o == nil || IsNil(o.OpenInfo) {
+		var ret UpdateGoogleBusinessLocationDetailsRequestOpenInfo
+		return ret
+	}
+	return *o.OpenInfo
+}
+
+// GetOpenInfoOk returns a tuple with the OpenInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetOpenInfoOk() (*UpdateGoogleBusinessLocationDetailsRequestOpenInfo, bool) {
+	if o == nil || IsNil(o.OpenInfo) {
+		return nil, false
+	}
+	return o.OpenInfo, true
+}
+
+// HasOpenInfo returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasOpenInfo() bool {
+	if o != nil && !IsNil(o.OpenInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetOpenInfo gets a reference to the given UpdateGoogleBusinessLocationDetailsRequestOpenInfo and assigns it to the OpenInfo field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetOpenInfo(v UpdateGoogleBusinessLocationDetailsRequestOpenInfo) {
+	o.OpenInfo = &v
+}
+
+// GetMoreHours returns the MoreHours field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetMoreHours() []UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner {
+	if o == nil || IsNil(o.MoreHours) {
+		var ret []UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner
+		return ret
+	}
+	return o.MoreHours
+}
+
+// GetMoreHoursOk returns a tuple with the MoreHours field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetMoreHoursOk() ([]UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner, bool) {
+	if o == nil || IsNil(o.MoreHours) {
+		return nil, false
+	}
+	return o.MoreHours, true
+}
+
+// HasMoreHours returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasMoreHours() bool {
+	if o != nil && !IsNil(o.MoreHours) {
+		return true
+	}
+
+	return false
+}
+
+// SetMoreHours gets a reference to the given []UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner and assigns it to the MoreHours field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetMoreHours(v []UpdateGoogleBusinessLocationDetailsRequestMoreHoursInner) {
+	o.MoreHours = v
+}
+
+// GetLatlng returns the Latlng field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetLatlng() UpdateGoogleBusinessLocationDetailsRequestLatlng {
+	if o == nil || IsNil(o.Latlng) {
+		var ret UpdateGoogleBusinessLocationDetailsRequestLatlng
+		return ret
+	}
+	return *o.Latlng
+}
+
+// GetLatlngOk returns a tuple with the Latlng field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetLatlngOk() (*UpdateGoogleBusinessLocationDetailsRequestLatlng, bool) {
+	if o == nil || IsNil(o.Latlng) {
+		return nil, false
+	}
+	return o.Latlng, true
+}
+
+// HasLatlng returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasLatlng() bool {
+	if o != nil && !IsNil(o.Latlng) {
+		return true
+	}
+
+	return false
+}
+
+// SetLatlng gets a reference to the given UpdateGoogleBusinessLocationDetailsRequestLatlng and assigns it to the Latlng field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetLatlng(v UpdateGoogleBusinessLocationDetailsRequestLatlng) {
+	o.Latlng = &v
+}
+
+// GetAdWordsLocationExtensions returns the AdWordsLocationExtensions field value if set, zero value otherwise.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetAdWordsLocationExtensions() UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions {
+	if o == nil || IsNil(o.AdWordsLocationExtensions) {
+		var ret UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions
+		return ret
+	}
+	return *o.AdWordsLocationExtensions
+}
+
+// GetAdWordsLocationExtensionsOk returns a tuple with the AdWordsLocationExtensions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) GetAdWordsLocationExtensionsOk() (*UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions, bool) {
+	if o == nil || IsNil(o.AdWordsLocationExtensions) {
+		return nil, false
+	}
+	return o.AdWordsLocationExtensions, true
+}
+
+// HasAdWordsLocationExtensions returns a boolean if a field has been set.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) HasAdWordsLocationExtensions() bool {
+	if o != nil && !IsNil(o.AdWordsLocationExtensions) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdWordsLocationExtensions gets a reference to the given UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions and assigns it to the AdWordsLocationExtensions field.
+func (o *UpdateGoogleBusinessLocationDetailsRequest) SetAdWordsLocationExtensions(v UpdateGoogleBusinessLocationDetailsRequestAdWordsLocationExtensions) {
+	o.AdWordsLocationExtensions = &v
+}
+
 func (o UpdateGoogleBusinessLocationDetailsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -333,6 +634,33 @@ func (o UpdateGoogleBusinessLocationDetailsRequest) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.ServiceItems) {
 		toSerialize["serviceItems"] = o.ServiceItems
+	}
+	if !IsNil(o.Title) {
+		toSerialize["title"] = o.Title
+	}
+	if !IsNil(o.StoreCode) {
+		toSerialize["storeCode"] = o.StoreCode
+	}
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
+	}
+	if !IsNil(o.StorefrontAddress) {
+		toSerialize["storefrontAddress"] = o.StorefrontAddress
+	}
+	if !IsNil(o.ServiceArea) {
+		toSerialize["serviceArea"] = o.ServiceArea
+	}
+	if !IsNil(o.OpenInfo) {
+		toSerialize["openInfo"] = o.OpenInfo
+	}
+	if !IsNil(o.MoreHours) {
+		toSerialize["moreHours"] = o.MoreHours
+	}
+	if !IsNil(o.Latlng) {
+		toSerialize["latlng"] = o.Latlng
+	}
+	if !IsNil(o.AdWordsLocationExtensions) {
+		toSerialize["adWordsLocationExtensions"] = o.AdWordsLocationExtensions
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -385,6 +713,15 @@ func (o *UpdateGoogleBusinessLocationDetailsRequest) UnmarshalJSON(data []byte) 
 		delete(additionalProperties, "phoneNumbers")
 		delete(additionalProperties, "categories")
 		delete(additionalProperties, "serviceItems")
+		delete(additionalProperties, "title")
+		delete(additionalProperties, "storeCode")
+		delete(additionalProperties, "labels")
+		delete(additionalProperties, "storefrontAddress")
+		delete(additionalProperties, "serviceArea")
+		delete(additionalProperties, "openInfo")
+		delete(additionalProperties, "moreHours")
+		delete(additionalProperties, "latlng")
+		delete(additionalProperties, "adWordsLocationExtensions")
 		o.AdditionalProperties = additionalProperties
 	}
 

@@ -1103,7 +1103,7 @@ func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) UpdateAdTrackingTagsRequest(
 	return r
 }
 
-func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) Execute() (*http.Response, error) {
+func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) Execute() (*UpdateAdTrackingTags200Response, *http.Response, error) {
 	return r.ApiService.UpdateAdTrackingTagsExecute(r)
 }
 
@@ -1137,16 +1137,19 @@ func (a *TrackingTagsAPIService) UpdateAdTrackingTags(ctx context.Context, adId 
 }
 
 // Execute executes the request
-func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUpdateAdTrackingTagsRequest) (*http.Response, error) {
+//
+//	@return UpdateAdTrackingTags200Response
+func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUpdateAdTrackingTagsRequest) (*UpdateAdTrackingTags200Response, *http.Response, error) {
 	var (
-		localVarHTTPMethod = http.MethodPatch
-		localVarPostBody   interface{}
-		formFiles          []formFile
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateAdTrackingTags200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.UpdateAdTrackingTags")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/ads/{adId}/tracking-tags"
@@ -1156,7 +1159,7 @@ func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUp
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.updateAdTrackingTagsRequest == nil {
-		return nil, reportError("updateAdTrackingTagsRequest is required and must be specified")
+		return localVarReturnValue, nil, reportError("updateAdTrackingTagsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1180,19 +1183,19 @@ func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUp
 	localVarPostBody = r.updateAdTrackingTagsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1205,16 +1208,25 @@ func (a *TrackingTagsAPIService) UpdateAdTrackingTagsExecute(r TrackingTagsAPIUp
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type TrackingTagsAPIUpdateTrackingTagRequest struct {

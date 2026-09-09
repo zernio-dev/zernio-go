@@ -12,171 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the CreatePost200Response type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreatePost200Response{}
-
-// CreatePost200Response struct for CreatePost200Response
+// CreatePost200Response - struct for CreatePost200Response
 type CreatePost200Response struct {
-	// Always true on this response
-	DryRun bool `json:"dryRun"`
-	// True only when every evaluated TikTok account can publish now
-	CanPublish bool `json:"canPublish"`
-	// One verdict per `tiktok` entry in the request, in request order
-	Tiktok []CreatePost200ResponseTiktokInner `json:"tiktok"`
+	PostCreateResponse  *PostCreateResponse
+	TikTokDryRunVerdict *TikTokDryRunVerdict
 }
 
-type _CreatePost200Response CreatePost200Response
-
-// NewCreatePost200Response instantiates a new CreatePost200Response object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreatePost200Response(dryRun bool, canPublish bool, tiktok []CreatePost200ResponseTiktokInner) *CreatePost200Response {
-	this := CreatePost200Response{}
-	this.DryRun = dryRun
-	this.CanPublish = canPublish
-	this.Tiktok = tiktok
-	return &this
-}
-
-// NewCreatePost200ResponseWithDefaults instantiates a new CreatePost200Response object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreatePost200ResponseWithDefaults() *CreatePost200Response {
-	this := CreatePost200Response{}
-	return &this
-}
-
-// GetDryRun returns the DryRun field value
-func (o *CreatePost200Response) GetDryRun() bool {
-	if o == nil {
-		var ret bool
-		return ret
+// PostCreateResponseAsCreatePost200Response is a convenience function that returns PostCreateResponse wrapped in CreatePost200Response
+func PostCreateResponseAsCreatePost200Response(v *PostCreateResponse) CreatePost200Response {
+	return CreatePost200Response{
+		PostCreateResponse: v,
 	}
-
-	return o.DryRun
 }
 
-// GetDryRunOk returns a tuple with the DryRun field value
-// and a boolean to check if the value has been set.
-func (o *CreatePost200Response) GetDryRunOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
+// TikTokDryRunVerdictAsCreatePost200Response is a convenience function that returns TikTokDryRunVerdict wrapped in CreatePost200Response
+func TikTokDryRunVerdictAsCreatePost200Response(v *TikTokDryRunVerdict) CreatePost200Response {
+	return CreatePost200Response{
+		TikTokDryRunVerdict: v,
 	}
-	return &o.DryRun, true
 }
 
-// SetDryRun sets field value
-func (o *CreatePost200Response) SetDryRun(v bool) {
-	o.DryRun = v
-}
-
-// GetCanPublish returns the CanPublish field value
-func (o *CreatePost200Response) GetCanPublish() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-
-	return o.CanPublish
-}
-
-// GetCanPublishOk returns a tuple with the CanPublish field value
-// and a boolean to check if the value has been set.
-func (o *CreatePost200Response) GetCanPublishOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CanPublish, true
-}
-
-// SetCanPublish sets field value
-func (o *CreatePost200Response) SetCanPublish(v bool) {
-	o.CanPublish = v
-}
-
-// GetTiktok returns the Tiktok field value
-func (o *CreatePost200Response) GetTiktok() []CreatePost200ResponseTiktokInner {
-	if o == nil {
-		var ret []CreatePost200ResponseTiktokInner
-		return ret
-	}
-
-	return o.Tiktok
-}
-
-// GetTiktokOk returns a tuple with the Tiktok field value
-// and a boolean to check if the value has been set.
-func (o *CreatePost200Response) GetTiktokOk() ([]CreatePost200ResponseTiktokInner, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Tiktok, true
-}
-
-// SetTiktok sets field value
-func (o *CreatePost200Response) SetTiktok(v []CreatePost200ResponseTiktokInner) {
-	o.Tiktok = v
-}
-
-func (o CreatePost200Response) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o CreatePost200Response) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["dryRun"] = o.DryRun
-	toSerialize["canPublish"] = o.CanPublish
-	toSerialize["tiktok"] = o.Tiktok
-	return toSerialize, nil
-}
-
-func (o *CreatePost200Response) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"dryRun",
-		"canPublish",
-		"tiktok",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *CreatePost200Response) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into PostCreateResponse
+	err = newStrictDecoder(data).Decode(&dst.PostCreateResponse)
+	if err == nil {
+		jsonPostCreateResponse, _ := json.Marshal(dst.PostCreateResponse)
+		if string(jsonPostCreateResponse) == "{}" { // empty struct
+			dst.PostCreateResponse = nil
+		} else {
+			if err = validator.Validate(dst.PostCreateResponse); err != nil {
+				dst.PostCreateResponse = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.PostCreateResponse = nil
 	}
 
-	varCreatePost200Response := _CreatePost200Response{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreatePost200Response)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into TikTokDryRunVerdict
+	err = newStrictDecoder(data).Decode(&dst.TikTokDryRunVerdict)
+	if err == nil {
+		jsonTikTokDryRunVerdict, _ := json.Marshal(dst.TikTokDryRunVerdict)
+		if string(jsonTikTokDryRunVerdict) == "{}" { // empty struct
+			dst.TikTokDryRunVerdict = nil
+		} else {
+			if err = validator.Validate(dst.TikTokDryRunVerdict); err != nil {
+				dst.TikTokDryRunVerdict = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.TikTokDryRunVerdict = nil
 	}
 
-	*o = CreatePost200Response(varCreatePost200Response)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.PostCreateResponse = nil
+		dst.TikTokDryRunVerdict = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(CreatePost200Response)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(CreatePost200Response)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreatePost200Response) MarshalJSON() ([]byte, error) {
+	if src.PostCreateResponse != nil {
+		return json.Marshal(&src.PostCreateResponse)
+	}
+
+	if src.TikTokDryRunVerdict != nil {
+		return json.Marshal(&src.TikTokDryRunVerdict)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *CreatePost200Response) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.PostCreateResponse != nil {
+		return obj.PostCreateResponse
+	}
+
+	if obj.TikTokDryRunVerdict != nil {
+		return obj.TikTokDryRunVerdict
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj CreatePost200Response) GetActualInstanceValue() interface{} {
+	if obj.PostCreateResponse != nil {
+		return *obj.PostCreateResponse
+	}
+
+	if obj.TikTokDryRunVerdict != nil {
+		return *obj.TikTokDryRunVerdict
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableCreatePost200Response struct {

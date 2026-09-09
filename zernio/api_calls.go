@@ -470,7 +470,6 @@ func (a *CallsAPIService) ListCallsExecute(r CallsAPIListCallsRequest) (*ListCal
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

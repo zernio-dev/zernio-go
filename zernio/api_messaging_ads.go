@@ -33,7 +33,7 @@ func (r MessagingAdsAPICreateCallAdRequest) CreateCallAdRequest(createCallAdRequ
 	return r
 }
 
-func (r MessagingAdsAPICreateCallAdRequest) Execute() (*http.Response, error) {
+func (r MessagingAdsAPICreateCallAdRequest) Execute() (*CreateMessagingAd201Response, *http.Response, error) {
 	return r.ApiService.CreateCallAdExecute(r)
 }
 
@@ -56,16 +56,19 @@ func (a *MessagingAdsAPIService) CreateCallAd(ctx context.Context) MessagingAdsA
 }
 
 // Execute executes the request
-func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCallAdRequest) (*http.Response, error) {
+//
+//	@return CreateMessagingAd201Response
+func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCallAdRequest) (*CreateMessagingAd201Response, *http.Response, error) {
 	var (
-		localVarHTTPMethod = http.MethodPost
-		localVarPostBody   interface{}
-		formFiles          []formFile
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateMessagingAd201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagingAdsAPIService.CreateCallAd")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/ads/call"
@@ -74,7 +77,7 @@ func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCall
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.createCallAdRequest == nil {
-		return nil, reportError("createCallAdRequest is required and must be specified")
+		return localVarReturnValue, nil, reportError("createCallAdRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -98,19 +101,19 @@ func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCall
 	localVarPostBody = r.createCallAdRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -123,16 +126,25 @@ func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCall
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type MessagingAdsAPICreateCtwaAdRequest struct {
@@ -146,7 +158,7 @@ func (r MessagingAdsAPICreateCtwaAdRequest) CtwaAdRequestBody(ctwaAdRequestBody 
 	return r
 }
 
-func (r MessagingAdsAPICreateCtwaAdRequest) Execute() (*CreateCtwaAd201Response, *http.Response, error) {
+func (r MessagingAdsAPICreateCtwaAdRequest) Execute() (*CreateMessagingAd201Response, *http.Response, error) {
 	return r.ApiService.CreateCtwaAdExecute(r)
 }
 
@@ -181,15 +193,15 @@ func (a *MessagingAdsAPIService) CreateCtwaAd(ctx context.Context) MessagingAdsA
 
 // Execute executes the request
 //
-//	@return CreateCtwaAd201Response
+//	@return CreateMessagingAd201Response
 //
 // Deprecated
-func (a *MessagingAdsAPIService) CreateCtwaAdExecute(r MessagingAdsAPICreateCtwaAdRequest) (*CreateCtwaAd201Response, *http.Response, error) {
+func (a *MessagingAdsAPIService) CreateCtwaAdExecute(r MessagingAdsAPICreateCtwaAdRequest) (*CreateMessagingAd201Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateCtwaAd201Response
+		localVarReturnValue *CreateMessagingAd201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagingAdsAPIService.CreateCtwaAd")
@@ -284,7 +296,7 @@ func (r MessagingAdsAPICreateMessagingAdRequest) CreateMessagingAdRequest(create
 	return r
 }
 
-func (r MessagingAdsAPICreateMessagingAdRequest) Execute() (*http.Response, error) {
+func (r MessagingAdsAPICreateMessagingAdRequest) Execute() (*CreateMessagingAd201Response, *http.Response, error) {
 	return r.ApiService.CreateMessagingAdExecute(r)
 }
 
@@ -309,16 +321,19 @@ func (a *MessagingAdsAPIService) CreateMessagingAd(ctx context.Context) Messagin
 }
 
 // Execute executes the request
-func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreateMessagingAdRequest) (*http.Response, error) {
+//
+//	@return CreateMessagingAd201Response
+func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreateMessagingAdRequest) (*CreateMessagingAd201Response, *http.Response, error) {
 	var (
-		localVarHTTPMethod = http.MethodPost
-		localVarPostBody   interface{}
-		formFiles          []formFile
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateMessagingAd201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagingAdsAPIService.CreateMessagingAd")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/ads/messaging"
@@ -327,7 +342,7 @@ func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreat
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.createMessagingAdRequest == nil {
-		return nil, reportError("createMessagingAdRequest is required and must be specified")
+		return localVarReturnValue, nil, reportError("createMessagingAdRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -351,19 +366,19 @@ func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreat
 	localVarPostBody = r.createMessagingAdRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -376,14 +391,23 @@ func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreat
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
