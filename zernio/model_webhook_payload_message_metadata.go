@@ -47,6 +47,7 @@ type WebhookPayloadMessageMetadata struct {
 	NfmReplyName    *string                                       `json:"nfmReplyName,omitempty"`
 	Order           *WebhookPayloadMessageMetadataOrder           `json:"order,omitempty"`
 	ReferredProduct *WebhookPayloadMessageMetadataReferredProduct `json:"referredProduct,omitempty"`
+	Location        *WebhookPayloadMessageMetadataLocation        `json:"location,omitempty"`
 	// WhatsApp only. Contact cards the user shared, forwarded verbatim from Meta. Read `contactsOrigin` before treating any number here as the sender's own.
 	Contacts []map[string]interface{} `json:"contacts,omitempty"`
 	// WhatsApp only. How the contact card was shared. `contact_request` means the user tapped a `request_contact_info` button, so the number is their own and consented. `other` means they picked a card from their address book: it may be anyone's, and must NOT be stored as the sender's identity. Omitted when Meta sends no origin.
@@ -557,6 +558,38 @@ func (o *WebhookPayloadMessageMetadata) SetReferredProduct(v WebhookPayloadMessa
 	o.ReferredProduct = &v
 }
 
+// GetLocation returns the Location field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetLocation() WebhookPayloadMessageMetadataLocation {
+	if o == nil || IsNil(o.Location) {
+		var ret WebhookPayloadMessageMetadataLocation
+		return ret
+	}
+	return *o.Location
+}
+
+// GetLocationOk returns a tuple with the Location field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetLocationOk() (*WebhookPayloadMessageMetadataLocation, bool) {
+	if o == nil || IsNil(o.Location) {
+		return nil, false
+	}
+	return o.Location, true
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasLocation() bool {
+	if o != nil && !IsNil(o.Location) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocation gets a reference to the given WebhookPayloadMessageMetadataLocation and assigns it to the Location field.
+func (o *WebhookPayloadMessageMetadata) SetLocation(v WebhookPayloadMessageMetadataLocation) {
+	o.Location = &v
+}
+
 // GetContacts returns the Contacts field value if set, zero value otherwise.
 func (o *WebhookPayloadMessageMetadata) GetContacts() []map[string]interface{} {
 	if o == nil || IsNil(o.Contacts) {
@@ -835,6 +868,9 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ReferredProduct) {
 		toSerialize["referredProduct"] = o.ReferredProduct
+	}
+	if !IsNil(o.Location) {
+		toSerialize["location"] = o.Location
 	}
 	if !IsNil(o.Contacts) {
 		toSerialize["contacts"] = o.Contacts

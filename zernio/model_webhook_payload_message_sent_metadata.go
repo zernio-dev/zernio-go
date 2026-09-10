@@ -18,8 +18,11 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin or WhatsApp contact cards. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
+	Location *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
+	// WhatsApp only. The contact cards this message carries. On API sends this is the `contacts` array exactly as given to the inbox send API (`name`, `phones[].phone` / `type`, `emails[]`); on Coexistence echoes of a card shared from the WhatsApp Business app it is Meta's shape (`phones[].wa_id`, `vcard`). The message `text` is only the emoji preview (`👤 <name>`); the cards live here.
+	Contacts []map[string]interface{} `json:"contacts,omitempty"`
 	// `platformMessageId` of the message this send is a quote-reply to.  Present when the reply was sent through Zernio with `replyTo` on the inbox send API (WhatsApp and Telegram). A WhatsApp API send fires its `message.sent` off the delivery status, and the quote reference is forwarded from the stored send there, so it arrives on the same `message.sent` as any other WhatsApp send.  Not delivered on Instagram echoes. Zernio forwards `reply_to.mid` whenever Meta puts it on an echo, but on Instagram Meta does not send it, so a reply the operator quoted in the Instagram app arrives with no `quotedMessageId`. Facebook Messenger rides a separate subscription (`message_echoes`) and has not been measured, so treat it as unverified rather than supported.  Absent on WhatsApp Coexistence echoes. Meta omits the quote context from `smb_message_echoes`, so a reply the operator sent from the WhatsApp Business app arrives with no `quotedMessageId` even though WhatsApp shows it as a quote-reply. Do not read the absence of this field as \"not a reply\".
 	QuotedMessageId *string `json:"quotedMessageId,omitempty"`
 	// Slack only. Parent thread ts of the sent message. Pass it back as `replyTo` on the inbox send API to keep replying inside the thread.
@@ -41,6 +44,70 @@ func NewWebhookPayloadMessageSentMetadata() *WebhookPayloadMessageSentMetadata {
 func NewWebhookPayloadMessageSentMetadataWithDefaults() *WebhookPayloadMessageSentMetadata {
 	this := WebhookPayloadMessageSentMetadata{}
 	return &this
+}
+
+// GetLocation returns the Location field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetLocation() WebhookPayloadMessageMetadataLocation {
+	if o == nil || IsNil(o.Location) {
+		var ret WebhookPayloadMessageMetadataLocation
+		return ret
+	}
+	return *o.Location
+}
+
+// GetLocationOk returns a tuple with the Location field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetLocationOk() (*WebhookPayloadMessageMetadataLocation, bool) {
+	if o == nil || IsNil(o.Location) {
+		return nil, false
+	}
+	return o.Location, true
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasLocation() bool {
+	if o != nil && !IsNil(o.Location) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocation gets a reference to the given WebhookPayloadMessageMetadataLocation and assigns it to the Location field.
+func (o *WebhookPayloadMessageSentMetadata) SetLocation(v WebhookPayloadMessageMetadataLocation) {
+	o.Location = &v
+}
+
+// GetContacts returns the Contacts field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetContacts() []map[string]interface{} {
+	if o == nil || IsNil(o.Contacts) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.Contacts
+}
+
+// GetContactsOk returns a tuple with the Contacts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetContactsOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Contacts) {
+		return nil, false
+	}
+	return o.Contacts, true
+}
+
+// HasContacts returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasContacts() bool {
+	if o != nil && !IsNil(o.Contacts) {
+		return true
+	}
+
+	return false
+}
+
+// SetContacts gets a reference to the given []map[string]interface{} and assigns it to the Contacts field.
+func (o *WebhookPayloadMessageSentMetadata) SetContacts(v []map[string]interface{}) {
+	o.Contacts = v
 }
 
 // GetQuotedMessageId returns the QuotedMessageId field value if set, zero value otherwise.
@@ -117,6 +184,12 @@ func (o WebhookPayloadMessageSentMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Location) {
+		toSerialize["location"] = o.Location
+	}
+	if !IsNil(o.Contacts) {
+		toSerialize["contacts"] = o.Contacts
+	}
 	if !IsNil(o.QuotedMessageId) {
 		toSerialize["quotedMessageId"] = o.QuotedMessageId
 	}
