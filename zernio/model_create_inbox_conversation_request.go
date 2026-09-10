@@ -44,8 +44,10 @@ type CreateInboxConversationRequest struct {
 	TemplateParams []string `json:"templateParams,omitempty"`
 	// WhatsApp only. Values for template buttons that carry one at send time, each addressed by the button's position in the approved template. This is the only way to send a copy-code button's payload (a Pix payment code, a coupon) or a flow token, because templateParams is a flat array of text variables and covers dynamic URL buttons only. Supplying a button here overrides whatever templateParams would have derived for that same index, so the send never carries one button twice; repeating an index within this array is rejected with 400. Each index must name a button of the matching kind on the approved template, which is also checked before the send and returns 400 (INVALID_TEMPLATE_BUTTON_PARAM) rather than a Meta rejection.
 	TemplateButtonParams []CreateInboxConversationRequestTemplateButtonParamsInner `json:"templateButtonParams,omitempty"`
-	HeaderMedia          *CreateInboxConversationRequestHeaderMedia                `json:"headerMedia,omitempty"`
-	HeaderLocation       *CreateInboxConversationRequestHeaderLocation             `json:"headerLocation,omitempty"`
+	// WhatsApp only. Per-card overrides for a CAROUSEL template, each addressed by the card's card_index. Carousel card body variables restart at {{1}} per card, so they cannot be expressed in the flat templateParams slot order; use this instead. A cardIndex naming a card the approved template does not have, a duplicate cardIndex, or a params count that does not match the card body's token count is rejected with 400 (INVALID_TEMPLATE_CARD_PARAM).
+	TemplateCards  []CreateInboxConversationRequestTemplateCardsInner `json:"templateCards,omitempty"`
+	HeaderMedia    *CreateInboxConversationRequestHeaderMedia         `json:"headerMedia,omitempty"`
+	HeaderLocation *CreateInboxConversationRequestHeaderLocation      `json:"headerLocation,omitempty"`
 }
 
 type _CreateInboxConversationRequest CreateInboxConversationRequest
@@ -420,6 +422,38 @@ func (o *CreateInboxConversationRequest) SetTemplateButtonParams(v []CreateInbox
 	o.TemplateButtonParams = v
 }
 
+// GetTemplateCards returns the TemplateCards field value if set, zero value otherwise.
+func (o *CreateInboxConversationRequest) GetTemplateCards() []CreateInboxConversationRequestTemplateCardsInner {
+	if o == nil || IsNil(o.TemplateCards) {
+		var ret []CreateInboxConversationRequestTemplateCardsInner
+		return ret
+	}
+	return o.TemplateCards
+}
+
+// GetTemplateCardsOk returns a tuple with the TemplateCards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInboxConversationRequest) GetTemplateCardsOk() ([]CreateInboxConversationRequestTemplateCardsInner, bool) {
+	if o == nil || IsNil(o.TemplateCards) {
+		return nil, false
+	}
+	return o.TemplateCards, true
+}
+
+// HasTemplateCards returns a boolean if a field has been set.
+func (o *CreateInboxConversationRequest) HasTemplateCards() bool {
+	if o != nil && !IsNil(o.TemplateCards) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateCards gets a reference to the given []CreateInboxConversationRequestTemplateCardsInner and assigns it to the TemplateCards field.
+func (o *CreateInboxConversationRequest) SetTemplateCards(v []CreateInboxConversationRequestTemplateCardsInner) {
+	o.TemplateCards = v
+}
+
 // GetHeaderMedia returns the HeaderMedia field value if set, zero value otherwise.
 func (o *CreateInboxConversationRequest) GetHeaderMedia() CreateInboxConversationRequestHeaderMedia {
 	if o == nil || IsNil(o.HeaderMedia) {
@@ -524,6 +558,9 @@ func (o CreateInboxConversationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TemplateButtonParams) {
 		toSerialize["templateButtonParams"] = o.TemplateButtonParams
+	}
+	if !IsNil(o.TemplateCards) {
+		toSerialize["templateCards"] = o.TemplateCards
 	}
 	if !IsNil(o.HeaderMedia) {
 		toSerialize["headerMedia"] = o.HeaderMedia
