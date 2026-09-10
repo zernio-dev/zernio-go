@@ -38,6 +38,10 @@ type PostAnalytics struct {
 	IgReelsVideoViewTotalTime *int32 `json:"igReelsVideoViewTotalTime,omitempty"`
 	// Instagram Reels only: percentage (0-100) of initial views that skipped the reel within its first 3 seconds, as reported by Meta. Meta labels the metric estimated and in development, so it can move between syncs. 0 for non-Reels media and other platforms. When a post is published to several accounts, the aggregate is weighted by views.
 	ReelsSkipRate *float32 `json:"reelsSkipRate,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: share of viewers who watched the video to the end, 0 to 1, as TikTok reports it (T+24-48h, only for posts active in the last 7 days). 0 for other platforms. When a post is published to several accounts, the aggregate is weighted by views.
+	CompletionRate *float32 `json:"completionRate,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: profile views from users who reached the profile through this post (T+24-48h). 0 for other platforms.
+	ProfileViews *int32 `json:"profileViews,omitempty"`
 	// Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
 	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
@@ -459,6 +463,70 @@ func (o *PostAnalytics) SetReelsSkipRate(v float32) {
 	o.ReelsSkipRate = &v
 }
 
+// GetCompletionRate returns the CompletionRate field value if set, zero value otherwise.
+func (o *PostAnalytics) GetCompletionRate() float32 {
+	if o == nil || IsNil(o.CompletionRate) {
+		var ret float32
+		return ret
+	}
+	return *o.CompletionRate
+}
+
+// GetCompletionRateOk returns a tuple with the CompletionRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetCompletionRateOk() (*float32, bool) {
+	if o == nil || IsNil(o.CompletionRate) {
+		return nil, false
+	}
+	return o.CompletionRate, true
+}
+
+// HasCompletionRate returns a boolean if a field has been set.
+func (o *PostAnalytics) HasCompletionRate() bool {
+	if o != nil && !IsNil(o.CompletionRate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCompletionRate gets a reference to the given float32 and assigns it to the CompletionRate field.
+func (o *PostAnalytics) SetCompletionRate(v float32) {
+	o.CompletionRate = &v
+}
+
+// GetProfileViews returns the ProfileViews field value if set, zero value otherwise.
+func (o *PostAnalytics) GetProfileViews() int32 {
+	if o == nil || IsNil(o.ProfileViews) {
+		var ret int32
+		return ret
+	}
+	return *o.ProfileViews
+}
+
+// GetProfileViewsOk returns a tuple with the ProfileViews field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetProfileViewsOk() (*int32, bool) {
+	if o == nil || IsNil(o.ProfileViews) {
+		return nil, false
+	}
+	return o.ProfileViews, true
+}
+
+// HasProfileViews returns a boolean if a field has been set.
+func (o *PostAnalytics) HasProfileViews() bool {
+	if o != nil && !IsNil(o.ProfileViews) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileViews gets a reference to the given int32 and assigns it to the ProfileViews field.
+func (o *PostAnalytics) SetProfileViews(v int32) {
+	o.ProfileViews = &v
+}
+
 // GetReposts returns the Reposts field value if set, zero value otherwise.
 func (o *PostAnalytics) GetReposts() int32 {
 	if o == nil || IsNil(o.Reposts) {
@@ -643,6 +711,12 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ReelsSkipRate) {
 		toSerialize["reelsSkipRate"] = o.ReelsSkipRate
+	}
+	if !IsNil(o.CompletionRate) {
+		toSerialize["completionRate"] = o.CompletionRate
+	}
+	if !IsNil(o.ProfileViews) {
+		toSerialize["profileViews"] = o.ProfileViews
 	}
 	if !IsNil(o.Reposts) {
 		toSerialize["reposts"] = o.Reposts

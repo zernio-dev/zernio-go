@@ -94,7 +94,7 @@ func (r AnalyticsAPIGetAnalyticsRequest) Page(page int32) AnalyticsAPIGetAnalyti
 	return r
 }
 
-// Sort by date, engagement, or a specific metric. Instagram-only metrics (follows, reposts, reels_skip_rate, ig_reels_*) sort a null value as 0.
+// Sort by date, engagement, or a specific metric. Platform-specific metrics (follows, reposts, reels_skip_rate, ig_reels_*, completion_rate, profile_views) sort a null value as 0.
 func (r AnalyticsAPIGetAnalyticsRequest) SortBy(sortBy string) AnalyticsAPIGetAnalyticsRequest {
 	r.sortBy = &sortBy
 	return r

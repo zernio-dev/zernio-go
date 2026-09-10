@@ -40,6 +40,10 @@ type AnalyticsDeltaEntryMetrics struct {
 	Reposts                   int32 `json:"reposts"`
 	// Instagram Reels skip rate, 0 to 1
 	ReelsSkipRate float32 `json:"reelsSkipRate"`
+	// TikTok business lane: share of viewers who watched to the end, 0 to 1
+	CompletionRate float32 `json:"completionRate"`
+	// TikTok business lane: profile views attributed to the post
+	ProfileViews int32 `json:"profileViews"`
 }
 
 type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
@@ -48,7 +52,7 @@ type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32) *AnalyticsDeltaEntryMetrics {
+func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32, completionRate float32, profileViews int32) *AnalyticsDeltaEntryMetrics {
 	this := AnalyticsDeltaEntryMetrics{}
 	this.Impressions = impressions
 	this.Reach = reach
@@ -64,6 +68,8 @@ func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, 
 	this.IgReelsVideoViewTotalTime = igReelsVideoViewTotalTime
 	this.Reposts = reposts
 	this.ReelsSkipRate = reelsSkipRate
+	this.CompletionRate = completionRate
+	this.ProfileViews = profileViews
 	return &this
 }
 
@@ -411,6 +417,54 @@ func (o *AnalyticsDeltaEntryMetrics) SetReelsSkipRate(v float32) {
 	o.ReelsSkipRate = v
 }
 
+// GetCompletionRate returns the CompletionRate field value
+func (o *AnalyticsDeltaEntryMetrics) GetCompletionRate() float32 {
+	if o == nil {
+		var ret float32
+		return ret
+	}
+
+	return o.CompletionRate
+}
+
+// GetCompletionRateOk returns a tuple with the CompletionRate field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetCompletionRateOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CompletionRate, true
+}
+
+// SetCompletionRate sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetCompletionRate(v float32) {
+	o.CompletionRate = v
+}
+
+// GetProfileViews returns the ProfileViews field value
+func (o *AnalyticsDeltaEntryMetrics) GetProfileViews() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.ProfileViews
+}
+
+// GetProfileViewsOk returns a tuple with the ProfileViews field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetProfileViewsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ProfileViews, true
+}
+
+// SetProfileViews sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetProfileViews(v int32) {
+	o.ProfileViews = v
+}
+
 func (o AnalyticsDeltaEntryMetrics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -435,6 +489,8 @@ func (o AnalyticsDeltaEntryMetrics) ToMap() (map[string]interface{}, error) {
 	toSerialize["igReelsVideoViewTotalTime"] = o.IgReelsVideoViewTotalTime
 	toSerialize["reposts"] = o.Reposts
 	toSerialize["reelsSkipRate"] = o.ReelsSkipRate
+	toSerialize["completionRate"] = o.CompletionRate
+	toSerialize["profileViews"] = o.ProfileViews
 	return toSerialize, nil
 }
 
@@ -457,6 +513,8 @@ func (o *AnalyticsDeltaEntryMetrics) UnmarshalJSON(data []byte) (err error) {
 		"igReelsVideoViewTotalTime",
 		"reposts",
 		"reelsSkipRate",
+		"completionRate",
+		"profileViews",
 	}
 
 	allProperties := make(map[string]interface{})
