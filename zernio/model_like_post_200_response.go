@@ -27,6 +27,10 @@ type LikePost200Response struct {
 	Liked    *bool   `json:"liked,omitempty"`
 	// (Bluesky only) URI to use for unliking
 	LikeUri *string `json:"likeUri,omitempty"`
+	// LinkedIn only: the account already had this exact reaction, so nothing was created
+	AlreadyReacted *bool `json:"alreadyReacted,omitempty"`
+	// LinkedIn only: the reaction type now in effect
+	ReactionType *string `json:"reactionType,omitempty"`
 }
 
 // NewLikePost200Response instantiates a new LikePost200Response object
@@ -206,6 +210,70 @@ func (o *LikePost200Response) SetLikeUri(v string) {
 	o.LikeUri = &v
 }
 
+// GetAlreadyReacted returns the AlreadyReacted field value if set, zero value otherwise.
+func (o *LikePost200Response) GetAlreadyReacted() bool {
+	if o == nil || IsNil(o.AlreadyReacted) {
+		var ret bool
+		return ret
+	}
+	return *o.AlreadyReacted
+}
+
+// GetAlreadyReactedOk returns a tuple with the AlreadyReacted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LikePost200Response) GetAlreadyReactedOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlreadyReacted) {
+		return nil, false
+	}
+	return o.AlreadyReacted, true
+}
+
+// HasAlreadyReacted returns a boolean if a field has been set.
+func (o *LikePost200Response) HasAlreadyReacted() bool {
+	if o != nil && !IsNil(o.AlreadyReacted) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlreadyReacted gets a reference to the given bool and assigns it to the AlreadyReacted field.
+func (o *LikePost200Response) SetAlreadyReacted(v bool) {
+	o.AlreadyReacted = &v
+}
+
+// GetReactionType returns the ReactionType field value if set, zero value otherwise.
+func (o *LikePost200Response) GetReactionType() string {
+	if o == nil || IsNil(o.ReactionType) {
+		var ret string
+		return ret
+	}
+	return *o.ReactionType
+}
+
+// GetReactionTypeOk returns a tuple with the ReactionType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LikePost200Response) GetReactionTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ReactionType) {
+		return nil, false
+	}
+	return o.ReactionType, true
+}
+
+// HasReactionType returns a boolean if a field has been set.
+func (o *LikePost200Response) HasReactionType() bool {
+	if o != nil && !IsNil(o.ReactionType) {
+		return true
+	}
+
+	return false
+}
+
+// SetReactionType gets a reference to the given string and assigns it to the ReactionType field.
+func (o *LikePost200Response) SetReactionType(v string) {
+	o.ReactionType = &v
+}
+
 func (o LikePost200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -230,6 +298,12 @@ func (o LikePost200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LikeUri) {
 		toSerialize["likeUri"] = o.LikeUri
+	}
+	if !IsNil(o.AlreadyReacted) {
+		toSerialize["alreadyReacted"] = o.AlreadyReacted
+	}
+	if !IsNil(o.ReactionType) {
+		toSerialize["reactionType"] = o.ReactionType
 	}
 	return toSerialize, nil
 }

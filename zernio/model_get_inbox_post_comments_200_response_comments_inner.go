@@ -39,7 +39,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	CanDelete      *bool `json:"canDelete,omitempty"`
 	// Whether this comment can be hidden (Facebook, Instagram, Threads)
 	CanHide *bool `json:"canHide,omitempty"`
-	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit)
+	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit, LinkedIn)
 	CanLike *bool `json:"canLike,omitempty"`
 	// Whether the comment is currently hidden
 	IsHidden *bool `json:"isHidden,omitempty"`
