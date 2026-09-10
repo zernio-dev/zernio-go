@@ -4971,8 +4971,9 @@ Fetch an account's latest external posts (published directly on the platform, no
 Primary use case: verifying a submitted post. When a user publishes on the platform and immediately pastes the post URL into your app, call this with `accountId` plus `url` (or `postId`) to confirm the post exists and return its metadata.
 
 Behavior:
-- We check our stored copy first and return immediately if the post is already known (no platform call).
-- Otherwise we fetch the account's latest posts live from the platform, then match and return the submitted post.
+- Account access and connection state are checked before any platform call, including requests inside the debounce window.
+- Inactive accounts or accounts marked `needsReconnection` return `409` with code `ads_connection_required`. Stop scheduled retries for that account until it is reconnected, then read `GET /v1/accounts` for its current account ID.
+- For connected accounts, we fetch the latest posts live from the platform, then match and return the submitted post.
 - Requests are debounced per account (~15s): if the account was synced inside that window, the live fetch is skipped.
 
 `accountId` is required, because a post URL or id alone cannot be resolved to an account, and the account must be connected to Zernio (we use its token to read the platform). Supported for every platform with a listing API (Instagram, Facebook, TikTok, YouTube, X, Threads, Pinterest, Reddit, Bluesky, Google Business Profile, and LinkedIn organization accounts).
@@ -5102,6 +5103,16 @@ func (a *AnalyticsAPIService) SyncExternalPostsExecute(r AnalyticsAPISyncExterna
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

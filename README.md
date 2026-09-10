@@ -542,12 +542,14 @@ func main() {
 | `client.CommentsAPI.HideInboxComment(ctx)` | Hide comment |
 | `client.CommentsAPI.LikeInboxComment(ctx)` | Like comment |
 | `client.CommentsAPI.LikePost(ctx)` | Like post |
+| `client.CommentsAPI.PinInboxComment(ctx)` | Pin comment |
 | `client.CommentsAPI.ReplyToInboxPost(ctx)` | Reply to comment |
 | `client.CommentsAPI.SendPrivateReplyToComment(ctx)` | Send private reply |
 | `client.CommentsAPI.SetCommentModeration(ctx)` | Set comment moderation status |
 | `client.CommentsAPI.UnhideInboxComment(ctx)` | Unhide comment |
 | `client.CommentsAPI.UnlikeInboxComment(ctx)` | Unlike comment |
 | `client.CommentsAPI.UnlikePost(ctx)` | Unlike post |
+| `client.CommentsAPI.UnpinInboxComment(ctx)` | Unpin comment |
 
 ### Connected Apps
 | Method | Description |

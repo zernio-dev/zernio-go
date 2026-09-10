@@ -351,7 +351,7 @@ func (r CommentsAPIGetInboxPostCommentsRequest) Cursor(cursor string) CommentsAP
 	return r
 }
 
-// (Reddit only) Get replies to a specific comment
+// (Reddit and TikTok only) Get replies to a specific comment
 func (r CommentsAPIGetInboxPostCommentsRequest) CommentId(commentId string) CommentsAPIGetInboxPostCommentsRequest {
 	r.commentId = &commentId
 	return r
@@ -374,6 +374,11 @@ Responses are cached for up to 10 minutes, so a page may lag new comments by tha
 window. Do not poll this endpoint for real-time updates: subscribe to the
 `comment.received` webhook, which delivers new comments as they arrive. Your own
 writes (creating, replying to, or deleting a comment) refresh the cache immediately.
+
+TikTok is served for accounts connected through the TikTok for Business app: `postId`
+is the TikTok video id, each top-level comment carries up to three inline replies, and
+`commentId` pages the full reply list of one comment. Developer-app TikTok accounts
+return 400 with code `PLATFORM_LIMITATION`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook and Instagram, a comment ID is also accepted here and returns that comment's replies.
@@ -526,7 +531,8 @@ func (r CommentsAPIHideInboxCommentRequest) Execute() (*HideInboxComment200Respo
 /*
 HideInboxComment Hide comment
 
-Hide a comment on a post. Supported by Facebook, Instagram, Threads, and X.
+Hide a comment on a post. Supported by Facebook, Instagram, Threads, X, and TikTok
+(accounts connected through the TikTok for Business app).
 Hidden comments are only visible to the commenter and page admin.
 For X, the reply must belong to a conversation started by the authenticated user.
 
@@ -1201,6 +1207,148 @@ func (a *CommentsAPIService) ListInboxCommentsExecute(r CommentsAPIListInboxComm
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommentsAPIPinInboxCommentRequest struct {
+	ctx                        context.Context
+	ApiService                 *CommentsAPIService
+	postId                     string
+	commentId                  string
+	sendTypingIndicatorRequest *SendTypingIndicatorRequest
+}
+
+func (r CommentsAPIPinInboxCommentRequest) SendTypingIndicatorRequest(sendTypingIndicatorRequest SendTypingIndicatorRequest) CommentsAPIPinInboxCommentRequest {
+	r.sendTypingIndicatorRequest = &sendTypingIndicatorRequest
+	return r
+}
+
+func (r CommentsAPIPinInboxCommentRequest) Execute() (*PinInboxComment200Response, *http.Response, error) {
+	return r.ApiService.PinInboxCommentExecute(r)
+}
+
+/*
+PinInboxComment Pin comment
+
+Pin a top-level comment to the top of a post's comment section. TikTok accounts
+connected through the TikTok for Business app only; every other platform returns 400.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId
+	@param commentId
+	@return CommentsAPIPinInboxCommentRequest
+*/
+func (a *CommentsAPIService) PinInboxComment(ctx context.Context, postId string, commentId string) CommentsAPIPinInboxCommentRequest {
+	return CommentsAPIPinInboxCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return PinInboxComment200Response
+func (a *CommentsAPIService) PinInboxCommentExecute(r CommentsAPIPinInboxCommentRequest) (*PinInboxComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PinInboxComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.PinInboxComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/comments/{postId}/{commentId}/pin"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.sendTypingIndicatorRequest == nil {
+		return localVarReturnValue, nil, reportError("sendTypingIndicatorRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.sendTypingIndicatorRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommentsAPIReplyToInboxPostRequest struct {
 	ctx                     context.Context
 	ApiService              *CommentsAPIService
@@ -1674,7 +1822,8 @@ func (r CommentsAPIUnhideInboxCommentRequest) Execute() (*HideInboxComment200Res
 /*
 UnhideInboxComment Unhide comment
 
-Unhide a previously hidden comment. Supported by Facebook, Instagram, Threads, and X.
+Unhide a previously hidden comment. Supported by Facebook, Instagram, Threads, X, and
+TikTok (accounts connected through the TikTok for Business app).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
@@ -2000,6 +2149,147 @@ func (a *CommentsAPIService) UnlikePostExecute(r CommentsAPIUnlikePostRequest) (
 	if r.likeUri != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "likeUri", r.likeUri, "form", "")
 	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommentsAPIUnpinInboxCommentRequest struct {
+	ctx        context.Context
+	ApiService *CommentsAPIService
+	postId     string
+	commentId  string
+	accountId  *string
+}
+
+func (r CommentsAPIUnpinInboxCommentRequest) AccountId(accountId string) CommentsAPIUnpinInboxCommentRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r CommentsAPIUnpinInboxCommentRequest) Execute() (*PinInboxComment200Response, *http.Response, error) {
+	return r.ApiService.UnpinInboxCommentExecute(r)
+}
+
+/*
+UnpinInboxComment Unpin comment
+
+Unpin a previously pinned comment. TikTok accounts connected through the TikTok for
+Business app only.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId
+	@param commentId
+	@return CommentsAPIUnpinInboxCommentRequest
+*/
+func (a *CommentsAPIService) UnpinInboxComment(ctx context.Context, postId string, commentId string) CommentsAPIUnpinInboxCommentRequest {
+	return CommentsAPIUnpinInboxCommentRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+		commentId:  commentId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return PinInboxComment200Response
+func (a *CommentsAPIService) UnpinInboxCommentExecute(r CommentsAPIUnpinInboxCommentRequest) (*PinInboxComment200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PinInboxComment200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommentsAPIService.UnpinInboxComment")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/comments/{postId}/{commentId}/pin"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"commentId"+"}", url.PathEscape(parameterValueToString(r.commentId, "commentId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &TikTokPlatformData{}
 type TikTokPlatformData struct {
 	// When true, sends the post to the TikTok Creator Inbox as a draft instead of publishing immediately. The creator receives an inbox notification to complete posting via TikTok's editing flow. Maps to TikTok API post_mode: \"MEDIA_UPLOAD\" (photos) or the dedicated inbox endpoint (videos). When false or omitted, publishes directly via post_mode: \"DIRECT_POST\". Note: publish_type is not a supported field. Use this field instead.
 	Draft *bool `json:"draft,omitempty"`
-	// One of the values returned by the TikTok creator info API for the account
+	// One of the values returned by the TikTok creator info API for the account. Accounts connected through the TikTok for Business app publish videos as public only: a non-public value on a video post is rejected at creation unless draft is true (photo posts keep every level).
 	PrivacyLevel *string `json:"privacyLevel,omitempty"`
 	// Allow comments on the post
 	AllowComment *bool `json:"allowComment,omitempty"`

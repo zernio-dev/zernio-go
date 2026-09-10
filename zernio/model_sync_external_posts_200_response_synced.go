@@ -24,7 +24,7 @@ type SyncExternalPosts200ResponseSynced struct {
 	PostsFound *int32 `json:"postsFound,omitempty"`
 	// Posts inserted or updated in Zernio
 	PostsSynced *int32 `json:"postsSynced,omitempty"`
-	// True when no live fetch ran: the post was already stored, or the account was synced within the debounce window
+	// True when the account was synced within the debounce window and no live fetch ran.
 	Skipped *bool `json:"skipped,omitempty"`
 }
 
