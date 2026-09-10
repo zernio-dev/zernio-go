@@ -36,6 +36,8 @@ type ListPhoneNumberCountries200ResponseCountriesInner struct {
 	OutboundCallingAvailable *bool `json:"outboundCallingAvailable,omitempty"`
 	// Live carrier-stock snapshot (refreshed every 6h + on availability checks): false when NO offered type currently has deliverable inventory, so a purchase would fail. Treat as advisory; the purchase itself re-checks.
 	InStock *bool `json:"inStock,omitempty"`
+	// At least one out-of-stock type here can be pre-ordered (see `types[].preOrderable`).
+	PreOrderable *bool `json:"preOrderable,omitempty"`
 	// Every number type offered in this country (default first). Capabilities, KYC tier, monthly price, and stock are per type. The country-level fields above mirror the first (default) entry. Pass the chosen `numberType` to POST /v1/phone-numbers/purchase.
 	Types []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner `json:"types,omitempty"`
 }
@@ -345,6 +347,38 @@ func (o *ListPhoneNumberCountries200ResponseCountriesInner) SetInStock(v bool) {
 	o.InStock = &v
 }
 
+// GetPreOrderable returns the PreOrderable field value if set, zero value otherwise.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetPreOrderable() bool {
+	if o == nil || IsNil(o.PreOrderable) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrderable
+}
+
+// GetPreOrderableOk returns a tuple with the PreOrderable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetPreOrderableOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrderable) {
+		return nil, false
+	}
+	return o.PreOrderable, true
+}
+
+// HasPreOrderable returns a boolean if a field has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) HasPreOrderable() bool {
+	if o != nil && !IsNil(o.PreOrderable) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrderable gets a reference to the given bool and assigns it to the PreOrderable field.
+func (o *ListPhoneNumberCountries200ResponseCountriesInner) SetPreOrderable(v bool) {
+	o.PreOrderable = &v
+}
+
 // GetTypes returns the Types field value if set, zero value otherwise.
 func (o *ListPhoneNumberCountries200ResponseCountriesInner) GetTypes() []ListPhoneNumberCountries200ResponseCountriesInnerTypesInner {
 	if o == nil || IsNil(o.Types) {
@@ -413,6 +447,9 @@ func (o ListPhoneNumberCountries200ResponseCountriesInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.InStock) {
 		toSerialize["inStock"] = o.InStock
+	}
+	if !IsNil(o.PreOrderable) {
+		toSerialize["preOrderable"] = o.PreOrderable
 	}
 	if !IsNil(o.Types) {
 		toSerialize["types"] = o.Types

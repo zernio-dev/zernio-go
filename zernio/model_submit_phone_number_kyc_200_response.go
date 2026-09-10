@@ -20,7 +20,9 @@ var _ MappedNullable = &SubmitPhoneNumberKyc200Response{}
 
 // SubmitPhoneNumberKyc200Response struct for SubmitPhoneNumberKyc200Response
 type SubmitPhoneNumberKyc200Response struct {
-	Status      *string                                     `json:"status,omitempty"`
+	Status *string `json:"status,omitempty"`
+	// True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+	PreOrder    *bool                                       `json:"preOrder,omitempty"`
 	PhoneNumber *SubmitPhoneNumberKyc200ResponsePhoneNumber `json:"phoneNumber,omitempty"`
 	// Every number provisioned from this submission. Length equals the requested `quantity` on full success (fewer if some orders failed; best-effort). The first element mirrors `phoneNumber`.
 	Numbers []SubmitPhoneNumberKyc200ResponseNumbersInner `json:"numbers,omitempty"`
@@ -73,6 +75,38 @@ func (o *SubmitPhoneNumberKyc200Response) HasStatus() bool {
 // SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *SubmitPhoneNumberKyc200Response) SetStatus(v string) {
 	o.Status = &v
+}
+
+// GetPreOrder returns the PreOrder field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKyc200Response) GetPreOrder() bool {
+	if o == nil || IsNil(o.PreOrder) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrder
+}
+
+// GetPreOrderOk returns a tuple with the PreOrder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKyc200Response) GetPreOrderOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrder) {
+		return nil, false
+	}
+	return o.PreOrder, true
+}
+
+// HasPreOrder returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKyc200Response) HasPreOrder() bool {
+	if o != nil && !IsNil(o.PreOrder) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrder gets a reference to the given bool and assigns it to the PreOrder field.
+func (o *SubmitPhoneNumberKyc200Response) SetPreOrder(v bool) {
+	o.PreOrder = &v
 }
 
 // GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
@@ -151,6 +185,9 @@ func (o SubmitPhoneNumberKyc200Response) ToMap() (map[string]interface{}, error)
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.PreOrder) {
+		toSerialize["preOrder"] = o.PreOrder
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber

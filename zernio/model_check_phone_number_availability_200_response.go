@@ -23,7 +23,9 @@ type CheckPhoneNumberAvailability200Response struct {
 	Country    *string `json:"country,omitempty"`
 	NumberType *string `json:"numberType,omitempty"`
 	// Whether deliverable voice inventory exists right now.
-	Available         *bool   `json:"available,omitempty"`
+	Available *bool `json:"available,omitempty"`
+	// Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+	PreOrderable      *bool   `json:"preOrderable,omitempty"`
 	AddressConstraint *string `json:"addressConstraint,omitempty"`
 	// For `geo` only: the area(s) the registered address must be in.
 	Areas []string `json:"areas,omitempty"`
@@ -144,6 +146,38 @@ func (o *CheckPhoneNumberAvailability200Response) SetAvailable(v bool) {
 	o.Available = &v
 }
 
+// GetPreOrderable returns the PreOrderable field value if set, zero value otherwise.
+func (o *CheckPhoneNumberAvailability200Response) GetPreOrderable() bool {
+	if o == nil || IsNil(o.PreOrderable) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrderable
+}
+
+// GetPreOrderableOk returns a tuple with the PreOrderable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberAvailability200Response) GetPreOrderableOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrderable) {
+		return nil, false
+	}
+	return o.PreOrderable, true
+}
+
+// HasPreOrderable returns a boolean if a field has been set.
+func (o *CheckPhoneNumberAvailability200Response) HasPreOrderable() bool {
+	if o != nil && !IsNil(o.PreOrderable) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrderable gets a reference to the given bool and assigns it to the PreOrderable field.
+func (o *CheckPhoneNumberAvailability200Response) SetPreOrderable(v bool) {
+	o.PreOrderable = &v
+}
+
 // GetAddressConstraint returns the AddressConstraint field value if set, zero value otherwise.
 func (o *CheckPhoneNumberAvailability200Response) GetAddressConstraint() string {
 	if o == nil || IsNil(o.AddressConstraint) {
@@ -258,6 +292,9 @@ func (o CheckPhoneNumberAvailability200Response) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Available) {
 		toSerialize["available"] = o.Available
+	}
+	if !IsNil(o.PreOrderable) {
+		toSerialize["preOrderable"] = o.PreOrderable
 	}
 	if !IsNil(o.AddressConstraint) {
 		toSerialize["addressConstraint"] = o.AddressConstraint

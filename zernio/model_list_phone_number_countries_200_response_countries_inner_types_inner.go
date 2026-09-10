@@ -21,8 +21,9 @@ var _ MappedNullable = &ListPhoneNumberCountries200ResponseCountriesInnerTypesIn
 // ListPhoneNumberCountries200ResponseCountriesInnerTypesInner struct for ListPhoneNumberCountries200ResponseCountriesInnerTypesInner
 type ListPhoneNumberCountries200ResponseCountriesInnerTypesInner struct {
 	NumberType *string `json:"numberType,omitempty"`
-	Tier       *int32  `json:"tier,omitempty"`
-	NeedsKyc   *bool   `json:"needsKyc,omitempty"`
+	// Null on a `fulfilment: request` type, whose document tier is only known once its requirements are read.
+	Tier     NullableInt32 `json:"tier,omitempty"`
+	NeedsKyc *bool         `json:"needsKyc,omitempty"`
 	// Price a NEW number of this type costs per month, in cents.
 	MonthlyCents *int32 `json:"monthlyCents,omitempty"`
 	// Always false for toll_free (WhatsApp does not reliably register toll-free numbers).
@@ -30,6 +31,10 @@ type ListPhoneNumberCountries200ResponseCountriesInnerTypesInner struct {
 	SmsAvailable      *bool `json:"smsAvailable,omitempty"`
 	CallsAvailable    *bool `json:"callsAvailable,omitempty"`
 	InStock           *bool `json:"inStock,omitempty"`
+	// `request`: the carrier stocks this type nowhere and only sources it to order, so it is always a pre-order.
+	Fulfilment *string `json:"fulfilment,omitempty"`
+	// Out of stock but orderable anyway. Submit KYC as usual (POST /v1/phone-numbers/kyc) and the carrier sources the number after review, usually about 3 weeks and never guaranteed. Only document tiers (3/4) qualify, and nothing is billed until the number is active.
+	PreOrderable *bool `json:"preOrderable,omitempty"`
 }
 
 // NewListPhoneNumberCountries200ResponseCountriesInnerTypesInner instantiates a new ListPhoneNumberCountries200ResponseCountriesInnerTypesInner object
@@ -81,36 +86,47 @@ func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetNumberT
 	o.NumberType = &v
 }
 
-// GetTier returns the Tier field value if set, zero value otherwise.
+// GetTier returns the Tier field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetTier() int32 {
-	if o == nil || IsNil(o.Tier) {
+	if o == nil || IsNil(o.Tier.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Tier
+	return *o.Tier.Get()
 }
 
 // GetTierOk returns a tuple with the Tier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetTierOk() (*int32, bool) {
-	if o == nil || IsNil(o.Tier) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Tier, true
+	return o.Tier.Get(), o.Tier.IsSet()
 }
 
 // HasTier returns a boolean if a field has been set.
 func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) HasTier() bool {
-	if o != nil && !IsNil(o.Tier) {
+	if o != nil && o.Tier.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTier gets a reference to the given int32 and assigns it to the Tier field.
+// SetTier gets a reference to the given NullableInt32 and assigns it to the Tier field.
 func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetTier(v int32) {
-	o.Tier = &v
+	o.Tier.Set(&v)
+}
+
+// SetTierNil sets the value for Tier to be an explicit nil
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetTierNil() {
+	o.Tier.Set(nil)
+}
+
+// UnsetTier ensures that no value is present for Tier, not even an explicit nil
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) UnsetTier() {
+	o.Tier.Unset()
 }
 
 // GetNeedsKyc returns the NeedsKyc field value if set, zero value otherwise.
@@ -305,6 +321,70 @@ func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetInStock
 	o.InStock = &v
 }
 
+// GetFulfilment returns the Fulfilment field value if set, zero value otherwise.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetFulfilment() string {
+	if o == nil || IsNil(o.Fulfilment) {
+		var ret string
+		return ret
+	}
+	return *o.Fulfilment
+}
+
+// GetFulfilmentOk returns a tuple with the Fulfilment field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetFulfilmentOk() (*string, bool) {
+	if o == nil || IsNil(o.Fulfilment) {
+		return nil, false
+	}
+	return o.Fulfilment, true
+}
+
+// HasFulfilment returns a boolean if a field has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) HasFulfilment() bool {
+	if o != nil && !IsNil(o.Fulfilment) {
+		return true
+	}
+
+	return false
+}
+
+// SetFulfilment gets a reference to the given string and assigns it to the Fulfilment field.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetFulfilment(v string) {
+	o.Fulfilment = &v
+}
+
+// GetPreOrderable returns the PreOrderable field value if set, zero value otherwise.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetPreOrderable() bool {
+	if o == nil || IsNil(o.PreOrderable) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrderable
+}
+
+// GetPreOrderableOk returns a tuple with the PreOrderable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) GetPreOrderableOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrderable) {
+		return nil, false
+	}
+	return o.PreOrderable, true
+}
+
+// HasPreOrderable returns a boolean if a field has been set.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) HasPreOrderable() bool {
+	if o != nil && !IsNil(o.PreOrderable) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrderable gets a reference to the given bool and assigns it to the PreOrderable field.
+func (o *ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) SetPreOrderable(v bool) {
+	o.PreOrderable = &v
+}
+
 func (o ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -318,8 +398,8 @@ func (o ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) ToMap() (ma
 	if !IsNil(o.NumberType) {
 		toSerialize["numberType"] = o.NumberType
 	}
-	if !IsNil(o.Tier) {
-		toSerialize["tier"] = o.Tier
+	if o.Tier.IsSet() {
+		toSerialize["tier"] = o.Tier.Get()
 	}
 	if !IsNil(o.NeedsKyc) {
 		toSerialize["needsKyc"] = o.NeedsKyc
@@ -338,6 +418,12 @@ func (o ListPhoneNumberCountries200ResponseCountriesInnerTypesInner) ToMap() (ma
 	}
 	if !IsNil(o.InStock) {
 		toSerialize["inStock"] = o.InStock
+	}
+	if !IsNil(o.Fulfilment) {
+		toSerialize["fulfilment"] = o.Fulfilment
+	}
+	if !IsNil(o.PreOrderable) {
+		toSerialize["preOrderable"] = o.PreOrderable
 	}
 	return toSerialize, nil
 }
