@@ -39,7 +39,7 @@ type CreateStandaloneAdRequest struct {
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta only. Explicit ad-set `billing_event`. Defaults to `IMPRESSIONS`. Forwarded verbatim to Meta, which validates compatibility with the optimization goal.
 	BillingEvent *string `json:"billingEvent,omitempty"`
-	// Meta only. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
+	// Meta only. Defaults to AUCTION and is explicitly sent on new campaigns, including validateOnly. Reusing existingCampaignId does not change the campaign. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
 	BuyingType *string `json:"buyingType,omitempty"`
 	// Meta only. The RESERVED prediction id the R&F ad set runs on (reserving mints a new id, so pass that one). Requires buyingType RESERVED.
 	RfPredictionId *string        `json:"rfPredictionId,omitempty"`
@@ -231,6 +231,8 @@ func NewCreateStandaloneAdRequest(accountId string, adAccountId string, name str
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
+	var buyingType string = "AUCTION"
+	this.BuyingType = &buyingType
 	var budgetLevel string = "adset"
 	this.BudgetLevel = &budgetLevel
 	var campaignType string = "display"
@@ -245,6 +247,8 @@ func NewCreateStandaloneAdRequest(accountId string, adAccountId string, name str
 // but it doesn't guarantee that properties required by API are set
 func NewCreateStandaloneAdRequestWithDefaults() *CreateStandaloneAdRequest {
 	this := CreateStandaloneAdRequest{}
+	var buyingType string = "AUCTION"
+	this.BuyingType = &buyingType
 	var budgetLevel string = "adset"
 	this.BudgetLevel = &budgetLevel
 	var campaignType string = "display"
