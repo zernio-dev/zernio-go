@@ -21,7 +21,7 @@ var _ MappedNullable = &SelectFacebookPage200Response{}
 // SelectFacebookPage200Response struct for SelectFacebookPage200Response
 type SelectFacebookPage200Response struct {
 	Message *string `json:"message,omitempty"`
-	// Redirect URL if custom redirect_url was provided
+	// Redirect URL when a custom redirect_url was provided or a business Page was selected.
 	RedirectUrl *string                               `json:"redirect_url,omitempty"`
 	Account     *SelectFacebookPage200ResponseAccount `json:"account,omitempty"`
 }

@@ -12,236 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the SelectFacebookPageRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &SelectFacebookPageRequest{}
-
-// SelectFacebookPageRequest struct for SelectFacebookPageRequest
+// SelectFacebookPageRequest - struct for SelectFacebookPageRequest
 type SelectFacebookPageRequest struct {
-	// Profile ID from your connection flow
-	ProfileId string `json:"profileId"`
-	// The Facebook Page ID selected by the user
-	PageId string `json:"pageId"`
-	// Temporary Facebook access token from OAuth
-	TempToken   string                               `json:"tempToken"`
-	UserProfile SelectFacebookPageRequestUserProfile `json:"userProfile"`
-	// Optional custom redirect URL to return to after selection
-	RedirectUrl *string `json:"redirect_url,omitempty"`
+	SelectFacebookPageRequestOneOf  *SelectFacebookPageRequestOneOf
+	SelectFacebookPageRequestOneOf1 *SelectFacebookPageRequestOneOf1
 }
 
-type _SelectFacebookPageRequest SelectFacebookPageRequest
-
-// NewSelectFacebookPageRequest instantiates a new SelectFacebookPageRequest object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSelectFacebookPageRequest(profileId string, pageId string, tempToken string, userProfile SelectFacebookPageRequestUserProfile) *SelectFacebookPageRequest {
-	this := SelectFacebookPageRequest{}
-	this.ProfileId = profileId
-	this.PageId = pageId
-	this.TempToken = tempToken
-	this.UserProfile = userProfile
-	return &this
-}
-
-// NewSelectFacebookPageRequestWithDefaults instantiates a new SelectFacebookPageRequest object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewSelectFacebookPageRequestWithDefaults() *SelectFacebookPageRequest {
-	this := SelectFacebookPageRequest{}
-	return &this
-}
-
-// GetProfileId returns the ProfileId field value
-func (o *SelectFacebookPageRequest) GetProfileId() string {
-	if o == nil {
-		var ret string
-		return ret
+// SelectFacebookPageRequestOneOfAsSelectFacebookPageRequest is a convenience function that returns SelectFacebookPageRequestOneOf wrapped in SelectFacebookPageRequest
+func SelectFacebookPageRequestOneOfAsSelectFacebookPageRequest(v *SelectFacebookPageRequestOneOf) SelectFacebookPageRequest {
+	return SelectFacebookPageRequest{
+		SelectFacebookPageRequestOneOf: v,
 	}
-
-	return o.ProfileId
 }
 
-// GetProfileIdOk returns a tuple with the ProfileId field value
-// and a boolean to check if the value has been set.
-func (o *SelectFacebookPageRequest) GetProfileIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// SelectFacebookPageRequestOneOf1AsSelectFacebookPageRequest is a convenience function that returns SelectFacebookPageRequestOneOf1 wrapped in SelectFacebookPageRequest
+func SelectFacebookPageRequestOneOf1AsSelectFacebookPageRequest(v *SelectFacebookPageRequestOneOf1) SelectFacebookPageRequest {
+	return SelectFacebookPageRequest{
+		SelectFacebookPageRequestOneOf1: v,
 	}
-	return &o.ProfileId, true
 }
 
-// SetProfileId sets field value
-func (o *SelectFacebookPageRequest) SetProfileId(v string) {
-	o.ProfileId = v
-}
-
-// GetPageId returns the PageId field value
-func (o *SelectFacebookPageRequest) GetPageId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.PageId
-}
-
-// GetPageIdOk returns a tuple with the PageId field value
-// and a boolean to check if the value has been set.
-func (o *SelectFacebookPageRequest) GetPageIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.PageId, true
-}
-
-// SetPageId sets field value
-func (o *SelectFacebookPageRequest) SetPageId(v string) {
-	o.PageId = v
-}
-
-// GetTempToken returns the TempToken field value
-func (o *SelectFacebookPageRequest) GetTempToken() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.TempToken
-}
-
-// GetTempTokenOk returns a tuple with the TempToken field value
-// and a boolean to check if the value has been set.
-func (o *SelectFacebookPageRequest) GetTempTokenOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.TempToken, true
-}
-
-// SetTempToken sets field value
-func (o *SelectFacebookPageRequest) SetTempToken(v string) {
-	o.TempToken = v
-}
-
-// GetUserProfile returns the UserProfile field value
-func (o *SelectFacebookPageRequest) GetUserProfile() SelectFacebookPageRequestUserProfile {
-	if o == nil {
-		var ret SelectFacebookPageRequestUserProfile
-		return ret
-	}
-
-	return o.UserProfile
-}
-
-// GetUserProfileOk returns a tuple with the UserProfile field value
-// and a boolean to check if the value has been set.
-func (o *SelectFacebookPageRequest) GetUserProfileOk() (*SelectFacebookPageRequestUserProfile, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UserProfile, true
-}
-
-// SetUserProfile sets field value
-func (o *SelectFacebookPageRequest) SetUserProfile(v SelectFacebookPageRequestUserProfile) {
-	o.UserProfile = v
-}
-
-// GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.
-func (o *SelectFacebookPageRequest) GetRedirectUrl() string {
-	if o == nil || IsNil(o.RedirectUrl) {
-		var ret string
-		return ret
-	}
-	return *o.RedirectUrl
-}
-
-// GetRedirectUrlOk returns a tuple with the RedirectUrl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SelectFacebookPageRequest) GetRedirectUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.RedirectUrl) {
-		return nil, false
-	}
-	return o.RedirectUrl, true
-}
-
-// HasRedirectUrl returns a boolean if a field has been set.
-func (o *SelectFacebookPageRequest) HasRedirectUrl() bool {
-	if o != nil && !IsNil(o.RedirectUrl) {
-		return true
-	}
-
-	return false
-}
-
-// SetRedirectUrl gets a reference to the given string and assigns it to the RedirectUrl field.
-func (o *SelectFacebookPageRequest) SetRedirectUrl(v string) {
-	o.RedirectUrl = &v
-}
-
-func (o SelectFacebookPageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o SelectFacebookPageRequest) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["profileId"] = o.ProfileId
-	toSerialize["pageId"] = o.PageId
-	toSerialize["tempToken"] = o.TempToken
-	toSerialize["userProfile"] = o.UserProfile
-	if !IsNil(o.RedirectUrl) {
-		toSerialize["redirect_url"] = o.RedirectUrl
-	}
-	return toSerialize, nil
-}
-
-func (o *SelectFacebookPageRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"profileId",
-		"pageId",
-		"tempToken",
-		"userProfile",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *SelectFacebookPageRequest) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into SelectFacebookPageRequestOneOf
+	err = newStrictDecoder(data).Decode(&dst.SelectFacebookPageRequestOneOf)
+	if err == nil {
+		jsonSelectFacebookPageRequestOneOf, _ := json.Marshal(dst.SelectFacebookPageRequestOneOf)
+		if string(jsonSelectFacebookPageRequestOneOf) == "{}" { // empty struct
+			dst.SelectFacebookPageRequestOneOf = nil
+		} else {
+			if err = validator.Validate(dst.SelectFacebookPageRequestOneOf); err != nil {
+				dst.SelectFacebookPageRequestOneOf = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.SelectFacebookPageRequestOneOf = nil
 	}
 
-	varSelectFacebookPageRequest := _SelectFacebookPageRequest{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSelectFacebookPageRequest)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into SelectFacebookPageRequestOneOf1
+	err = newStrictDecoder(data).Decode(&dst.SelectFacebookPageRequestOneOf1)
+	if err == nil {
+		jsonSelectFacebookPageRequestOneOf1, _ := json.Marshal(dst.SelectFacebookPageRequestOneOf1)
+		if string(jsonSelectFacebookPageRequestOneOf1) == "{}" { // empty struct
+			dst.SelectFacebookPageRequestOneOf1 = nil
+		} else {
+			if err = validator.Validate(dst.SelectFacebookPageRequestOneOf1); err != nil {
+				dst.SelectFacebookPageRequestOneOf1 = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.SelectFacebookPageRequestOneOf1 = nil
 	}
 
-	*o = SelectFacebookPageRequest(varSelectFacebookPageRequest)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.SelectFacebookPageRequestOneOf = nil
+		dst.SelectFacebookPageRequestOneOf1 = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(SelectFacebookPageRequest)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(SelectFacebookPageRequest)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src SelectFacebookPageRequest) MarshalJSON() ([]byte, error) {
+	if src.SelectFacebookPageRequestOneOf != nil {
+		return json.Marshal(&src.SelectFacebookPageRequestOneOf)
+	}
+
+	if src.SelectFacebookPageRequestOneOf1 != nil {
+		return json.Marshal(&src.SelectFacebookPageRequestOneOf1)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *SelectFacebookPageRequest) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.SelectFacebookPageRequestOneOf != nil {
+		return obj.SelectFacebookPageRequestOneOf
+	}
+
+	if obj.SelectFacebookPageRequestOneOf1 != nil {
+		return obj.SelectFacebookPageRequestOneOf1
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj SelectFacebookPageRequest) GetActualInstanceValue() interface{} {
+	if obj.SelectFacebookPageRequestOneOf != nil {
+		return *obj.SelectFacebookPageRequestOneOf
+	}
+
+	if obj.SelectFacebookPageRequestOneOf1 != nil {
+		return *obj.SelectFacebookPageRequestOneOf1
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableSelectFacebookPageRequest struct {
