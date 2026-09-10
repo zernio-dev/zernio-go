@@ -48,13 +48,13 @@ type CreateStandaloneAdRequest struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
-	// Meta only. Validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
+	// Google Performance Max validates the complete atomic campaign and asset group with no resource creation or local persistence. Google validation still downloads image URLs and consumes quota. On Meta, validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
-	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
+	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
-	// Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads accepts lifetime only (no daily-budget concept on the platform); sending daily returns 422. OpenAI Ads lifetime budgets require `endDate` to give the lifetime cap a spend window.
+	// Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads accepts lifetime only (no daily-budget concept on the platform); sending daily returns 422. OpenAI Ads lifetime budgets require `endDate` to give the lifetime cap a spend window.
 	BudgetType *string `json:"budgetType,omitempty"`
-	// Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused so you can review before they spend. On Meta the pause is held on the campaign this call creates, leaving the ad set and ad switched on, so a single PUT /v1/ads/campaigns/{campaignId}/status with `active` brings the whole thing live. It is held at every level instead when the pause cannot rely on the campaign: `existingCampaignId` (that campaign may be running and is never touched) or `campaignStatus: ACTIVE`. On TikTok the whole campaign > ad group > ad hierarchy stays paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
+	// Google Performance Max accepts PAUSED only and always creates a paused campaign. Meta, TikTok, and LinkedIn: publish state of the created entities. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused so you can review before they spend. On Meta the pause is held on the campaign this call creates, leaving the ad set and ad switched on, so a single PUT /v1/ads/campaigns/{campaignId}/status with `active` brings the whole thing live. It is held at every level instead when the pause cannot rely on the campaign: `existingCampaignId` (that campaign may be running and is never touched) or `campaignStatus: ACTIVE`. On TikTok the whole campaign > ad group > ad hierarchy stays paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
 	Status *string `json:"status,omitempty"`
 	// Meta only. Overrides `status` for the campaign level alone, so you can create a live campaign whose ad set and ad stay paused, or the reverse. Omitted, it follows `status`.
 	CampaignStatus *string `json:"campaignStatus,omitempty"`
@@ -159,8 +159,9 @@ type CreateStandaloneAdRequest struct {
 	PlacementAssets *CreateStandaloneAdRequestPlacementAssets    `json:"placementAssets,omitempty"`
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
-	// Google only
-	CampaignType *string `json:"campaignType,omitempty"`
+	// Google only. Performance Max requires assetGroup and is always created PAUSED.
+	CampaignType *string                    `json:"campaignType,omitempty"`
+	AssetGroup   *GooglePmaxAssetGroupInput `json:"assetGroup,omitempty"`
 	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
 	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
@@ -192,7 +193,7 @@ type CreateStandaloneAdRequest struct {
 	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Minimum ROAS as a decimal multiplier (e.g. 2.0 = 2.0x ROAS). Required when `bidStrategy` is `LOWEST_COST_WITH_MIN_ROAS`. Sending it without `bidStrategy` is a 400. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Known gap: a CBO campaign's ROAS floor lives on the campaign only (set via `POST /v1/ads/campaigns`); there is no supported way to set it while joining a CBO campaign here.
 	// Deprecated
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
-	// Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
+	// Google Search and Display only. Performance Max rejects portfolio bidding. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only (facebook, instagram; other platforms return 400). Value rule set to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is driven by this id, so `valueRulesApplied` is optional alongside it.  Rejected with 400 in `adSetId` attach mode: that shape inherits the existing ad set's attachment, so the field would be silently ignored. Use `PUT /v1/ads/ad-sets/{adSetId}` there instead.  Ignored (stripped before the ad-set create) when `buyingType` is `RESERVED`: value rules only apply to auction ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`, and a Reach & Frequency reservation has no auction bid strategy.  Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`; the attachment is not mirrored onto Zernio's ad documents.
 	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
@@ -2629,6 +2630,38 @@ func (o *CreateStandaloneAdRequest) SetCampaignType(v string) {
 	o.CampaignType = &v
 }
 
+// GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetAssetGroup() GooglePmaxAssetGroupInput {
+	if o == nil || IsNil(o.AssetGroup) {
+		var ret GooglePmaxAssetGroupInput
+		return ret
+	}
+	return *o.AssetGroup
+}
+
+// GetAssetGroupOk returns a tuple with the AssetGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetAssetGroupOk() (*GooglePmaxAssetGroupInput, bool) {
+	if o == nil || IsNil(o.AssetGroup) {
+		return nil, false
+	}
+	return o.AssetGroup, true
+}
+
+// HasAssetGroup returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasAssetGroup() bool {
+	if o != nil && !IsNil(o.AssetGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetGroup gets a reference to the given GooglePmaxAssetGroupInput and assigns it to the AssetGroup field.
+func (o *CreateStandaloneAdRequest) SetAssetGroup(v GooglePmaxAssetGroupInput) {
+	o.AssetGroup = &v
+}
+
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetKeywords() []KeywordEntry {
 	if o == nil || IsNil(o.Keywords) {
@@ -3762,6 +3795,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CampaignType) {
 		toSerialize["campaignType"] = o.CampaignType
+	}
+	if !IsNil(o.AssetGroup) {
+		toSerialize["assetGroup"] = o.AssetGroup
 	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords

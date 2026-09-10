@@ -20,6 +20,10 @@ var _ MappedNullable = &AdCreative{}
 
 // AdCreative Platform-specific creative data. Fields vary by platform.
 type AdCreative struct {
+	// Initial Performance Max asset group input. Use the asset-groups endpoint for current Google assets.
+	AssetGroup *GooglePmaxAssetGroupInput `json:"assetGroup,omitempty"`
+	// Google resource name of the created Performance Max asset group.
+	AssetGroupResourceName *string `json:"assetGroupResourceName,omitempty"`
 	// Google RSA only. Replaces the complete headline list. No padding or truncation on update.
 	Headlines []GoogleRsaHeadline `json:"headlines,omitempty"`
 	// Google RSA only. Replaces the complete description list. No padding or truncation on update.
@@ -89,6 +93,70 @@ func NewAdCreative() *AdCreative {
 func NewAdCreativeWithDefaults() *AdCreative {
 	this := AdCreative{}
 	return &this
+}
+
+// GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
+func (o *AdCreative) GetAssetGroup() GooglePmaxAssetGroupInput {
+	if o == nil || IsNil(o.AssetGroup) {
+		var ret GooglePmaxAssetGroupInput
+		return ret
+	}
+	return *o.AssetGroup
+}
+
+// GetAssetGroupOk returns a tuple with the AssetGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetAssetGroupOk() (*GooglePmaxAssetGroupInput, bool) {
+	if o == nil || IsNil(o.AssetGroup) {
+		return nil, false
+	}
+	return o.AssetGroup, true
+}
+
+// HasAssetGroup returns a boolean if a field has been set.
+func (o *AdCreative) HasAssetGroup() bool {
+	if o != nil && !IsNil(o.AssetGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetGroup gets a reference to the given GooglePmaxAssetGroupInput and assigns it to the AssetGroup field.
+func (o *AdCreative) SetAssetGroup(v GooglePmaxAssetGroupInput) {
+	o.AssetGroup = &v
+}
+
+// GetAssetGroupResourceName returns the AssetGroupResourceName field value if set, zero value otherwise.
+func (o *AdCreative) GetAssetGroupResourceName() string {
+	if o == nil || IsNil(o.AssetGroupResourceName) {
+		var ret string
+		return ret
+	}
+	return *o.AssetGroupResourceName
+}
+
+// GetAssetGroupResourceNameOk returns a tuple with the AssetGroupResourceName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetAssetGroupResourceNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AssetGroupResourceName) {
+		return nil, false
+	}
+	return o.AssetGroupResourceName, true
+}
+
+// HasAssetGroupResourceName returns a boolean if a field has been set.
+func (o *AdCreative) HasAssetGroupResourceName() bool {
+	if o != nil && !IsNil(o.AssetGroupResourceName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetGroupResourceName gets a reference to the given string and assigns it to the AssetGroupResourceName field.
+func (o *AdCreative) SetAssetGroupResourceName(v string) {
+	o.AssetGroupResourceName = &v
 }
 
 // GetHeadlines returns the Headlines field value if set, zero value otherwise.
@@ -1118,6 +1186,12 @@ func (o AdCreative) MarshalJSON() ([]byte, error) {
 
 func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AssetGroup) {
+		toSerialize["assetGroup"] = o.AssetGroup
+	}
+	if !IsNil(o.AssetGroupResourceName) {
+		toSerialize["assetGroupResourceName"] = o.AssetGroupResourceName
+	}
 	if !IsNil(o.Headlines) {
 		toSerialize["headlines"] = o.Headlines
 	}
