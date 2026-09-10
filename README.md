@@ -165,6 +165,11 @@ func main() {
 |--------|-------------|
 | `client.MediaAPI.GetMediaPresignedUrl(ctx)` | Get upload URL |
 
+### Tools
+| Method | Description |
+|--------|-------------|
+| `client.ToolsAPI.DownloadTikTokVideo(ctx)` | Download a TikTok video |
+
 ### Users
 | Method | Description |
 |--------|-------------|
