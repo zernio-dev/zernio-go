@@ -24,6 +24,10 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	Id       *string `json:"id,omitempty"`
 	Name     *string `json:"name,omitempty"`
 	Currency *string `json:"currency,omitempty"`
+	// Meta only. Owning Business Manager ID when available on the grant.
+	BusinessId *string `json:"businessId,omitempty"`
+	// Owning business name when supplied by the platform.
+	BusinessName *string `json:"businessName,omitempty"`
 	// LinkedIn only. LinkedIn's own ad account status. In practice always `ACTIVE`, because the LinkedIn query filters to active accounts. Meta, Google, TikTok and Pinterest report `accountStatus` instead; X reports `approvalStatus`.
 	Status        *string     `json:"status,omitempty"`
 	AccountStatus interface{} `json:"accountStatus,omitempty"`
@@ -154,6 +158,70 @@ func (o *ListAdAccounts200ResponseAccountsInner) HasCurrency() bool {
 // SetCurrency gets a reference to the given string and assigns it to the Currency field.
 func (o *ListAdAccounts200ResponseAccountsInner) SetCurrency(v string) {
 	o.Currency = &v
+}
+
+// GetBusinessId returns the BusinessId field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBusinessId() string {
+	if o == nil || IsNil(o.BusinessId) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessId
+}
+
+// GetBusinessIdOk returns a tuple with the BusinessId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBusinessIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessId) {
+		return nil, false
+	}
+	return o.BusinessId, true
+}
+
+// HasBusinessId returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasBusinessId() bool {
+	if o != nil && !IsNil(o.BusinessId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessId gets a reference to the given string and assigns it to the BusinessId field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetBusinessId(v string) {
+	o.BusinessId = &v
+}
+
+// GetBusinessName returns the BusinessName field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBusinessName() string {
+	if o == nil || IsNil(o.BusinessName) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessName
+}
+
+// GetBusinessNameOk returns a tuple with the BusinessName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBusinessNameOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessName) {
+		return nil, false
+	}
+	return o.BusinessName, true
+}
+
+// HasBusinessName returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasBusinessName() bool {
+	if o != nil && !IsNil(o.BusinessName) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessName gets a reference to the given string and assigns it to the BusinessName field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetBusinessName(v string) {
+	o.BusinessName = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -474,6 +542,12 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency
+	}
+	if !IsNil(o.BusinessId) {
+		toSerialize["businessId"] = o.BusinessId
+	}
+	if !IsNil(o.BusinessName) {
+		toSerialize["businessName"] = o.BusinessName
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

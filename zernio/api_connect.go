@@ -150,6 +150,136 @@ func (a *ConnectAPIService) AssignGoogleBusinessLocationExecute(r ConnectAPIAssi
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPICompleteMetaAdsBusinessLoginRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	state      *string
+	code       *string
+	error_     *string
+}
+
+// Authenticated state from the initial connectAds response.
+func (r ConnectAPICompleteMetaAdsBusinessLoginRequest) State(state string) ConnectAPICompleteMetaAdsBusinessLoginRequest {
+	r.state = &state
+	return r
+}
+
+// Single-use authorization code returned by Meta.
+func (r ConnectAPICompleteMetaAdsBusinessLoginRequest) Code(code string) ConnectAPICompleteMetaAdsBusinessLoginRequest {
+	r.code = &code
+	return r
+}
+
+// Meta authorization error when the user declines the dialog.
+func (r ConnectAPICompleteMetaAdsBusinessLoginRequest) Error_(error_ string) ConnectAPICompleteMetaAdsBusinessLoginRequest {
+	r.error_ = &error_
+	return r
+}
+
+func (r ConnectAPICompleteMetaAdsBusinessLoginRequest) Execute() (*http.Response, error) {
+	return r.ApiService.CompleteMetaAdsBusinessLoginExecute(r)
+}
+
+/*
+CompleteMetaAdsBusinessLogin Complete Meta business login
+
+Facebook Login for Business redirect target. Meta supplies the single-use authorization code and the authenticated state returned by connectAds. The state expires after 30 minutes and binds the user, profile, Page selection and ad-account scope. No bearer token is sent by the browser. Success reconnects only metaads and redirects to the original redirect_url. Invalid state returns 400; inaccessible profiles or missing ads access cannot connect. No token is returned to the browser.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPICompleteMetaAdsBusinessLoginRequest
+*/
+func (a *ConnectAPIService) CompleteMetaAdsBusinessLogin(ctx context.Context) ConnectAPICompleteMetaAdsBusinessLoginRequest {
+	return ConnectAPICompleteMetaAdsBusinessLoginRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *ConnectAPIService) CompleteMetaAdsBusinessLoginExecute(r ConnectAPICompleteMetaAdsBusinessLoginRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.CompleteMetaAdsBusinessLogin")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/meta-ads/callback"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.state == nil {
+		return nil, reportError("state is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "state", r.state, "form", "")
+	if r.code != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "code", r.code, "form", "")
+	}
+	if r.error_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "error", r.error_, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 type ConnectAPICompleteTelegramConnectRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -595,6 +725,8 @@ type ConnectAPIConnectAdsRequest struct {
 	ApiService   *ConnectAPIService
 	platform     string
 	profileId    *string
+	loginMode    *string
+	pageId       *string
 	accountId    *string
 	redirectUrl  *string
 	headless     *bool
@@ -606,6 +738,18 @@ type ConnectAPIConnectAdsRequest struct {
 // Your Zernio profile ID
 func (r ConnectAPIConnectAdsRequest) ProfileId(profileId string) ConnectAPIConnectAdsRequest {
 	r.profileId = &profileId
+	return r
+}
+
+// Meta ads authorization mode. Business login is opt-in for Facebook and Instagram; classic preserves the posting-account flow.
+func (r ConnectAPIConnectAdsRequest) LoginMode(loginMode string) ConnectAPIConnectAdsRequest {
+	r.loginMode = &loginMode
+	return r
+}
+
+// Business login only. Facebook Page ID to select from the token grants for ad creatives and lead forms.
+func (r ConnectAPIConnectAdsRequest) PageId(pageId string) ConnectAPIConnectAdsRequest {
+	r.pageId = &pageId
 	return r
 }
 
@@ -633,7 +777,7 @@ func (r ConnectAPIConnectAdsRequest) Force(force bool) ConnectAPIConnectAdsReque
 	return r
 }
 
-// Scope ad sync to a single platform ad account. Without this param, sync covers every ad account the connected token can see. Supported on &#x60;facebook&#x60;/&#x60;instagram&#x60; (Meta, &#x60;act_&lt;digits&gt;&#x60;), &#x60;linkedin&#x60; (bare numeric sponsored-account id), &#x60;googleads&#x60; (bare customer id digits) and &#x60;twitter&#x60; (X Ads, base36 account id). &#x60;tiktok&#x60; scopes advertisers at OAuth and &#x60;pinterest&#x60; has no ads discovery, so both ignore it. Meta ids are additionally validated against the connected token; unreachable IDs return 400. Setting a scope also removes already synced ads from de-scoped ad accounts. For multiple accounts use &#x60;adAccountIds&#x60; instead.
+// Scope ad sync to a single platform ad account. Without this param, sync covers every ad account the connected token can see. Business-login reconnects preserve the existing scope; supplied IDs are checked against the new grant. To change that scope after migration, call this endpoint with the IDs and omit loginMode. Supported on &#x60;facebook&#x60;/&#x60;instagram&#x60; (Meta, &#x60;act_&lt;digits&gt;&#x60;), &#x60;linkedin&#x60; (bare numeric sponsored-account id), &#x60;googleads&#x60; (bare customer id digits) and &#x60;twitter&#x60; (X Ads, base36 account id). &#x60;tiktok&#x60; scopes advertisers at OAuth and &#x60;pinterest&#x60; has no ads discovery, so both ignore it. Meta ids are additionally validated against the connected token; unreachable IDs return 400. Setting a scope also removes already synced ads from de-scoped ad accounts. For multiple accounts use &#x60;adAccountIds&#x60; instead.
 func (r ConnectAPIConnectAdsRequest) AdAccountId(adAccountId string) ConnectAPIConnectAdsRequest {
 	r.adAccountId = &adAccountId
 	return r
@@ -653,6 +797,26 @@ func (r ConnectAPIConnectAdsRequest) Execute() (*ConnectAds200Response, *http.Re
 ConnectAds Connect ads for a platform
 
 Unified ads connection endpoint. Creates a dedicated ads SocialAccount for the specified platform.
+
+**Meta business login (opt-in).** Set `loginMode=business` for `facebook` or
+`instagram` to use Facebook Login for Business and a Business Integration System User
+token. No posting account is created or required. This mode always returns an authUrl;
+it returns 503 when the server has no META_ADS_CONFIG_ID. Complete the dialog in a
+browser. The callback creates or reconnects only the metaads account, preserving its
+ID, history and scopedAdAccountIds. Non-empty successful subscription results replace
+subscribedAdAccountIds to remove stale grants; an empty result leaves routing unchanged. A reconnect must grant
+every previously scoped ad account (or every previous grant for an unscoped connection).
+Missing or unverifiable grants return 409 before changing the account.
+
+Pass `pageId` to select a granted Page for creatives and lead forms. Otherwise the
+previous Page or sole granted Page is selected. Multiple Pages without a selection
+return 400 with available Page IDs; restart with pageId. With no Pages granted the
+account can manage campaigns and sync insights but cannot create Page-based creatives
+or list Page forms. Success redirects with connected=metaads, profileId and accountId.
+Business login reports metadata.tokenType=system-user in GET /v1/accounts. An absent
+Meta expires_in leaves tokenExpiresAt absent; no personal-token re-exchange occurs.
+Subsequent classic requests can change the ad-account scope using the business token;
+force=true requires loginMode=business to reconnect that connection.
 
 **Same-token platforms (facebook, instagram, linkedin, pinterest).** The ads SocialAccount
 (metaads, linkedinads, pinterestads) reuses the OAuth token of the parent posting account,
@@ -687,7 +851,7 @@ returns alreadyConnected: true.
 Ads accounts appear as regular SocialAccount documents with ads platform values (e.g., metaads, tiktokads) in GET /v1/accounts.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param platform Platform to connect ads for. Only platforms with ads support are accepted.  `instagram` requires an Instagram account connected with loginMethod=facebook_login whose token carries ads_management and ads_read. With an account connected through the default instagram_login flow no ads account can be created; do not use this value for those accounts.
+	@param platform Platform to connect ads for. Only platforms with ads support are accepted.  In classic mode, `instagram` requires an Instagram account connected with loginMethod=facebook_login whose token carries ads_management and ads_read. With an account connected through the default instagram_login flow no ads account can be created; do not use this value for those accounts.
 	@return ConnectAPIConnectAdsRequest
 */
 func (a *ConnectAPIService) ConnectAds(ctx context.Context, platform string) ConnectAPIConnectAdsRequest {
@@ -724,6 +888,16 @@ func (a *ConnectAPIService) ConnectAdsExecute(r ConnectAPIConnectAdsRequest) (*C
 		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
 	}
 
+	if r.loginMode != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMode", r.loginMode, "form", "")
+	} else {
+		var defaultValue string = "classic"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMode", defaultValue, "form", "")
+		r.loginMode = &defaultValue
+	}
+	if r.pageId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
+	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")

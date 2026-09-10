@@ -219,6 +219,7 @@ func main() {
 | `client.ConnectAPI.UpdateRedditSubreddits(ctx)` | Set default subreddit |
 | `client.ConnectAPI.UpdateYoutubeDefaultPlaylist(ctx)` | Set default YouTube playlist |
 | `client.ConnectAPI.AssignGoogleBusinessLocation(ctx)` | Assign Google Business Profile location to another profile |
+| `client.ConnectAPI.CompleteMetaAdsBusinessLogin(ctx)` | Complete Meta business login |
 | `client.ConnectAPI.CompleteTelegramConnect(ctx)` | Check Telegram status |
 | `client.ConnectAPI.CompleteWhatsAppPhoneSelection(ctx)` | Complete number selection |
 | `client.ConnectAPI.ConfigureTikTokAdsBrandIdentity(ctx)` | Set TikTok brand identity |

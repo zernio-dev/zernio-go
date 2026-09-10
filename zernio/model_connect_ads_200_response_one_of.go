@@ -25,6 +25,8 @@ type ConnectAds200ResponseOneOf struct {
 	Platform         *string `json:"platform,omitempty"`
 	Username         *string `json:"username,omitempty"`
 	DisplayName      *string `json:"displayName,omitempty"`
+	// Present for an existing business-login connection.
+	TokenType *string `json:"tokenType,omitempty"`
 	// Echo of the persisted ad-account scope when the caller passed `adAccountId` / `adAccountIds`. Omitted when no scope is set.
 	ScopedAdAccountIds []string `json:"scopedAdAccountIds,omitempty"`
 }
@@ -206,6 +208,38 @@ func (o *ConnectAds200ResponseOneOf) SetDisplayName(v string) {
 	o.DisplayName = &v
 }
 
+// GetTokenType returns the TokenType field value if set, zero value otherwise.
+func (o *ConnectAds200ResponseOneOf) GetTokenType() string {
+	if o == nil || IsNil(o.TokenType) {
+		var ret string
+		return ret
+	}
+	return *o.TokenType
+}
+
+// GetTokenTypeOk returns a tuple with the TokenType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectAds200ResponseOneOf) GetTokenTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TokenType) {
+		return nil, false
+	}
+	return o.TokenType, true
+}
+
+// HasTokenType returns a boolean if a field has been set.
+func (o *ConnectAds200ResponseOneOf) HasTokenType() bool {
+	if o != nil && !IsNil(o.TokenType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTokenType gets a reference to the given string and assigns it to the TokenType field.
+func (o *ConnectAds200ResponseOneOf) SetTokenType(v string) {
+	o.TokenType = &v
+}
+
 // GetScopedAdAccountIds returns the ScopedAdAccountIds field value if set, zero value otherwise.
 func (o *ConnectAds200ResponseOneOf) GetScopedAdAccountIds() []string {
 	if o == nil || IsNil(o.ScopedAdAccountIds) {
@@ -262,6 +296,9 @@ func (o ConnectAds200ResponseOneOf) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisplayName) {
 		toSerialize["displayName"] = o.DisplayName
+	}
+	if !IsNil(o.TokenType) {
+		toSerialize["tokenType"] = o.TokenType
 	}
 	if !IsNil(o.ScopedAdAccountIds) {
 		toSerialize["scopedAdAccountIds"] = o.ScopedAdAccountIds

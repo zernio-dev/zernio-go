@@ -3601,6 +3601,9 @@ ListAdAccounts List ad accounts
 
 Returns the platform ad accounts available for the given account (e.g. Meta ad
 accounts, TikTok advertiser IDs, Google Ads customer IDs).
+Meta business-login accounts use their own system-user token. Fresh Meta discovery
+includes businessId and businessName from the owning Business Manager when available;
+cached entries gain these fields after the next discovery refresh.
 
 For TikTok agencies: enumerates every advertiser under every Business Center the token
 can read (paginated server-side), then chunks the lookup against TikTok's
