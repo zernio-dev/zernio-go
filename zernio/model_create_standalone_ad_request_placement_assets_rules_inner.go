@@ -27,8 +27,14 @@ type CreateStandaloneAdRequestPlacementAssetsRulesInner struct {
 	// Video mode. The video to deliver for this rule's placements.
 	VideoUrl *string `json:"videoUrl,omitempty"`
 	// Video mode (optional). Poster image for this rule's video; auto-generated when omitted.
-	ThumbnailUrl *string                             `json:"thumbnailUrl,omitempty"`
-	Placements   CreateStandaloneAdRequestPlacements `json:"placements"`
+	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+	// One headline pinned to this rule. Omit to inherit the top-level headline.
+	Headline *string `json:"headline,omitempty"`
+	// One primary text pinned to this rule. Omit to inherit the top-level body.
+	Body *string `json:"body,omitempty"`
+	// One link description pinned to this rule. Omit to inherit the top-level description.
+	Description *string                             `json:"description,omitempty"`
+	Placements  CreateStandaloneAdRequestPlacements `json:"placements"`
 }
 
 type _CreateStandaloneAdRequestPlacementAssetsRulesInner CreateStandaloneAdRequestPlacementAssetsRulesInner
@@ -147,6 +153,102 @@ func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) SetThumbnailUrl(v s
 	o.ThumbnailUrl = &v
 }
 
+// GetHeadline returns the Headline field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetHeadline() string {
+	if o == nil || IsNil(o.Headline) {
+		var ret string
+		return ret
+	}
+	return *o.Headline
+}
+
+// GetHeadlineOk returns a tuple with the Headline field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetHeadlineOk() (*string, bool) {
+	if o == nil || IsNil(o.Headline) {
+		return nil, false
+	}
+	return o.Headline, true
+}
+
+// HasHeadline returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) HasHeadline() bool {
+	if o != nil && !IsNil(o.Headline) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadline gets a reference to the given string and assigns it to the Headline field.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) SetHeadline(v string) {
+	o.Headline = &v
+}
+
+// GetBody returns the Body field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetBody() string {
+	if o == nil || IsNil(o.Body) {
+		var ret string
+		return ret
+	}
+	return *o.Body
+}
+
+// GetBodyOk returns a tuple with the Body field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetBodyOk() (*string, bool) {
+	if o == nil || IsNil(o.Body) {
+		return nil, false
+	}
+	return o.Body, true
+}
+
+// HasBody returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) HasBody() bool {
+	if o != nil && !IsNil(o.Body) {
+		return true
+	}
+
+	return false
+}
+
+// SetBody gets a reference to the given string and assigns it to the Body field.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) SetBody(v string) {
+	o.Body = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) SetDescription(v string) {
+	o.Description = &v
+}
+
 // GetPlacements returns the Placements field value
 func (o *CreateStandaloneAdRequestPlacementAssetsRulesInner) GetPlacements() CreateStandaloneAdRequestPlacements {
 	if o == nil {
@@ -189,6 +291,15 @@ func (o CreateStandaloneAdRequestPlacementAssetsRulesInner) ToMap() (map[string]
 	}
 	if !IsNil(o.ThumbnailUrl) {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl
+	}
+	if !IsNil(o.Headline) {
+		toSerialize["headline"] = o.Headline
+	}
+	if !IsNil(o.Body) {
+		toSerialize["body"] = o.Body
+	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
 	}
 	toSerialize["placements"] = o.Placements
 	return toSerialize, nil
