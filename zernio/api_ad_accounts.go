@@ -455,6 +455,198 @@ func (a *AdAccountsAPIService) AddAccountStructuredSnippetsExecute(r AdAccountsA
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPICreateAdAccountRequest struct {
+	ctx                    context.Context
+	ApiService             *AdAccountsAPIService
+	createAdAccountRequest *CreateAdAccountRequest
+}
+
+func (r AdAccountsAPICreateAdAccountRequest) CreateAdAccountRequest(createAdAccountRequest CreateAdAccountRequest) AdAccountsAPICreateAdAccountRequest {
+	r.createAdAccountRequest = &createAdAccountRequest
+	return r
+}
+
+func (r AdAccountsAPICreateAdAccountRequest) Execute() (*CreateAdAccount201Response, *http.Response, error) {
+	return r.ApiService.CreateAdAccountExecute(r)
+}
+
+/*
+CreateAdAccount Create Meta ad account
+
+Creates a durable Meta ad account in the end user's own business portfolio using
+their connected Meta Ads token. Requires an active metaads accountId, Ads access,
+business_management permission and business admin access. Discover portfolios with
+GET /v1/ads/businesses. System-user tokens may return an empty businesses list;
+supply the known business ID in that case.
+
+The self-serve account starts without a payment method. The user must add a payment
+method in Ads Manager before ads can deliver. Zernio cannot add payment methods.
+Meta may require business verification and limits how many accounts a business can
+create. Closing an account does not guarantee more capacity. An ad account cannot
+truly be deleted, even after closing it and removing it from a business.
+
+timezoneId is Meta's numeric ID, not an IANA timezone name. Select it from
+https://developers.facebook.com/docs/marketing-api/reference/ad-account/timezone-ids/.
+For example, 1 is America/Los_Angeles. Meta validates supported currencies and IDs.
+endAdvertiser, mediaAgency and partner default to NONE for the self-serve flow.
+
+The new account is added atomically to an existing scoped ad-account allowlist.
+Unrestricted connections stay unrestricted. Reconnecting the same Meta identity
+preserves this scope unless a caller explicitly replaces it. Discovery is nudged
+immediately. Use the returned adAccountId with the existing ads endpoints.
+
+This operation is not idempotent and Zernio never automatically retries it.
+Unknown body fields are rejected. No validateOnly or dry-run option is supported.
+After a timeout or a 502 with details.creationStatus=unknown, check the business
+in Ads Manager before attempting another creation. A 201 with connectionUpdated=false
+means the account exists but needs reconnecting with adAccountIds containing the returned ID and the previous
+scoped IDs via GET /v1/connect/facebook/ads. Do not repeat the create call.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPICreateAdAccountRequest
+*/
+func (a *AdAccountsAPIService) CreateAdAccount(ctx context.Context) AdAccountsAPICreateAdAccountRequest {
+	return AdAccountsAPICreateAdAccountRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateAdAccount201Response
+func (a *AdAccountsAPIService) CreateAdAccountExecute(r AdAccountsAPICreateAdAccountRequest) (*CreateAdAccount201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateAdAccount201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.CreateAdAccount")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/accounts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createAdAccountRequest == nil {
+		return localVarReturnValue, nil, reportError("createAdAccountRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createAdAccountRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPICreateAdNegativeKeywordListRequest struct {
 	ctx                                context.Context
 	ApiService                         *AdAccountsAPIService
