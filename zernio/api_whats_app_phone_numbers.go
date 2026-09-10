@@ -1297,8 +1297,9 @@ PurchaseWhatsAppPhoneNumber Purchase phone number
 Deprecated alias of `/v1/phone-numbers/purchase`; same contract. New
 integrations should use that path.
 
-Payment-first: you do not pick a specific number, the system provisions one and
-auto-assigns it. With usage-based billing active and a payment method on file, the
+Payment-first: the system provisions a number and auto-assigns it, unless you pass
+`phoneNumber` to buy one exact number from `GET /v1/phone-numbers/available`. With
+usage-based billing active and a payment method on file, the
 number provisions inline and bills per month on your usage-based invoice (there is
 no checkout redirect). No payment method on file returns `402 PAYMENT_REQUIRED`;
 a regulated country returns `202` with `status: "kyc_required"` and a `kycUrl`.

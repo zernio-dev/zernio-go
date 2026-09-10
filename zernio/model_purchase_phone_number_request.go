@@ -30,6 +30,8 @@ type PurchasePhoneNumberRequest struct {
 	NumberType *string `json:"numberType,omitempty"`
 	// Area code (national destination code, e.g. 11 for Sao Paulo) the number must be in. Hard constraint: when the area has no deliverable inventory the purchase fails with 409 code AREA_CODE_UNAVAILABLE instead of assigning a number from another area, and later replacements stay in this area too. Omit for any area. Get live options from GET /v1/phone-numbers/availability (areaOptions).
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// One exact number to buy, in E.164, taken from GET /v1/phone-numbers/available. Hard constraint: when it is no longer available (bought by someone else, or WhatsApp's buy-time check rejects it) the purchase fails with 409 code PHONE_NUMBER_UNAVAILABLE instead of assigning another number; search again and pick another. Only for countries and types that activate instantly: a regulated one (202 kyc_required) returns 400 when phoneNumber is set.
+	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// A phone number is the unit; WhatsApp is one optional feature. Pass false to buy a STANDALONE number (Calls/SMS only): provisioning skips the Meta pre-verify/OTP steps and the number activates immediately. Omitted defaults to the WhatsApp provisioning path. WhatsApp can be connected to a standalone number later from the connect flow.
 	ConnectWhatsapp *bool `json:"connectWhatsapp,omitempty"`
 	// SMS capability is per-number, not per-country. Pass true to provision from the SMS-capable inventory pool so the number can actually text (see also GET /v1/phone-numbers/available with sms=true, and smsAvailable on GET /v1/phone-numbers/countries).
@@ -200,6 +202,38 @@ func (o *PurchasePhoneNumberRequest) HasAreaCode() bool {
 // SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
 func (o *PurchasePhoneNumberRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
+}
+
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *PurchasePhoneNumberRequest) GetPhoneNumber() string {
+	if o == nil || IsNil(o.PhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.PhoneNumber
+}
+
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumberRequest) GetPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
+		return nil, false
+	}
+	return o.PhoneNumber, true
+}
+
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *PurchasePhoneNumberRequest) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
+func (o *PurchasePhoneNumberRequest) SetPhoneNumber(v string) {
+	o.PhoneNumber = &v
 }
 
 // GetConnectWhatsapp returns the ConnectWhatsapp field value if set, zero value otherwise.
@@ -381,6 +415,9 @@ func (o PurchasePhoneNumberRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
 	}
 	if !IsNil(o.ConnectWhatsapp) {
 		toSerialize["connectWhatsapp"] = o.ConnectWhatsapp

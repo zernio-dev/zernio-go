@@ -21,6 +21,8 @@ var _ MappedNullable = &SearchAvailableWhatsAppNumbers200ResponseNumbersInner{}
 // SearchAvailableWhatsAppNumbers200ResponseNumbersInner struct for SearchAvailableWhatsAppNumbers200ResponseNumbersInner
 type SearchAvailableWhatsAppNumbers200ResponseNumbersInner struct {
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
+	Locality    *string `json:"locality,omitempty"`
+	BestEffort  *bool   `json:"bestEffort,omitempty"`
 }
 
 // NewSearchAvailableWhatsAppNumbers200ResponseNumbersInner instantiates a new SearchAvailableWhatsAppNumbers200ResponseNumbersInner object
@@ -72,6 +74,70 @@ func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) SetPhoneNumber(v
 	o.PhoneNumber = &v
 }
 
+// GetLocality returns the Locality field value if set, zero value otherwise.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) GetLocality() string {
+	if o == nil || IsNil(o.Locality) {
+		var ret string
+		return ret
+	}
+	return *o.Locality
+}
+
+// GetLocalityOk returns a tuple with the Locality field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) GetLocalityOk() (*string, bool) {
+	if o == nil || IsNil(o.Locality) {
+		return nil, false
+	}
+	return o.Locality, true
+}
+
+// HasLocality returns a boolean if a field has been set.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) HasLocality() bool {
+	if o != nil && !IsNil(o.Locality) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocality gets a reference to the given string and assigns it to the Locality field.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) SetLocality(v string) {
+	o.Locality = &v
+}
+
+// GetBestEffort returns the BestEffort field value if set, zero value otherwise.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) GetBestEffort() bool {
+	if o == nil || IsNil(o.BestEffort) {
+		var ret bool
+		return ret
+	}
+	return *o.BestEffort
+}
+
+// GetBestEffortOk returns a tuple with the BestEffort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) GetBestEffortOk() (*bool, bool) {
+	if o == nil || IsNil(o.BestEffort) {
+		return nil, false
+	}
+	return o.BestEffort, true
+}
+
+// HasBestEffort returns a boolean if a field has been set.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) HasBestEffort() bool {
+	if o != nil && !IsNil(o.BestEffort) {
+		return true
+	}
+
+	return false
+}
+
+// SetBestEffort gets a reference to the given bool and assigns it to the BestEffort field.
+func (o *SearchAvailableWhatsAppNumbers200ResponseNumbersInner) SetBestEffort(v bool) {
+	o.BestEffort = &v
+}
+
 func (o SearchAvailableWhatsAppNumbers200ResponseNumbersInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +150,12 @@ func (o SearchAvailableWhatsAppNumbers200ResponseNumbersInner) ToMap() (map[stri
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber
+	}
+	if !IsNil(o.Locality) {
+		toSerialize["locality"] = o.Locality
+	}
+	if !IsNil(o.BestEffort) {
+		toSerialize["bestEffort"] = o.BestEffort
 	}
 	return toSerialize, nil
 }

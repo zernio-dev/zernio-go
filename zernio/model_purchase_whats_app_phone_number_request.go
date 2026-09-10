@@ -26,6 +26,8 @@ type PurchaseWhatsAppPhoneNumberRequest struct {
 	ProfileId string `json:"profileId"`
 	// ISO 3166-1 alpha-2 country for the number (default US). International numbers require usage-based billing. Tier 3/4 countries return 202 { status: \"kyc_required\", kycUrl }. The customer must complete KYC at that URL before the number is ordered. See GET /v1/whatsapp/phone-numbers/countries.
 	Country *string `json:"country,omitempty"`
+	// One exact number to buy, in E.164, taken from GET /v1/phone-numbers/available. Fails with 409 code PHONE_NUMBER_UNAVAILABLE when it is no longer available.
+	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: \"already_purchased\", numberId, phoneNumber } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
 	PurchaseIntentId *string `json:"purchaseIntentId,omitempty"`
 	// Any second purchase within 10 minutes of a previous one is rejected with 409 code PURCHASE_VELOCITY as duplicate protection. Pass true to confirm the additional purchase is intentional (e.g. bulk provisioning).
@@ -116,6 +118,38 @@ func (o *PurchaseWhatsAppPhoneNumberRequest) SetCountry(v string) {
 	o.Country = &v
 }
 
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *PurchaseWhatsAppPhoneNumberRequest) GetPhoneNumber() string {
+	if o == nil || IsNil(o.PhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.PhoneNumber
+}
+
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchaseWhatsAppPhoneNumberRequest) GetPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
+		return nil, false
+	}
+	return o.PhoneNumber, true
+}
+
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *PurchaseWhatsAppPhoneNumberRequest) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
+func (o *PurchaseWhatsAppPhoneNumberRequest) SetPhoneNumber(v string) {
+	o.PhoneNumber = &v
+}
+
 // GetPurchaseIntentId returns the PurchaseIntentId field value if set, zero value otherwise.
 func (o *PurchaseWhatsAppPhoneNumberRequest) GetPurchaseIntentId() string {
 	if o == nil || IsNil(o.PurchaseIntentId) {
@@ -193,6 +227,9 @@ func (o PurchaseWhatsAppPhoneNumberRequest) ToMap() (map[string]interface{}, err
 	toSerialize["profileId"] = o.ProfileId
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
+	}
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
 	}
 	if !IsNil(o.PurchaseIntentId) {
 		toSerialize["purchaseIntentId"] = o.PurchaseIntentId

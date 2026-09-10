@@ -20,9 +20,14 @@ var _ MappedNullable = &SearchAvailablePhoneNumbers200ResponseNumbersInner{}
 
 // SearchAvailablePhoneNumbers200ResponseNumbersInner struct for SearchAvailablePhoneNumbers200ResponseNumbersInner
 type SearchAvailablePhoneNumbers200ResponseNumbersInner struct {
+	// E.164. Pass it as `phoneNumber` on POST /v1/phone-numbers/purchase to buy this exact number.
 	PhoneNumber *string `json:"phoneNumber,omitempty"`
 	// Provider capability list for this number (e.g. voice, sms, mms).
 	Features []string `json:"features,omitempty"`
+	// Town or rate center the number belongs to, as the carrier names it (e.g. WACO).
+	Locality *string `json:"locality,omitempty"`
+	// true when the carrier added this number because too few matched your filters, so it may be outside the requested prefix or locality.
+	BestEffort *bool `json:"bestEffort,omitempty"`
 }
 
 // NewSearchAvailablePhoneNumbers200ResponseNumbersInner instantiates a new SearchAvailablePhoneNumbers200ResponseNumbersInner object
@@ -106,6 +111,70 @@ func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetFeatures(v []str
 	o.Features = v
 }
 
+// GetLocality returns the Locality field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetLocality() string {
+	if o == nil || IsNil(o.Locality) {
+		var ret string
+		return ret
+	}
+	return *o.Locality
+}
+
+// GetLocalityOk returns a tuple with the Locality field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetLocalityOk() (*string, bool) {
+	if o == nil || IsNil(o.Locality) {
+		return nil, false
+	}
+	return o.Locality, true
+}
+
+// HasLocality returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasLocality() bool {
+	if o != nil && !IsNil(o.Locality) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocality gets a reference to the given string and assigns it to the Locality field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetLocality(v string) {
+	o.Locality = &v
+}
+
+// GetBestEffort returns the BestEffort field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetBestEffort() bool {
+	if o == nil || IsNil(o.BestEffort) {
+		var ret bool
+		return ret
+	}
+	return *o.BestEffort
+}
+
+// GetBestEffortOk returns a tuple with the BestEffort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetBestEffortOk() (*bool, bool) {
+	if o == nil || IsNil(o.BestEffort) {
+		return nil, false
+	}
+	return o.BestEffort, true
+}
+
+// HasBestEffort returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasBestEffort() bool {
+	if o != nil && !IsNil(o.BestEffort) {
+		return true
+	}
+
+	return false
+}
+
+// SetBestEffort gets a reference to the given bool and assigns it to the BestEffort field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetBestEffort(v bool) {
+	o.BestEffort = &v
+}
+
 func (o SearchAvailablePhoneNumbers200ResponseNumbersInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -121,6 +190,12 @@ func (o SearchAvailablePhoneNumbers200ResponseNumbersInner) ToMap() (map[string]
 	}
 	if !IsNil(o.Features) {
 		toSerialize["features"] = o.Features
+	}
+	if !IsNil(o.Locality) {
+		toSerialize["locality"] = o.Locality
+	}
+	if !IsNil(o.BestEffort) {
+		toSerialize["bestEffort"] = o.BestEffort
 	}
 	return toSerialize, nil
 }

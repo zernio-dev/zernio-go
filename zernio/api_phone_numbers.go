@@ -2124,8 +2124,9 @@ func (r PhoneNumbersAPIPurchasePhoneNumberRequest) Execute() (*PurchasePhoneNumb
 /*
 PurchasePhoneNumber Purchase phone number
 
-Payment-first: you do not pick a specific number, the system provisions one and
-auto-assigns it. With usage-based billing active and a payment method on file, the
+Payment-first: the system provisions a number and auto-assigns it, unless you pass
+`phoneNumber` to buy one exact number from `GET /v1/phone-numbers/available`. With
+usage-based billing active and a payment method on file, the
 number provisions inline and bills per month on your usage-based invoice (there is
 no checkout redirect). No payment method on file returns `402 PAYMENT_REQUIRED`;
 a regulated country returns `202` with `status: "kyc_required"` and a `kycUrl`.
@@ -2989,7 +2990,9 @@ Search the provider's inventory for numbers available to purchase in a
 country (default US). Optional filters narrow the results. The country
 must be offerable (see GET /v1/phone-numbers/countries). Voice
 capability is always required; pass `sms=true` to only see numbers that
-can also text (SMS support is per-number, not per-country).
+can also text (SMS support is per-number, not per-country). Numbers a
+purchase would refuse are left out, and any result's `phoneNumber` can
+be bought exactly by passing it to POST /v1/phone-numbers/purchase.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPISearchAvailablePhoneNumbersRequest
