@@ -33,7 +33,7 @@ type GetAdComments200ResponseMeta struct {
 	PlatformAdId *string `json:"platformAdId,omitempty"`
 	// Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
 	EffectiveStoryId *string `json:"effectiveStoryId,omitempty"`
-	// TikTok-only video item ID. Null when the ad and comments do not expose it.
+	// TikTok-only video item ID from stored ad fields or returned comments. Null does not prevent listing; ad details are not fetched to populate it.
 	TiktokItemId NullableString `json:"tiktokItemId,omitempty"`
 	// TikTok-only resolved start date.
 	Since *string `json:"since,omitempty"`

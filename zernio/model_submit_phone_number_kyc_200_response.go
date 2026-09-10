@@ -21,7 +21,7 @@ var _ MappedNullable = &SubmitPhoneNumberKyc200Response{}
 // SubmitPhoneNumberKyc200Response struct for SubmitPhoneNumberKyc200Response
 type SubmitPhoneNumberKyc200Response struct {
 	Status *string `json:"status,omitempty"`
-	// True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+	// True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until we get it, from regular stock the moment it returns or sourced by the carrier (usually 2 to 4 weeks), and is not billed until active. Releasing it (DELETE /v1/phone-numbers/{id}) cancels the pre-order. A pre-order is one number: `quantity` above 1 is rejected with 400.
 	PreOrder    *bool                                       `json:"preOrder,omitempty"`
 	PhoneNumber *SubmitPhoneNumberKyc200ResponsePhoneNumber `json:"phoneNumber,omitempty"`
 	// Every number provisioned from this submission. Length equals the requested `quantity` on full success (fewer if some orders failed; best-effort). The first element mirrors `phoneNumber`.

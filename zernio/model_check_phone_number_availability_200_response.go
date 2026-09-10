@@ -24,7 +24,7 @@ type CheckPhoneNumberAvailability200Response struct {
 	NumberType *string `json:"numberType,omitempty"`
 	// Whether deliverable voice inventory exists right now.
 	Available *bool `json:"available,omitempty"`
-	// Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+	// Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and we buy regular stock the moment it returns, otherwise the carrier sources the number (usually 2 to 4 weeks, never guaranteed). Only document tiers (3/4) qualify.
 	PreOrderable      *bool   `json:"preOrderable,omitempty"`
 	AddressConstraint *string `json:"addressConstraint,omitempty"`
 	// For `geo` only: the area(s) the registered address must be in.
