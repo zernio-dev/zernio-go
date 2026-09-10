@@ -275,12 +275,13 @@ func main() {
 | `client.AdAccountsAPI.ListAdsInstagramAccounts(ctx)` | List Instagram ad identities |
 | `client.AdAccountsAPI.ListAdvertisableApplications(ctx)` | List advertisable apps |
 | `client.AdAccountsAPI.ListCustomConversions(ctx)` | List custom conversions |
-| `client.AdAccountsAPI.ListHighDemandPeriods(ctx)` | High demand periods / budget schedules |
+| `client.AdAccountsAPI.ListHighDemandPeriods(ctx)` | List high-demand periods |
 | `client.AdAccountsAPI.ListMetaBusinesses(ctx)` | Businesses list |
+| `client.AdAccountsAPI.ListTikTokAdPixels(ctx)` | List TikTok ad pixels |
 | `client.AdAccountsAPI.ListValueRuleSets(ctx)` | List value rule sets |
 | `client.AdAccountsAPI.CreateAdAccount(ctx)` | Create Meta ad account |
 | `client.AdAccountsAPI.CreateAdNegativeKeywordList(ctx)` | Create a negative keyword list |
-| `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create or reuse a custom conversion |
+| `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create custom conversion |
 | `client.AdAccountsAPI.CreateHighDemandPeriod(ctx)` | Schedule a budget increase |
 | `client.AdAccountsAPI.CreateValueRuleSet(ctx)` | Create a value rule set |
 | `client.AdAccountsAPI.GetAdAccountFinance(ctx)` | Ad account finances |
@@ -288,7 +289,7 @@ func main() {
 | `client.AdAccountsAPI.GetAdNegativeKeywordList(ctx)` | Get a negative keyword list |
 | `client.AdAccountsAPI.GetAdsActivityLog(ctx)` | Ad account change / audit log |
 | `client.AdAccountsAPI.GetDsaDefaults(ctx)` | Get ad account DSA defaults |
-| `client.AdAccountsAPI.GetDsaRecommendations(ctx)` | List DSA beneficiary/payor suggestions |
+| `client.AdAccountsAPI.GetDsaRecommendations(ctx)` | Get DSA recommendations |
 | `client.AdAccountsAPI.GetIosFourteenCampaignLimits(ctx)` | Get iOS 14 campaign limits |
 | `client.AdAccountsAPI.GetValueRuleSet(ctx)` | Read a value rule set |
 | `client.AdAccountsAPI.UpdateAccountCallouts(ctx)` | Update account callouts |
@@ -329,7 +330,7 @@ func main() {
 | `client.AdCampaignsAPI.ListAdKeywords(ctx)` | List Search keywords |
 | `client.AdCampaignsAPI.ListAdSets(ctx)` | List ad sets |
 | `client.AdCampaignsAPI.ListAds(ctx)` | List ads |
-| `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List Google Ads portfolio bid strategies |
+| `client.AdCampaignsAPI.ListBidStrategies(ctx)` | List portfolio bid strategies |
 | `client.AdCampaignsAPI.ListCampaignAssets(ctx)` | List campaign assets |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
@@ -337,10 +338,10 @@ func main() {
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
-| `client.AdCampaignsAPI.CreateBidStrategy(ctx)` | Create a Google Ads portfolio bid strategy |
+| `client.AdCampaignsAPI.CreateBidStrategy(ctx)` | Create portfolio bid strategy |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
-| `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Live ad-set details incl. learning phase |
+| `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Get live ad-set details |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
 | `client.AdCampaignsAPI.GetCampaignBidding(ctx)` | Read a campaign's current bidding |
@@ -353,13 +354,13 @@ func main() {
 | `client.AdCampaignsAPI.UpdateAdSet(ctx)` | Update an ad set |
 | `client.AdCampaignsAPI.UpdateAdSetStatus(ctx)` | Pause or resume a single ad set |
 | `client.AdCampaignsAPI.UpdateAdStatus(ctx)` | Pause or resume a single ad |
-| `client.AdCampaignsAPI.UpdateBidStrategy(ctx)` | Update a Google Ads portfolio bid strategy |
+| `client.AdCampaignsAPI.UpdateBidStrategy(ctx)` | Update portfolio bid strategy |
 | `client.AdCampaignsAPI.UpdateCampaignAssets(ctx)` | Update campaign assets |
 | `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
-| `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search keywords to an ad group |
+| `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search ad-group keywords |
 | `client.AdCampaignsAPI.AttachAdGroupAssets(ctx)` | Attach ad-group assets |
 | `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach campaign assets |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
@@ -380,6 +381,8 @@ func main() {
 | `client.AdCreativesAPI.ListAdCreatives(ctx)` | Creative library |
 | `client.AdCreativesAPI.ListAdImages(ctx)` | Ad image library |
 | `client.AdCreativesAPI.ListAdVideos(ctx)` | Ad video library |
+| `client.AdCreativesAPI.ListPartnershipAdContent(ctx)` | List partnership ad content |
+| `client.AdCreativesAPI.ListPartnershipAdPermissions(ctx)` | List partnership permissions |
 | `client.AdCreativesAPI.CreateAdCreative(ctx)` | Create a standalone creative |
 | `client.AdCreativesAPI.GetAdCreative(ctx)` | Creative details |
 | `client.AdCreativesAPI.GetAdMedia(ctx)` | Direct video and image URLs for an ad |
@@ -388,21 +391,22 @@ func main() {
 | `client.AdCreativesAPI.DeleteAdCreative(ctx)` | Delete a creative |
 | `client.AdCreativesAPI.DeleteAdVideo(ctx)` | Delete an ad video |
 | `client.AdCreativesAPI.GenerateAdPreviews(ctx)` | Render pre-create ad previews |
+| `client.AdCreativesAPI.SetPartnershipAdPermission(ctx)` | Set partnership permission |
 | `client.AdCreativesAPI.UploadAdImage(ctx)` | Upload an ad image from base64 |
 | `client.AdCreativesAPI.UploadAdVideo(ctx)` | Upload an ad video |
 
 ### Ad Insights
 | Method | Description |
 |--------|-------------|
-| `client.AdInsightsAPI.ListLocalServicesLeadConversations(ctx)` | Conversations of a Local Services lead |
+| `client.AdInsightsAPI.ListLocalServicesLeadConversations(ctx)` | List lead conversations |
 | `client.AdInsightsAPI.ListLocalServicesLeads(ctx)` | Google Local Services Ads leads |
-| `client.AdInsightsAPI.CreateAdInsightsReport(ctx)` | Submit an async insights report run |
+| `client.AdInsightsAPI.CreateAdInsightsReport(ctx)` | Submit async insights report |
 | `client.AdInsightsAPI.GetAdAnalytics(ctx)` | Get ad analytics |
 | `client.AdInsightsAPI.GetAdInsightsReport(ctx)` | Poll an async insights report run |
 | `client.AdInsightsAPI.GetAdsSearchTerms(ctx)` | Google Ads search terms report |
 | `client.AdInsightsAPI.GetCampaignAnalytics(ctx)` | Get campaign analytics |
-| `client.AdInsightsAPI.GenerateKeywordHistoricalMetrics(ctx)` | Historical keyword metrics (Google Keyword Planner) |
-| `client.AdInsightsAPI.GenerateKeywordIdeas(ctx)` | Generate keyword ideas (Google Keyword Planner) |
+| `client.AdInsightsAPI.GenerateKeywordHistoricalMetrics(ctx)` | Get historical keyword metrics |
+| `client.AdInsightsAPI.GenerateKeywordIdeas(ctx)` | Generate keyword ideas |
 | `client.AdInsightsAPI.QueryAdInsights(ctx)` | Flexible live insights query |
 
 ### Ad Library
@@ -414,7 +418,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AdTargetingAPI.GetLinkedInBidPricing(ctx)` | Suggested bid and budget bounds |
-| `client.AdTargetingAPI.GetLinkedInSupplyForecast(ctx)` | Impressions, clicks and spend forecast |
+| `client.AdTargetingAPI.GetLinkedInSupplyForecast(ctx)` | Forecast ad delivery |
 | `client.AdTargetingAPI.EstimateAdReach(ctx)` | Estimate audience reach |
 | `client.AdTargetingAPI.SearchAdInterests(ctx)` | Search targeting interests |
 | `client.AdTargetingAPI.SearchAdTargeting(ctx)` | Search targeting options |
@@ -560,10 +564,10 @@ func main() {
 ### Conversions
 | Method | Description |
 |--------|-------------|
-| `client.ConversionsAPI.ListConversionActions(ctx)` | List conversion actions and their tag snippets |
+| `client.ConversionsAPI.ListConversionActions(ctx)` | List conversion actions |
 | `client.ConversionsAPI.ListConversionAssociations(ctx)` | List associated campaigns |
 | `client.ConversionsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
-| `client.ConversionsAPI.CreateConversionAction(ctx)` | Create a website conversion action |
+| `client.ConversionsAPI.CreateConversionAction(ctx)` | Create website conversion action |
 | `client.ConversionsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
 | `client.ConversionsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.ConversionsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
@@ -760,10 +764,10 @@ func main() {
 ### Reach and Frequency
 | Method | Description |
 |--------|-------------|
-| `client.ReachAndFrequencyAPI.CreateRfPrediction(ctx)` | Create a Reach & Frequency prediction |
-| `client.ReachAndFrequencyAPI.GetRfPrediction(ctx)` | Read a Reach & Frequency prediction |
-| `client.ReachAndFrequencyAPI.CancelRfReservation(ctx)` | Cancel a Reach & Frequency reservation |
-| `client.ReachAndFrequencyAPI.ReserveRfPrediction(ctx)` | Reserve a Reach & Frequency prediction |
+| `client.ReachAndFrequencyAPI.CreateRfPrediction(ctx)` | Create reach-frequency prediction |
+| `client.ReachAndFrequencyAPI.GetRfPrediction(ctx)` | Get reach-frequency prediction |
+| `client.ReachAndFrequencyAPI.CancelRfReservation(ctx)` | Cancel reach-frequency booking |
+| `client.ReachAndFrequencyAPI.ReserveRfPrediction(ctx)` | Reserve reach-frequency inventory |
 
 ### Reviews (Inbox)
 | Method | Description |
