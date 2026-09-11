@@ -25,7 +25,13 @@ type UpdateAdRequestCreative struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta and LinkedIn (TikTok has no headline slot)
 	Headline *string `json:"headline,omitempty"`
-	Body     *string `json:"body,omitempty"`
+	// Google Display only. Replaces the responsive display ad's long headline.
+	LongHeadline *string `json:"longHeadline,omitempty"`
+	// Google Display only. Replaces the responsive display ad's business name.
+	BusinessName *string `json:"businessName,omitempty"`
+	// Google Display only. Uploaded as a new square (1:1) marketing image asset that replaces the current one.
+	SquareImageUrl *string `json:"squareImageUrl,omitempty"`
+	Body           *string `json:"body,omitempty"`
 	// Link description slot (Meta `link_data.description` / `video_data.link_description`, LinkedIn creative description).
 	Description  *string `json:"description,omitempty"`
 	CallToAction *string `json:"callToAction,omitempty"`
@@ -149,6 +155,102 @@ func (o *UpdateAdRequestCreative) HasHeadline() bool {
 // SetHeadline gets a reference to the given string and assigns it to the Headline field.
 func (o *UpdateAdRequestCreative) SetHeadline(v string) {
 	o.Headline = &v
+}
+
+// GetLongHeadline returns the LongHeadline field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetLongHeadline() string {
+	if o == nil || IsNil(o.LongHeadline) {
+		var ret string
+		return ret
+	}
+	return *o.LongHeadline
+}
+
+// GetLongHeadlineOk returns a tuple with the LongHeadline field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetLongHeadlineOk() (*string, bool) {
+	if o == nil || IsNil(o.LongHeadline) {
+		return nil, false
+	}
+	return o.LongHeadline, true
+}
+
+// HasLongHeadline returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasLongHeadline() bool {
+	if o != nil && !IsNil(o.LongHeadline) {
+		return true
+	}
+
+	return false
+}
+
+// SetLongHeadline gets a reference to the given string and assigns it to the LongHeadline field.
+func (o *UpdateAdRequestCreative) SetLongHeadline(v string) {
+	o.LongHeadline = &v
+}
+
+// GetBusinessName returns the BusinessName field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetBusinessName() string {
+	if o == nil || IsNil(o.BusinessName) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessName
+}
+
+// GetBusinessNameOk returns a tuple with the BusinessName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetBusinessNameOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessName) {
+		return nil, false
+	}
+	return o.BusinessName, true
+}
+
+// HasBusinessName returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasBusinessName() bool {
+	if o != nil && !IsNil(o.BusinessName) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessName gets a reference to the given string and assigns it to the BusinessName field.
+func (o *UpdateAdRequestCreative) SetBusinessName(v string) {
+	o.BusinessName = &v
+}
+
+// GetSquareImageUrl returns the SquareImageUrl field value if set, zero value otherwise.
+func (o *UpdateAdRequestCreative) GetSquareImageUrl() string {
+	if o == nil || IsNil(o.SquareImageUrl) {
+		var ret string
+		return ret
+	}
+	return *o.SquareImageUrl
+}
+
+// GetSquareImageUrlOk returns a tuple with the SquareImageUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestCreative) GetSquareImageUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.SquareImageUrl) {
+		return nil, false
+	}
+	return o.SquareImageUrl, true
+}
+
+// HasSquareImageUrl returns a boolean if a field has been set.
+func (o *UpdateAdRequestCreative) HasSquareImageUrl() bool {
+	if o != nil && !IsNil(o.SquareImageUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetSquareImageUrl gets a reference to the given string and assigns it to the SquareImageUrl field.
+func (o *UpdateAdRequestCreative) SetSquareImageUrl(v string) {
+	o.SquareImageUrl = &v
 }
 
 // GetBody returns the Body field value if set, zero value otherwise.
@@ -425,6 +527,15 @@ func (o UpdateAdRequestCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Headline) {
 		toSerialize["headline"] = o.Headline
+	}
+	if !IsNil(o.LongHeadline) {
+		toSerialize["longHeadline"] = o.LongHeadline
+	}
+	if !IsNil(o.BusinessName) {
+		toSerialize["businessName"] = o.BusinessName
+	}
+	if !IsNil(o.SquareImageUrl) {
+		toSerialize["squareImageUrl"] = o.SquareImageUrl
 	}
 	if !IsNil(o.Body) {
 		toSerialize["body"] = o.Body

@@ -20,16 +20,18 @@ var _ MappedNullable = &UpdateAdRequest{}
 
 // UpdateAdRequest struct for UpdateAdRequest
 type UpdateAdRequest struct {
-	// Google RSA only. Replaces the complete headline list. No padding or truncation on update.
+	// Google Search and Display only. Replaces the complete headline list. Search takes 3-15, Display 1-5 and rejects pinnedField; the count is checked once the ad's channel is known. No padding or truncation on update.
 	Headlines []GoogleRsaHeadline `json:"headlines,omitempty"`
-	// Google RSA only. Replaces the complete description list. No padding or truncation on update.
+	// Google Search and Display only. Replaces the complete description list. Search takes 2-4, Display 1-5 and rejects pinnedField. No padding or truncation on update.
 	Descriptions []GoogleRsaDescription `json:"descriptions,omitempty"`
-	// Google RSA only. Replaces final URLs. Omitted lists stay unchanged.
-	FinalUrls []string                  `json:"finalUrls,omitempty"`
-	Status    *string                   `json:"status,omitempty"`
-	Budget    *UpdateAdSetRequestBudget `json:"budget,omitempty"`
-	Targeting *UpdateAdRequestTargeting `json:"targeting,omitempty"`
-	Creative  *UpdateAdRequestCreative  `json:"creative,omitempty"`
+	// Google Search and Display only. Replaces final URLs. Omitted lists stay unchanged. For Performance Max use assetGroup.finalUrl.
+	FinalUrls []string `json:"finalUrls,omitempty"`
+	// Google Performance Max only. Replaces whole asset roles on the ad's asset group. Returns 422 on any other platform or channel.
+	AssetGroup *GooglePmaxAssetGroupUpdate `json:"assetGroup,omitempty"`
+	Status     *string                     `json:"status,omitempty"`
+	Budget     *UpdateAdSetRequestBudget   `json:"budget,omitempty"`
+	Targeting  *UpdateAdRequestTargeting   `json:"targeting,omitempty"`
+	Creative   *UpdateAdRequestCreative    `json:"creative,omitempty"`
 	// Rename the ad. Now propagated to Meta (POST /{ad-id}); non-Meta platforms return 501.
 	Name *string `json:"name,omitempty"`
 }
@@ -145,6 +147,38 @@ func (o *UpdateAdRequest) HasFinalUrls() bool {
 // SetFinalUrls gets a reference to the given []string and assigns it to the FinalUrls field.
 func (o *UpdateAdRequest) SetFinalUrls(v []string) {
 	o.FinalUrls = v
+}
+
+// GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
+func (o *UpdateAdRequest) GetAssetGroup() GooglePmaxAssetGroupUpdate {
+	if o == nil || IsNil(o.AssetGroup) {
+		var ret GooglePmaxAssetGroupUpdate
+		return ret
+	}
+	return *o.AssetGroup
+}
+
+// GetAssetGroupOk returns a tuple with the AssetGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequest) GetAssetGroupOk() (*GooglePmaxAssetGroupUpdate, bool) {
+	if o == nil || IsNil(o.AssetGroup) {
+		return nil, false
+	}
+	return o.AssetGroup, true
+}
+
+// HasAssetGroup returns a boolean if a field has been set.
+func (o *UpdateAdRequest) HasAssetGroup() bool {
+	if o != nil && !IsNil(o.AssetGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssetGroup gets a reference to the given GooglePmaxAssetGroupUpdate and assigns it to the AssetGroup field.
+func (o *UpdateAdRequest) SetAssetGroup(v GooglePmaxAssetGroupUpdate) {
+	o.AssetGroup = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -325,6 +359,9 @@ func (o UpdateAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FinalUrls) {
 		toSerialize["finalUrls"] = o.FinalUrls
+	}
+	if !IsNil(o.AssetGroup) {
+		toSerialize["assetGroup"] = o.AssetGroup
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

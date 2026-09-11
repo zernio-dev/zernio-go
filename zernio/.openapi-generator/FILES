@@ -935,6 +935,8 @@ model_google_pmax_asset_group.go
 model_google_pmax_asset_group_assets_inner.go
 model_google_pmax_asset_group_input.go
 model_google_pmax_asset_group_input_images.go
+model_google_pmax_asset_group_update.go
+model_google_pmax_asset_group_update_images.go
 model_google_rsa_description.go
 model_google_rsa_headline.go
 model_google_sitelink.go
