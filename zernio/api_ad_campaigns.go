@@ -2492,6 +2492,180 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIGetAdCampaignDetailsRequest struct {
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	campaignId string
+	accountId  *string
+	fields     *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdCampaignsAPIGetAdCampaignDetailsRequest) AccountId(accountId string) AdCampaignsAPIGetAdCampaignDetailsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers.
+func (r AdCampaignsAPIGetAdCampaignDetailsRequest) Fields(fields string) AdCampaignsAPIGetAdCampaignDetailsRequest {
+	r.fields = &fields
+	return r
+}
+
+func (r AdCampaignsAPIGetAdCampaignDetailsRequest) Execute() (*GetAdCampaignDetails200Response, *http.Response, error) {
+	return r.ApiService.GetAdCampaignDetailsExecute(r)
+}
+
+/*
+GetAdCampaignDetails Get live campaign details
+
+Reads one campaign live from Meta, returned verbatim, so a caller that knows a
+campaign id no longer has to page `GET /v1/ads/campaigns` to find it. The default
+projection covers name, status, objective, buying type, bid strategy, budgets,
+spend cap, schedule and `issues_info`. `fields` is a raw-passthrough override;
+unknown fields return Meta's 400 verbatim. A campaign the resolved connection
+cannot see comes back as Meta's own 400, not a 404.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Meta campaign id (platformCampaignId).
+	@return AdCampaignsAPIGetAdCampaignDetailsRequest
+*/
+func (a *AdCampaignsAPIService) GetAdCampaignDetails(ctx context.Context, campaignId string) AdCampaignsAPIGetAdCampaignDetailsRequest {
+	return AdCampaignsAPIGetAdCampaignDetailsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdCampaignDetails200Response
+func (a *AdCampaignsAPIService) GetAdCampaignDetailsExecute(r AdCampaignsAPIGetAdCampaignDetailsRequest) (*GetAdCampaignDetails200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdCampaignDetails200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetAdCampaignDetails")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.fields != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIGetAdSetDetailsRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService

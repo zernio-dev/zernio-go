@@ -30,7 +30,7 @@ type LeadGenAPIArchiveLeadFormRequest struct {
 	accountId  *string
 }
 
-// Connected facebook or linkedin ads account id (selects the platform).
+// Connected Meta ads, facebook or linkedin ads account id (selects the platform). A Meta ads connection resolves its Page through the Facebook account linked to the same profile.
 func (r LeadGenAPIArchiveLeadFormRequest) AccountId(accountId string) LeadGenAPIArchiveLeadFormRequest {
 	r.accountId = &accountId
 	return r
@@ -178,7 +178,7 @@ func (r LeadGenAPICreateLeadFormRequest) Execute() (*CreateLeadForm200Response, 
 /*
 CreateLeadForm Create a lead form
 
-Creates a Lead Gen form. The form content goes inside `platformSpecificData` for both platforms (the shape is selected by the accountId's platform). Meta: created on the connected Facebook Page (a facebook account or a metaads business-login account with a selected Page) (POST /{page-id}/leadgen_forms); the old top-level Meta fields (questions, thankYou*, contextCard, …) are DEPRECATED but still accepted while platformSpecificData is absent; mixing both shapes is a 400. LinkedIn: created on the ad account's Company Page. NOT idempotent: a retry creates a second form. Meta prefilled question types (EMAIL, PHONE, FULL_NAME, …) must omit label/key; CUSTOM questions require both. LinkedIn exposes only free-text and multiple-choice questions via API (prefilled-from-profile fields are Campaign Manager UI-only). Requires the Ads add-on.
+Creates a Lead Gen form. The form content goes inside `platformSpecificData` for both platforms (the shape is selected by the accountId's platform). Meta: created on the connected Facebook Page (POST /{page-id}/leadgen_forms), where `accountId` may be the `metaads` ads connection (its Page comes from the Facebook account linked to the same profile) or the Facebook account itself; the old top-level Meta fields (questions, thankYou*, contextCard, …) are DEPRECATED but still accepted while platformSpecificData is absent; mixing both shapes is a 400. LinkedIn: created on the ad account's Company Page. NOT idempotent: a retry creates a second form. Meta prefilled question types (EMAIL, PHONE, FULL_NAME, …) must omit label/key; CUSTOM questions require both. LinkedIn exposes only free-text and multiple-choice questions via API (prefilled-from-profile fields are Campaign Manager UI-only). Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return LeadGenAPICreateLeadFormRequest
@@ -437,7 +437,7 @@ type LeadGenAPIGetLeadFormRequest struct {
 	fields     *string
 }
 
-// Connected facebook or linkedin ads account id (selects the platform).
+// Connected Meta ads, facebook or linkedin ads account id (selects the platform). A Meta ads connection resolves its Page through the Facebook account linked to the same profile.
 func (r LeadGenAPIGetLeadFormRequest) AccountId(accountId string) LeadGenAPIGetLeadFormRequest {
 	r.accountId = &accountId
 	return r
@@ -774,7 +774,7 @@ type LeadGenAPIListLeadFormsRequest struct {
 	cursor      *string
 }
 
-// Connected Facebook, Meta ads business-login or LinkedIn ads account ID.
+// Connected Meta ads, Facebook or LinkedIn ads account ID. A Meta ads connection resolves its Page through the Facebook account linked to the same profile.
 func (r LeadGenAPIListLeadFormsRequest) AccountId(accountId string) LeadGenAPIListLeadFormsRequest {
 	r.accountId = &accountId
 	return r
@@ -803,7 +803,7 @@ func (r LeadGenAPIListLeadFormsRequest) Execute() (*ListLeadForms200Response, *h
 /*
 ListLeadForms List lead forms
 
-Lists the Lead Gen forms owned by the account. Meta: forms on the connected Facebook Page, including a Page selected on a metaads business-login connection. LinkedIn: forms owned by the ad account's Company Page. Pass `adAccountId` (LinkedIn forms are org-owned). Requires the Ads add-on.
+Lists the Lead Gen forms owned by the account. Meta: forms on the connected Facebook Page. Pass either the `metaads` ads connection (the Page is taken from the Facebook account linked to it) or the Facebook account itself. LinkedIn: forms owned by the ad account's Company Page. Pass `adAccountId` (LinkedIn forms are org-owned). Requires the Ads add-on.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return LeadGenAPIListLeadFormsRequest
