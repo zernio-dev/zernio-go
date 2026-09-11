@@ -57,13 +57,13 @@ type TargetingSpec struct {
 	WorkEmployers []CreateStandaloneAdRequestBehaviorsInner `json:"workEmployers,omitempty"`
 	// Meta only. Work-industry entities from /v1/ads/targeting/search?dimension=workIndustry. Not interchangeable with the LinkedIn `industries` URN fragments.
 	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
-	// LinkedIn B2B only. Industry URN id fragments.
+	// LinkedIn B2B only. Industry URN id fragments, or the full urn:li:industry:* URN from /v1/ads/targeting/search?dimension=industry.
 	Industries []string `json:"industries,omitempty"`
-	// LinkedIn B2B only.
+	// LinkedIn B2B only. Single-letter size codes (A to I), or the full urn:li:staffCountRange:* URN from /v1/ads/targeting/search?dimension=companySize.
 	CompanySizes []string `json:"companySizes,omitempty"`
-	// LinkedIn B2B only.
+	// LinkedIn B2B only. Seniority URN id fragments, or the full urn:li:seniority:* URN from /v1/ads/targeting/search?dimension=seniority.
 	Seniorities []string `json:"seniorities,omitempty"`
-	// LinkedIn B2B only.
+	// LinkedIn B2B only. Function URN id fragments, or the full urn:li:function:* URN from /v1/ads/targeting/search?dimension=jobFunction.
 	JobFunctions []string `json:"jobFunctions,omitempty"`
 	// Platform audience IDs to include, as returned by GET /v1/ads/audiences (Meta custom audience ids, TikTok audience ids, Pinterest customer list ids, LinkedIn segment ids (the platformAudienceId from GET /v1/ads/audiences; Zernio resolves it to the targetable LinkedIn ad segment, an unknown id returns 400), Google user list ids, X custom audience ids). Not supported on OpenAI (400).
 	AudienceInclude []string `json:"audienceInclude,omitempty"`

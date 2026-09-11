@@ -671,7 +671,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities, &#x60;income&#x60; resolves income-tier options, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics. Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities, &#x60;income&#x60; resolves income-tier options, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -716,6 +716,8 @@ The `dimension` param selects what is searched:
   - `language`: Google-only
   - `workPosition`, `workEmployer`, `workIndustry`: the Meta-only work demographics, whose
     ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`
+  - `industry`, `jobFunction`, `seniority`, `companySize`: the LinkedIn-only B2B facets, whose
+    URNs feed `TargetingSpec.industries`/`jobFunctions`/`seniorities`/`companySizes`
 
 Availability of each dimension varies by platform (e.g. behaviours are Meta/TikTok only).
 Work industries are a fixed ~30-entry Meta catalog with no server-side query,
@@ -739,6 +741,15 @@ returns a name and a URN per result, with no level or country field to
 filter on. Every result has `type` set to `location`, and its id is a
 `urn:li:geo:*` URN usable as a `regions[].key` on `POST /v1/ads/create`,
 `POST /v1/ads/boost` and `POST /v1/ads/targeting/reach-estimate`.
+
+LinkedIn B2B searches (`industry`, `jobFunction`, `seniority`, `companySize`) return the
+full URN to pass straight back, so no URN id fragment has to be assembled by hand:
+`urn:li:industry:4`, `urn:li:function:8`, `urn:li:seniority:6`,
+`urn:li:staffCountRange:(51,200)`. Only `industry` is a server-side name search
+(LinkedIn's typeahead finder). LinkedIn exposes no typeahead for job functions,
+seniorities and company sizes, so Zernio fetches each whole table (26, 10 and 9 entries),
+caches it, and does the matching, ranking and `limit` cutoff itself. Those three never
+carry `audienceSize`, and `countryCode` and `geoType` are not applied to any of the four.
 
 Google geo searches resolve against Google's geoTargetConstants and return
 every matching level in one list; `geoType` is not applied (Google's
