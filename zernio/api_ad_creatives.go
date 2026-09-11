@@ -660,7 +660,7 @@ func (r AdCreativesAPIGetAdCreativeRequest) AccountId(accountId string) AdCreati
 	return r
 }
 
-// Comma-separated Graph field override (supports nested {} projections).
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCreativesAPIGetAdCreativeRequest) Fields(fields string) AdCreativesAPIGetAdCreativeRequest {
 	r.fields = &fields
 	return r
@@ -1402,7 +1402,7 @@ func (r AdCreativesAPIListAdCreativesRequest) AdAccountId(adAccountId string) Ad
 	return r
 }
 
-// Comma-separated Graph field override (supports nested {} projections).
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCreativesAPIListAdCreativesRequest) Fields(fields string) AdCreativesAPIListAdCreativesRequest {
 	r.fields = &fields
 	return r
@@ -1595,7 +1595,7 @@ func (r AdCreativesAPIListAdImagesRequest) AdAccountId(adAccountId string) AdCre
 	return r
 }
 
-// Comma-separated Graph field override (supports nested {} projections).
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCreativesAPIListAdImagesRequest) Fields(fields string) AdCreativesAPIListAdImagesRequest {
 	r.fields = &fields
 	return r
@@ -1787,7 +1787,7 @@ func (r AdCreativesAPIListAdVideosRequest) AdAccountId(adAccountId string) AdCre
 	return r
 }
 
-// Comma-separated Graph field override (supports nested {} projections).
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCreativesAPIListAdVideosRequest) Fields(fields string) AdCreativesAPIListAdVideosRequest {
 	r.fields = &fields
 	return r

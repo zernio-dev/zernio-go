@@ -2527,7 +2527,7 @@ func (r AdCampaignsAPIGetAdSetDetailsRequest) AccountId(accountId string) AdCamp
 	return r
 }
 
-// Comma-separated Graph field override (supports nested {} projections).
+// Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCampaignsAPIGetAdSetDetailsRequest) Fields(fields string) AdCampaignsAPIGetAdSetDetailsRequest {
 	r.fields = &fields
 	return r

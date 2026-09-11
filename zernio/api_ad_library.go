@@ -128,7 +128,7 @@ func (r AdLibraryAPISearchAdLibraryRequest) SearchType(searchType string) AdLibr
 	return r
 }
 
-// Meta only. Raw Graph projection override, e.g. add spend,impressions,demographic_distribution for political ads.
+// Meta only. Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdLibraryAPISearchAdLibraryRequest) Fields(fields string) AdLibraryAPISearchAdLibraryRequest {
 	r.fields = &fields
 	return r
