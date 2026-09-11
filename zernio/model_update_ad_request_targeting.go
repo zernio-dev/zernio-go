@@ -25,10 +25,14 @@ type UpdateAdRequestTargeting struct {
 	// Google only. The FULL desired set of negative keywords for the entire ad group, independent of positives. Omit to leave negatives unchanged; [] removes all negatives. Uses the same text/match-type identity and preservation contract as keywords above. Strings and objects without matchType default to BROAD, so resending an EXACT or PHRASE negative as a bare string requests a different criterion. Campaign negatives are separate: use /v1/ads/campaigns/{campaignId}/negative-keywords to manage those.
 	NegativeKeywords []UpdateAdRequestTargetingKeywordsInner `json:"negativeKeywords,omitempty"`
 	// Google only. The FULL new set of device criteria for the campaign; devices not listed are excluded. Entries are a device name alone (included, no bid adjustment) or { device, bidModifier }.
-	Devices   []UpdateAdRequestTargetingDevicesInner `json:"devices,omitempty"`
-	AgeMin    *int32                                 `json:"ageMin,omitempty"`
-	AgeMax    *int32                                 `json:"ageMax,omitempty"`
-	Countries []string                               `json:"countries,omitempty"`
+	Devices []UpdateAdRequestTargetingDevicesInner `json:"devices,omitempty"`
+	AgeMin  *int32                                 `json:"ageMin,omitempty"`
+	AgeMax  *int32                                 `json:"ageMax,omitempty"`
+	// ISO 3166-1 alpha-2 codes. On Google this is the FULL new country set for the campaign (same contract as `locations`); on LinkedIn it replaces the campaign's geo criteria.
+	Countries []string                                          `json:"countries,omitempty"`
+	Locations *UpdateCampaignTargetingRequestTargetingLocations `json:"locations,omitempty"`
+	// Google only. The FULL new language set for the campaign, as Google language codes (ISO 639-1, plus variants such as `zh_CN`). An unknown code returns 400.
+	Languages []string `json:"languages,omitempty"`
 	// Interest objects from /v1/ads/interests. Each must include id and name.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Meta only. Omit to preserve the existing setting on update. 0 = disabled, 1 = enabled.
@@ -244,6 +248,70 @@ func (o *UpdateAdRequestTargeting) SetCountries(v []string) {
 	o.Countries = v
 }
 
+// GetLocations returns the Locations field value if set, zero value otherwise.
+func (o *UpdateAdRequestTargeting) GetLocations() UpdateCampaignTargetingRequestTargetingLocations {
+	if o == nil || IsNil(o.Locations) {
+		var ret UpdateCampaignTargetingRequestTargetingLocations
+		return ret
+	}
+	return *o.Locations
+}
+
+// GetLocationsOk returns a tuple with the Locations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestTargeting) GetLocationsOk() (*UpdateCampaignTargetingRequestTargetingLocations, bool) {
+	if o == nil || IsNil(o.Locations) {
+		return nil, false
+	}
+	return o.Locations, true
+}
+
+// HasLocations returns a boolean if a field has been set.
+func (o *UpdateAdRequestTargeting) HasLocations() bool {
+	if o != nil && !IsNil(o.Locations) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocations gets a reference to the given UpdateCampaignTargetingRequestTargetingLocations and assigns it to the Locations field.
+func (o *UpdateAdRequestTargeting) SetLocations(v UpdateCampaignTargetingRequestTargetingLocations) {
+	o.Locations = &v
+}
+
+// GetLanguages returns the Languages field value if set, zero value otherwise.
+func (o *UpdateAdRequestTargeting) GetLanguages() []string {
+	if o == nil || IsNil(o.Languages) {
+		var ret []string
+		return ret
+	}
+	return o.Languages
+}
+
+// GetLanguagesOk returns a tuple with the Languages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequestTargeting) GetLanguagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Languages) {
+		return nil, false
+	}
+	return o.Languages, true
+}
+
+// HasLanguages returns a boolean if a field has been set.
+func (o *UpdateAdRequestTargeting) HasLanguages() bool {
+	if o != nil && !IsNil(o.Languages) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguages gets a reference to the given []string and assigns it to the Languages field.
+func (o *UpdateAdRequestTargeting) SetLanguages(v []string) {
+	o.Languages = v
+}
+
 // GetInterests returns the Interests field value if set, zero value otherwise.
 func (o *UpdateAdRequestTargeting) GetInterests() []UpdateAdRequestTargetingInterestsInner {
 	if o == nil || IsNil(o.Interests) {
@@ -335,6 +403,12 @@ func (o UpdateAdRequestTargeting) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries
+	}
+	if !IsNil(o.Locations) {
+		toSerialize["locations"] = o.Locations
+	}
+	if !IsNil(o.Languages) {
+		toSerialize["languages"] = o.Languages
 	}
 	if !IsNil(o.Interests) {
 		toSerialize["interests"] = o.Interests
