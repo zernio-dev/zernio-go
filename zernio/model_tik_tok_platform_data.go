@@ -44,15 +44,15 @@ type TikTokPlatformData struct {
 	MediaType *string `json:"mediaType,omitempty"`
 	// Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
 	VideoCoverTimestampMs *int32 `json:"videoCoverTimestampMs,omitempty"`
-	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is stitched as a single frame at the start of the video and used as the cover. Overrides videoCoverTimestampMs when provided.
+	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is stitched as a single frame at the start of the video and used as the cover. Accounts connected through the TikTok for Business app instead pass the URL to TikTok as the cover directly, with no stitching, and the URL must resolve on a domain we have verified with TikTok. Overrides videoCoverTimestampMs when provided.
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 	// Optional for photo carousels. Index of image to use as cover, 0-based (defaults to 0/first image).
 	PhotoCoverIndex *int32 `json:"photoCoverIndex,omitempty"`
 	// When true, TikTok may add recommended music (photos only)
 	AutoAddMusic *bool `json:"autoAddMusic,omitempty"`
-	// Set true to disclose AI-generated content
+	// Set true to disclose AI-generated content. Accounts connected through the TikTok for Business app carry the disclosure on video posts only: the business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed. Send draft true to publish such a photo post and set the disclosure in the TikTok app.
 	VideoMadeWithAi *bool `json:"videoMadeWithAi,omitempty"`
-	// Optional long-form description for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated.
+	// Optional long-form caption for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated. Falls back to the post content when omitted.
 	Description *string `json:"description,omitempty"`
 }
 
