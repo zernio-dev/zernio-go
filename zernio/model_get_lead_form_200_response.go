@@ -20,8 +20,8 @@ var _ MappedNullable = &GetLeadForm200Response{}
 
 // GetLeadForm200Response struct for GetLeadForm200Response
 type GetLeadForm200Response struct {
-	Status *string                `json:"status,omitempty"`
-	Form   map[string]interface{} `json:"form,omitempty"`
+	Status *string                     `json:"status,omitempty"`
+	Form   *GetLeadForm200ResponseForm `json:"form,omitempty"`
 }
 
 // NewGetLeadForm200Response instantiates a new GetLeadForm200Response object
@@ -74,19 +74,19 @@ func (o *GetLeadForm200Response) SetStatus(v string) {
 }
 
 // GetForm returns the Form field value if set, zero value otherwise.
-func (o *GetLeadForm200Response) GetForm() map[string]interface{} {
+func (o *GetLeadForm200Response) GetForm() GetLeadForm200ResponseForm {
 	if o == nil || IsNil(o.Form) {
-		var ret map[string]interface{}
+		var ret GetLeadForm200ResponseForm
 		return ret
 	}
-	return o.Form
+	return *o.Form
 }
 
 // GetFormOk returns a tuple with the Form field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetLeadForm200Response) GetFormOk() (map[string]interface{}, bool) {
+func (o *GetLeadForm200Response) GetFormOk() (*GetLeadForm200ResponseForm, bool) {
 	if o == nil || IsNil(o.Form) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Form, true
 }
@@ -100,9 +100,9 @@ func (o *GetLeadForm200Response) HasForm() bool {
 	return false
 }
 
-// SetForm gets a reference to the given map[string]interface{} and assigns it to the Form field.
-func (o *GetLeadForm200Response) SetForm(v map[string]interface{}) {
-	o.Form = v
+// SetForm gets a reference to the given GetLeadForm200ResponseForm and assigns it to the Form field.
+func (o *GetLeadForm200Response) SetForm(v GetLeadForm200ResponseForm) {
+	o.Form = &v
 }
 
 func (o GetLeadForm200Response) MarshalJSON() ([]byte, error) {

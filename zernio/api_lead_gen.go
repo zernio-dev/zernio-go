@@ -43,7 +43,7 @@ func (r LeadGenAPIArchiveLeadFormRequest) Execute() (*ArchiveLeadForm200Response
 /*
 ArchiveLeadForm Archive a lead form
 
-Neither platform hard-deletes a form; this archives it (Meta status=ARCHIVED; LinkedIn state=ARCHIVED via PARTIAL_UPDATE).
+Neither platform hard-deletes a form; this archives it (Meta status=ARCHIVED; LinkedIn state=ARCHIVED via PARTIAL_UPDATE). Meta forms must belong to the Page the accountId manages.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param formId Numeric form id (Meta leadgen_form id or LinkedIn leadForm id).
@@ -143,6 +143,7 @@ func (a *LeadGenAPIService) ArchiveLeadFormExecute(r LeadGenAPIArchiveLeadFormRe
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -433,11 +434,18 @@ type LeadGenAPIGetLeadFormRequest struct {
 	ApiService *LeadGenAPIService
 	formId     string
 	accountId  *string
+	fields     *string
 }
 
 // Connected facebook or linkedin ads account id (selects the platform).
 func (r LeadGenAPIGetLeadFormRequest) AccountId(accountId string) LeadGenAPIGetLeadFormRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Meta only. A Graph field selection passed through verbatim to GET /{form-id}, replacing the default projection, so fields Meta adds later are reachable without an API change. Field names, commas and {} expansion only; anything else (Graph field modifiers such as .limit(), or characters that could open another query parameter) is a 400. Ownership of the form is verified before the selection runs, so this cannot reach any Page but the one accountId manages. Unknown field names are rejected by Meta as a 400.
+func (r LeadGenAPIGetLeadFormRequest) Fields(fields string) LeadGenAPIGetLeadFormRequest {
+	r.fields = &fields
 	return r
 }
 
@@ -447,6 +455,8 @@ func (r LeadGenAPIGetLeadFormRequest) Execute() (*GetLeadForm200Response, *http.
 
 /*
 GetLeadForm Get a lead form
+
+Returns the full form, including the thank-you page, so a form can be diffed against what was created. Meta forms are scoped to the Page the accountId manages: a form on any other Page is a 404, never a read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param formId Numeric form id (Meta leadgen_form id or LinkedIn leadForm id).
@@ -487,6 +497,9 @@ func (a *LeadGenAPIService) GetLeadFormExecute(r LeadGenAPIGetLeadFormRequest) (
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.fields != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -546,6 +559,7 @@ func (a *LeadGenAPIService) GetLeadFormExecute(r LeadGenAPIGetLeadFormRequest) (
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
