@@ -44,7 +44,7 @@ type TikTokPlatformData struct {
 	MediaType *string `json:"mediaType,omitempty"`
 	// Optional for video posts. Timestamp in milliseconds to select which frame to use as thumbnail (defaults to 1000ms/1 second). Ignored when videoCoverImageUrl is provided.
 	VideoCoverTimestampMs *int32 `json:"videoCoverTimestampMs,omitempty"`
-	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). The image is stitched as a single frame at the start of the video and used as the cover. Accounts connected through the TikTok for Business app instead pass the URL to TikTok as the cover directly, with no stitching, and the URL must resolve on a domain we have verified with TikTok. Overrides videoCoverTimestampMs when provided.
+	// Optional for video posts. URL of a custom thumbnail image (JPG, PNG, or WebP, max 20MB). Any downloadable URL works: we rehost it ourselves. The image is stitched as a single frame at the start of the video to serve as the cover. Accounts connected through the TikTok for Business app hand it to TikTok as the cover instead, with no stitching, falling back to videoCoverTimestampMs without it. Overrides videoCoverTimestampMs when provided.
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 	// Optional for photo carousels. Index of image to use as cover, 0-based (defaults to 0/first image).
 	PhotoCoverIndex *int32 `json:"photoCoverIndex,omitempty"`

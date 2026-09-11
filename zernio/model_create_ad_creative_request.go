@@ -40,9 +40,10 @@ type CreateAdCreativeRequest struct {
 	ImageHash     *string                                     `json:"imageHash,omitempty"`
 	CarouselCards []CreateAdCreativeRequestCarouselCardsInner `json:"carouselCards,omitempty"`
 	// Appended to every outbound URL (e.g. utm_source=fb).
-	UrlTags   *string        `json:"urlTags,omitempty"`
-	Promotion *MetaPromotion `json:"promotion,omitempty"`
-	// Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an enhancement; an explicit offer uses promotion.
+	UrlTags *string `json:"urlTags,omitempty"`
+	// Not supported. Meta validates creative_sourcing_spec.promotion_metadata_spec on the create call and then discards it, so a Promotion set through the Marketing API never reaches the creative. Any object is rejected with 400 invalid_field_value. Send null or omit the field, and set the Promotion on the ad in Ads Manager. Verified on 2026-09-11 across Graph v19.0 to v25.0 and every write path.
+	Promotion map[string]interface{} `json:"promotion,omitempty"`
+	// Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an Advantage+ enhancement, not the Ads Manager Promotion setting.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
@@ -388,20 +389,21 @@ func (o *CreateAdCreativeRequest) SetUrlTags(v string) {
 	o.UrlTags = &v
 }
 
-// GetPromotion returns the Promotion field value if set, zero value otherwise.
-func (o *CreateAdCreativeRequest) GetPromotion() MetaPromotion {
-	if o == nil || IsNil(o.Promotion) {
-		var ret MetaPromotion
+// GetPromotion returns the Promotion field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateAdCreativeRequest) GetPromotion() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Promotion
+	return o.Promotion
 }
 
 // GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateAdCreativeRequest) GetPromotionOk() (*MetaPromotion, bool) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateAdCreativeRequest) GetPromotionOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.Promotion) {
-		return nil, false
+		return map[string]interface{}{}, false
 	}
 	return o.Promotion, true
 }
@@ -415,9 +417,9 @@ func (o *CreateAdCreativeRequest) HasPromotion() bool {
 	return false
 }
 
-// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
-func (o *CreateAdCreativeRequest) SetPromotion(v MetaPromotion) {
-	o.Promotion = &v
+// SetPromotion gets a reference to the given map[string]interface{} and assigns it to the Promotion field.
+func (o *CreateAdCreativeRequest) SetPromotion(v map[string]interface{}) {
+	o.Promotion = v
 }
 
 // GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
@@ -517,7 +519,7 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.UrlTags) {
 		toSerialize["urlTags"] = o.UrlTags
 	}
-	if !IsNil(o.Promotion) {
+	if o.Promotion != nil {
 		toSerialize["promotion"] = o.Promotion
 	}
 	if !IsNil(o.CreativeFeatures) {

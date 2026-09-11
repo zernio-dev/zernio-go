@@ -22,7 +22,7 @@ var _ MappedNullable = &CreateStandaloneAd200ResponseResultsInner{}
 type CreateStandaloneAd200ResponseResultsInner struct {
 	Node   *string `json:"node,omitempty"`
 	Status *string `json:"status,omitempty"`
-	// Why the node could not be validated (only on skipped).
+	// Why the node could not be validated (on skipped), or what the dry run could not check and what the request would do as sent (on validated). A Performance Max validation with no location targeting reports here that the campaign would run worldwide.
 	Reason *string `json:"reason,omitempty"`
 }
 

@@ -207,6 +207,7 @@ func main() {
 | `client.ConnectAPI.GetFacebookPages(ctx)` | List Facebook pages |
 | `client.ConnectAPI.GetGmbLocations(ctx)` | List Google Business Profile locations |
 | `client.ConnectAPI.GetLinkedInOrganizations(ctx)` | List LinkedIn orgs |
+| `client.ConnectAPI.GetPageWebhookSubscription(ctx)` | Read a Facebook Page's webhook subscription |
 | `client.ConnectAPI.GetPendingOAuthData(ctx)` | Get pending OAuth data |
 | `client.ConnectAPI.GetPinterestBoards(ctx)` | List Pinterest boards |
 | `client.ConnectAPI.GetRedditFlairs(ctx)` | List subreddit flairs |
@@ -238,6 +239,7 @@ func main() {
 | `client.ConnectAPI.ConnectWhatsAppEmbeddedSignup(ctx)` | Connect WhatsApp from Embedded Signup |
 | `client.ConnectAPI.HandleOAuthCallback(ctx)` | Complete OAuth callback |
 | `client.ConnectAPI.InitiateTelegramConnect(ctx)` | Connect Telegram directly |
+| `client.ConnectAPI.ResyncPageWebhookSubscription(ctx)` | Re-subscribe a Facebook Page to Zernio's webhooks |
 | `client.ConnectAPI.SelectFacebookPage(ctx)` | Select Facebook page |
 | `client.ConnectAPI.SelectGoogleBusinessLocation(ctx)` | Select Google Business Profile location |
 | `client.ConnectAPI.SelectInstagramAccount(ctx)` | Select the Page whose Instagram account to connect |

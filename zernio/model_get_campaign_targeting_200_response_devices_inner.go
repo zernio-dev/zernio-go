@@ -22,7 +22,7 @@ var _ MappedNullable = &GetCampaignTargeting200ResponseDevicesInner{}
 type GetCampaignTargeting200ResponseDevicesInner struct {
 	Device   *string `json:"device,omitempty"`
 	Included *bool   `json:"included,omitempty"`
-	// Always null on this read (see description).
+	// Google's bid adjustment for this device: null when it has none, 0 when the device is switched off, otherwise 0.1 to 10.
 	BidModifier NullableFloat32 `json:"bidModifier,omitempty"`
 }
 

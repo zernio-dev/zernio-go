@@ -38,9 +38,6 @@ type AdCreative struct {
 	VideoId NullableString `json:"videoId,omitempty"`
 	// Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
 	VideoUrl NullableString `json:"videoUrl,omitempty"`
-	// Meta offer read from the live creative on creation or GET /v1/ads/{adId}. Null when metadata is not returned or cannot be read. Requested values are never echoed as applied.
-	Promotion       *MetaPromotion       `json:"promotion,omitempty"`
-	PromotionStatus *MetaPromotionStatus `json:"promotionStatus,omitempty"`
 	// Meta ad creative id backing this ad. Reusable via existingCreativeId on POST /v1/ads/create.
 	CreativeId NullableString `json:"creativeId,omitempty"`
 	// Meta creative object_type (e.g. SHARE, VIDEO, PRIVACY_CHECK_FAIL, POST_DELETED). Use this to render state-aware previews: when Meta moderation strips image/video fields, only thumbnailUrl at 64x64 is available.
@@ -414,70 +411,6 @@ func (o *AdCreative) SetVideoUrlNil() {
 // UnsetVideoUrl ensures that no value is present for VideoUrl, not even an explicit nil
 func (o *AdCreative) UnsetVideoUrl() {
 	o.VideoUrl.Unset()
-}
-
-// GetPromotion returns the Promotion field value if set, zero value otherwise.
-func (o *AdCreative) GetPromotion() MetaPromotion {
-	if o == nil || IsNil(o.Promotion) {
-		var ret MetaPromotion
-		return ret
-	}
-	return *o.Promotion
-}
-
-// GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AdCreative) GetPromotionOk() (*MetaPromotion, bool) {
-	if o == nil || IsNil(o.Promotion) {
-		return nil, false
-	}
-	return o.Promotion, true
-}
-
-// HasPromotion returns a boolean if a field has been set.
-func (o *AdCreative) HasPromotion() bool {
-	if o != nil && !IsNil(o.Promotion) {
-		return true
-	}
-
-	return false
-}
-
-// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
-func (o *AdCreative) SetPromotion(v MetaPromotion) {
-	o.Promotion = &v
-}
-
-// GetPromotionStatus returns the PromotionStatus field value if set, zero value otherwise.
-func (o *AdCreative) GetPromotionStatus() MetaPromotionStatus {
-	if o == nil || IsNil(o.PromotionStatus) {
-		var ret MetaPromotionStatus
-		return ret
-	}
-	return *o.PromotionStatus
-}
-
-// GetPromotionStatusOk returns a tuple with the PromotionStatus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AdCreative) GetPromotionStatusOk() (*MetaPromotionStatus, bool) {
-	if o == nil || IsNil(o.PromotionStatus) {
-		return nil, false
-	}
-	return o.PromotionStatus, true
-}
-
-// HasPromotionStatus returns a boolean if a field has been set.
-func (o *AdCreative) HasPromotionStatus() bool {
-	if o != nil && !IsNil(o.PromotionStatus) {
-		return true
-	}
-
-	return false
-}
-
-// SetPromotionStatus gets a reference to the given MetaPromotionStatus and assigns it to the PromotionStatus field.
-func (o *AdCreative) SetPromotionStatus(v MetaPromotionStatus) {
-	o.PromotionStatus = &v
 }
 
 // GetCreativeId returns the CreativeId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1212,12 +1145,6 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if o.VideoUrl.IsSet() {
 		toSerialize["videoUrl"] = o.VideoUrl.Get()
-	}
-	if !IsNil(o.Promotion) {
-		toSerialize["promotion"] = o.Promotion
-	}
-	if !IsNil(o.PromotionStatus) {
-		toSerialize["promotionStatus"] = o.PromotionStatus
 	}
 	if o.CreativeId.IsSet() {
 		toSerialize["creativeId"] = o.CreativeId.Get()

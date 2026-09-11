@@ -24,7 +24,7 @@ type UpdateAdRequestTargeting struct {
 	Keywords []UpdateAdRequestTargetingKeywordsInner `json:"keywords,omitempty"`
 	// Google only. The FULL desired set of negative keywords for the entire ad group, independent of positives. Omit to leave negatives unchanged; [] removes all negatives. Uses the same text/match-type identity and preservation contract as keywords above. Strings and objects without matchType default to BROAD, so resending an EXACT or PHRASE negative as a bare string requests a different criterion. Campaign negatives are separate: use /v1/ads/campaigns/{campaignId}/negative-keywords to manage those.
 	NegativeKeywords []UpdateAdRequestTargetingKeywordsInner `json:"negativeKeywords,omitempty"`
-	// Google only. The FULL new set of device criteria for the campaign; devices not listed are excluded. Entries are a device name alone (included, no bid adjustment) or { device, bidModifier }.
+	// Google only. The FULL new set of device bid modifiers for the campaign. Entries are a device name alone (targeted, bid modifier reset to 1) or { device, bidModifier }. A supported device you leave out is switched off, written as a bid modifier of 0. Google never removes a device criterion, so an excluded device reads back as bidModifier 0 rather than disappearing, and a set that switches every device off returns 422. Which devices a campaign carries depends on its channel: Search campaigns have MOBILE, DESKTOP and TABLET, Display campaigns also have CONNECTED_TV, and sending a device the campaign does not carry returns 422.
 	Devices []UpdateAdRequestTargetingDevicesInner `json:"devices,omitempty"`
 	AgeMin  *int32                                 `json:"ageMin,omitempty"`
 	AgeMax  *int32                                 `json:"ageMax,omitempty"`

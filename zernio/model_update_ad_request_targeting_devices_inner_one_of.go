@@ -23,7 +23,7 @@ var _ MappedNullable = &UpdateAdRequestTargetingDevicesInnerOneOf{}
 // UpdateAdRequestTargetingDevicesInnerOneOf struct for UpdateAdRequestTargetingDevicesInnerOneOf
 type UpdateAdRequestTargetingDevicesInnerOneOf struct {
 	Device string `json:"device"`
-	// Google device bid modifier, 0.1 to 10 (minus 90% to plus 900%). Omit a device to exclude it.
+	// Google device bid modifier. 0 switches the device off (minus 100%); otherwise 0.1 to 10 (minus 90% to plus 900%). Google rejects any value between 0 and 0.1.
 	BidModifier *float32 `json:"bidModifier,omitempty"`
 }
 

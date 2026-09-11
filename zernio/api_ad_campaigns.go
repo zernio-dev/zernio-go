@@ -1334,15 +1334,11 @@ Other mutually-exclusive request shapes are selected by the body:
 - Meta-only multi-creative shape via the creatives array: one ad set with N ads sharing budget and targeting.
 - Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, Google Ads, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
 
-Meta accepts `promotion` and `creativeFeatures` on the single and attach shapes and
-as defaults for `creatives[]`. An item replaces the whole feature map; its `promotion`
-replaces the default offer, and `promotion: null` disables that default for the item.
+Meta accepts `creativeFeatures` on the single and attach shapes and as defaults for
+`creatives[]`; an item replaces the whole feature map. `promotion` is not supported on any
+shape and any object is rejected with 400.
 Reusing `existingCreativeId` uses the existing creative settings instead of new settings.
 Requested settings are persisted for lists, exports, and default ad-detail reads.
-Only ads supplied a `promotion` receive live readback; multi-create batches those reads
-in groups of up to 50 IDs without per-ad fallback. Inspect `ad.creative.promotionStatus` (or
-`ads[].creative.promotionStatus`). `not_returned` means Meta omitted the metadata;
-successful creation does not by itself prove the offer was applied or will display.
 
 Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
@@ -2346,16 +2342,9 @@ func (a *AdCampaignsAPIService) DuplicateAdSetExecute(r AdCampaignsAPIDuplicateA
 }
 
 type AdCampaignsAPIGetAdRequest struct {
-	ctx              context.Context
-	ApiService       *AdCampaignsAPIService
-	adId             string
-	refreshPromotion *bool
-}
-
-// Meta only. Read current promotion metadata from Meta and include promotionStatus. Omit for stored creative settings with no promotion-specific Graph call.
-func (r AdCampaignsAPIGetAdRequest) RefreshPromotion(refreshPromotion bool) AdCampaignsAPIGetAdRequest {
-	r.refreshPromotion = &refreshPromotion
-	return r
+	ctx        context.Context
+	ApiService *AdCampaignsAPIService
+	adId       string
 }
 
 func (r AdCampaignsAPIGetAdRequest) Execute() (*GetAd200Response, *http.Response, error) {
@@ -2379,11 +2368,8 @@ The `{adId}` path segment accepts any identifier dialect Zernio indexes for the 
 - the creative's `effective_instagram_media_id` (Instagram side)
 
 Any of the four resolve to the same ad. Caller doesn't need a translation step.
-By default, creative.promotion and creative.creativeFeatures contain stored requested
-settings, which do not confirm platform application. With `refreshPromotion=true`,
-Meta promotion metadata is read live and exposed as `ad.creative.promotion`
-with `promotionStatus`. Only `applied` confirms an offer; `not_returned` means the
-creative read succeeded without promotion metadata, and `unavailable` means it failed.
+`creative.creativeFeatures` holds the stored requested settings, which do not confirm
+platform application.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs. See description for details.
@@ -2420,13 +2406,6 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.refreshPromotion != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "refreshPromotion", r.refreshPromotion, "form", "")
-	} else {
-		var defaultValue bool = false
-		parameterAddToHeaderOrQuery(localVarQueryParams, "refreshPromotion", defaultValue, "form", "")
-		r.refreshPromotion = &defaultValue
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -3385,10 +3364,11 @@ so an integrator can build an editor around it. Cached for the quota window
 (10 minutes fresh, up to 7 days last-good), not always a live read. Google
 only; every other platform returns 501.
 
-`devices` always lists all four device types with `included` reflecting
-Google's negative device criteria (a device absent from any negative
-criterion is included by default). This read has no bid-modifier source,
-so `bidModifier` is always `null` even for a device with one configured.
+`devices` lists the device criteria the campaign carries, which depends on
+its channel: Search campaigns have MOBILE, DESKTOP and TABLET, Display
+campaigns also have CONNECTED_TV. `bidModifier` is Google's bid adjustment
+for that device, `null` when it has none, and `0` when the device is
+switched off; `included` is false for exactly that case.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Google platform campaign ID
@@ -6228,7 +6208,9 @@ Per-platform support:
     `targeting.countries` / `regions` / `cities` / `zips` / `metros`), and LANGUAGE
     edits via `targeting.languages`.
     Each list you send becomes the FULL new set of its kind (criteria not in the
-    list are removed); a kind left out is untouched. Any other `targeting` field
+    list are removed, except devices, which Google cannot remove and which are
+    switched off with a bid modifier of 0 instead); a kind left out is untouched.
+    Any other `targeting` field
     returns 400: Google cannot mutate it post-create without recreating
     the campaign. Creative edits are dispatched on the ad's `advertisingChannelType`,
     and every supported field replaces a whole set; a field you omit is preserved.
@@ -6610,6 +6592,12 @@ it became. `skippedReasons` names which case applies.
 
 On Meta this flips the campaign only. An ad set paused in its own right stays paused, so pair this with
 PUT /v1/ads/ad-sets/{adSetId}/status when you also need the ad set switched back on.
+
+Google keeps an independent on/off switch at campaign, ad group and ad level and the most restrictive
+one wins, so `active` switches the campaign on TOGETHER with the ad groups and ads Zernio tracks under
+it, in one mutate. Without that the campaign reads ENABLED while a paused ad group or ad keeps it from
+serving. `paused` writes the campaign alone, which already stops delivery and leaves each ad's own
+switch as you set it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -7821,6 +7809,11 @@ creation must stay editable afterwards. Send at least one of `devices`,
 existing criteria on the campaign (a full set, not a delta). Fields left
 out of the body are untouched. Google only; every other platform returns
 501.
+
+`devices` is the full set of device bid modifiers: a supported device you
+leave out is switched off with a bid modifier of 0, since Google cannot
+remove a device criterion. A device the campaign's channel does not carry,
+and a set that switches every device off, both return 422.
 
 `locations` accepts the same shapes as campaign creation: a bare array of
 ISO country codes, or an object with `countries`/`regions`/`cities`/`zips`/`metros`

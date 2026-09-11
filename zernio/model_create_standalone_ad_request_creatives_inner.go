@@ -22,8 +22,6 @@ var _ MappedNullable = &CreateStandaloneAdRequestCreativesInner{}
 
 // CreateStandaloneAdRequestCreativesInner Each creative must supply EXACTLY ONE of `imageUrl` (image creative) or `video` (video creative).
 type CreateStandaloneAdRequestCreativesInner struct {
-	// Overrides the top-level offer for this item. Omit to inherit; null disables the inherited offer.
-	Promotion *MetaPromotion `json:"promotion,omitempty"`
 	// Replaces the entire top-level creativeFeatures map for this item. Omit to inherit; an empty map clears these defaults.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Exact name for this ad. Falls back to `<name> #N` (N = 1-based position).
@@ -60,38 +58,6 @@ func NewCreateStandaloneAdRequestCreativesInner(headline string, body string, li
 func NewCreateStandaloneAdRequestCreativesInnerWithDefaults() *CreateStandaloneAdRequestCreativesInner {
 	this := CreateStandaloneAdRequestCreativesInner{}
 	return &this
-}
-
-// GetPromotion returns the Promotion field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCreativesInner) GetPromotion() MetaPromotion {
-	if o == nil || IsNil(o.Promotion) {
-		var ret MetaPromotion
-		return ret
-	}
-	return *o.Promotion
-}
-
-// GetPromotionOk returns a tuple with the Promotion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCreativesInner) GetPromotionOk() (*MetaPromotion, bool) {
-	if o == nil || IsNil(o.Promotion) {
-		return nil, false
-	}
-	return o.Promotion, true
-}
-
-// HasPromotion returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestCreativesInner) HasPromotion() bool {
-	if o != nil && !IsNil(o.Promotion) {
-		return true
-	}
-
-	return false
-}
-
-// SetPromotion gets a reference to the given MetaPromotion and assigns it to the Promotion field.
-func (o *CreateStandaloneAdRequestCreativesInner) SetPromotion(v MetaPromotion) {
-	o.Promotion = &v
 }
 
 // GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
@@ -360,9 +326,6 @@ func (o CreateStandaloneAdRequestCreativesInner) MarshalJSON() ([]byte, error) {
 
 func (o CreateStandaloneAdRequestCreativesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Promotion) {
-		toSerialize["promotion"] = o.Promotion
-	}
 	if !IsNil(o.CreativeFeatures) {
 		toSerialize["creativeFeatures"] = o.CreativeFeatures
 	}
