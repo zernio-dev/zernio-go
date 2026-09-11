@@ -24,9 +24,13 @@ type OnWhatsAppNumberActionRequiredRequest struct {
 	Id    *string `json:"id,omitempty"`
 	Event *string `json:"event,omitempty"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
-	Timestamp *time.Time                              `json:"timestamp,omitempty"`
-	Reason    *string                                 `json:"reason,omitempty"`
-	Number    *OnWhatsAppNumberActivatedRequestNumber `json:"number,omitempty"`
+	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Reason    *string    `json:"reason,omitempty"`
+	// Every requirement on the order with the reviewer's current verdict. Omitted when the order's requirements could not be read.
+	Requirements []OnWhatsAppNumberActionRequiredRequestRequirementsInner `json:"requirements,omitempty"`
+	// When the reviewer last commented on the order. Omitted when there is no reviewer comment.
+	ReviewedAt *time.Time                              `json:"reviewedAt,omitempty"`
+	Number     *OnWhatsAppNumberActivatedRequestNumber `json:"number,omitempty"`
 }
 
 // NewOnWhatsAppNumberActionRequiredRequest instantiates a new OnWhatsAppNumberActionRequiredRequest object
@@ -174,6 +178,70 @@ func (o *OnWhatsAppNumberActionRequiredRequest) SetReason(v string) {
 	o.Reason = &v
 }
 
+// GetRequirements returns the Requirements field value if set, zero value otherwise.
+func (o *OnWhatsAppNumberActionRequiredRequest) GetRequirements() []OnWhatsAppNumberActionRequiredRequestRequirementsInner {
+	if o == nil || IsNil(o.Requirements) {
+		var ret []OnWhatsAppNumberActionRequiredRequestRequirementsInner
+		return ret
+	}
+	return o.Requirements
+}
+
+// GetRequirementsOk returns a tuple with the Requirements field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OnWhatsAppNumberActionRequiredRequest) GetRequirementsOk() ([]OnWhatsAppNumberActionRequiredRequestRequirementsInner, bool) {
+	if o == nil || IsNil(o.Requirements) {
+		return nil, false
+	}
+	return o.Requirements, true
+}
+
+// HasRequirements returns a boolean if a field has been set.
+func (o *OnWhatsAppNumberActionRequiredRequest) HasRequirements() bool {
+	if o != nil && !IsNil(o.Requirements) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequirements gets a reference to the given []OnWhatsAppNumberActionRequiredRequestRequirementsInner and assigns it to the Requirements field.
+func (o *OnWhatsAppNumberActionRequiredRequest) SetRequirements(v []OnWhatsAppNumberActionRequiredRequestRequirementsInner) {
+	o.Requirements = v
+}
+
+// GetReviewedAt returns the ReviewedAt field value if set, zero value otherwise.
+func (o *OnWhatsAppNumberActionRequiredRequest) GetReviewedAt() time.Time {
+	if o == nil || IsNil(o.ReviewedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.ReviewedAt
+}
+
+// GetReviewedAtOk returns a tuple with the ReviewedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OnWhatsAppNumberActionRequiredRequest) GetReviewedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.ReviewedAt) {
+		return nil, false
+	}
+	return o.ReviewedAt, true
+}
+
+// HasReviewedAt returns a boolean if a field has been set.
+func (o *OnWhatsAppNumberActionRequiredRequest) HasReviewedAt() bool {
+	if o != nil && !IsNil(o.ReviewedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetReviewedAt gets a reference to the given time.Time and assigns it to the ReviewedAt field.
+func (o *OnWhatsAppNumberActionRequiredRequest) SetReviewedAt(v time.Time) {
+	o.ReviewedAt = &v
+}
+
 // GetNumber returns the Number field value if set, zero value otherwise.
 func (o *OnWhatsAppNumberActionRequiredRequest) GetNumber() OnWhatsAppNumberActivatedRequestNumber {
 	if o == nil || IsNil(o.Number) {
@@ -227,6 +295,12 @@ func (o OnWhatsAppNumberActionRequiredRequest) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Reason) {
 		toSerialize["reason"] = o.Reason
+	}
+	if !IsNil(o.Requirements) {
+		toSerialize["requirements"] = o.Requirements
+	}
+	if !IsNil(o.ReviewedAt) {
+		toSerialize["reviewedAt"] = o.ReviewedAt
 	}
 	if !IsNil(o.Number) {
 		toSerialize["number"] = o.Number
