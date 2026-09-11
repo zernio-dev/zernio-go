@@ -33,9 +33,11 @@ type AnalyticsListResponsePostsInner struct {
 	Platform        *string             `json:"platform,omitempty"`
 	PlatformPostUrl *string             `json:"platformPostUrl,omitempty"`
 	IsExternal      *bool               `json:"isExternal,omitempty"`
-	ProfileId       NullableString      `json:"profileId,omitempty"`
-	ThumbnailUrl    *string             `json:"thumbnailUrl,omitempty"`
-	MediaType       *string             `json:"mediaType,omitempty"`
+	// True when this post's metrics include paid delivery, so organic reporting should exclude it. Set for LinkedIn dark posts and for TikTok posts that one of your TikTok ads promotes (Spark / boosted). TikTok exposes no ad flag of its own, so a video created by an uploaded-asset (non-Spark) TikTok ad is posted to the profile with a fresh organic id and cannot be detected: those still report as false.
+	IsAd         *bool          `json:"isAd,omitempty"`
+	ProfileId    NullableString `json:"profileId,omitempty"`
+	ThumbnailUrl *string        `json:"thumbnailUrl,omitempty"`
+	MediaType    *string        `json:"mediaType,omitempty"`
 	// All media items for this post. Carousel posts contain one entry per slide.
 	MediaItems []AnalyticsListResponsePostsInnerMediaItemsInner `json:"mediaItems,omitempty"`
 	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
@@ -428,6 +430,38 @@ func (o *AnalyticsListResponsePostsInner) SetIsExternal(v bool) {
 	o.IsExternal = &v
 }
 
+// GetIsAd returns the IsAd field value if set, zero value otherwise.
+func (o *AnalyticsListResponsePostsInner) GetIsAd() bool {
+	if o == nil || IsNil(o.IsAd) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAd
+}
+
+// GetIsAdOk returns a tuple with the IsAd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AnalyticsListResponsePostsInner) GetIsAdOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAd) {
+		return nil, false
+	}
+	return o.IsAd, true
+}
+
+// HasIsAd returns a boolean if a field has been set.
+func (o *AnalyticsListResponsePostsInner) HasIsAd() bool {
+	if o != nil && !IsNil(o.IsAd) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAd gets a reference to the given bool and assigns it to the IsAd field.
+func (o *AnalyticsListResponsePostsInner) SetIsAd(v bool) {
+	o.IsAd = &v
+}
+
 // GetProfileId returns the ProfileId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AnalyticsListResponsePostsInner) GetProfileId() string {
 	if o == nil || IsNil(o.ProfileId.Get()) {
@@ -737,6 +771,9 @@ func (o AnalyticsListResponsePostsInner) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.IsExternal) {
 		toSerialize["isExternal"] = o.IsExternal
+	}
+	if !IsNil(o.IsAd) {
+		toSerialize["isAd"] = o.IsAd
 	}
 	if o.ProfileId.IsSet() {
 		toSerialize["profileId"] = o.ProfileId.Get()
