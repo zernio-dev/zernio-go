@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadComment type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadComment{}
 
-// WebhookPayloadComment Webhook payload for comment received events (Instagram, Facebook, X, YouTube, LinkedIn, Bluesky, Reddit, TikTok). TikTok events carry only the author id: the comment.update webhook has no username, picture or owner flag.
+// WebhookPayloadComment Webhook payload for comment received events (Instagram, Facebook, Threads, YouTube, LinkedIn, Bluesky, Reddit, TikTok). X/Twitter does NOT fire this event. TikTok events carry only the author id: the comment.update webhook has no username, picture or owner flag.
 type WebhookPayloadComment struct {
 	// Stable webhook event ID
 	Id      string                       `json:"id"`
