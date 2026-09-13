@@ -203,6 +203,7 @@ func main() {
 | `client.ConnectAPI.ListSnapchatProfiles(ctx)` | List Snapchat profiles |
 | `client.ConnectAPI.ListWhatsAppPhoneNumbers(ctx)` | List numbers for selection |
 | `client.ConnectAPI.CreatePinterestBoard(ctx)` | Create Pinterest board |
+| `client.ConnectAPI.CreateYoutubePlaylist(ctx)` | Create YouTube playlist |
 | `client.ConnectAPI.GetConnectUrl(ctx)` | Get OAuth connect URL |
 | `client.ConnectAPI.GetFacebookPages(ctx)` | List Facebook pages |
 | `client.ConnectAPI.GetGmbLocations(ctx)` | List Google Business Profile locations |
