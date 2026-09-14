@@ -105,6 +105,8 @@ type CreateStandaloneAdRequest struct {
 	Targeting *TargetingSpec `json:"targeting,omitempty"`
 	// ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no other geo targeting (flat or nested `targeting`) is provided. (LinkedIn and OpenAI Ads currently honour country-level targeting only; any other targeting field returns 400 for OpenAI Ads.)
 	Countries []string `json:"countries,omitempty"`
+	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
+	CountryGroups []string `json:"countryGroups,omitempty"`
 	// City-level geo targeting (Meta and TikTok). Each city is targeted by the platform's opaque `key` (the city ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`. Optional `radius` + `distance_unit` (Meta only) extend the targeting beyond the city limits (e.g. radius 25 km around the city center). Both must be set together, or both omitted (Meta defaults to ~16 km when omitted).  On Meta, cannot overlap with the same country in `countries` (Meta returns a \"locations overlap\" error). Either drop the country or scope it to a different country. On TikTok, keys are numeric location ids and can be sent without `countries`.
 	Cities []CreateStandaloneAdRequestCitiesInner `json:"cities,omitempty"`
 	// Region-level (state/province) geo targeting (Meta and TikTok). Each region is targeted by the platform's opaque `key` (the region ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`.
@@ -1642,6 +1644,38 @@ func (o *CreateStandaloneAdRequest) HasCountries() bool {
 // SetCountries gets a reference to the given []string and assigns it to the Countries field.
 func (o *CreateStandaloneAdRequest) SetCountries(v []string) {
 	o.Countries = v
+}
+
+// GetCountryGroups returns the CountryGroups field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetCountryGroups() []string {
+	if o == nil || IsNil(o.CountryGroups) {
+		var ret []string
+		return ret
+	}
+	return o.CountryGroups
+}
+
+// GetCountryGroupsOk returns a tuple with the CountryGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetCountryGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CountryGroups) {
+		return nil, false
+	}
+	return o.CountryGroups, true
+}
+
+// HasCountryGroups returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasCountryGroups() bool {
+	if o != nil && !IsNil(o.CountryGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryGroups gets a reference to the given []string and assigns it to the CountryGroups field.
+func (o *CreateStandaloneAdRequest) SetCountryGroups(v []string) {
+	o.CountryGroups = v
 }
 
 // GetCities returns the Cities field value if set, zero value otherwise.
@@ -3708,6 +3742,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries
+	}
+	if !IsNil(o.CountryGroups) {
+		toSerialize["countryGroups"] = o.CountryGroups
 	}
 	if !IsNil(o.Cities) {
 		toSerialize["cities"] = o.Cities

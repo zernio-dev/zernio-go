@@ -20,8 +20,10 @@ var _ MappedNullable = &TargetingSpecExcludedLocations{}
 
 // TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape: excluded cities can carry a radius catchment and excluded custom (lat/lng) pins are supported, both on Meta (excluded_geo_locations).
 type TargetingSpecExcludedLocations struct {
-	Countries []string                                                            `json:"countries,omitempty"`
-	Regions   []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"regions,omitempty"`
+	Countries []string `json:"countries,omitempty"`
+	// Meta only. Continents and trade blocs to exclude (`excluded_geo_locations.country_groups`).
+	CountryGroups []string                                                            `json:"countryGroups,omitempty"`
+	Regions       []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"regions,omitempty"`
 	// Cities to exclude. Optional `radius` + `distanceUnit` exclude a catchment around the city (both must be set together or both omitted); Meta honours the radius on excluded cities.
 	Cities []TargetingSpecExcludedLocationsCitiesInner                         `json:"cities,omitempty"`
 	Zips   []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"zips,omitempty"`
@@ -80,6 +82,38 @@ func (o *TargetingSpecExcludedLocations) HasCountries() bool {
 // SetCountries gets a reference to the given []string and assigns it to the Countries field.
 func (o *TargetingSpecExcludedLocations) SetCountries(v []string) {
 	o.Countries = v
+}
+
+// GetCountryGroups returns the CountryGroups field value if set, zero value otherwise.
+func (o *TargetingSpecExcludedLocations) GetCountryGroups() []string {
+	if o == nil || IsNil(o.CountryGroups) {
+		var ret []string
+		return ret
+	}
+	return o.CountryGroups
+}
+
+// GetCountryGroupsOk returns a tuple with the CountryGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpecExcludedLocations) GetCountryGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CountryGroups) {
+		return nil, false
+	}
+	return o.CountryGroups, true
+}
+
+// HasCountryGroups returns a boolean if a field has been set.
+func (o *TargetingSpecExcludedLocations) HasCountryGroups() bool {
+	if o != nil && !IsNil(o.CountryGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryGroups gets a reference to the given []string and assigns it to the CountryGroups field.
+func (o *TargetingSpecExcludedLocations) SetCountryGroups(v []string) {
+	o.CountryGroups = v
 }
 
 // GetRegions returns the Regions field value if set, zero value otherwise.
@@ -286,6 +320,9 @@ func (o TargetingSpecExcludedLocations) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries
+	}
+	if !IsNil(o.CountryGroups) {
+		toSerialize["countryGroups"] = o.CountryGroups
 	}
 	if !IsNil(o.Regions) {
 		toSerialize["regions"] = o.Regions
