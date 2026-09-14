@@ -36,7 +36,10 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	CommenterIsFollower    *bool  `json:"commenterIsFollower,omitempty"`
 	CommenterFollowerCount *int32 `json:"commenterFollowerCount,omitempty"`
 	// DM error message if status is failed
-	Error *string `json:"error,omitempty"`
+	Error         *string                                                `json:"error,omitempty"`
+	PlatformError *GetCommentAutomation200ResponseLogsInnerPlatformError `json:"platformError,omitempty"`
+	// True when the failed send spent the comment's single Instagram private reply (subcode 1545133 or 2534023), the same rule as `details.privateReplyConsumed` on the private-reply endpoint. Absent on direct DMs, on Facebook, and on rows written before this field existed.
+	PrivateReplyConsumed *bool `json:"privateReplyConsumed,omitempty"`
 	// Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
 	CommentReplyStatus *string `json:"commentReplyStatus,omitempty"`
 	// Public-reply error message if commentReplyStatus is failed
@@ -415,6 +418,70 @@ func (o *GetCommentAutomation200ResponseLogsInner) SetError(v string) {
 	o.Error = &v
 }
 
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetPlatformError() GetCommentAutomation200ResponseLogsInnerPlatformError {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret GetCommentAutomation200ResponseLogsInnerPlatformError
+		return ret
+	}
+	return *o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetPlatformErrorOk() (*GetCommentAutomation200ResponseLogsInnerPlatformError, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return nil, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given GetCommentAutomation200ResponseLogsInnerPlatformError and assigns it to the PlatformError field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetPlatformError(v GetCommentAutomation200ResponseLogsInnerPlatformError) {
+	o.PlatformError = &v
+}
+
+// GetPrivateReplyConsumed returns the PrivateReplyConsumed field value if set, zero value otherwise.
+func (o *GetCommentAutomation200ResponseLogsInner) GetPrivateReplyConsumed() bool {
+	if o == nil || IsNil(o.PrivateReplyConsumed) {
+		var ret bool
+		return ret
+	}
+	return *o.PrivateReplyConsumed
+}
+
+// GetPrivateReplyConsumedOk returns a tuple with the PrivateReplyConsumed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) GetPrivateReplyConsumedOk() (*bool, bool) {
+	if o == nil || IsNil(o.PrivateReplyConsumed) {
+		return nil, false
+	}
+	return o.PrivateReplyConsumed, true
+}
+
+// HasPrivateReplyConsumed returns a boolean if a field has been set.
+func (o *GetCommentAutomation200ResponseLogsInner) HasPrivateReplyConsumed() bool {
+	if o != nil && !IsNil(o.PrivateReplyConsumed) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateReplyConsumed gets a reference to the given bool and assigns it to the PrivateReplyConsumed field.
+func (o *GetCommentAutomation200ResponseLogsInner) SetPrivateReplyConsumed(v bool) {
+	o.PrivateReplyConsumed = &v
+}
+
 // GetCommentReplyStatus returns the CommentReplyStatus field value if set, zero value otherwise.
 func (o *GetCommentAutomation200ResponseLogsInner) GetCommentReplyStatus() string {
 	if o == nil || IsNil(o.CommentReplyStatus) {
@@ -585,6 +652,12 @@ func (o GetCommentAutomation200ResponseLogsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
+	}
+	if !IsNil(o.PrivateReplyConsumed) {
+		toSerialize["privateReplyConsumed"] = o.PrivateReplyConsumed
 	}
 	if !IsNil(o.CommentReplyStatus) {
 		toSerialize["commentReplyStatus"] = o.CommentReplyStatus
