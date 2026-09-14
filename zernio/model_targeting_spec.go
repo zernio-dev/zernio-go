@@ -34,6 +34,8 @@ type TargetingSpec struct {
 	Zips []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"zips,omitempty"`
 	// DMA / metro-area targeting. `key` is the platform's metro ID (e.g. Meta `DMA:807`).
 	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"metros,omitempty"`
+	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it, and is also accepted under `excludedLocations`. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
+	CountryGroups []string `json:"countryGroups,omitempty"`
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
@@ -310,6 +312,38 @@ func (o *TargetingSpec) HasMetros() bool {
 // SetMetros gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner and assigns it to the Metros field.
 func (o *TargetingSpec) SetMetros(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner) {
 	o.Metros = v
+}
+
+// GetCountryGroups returns the CountryGroups field value if set, zero value otherwise.
+func (o *TargetingSpec) GetCountryGroups() []string {
+	if o == nil || IsNil(o.CountryGroups) {
+		var ret []string
+		return ret
+	}
+	return o.CountryGroups
+}
+
+// GetCountryGroupsOk returns a tuple with the CountryGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetCountryGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CountryGroups) {
+		return nil, false
+	}
+	return o.CountryGroups, true
+}
+
+// HasCountryGroups returns a boolean if a field has been set.
+func (o *TargetingSpec) HasCountryGroups() bool {
+	if o != nil && !IsNil(o.CountryGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryGroups gets a reference to the given []string and assigns it to the CountryGroups field.
+func (o *TargetingSpec) SetCountryGroups(v []string) {
+	o.CountryGroups = v
 }
 
 // GetCustomLocations returns the CustomLocations field value if set, zero value otherwise.
@@ -918,6 +952,9 @@ func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metros) {
 		toSerialize["metros"] = o.Metros
+	}
+	if !IsNil(o.CountryGroups) {
+		toSerialize["countryGroups"] = o.CountryGroups
 	}
 	if !IsNil(o.CustomLocations) {
 		toSerialize["customLocations"] = o.CustomLocations

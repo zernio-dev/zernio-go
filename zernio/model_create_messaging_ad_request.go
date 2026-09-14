@@ -68,6 +68,8 @@ type CreateMessagingAdRequest struct {
 	Zips []CtwaAdRequestBodyZipsInner `json:"zips,omitempty"`
 	// DMA / metro-area geo targeting. `key` is Meta's metro id (e.g. `DMA:807`).
 	Metros []CtwaAdRequestBodyZipsInner `json:"metros,omitempty"`
+	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it, and is also accepted under `excludedLocations`. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
+	CountryGroups []string `json:"countryGroups,omitempty"`
 	// Point-radius geo (Meta `geo_locations.custom_locations`). Use for targeting a radius around a specific lat/long when no Meta city/region key fits. `distanceUnit` is required.
 	CustomLocations []CtwaAdRequestBodyCustomLocationsInner   `json:"customLocations,omitempty"`
 	AgeMin          *int32                                    `json:"ageMin,omitempty"`
@@ -869,6 +871,38 @@ func (o *CreateMessagingAdRequest) SetMetros(v []CtwaAdRequestBodyZipsInner) {
 	o.Metros = v
 }
 
+// GetCountryGroups returns the CountryGroups field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetCountryGroups() []string {
+	if o == nil || IsNil(o.CountryGroups) {
+		var ret []string
+		return ret
+	}
+	return o.CountryGroups
+}
+
+// GetCountryGroupsOk returns a tuple with the CountryGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetCountryGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CountryGroups) {
+		return nil, false
+	}
+	return o.CountryGroups, true
+}
+
+// HasCountryGroups returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasCountryGroups() bool {
+	if o != nil && !IsNil(o.CountryGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryGroups gets a reference to the given []string and assigns it to the CountryGroups field.
+func (o *CreateMessagingAdRequest) SetCountryGroups(v []string) {
+	o.CountryGroups = v
+}
+
 // GetCustomLocations returns the CustomLocations field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetCustomLocations() []CtwaAdRequestBodyCustomLocationsInner {
 	if o == nil || IsNil(o.CustomLocations) {
@@ -1512,6 +1546,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Metros) {
 		toSerialize["metros"] = o.Metros
+	}
+	if !IsNil(o.CountryGroups) {
+		toSerialize["countryGroups"] = o.CountryGroups
 	}
 	if !IsNil(o.CustomLocations) {
 		toSerialize["customLocations"] = o.CustomLocations
