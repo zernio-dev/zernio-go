@@ -48,8 +48,11 @@ type TikTokPlatformData struct {
 	VideoCoverImageUrl *string `json:"videoCoverImageUrl,omitempty"`
 	// Optional for photo carousels. Index of image to use as cover, 0-based (defaults to 0/first image).
 	PhotoCoverIndex *int32 `json:"photoCoverIndex,omitempty"`
-	// When true, TikTok may add recommended music (photos only)
-	AutoAddMusic *bool `json:"autoAddMusic,omitempty"`
+	// When true, TikTok may add recommended music (photos only). With the brand-organic or branded-content toggle on, TikTok allows Commercial Music Library tracks only, so this attaches nothing there; use musicSoundInfo instead.
+	AutoAddMusic   *bool                             `json:"autoAddMusic,omitempty"`
+	MusicSoundInfo *TikTokPlatformDataMusicSoundInfo `json:"musicSoundInfo,omitempty"`
+	// Volume of the video's own sound when a commercial track is attached (0 to 100). Requires musicSoundInfo. Video posts only.
+	VideoOriginalSoundVolume *int32 `json:"videoOriginalSoundVolume,omitempty"`
 	// Set true to disclose AI-generated content. Accounts connected through the TikTok for Business app carry the disclosure on video posts only: the business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed. Send draft true to publish such a photo post and set the disclosure in the TikTok app.
 	VideoMadeWithAi *bool `json:"videoMadeWithAi,omitempty"`
 	// Optional long-form caption for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated. Falls back to the post content when omitted.
@@ -553,6 +556,70 @@ func (o *TikTokPlatformData) SetAutoAddMusic(v bool) {
 	o.AutoAddMusic = &v
 }
 
+// GetMusicSoundInfo returns the MusicSoundInfo field value if set, zero value otherwise.
+func (o *TikTokPlatformData) GetMusicSoundInfo() TikTokPlatformDataMusicSoundInfo {
+	if o == nil || IsNil(o.MusicSoundInfo) {
+		var ret TikTokPlatformDataMusicSoundInfo
+		return ret
+	}
+	return *o.MusicSoundInfo
+}
+
+// GetMusicSoundInfoOk returns a tuple with the MusicSoundInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TikTokPlatformData) GetMusicSoundInfoOk() (*TikTokPlatformDataMusicSoundInfo, bool) {
+	if o == nil || IsNil(o.MusicSoundInfo) {
+		return nil, false
+	}
+	return o.MusicSoundInfo, true
+}
+
+// HasMusicSoundInfo returns a boolean if a field has been set.
+func (o *TikTokPlatformData) HasMusicSoundInfo() bool {
+	if o != nil && !IsNil(o.MusicSoundInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetMusicSoundInfo gets a reference to the given TikTokPlatformDataMusicSoundInfo and assigns it to the MusicSoundInfo field.
+func (o *TikTokPlatformData) SetMusicSoundInfo(v TikTokPlatformDataMusicSoundInfo) {
+	o.MusicSoundInfo = &v
+}
+
+// GetVideoOriginalSoundVolume returns the VideoOriginalSoundVolume field value if set, zero value otherwise.
+func (o *TikTokPlatformData) GetVideoOriginalSoundVolume() int32 {
+	if o == nil || IsNil(o.VideoOriginalSoundVolume) {
+		var ret int32
+		return ret
+	}
+	return *o.VideoOriginalSoundVolume
+}
+
+// GetVideoOriginalSoundVolumeOk returns a tuple with the VideoOriginalSoundVolume field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TikTokPlatformData) GetVideoOriginalSoundVolumeOk() (*int32, bool) {
+	if o == nil || IsNil(o.VideoOriginalSoundVolume) {
+		return nil, false
+	}
+	return o.VideoOriginalSoundVolume, true
+}
+
+// HasVideoOriginalSoundVolume returns a boolean if a field has been set.
+func (o *TikTokPlatformData) HasVideoOriginalSoundVolume() bool {
+	if o != nil && !IsNil(o.VideoOriginalSoundVolume) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideoOriginalSoundVolume gets a reference to the given int32 and assigns it to the VideoOriginalSoundVolume field.
+func (o *TikTokPlatformData) SetVideoOriginalSoundVolume(v int32) {
+	o.VideoOriginalSoundVolume = &v
+}
+
 // GetVideoMadeWithAi returns the VideoMadeWithAi field value if set, zero value otherwise.
 func (o *TikTokPlatformData) GetVideoMadeWithAi() bool {
 	if o == nil || IsNil(o.VideoMadeWithAi) {
@@ -671,6 +738,12 @@ func (o TikTokPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AutoAddMusic) {
 		toSerialize["autoAddMusic"] = o.AutoAddMusic
+	}
+	if !IsNil(o.MusicSoundInfo) {
+		toSerialize["musicSoundInfo"] = o.MusicSoundInfo
+	}
+	if !IsNil(o.VideoOriginalSoundVolume) {
+		toSerialize["videoOriginalSoundVolume"] = o.VideoOriginalSoundVolume
 	}
 	if !IsNil(o.VideoMadeWithAi) {
 		toSerialize["videoMadeWithAi"] = o.VideoMadeWithAi
