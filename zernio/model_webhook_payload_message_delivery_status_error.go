@@ -23,7 +23,11 @@ type WebhookPayloadMessageDeliveryStatusError struct {
 	Code    *int32  `json:"code,omitempty"`
 	Title   *string `json:"title,omitempty"`
 	Message *string `json:"message,omitempty"`
-	// Plain-language translation of `code` (e.g. for 131026, that the recipient has likely opted out of marketing messages while utility templates are unaffected). Null for unmapped codes; fall back to title/message.
+	// Platform's extended detail for `code` (WhatsApp: Meta's `error_data.details`), when the platform sent one. Absent on SMS.
+	Details *string `json:"details,omitempty"`
+	// Link to the platform's documentation for `code`, when the platform sent one.
+	Href *string `json:"href,omitempty"`
+	// Plain-language translation of `code` (e.g. for 131026, that the recipient has likely opted out of marketing messages while utility templates are unaffected, or for 131031, that Meta restricted the WhatsApp Business Account). Null for unmapped codes; fall back to title/message.
 	Explanation NullableString `json:"explanation,omitempty"`
 }
 
@@ -140,6 +144,70 @@ func (o *WebhookPayloadMessageDeliveryStatusError) SetMessage(v string) {
 	o.Message = &v
 }
 
+// GetDetails returns the Details field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageDeliveryStatusError) GetDetails() string {
+	if o == nil || IsNil(o.Details) {
+		var ret string
+		return ret
+	}
+	return *o.Details
+}
+
+// GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageDeliveryStatusError) GetDetailsOk() (*string, bool) {
+	if o == nil || IsNil(o.Details) {
+		return nil, false
+	}
+	return o.Details, true
+}
+
+// HasDetails returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageDeliveryStatusError) HasDetails() bool {
+	if o != nil && !IsNil(o.Details) {
+		return true
+	}
+
+	return false
+}
+
+// SetDetails gets a reference to the given string and assigns it to the Details field.
+func (o *WebhookPayloadMessageDeliveryStatusError) SetDetails(v string) {
+	o.Details = &v
+}
+
+// GetHref returns the Href field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageDeliveryStatusError) GetHref() string {
+	if o == nil || IsNil(o.Href) {
+		var ret string
+		return ret
+	}
+	return *o.Href
+}
+
+// GetHrefOk returns a tuple with the Href field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageDeliveryStatusError) GetHrefOk() (*string, bool) {
+	if o == nil || IsNil(o.Href) {
+		return nil, false
+	}
+	return o.Href, true
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageDeliveryStatusError) HasHref() bool {
+	if o != nil && !IsNil(o.Href) {
+		return true
+	}
+
+	return false
+}
+
+// SetHref gets a reference to the given string and assigns it to the Href field.
+func (o *WebhookPayloadMessageDeliveryStatusError) SetHref(v string) {
+	o.Href = &v
+}
+
 // GetExplanation returns the Explanation field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WebhookPayloadMessageDeliveryStatusError) GetExplanation() string {
 	if o == nil || IsNil(o.Explanation.Get()) {
@@ -201,6 +269,12 @@ func (o WebhookPayloadMessageDeliveryStatusError) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.Details) {
+		toSerialize["details"] = o.Details
+	}
+	if !IsNil(o.Href) {
+		toSerialize["href"] = o.Href
 	}
 	if o.Explanation.IsSet() {
 		toSerialize["explanation"] = o.Explanation.Get()
