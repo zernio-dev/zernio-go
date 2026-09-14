@@ -185,6 +185,8 @@ Supported platforms: X, Bluesky, Reddit, WhatsApp, SMS, and Slack. Other platfor
 
 **WhatsApp.** This is the endpoint for sending an approved template message to a phone number. Provide templateName, templateLanguage, and templateParams (variable values for the text header, body and dynamic URL buttons, in that order), with the recipient phone in participantId. A template is required because WhatsApp does not permit freeform messages to open a conversation; a missing template returns TEMPLATE_REQUIRED.
 
+Before sending, Zernio must resolve an exact APPROVED template definition matching both templateName and templateLanguage. If Meta rejects that lookup, or the exact approved definition is absent, Zernio sends no message and returns the canonical platform error instead. Lookup errors use code `platform_api_error`, type `platform_error`, and platform `whatsapp`. Sanitized Meta code, message, and `error_data.details` are returned in `platformError`; `details` identifies `phase: template_lookup`, the query-free endpoint, upstream status, and only safe provider usage or retry headers.
+
 - Templates with media headers (image, video, document) are handled automatically: Zernio reads the approved template definition and fills the header at send time with the template's approved sample asset. To send a DIFFERENT asset per message (e.g. a distinct invoice PDF for each recipient), pass the headerMedia field with a public link (or a Meta media id); it overrides the sample for that send.
 - A template whose approved header format is LOCATION has no header asset to reconstruct at all: Meta only accepts the location at send time, so pass headerLocation (latitude and longitude required) whenever such a template is sent; headerMedia and headerLocation cannot both be supplied.
 - A button that carries its own value at send time (a copy-code button holding a Pix payment code or a coupon, a flow token) is sent with templateButtonParams, addressed by the button's index; templateParams covers text variables and dynamic URL buttons only.
@@ -330,7 +332,27 @@ func (a *MessagesAPIService) CreateInboxConversationExecute(r MessagesAPICreateI
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v WhatsAppTemplateLookupError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v WhatsAppTemplateLookupError
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -1865,6 +1887,14 @@ See the `template` field below for the exact shape. To send a template
 to a phone number you have no conversation with yet, use the
 create-conversation endpoint (POST /v1/inbox/conversations) instead.
 
+Zernio resolves the exact APPROVED template name and language before any
+WhatsApp template send. A failed lookup or missing exact definition sends
+no message and returns code `platform_api_error`, type `platform_error`,
+and platform `whatsapp`. Sanitized Meta code, message, and
+`error_data.details` are returned in `platformError`; `details` identifies
+`phase: template_lookup`, the query-free endpoint, upstream status, and
+only safe provider usage or retry headers.
+
 WhatsApp rich interactive messages (list, CTA URL, Flow, location request)
 are available via the `interactive` field. Tap events are delivered through
 the `message.received` webhook with WhatsApp-specific `metadata` fields
@@ -2003,6 +2033,17 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v WhatsAppTemplateLookupError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 503 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -2015,7 +2056,7 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 502 {
-			var v ErrorResponse
+			var v SendInboxMessage502Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2023,7 +2064,16 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		var v WhatsAppTemplateLookupError
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

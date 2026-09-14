@@ -13,115 +13,58 @@ package zernio
 
 import (
 	"encoding/json"
+	"fmt"
 )
-
-// checks if the CreateInboxConversation400Response type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateInboxConversation400Response{}
 
 // CreateInboxConversation400Response struct for CreateInboxConversation400Response
 type CreateInboxConversation400Response struct {
-	Error *string `json:"error,omitempty"`
-	Code  *string `json:"code,omitempty"`
+	CreateInboxConversation400ResponseAnyOf *CreateInboxConversation400ResponseAnyOf
+	WhatsAppTemplateLookupError             *WhatsAppTemplateLookupError
 }
 
-// NewCreateInboxConversation400Response instantiates a new CreateInboxConversation400Response object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreateInboxConversation400Response() *CreateInboxConversation400Response {
-	this := CreateInboxConversation400Response{}
-	return &this
-}
-
-// NewCreateInboxConversation400ResponseWithDefaults instantiates a new CreateInboxConversation400Response object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreateInboxConversation400ResponseWithDefaults() *CreateInboxConversation400Response {
-	this := CreateInboxConversation400Response{}
-	return &this
-}
-
-// GetError returns the Error field value if set, zero value otherwise.
-func (o *CreateInboxConversation400Response) GetError() string {
-	if o == nil || IsNil(o.Error) {
-		var ret string
-		return ret
-	}
-	return *o.Error
-}
-
-// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateInboxConversation400Response) GetErrorOk() (*string, bool) {
-	if o == nil || IsNil(o.Error) {
-		return nil, false
-	}
-	return o.Error, true
-}
-
-// HasError returns a boolean if a field has been set.
-func (o *CreateInboxConversation400Response) HasError() bool {
-	if o != nil && !IsNil(o.Error) {
-		return true
+// Unmarshal JSON data into any of the pointers in the struct
+func (dst *CreateInboxConversation400Response) UnmarshalJSON(data []byte) error {
+	var err error
+	// try to unmarshal JSON data into CreateInboxConversation400ResponseAnyOf
+	err = json.Unmarshal(data, &dst.CreateInboxConversation400ResponseAnyOf)
+	if err == nil {
+		jsonCreateInboxConversation400ResponseAnyOf, _ := json.Marshal(dst.CreateInboxConversation400ResponseAnyOf)
+		if string(jsonCreateInboxConversation400ResponseAnyOf) == "{}" { // empty struct
+			dst.CreateInboxConversation400ResponseAnyOf = nil
+		} else {
+			return nil // data stored in dst.CreateInboxConversation400ResponseAnyOf, return on the first match
+		}
+	} else {
+		dst.CreateInboxConversation400ResponseAnyOf = nil
 	}
 
-	return false
-}
-
-// SetError gets a reference to the given string and assigns it to the Error field.
-func (o *CreateInboxConversation400Response) SetError(v string) {
-	o.Error = &v
-}
-
-// GetCode returns the Code field value if set, zero value otherwise.
-func (o *CreateInboxConversation400Response) GetCode() string {
-	if o == nil || IsNil(o.Code) {
-		var ret string
-		return ret
-	}
-	return *o.Code
-}
-
-// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateInboxConversation400Response) GetCodeOk() (*string, bool) {
-	if o == nil || IsNil(o.Code) {
-		return nil, false
-	}
-	return o.Code, true
-}
-
-// HasCode returns a boolean if a field has been set.
-func (o *CreateInboxConversation400Response) HasCode() bool {
-	if o != nil && !IsNil(o.Code) {
-		return true
+	// try to unmarshal JSON data into WhatsAppTemplateLookupError
+	err = json.Unmarshal(data, &dst.WhatsAppTemplateLookupError)
+	if err == nil {
+		jsonWhatsAppTemplateLookupError, _ := json.Marshal(dst.WhatsAppTemplateLookupError)
+		if string(jsonWhatsAppTemplateLookupError) == "{}" { // empty struct
+			dst.WhatsAppTemplateLookupError = nil
+		} else {
+			return nil // data stored in dst.WhatsAppTemplateLookupError, return on the first match
+		}
+	} else {
+		dst.WhatsAppTemplateLookupError = nil
 	}
 
-	return false
+	return fmt.Errorf("data failed to match schemas in anyOf(CreateInboxConversation400Response)")
 }
 
-// SetCode gets a reference to the given string and assigns it to the Code field.
-func (o *CreateInboxConversation400Response) SetCode(v string) {
-	o.Code = &v
-}
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreateInboxConversation400Response) MarshalJSON() ([]byte, error) {
+	if src.CreateInboxConversation400ResponseAnyOf != nil {
+		return json.Marshal(&src.CreateInboxConversation400ResponseAnyOf)
+	}
 
-func (o CreateInboxConversation400Response) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
+	if src.WhatsAppTemplateLookupError != nil {
+		return json.Marshal(&src.WhatsAppTemplateLookupError)
 	}
-	return json.Marshal(toSerialize)
-}
 
-func (o CreateInboxConversation400Response) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Error) {
-		toSerialize["error"] = o.Error
-	}
-	if !IsNil(o.Code) {
-		toSerialize["code"] = o.Code
-	}
-	return toSerialize, nil
+	return nil, nil // no data in anyOf schemas
 }
 
 type NullableCreateInboxConversation400Response struct {
