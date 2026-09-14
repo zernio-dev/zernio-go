@@ -986,7 +986,7 @@ func (r CommentsAPIListInboxCommentsRequest) ProfileId(profileId string) Comment
 	return r
 }
 
-// Filter by platform. &#x60;metaads&#x60; is a synthetic value meaning the user&#39;s ads (boosted/dark posts) only; &#x60;facebook&#x60;/&#x60;instagram&#x60; return organic posts only.
+// Filter by platform. &#x60;metaads&#x60; is a synthetic value meaning the user&#39;s ads (boosted/dark posts) only; &#x60;facebook&#x60;/&#x60;instagram&#x60; return organic posts only. &#x60;tiktok&#x60; covers accounts connected through the TikTok Business app only; developer-app TikTok accounts are returned under &#x60;meta.accountsSkipped&#x60;.
 func (r CommentsAPIListInboxCommentsRequest) Platform(platform string) CommentsAPIListInboxCommentsRequest {
 	r.platform = &platform
 	return r
