@@ -18,8 +18,9 @@ import (
 // checks if the ListTikTokCommercialMusic200ResponseTracksInnerClip type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListTikTokCommercialMusic200ResponseTracksInnerClip{}
 
-// ListTikTokCommercialMusic200ResponseTracksInnerClip The trending excerpt of the track, when TikTok provides one
+// ListTikTokCommercialMusic200ResponseTracksInnerClip The trending excerpt of the track, when TikTok provides one. Its id is also accepted as musicSoundId.
 type ListTikTokCommercialMusic200ResponseTracksInnerClip struct {
+	Id          *string `json:"id,omitempty"`
 	DurationSec *int32  `json:"durationSec,omitempty"`
 	PreviewUrl  *string `json:"previewUrl,omitempty"`
 }
@@ -39,6 +40,38 @@ func NewListTikTokCommercialMusic200ResponseTracksInnerClip() *ListTikTokCommerc
 func NewListTikTokCommercialMusic200ResponseTracksInnerClipWithDefaults() *ListTikTokCommercialMusic200ResponseTracksInnerClip {
 	this := ListTikTokCommercialMusic200ResponseTracksInnerClip{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ListTikTokCommercialMusic200ResponseTracksInnerClip) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokCommercialMusic200ResponseTracksInnerClip) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ListTikTokCommercialMusic200ResponseTracksInnerClip) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ListTikTokCommercialMusic200ResponseTracksInnerClip) SetId(v string) {
+	o.Id = &v
 }
 
 // GetDurationSec returns the DurationSec field value if set, zero value otherwise.
@@ -115,6 +148,9 @@ func (o ListTikTokCommercialMusic200ResponseTracksInnerClip) MarshalJSON() ([]by
 
 func (o ListTikTokCommercialMusic200ResponseTracksInnerClip) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
+	}
 	if !IsNil(o.DurationSec) {
 		toSerialize["durationSec"] = o.DurationSec
 	}

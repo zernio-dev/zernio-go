@@ -20,12 +20,14 @@ var _ MappedNullable = &ListTikTokCommercialMusic200ResponseTracksInner{}
 
 // ListTikTokCommercialMusic200ResponseTracksInner struct for ListTikTokCommercialMusic200ResponseTracksInner
 type ListTikTokCommercialMusic200ResponseTracksInner struct {
-	// The commercial_music_id to send as musicSoundId
-	Id          *string  `json:"id,omitempty"`
-	Name        *string  `json:"name,omitempty"`
-	Artist      *string  `json:"artist,omitempty"`
-	DurationSec *int32   `json:"durationSec,omitempty"`
-	Genres      []string `json:"genres,omitempty"`
+	// The id to send as musicSoundId (the full track's song clip id). TikTok rejects the commercial music id itself at publish time.
+	Id *string `json:"id,omitempty"`
+	// TikTok's commercial_music_id, for reference only
+	CommercialMusicId *string  `json:"commercialMusicId,omitempty"`
+	Name              *string  `json:"name,omitempty"`
+	Artist            *string  `json:"artist,omitempty"`
+	DurationSec       *int32   `json:"durationSec,omitempty"`
+	Genres            []string `json:"genres,omitempty"`
 	// Preview audio of the full track
 	PreviewUrl   *string `json:"previewUrl,omitempty"`
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
@@ -81,6 +83,38 @@ func (o *ListTikTokCommercialMusic200ResponseTracksInner) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *ListTikTokCommercialMusic200ResponseTracksInner) SetId(v string) {
 	o.Id = &v
+}
+
+// GetCommercialMusicId returns the CommercialMusicId field value if set, zero value otherwise.
+func (o *ListTikTokCommercialMusic200ResponseTracksInner) GetCommercialMusicId() string {
+	if o == nil || IsNil(o.CommercialMusicId) {
+		var ret string
+		return ret
+	}
+	return *o.CommercialMusicId
+}
+
+// GetCommercialMusicIdOk returns a tuple with the CommercialMusicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListTikTokCommercialMusic200ResponseTracksInner) GetCommercialMusicIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CommercialMusicId) {
+		return nil, false
+	}
+	return o.CommercialMusicId, true
+}
+
+// HasCommercialMusicId returns a boolean if a field has been set.
+func (o *ListTikTokCommercialMusic200ResponseTracksInner) HasCommercialMusicId() bool {
+	if o != nil && !IsNil(o.CommercialMusicId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommercialMusicId gets a reference to the given string and assigns it to the CommercialMusicId field.
+func (o *ListTikTokCommercialMusic200ResponseTracksInner) SetCommercialMusicId(v string) {
+	o.CommercialMusicId = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -351,6 +385,9 @@ func (o ListTikTokCommercialMusic200ResponseTracksInner) ToMap() (map[string]int
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.CommercialMusicId) {
+		toSerialize["commercialMusicId"] = o.CommercialMusicId
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name

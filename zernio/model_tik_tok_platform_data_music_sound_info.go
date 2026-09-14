@@ -22,7 +22,7 @@ var _ MappedNullable = &TikTokPlatformDataMusicSoundInfo{}
 
 // TikTokPlatformDataMusicSoundInfo Commercial Music Library track to attach. Accounts connected through the TikTok for Business app only: a developer-app account rejects the post at publish time with a message that says so. Pick musicSoundId from GET /v1/accounts/{accountId}/tiktok/commercial-music. Ignored on drafts, where TikTok ignores every post_info field.
 type TikTokPlatformDataMusicSoundInfo struct {
-	// The commercial_music_id of the track.
+	// The id field of a track from GET /v1/accounts/{accountId}/tiktok/commercial-music (a song clip id). TikTok fails the publish with a generic 51065 when given the commercial music id instead.
 	MusicSoundId string `json:"musicSoundId"`
 	// Track volume. TikTok defaults an omitted volume to 0, which publishes the track silently, so we default to the app's 50. Video posts only.
 	MusicSoundVolume *int32 `json:"musicSoundVolume,omitempty"`
