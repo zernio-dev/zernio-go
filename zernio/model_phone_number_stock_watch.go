@@ -29,7 +29,9 @@ type PhoneNumberStockWatch struct {
 	CountryName string `json:"countryName"`
 	// The watched number type, or null when the watch covers every type in the country.
 	NumberType NullableString `json:"numberType"`
-	CreatedAt  time.Time      `json:"createdAt"`
+	// The watched area code (NDC), or null when the watch covers every area.
+	AreaCode  NullableString `json:"areaCode,omitempty"`
+	CreatedAt time.Time      `json:"createdAt"`
 }
 
 type _PhoneNumberStockWatch PhoneNumberStockWatch
@@ -154,6 +156,49 @@ func (o *PhoneNumberStockWatch) SetNumberType(v string) {
 	o.NumberType.Set(&v)
 }
 
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PhoneNumberStockWatch) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode.Get()
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PhoneNumberStockWatch) GetAreaCodeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AreaCode.Get(), o.AreaCode.IsSet()
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *PhoneNumberStockWatch) HasAreaCode() bool {
+	if o != nil && o.AreaCode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given NullableString and assigns it to the AreaCode field.
+func (o *PhoneNumberStockWatch) SetAreaCode(v string) {
+	o.AreaCode.Set(&v)
+}
+
+// SetAreaCodeNil sets the value for AreaCode to be an explicit nil
+func (o *PhoneNumberStockWatch) SetAreaCodeNil() {
+	o.AreaCode.Set(nil)
+}
+
+// UnsetAreaCode ensures that no value is present for AreaCode, not even an explicit nil
+func (o *PhoneNumberStockWatch) UnsetAreaCode() {
+	o.AreaCode.Unset()
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *PhoneNumberStockWatch) GetCreatedAt() time.Time {
 	if o == nil {
@@ -192,6 +237,9 @@ func (o PhoneNumberStockWatch) ToMap() (map[string]interface{}, error) {
 	toSerialize["country"] = o.Country
 	toSerialize["countryName"] = o.CountryName
 	toSerialize["numberType"] = o.NumberType.Get()
+	if o.AreaCode.IsSet() {
+		toSerialize["areaCode"] = o.AreaCode.Get()
+	}
 	toSerialize["createdAt"] = o.CreatedAt
 	return toSerialize, nil
 }

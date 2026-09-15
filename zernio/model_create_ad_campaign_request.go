@@ -32,7 +32,7 @@ type CreateAdCampaignRequest struct {
 	// Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
 	IsSkadnetworkAttribution *bool             `json:"isSkadnetworkAttribution,omitempty"`
 	PromotedObject           *AdPromotedObject `json:"promotedObject,omitempty"`
-	// Meta only. Defaults to AUCTION and is explicitly sent on new campaigns, including validateOnly. SKAdNetwork app promotion requires AUCTION.
+	// Meta only. OMIT on non-Meta platforms (Google Ads, etc.): any value is rejected with a 400. On Meta the server applies AUCTION when omitted, so it does not need to be sent; RESERVED = Reach & Frequency. SKAdNetwork app promotion requires AUCTION.
 	BuyingType *string `json:"buyingType,omitempty"`
 	// Meta only. Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED.
 	ValidateOnly        *bool    `json:"validateOnly,omitempty"`
@@ -63,8 +63,6 @@ func NewCreateAdCampaignRequest(accountId string, adAccountId string, name strin
 	this.AdAccountId = adAccountId
 	this.Name = name
 	this.Goal = goal
-	var buyingType string = "AUCTION"
-	this.BuyingType = &buyingType
 	var status string = "PAUSED"
 	this.Status = &status
 	return &this
@@ -75,8 +73,6 @@ func NewCreateAdCampaignRequest(accountId string, adAccountId string, name strin
 // but it doesn't guarantee that properties required by API are set
 func NewCreateAdCampaignRequestWithDefaults() *CreateAdCampaignRequest {
 	this := CreateAdCampaignRequest{}
-	var buyingType string = "AUCTION"
-	this.BuyingType = &buyingType
 	var status string = "PAUSED"
 	this.Status = &status
 	return &this

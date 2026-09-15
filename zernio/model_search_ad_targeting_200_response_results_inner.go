@@ -22,7 +22,7 @@ var _ MappedNullable = &SearchAdTargeting200ResponseResultsInner{}
 
 // SearchAdTargeting200ResponseResultsInner struct for SearchAdTargeting200ResponseResultsInner
 type SearchAdTargeting200ResponseResultsInner struct {
-	// The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec.
+	// The platform's opaque id. Use as a geo `key` (regions/cities/zips/metros) or an entity `id` (interests/behaviors) in TargetingSpec. A `country` result is the exception on every platform: its id is the ISO 3166-1 alpha-2 code, which is what `targeting.countries` takes.
 	Id string `json:"id"`
 	// Human-readable label.
 	Name string `json:"name"`

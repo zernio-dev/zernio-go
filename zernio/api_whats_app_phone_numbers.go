@@ -1888,13 +1888,13 @@ func (a *WhatsAppPhoneNumbersAPIService) SearchAvailableWhatsAppNumbersExecute(r
 }
 
 type WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest struct {
-	ctx                         context.Context
-	ApiService                  *WhatsAppPhoneNumbersAPIService
-	submitPhoneNumberKycRequest *SubmitPhoneNumberKycRequest
+	ctx                            context.Context
+	ApiService                     *WhatsAppPhoneNumbersAPIService
+	submitWhatsAppNumberKycRequest *SubmitWhatsAppNumberKycRequest
 }
 
-func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) SubmitPhoneNumberKycRequest(submitPhoneNumberKycRequest SubmitPhoneNumberKycRequest) WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest {
-	r.submitPhoneNumberKycRequest = &submitPhoneNumberKycRequest
+func (r WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest) SubmitWhatsAppNumberKycRequest(submitWhatsAppNumberKycRequest SubmitWhatsAppNumberKycRequest) WhatsAppPhoneNumbersAPISubmitWhatsAppNumberKycRequest {
+	r.submitWhatsAppNumberKycRequest = &submitWhatsAppNumberKycRequest
 	return r
 }
 
@@ -1961,8 +1961,8 @@ func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsA
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.submitPhoneNumberKycRequest == nil {
-		return localVarReturnValue, nil, reportError("submitPhoneNumberKycRequest is required and must be specified")
+	if r.submitWhatsAppNumberKycRequest == nil {
+		return localVarReturnValue, nil, reportError("submitWhatsAppNumberKycRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1983,7 +1983,7 @@ func (a *WhatsAppPhoneNumbersAPIService) SubmitWhatsAppNumberKycExecute(r WhatsA
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.submitPhoneNumberKycRequest
+	localVarPostBody = r.submitWhatsAppNumberKycRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

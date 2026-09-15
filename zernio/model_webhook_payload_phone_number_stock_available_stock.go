@@ -26,6 +26,10 @@ type WebhookPayloadPhoneNumberStockAvailableStock struct {
 	Country string `json:"country"`
 	// Number types deliverable at sweep time. Only types with stock are listed.
 	Types []WebhookPayloadPhoneNumberStockAvailableStockTypesInner `json:"types"`
+	// Set when the watch named an area: the area code (NDC) that is back in stock.
+	AreaCode *string `json:"areaCode,omitempty"`
+	// The name of that area, when known.
+	AreaName *string `json:"areaName,omitempty"`
 }
 
 type _WebhookPayloadPhoneNumberStockAvailableStock WebhookPayloadPhoneNumberStockAvailableStock
@@ -97,6 +101,70 @@ func (o *WebhookPayloadPhoneNumberStockAvailableStock) SetTypes(v []WebhookPaylo
 	o.Types = v
 }
 
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) SetAreaCode(v string) {
+	o.AreaCode = &v
+}
+
+// GetAreaName returns the AreaName field value if set, zero value otherwise.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) GetAreaName() string {
+	if o == nil || IsNil(o.AreaName) {
+		var ret string
+		return ret
+	}
+	return *o.AreaName
+}
+
+// GetAreaNameOk returns a tuple with the AreaName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) GetAreaNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaName) {
+		return nil, false
+	}
+	return o.AreaName, true
+}
+
+// HasAreaName returns a boolean if a field has been set.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) HasAreaName() bool {
+	if o != nil && !IsNil(o.AreaName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaName gets a reference to the given string and assigns it to the AreaName field.
+func (o *WebhookPayloadPhoneNumberStockAvailableStock) SetAreaName(v string) {
+	o.AreaName = &v
+}
+
 func (o WebhookPayloadPhoneNumberStockAvailableStock) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -109,6 +177,12 @@ func (o WebhookPayloadPhoneNumberStockAvailableStock) ToMap() (map[string]interf
 	toSerialize := map[string]interface{}{}
 	toSerialize["country"] = o.Country
 	toSerialize["types"] = o.Types
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.AreaName) {
+		toSerialize["areaName"] = o.AreaName
+	}
 	return toSerialize, nil
 }
 

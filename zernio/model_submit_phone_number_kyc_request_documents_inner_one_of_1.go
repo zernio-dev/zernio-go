@@ -25,6 +25,8 @@ type SubmitPhoneNumberKycRequestDocumentsInnerOneOf1 struct {
 	RequirementId string `json:"requirementId"`
 	// Id from POST /v1/phone-numbers/kyc/upload-document.
 	DocumentId string `json:"documentId"`
+	// Date printed on the document (YYYY-MM-DD), for slots the regulator windows such as proof of address. The pre-submit review trusts it over its own read of the PDF.
+	IssuedAt *string `json:"issuedAt,omitempty"`
 }
 
 type _SubmitPhoneNumberKycRequestDocumentsInnerOneOf1 SubmitPhoneNumberKycRequestDocumentsInnerOneOf1
@@ -96,6 +98,38 @@ func (o *SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) SetDocumentId(v string
 	o.DocumentId = v
 }
 
+// GetIssuedAt returns the IssuedAt field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) GetIssuedAt() string {
+	if o == nil || IsNil(o.IssuedAt) {
+		var ret string
+		return ret
+	}
+	return *o.IssuedAt
+}
+
+// GetIssuedAtOk returns a tuple with the IssuedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) GetIssuedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.IssuedAt) {
+		return nil, false
+	}
+	return o.IssuedAt, true
+}
+
+// HasIssuedAt returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) HasIssuedAt() bool {
+	if o != nil && !IsNil(o.IssuedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetIssuedAt gets a reference to the given string and assigns it to the IssuedAt field.
+func (o *SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) SetIssuedAt(v string) {
+	o.IssuedAt = &v
+}
+
 func (o SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -108,6 +142,9 @@ func (o SubmitPhoneNumberKycRequestDocumentsInnerOneOf1) ToMap() (map[string]int
 	toSerialize := map[string]interface{}{}
 	toSerialize["requirementId"] = o.RequirementId
 	toSerialize["documentId"] = o.DocumentId
+	if !IsNil(o.IssuedAt) {
+		toSerialize["issuedAt"] = o.IssuedAt
+	}
 	return toSerialize, nil
 }
 

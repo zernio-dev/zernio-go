@@ -733,6 +733,11 @@ GET /v1/phone-numbers/countries can also be watched, but anything with
 `preOrderable: true` does not need a watch: submit KYC and the carrier
 sources the number to order.
 
+Pass `areaCode` (with `numberType`) to watch one sold-out area, for
+example an entry of `soldOutAreas` from
+GET /v1/phone-numbers/availability. Area stock is checked live on the
+same 6h cadence.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPICreatePhoneNumberStockWatchRequest
 */

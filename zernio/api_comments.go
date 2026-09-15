@@ -50,7 +50,7 @@ func (r CommentsAPIDeleteInboxCommentRequest) Execute() (*DeleteInboxComment200R
 /*
 DeleteInboxComment Delete comment
 
-Delete a comment on a post. Supported by Facebook, Instagram, Bluesky, Reddit, YouTube, and LinkedIn.
+Delete a comment on a post. Supported by Facebook, Instagram, Threads, LinkedIn, Reddit, Bluesky, X (Twitter), YouTube, and TikTok (accounts connected through the TikTok for Business app). Not supported on Google Business (reviews only).
 Requires accountId and commentId query parameters.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

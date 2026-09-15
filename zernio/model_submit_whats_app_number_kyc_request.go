@@ -1,7 +1,7 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
 API version: 1.0.4
 Contact: support@zernio.com
@@ -24,14 +24,20 @@ var _ MappedNullable = &SubmitWhatsAppNumberKycRequest{}
 type SubmitWhatsAppNumberKycRequest struct {
 	ProfileId string `json:"profileId"`
 	Country   string `json:"country"`
-	// Idempotency token for this submission attempt. A retry/double-submit with the same token returns the same number; omit and each call creates a new number.
+	// Idempotency token for this submission attempt. Once the number has been ordered, a retry with the same token returns that same number instead of ordering another. A submission that fails before the number is ordered releases the token, so you can correct your details and re-submit with it. Omit it and every call provisions a new number.
 	SubmissionId *string `json:"submissionId,omitempty"`
-	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort).
+	// Provision several same-country numbers from one submission (1-5). The single verification covers all of them; each number is billed only when it activates. Numbers that fail to order are skipped (best-effort). With `areaCode`, a quantity above that area's live stock is rejected with a 400.
 	Quantity *int32 `json:"quantity,omitempty"`
 	// Reuse a prior approved verification for this country (skips document/field collection; places the order immediately).
 	Reuse *bool `json:"reuse,omitempty"`
-	// Which approved verification to reuse when several exist: the phone number it was originally approved for (GET reusable.options[].fromPhoneNumber). Omitted = newest. No match = 409.
+	// Which reusable verification to use (GET reusable.options[].id). The unambiguous selection key. Omitted = the approved default. No match = 409.
+	ReuseOptionId *string `json:"reuseOptionId,omitempty"`
+	// Legacy fallback for `reuseOptionId`: the source phone number (GET reusable.options[].fromPhoneNumber). Ambiguous when a number labels two verifications, so prefer `reuseOptionId`. Omitted = the approved default. No match = 409.
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
+	// Area code (NDC) the number must be in. Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area. Omit for any area. Options come from GET /v1/phone-numbers/availability (areaOptions); the purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
+	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// With areaCode: pre-order that area when it has no stock (an area listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area.
+	PreOrder *bool `json:"preOrder,omitempty"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
 	// End user's legal last name. Same condition as endUserFirstName.
@@ -39,8 +45,8 @@ type SubmitWhatsAppNumberKycRequest struct {
 	// requirementId → textual value
 	Values map[string]string `json:"values,omitempty"`
 	// One per document requirement. Each is EITHER inline base64 OR a `documentId` returned by POST /v1/whatsapp/phone-numbers/kyc/upload-document (use the upload endpoint for large files to stay under the request-size limit).
-	Documents []SubmitWhatsAppNumberKycRequestDocumentsInner `json:"documents,omitempty"`
-	Address   *SubmitWhatsAppNumberKycRequestAddress         `json:"address,omitempty"`
+	Documents []RemediatePhoneNumberRequestDocumentsInner `json:"documents,omitempty"`
+	Address   *SubmitPhoneNumberKycRequestAddress         `json:"address,omitempty"`
 }
 
 type _SubmitWhatsAppNumberKycRequest SubmitWhatsAppNumberKycRequest
@@ -212,6 +218,38 @@ func (o *SubmitWhatsAppNumberKycRequest) SetReuse(v bool) {
 	o.Reuse = &v
 }
 
+// GetReuseOptionId returns the ReuseOptionId field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetReuseOptionId() string {
+	if o == nil || IsNil(o.ReuseOptionId) {
+		var ret string
+		return ret
+	}
+	return *o.ReuseOptionId
+}
+
+// GetReuseOptionIdOk returns a tuple with the ReuseOptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetReuseOptionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ReuseOptionId) {
+		return nil, false
+	}
+	return o.ReuseOptionId, true
+}
+
+// HasReuseOptionId returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasReuseOptionId() bool {
+	if o != nil && !IsNil(o.ReuseOptionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReuseOptionId gets a reference to the given string and assigns it to the ReuseOptionId field.
+func (o *SubmitWhatsAppNumberKycRequest) SetReuseOptionId(v string) {
+	o.ReuseOptionId = &v
+}
+
 // GetReuseFrom returns the ReuseFrom field value if set, zero value otherwise.
 func (o *SubmitWhatsAppNumberKycRequest) GetReuseFrom() string {
 	if o == nil || IsNil(o.ReuseFrom) {
@@ -242,6 +280,70 @@ func (o *SubmitWhatsAppNumberKycRequest) HasReuseFrom() bool {
 // SetReuseFrom gets a reference to the given string and assigns it to the ReuseFrom field.
 func (o *SubmitWhatsAppNumberKycRequest) SetReuseFrom(v string) {
 	o.ReuseFrom = &v
+}
+
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *SubmitWhatsAppNumberKycRequest) SetAreaCode(v string) {
+	o.AreaCode = &v
+}
+
+// GetPreOrder returns the PreOrder field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetPreOrder() bool {
+	if o == nil || IsNil(o.PreOrder) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrder
+}
+
+// GetPreOrderOk returns a tuple with the PreOrder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetPreOrderOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrder) {
+		return nil, false
+	}
+	return o.PreOrder, true
+}
+
+// HasPreOrder returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasPreOrder() bool {
+	if o != nil && !IsNil(o.PreOrder) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrder gets a reference to the given bool and assigns it to the PreOrder field.
+func (o *SubmitWhatsAppNumberKycRequest) SetPreOrder(v bool) {
+	o.PreOrder = &v
 }
 
 // GetEndUserFirstName returns the EndUserFirstName field value if set, zero value otherwise.
@@ -341,9 +443,9 @@ func (o *SubmitWhatsAppNumberKycRequest) SetValues(v map[string]string) {
 }
 
 // GetDocuments returns the Documents field value if set, zero value otherwise.
-func (o *SubmitWhatsAppNumberKycRequest) GetDocuments() []SubmitWhatsAppNumberKycRequestDocumentsInner {
+func (o *SubmitWhatsAppNumberKycRequest) GetDocuments() []RemediatePhoneNumberRequestDocumentsInner {
 	if o == nil || IsNil(o.Documents) {
-		var ret []SubmitWhatsAppNumberKycRequestDocumentsInner
+		var ret []RemediatePhoneNumberRequestDocumentsInner
 		return ret
 	}
 	return o.Documents
@@ -351,7 +453,7 @@ func (o *SubmitWhatsAppNumberKycRequest) GetDocuments() []SubmitWhatsAppNumberKy
 
 // GetDocumentsOk returns a tuple with the Documents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SubmitWhatsAppNumberKycRequest) GetDocumentsOk() ([]SubmitWhatsAppNumberKycRequestDocumentsInner, bool) {
+func (o *SubmitWhatsAppNumberKycRequest) GetDocumentsOk() ([]RemediatePhoneNumberRequestDocumentsInner, bool) {
 	if o == nil || IsNil(o.Documents) {
 		return nil, false
 	}
@@ -367,15 +469,15 @@ func (o *SubmitWhatsAppNumberKycRequest) HasDocuments() bool {
 	return false
 }
 
-// SetDocuments gets a reference to the given []SubmitWhatsAppNumberKycRequestDocumentsInner and assigns it to the Documents field.
-func (o *SubmitWhatsAppNumberKycRequest) SetDocuments(v []SubmitWhatsAppNumberKycRequestDocumentsInner) {
+// SetDocuments gets a reference to the given []RemediatePhoneNumberRequestDocumentsInner and assigns it to the Documents field.
+func (o *SubmitWhatsAppNumberKycRequest) SetDocuments(v []RemediatePhoneNumberRequestDocumentsInner) {
 	o.Documents = v
 }
 
 // GetAddress returns the Address field value if set, zero value otherwise.
-func (o *SubmitWhatsAppNumberKycRequest) GetAddress() SubmitWhatsAppNumberKycRequestAddress {
+func (o *SubmitWhatsAppNumberKycRequest) GetAddress() SubmitPhoneNumberKycRequestAddress {
 	if o == nil || IsNil(o.Address) {
-		var ret SubmitWhatsAppNumberKycRequestAddress
+		var ret SubmitPhoneNumberKycRequestAddress
 		return ret
 	}
 	return *o.Address
@@ -383,7 +485,7 @@ func (o *SubmitWhatsAppNumberKycRequest) GetAddress() SubmitWhatsAppNumberKycReq
 
 // GetAddressOk returns a tuple with the Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SubmitWhatsAppNumberKycRequest) GetAddressOk() (*SubmitWhatsAppNumberKycRequestAddress, bool) {
+func (o *SubmitWhatsAppNumberKycRequest) GetAddressOk() (*SubmitPhoneNumberKycRequestAddress, bool) {
 	if o == nil || IsNil(o.Address) {
 		return nil, false
 	}
@@ -399,8 +501,8 @@ func (o *SubmitWhatsAppNumberKycRequest) HasAddress() bool {
 	return false
 }
 
-// SetAddress gets a reference to the given SubmitWhatsAppNumberKycRequestAddress and assigns it to the Address field.
-func (o *SubmitWhatsAppNumberKycRequest) SetAddress(v SubmitWhatsAppNumberKycRequestAddress) {
+// SetAddress gets a reference to the given SubmitPhoneNumberKycRequestAddress and assigns it to the Address field.
+func (o *SubmitWhatsAppNumberKycRequest) SetAddress(v SubmitPhoneNumberKycRequestAddress) {
 	o.Address = &v
 }
 
@@ -425,8 +527,17 @@ func (o SubmitWhatsAppNumberKycRequest) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Reuse) {
 		toSerialize["reuse"] = o.Reuse
 	}
+	if !IsNil(o.ReuseOptionId) {
+		toSerialize["reuseOptionId"] = o.ReuseOptionId
+	}
 	if !IsNil(o.ReuseFrom) {
 		toSerialize["reuseFrom"] = o.ReuseFrom
+	}
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PreOrder) {
+		toSerialize["preOrder"] = o.PreOrder
 	}
 	if !IsNil(o.EndUserFirstName) {
 		toSerialize["endUserFirstName"] = o.EndUserFirstName

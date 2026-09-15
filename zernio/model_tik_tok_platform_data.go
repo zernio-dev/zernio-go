@@ -55,6 +55,12 @@ type TikTokPlatformData struct {
 	VideoOriginalSoundVolume *int32 `json:"videoOriginalSoundVolume,omitempty"`
 	// Set true to disclose AI-generated content. Accounts connected through the TikTok for Business app carry the disclosure on video posts only: the business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed. Send draft true to publish such a photo post and set the disclosure in the TikTok app.
 	VideoMadeWithAi *bool `json:"videoMadeWithAi,omitempty"`
+	// Location tag to attach, as the id of a result from GET /v1/accounts/{accountId}/tiktok/locations. Accounts connected through the TikTok for Business app and video posts only: a developer-app account rejects the post at publish time with a message that says so, and a direct photo post is rejected at creation since the business photo endpoint has no location field. Requires locationName. Ignored on drafts, where TikTok ignores every post_info field.
+	LocationId *string `json:"locationId,omitempty"`
+	// Display name of the location tag, as returned next to its id. Required with locationId; a locationId without it is rejected at creation.
+	LocationName *string `json:"locationName,omitempty"`
+	// Set true to publish the video as an \"Only show in ads\" post: it is kept off the profile and exists to be used as a Spark Ad. Accounts connected through the TikTok for Business app and video posts only, with the same rejections as locationId. Ignored on drafts.
+	IsAdsOnly *bool `json:"isAdsOnly,omitempty"`
 	// Optional long-form caption for photo posts (max 4000 chars). Recommended when content exceeds 90 chars, as photo titles are auto-truncated. Falls back to the post content when omitted.
 	Description *string `json:"description,omitempty"`
 }
@@ -652,6 +658,102 @@ func (o *TikTokPlatformData) SetVideoMadeWithAi(v bool) {
 	o.VideoMadeWithAi = &v
 }
 
+// GetLocationId returns the LocationId field value if set, zero value otherwise.
+func (o *TikTokPlatformData) GetLocationId() string {
+	if o == nil || IsNil(o.LocationId) {
+		var ret string
+		return ret
+	}
+	return *o.LocationId
+}
+
+// GetLocationIdOk returns a tuple with the LocationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TikTokPlatformData) GetLocationIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LocationId) {
+		return nil, false
+	}
+	return o.LocationId, true
+}
+
+// HasLocationId returns a boolean if a field has been set.
+func (o *TikTokPlatformData) HasLocationId() bool {
+	if o != nil && !IsNil(o.LocationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationId gets a reference to the given string and assigns it to the LocationId field.
+func (o *TikTokPlatformData) SetLocationId(v string) {
+	o.LocationId = &v
+}
+
+// GetLocationName returns the LocationName field value if set, zero value otherwise.
+func (o *TikTokPlatformData) GetLocationName() string {
+	if o == nil || IsNil(o.LocationName) {
+		var ret string
+		return ret
+	}
+	return *o.LocationName
+}
+
+// GetLocationNameOk returns a tuple with the LocationName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TikTokPlatformData) GetLocationNameOk() (*string, bool) {
+	if o == nil || IsNil(o.LocationName) {
+		return nil, false
+	}
+	return o.LocationName, true
+}
+
+// HasLocationName returns a boolean if a field has been set.
+func (o *TikTokPlatformData) HasLocationName() bool {
+	if o != nil && !IsNil(o.LocationName) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationName gets a reference to the given string and assigns it to the LocationName field.
+func (o *TikTokPlatformData) SetLocationName(v string) {
+	o.LocationName = &v
+}
+
+// GetIsAdsOnly returns the IsAdsOnly field value if set, zero value otherwise.
+func (o *TikTokPlatformData) GetIsAdsOnly() bool {
+	if o == nil || IsNil(o.IsAdsOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.IsAdsOnly
+}
+
+// GetIsAdsOnlyOk returns a tuple with the IsAdsOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TikTokPlatformData) GetIsAdsOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsAdsOnly) {
+		return nil, false
+	}
+	return o.IsAdsOnly, true
+}
+
+// HasIsAdsOnly returns a boolean if a field has been set.
+func (o *TikTokPlatformData) HasIsAdsOnly() bool {
+	if o != nil && !IsNil(o.IsAdsOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAdsOnly gets a reference to the given bool and assigns it to the IsAdsOnly field.
+func (o *TikTokPlatformData) SetIsAdsOnly(v bool) {
+	o.IsAdsOnly = &v
+}
+
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *TikTokPlatformData) GetDescription() string {
 	if o == nil || IsNil(o.Description) {
@@ -747,6 +849,15 @@ func (o TikTokPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VideoMadeWithAi) {
 		toSerialize["videoMadeWithAi"] = o.VideoMadeWithAi
+	}
+	if !IsNil(o.LocationId) {
+		toSerialize["locationId"] = o.LocationId
+	}
+	if !IsNil(o.LocationName) {
+		toSerialize["locationName"] = o.LocationName
+	}
+	if !IsNil(o.IsAdsOnly) {
+		toSerialize["isAdsOnly"] = o.IsAdsOnly
 	}
 	if !IsNil(o.Description) {
 		toSerialize["description"] = o.Description

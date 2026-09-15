@@ -36,6 +36,8 @@ type SubmitPhoneNumberKycRequest struct {
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
 	// Area code (NDC) the number must be in. Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area. Omit for any area. Options come from GET /v1/phone-numbers/availability (areaOptions); the purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// With areaCode: pre-order that area when it has no stock (an area listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area.
+	PreOrder *bool `json:"preOrder,omitempty"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
 	EndUserFirstName *string `json:"endUserFirstName,omitempty"`
 	// End user's legal last name. Same condition as endUserFirstName.
@@ -312,6 +314,38 @@ func (o *SubmitPhoneNumberKycRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
 }
 
+// GetPreOrder returns the PreOrder field value if set, zero value otherwise.
+func (o *SubmitPhoneNumberKycRequest) GetPreOrder() bool {
+	if o == nil || IsNil(o.PreOrder) {
+		var ret bool
+		return ret
+	}
+	return *o.PreOrder
+}
+
+// GetPreOrderOk returns a tuple with the PreOrder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitPhoneNumberKycRequest) GetPreOrderOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreOrder) {
+		return nil, false
+	}
+	return o.PreOrder, true
+}
+
+// HasPreOrder returns a boolean if a field has been set.
+func (o *SubmitPhoneNumberKycRequest) HasPreOrder() bool {
+	if o != nil && !IsNil(o.PreOrder) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreOrder gets a reference to the given bool and assigns it to the PreOrder field.
+func (o *SubmitPhoneNumberKycRequest) SetPreOrder(v bool) {
+	o.PreOrder = &v
+}
+
 // GetEndUserFirstName returns the EndUserFirstName field value if set, zero value otherwise.
 func (o *SubmitPhoneNumberKycRequest) GetEndUserFirstName() string {
 	if o == nil || IsNil(o.EndUserFirstName) {
@@ -501,6 +535,9 @@ func (o SubmitPhoneNumberKycRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PreOrder) {
+		toSerialize["preOrder"] = o.PreOrder
 	}
 	if !IsNil(o.EndUserFirstName) {
 		toSerialize["endUserFirstName"] = o.EndUserFirstName

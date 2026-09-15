@@ -26,6 +26,8 @@ type CreatePhoneNumberStockWatchRequest struct {
 	Country string `json:"country"`
 	// Narrow the watch to one number type. Omit to be notified when any type in the country is back.
 	NumberType *string `json:"numberType,omitempty"`
+	// Narrow the watch to one area code (NDC). Requires numberType.
+	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
 }
 
 type _CreatePhoneNumberStockWatchRequest CreatePhoneNumberStockWatchRequest
@@ -104,6 +106,38 @@ func (o *CreatePhoneNumberStockWatchRequest) SetNumberType(v string) {
 	o.NumberType = &v
 }
 
+// GetAreaCode returns the AreaCode field value if set, zero value otherwise.
+func (o *CreatePhoneNumberStockWatchRequest) GetAreaCode() string {
+	if o == nil || IsNil(o.AreaCode) {
+		var ret string
+		return ret
+	}
+	return *o.AreaCode
+}
+
+// GetAreaCodeOk returns a tuple with the AreaCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberStockWatchRequest) GetAreaCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.AreaCode) {
+		return nil, false
+	}
+	return o.AreaCode, true
+}
+
+// HasAreaCode returns a boolean if a field has been set.
+func (o *CreatePhoneNumberStockWatchRequest) HasAreaCode() bool {
+	if o != nil && !IsNil(o.AreaCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
+func (o *CreatePhoneNumberStockWatchRequest) SetAreaCode(v string) {
+	o.AreaCode = &v
+}
+
 func (o CreatePhoneNumberStockWatchRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -117,6 +151,9 @@ func (o CreatePhoneNumberStockWatchRequest) ToMap() (map[string]interface{}, err
 	toSerialize["country"] = o.Country
 	if !IsNil(o.NumberType) {
 		toSerialize["numberType"] = o.NumberType
+	}
+	if !IsNil(o.AreaCode) {
+		toSerialize["areaCode"] = o.AreaCode
 	}
 	return toSerialize, nil
 }

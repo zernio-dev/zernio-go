@@ -39,8 +39,9 @@ type AdKeyword struct {
 	MatchType   *string        `json:"matchType,omitempty"`
 	Status      *string        `json:"status,omitempty"`
 	Negative    *bool          `json:"negative,omitempty"`
-	// Google Quality Score, 1-10. Null when unrated.
+	// Deprecated, use `quality.score`. Google Quality Score, 1-10. Null when unrated.
 	QualityScore NullableInt32     `json:"qualityScore,omitempty"`
+	Quality      *AdKeywordQuality `json:"quality,omitempty"`
 	SyncedAt     NullableTime      `json:"syncedAt,omitempty"`
 	Metrics      *AdKeywordMetrics `json:"metrics,omitempty"`
 }
@@ -629,6 +630,38 @@ func (o *AdKeyword) UnsetQualityScore() {
 	o.QualityScore.Unset()
 }
 
+// GetQuality returns the Quality field value if set, zero value otherwise.
+func (o *AdKeyword) GetQuality() AdKeywordQuality {
+	if o == nil || IsNil(o.Quality) {
+		var ret AdKeywordQuality
+		return ret
+	}
+	return *o.Quality
+}
+
+// GetQualityOk returns a tuple with the Quality field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdKeyword) GetQualityOk() (*AdKeywordQuality, bool) {
+	if o == nil || IsNil(o.Quality) {
+		return nil, false
+	}
+	return o.Quality, true
+}
+
+// HasQuality returns a boolean if a field has been set.
+func (o *AdKeyword) HasQuality() bool {
+	if o != nil && !IsNil(o.Quality) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuality gets a reference to the given AdKeywordQuality and assigns it to the Quality field.
+func (o *AdKeyword) SetQuality(v AdKeywordQuality) {
+	o.Quality = &v
+}
+
 // GetSyncedAt returns the SyncedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdKeyword) GetSyncedAt() time.Time {
 	if o == nil || IsNil(o.SyncedAt.Get()) {
@@ -761,6 +794,9 @@ func (o AdKeyword) ToMap() (map[string]interface{}, error) {
 	}
 	if o.QualityScore.IsSet() {
 		toSerialize["qualityScore"] = o.QualityScore.Get()
+	}
+	if !IsNil(o.Quality) {
+		toSerialize["quality"] = o.Quality
 	}
 	if o.SyncedAt.IsSet() {
 		toSerialize["syncedAt"] = o.SyncedAt.Get()

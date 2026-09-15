@@ -28,6 +28,8 @@ type RespondToPhoneNumberReviewerRequestDocumentsInner struct {
 	Base64 *string `json:"base64,omitempty"`
 	// Id of a document already uploaded out-of-band.
 	DocumentId *string `json:"documentId,omitempty"`
+	// Date printed on the document (YYYY-MM-DD), for slots the regulator windows such as proof of address. The pre-submit review trusts it over its own read of the PDF.
+	IssuedAt *string `json:"issuedAt,omitempty"`
 }
 
 type _RespondToPhoneNumberReviewerRequestDocumentsInner RespondToPhoneNumberReviewerRequestDocumentsInner
@@ -170,6 +172,38 @@ func (o *RespondToPhoneNumberReviewerRequestDocumentsInner) SetDocumentId(v stri
 	o.DocumentId = &v
 }
 
+// GetIssuedAt returns the IssuedAt field value if set, zero value otherwise.
+func (o *RespondToPhoneNumberReviewerRequestDocumentsInner) GetIssuedAt() string {
+	if o == nil || IsNil(o.IssuedAt) {
+		var ret string
+		return ret
+	}
+	return *o.IssuedAt
+}
+
+// GetIssuedAtOk returns a tuple with the IssuedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RespondToPhoneNumberReviewerRequestDocumentsInner) GetIssuedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.IssuedAt) {
+		return nil, false
+	}
+	return o.IssuedAt, true
+}
+
+// HasIssuedAt returns a boolean if a field has been set.
+func (o *RespondToPhoneNumberReviewerRequestDocumentsInner) HasIssuedAt() bool {
+	if o != nil && !IsNil(o.IssuedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetIssuedAt gets a reference to the given string and assigns it to the IssuedAt field.
+func (o *RespondToPhoneNumberReviewerRequestDocumentsInner) SetIssuedAt(v string) {
+	o.IssuedAt = &v
+}
+
 func (o RespondToPhoneNumberReviewerRequestDocumentsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -189,6 +223,9 @@ func (o RespondToPhoneNumberReviewerRequestDocumentsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.DocumentId) {
 		toSerialize["documentId"] = o.DocumentId
+	}
+	if !IsNil(o.IssuedAt) {
+		toSerialize["issuedAt"] = o.IssuedAt
 	}
 	return toSerialize, nil
 }

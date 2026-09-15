@@ -21,7 +21,7 @@ var _ MappedNullable = &RemediatePhoneNumberRequest{}
 // RemediatePhoneNumberRequest struct for RemediatePhoneNumberRequest
 type RemediatePhoneNumberRequest struct {
 	Values    map[string]string                           `json:"values,omitempty"`
-	Documents []SubmitPhoneNumberKycRequestDocumentsInner `json:"documents,omitempty"`
+	Documents []RemediatePhoneNumberRequestDocumentsInner `json:"documents,omitempty"`
 	// Same shape as the KYC submit address.
 	Address map[string]interface{} `json:"address,omitempty"`
 }
@@ -76,9 +76,9 @@ func (o *RemediatePhoneNumberRequest) SetValues(v map[string]string) {
 }
 
 // GetDocuments returns the Documents field value if set, zero value otherwise.
-func (o *RemediatePhoneNumberRequest) GetDocuments() []SubmitPhoneNumberKycRequestDocumentsInner {
+func (o *RemediatePhoneNumberRequest) GetDocuments() []RemediatePhoneNumberRequestDocumentsInner {
 	if o == nil || IsNil(o.Documents) {
-		var ret []SubmitPhoneNumberKycRequestDocumentsInner
+		var ret []RemediatePhoneNumberRequestDocumentsInner
 		return ret
 	}
 	return o.Documents
@@ -86,7 +86,7 @@ func (o *RemediatePhoneNumberRequest) GetDocuments() []SubmitPhoneNumberKycReque
 
 // GetDocumentsOk returns a tuple with the Documents field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RemediatePhoneNumberRequest) GetDocumentsOk() ([]SubmitPhoneNumberKycRequestDocumentsInner, bool) {
+func (o *RemediatePhoneNumberRequest) GetDocumentsOk() ([]RemediatePhoneNumberRequestDocumentsInner, bool) {
 	if o == nil || IsNil(o.Documents) {
 		return nil, false
 	}
@@ -102,8 +102,8 @@ func (o *RemediatePhoneNumberRequest) HasDocuments() bool {
 	return false
 }
 
-// SetDocuments gets a reference to the given []SubmitPhoneNumberKycRequestDocumentsInner and assigns it to the Documents field.
-func (o *RemediatePhoneNumberRequest) SetDocuments(v []SubmitPhoneNumberKycRequestDocumentsInner) {
+// SetDocuments gets a reference to the given []RemediatePhoneNumberRequestDocumentsInner and assigns it to the Documents field.
+func (o *RemediatePhoneNumberRequest) SetDocuments(v []RemediatePhoneNumberRequestDocumentsInner) {
 	o.Documents = v
 }
 

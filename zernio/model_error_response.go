@@ -32,8 +32,7 @@ type ErrorResponse struct {
 	Platform *string `json:"platform,omitempty"`
 	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
 	PlatformError map[string]interface{} `json:"platformError,omitempty"`
-	// Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.
-	Details map[string]interface{} `json:"details,omitempty"`
+	Details       *ErrorResponseDetails  `json:"details,omitempty"`
 }
 
 // NewErrorResponse instantiates a new ErrorResponse object
@@ -246,19 +245,19 @@ func (o *ErrorResponse) SetPlatformError(v map[string]interface{}) {
 }
 
 // GetDetails returns the Details field value if set, zero value otherwise.
-func (o *ErrorResponse) GetDetails() map[string]interface{} {
+func (o *ErrorResponse) GetDetails() ErrorResponseDetails {
 	if o == nil || IsNil(o.Details) {
-		var ret map[string]interface{}
+		var ret ErrorResponseDetails
 		return ret
 	}
-	return o.Details
+	return *o.Details
 }
 
 // GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ErrorResponse) GetDetailsOk() (map[string]interface{}, bool) {
+func (o *ErrorResponse) GetDetailsOk() (*ErrorResponseDetails, bool) {
 	if o == nil || IsNil(o.Details) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Details, true
 }
@@ -272,9 +271,9 @@ func (o *ErrorResponse) HasDetails() bool {
 	return false
 }
 
-// SetDetails gets a reference to the given map[string]interface{} and assigns it to the Details field.
-func (o *ErrorResponse) SetDetails(v map[string]interface{}) {
-	o.Details = v
+// SetDetails gets a reference to the given ErrorResponseDetails and assigns it to the Details field.
+func (o *ErrorResponse) SetDetails(v ErrorResponseDetails) {
+	o.Details = &v
 }
 
 func (o ErrorResponse) MarshalJSON() ([]byte, error) {

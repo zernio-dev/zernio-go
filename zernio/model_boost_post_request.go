@@ -74,7 +74,8 @@ type BoostPostRequest struct {
 	// CTA button label. Non-messaging CTAs require `linkUrl`. WHATSAPP_MESSAGE, MESSAGE_PAGE, and INSTAGRAM_MESSAGE do not require a URL and reject linkUrl.  **Meta**: the CTA enum of POST /v1/ads/create plus `VIEW_INSTAGRAM_PROFILE`, `WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, and `INSTAGRAM_MESSAGE`. VIEW_INSTAGRAM_PROFILE requires linkUrl; the messaging CTAs select their destination automatically.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
 	CallToAction *string `json:"callToAction,omitempty"`
 	// TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator Spark Ads: the advertiser can boost a video owned by a DIFFERENT TikTok account. Without this, boosts are limited to videos owned by the same account running the ads (same-BC creators only). The creator generates the code in their TikTok app's Promote settings and shares it with the advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
-	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
+	SparkAuthCode  *string                         `json:"sparkAuthCode,omitempty"`
+	PromotedObject *BoostPostRequestPromotedObject `json:"promotedObject,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
@@ -983,6 +984,38 @@ func (o *BoostPostRequest) SetSparkAuthCode(v string) {
 	o.SparkAuthCode = &v
 }
 
+// GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetPromotedObject() BoostPostRequestPromotedObject {
+	if o == nil || IsNil(o.PromotedObject) {
+		var ret BoostPostRequestPromotedObject
+		return ret
+	}
+	return *o.PromotedObject
+}
+
+// GetPromotedObjectOk returns a tuple with the PromotedObject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetPromotedObjectOk() (*BoostPostRequestPromotedObject, bool) {
+	if o == nil || IsNil(o.PromotedObject) {
+		return nil, false
+	}
+	return o.PromotedObject, true
+}
+
+// HasPromotedObject returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasPromotedObject() bool {
+	if o != nil && !IsNil(o.PromotedObject) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotedObject gets a reference to the given BoostPostRequestPromotedObject and assigns it to the PromotedObject field.
+func (o *BoostPostRequest) SetPromotedObject(v BoostPostRequestPromotedObject) {
+	o.PromotedObject = &v
+}
+
 // GetDsaBeneficiary returns the DsaBeneficiary field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetDsaBeneficiary() string {
 	if o == nil || IsNil(o.DsaBeneficiary) {
@@ -1228,6 +1261,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SparkAuthCode) {
 		toSerialize["sparkAuthCode"] = o.SparkAuthCode
+	}
+	if !IsNil(o.PromotedObject) {
+		toSerialize["promotedObject"] = o.PromotedObject
 	}
 	if !IsNil(o.DsaBeneficiary) {
 		toSerialize["dsaBeneficiary"] = o.DsaBeneficiary

@@ -3331,6 +3331,209 @@ func (a *AdCampaignsAPIService) GetAdsTimelineExecute(r AdCampaignsAPIGetAdsTime
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdCampaignsAPIGetCampaignAdScheduleRequest struct {
+	ctx                context.Context
+	ApiService         *AdCampaignsAPIService
+	campaignId         string
+	platform           *string
+	includePerformance *bool
+	windowDays         *int32
+	fromDate           *string
+	toDate             *string
+}
+
+// Disambiguates the campaign id when the connection spans platforms.
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) Platform(platform string) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	r.platform = &platform
+	return r
+}
+
+// Also return delivery by day of week and by hour. Costs one extra Google call.
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) IncludePerformance(includePerformance bool) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	r.includePerformance = &includePerformance
+	return r
+}
+
+// Trailing window for the performance split. Ignored when fromDate and toDate are both given.
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) WindowDays(windowDays int32) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	r.windowDays = &windowDays
+	return r
+}
+
+// Start of an explicit performance range (YYYY-MM-DD). Use together with toDate.
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) FromDate(fromDate string) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End of an explicit performance range (YYYY-MM-DD). Must be on or after fromDate.
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) ToDate(toDate string) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	r.toDate = &toDate
+	return r
+}
+
+func (r AdCampaignsAPIGetCampaignAdScheduleRequest) Execute() (*GetCampaignAdSchedule200Response, *http.Response, error) {
+	return r.ApiService.GetCampaignAdScheduleExecute(r)
+}
+
+/*
+GetCampaignAdSchedule Read a campaign's ad schedule (dayparting)
+
+The windows a Google campaign serves in, with the bid modifier on each, plus the
+criterion ids Google minted for them.
+
+An EMPTY `schedule` is meaningful and is not a failed lookup: Google has no
+"all day" criterion, so a campaign with no ad schedule serves around the clock.
+`servesAroundTheClock` states that explicitly.
+
+Set `includePerformance=true` to also get delivery split by day of week and by hour,
+which is the evidence for deciding what the schedule should be. It is one extra
+Google call segmented by both dimensions at once, so the two views always agree.
+
+Google Ads only. The response carries `cachedAt` and `stale`, set when a
+quota-exhausted call falls back to the last-good copy instead of a live read.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform campaign id.
+	@return AdCampaignsAPIGetCampaignAdScheduleRequest
+*/
+func (a *AdCampaignsAPIService) GetCampaignAdSchedule(ctx context.Context, campaignId string) AdCampaignsAPIGetCampaignAdScheduleRequest {
+	return AdCampaignsAPIGetCampaignAdScheduleRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetCampaignAdSchedule200Response
+func (a *AdCampaignsAPIService) GetCampaignAdScheduleExecute(r AdCampaignsAPIGetCampaignAdScheduleRequest) (*GetCampaignAdSchedule200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetCampaignAdSchedule200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.GetCampaignAdSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/ad-schedule"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.includePerformance != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includePerformance", r.includePerformance, "form", "")
+	}
+	if r.windowDays != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "windowDays", r.windowDays, "form", "")
+	} else {
+		var defaultValue int32 = 30
+		parameterAddToHeaderOrQuery(localVarQueryParams, "windowDays", defaultValue, "form", "")
+		r.windowDays = &defaultValue
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdCampaignsAPIGetCampaignBiddingRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
@@ -6416,12 +6619,18 @@ the ad's campaign. Send the complete list you want to keep. Zernio diffs it agai
 the campaign's live criteria and sends the removes and the creates in ONE
 `googleAds:mutate`, so the campaign is never left with a half-applied set; criteria
 already in the list keep their criterion ID and history. Excluded (negative)
-locations are left untouched. Two cases are refused rather than applied: an empty
-location list returns 400 (a Google campaign with no location criteria targets every
-country, which is never what "remove my locations" means, so omit the field instead),
-and radius targeting (`customLocations`) returns 422 because it is a separate Google
-criterion type that this replacement neither creates nor removes. Send either
-`targeting.locations` or the top-level geo fields, not both: mixing them returns 400.
+locations are left untouched. An empty location list returns 400 (a Google campaign
+with no location criteria targets every country, which is never what "remove my
+locations" means, so omit the field instead). Send either `targeting.locations` or the
+top-level geo fields, not both: mixing them returns 400.
+
+**Google radius targeting:** `customLocations` is editable and is replaced the same
+way, but as its OWN set. Google models a place (LOCATION) and a point plus radius
+(PROXIMITY) as different criterion types, so the two are independent: sending
+`customLocations` replaces every radius and leaves the cities and countries alone,
+and sending places replaces those and leaves the radius alone. Send
+`customLocations: []` to drop radius targeting entirely. A circle you re-send
+unchanged keeps its criterion ID rather than being removed and recreated.
 
 **Google keyword replacement:** These edits affect the ad's entire ad group,
 including sibling ads. Positive (`targeting.keywords`) and negative
@@ -7750,6 +7959,171 @@ func (a *AdCampaignsAPIService) UpdateBidStrategyExecute(r AdCampaignsAPIUpdateB
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIUpdateCampaignAdScheduleRequest struct {
+	ctx                             context.Context
+	ApiService                      *AdCampaignsAPIService
+	campaignId                      string
+	updateCampaignAdScheduleRequest *UpdateCampaignAdScheduleRequest
+}
+
+func (r AdCampaignsAPIUpdateCampaignAdScheduleRequest) UpdateCampaignAdScheduleRequest(updateCampaignAdScheduleRequest UpdateCampaignAdScheduleRequest) AdCampaignsAPIUpdateCampaignAdScheduleRequest {
+	r.updateCampaignAdScheduleRequest = &updateCampaignAdScheduleRequest
+	return r
+}
+
+func (r AdCampaignsAPIUpdateCampaignAdScheduleRequest) Execute() (*UpdateCampaignAdSchedule200Response, *http.Response, error) {
+	return r.ApiService.UpdateCampaignAdScheduleExecute(r)
+}
+
+/*
+UpdateCampaignAdSchedule Replace a campaign's ad schedule (dayparting)
+
+Replaces the campaign's whole ad schedule with the windows you send. This is a
+REPLACE, not a merge: windows you leave out stop serving.
+
+Send `schedule: []` to clear dayparting, which returns the campaign to serving around
+the clock.
+
+Google rules enforced here, so you get a named field instead of a criterion error:
+at most 6 windows per day, a window must end after it starts, windows on the same day
+may not overlap, `endHour` 24 is midnight and cannot carry minutes, and minutes are
+quarter-hours only (0, 15, 30, 45). `bidModifier` is 0.1-10.0; Google's 0 means
+"off" for devices only, so a window is switched off by leaving it out.
+
+Windows are half-open (Google is exclusive of the end minute), so 09:00-12:00 and
+12:00-17:00 on the same day are adjacent and both valid.
+
+Google cannot edit an ad schedule in place (every AdScheduleInfo field is prohibited on
+update), so this removes the live criteria and creates the new ones in a single atomic
+mutate. The response is read back from Google and carries the new criterion ids.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param campaignId Numeric Google platform campaign id.
+	@return AdCampaignsAPIUpdateCampaignAdScheduleRequest
+*/
+func (a *AdCampaignsAPIService) UpdateCampaignAdSchedule(ctx context.Context, campaignId string) AdCampaignsAPIUpdateCampaignAdScheduleRequest {
+	return AdCampaignsAPIUpdateCampaignAdScheduleRequest{
+		ApiService: a,
+		ctx:        ctx,
+		campaignId: campaignId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return UpdateCampaignAdSchedule200Response
+func (a *AdCampaignsAPIService) UpdateCampaignAdScheduleExecute(r AdCampaignsAPIUpdateCampaignAdScheduleRequest) (*UpdateCampaignAdSchedule200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UpdateCampaignAdSchedule200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateCampaignAdSchedule")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/campaigns/{campaignId}/ad-schedule"
+	localVarPath = strings.Replace(localVarPath, "{"+"campaignId"+"}", url.PathEscape(parameterValueToString(r.campaignId, "campaignId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.updateCampaignAdScheduleRequest == nil {
+		return localVarReturnValue, nil, reportError("updateCampaignAdScheduleRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.updateCampaignAdScheduleRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v ErrorResponse
