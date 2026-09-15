@@ -18,12 +18,14 @@ import (
 // checks if the ErrorResponseDetails type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ErrorResponseDetails{}
 
-// ErrorResponseDetails Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.  On a Google Ads 429 it carries `quotaExhausted: true`, which marks the failure as Google's own ads quota rather than a Zernio rate limit, so you can keep calling other platforms instead of backing off everywhere. When Google names the scope it also carries `quotaScope`: `DEVELOPER` means the shared developer-token budget (every Google account is affected and there is nothing to change on your side), `ACCOUNT` means your own ad account. A Meta 429 carries neither field.
+// ErrorResponseDetails Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.  On a Google Ads 429 it carries `quotaExhausted: true`, which marks the failure as Google's own ads quota rather than a Zernio rate limit, so you can keep calling other platforms instead of backing off everywhere. When Google names the scope it also carries `quotaScope`: `DEVELOPER` means the shared developer-token budget (every Google account is affected and there is nothing to change on your side), `ACCOUNT` means your own ad account. A Meta 429 carries neither field.  A Zernio Google Ads budget 429 carries `budgetScope` instead, and never `quotaExhausted`: these are Zernio's own limits, applied before the call reaches Google. `user` is your own burst or daily allowance, so the work is yours to reschedule; `platform` is the fleet-wide daily budget shared with every other customer, so only waiting for the reset clears it. The two scopes are separate axes from `quotaScope`, not the same pool named twice.
 type ErrorResponseDetails struct {
 	// Google Ads 429 only. True when the upstream Google Ads quota is spent rather than a Zernio limit.
 	QuotaExhausted *bool `json:"quotaExhausted,omitempty"`
 	// Google Ads 429 only, when Google names the scope. DEVELOPER is the shared developer-token budget; ACCOUNT is your ad account.
-	QuotaScope           *string `json:"quotaScope,omitempty"`
+	QuotaScope *string `json:"quotaScope,omitempty"`
+	// Zernio Google Ads operations-budget 429 only (never set alongside `quotaExhausted`). `user` is your own burst/daily allowance; `platform` is the fleet-wide daily budget shared across customers.
+	BudgetScope          *string `json:"budgetScope,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -110,6 +112,38 @@ func (o *ErrorResponseDetails) SetQuotaScope(v string) {
 	o.QuotaScope = &v
 }
 
+// GetBudgetScope returns the BudgetScope field value if set, zero value otherwise.
+func (o *ErrorResponseDetails) GetBudgetScope() string {
+	if o == nil || IsNil(o.BudgetScope) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetScope
+}
+
+// GetBudgetScopeOk returns a tuple with the BudgetScope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponseDetails) GetBudgetScopeOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetScope) {
+		return nil, false
+	}
+	return o.BudgetScope, true
+}
+
+// HasBudgetScope returns a boolean if a field has been set.
+func (o *ErrorResponseDetails) HasBudgetScope() bool {
+	if o != nil && !IsNil(o.BudgetScope) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetScope gets a reference to the given string and assigns it to the BudgetScope field.
+func (o *ErrorResponseDetails) SetBudgetScope(v string) {
+	o.BudgetScope = &v
+}
+
 func (o ErrorResponseDetails) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -125,6 +159,9 @@ func (o ErrorResponseDetails) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.QuotaScope) {
 		toSerialize["quotaScope"] = o.QuotaScope
+	}
+	if !IsNil(o.BudgetScope) {
+		toSerialize["budgetScope"] = o.BudgetScope
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -150,6 +187,7 @@ func (o *ErrorResponseDetails) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "quotaExhausted")
 		delete(additionalProperties, "quotaScope")
+		delete(additionalProperties, "budgetScope")
 		o.AdditionalProperties = additionalProperties
 	}
 
