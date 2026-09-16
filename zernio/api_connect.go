@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.5.0
+API version: 1.6.0
 Contact: support@zernio.com
 */
 
@@ -721,18 +721,19 @@ func (a *ConnectAPIService) ConfigureTikTokAdsBrandIdentityExecute(r ConnectAPIC
 }
 
 type ConnectAPIConnectAdsRequest struct {
-	ctx          context.Context
-	ApiService   *ConnectAPIService
-	platform     string
-	profileId    *string
-	loginMode    *string
-	pageId       *string
-	accountId    *string
-	redirectUrl  *string
-	headless     *bool
-	force        *bool
-	adAccountId  *string
-	adAccountIds *[]string
+	ctx             context.Context
+	ApiService      *ConnectAPIService
+	platform        string
+	profileId       *string
+	loginMode       *string
+	permissionLevel *string
+	pageId          *string
+	accountId       *string
+	redirectUrl     *string
+	headless        *bool
+	force           *bool
+	adAccountId     *string
+	adAccountIds    *[]string
 }
 
 // Your Zernio profile ID
@@ -744,6 +745,12 @@ func (r ConnectAPIConnectAdsRequest) ProfileId(profileId string) ConnectAPIConne
 // Meta ads authorization mode. Business login is opt-in for Facebook and Instagram; classic preserves the posting-account flow.
 func (r ConnectAPIConnectAdsRequest) LoginMode(loginMode string) ConnectAPIConnectAdsRequest {
 	r.loginMode = &loginMode
+	return r
+}
+
+// Business login only. Ad-account permission the connection&#39;s system user will hold. &#x60;full&#x60; asks the owner for Full control (MANAGE; required to create pixels and other account-level assets through Zernio). &#x60;advertise&#x60; asks for Manage campaigns (ADVERTISE), enough for campaigns, ad sets, creatives, ads, media and reporting, for owners who will not grant billing-level control to an integration. Either way Meta only lets a business admin complete the grant. 503 if the advertise configuration is not set up.
+func (r ConnectAPIConnectAdsRequest) PermissionLevel(permissionLevel string) ConnectAPIConnectAdsRequest {
+	r.permissionLevel = &permissionLevel
 	return r
 }
 
@@ -897,6 +904,13 @@ func (a *ConnectAPIService) ConnectAdsExecute(r ConnectAPIConnectAdsRequest) (*C
 		var defaultValue string = "classic"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "loginMode", defaultValue, "form", "")
 		r.loginMode = &defaultValue
+	}
+	if r.permissionLevel != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "permissionLevel", r.permissionLevel, "form", "")
+	} else {
+		var defaultValue string = "full"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "permissionLevel", defaultValue, "form", "")
+		r.permissionLevel = &defaultValue
 	}
 	if r.pageId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
