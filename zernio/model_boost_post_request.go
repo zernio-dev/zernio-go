@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.7.0
+API version: 1.8.0
 Contact: support@zernio.com
 */
 
@@ -39,7 +39,7 @@ type BoostPostRequest struct {
 	AdSetName *string `json:"adSetName,omitempty"`
 	// Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal string `json:"goal"`
-	// Meta only. Attach the boosted post to this existing ad set instead of creating a campaign. The ad set then owns budget, schedule and targeting; sending those too is a 400.
+	// Meta, or TikTok with `smartPlus: true`. Attach the boosted post to this existing ad set instead of creating a campaign. On TikTok the id is an existing Smart+ ad group: the post is added as one more Spark ad in it (up to 30 per ad group), under the identity its `sparkAuthCode` creates; goal and budget are inherited from the Smart+ campaign; a regular ad group is rejected with a 400. Meta: The ad set then owns budget, schedule and targeting; sending those too is a 400.
 	AdSetId *string                        `json:"adSetId,omitempty"`
 	Budget  *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
