@@ -776,6 +776,13 @@ func main() {
 | `client.PhoneNumbersAPI.ValidatePhoneNumberKycAddress(ctx)` | Pre-validate KYC address |
 | `client.PhoneNumbersAPI.ViewPhoneNumberKycDocument(ctx)` | View a KYC document on file |
 
+### Products
+| Method | Description |
+|--------|-------------|
+| `client.ProductsAPI.ListProducts(ctx)` | List products |
+| `client.ProductsAPI.GetProduct(ctx)` | Get a product |
+| `client.ProductsAPI.UpdateProduct(ctx)` | Update a product |
+
 ### Reach and Frequency
 | Method | Description |
 |--------|-------------|
