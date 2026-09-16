@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.2.1
+API version: 1.3.0
 Contact: support@zernio.com
 */
 
@@ -42,6 +42,18 @@ type GetPostTimeline200ResponseTimelineInner struct {
 	Clicks *int32 `json:"clicks,omitempty"`
 	// Total views on this date
 	Views *int32 `json:"views,omitempty"`
+	// Follows attributed to the post on this date (Instagram feed and stories, TikTok business lane); 0 elsewhere
+	Follows *int32 `json:"follows,omitempty"`
+	// TikTok business lane: share of viewers who watched to the end on this date, 0 to 1; 0 elsewhere
+	CompletionRate *float32 `json:"completionRate,omitempty"`
+	// TikTok business lane: profile views attributed to the post on this date; 0 elsewhere
+	ProfileViews *int32 `json:"profileViews,omitempty"`
+	// TikTok business lane: website-link clicks attributed to the post on this date (also inside clicks); 0 elsewhere
+	WebsiteClicks *int32 `json:"websiteClicks,omitempty"`
+	// TikTok business lane: share of views by surface on this date (forYou, follow, search, personalProfile, sound, directMessage, other), fractions 0 to 1; empty object elsewhere
+	ImpressionSources map[string]float32 `json:"impressionSources,omitempty"`
+	// TikTok business lane: follower / nonFollower and newViewer / returnViewer shares on this date, fractions 0 to 1; empty object elsewhere
+	AudienceTypes map[string]float32 `json:"audienceTypes,omitempty"`
 }
 
 // NewGetPostTimeline200ResponseTimelineInner instantiates a new GetPostTimeline200ResponseTimelineInner object
@@ -413,6 +425,198 @@ func (o *GetPostTimeline200ResponseTimelineInner) SetViews(v int32) {
 	o.Views = &v
 }
 
+// GetFollows returns the Follows field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetFollows() int32 {
+	if o == nil || IsNil(o.Follows) {
+		var ret int32
+		return ret
+	}
+	return *o.Follows
+}
+
+// GetFollowsOk returns a tuple with the Follows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetFollowsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Follows) {
+		return nil, false
+	}
+	return o.Follows, true
+}
+
+// HasFollows returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasFollows() bool {
+	if o != nil && !IsNil(o.Follows) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollows gets a reference to the given int32 and assigns it to the Follows field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetFollows(v int32) {
+	o.Follows = &v
+}
+
+// GetCompletionRate returns the CompletionRate field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetCompletionRate() float32 {
+	if o == nil || IsNil(o.CompletionRate) {
+		var ret float32
+		return ret
+	}
+	return *o.CompletionRate
+}
+
+// GetCompletionRateOk returns a tuple with the CompletionRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetCompletionRateOk() (*float32, bool) {
+	if o == nil || IsNil(o.CompletionRate) {
+		return nil, false
+	}
+	return o.CompletionRate, true
+}
+
+// HasCompletionRate returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasCompletionRate() bool {
+	if o != nil && !IsNil(o.CompletionRate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCompletionRate gets a reference to the given float32 and assigns it to the CompletionRate field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetCompletionRate(v float32) {
+	o.CompletionRate = &v
+}
+
+// GetProfileViews returns the ProfileViews field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetProfileViews() int32 {
+	if o == nil || IsNil(o.ProfileViews) {
+		var ret int32
+		return ret
+	}
+	return *o.ProfileViews
+}
+
+// GetProfileViewsOk returns a tuple with the ProfileViews field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetProfileViewsOk() (*int32, bool) {
+	if o == nil || IsNil(o.ProfileViews) {
+		return nil, false
+	}
+	return o.ProfileViews, true
+}
+
+// HasProfileViews returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasProfileViews() bool {
+	if o != nil && !IsNil(o.ProfileViews) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileViews gets a reference to the given int32 and assigns it to the ProfileViews field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetProfileViews(v int32) {
+	o.ProfileViews = &v
+}
+
+// GetWebsiteClicks returns the WebsiteClicks field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetWebsiteClicks() int32 {
+	if o == nil || IsNil(o.WebsiteClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.WebsiteClicks
+}
+
+// GetWebsiteClicksOk returns a tuple with the WebsiteClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetWebsiteClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.WebsiteClicks) {
+		return nil, false
+	}
+	return o.WebsiteClicks, true
+}
+
+// HasWebsiteClicks returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasWebsiteClicks() bool {
+	if o != nil && !IsNil(o.WebsiteClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebsiteClicks gets a reference to the given int32 and assigns it to the WebsiteClicks field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetWebsiteClicks(v int32) {
+	o.WebsiteClicks = &v
+}
+
+// GetImpressionSources returns the ImpressionSources field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetImpressionSources() map[string]float32 {
+	if o == nil || IsNil(o.ImpressionSources) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.ImpressionSources
+}
+
+// GetImpressionSourcesOk returns a tuple with the ImpressionSources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetImpressionSourcesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.ImpressionSources) {
+		return map[string]float32{}, false
+	}
+	return o.ImpressionSources, true
+}
+
+// HasImpressionSources returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasImpressionSources() bool {
+	if o != nil && !IsNil(o.ImpressionSources) {
+		return true
+	}
+
+	return false
+}
+
+// SetImpressionSources gets a reference to the given map[string]float32 and assigns it to the ImpressionSources field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetImpressionSources(v map[string]float32) {
+	o.ImpressionSources = v
+}
+
+// GetAudienceTypes returns the AudienceTypes field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetAudienceTypes() map[string]float32 {
+	if o == nil || IsNil(o.AudienceTypes) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.AudienceTypes
+}
+
+// GetAudienceTypesOk returns a tuple with the AudienceTypes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetAudienceTypesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.AudienceTypes) {
+		return map[string]float32{}, false
+	}
+	return o.AudienceTypes, true
+}
+
+// HasAudienceTypes returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasAudienceTypes() bool {
+	if o != nil && !IsNil(o.AudienceTypes) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceTypes gets a reference to the given map[string]float32 and assigns it to the AudienceTypes field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetAudienceTypes(v map[string]float32) {
+	o.AudienceTypes = v
+}
+
 func (o GetPostTimeline200ResponseTimelineInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -455,6 +659,24 @@ func (o GetPostTimeline200ResponseTimelineInner) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Views) {
 		toSerialize["views"] = o.Views
+	}
+	if !IsNil(o.Follows) {
+		toSerialize["follows"] = o.Follows
+	}
+	if !IsNil(o.CompletionRate) {
+		toSerialize["completionRate"] = o.CompletionRate
+	}
+	if !IsNil(o.ProfileViews) {
+		toSerialize["profileViews"] = o.ProfileViews
+	}
+	if !IsNil(o.WebsiteClicks) {
+		toSerialize["websiteClicks"] = o.WebsiteClicks
+	}
+	if !IsNil(o.ImpressionSources) {
+		toSerialize["impressionSources"] = o.ImpressionSources
+	}
+	if !IsNil(o.AudienceTypes) {
+		toSerialize["audienceTypes"] = o.AudienceTypes
 	}
 	return toSerialize, nil
 }

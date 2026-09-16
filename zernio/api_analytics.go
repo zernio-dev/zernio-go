@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.2.1
+API version: 1.3.0
 Contact: support@zernio.com
 */
 
@@ -94,7 +94,7 @@ func (r AnalyticsAPIGetAnalyticsRequest) Page(page int32) AnalyticsAPIGetAnalyti
 	return r
 }
 
-// Sort by date, engagement, or a specific metric. Platform-specific metrics (follows, reposts, reels_skip_rate, ig_reels_*, completion_rate, profile_views) sort a null value as 0.
+// Sort by date, engagement, or a specific metric. Platform-specific metrics (follows, reposts, reels_skip_rate, ig_reels_*, completion_rate, profile_views, website_clicks) sort a null value as 0.
 func (r AnalyticsAPIGetAnalyticsRequest) SortBy(sortBy string) AnalyticsAPIGetAnalyticsRequest {
 	r.sortBy = &sortBy
 	return r

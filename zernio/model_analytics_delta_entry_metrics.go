@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.2.1
+API version: 1.3.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,12 @@ type AnalyticsDeltaEntryMetrics struct {
 	CompletionRate float32 `json:"completionRate"`
 	// TikTok business lane: profile views attributed to the post
 	ProfileViews int32 `json:"profileViews"`
+	// TikTok business lane: website-link clicks attributed to the post (also inside clicks)
+	WebsiteClicks int32 `json:"websiteClicks"`
+	// TikTok business lane: share of views by surface (forYou, follow, search, personalProfile, sound, directMessage, other), fractions 0 to 1. Empty object elsewhere.
+	ImpressionSources map[string]float32 `json:"impressionSources"`
+	// TikTok business lane: follower / nonFollower and newViewer / returnViewer shares, fractions 0 to 1. Empty object elsewhere.
+	AudienceTypes map[string]float32 `json:"audienceTypes"`
 }
 
 type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
@@ -52,7 +58,7 @@ type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32, completionRate float32, profileViews int32) *AnalyticsDeltaEntryMetrics {
+func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32, completionRate float32, profileViews int32, websiteClicks int32, impressionSources map[string]float32, audienceTypes map[string]float32) *AnalyticsDeltaEntryMetrics {
 	this := AnalyticsDeltaEntryMetrics{}
 	this.Impressions = impressions
 	this.Reach = reach
@@ -70,6 +76,9 @@ func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, 
 	this.ReelsSkipRate = reelsSkipRate
 	this.CompletionRate = completionRate
 	this.ProfileViews = profileViews
+	this.WebsiteClicks = websiteClicks
+	this.ImpressionSources = impressionSources
+	this.AudienceTypes = audienceTypes
 	return &this
 }
 
@@ -465,6 +474,78 @@ func (o *AnalyticsDeltaEntryMetrics) SetProfileViews(v int32) {
 	o.ProfileViews = v
 }
 
+// GetWebsiteClicks returns the WebsiteClicks field value
+func (o *AnalyticsDeltaEntryMetrics) GetWebsiteClicks() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.WebsiteClicks
+}
+
+// GetWebsiteClicksOk returns a tuple with the WebsiteClicks field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetWebsiteClicksOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.WebsiteClicks, true
+}
+
+// SetWebsiteClicks sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetWebsiteClicks(v int32) {
+	o.WebsiteClicks = v
+}
+
+// GetImpressionSources returns the ImpressionSources field value
+func (o *AnalyticsDeltaEntryMetrics) GetImpressionSources() map[string]float32 {
+	if o == nil {
+		var ret map[string]float32
+		return ret
+	}
+
+	return o.ImpressionSources
+}
+
+// GetImpressionSourcesOk returns a tuple with the ImpressionSources field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetImpressionSourcesOk() (map[string]float32, bool) {
+	if o == nil {
+		return map[string]float32{}, false
+	}
+	return o.ImpressionSources, true
+}
+
+// SetImpressionSources sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetImpressionSources(v map[string]float32) {
+	o.ImpressionSources = v
+}
+
+// GetAudienceTypes returns the AudienceTypes field value
+func (o *AnalyticsDeltaEntryMetrics) GetAudienceTypes() map[string]float32 {
+	if o == nil {
+		var ret map[string]float32
+		return ret
+	}
+
+	return o.AudienceTypes
+}
+
+// GetAudienceTypesOk returns a tuple with the AudienceTypes field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetAudienceTypesOk() (map[string]float32, bool) {
+	if o == nil {
+		return map[string]float32{}, false
+	}
+	return o.AudienceTypes, true
+}
+
+// SetAudienceTypes sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetAudienceTypes(v map[string]float32) {
+	o.AudienceTypes = v
+}
+
 func (o AnalyticsDeltaEntryMetrics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -491,6 +572,9 @@ func (o AnalyticsDeltaEntryMetrics) ToMap() (map[string]interface{}, error) {
 	toSerialize["reelsSkipRate"] = o.ReelsSkipRate
 	toSerialize["completionRate"] = o.CompletionRate
 	toSerialize["profileViews"] = o.ProfileViews
+	toSerialize["websiteClicks"] = o.WebsiteClicks
+	toSerialize["impressionSources"] = o.ImpressionSources
+	toSerialize["audienceTypes"] = o.AudienceTypes
 	return toSerialize, nil
 }
 
@@ -515,6 +599,9 @@ func (o *AnalyticsDeltaEntryMetrics) UnmarshalJSON(data []byte) (err error) {
 		"reelsSkipRate",
 		"completionRate",
 		"profileViews",
+		"websiteClicks",
+		"impressionSources",
+		"audienceTypes",
 	}
 
 	allProperties := make(map[string]interface{})

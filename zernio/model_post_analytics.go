@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.2.1
+API version: 1.3.0
 Contact: support@zernio.com
 */
 
@@ -42,6 +42,12 @@ type PostAnalytics struct {
 	CompletionRate *float32 `json:"completionRate,omitempty"`
 	// TikTok accounts connected through the TikTok for Business app only: profile views from users who reached the profile through this post (T+24-48h). 0 for other platforms.
 	ProfileViews *int32 `json:"profileViews,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: clicks on the profile website link attributed to this post (T+24-48h). Also counted inside `clicks`, which sums every profile-link type (website, phone, email, address, app download). 0 for other platforms.
+	WebsiteClicks *int32 `json:"websiteClicks,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: share of views by surface, as fractions 0 to 1 (T+24-48h, only for posts active in the last 7 days). Keys: `forYou`, `follow`, `search`, `personalProfile`, `sound`, `directMessage`, `other`; a surface TikTok adds later appears under a camelCase key derived from its name. Empty object when TikTok reports nothing, and for other platforms. When a post is published to several accounts, each share is weighted by views.
+	ImpressionSources map[string]float32 `json:"impressionSources,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: two viewer splits as fractions 0 to 1 (T+24-48h). Each pair sums to 1 when present, `follower` + `nonFollower` and `newViewer` + `returnViewer`; TikTok can report one pair without the other. Empty object when TikTok reports nothing, and for other platforms. Views-weighted across accounts like impressionSources.
+	AudienceTypes map[string]float32 `json:"audienceTypes,omitempty"`
 	// Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
 	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
@@ -527,6 +533,102 @@ func (o *PostAnalytics) SetProfileViews(v int32) {
 	o.ProfileViews = &v
 }
 
+// GetWebsiteClicks returns the WebsiteClicks field value if set, zero value otherwise.
+func (o *PostAnalytics) GetWebsiteClicks() int32 {
+	if o == nil || IsNil(o.WebsiteClicks) {
+		var ret int32
+		return ret
+	}
+	return *o.WebsiteClicks
+}
+
+// GetWebsiteClicksOk returns a tuple with the WebsiteClicks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetWebsiteClicksOk() (*int32, bool) {
+	if o == nil || IsNil(o.WebsiteClicks) {
+		return nil, false
+	}
+	return o.WebsiteClicks, true
+}
+
+// HasWebsiteClicks returns a boolean if a field has been set.
+func (o *PostAnalytics) HasWebsiteClicks() bool {
+	if o != nil && !IsNil(o.WebsiteClicks) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebsiteClicks gets a reference to the given int32 and assigns it to the WebsiteClicks field.
+func (o *PostAnalytics) SetWebsiteClicks(v int32) {
+	o.WebsiteClicks = &v
+}
+
+// GetImpressionSources returns the ImpressionSources field value if set, zero value otherwise.
+func (o *PostAnalytics) GetImpressionSources() map[string]float32 {
+	if o == nil || IsNil(o.ImpressionSources) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.ImpressionSources
+}
+
+// GetImpressionSourcesOk returns a tuple with the ImpressionSources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetImpressionSourcesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.ImpressionSources) {
+		return map[string]float32{}, false
+	}
+	return o.ImpressionSources, true
+}
+
+// HasImpressionSources returns a boolean if a field has been set.
+func (o *PostAnalytics) HasImpressionSources() bool {
+	if o != nil && !IsNil(o.ImpressionSources) {
+		return true
+	}
+
+	return false
+}
+
+// SetImpressionSources gets a reference to the given map[string]float32 and assigns it to the ImpressionSources field.
+func (o *PostAnalytics) SetImpressionSources(v map[string]float32) {
+	o.ImpressionSources = v
+}
+
+// GetAudienceTypes returns the AudienceTypes field value if set, zero value otherwise.
+func (o *PostAnalytics) GetAudienceTypes() map[string]float32 {
+	if o == nil || IsNil(o.AudienceTypes) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.AudienceTypes
+}
+
+// GetAudienceTypesOk returns a tuple with the AudienceTypes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetAudienceTypesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.AudienceTypes) {
+		return map[string]float32{}, false
+	}
+	return o.AudienceTypes, true
+}
+
+// HasAudienceTypes returns a boolean if a field has been set.
+func (o *PostAnalytics) HasAudienceTypes() bool {
+	if o != nil && !IsNil(o.AudienceTypes) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceTypes gets a reference to the given map[string]float32 and assigns it to the AudienceTypes field.
+func (o *PostAnalytics) SetAudienceTypes(v map[string]float32) {
+	o.AudienceTypes = v
+}
+
 // GetReposts returns the Reposts field value if set, zero value otherwise.
 func (o *PostAnalytics) GetReposts() int32 {
 	if o == nil || IsNil(o.Reposts) {
@@ -717,6 +819,15 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ProfileViews) {
 		toSerialize["profileViews"] = o.ProfileViews
+	}
+	if !IsNil(o.WebsiteClicks) {
+		toSerialize["websiteClicks"] = o.WebsiteClicks
+	}
+	if !IsNil(o.ImpressionSources) {
+		toSerialize["impressionSources"] = o.ImpressionSources
+	}
+	if !IsNil(o.AudienceTypes) {
+		toSerialize["audienceTypes"] = o.AudienceTypes
 	}
 	if !IsNil(o.Reposts) {
 		toSerialize["reposts"] = o.Reposts
