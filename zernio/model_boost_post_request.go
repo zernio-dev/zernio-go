@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.3.0
+API version: 1.4.0
 Contact: support@zernio.com
 */
 
@@ -33,6 +33,10 @@ type BoostPostRequest struct {
 	// Platform ad account ID
 	AdAccountId string `json:"adAccountId"`
 	Name        string `json:"name"`
+	// Exact name for the campaign this boost provisions. Omitted keeps the default `<name> - Campaign`. Every platform: on LinkedIn it names the campaign group. Ignored on the Meta attach shape (`adSetId`), which creates no campaign.
+	CampaignName *string `json:"campaignName,omitempty"`
+	// Exact name for the ad-group level this boost provisions. Omitted keeps the default `<name> - Ad Group`. Meta: ad set; TikTok, Pinterest, Google: ad group; X: line item; LinkedIn: the campaign under the campaign group. Ignored on the Meta attach shape.
+	AdSetName *string `json:"adSetName,omitempty"`
 	// Available goals vary by platform. Meta (Facebook/Instagram) and TikTok support all 7. LinkedIn supports all except app_promotion. X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest and Google Ads support only engagement, traffic, awareness, video_views.
 	Goal string `json:"goal"`
 	// Meta only. Attach the boosted post to this existing ad set instead of creating a campaign. The ad set then owns budget, schedule and targeting; sending those too is a 400.
@@ -277,6 +281,70 @@ func (o *BoostPostRequest) GetNameOk() (*string, bool) {
 // SetName sets field value
 func (o *BoostPostRequest) SetName(v string) {
 	o.Name = v
+}
+
+// GetCampaignName returns the CampaignName field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetCampaignName() string {
+	if o == nil || IsNil(o.CampaignName) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignName
+}
+
+// GetCampaignNameOk returns a tuple with the CampaignName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetCampaignNameOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignName) {
+		return nil, false
+	}
+	return o.CampaignName, true
+}
+
+// HasCampaignName returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasCampaignName() bool {
+	if o != nil && !IsNil(o.CampaignName) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignName gets a reference to the given string and assigns it to the CampaignName field.
+func (o *BoostPostRequest) SetCampaignName(v string) {
+	o.CampaignName = &v
+}
+
+// GetAdSetName returns the AdSetName field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetAdSetName() string {
+	if o == nil || IsNil(o.AdSetName) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetName
+}
+
+// GetAdSetNameOk returns a tuple with the AdSetName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetAdSetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetName) {
+		return nil, false
+	}
+	return o.AdSetName, true
+}
+
+// HasAdSetName returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasAdSetName() bool {
+	if o != nil && !IsNil(o.AdSetName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetName gets a reference to the given string and assigns it to the AdSetName field.
+func (o *BoostPostRequest) SetAdSetName(v string) {
+	o.AdSetName = &v
 }
 
 // GetGoal returns the Goal field value
@@ -1198,6 +1266,12 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
+	if !IsNil(o.CampaignName) {
+		toSerialize["campaignName"] = o.CampaignName
+	}
+	if !IsNil(o.AdSetName) {
+		toSerialize["adSetName"] = o.AdSetName
+	}
 	toSerialize["goal"] = o.Goal
 	if !IsNil(o.AdSetId) {
 		toSerialize["adSetId"] = o.AdSetId
