@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.4.0
+API version: 1.5.0
 Contact: support@zernio.com
 */
 
@@ -78,7 +78,9 @@ type BoostPostRequest struct {
 	// CTA button label. Non-messaging CTAs require `linkUrl`. WHATSAPP_MESSAGE, MESSAGE_PAGE, and INSTAGRAM_MESSAGE do not require a URL and reject linkUrl.  **Meta**: the CTA enum of POST /v1/ads/create plus `VIEW_INSTAGRAM_PROFILE`, `WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, and `INSTAGRAM_MESSAGE`. VIEW_INSTAGRAM_PROFILE requires linkUrl; the messaging CTAs select their destination automatically.  **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the platform validates the value. See TikTok's \"Enumeration - Call-to-Action\".
 	CallToAction *string `json:"callToAction,omitempty"`
 	// TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator Spark Ads: the advertiser can boost a video owned by a DIFFERENT TikTok account. Without this, boosts are limited to videos owned by the same account running the ads (same-BC creators only). The creator generates the code in their TikTok app's Promote settings and shares it with the advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
-	SparkAuthCode  *string                         `json:"sparkAuthCode,omitempty"`
+	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
+	// TikTok only. Run the Spark post in a Smart+ campaign (goal `conversions` = Smart+ Web Conversions, `lead_generation` = Smart+ Lead Generation) instead of a regular campaign. Requires `sparkAuthCode` (the Smart+ ad runs the post under the identity that redeeming its Spark code creates; a Business Center-owned post is not accepted there) and `promotedObject.pixelId` + `customEventType`. `app_promotion` is not available on a Spark post. Rejected with a 400 on other platforms.
+	SmartPlus      *bool                           `json:"smartPlus,omitempty"`
 	PromotedObject *BoostPostRequestPromotedObject `json:"promotedObject,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
@@ -1052,6 +1054,38 @@ func (o *BoostPostRequest) SetSparkAuthCode(v string) {
 	o.SparkAuthCode = &v
 }
 
+// GetSmartPlus returns the SmartPlus field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetSmartPlus() bool {
+	if o == nil || IsNil(o.SmartPlus) {
+		var ret bool
+		return ret
+	}
+	return *o.SmartPlus
+}
+
+// GetSmartPlusOk returns a tuple with the SmartPlus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetSmartPlusOk() (*bool, bool) {
+	if o == nil || IsNil(o.SmartPlus) {
+		return nil, false
+	}
+	return o.SmartPlus, true
+}
+
+// HasSmartPlus returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasSmartPlus() bool {
+	if o != nil && !IsNil(o.SmartPlus) {
+		return true
+	}
+
+	return false
+}
+
+// SetSmartPlus gets a reference to the given bool and assigns it to the SmartPlus field.
+func (o *BoostPostRequest) SetSmartPlus(v bool) {
+	o.SmartPlus = &v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetPromotedObject() BoostPostRequestPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -1335,6 +1369,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SparkAuthCode) {
 		toSerialize["sparkAuthCode"] = o.SparkAuthCode
+	}
+	if !IsNil(o.SmartPlus) {
+		toSerialize["smartPlus"] = o.SmartPlus
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
