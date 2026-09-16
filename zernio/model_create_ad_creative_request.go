@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.1.0
+API version: 1.2.0
 Contact: support@zernio.com
 */
 
@@ -47,6 +47,8 @@ type CreateAdCreativeRequest struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
+	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure, the checkbox in Ads Manager, stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`. OPT_IN checks it, OPT_OUT explicitly declares no AI media, omitted leaves Meta's default. Applied to each new creative, including standalone, creatives[] and attach shapes, and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
+	AiDisclosure *string `json:"aiDisclosure,omitempty"`
 }
 
 type _CreateAdCreativeRequest CreateAdCreativeRequest
@@ -486,6 +488,38 @@ func (o *CreateAdCreativeRequest) SetMultiAdvertiser(v string) {
 	o.MultiAdvertiser = &v
 }
 
+// GetAiDisclosure returns the AiDisclosure field value if set, zero value otherwise.
+func (o *CreateAdCreativeRequest) GetAiDisclosure() string {
+	if o == nil || IsNil(o.AiDisclosure) {
+		var ret string
+		return ret
+	}
+	return *o.AiDisclosure
+}
+
+// GetAiDisclosureOk returns a tuple with the AiDisclosure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCreativeRequest) GetAiDisclosureOk() (*string, bool) {
+	if o == nil || IsNil(o.AiDisclosure) {
+		return nil, false
+	}
+	return o.AiDisclosure, true
+}
+
+// HasAiDisclosure returns a boolean if a field has been set.
+func (o *CreateAdCreativeRequest) HasAiDisclosure() bool {
+	if o != nil && !IsNil(o.AiDisclosure) {
+		return true
+	}
+
+	return false
+}
+
+// SetAiDisclosure gets a reference to the given string and assigns it to the AiDisclosure field.
+func (o *CreateAdCreativeRequest) SetAiDisclosure(v string) {
+	o.AiDisclosure = &v
+}
+
 func (o CreateAdCreativeRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -527,6 +561,9 @@ func (o CreateAdCreativeRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MultiAdvertiser) {
 		toSerialize["multiAdvertiser"] = o.MultiAdvertiser
+	}
+	if !IsNil(o.AiDisclosure) {
+		toSerialize["aiDisclosure"] = o.AiDisclosure
 	}
 	return toSerialize, nil
 }

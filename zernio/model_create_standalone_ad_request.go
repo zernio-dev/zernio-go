@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.1.0
+API version: 1.2.0
 Contact: support@zernio.com
 */
 
@@ -49,6 +49,8 @@ type CreateStandaloneAdRequest struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
+	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure, the checkbox in Ads Manager, stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`. OPT_IN checks it, OPT_OUT explicitly declares no AI media, omitted leaves Meta's default. Applied to each new creative, including standalone, creatives[] and attach shapes, and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
+	AiDisclosure *string `json:"aiDisclosure,omitempty"`
 	// Google Performance Max validates the complete atomic campaign and asset group with no resource creation or local persistence. Google validation still downloads image URLs and consumes quota. On Meta, validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, all-image placementAssets with per-rule copy, existing video.id or existingCreativeId; other media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Placement validation uses existing Instagram identities only. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
@@ -716,6 +718,38 @@ func (o *CreateStandaloneAdRequest) HasMultiAdvertiser() bool {
 // SetMultiAdvertiser gets a reference to the given string and assigns it to the MultiAdvertiser field.
 func (o *CreateStandaloneAdRequest) SetMultiAdvertiser(v string) {
 	o.MultiAdvertiser = &v
+}
+
+// GetAiDisclosure returns the AiDisclosure field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetAiDisclosure() string {
+	if o == nil || IsNil(o.AiDisclosure) {
+		var ret string
+		return ret
+	}
+	return *o.AiDisclosure
+}
+
+// GetAiDisclosureOk returns a tuple with the AiDisclosure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetAiDisclosureOk() (*string, bool) {
+	if o == nil || IsNil(o.AiDisclosure) {
+		return nil, false
+	}
+	return o.AiDisclosure, true
+}
+
+// HasAiDisclosure returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasAiDisclosure() bool {
+	if o != nil && !IsNil(o.AiDisclosure) {
+		return true
+	}
+
+	return false
+}
+
+// SetAiDisclosure gets a reference to the given string and assigns it to the AiDisclosure field.
+func (o *CreateStandaloneAdRequest) SetAiDisclosure(v string) {
+	o.AiDisclosure = &v
 }
 
 // GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
@@ -3655,6 +3689,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MultiAdvertiser) {
 		toSerialize["multiAdvertiser"] = o.MultiAdvertiser
+	}
+	if !IsNil(o.AiDisclosure) {
+		toSerialize["aiDisclosure"] = o.AiDisclosure
 	}
 	if !IsNil(o.ValidateOnly) {
 		toSerialize["validateOnly"] = o.ValidateOnly
