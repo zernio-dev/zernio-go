@@ -38,7 +38,7 @@ type UpdatePostMetadataRequest struct {
 	CategoryId *string `json:"categoryId,omitempty"`
 	// Video privacy setting
 	PrivacyStatus *string `json:"privacyStatus,omitempty"`
-	// Public URL of a custom thumbnail image (JPEG, PNG, or GIF, max 2 MB, recommended 1280x720). Works on any video you own, including existing videos not published through Zernio. The channel must be verified (phone verification) to set custom thumbnails.
+	// Public URL of a custom thumbnail image (JPEG, PNG, or GIF, max 50 MB, recommended 1280x720). Works on any video you own, including existing videos not published through Zernio. The channel must be verified (phone verification) to set custom thumbnails.
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 	// COPPA compliance flag. Set true for child-directed content (restricts comments, notifications, ad targeting).
 	MadeForKids *bool `json:"madeForKids,omitempty"`
