@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.18.0
+API version: 1.18.1
 Contact: support@zernio.com
 */
 
@@ -3707,7 +3707,7 @@ func (r WhatsAppAPIListWhatsAppCatalogsRequest) Execute() (*ListWhatsAppCatalogs
 /*
 ListWhatsAppCatalogs List the catalogs linked to a WhatsApp number
 
-The Meta Commerce catalogs connected to the number's WhatsApp Business Account. A linked catalog is what product, product_list and catalog_message interactive messages sell from (see POST /v1/inbox/conversations/{conversationId}/messages) and what customers browse in the WhatsApp app. Create and fill catalogs with the /v1/ads/catalogs endpoints.
+The Meta Commerce catalogs connected to the number's WhatsApp Business Account. Pass `catalogAccountId`: the WhatsApp connection's own (embedded signup) token answers an empty list even when a catalog is linked, only a Meta login with catalog_management sees the link. A linked catalog is what product, product_list and catalog_message interactive messages sell from (see POST /v1/inbox/conversations/{conversationId}/messages) and what customers browse in the WhatsApp app. Create and fill catalogs with the /v1/ads/catalogs endpoints.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppAPIListWhatsAppCatalogsRequest

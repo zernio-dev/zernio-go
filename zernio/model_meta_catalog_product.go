@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.18.0
+API version: 1.18.1
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,6 @@ type MetaCatalogProduct struct {
 	Category     NullableString `json:"category,omitempty"`
 	ProductType  NullableString `json:"productType,omitempty"`
 	Gtin         NullableString `json:"gtin,omitempty"`
-	Mpn          NullableString `json:"mpn,omitempty"`
 	Inventory    NullableInt32  `json:"inventory,omitempty"`
 	Visibility   NullableString `json:"visibility,omitempty"`
 	Color        NullableString `json:"color,omitempty"`
@@ -725,49 +724,6 @@ func (o *MetaCatalogProduct) UnsetGtin() {
 	o.Gtin.Unset()
 }
 
-// GetMpn returns the Mpn field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *MetaCatalogProduct) GetMpn() string {
-	if o == nil || IsNil(o.Mpn.Get()) {
-		var ret string
-		return ret
-	}
-	return *o.Mpn.Get()
-}
-
-// GetMpnOk returns a tuple with the Mpn field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *MetaCatalogProduct) GetMpnOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Mpn.Get(), o.Mpn.IsSet()
-}
-
-// HasMpn returns a boolean if a field has been set.
-func (o *MetaCatalogProduct) HasMpn() bool {
-	if o != nil && o.Mpn.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMpn gets a reference to the given NullableString and assigns it to the Mpn field.
-func (o *MetaCatalogProduct) SetMpn(v string) {
-	o.Mpn.Set(&v)
-}
-
-// SetMpnNil sets the value for Mpn to be an explicit nil
-func (o *MetaCatalogProduct) SetMpnNil() {
-	o.Mpn.Set(nil)
-}
-
-// UnsetMpn ensures that no value is present for Mpn, not even an explicit nil
-func (o *MetaCatalogProduct) UnsetMpn() {
-	o.Mpn.Unset()
-}
-
 // GetInventory returns the Inventory field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MetaCatalogProduct) GetInventory() int32 {
 	if o == nil || IsNil(o.Inventory.Get()) {
@@ -1233,9 +1189,6 @@ func (o MetaCatalogProduct) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Gtin.IsSet() {
 		toSerialize["gtin"] = o.Gtin.Get()
-	}
-	if o.Mpn.IsSet() {
-		toSerialize["mpn"] = o.Mpn.Get()
 	}
 	if o.Inventory.IsSet() {
 		toSerialize["inventory"] = o.Inventory.Get()
