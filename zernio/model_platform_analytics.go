@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.8.0
+API version: 1.8.1
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type PlatformAnalytics struct {
 	// Sync state of analytics for this platform
 	SyncStatus      *string        `json:"syncStatus,omitempty"`
 	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
-	// Error details when status is failed
+	// Error details when status is failed, or why analytics are unavailable for a published entry (e.g. Google Business Profile, a TikTok upload that never received a video id)
 	ErrorMessage NullableString `json:"errorMessage,omitempty"`
 }
 
