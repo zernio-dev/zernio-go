@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.9.0
+API version: 1.9.1
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &MediaItem{}
 // MediaItem Media referenced in posts. URLs must be publicly reachable over HTTPS. Use POST /v1/media/presign for uploads up to 5GB. Zernio auto-compresses images and videos that exceed platform limits (videos over 200 MB may not be compressed).
 type MediaItem struct {
 	Type *string `json:"type,omitempty"`
-	// A media item with a null, missing or empty url is dropped from non-draft posts (drafts keep it as a pending-upload placeholder).
+	// A media item with a null, missing or empty url is dropped.
 	Url *string `json:"url,omitempty"`
 	// Optional title for the media item. Used as the document title for LinkedIn PDF/carousel posts. If omitted, falls back to the post title, then the filename.
 	Title *string `json:"title,omitempty"`
