@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.16.1
+API version: 1.17.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,8 @@ type LinkedInPlatformData struct {
 	// Optional first comment to add after the post is created
 	FirstComment *string `json:"firstComment,omitempty"`
 	// Set to true to disable automatic link previews for URLs in the post content (default is false)
-	DisableLinkPreview *bool `json:"disableLinkPreview,omitempty"`
+	DisableLinkPreview *bool                         `json:"disableLinkPreview,omitempty"`
+	Audience           *LinkedInPlatformDataAudience `json:"audience,omitempty"`
 	// LinkedIn post link to repost (use the post's \"Copy link to post\" action), or a urn:li:share / urn:li:ugcPost / urn:li:groupPost URN. The published post is always a reshare authored by your account with the original embedded underneath: with content your text is the commentary (LinkedIn's \"repost with your thoughts\"), and with no content it publishes as a text-free reshare. A text-free reshare is NOT LinkedIn's one-click \"Repost\" (the feed treatment where the original author stays the author); LinkedIn's API exposes no way to create that, so the post still appears authored by you with the original embedded. Mutually exclusive with media. Works on personal profiles and organization pages.
 	ReshareUrl     *string                   `json:"reshareUrl,omitempty"`
 	GeoRestriction *GeoRestriction           `json:"geoRestriction,omitempty"`
@@ -179,6 +180,38 @@ func (o *LinkedInPlatformData) SetDisableLinkPreview(v bool) {
 	o.DisableLinkPreview = &v
 }
 
+// GetAudience returns the Audience field value if set, zero value otherwise.
+func (o *LinkedInPlatformData) GetAudience() LinkedInPlatformDataAudience {
+	if o == nil || IsNil(o.Audience) {
+		var ret LinkedInPlatformDataAudience
+		return ret
+	}
+	return *o.Audience
+}
+
+// GetAudienceOk returns a tuple with the Audience field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkedInPlatformData) GetAudienceOk() (*LinkedInPlatformDataAudience, bool) {
+	if o == nil || IsNil(o.Audience) {
+		return nil, false
+	}
+	return o.Audience, true
+}
+
+// HasAudience returns a boolean if a field has been set.
+func (o *LinkedInPlatformData) HasAudience() bool {
+	if o != nil && !IsNil(o.Audience) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudience gets a reference to the given LinkedInPlatformDataAudience and assigns it to the Audience field.
+func (o *LinkedInPlatformData) SetAudience(v LinkedInPlatformDataAudience) {
+	o.Audience = &v
+}
+
 // GetReshareUrl returns the ReshareUrl field value if set, zero value otherwise.
 func (o *LinkedInPlatformData) GetReshareUrl() string {
 	if o == nil || IsNil(o.ReshareUrl) {
@@ -296,6 +329,9 @@ func (o LinkedInPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisableLinkPreview) {
 		toSerialize["disableLinkPreview"] = o.DisableLinkPreview
+	}
+	if !IsNil(o.Audience) {
+		toSerialize["audience"] = o.Audience
 	}
 	if !IsNil(o.ReshareUrl) {
 		toSerialize["reshareUrl"] = o.ReshareUrl
