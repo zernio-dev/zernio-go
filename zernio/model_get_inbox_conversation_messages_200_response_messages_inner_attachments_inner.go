@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.9.3
+API version: 1.10.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct
 	RefreshUrl NullableString `json:"refreshUrl,omitempty"`
 	Filename   NullableString `json:"filename,omitempty"`
 	PreviewUrl NullableString `json:"previewUrl,omitempty"`
+	// Template content (title, subtitle, image, buttons) when type is template
+	Payload map[string]interface{} `json:"payload,omitempty"`
 }
 
 // NewGetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner instantiates a new GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner object
@@ -306,6 +308,38 @@ func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) U
 	o.PreviewUrl.Unset()
 }
 
+// GetPayload returns the Payload field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetPayload() map[string]interface{} {
+	if o == nil || IsNil(o.Payload) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Payload
+}
+
+// GetPayloadOk returns a tuple with the Payload field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetPayloadOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Payload) {
+		return map[string]interface{}{}, false
+	}
+	return o.Payload, true
+}
+
+// HasPayload returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) HasPayload() bool {
+	if o != nil && !IsNil(o.Payload) {
+		return true
+	}
+
+	return false
+}
+
+// SetPayload gets a reference to the given map[string]interface{} and assigns it to the Payload field.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetPayload(v map[string]interface{}) {
+	o.Payload = v
+}
+
 func (o GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -336,6 +370,9 @@ func (o GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) To
 	}
 	if o.PreviewUrl.IsSet() {
 		toSerialize["previewUrl"] = o.PreviewUrl.Get()
+	}
+	if !IsNil(o.Payload) {
+		toSerialize["payload"] = o.Payload
 	}
 	return toSerialize, nil
 }
