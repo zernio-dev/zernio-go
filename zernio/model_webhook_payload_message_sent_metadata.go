@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.8.1
+API version: 1.9.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin or WhatsApp contact cards. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards or the TikTok message type. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
 	Location *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
 	// WhatsApp only. The contact cards this message carries. On API sends this is the `contacts` array exactly as given to the inbox send API (`name`, `phones[].phone` / `type`, `emails[]`); on Coexistence echoes of a card shared from the WhatsApp Business app it is Meta's shape (`phones[].wa_id`, `vcard`). The message `text` is only the emoji preview (`👤 <name>`); the cards live here.
@@ -27,6 +27,8 @@ type WebhookPayloadMessageSentMetadata struct {
 	QuotedMessageId *string `json:"quotedMessageId,omitempty"`
 	// Slack only. Parent thread ts of the sent message. Pass it back as `replyTo` on the inbox send API to keep replying inside the thread.
 	ThreadTs *string `json:"threadTs,omitempty"`
+	// TikTok only. The message type as TikTok reports it, forwarded verbatim (for example image, video, sticker, share_post, emoji, reaction, template). Present on every TikTok DM that is not plain text; those arrive with text empty and, for image and video, an attachment. Absent on image sends made through the Zernio API, which carry the image in attachments.
+	TiktokMessageType *string `json:"tiktokMessageType,omitempty"`
 }
 
 // NewWebhookPayloadMessageSentMetadata instantiates a new WebhookPayloadMessageSentMetadata object
@@ -174,6 +176,38 @@ func (o *WebhookPayloadMessageSentMetadata) SetThreadTs(v string) {
 	o.ThreadTs = &v
 }
 
+// GetTiktokMessageType returns the TiktokMessageType field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetTiktokMessageType() string {
+	if o == nil || IsNil(o.TiktokMessageType) {
+		var ret string
+		return ret
+	}
+	return *o.TiktokMessageType
+}
+
+// GetTiktokMessageTypeOk returns a tuple with the TiktokMessageType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetTiktokMessageTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TiktokMessageType) {
+		return nil, false
+	}
+	return o.TiktokMessageType, true
+}
+
+// HasTiktokMessageType returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasTiktokMessageType() bool {
+	if o != nil && !IsNil(o.TiktokMessageType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTiktokMessageType gets a reference to the given string and assigns it to the TiktokMessageType field.
+func (o *WebhookPayloadMessageSentMetadata) SetTiktokMessageType(v string) {
+	o.TiktokMessageType = &v
+}
+
 func (o WebhookPayloadMessageSentMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -195,6 +229,9 @@ func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.ThreadTs) {
 		toSerialize["threadTs"] = o.ThreadTs
+	}
+	if !IsNil(o.TiktokMessageType) {
+		toSerialize["tiktokMessageType"] = o.TiktokMessageType
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.8.1
+API version: 1.9.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadConversationStarted type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadConversationStarted{}
 
-// WebhookPayloadConversationStarted Fired once when a new conversation begins, in either direction. A conversation starts the first time an account and a contact exchange a message on any DM platform (Instagram, Messenger/Facebook, Telegram, WhatsApp, X, Reddit, Bluesky, SMS). Platform-agnostic: one subscription covers every DM platform.
+// WebhookPayloadConversationStarted Fired once when a new conversation begins, in either direction. A conversation starts the first time an account and a contact exchange a message on any DM platform (Instagram, Messenger/Facebook, Telegram, WhatsApp, X, Reddit, Bluesky, SMS, TikTok). Platform-agnostic: one subscription covers every DM platform.
 type WebhookPayloadConversationStarted struct {
 	// Stable webhook event ID
 	Id           string                         `json:"id"`

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.8.1
+API version: 1.9.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadMessageMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageMetadata{}
 
-// WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, a quote-reply to an earlier message, or a WhatsApp inbound that Meta Business Agent is answering)
+// WebhookPayloadMessageMetadata Platform-specific message context (present when the message is a quick reply tap, postback button tap, inline keyboard callback, a quote-reply to an earlier message, a WhatsApp inbound that Meta Business Agent is answering, or a TikTok DM that is not plain text)
 type WebhookPayloadMessageMetadata struct {
 	// WhatsApp only. true when this inbound arrived while Meta Business Agent held the conversation: the agent answers it, and Zernio only observes. Sending a reply takes control back. See conversation.control_changed.
 	Standby *bool `json:"standby,omitempty"`
@@ -59,6 +59,8 @@ type WebhookPayloadMessageMetadata struct {
 	Unsupported    *WebhookPayloadMessageMetadataUnsupported `json:"unsupported,omitempty"`
 	// Instagram / Facebook Messenger only. Set when the message carries nothing an integrator can render (a `template` attachment with no text and no parseable content, or Meta's own `is_unsupported` flag). Sibling of `unsupported` above (WhatsApp only, carries Meta's error code/title/details): this field has no error envelope, only the boolean. Absence means \"not flagged\", never \"checked and renderable\".
 	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
+	// TikTok only. The message type as TikTok reports it, forwarded verbatim (for example image, video, sticker, share_post, emoji, reaction, template). Present on every TikTok DM that is not plain text; those arrive with text empty and, for image and video, an attachment.
+	TiktokMessageType *string `json:"tiktokMessageType,omitempty"`
 }
 
 // NewWebhookPayloadMessageMetadata instantiates a new WebhookPayloadMessageMetadata object
@@ -814,6 +816,38 @@ func (o *WebhookPayloadMessageMetadata) SetNoRenderableContent(v bool) {
 	o.NoRenderableContent = &v
 }
 
+// GetTiktokMessageType returns the TiktokMessageType field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetTiktokMessageType() string {
+	if o == nil || IsNil(o.TiktokMessageType) {
+		var ret string
+		return ret
+	}
+	return *o.TiktokMessageType
+}
+
+// GetTiktokMessageTypeOk returns a tuple with the TiktokMessageType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetTiktokMessageTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TiktokMessageType) {
+		return nil, false
+	}
+	return o.TiktokMessageType, true
+}
+
+// HasTiktokMessageType returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasTiktokMessageType() bool {
+	if o != nil && !IsNil(o.TiktokMessageType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTiktokMessageType gets a reference to the given string and assigns it to the TiktokMessageType field.
+func (o *WebhookPayloadMessageMetadata) SetTiktokMessageType(v string) {
+	o.TiktokMessageType = &v
+}
+
 func (o WebhookPayloadMessageMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -892,6 +926,9 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.NoRenderableContent) {
 		toSerialize["noRenderableContent"] = o.NoRenderableContent
+	}
+	if !IsNil(o.TiktokMessageType) {
+		toSerialize["tiktokMessageType"] = o.TiktokMessageType
 	}
 	return toSerialize, nil
 }
