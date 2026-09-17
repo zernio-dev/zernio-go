@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.10.0
+API version: 1.11.0
 Contact: support@zernio.com
 */
 
@@ -1942,6 +1942,148 @@ func (a *ConnectAPIService) ConnectWhatsAppEmbeddedSignupExecute(r ConnectAPICon
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject2
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIConnectWordPressWithApplicationPasswordRequest struct {
+	ctx                                            context.Context
+	ApiService                                     *ConnectAPIService
+	connectWordPressWithApplicationPasswordRequest *ConnectWordPressWithApplicationPasswordRequest
+}
+
+func (r ConnectAPIConnectWordPressWithApplicationPasswordRequest) ConnectWordPressWithApplicationPasswordRequest(connectWordPressWithApplicationPasswordRequest ConnectWordPressWithApplicationPasswordRequest) ConnectAPIConnectWordPressWithApplicationPasswordRequest {
+	r.connectWordPressWithApplicationPasswordRequest = &connectWordPressWithApplicationPasswordRequest
+	return r
+}
+
+func (r ConnectAPIConnectWordPressWithApplicationPasswordRequest) Execute() (*ConnectWordPressWithApplicationPassword200Response, *http.Response, error) {
+	return r.ApiService.ConnectWordPressWithApplicationPasswordExecute(r)
+}
+
+/*
+ConnectWordPressWithApplicationPassword Connect self-hosted WordPress with an application password
+
+Connects one self-hosted WordPress site using a WordPress username and
+application password. `siteUrl` must use HTTPS and may include the path
+where WordPress is installed. Zernio discovers the REST API, verifies
+the credentials and required post/media/taxonomy capabilities, then
+stores the password encrypted. Create an application password in the
+WordPress user's profile; do not send the user's login password.
+Reconnecting the same site and profile updates the connection in place.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIConnectWordPressWithApplicationPasswordRequest
+*/
+func (a *ConnectAPIService) ConnectWordPressWithApplicationPassword(ctx context.Context) ConnectAPIConnectWordPressWithApplicationPasswordRequest {
+	return ConnectAPIConnectWordPressWithApplicationPasswordRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectWordPressWithApplicationPassword200Response
+func (a *ConnectAPIService) ConnectWordPressWithApplicationPasswordExecute(r ConnectAPIConnectWordPressWithApplicationPasswordRequest) (*ConnectWordPressWithApplicationPassword200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectWordPressWithApplicationPassword200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.ConnectWordPressWithApplicationPassword")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/wordpress/token"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.connectWordPressWithApplicationPasswordRequest == nil {
+		return localVarReturnValue, nil, reportError("connectWordPressWithApplicationPasswordRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.connectWordPressWithApplicationPasswordRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
 			var v InlineObject2
@@ -3997,6 +4139,174 @@ func (a *ConnectAPIService) GetWhatsAppSdkConfigExecute(r ConnectAPIGetWhatsAppS
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ConnectAPIGetWordPressAuthUrlRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	redirectUrl *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetWordPressAuthUrlRequest) ProfileId(profileId string) ConnectAPIGetWordPressAuthUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
+func (r ConnectAPIGetWordPressAuthUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetWordPressAuthUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIGetWordPressAuthUrlRequest) Execute() (*GetWordPressAuthUrl200Response, *http.Response, error) {
+	return r.ApiService.GetWordPressAuthUrlExecute(r)
+}
+
+/*
+GetWordPressAuthUrl Get WordPress.com OAuth connect URL
+
+Initiates OAuth for a WordPress.com site or a Jetpack-connected site.
+WordPress is a connect-only blog platform: the connected account powers
+the Blogs API (`/v1/accounts/{accountId}/blogs`) and does not support
+social posts, inbox, analytics, ads, or Shopify product operations.
+Redirect the user to `authUrl`; after authorization, WordPress returns
+the browser to Zernio's internal callback and Zernio redirects to
+`redirect_url` (or the dashboard when omitted). Reconnecting the same
+site and profile updates the stored connection in place. The consent
+request omits `scope` to use WordPress.com's default single-site grant.
+Granular scopes cannot access the `/wp/v2` article API. Zernio checks
+that API before saving the connection and does not request explicit
+`global` authorization across all sites.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetWordPressAuthUrlRequest
+*/
+func (a *ConnectAPIService) GetWordPressAuthUrl(ctx context.Context) ConnectAPIGetWordPressAuthUrlRequest {
+	return ConnectAPIGetWordPressAuthUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWordPressAuthUrl200Response
+func (a *ConnectAPIService) GetWordPressAuthUrlExecute(r ConnectAPIGetWordPressAuthUrlRequest) (*GetWordPressAuthUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWordPressAuthUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWordPressAuthUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/wordpress"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject2
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

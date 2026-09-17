@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.10.0
+API version: 1.11.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &BlogArticle{}
 
 // BlogArticle An article inside a blog on the connected platform.
 type BlogArticle struct {
-	// Platform-native article id (numeric string for Shopify).
+	// Platform-native numeric article/post id.
 	Id *string `json:"id,omitempty"`
 	// Platform-native id of the blog the article belongs to.
 	BlogId   *string `json:"blogId,omitempty"`
@@ -30,19 +30,26 @@ type BlogArticle struct {
 	// Article body as HTML.
 	BodyHtml NullableString `json:"bodyHtml,omitempty"`
 	// URL slug of the article.
-	Handle *string  `json:"handle,omitempty"`
-	Tags   []string `json:"tags,omitempty"`
-	// Display name of the article author.
+	Handle *string `json:"handle,omitempty"`
+	// Tag names. On WordPress, missing tag names are created and matching is case-insensitive.
+	Tags []string `json:"tags,omitempty"`
+	// Shopify author display name, or numeric WordPress user id serialized as a string.
 	Author NullableString `json:"author,omitempty"`
 	// Short summary shown in blog listings.
 	Excerpt NullableString    `json:"excerpt,omitempty"`
 	Image   *BlogArticleImage `json:"image,omitempty"`
 	// False while the article is a draft or its publish date is still in the future.
 	IsPublished *bool `json:"isPublished,omitempty"`
-	// When the article was (or is scheduled to be) published; null for drafts.
+	// Publication time. On WordPress this is present only when status is `publish`; null for drafts, pending/private posts, and scheduled posts.
 	PublishedAt NullableTime `json:"publishedAt,omitempty"`
-	CreatedAt   NullableTime `json:"createdAt,omitempty"`
-	UpdatedAt   NullableTime `json:"updatedAt,omitempty"`
+	// WordPress only. Native post status returned by WordPress; omitted for Shopify.
+	Status *string `json:"status,omitempty"`
+	// WordPress only. Scheduled publication time in UTC when status is `future`; null for other WordPress statuses and omitted for Shopify.
+	PublishDate NullableTime `json:"publishDate,omitempty"`
+	// Creation time when the platform exposes one. WordPress returns null because its core date is the editable publication date.
+	CreatedAt NullableTime `json:"createdAt,omitempty"`
+	// Last modification time. WordPress returns modified_gmt as UTC.
+	UpdatedAt NullableTime `json:"updatedAt,omitempty"`
 }
 
 // NewBlogArticle instantiates a new BlogArticle object
@@ -490,6 +497,81 @@ func (o *BlogArticle) UnsetPublishedAt() {
 	o.PublishedAt.Unset()
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *BlogArticle) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BlogArticle) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *BlogArticle) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *BlogArticle) SetStatus(v string) {
+	o.Status = &v
+}
+
+// GetPublishDate returns the PublishDate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BlogArticle) GetPublishDate() time.Time {
+	if o == nil || IsNil(o.PublishDate.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.PublishDate.Get()
+}
+
+// GetPublishDateOk returns a tuple with the PublishDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BlogArticle) GetPublishDateOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PublishDate.Get(), o.PublishDate.IsSet()
+}
+
+// HasPublishDate returns a boolean if a field has been set.
+func (o *BlogArticle) HasPublishDate() bool {
+	if o != nil && o.PublishDate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPublishDate gets a reference to the given NullableTime and assigns it to the PublishDate field.
+func (o *BlogArticle) SetPublishDate(v time.Time) {
+	o.PublishDate.Set(&v)
+}
+
+// SetPublishDateNil sets the value for PublishDate to be an explicit nil
+func (o *BlogArticle) SetPublishDateNil() {
+	o.PublishDate.Set(nil)
+}
+
+// UnsetPublishDate ensures that no value is present for PublishDate, not even an explicit nil
+func (o *BlogArticle) UnsetPublishDate() {
+	o.PublishDate.Unset()
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BlogArticle) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt.Get()) {
@@ -621,6 +703,12 @@ func (o BlogArticle) ToMap() (map[string]interface{}, error) {
 	}
 	if o.PublishedAt.IsSet() {
 		toSerialize["publishedAt"] = o.PublishedAt.Get()
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if o.PublishDate.IsSet() {
+		toSerialize["publishDate"] = o.PublishDate.Get()
 	}
 	if o.CreatedAt.IsSet() {
 		toSerialize["createdAt"] = o.CreatedAt.Get()

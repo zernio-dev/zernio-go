@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.10.0
+API version: 1.11.0
 Contact: support@zernio.com
 */
 
@@ -27,15 +27,16 @@ type CreateBlogArticleRequest struct {
 	// Article body as HTML.
 	BodyHtml *string `json:"bodyHtml,omitempty"`
 	// URL slug. Generated from the title when omitted.
-	Handle *string  `json:"handle,omitempty"`
-	Tags   []string `json:"tags,omitempty"`
-	// Display name of the article author.
+	Handle *string `json:"handle,omitempty"`
+	// Tag names. WordPress resolves existing names case-insensitively and creates missing tags.
+	Tags []string `json:"tags,omitempty"`
+	// Shopify author display name, or numeric WordPress user id serialized as a string. Assigning another WordPress user may require elevated capability.
 	Author *string `json:"author,omitempty"`
 	// Short summary shown in blog listings.
 	Excerpt *string                        `json:"excerpt,omitempty"`
 	Image   *CreateBlogArticleRequestImage `json:"image,omitempty"`
 	Seo     *CreateBlogArticleRequestSeo   `json:"seo,omitempty"`
-	// Set false to create the article as a draft.
+	// Set false for a draft or true to publish. On WordPress false takes priority over a future publishDate; omission with no date defaults to draft.
 	IsPublished *bool `json:"isPublished,omitempty"`
 	// ISO 8601 datetime with offset (or Z). A future date schedules publication natively on the platform.
 	PublishDate *time.Time `json:"publishDate,omitempty"`

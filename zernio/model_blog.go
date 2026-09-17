@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.10.0
+API version: 1.11.0
 Contact: support@zernio.com
 */
 
@@ -20,11 +20,11 @@ var _ MappedNullable = &Blog{}
 
 // Blog A blog container on the connected platform. All content lives on the platform; Zernio proxies it and stores nothing.
 type Blog struct {
-	// Platform-native blog id (numeric string for Shopify).
+	// Platform-native blog id. Shopify uses a numeric blog id. WordPress.com uses the numeric site id; self-hosted WordPress uses `1`, scoped to the connected account.
 	Id       *string `json:"id,omitempty"`
 	Platform *string `json:"platform,omitempty"`
 	Title    *string `json:"title,omitempty"`
-	// URL slug of the blog.
+	// URL slug on Shopify; site hostname on WordPress.
 	Handle *string `json:"handle,omitempty"`
 }
 

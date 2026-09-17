@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.10.0
+API version: 1.11.0
 Contact: support@zernio.com
 */
 
@@ -45,9 +45,8 @@ CreateBlog Create a blog
 Creates a blog on the connected store. The platform generates the URL
 `handle` from the title when omitted.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (platform `shopify`). A WordPress connection is
+its existing site, so WordPress returns 405 for blog creation.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
@@ -187,21 +186,25 @@ CreateBlogArticle Create a blog article
 
 Creates an article on the blog. Publishing behavior:
 
-  - `isPublished: false` keeps the article as a draft.
+  - WordPress defaults to a draft when both publishing fields are omitted.
+  - `isPublished: false` keeps the article as a draft and takes priority
+    over a future `publishDate`.
   - A future `publishDate` schedules publication natively on the
     platform; the platform publishes it at that time with no Zernio
     queue involved.
+  - `isPublished: true` publishes immediately when there is no future
+    `publishDate`.
   - `seo.title` / `seo.description` map to Shopify's global `title_tag`
     and `description_tag` metafields (the fields Shopify themes read for
-    the page title and meta description).
+    the page title and meta description). WordPress rejects `seo`; SEO
+    plugin and custom-field writes are not supported.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (`shopify`) and WordPress (`wordpress`). WordPress
+native scheduling depends on the site's scheduler/WP-Cron.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@return BlogsAPICreateBlogArticleRequest
 */
 func (a *BlogsAPIService) CreateBlogArticle(ctx context.Context, accountId string, blogId string) BlogsAPICreateBlogArticleRequest {
@@ -335,9 +338,8 @@ DeleteBlog Delete a blog
 Deletes the blog AND every article in it. The delete happens on the
 platform and is permanent; Zernio stores nothing to restore it from.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (platform `shopify`). Disconnect a WordPress
+account instead of deleting its site; WordPress returns 405 here.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
@@ -457,15 +459,15 @@ func (r BlogsAPIDeleteBlogArticleRequest) Execute() (*http.Response, error) {
 DeleteBlogArticle Delete a blog article
 
 Deletes the article. The delete happens on the platform and is
-permanent; Zernio stores nothing to restore it from.
+permanent; Zernio stores nothing to restore it from. On WordPress the
+post is force-deleted, while uploaded attachments and tags remain in
+the site's media library and taxonomy.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (`shopify`) and WordPress (`wordpress`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@param articleId Platform-native numeric article id. Non-numeric values return 400.
 	@return BlogsAPIDeleteBlogArticleRequest
 */
@@ -575,23 +577,21 @@ type BlogsAPIGetBlogRequest struct {
 	blogId     string
 }
 
-func (r BlogsAPIGetBlogRequest) Execute() (*CreateBlog201Response, *http.Response, error) {
+func (r BlogsAPIGetBlogRequest) Execute() (*GetBlog200Response, *http.Response, error) {
 	return r.ApiService.GetBlogExecute(r)
 }
 
 /*
 GetBlog Get a blog
 
-Fetches a single blog. `blogId` is the platform's numeric blog id from
-`GET /v1/accounts/{accountId}/blogs`, not a Zernio id.
-
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Fetches a single blog. Use the platform-native `blogId` returned by
+`GET /v1/accounts/{accountId}/blogs`: a Shopify numeric blog id, the
+WordPress.com numeric site id, or `1` for a self-hosted WordPress site.
+The self-hosted id is scoped to its connected account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@return BlogsAPIGetBlogRequest
 */
 func (a *BlogsAPIService) GetBlog(ctx context.Context, accountId string, blogId string) BlogsAPIGetBlogRequest {
@@ -605,13 +605,13 @@ func (a *BlogsAPIService) GetBlog(ctx context.Context, accountId string, blogId 
 
 // Execute executes the request
 //
-//	@return CreateBlog201Response
-func (a *BlogsAPIService) GetBlogExecute(r BlogsAPIGetBlogRequest) (*CreateBlog201Response, *http.Response, error) {
+//	@return GetBlog200Response
+func (a *BlogsAPIService) GetBlogExecute(r BlogsAPIGetBlogRequest) (*GetBlog200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateBlog201Response
+		localVarReturnValue *GetBlog200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BlogsAPIService.GetBlog")
@@ -721,13 +721,13 @@ GetBlogArticle Get a blog article
 Fetches a single article. An article addressed through a blog it does
 not belong to is a 404 (code blog_article_not_found).
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (`shopify`) and WordPress (`wordpress`). WordPress
+returns its native `status`; `publishedAt` is present only for a
+published post and `publishDate` only for a scheduled post.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@param articleId Platform-native numeric article id. Non-numeric values return 400.
 	@return BlogsAPIGetBlogArticleRequest
 */
@@ -872,15 +872,14 @@ ListBlogArticles List blog articles
 
 Lists the articles of a blog. Cursor-paginated: pass `limit` (1-50,
 default 20) and the `cursor` from a previous response's `nextCursor`;
-`nextCursor` is null when there are no more pages.
-
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+`nextCursor` is null when there are no more pages. Treat cursors as
+opaque and pass them unchanged. Supported on Shopify (`shopify`) and
+WordPress (`wordpress`). WordPress results include native `status` and
+include `publishDate` only for scheduled (`future`) posts.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@return BlogsAPIListBlogArticlesRequest
 */
 func (a *BlogsAPIService) ListBlogArticles(ctx context.Context, accountId string, blogId string) BlogsAPIListBlogArticlesRequest {
@@ -1029,17 +1028,16 @@ func (r BlogsAPIListBlogsRequest) Execute() (*ListBlogs200Response, *http.Respon
 /*
 ListBlogs List blogs
 
-Lists the blogs on the connected store, newest-first as the platform
-returns them. Cursor-paginated: pass `limit` (1-50, default 20) and the
-`cursor` from a previous response's `nextCursor`; `nextCursor` is null
-when there are no more pages.
+Lists blogs on the connected account. Shopify returns its store blogs
+with cursor pagination. A WordPress account represents one site and
+always returns exactly that one blog with `nextCursor: null`.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+`limit` is 1-50 (default 20). Treat `nextCursor` as opaque; pass it
+unchanged on the next request. Supported on Shopify (`shopify`) and
+WordPress (`wordpress`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
+	@param accountId Connected Shopify or WordPress account id.
 	@return BlogsAPIListBlogsRequest
 */
 func (a *BlogsAPIService) ListBlogs(ctx context.Context, accountId string) BlogsAPIListBlogsRequest {
@@ -1182,9 +1180,8 @@ UpdateBlog Update a blog
 Partial-updates a blog. Send any subset of `title` and `handle`; at
 least one field is required (an empty body returns 400).
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (platform `shopify`). WordPress site settings are
+not writable through this API, so WordPress returns 405.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
@@ -1332,14 +1329,16 @@ Partial-updates an article. Send any subset of the create fields
 (an empty body returns 400). `isPublished` and `publishDate` behave as
 on create: `isPublished: false` unpublishes back to a draft and a
 future `publishDate` schedules publication natively on the platform.
+Omitting both fields preserves the current WordPress status. Omitting
+`image` preserves the current featured image; removal is not supported.
+WordPress rejects `seo` and does not support SEO-plugin/custom-field,
+category, or custom-post-type writes.
 
-Supported on Shopify (platform `shopify`). Accounts on platforms
-without blogs support return 400; a blogs-capable platform that lacks
-this specific operation returns 405.
+Supported on Shopify (`shopify`) and WordPress (`wordpress`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param accountId Connected Shopify or WordPress account id.
+	@param blogId Platform-native numeric blog/site id returned by the list operation.
 	@param articleId Platform-native numeric article id. Non-numeric values return 400.
 	@return BlogsAPIUpdateBlogArticleRequest
 */
