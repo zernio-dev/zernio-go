@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.9.2
+API version: 1.9.3
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type InlineObject2 struct {
 	Reason string `json:"reason"`
 	// Link to the relevant documentation page.
 	DocumentationUrl *string `json:"documentation_url,omitempty"`
-	// Deep-link to send the end-user to. For `free_tier_exceeded` and `twitter_passthrough` this is the Zernio billing tab. For `enterprise_required` this is the Zernio enterprise contact page.
+	// Deep-link to send the end-user to. For `free_tier_exceeded` and `twitter_passthrough` this opens the add-payment-method drawer on the Zernio billing page. For `enterprise_required` this is the Zernio enterprise contact page.
 	DashboardUrl *string               `json:"dashboard_url,omitempty"`
 	Details      *InlineObject2Details `json:"details,omitempty"`
 }
