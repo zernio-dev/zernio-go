@@ -188,6 +188,7 @@ model_bluesky_platform_data.go
 model_bookmark_post_200_response.go
 model_boost_post_request.go
 model_boost_post_request_platform_specific_data.go
+model_boost_post_request_promo_codes_inner.go
 model_boost_post_request_promoted_object.go
 model_boost_post_request_schedule.go
 model_boost_post_request_spark_posts_inner.go

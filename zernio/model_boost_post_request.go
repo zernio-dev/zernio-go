@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.14.0
+API version: 1.15.0
 Contact: support@zernio.com
 */
 
@@ -82,7 +82,9 @@ type BoostPostRequest struct {
 	// TikTok only. Run the Spark post in a Smart+ campaign (goal `conversions` = Smart+ Web Conversions, `lead_generation` = Smart+ Lead Generation) instead of a regular campaign. Requires `sparkAuthCode` (the Smart+ ad runs the post under the identity that redeeming its Spark code creates; a Business Center-owned post is not accepted there) and `promotedObject.pixelId` + `customEventType`. `app_promotion` is not available on a Spark post. Rejected with a 400 on other platforms. A Smart+ Spark ad uses a dynamic CTA portfolio, sent as ad_configuration.call_to_action_id (TikTok does not accept a named call to action there): Zernio creates one per ad account and reuses it, and `callToAction` is rejected with a 400 on this path.
 	SmartPlus *bool `json:"smartPlus,omitempty"`
 	// TikTok Smart+ only (requires `smartPlus: true`). Several Spark posts as creatives of ONE Smart+ ad, each with its own post code (TikTok allows 1-50 per ad; posts from different creators mix). Replaces `platformPostId` + `sparkAuthCode`. Without `adSetId` it creates campaign + ad group + one ad carrying all of them; with `adSetId` it creates one new ad with all of them in that ad group. Rejected with a 400 on other platforms.
-	SparkPosts     []BoostPostRequestSparkPostsInner `json:"sparkPosts,omitempty"`
+	SparkPosts []BoostPostRequestSparkPostsInner `json:"sparkPosts,omitempty"`
+	// TikTok Smart+ Web Conversions only (requires `smartPlus: true`, goal `conversions`). Promo codes or offers TikTok highlights on the ad (Ads Manager's \"Add promo code or offer\"). A promo code needs shoppers to enter it at checkout; an entry without `promoCode` is an offer applied automatically. Rejected with a 400 on other platforms and on Lead Generation campaigns.
+	PromoCodes     []BoostPostRequestPromoCodesInner `json:"promoCodes,omitempty"`
 	PromotedObject *BoostPostRequestPromotedObject   `json:"promotedObject,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
@@ -1120,6 +1122,38 @@ func (o *BoostPostRequest) SetSparkPosts(v []BoostPostRequestSparkPostsInner) {
 	o.SparkPosts = v
 }
 
+// GetPromoCodes returns the PromoCodes field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetPromoCodes() []BoostPostRequestPromoCodesInner {
+	if o == nil || IsNil(o.PromoCodes) {
+		var ret []BoostPostRequestPromoCodesInner
+		return ret
+	}
+	return o.PromoCodes
+}
+
+// GetPromoCodesOk returns a tuple with the PromoCodes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetPromoCodesOk() ([]BoostPostRequestPromoCodesInner, bool) {
+	if o == nil || IsNil(o.PromoCodes) {
+		return nil, false
+	}
+	return o.PromoCodes, true
+}
+
+// HasPromoCodes returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasPromoCodes() bool {
+	if o != nil && !IsNil(o.PromoCodes) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromoCodes gets a reference to the given []BoostPostRequestPromoCodesInner and assigns it to the PromoCodes field.
+func (o *BoostPostRequest) SetPromoCodes(v []BoostPostRequestPromoCodesInner) {
+	o.PromoCodes = v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetPromotedObject() BoostPostRequestPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -1409,6 +1443,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SparkPosts) {
 		toSerialize["sparkPosts"] = o.SparkPosts
+	}
+	if !IsNil(o.PromoCodes) {
+		toSerialize["promoCodes"] = o.PromoCodes
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
