@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.13.2
+API version: 1.14.0
 Contact: support@zernio.com
 */
 
@@ -80,8 +80,10 @@ type BoostPostRequest struct {
 	// TikTok-only. Spark Code (creator's `auth_code`) authorizing cross-creator Spark Ads: the advertiser can boost a video owned by a DIFFERENT TikTok account. Without this, boosts are limited to videos owned by the same account running the ads (same-BC creators only). The creator generates the code in their TikTok app's Promote settings and shares it with the advertiser. Maps to `auth_code` on the creative entry of /v2/ad/create/.
 	SparkAuthCode *string `json:"sparkAuthCode,omitempty"`
 	// TikTok only. Run the Spark post in a Smart+ campaign (goal `conversions` = Smart+ Web Conversions, `lead_generation` = Smart+ Lead Generation) instead of a regular campaign. Requires `sparkAuthCode` (the Smart+ ad runs the post under the identity that redeeming its Spark code creates; a Business Center-owned post is not accepted there) and `promotedObject.pixelId` + `customEventType`. `app_promotion` is not available on a Spark post. Rejected with a 400 on other platforms. A Smart+ Spark ad uses a dynamic CTA portfolio, sent as ad_configuration.call_to_action_id (TikTok does not accept a named call to action there): Zernio creates one per ad account and reuses it, and `callToAction` is rejected with a 400 on this path.
-	SmartPlus      *bool                           `json:"smartPlus,omitempty"`
-	PromotedObject *BoostPostRequestPromotedObject `json:"promotedObject,omitempty"`
+	SmartPlus *bool `json:"smartPlus,omitempty"`
+	// TikTok Smart+ only (requires `smartPlus: true`). Several Spark posts as creatives of ONE Smart+ ad, each with its own post code (TikTok allows 1-50 per ad; posts from different creators mix). Replaces `platformPostId` + `sparkAuthCode`. Without `adSetId` it creates campaign + ad group + one ad carrying all of them; with `adSetId` it creates one new ad with all of them in that ad group. Rejected with a 400 on other platforms.
+	SparkPosts     []BoostPostRequestSparkPostsInner `json:"sparkPosts,omitempty"`
+	PromotedObject *BoostPostRequestPromotedObject   `json:"promotedObject,omitempty"`
 	// Legal entity that benefits from the ad. Required when targeting EU users (EU DSA, Article 26). Optional if the ad account has a default beneficiary: set it once via `PATCH /v1/ads/accounts` or in Meta Ads Manager, and Meta fills it in whenever the field is omitted.
 	DsaBeneficiary *string `json:"dsaBeneficiary,omitempty"`
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
@@ -1086,6 +1088,38 @@ func (o *BoostPostRequest) SetSmartPlus(v bool) {
 	o.SmartPlus = &v
 }
 
+// GetSparkPosts returns the SparkPosts field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetSparkPosts() []BoostPostRequestSparkPostsInner {
+	if o == nil || IsNil(o.SparkPosts) {
+		var ret []BoostPostRequestSparkPostsInner
+		return ret
+	}
+	return o.SparkPosts
+}
+
+// GetSparkPostsOk returns a tuple with the SparkPosts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetSparkPostsOk() ([]BoostPostRequestSparkPostsInner, bool) {
+	if o == nil || IsNil(o.SparkPosts) {
+		return nil, false
+	}
+	return o.SparkPosts, true
+}
+
+// HasSparkPosts returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasSparkPosts() bool {
+	if o != nil && !IsNil(o.SparkPosts) {
+		return true
+	}
+
+	return false
+}
+
+// SetSparkPosts gets a reference to the given []BoostPostRequestSparkPostsInner and assigns it to the SparkPosts field.
+func (o *BoostPostRequest) SetSparkPosts(v []BoostPostRequestSparkPostsInner) {
+	o.SparkPosts = v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetPromotedObject() BoostPostRequestPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -1372,6 +1406,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SmartPlus) {
 		toSerialize["smartPlus"] = o.SmartPlus
+	}
+	if !IsNil(o.SparkPosts) {
+		toSerialize["sparkPosts"] = o.SparkPosts
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
