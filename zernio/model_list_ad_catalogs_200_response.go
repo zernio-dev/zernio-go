@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.17.0
+API version: 1.18.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,8 @@ var _ MappedNullable = &ListAdCatalogs200Response{}
 
 // ListAdCatalogs200Response struct for ListAdCatalogs200Response
 type ListAdCatalogs200Response struct {
-	Catalogs []ListAdCatalogs200ResponseCatalogsInner `json:"catalogs,omitempty"`
+	BusinessId *string              `json:"businessId,omitempty"`
+	Catalogs   []MetaProductCatalog `json:"catalogs,omitempty"`
 }
 
 // NewListAdCatalogs200Response instantiates a new ListAdCatalogs200Response object
@@ -40,10 +41,42 @@ func NewListAdCatalogs200ResponseWithDefaults() *ListAdCatalogs200Response {
 	return &this
 }
 
+// GetBusinessId returns the BusinessId field value if set, zero value otherwise.
+func (o *ListAdCatalogs200Response) GetBusinessId() string {
+	if o == nil || IsNil(o.BusinessId) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessId
+}
+
+// GetBusinessIdOk returns a tuple with the BusinessId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdCatalogs200Response) GetBusinessIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessId) {
+		return nil, false
+	}
+	return o.BusinessId, true
+}
+
+// HasBusinessId returns a boolean if a field has been set.
+func (o *ListAdCatalogs200Response) HasBusinessId() bool {
+	if o != nil && !IsNil(o.BusinessId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessId gets a reference to the given string and assigns it to the BusinessId field.
+func (o *ListAdCatalogs200Response) SetBusinessId(v string) {
+	o.BusinessId = &v
+}
+
 // GetCatalogs returns the Catalogs field value if set, zero value otherwise.
-func (o *ListAdCatalogs200Response) GetCatalogs() []ListAdCatalogs200ResponseCatalogsInner {
+func (o *ListAdCatalogs200Response) GetCatalogs() []MetaProductCatalog {
 	if o == nil || IsNil(o.Catalogs) {
-		var ret []ListAdCatalogs200ResponseCatalogsInner
+		var ret []MetaProductCatalog
 		return ret
 	}
 	return o.Catalogs
@@ -51,7 +84,7 @@ func (o *ListAdCatalogs200Response) GetCatalogs() []ListAdCatalogs200ResponseCat
 
 // GetCatalogsOk returns a tuple with the Catalogs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAdCatalogs200Response) GetCatalogsOk() ([]ListAdCatalogs200ResponseCatalogsInner, bool) {
+func (o *ListAdCatalogs200Response) GetCatalogsOk() ([]MetaProductCatalog, bool) {
 	if o == nil || IsNil(o.Catalogs) {
 		return nil, false
 	}
@@ -67,8 +100,8 @@ func (o *ListAdCatalogs200Response) HasCatalogs() bool {
 	return false
 }
 
-// SetCatalogs gets a reference to the given []ListAdCatalogs200ResponseCatalogsInner and assigns it to the Catalogs field.
-func (o *ListAdCatalogs200Response) SetCatalogs(v []ListAdCatalogs200ResponseCatalogsInner) {
+// SetCatalogs gets a reference to the given []MetaProductCatalog and assigns it to the Catalogs field.
+func (o *ListAdCatalogs200Response) SetCatalogs(v []MetaProductCatalog) {
 	o.Catalogs = v
 }
 
@@ -82,6 +115,9 @@ func (o ListAdCatalogs200Response) MarshalJSON() ([]byte, error) {
 
 func (o ListAdCatalogs200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.BusinessId) {
+		toSerialize["businessId"] = o.BusinessId
+	}
 	if !IsNil(o.Catalogs) {
 		toSerialize["catalogs"] = o.Catalogs
 	}

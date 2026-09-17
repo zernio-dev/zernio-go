@@ -391,8 +391,6 @@ func main() {
 ### Ad Creatives
 | Method | Description |
 |--------|-------------|
-| `client.AdCreativesAPI.ListAdCatalogProductSets(ctx)` | List a catalog's product sets |
-| `client.AdCreativesAPI.ListAdCatalogs(ctx)` | List Meta product catalogs |
 | `client.AdCreativesAPI.ListAdCreatives(ctx)` | Creative library |
 | `client.AdCreativesAPI.ListAdImages(ctx)` | Ad image library |
 | `client.AdCreativesAPI.ListAdVideos(ctx)` | Ad video library |
@@ -778,6 +776,29 @@ func main() {
 | `client.PhoneNumbersAPI.ValidatePhoneNumberKycAddress(ctx)` | Pre-validate KYC address |
 | `client.PhoneNumbersAPI.ViewPhoneNumberKycDocument(ctx)` | View a KYC document on file |
 
+### Product Catalogs
+| Method | Description |
+|--------|-------------|
+| `client.ProductCatalogsAPI.ListAdCatalogFeedUploads(ctx)` | List a feed's uploads |
+| `client.ProductCatalogsAPI.ListAdCatalogFeeds(ctx)` | List a catalog's product feeds |
+| `client.ProductCatalogsAPI.ListAdCatalogProductSets(ctx)` | List a catalog's product sets |
+| `client.ProductCatalogsAPI.ListAdCatalogProducts(ctx)` | List a catalog's products |
+| `client.ProductCatalogsAPI.ListAdCatalogs(ctx)` | List Meta product catalogs |
+| `client.ProductCatalogsAPI.CreateAdCatalog(ctx)` | Create a Meta product catalog |
+| `client.ProductCatalogsAPI.CreateAdCatalogFeed(ctx)` | Create a product feed |
+| `client.ProductCatalogsAPI.CreateAdCatalogFeedUpload(ctx)` | Fetch a feed file now |
+| `client.ProductCatalogsAPI.CreateAdCatalogProduct(ctx)` | Add a product to a catalog |
+| `client.ProductCatalogsAPI.CreateAdCatalogProductSet(ctx)` | Create a product set |
+| `client.ProductCatalogsAPI.GetAdCatalog(ctx)` | Get a product catalog |
+| `client.ProductCatalogsAPI.GetAdCatalogBatch(ctx)` | Get a bulk request's status |
+| `client.ProductCatalogsAPI.GetAdCatalogProduct(ctx)` | Get a product |
+| `client.ProductCatalogsAPI.UpdateAdCatalogProduct(ctx)` | Update a product |
+| `client.ProductCatalogsAPI.UpdateAdCatalogProductSet(ctx)` | Update a product set |
+| `client.ProductCatalogsAPI.DeleteAdCatalog(ctx)` | Delete a product catalog |
+| `client.ProductCatalogsAPI.DeleteAdCatalogProduct(ctx)` | Delete a product |
+| `client.ProductCatalogsAPI.DeleteAdCatalogProductSet(ctx)` | Delete a product set |
+| `client.ProductCatalogsAPI.BatchAdCatalogProducts(ctx)` | Create, update or delete products in bulk |
+
 ### Products
 | Method | Description |
 |--------|-------------|
@@ -912,6 +933,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.WhatsAppAPI.ListWhatsAppAccountEvents(ctx)` | List account notifications |
+| `client.WhatsAppAPI.ListWhatsAppCatalogs(ctx)` | List the catalogs linked to a WhatsApp number |
 | `client.WhatsAppAPI.ListWhatsAppConversions(ctx)` | List conversion events |
 | `client.WhatsAppAPI.ListWhatsAppGroupChats(ctx)` | List active groups |
 | `client.WhatsAppAPI.ListWhatsAppGroupJoinRequests(ctx)` | List join requests |
@@ -922,6 +944,7 @@ func main() {
 | `client.WhatsAppAPI.GetWhatsAppBlockStatus(ctx)` | Check if a user is blocked |
 | `client.WhatsAppAPI.GetWhatsAppBlockedUsers(ctx)` | List blocked users |
 | `client.WhatsAppAPI.GetWhatsAppBusinessProfile(ctx)` | Get business profile |
+| `client.WhatsAppAPI.GetWhatsAppCommerceSettings(ctx)` | Get a number's commerce settings |
 | `client.WhatsAppAPI.GetWhatsAppDataset(ctx)` | Get CTWA conversions dataset |
 | `client.WhatsAppAPI.GetWhatsAppDisplayName(ctx)` | Get display name status |
 | `client.WhatsAppAPI.GetWhatsAppGroupChat(ctx)` | Get group info |
@@ -932,6 +955,7 @@ func main() {
 | `client.WhatsAppAPI.GetWhatsappBusinessUsername(ctx)` | Get business username |
 | `client.WhatsAppAPI.GetWhatsappBusinessUsernameSuggestions(ctx)` | Get username suggestions |
 | `client.WhatsAppAPI.UpdateWhatsAppBusinessProfile(ctx)` | Update business profile |
+| `client.WhatsAppAPI.UpdateWhatsAppCommerceSettings(ctx)` | Update a number's commerce settings |
 | `client.WhatsAppAPI.UpdateWhatsAppDisplayName(ctx)` | Request display name change |
 | `client.WhatsAppAPI.UpdateWhatsAppGroupChat(ctx)` | Update group settings |
 | `client.WhatsAppAPI.UpdateWhatsAppTemplate(ctx)` | Update template |
@@ -943,6 +967,7 @@ func main() {
 | `client.WhatsAppAPI.AddWhatsAppGroupParticipants(ctx)` | Add participants |
 | `client.WhatsAppAPI.ApproveWhatsAppGroupJoinRequests(ctx)` | Approve join requests |
 | `client.WhatsAppAPI.BlockWhatsAppUsers(ctx)` | Block users |
+| `client.WhatsAppAPI.LinkWhatsAppCatalog(ctx)` | Link a catalog to a WhatsApp number |
 | `client.WhatsAppAPI.RegisterWhatsAppNumber(ctx)` | Register a connected WhatsApp number on the Cloud API |
 | `client.WhatsAppAPI.RejectWhatsAppGroupJoinRequests(ctx)` | Reject join requests |
 | `client.WhatsAppAPI.RemoveWhatsAppGroupParticipants(ctx)` | Remove participants |
@@ -950,6 +975,7 @@ func main() {
 | `client.WhatsAppAPI.SendWhatsAppConversion(ctx)` | Send WhatsApp conversion event |
 | `client.WhatsAppAPI.SetWhatsappBusinessUsername(ctx)` | Set business username |
 | `client.WhatsAppAPI.UnblockWhatsAppUsers(ctx)` | Unblock users |
+| `client.WhatsAppAPI.UnlinkWhatsAppCatalog(ctx)` | Unlink a catalog from a WhatsApp number |
 | `client.WhatsAppAPI.UploadWhatsAppProfilePhoto(ctx)` | Upload profile picture |
 | `client.WhatsAppAPI.VerifyWhatsAppNumber(ctx)` | Verify the Meta re-verification code for a BYO WhatsApp number |
 
