@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.18.1
+API version: 1.18.2
 Contact: support@zernio.com
 */
 
@@ -6577,7 +6577,7 @@ are propagated to the platform.
 
 Per-platform support:
   - **Meta** (Facebook + Instagram): all fields supported.
-  - **TikTok**: status, budget, targeting (via `/v2/adgroup/update/`), and creative
+  - **TikTok**: status, budget, `name` (renames the ad), targeting (via `/v2/adgroup/update/`), and creative
     (via `/v2/ad/update/` patch-style: `headline` is ignored, `body` becomes `ad_text`).
   - **Google**: status, budget, KEYWORD edits via `targeting.keywords` /
     `targeting.negativeKeywords`, DEVICE bid adjustments via `targeting.devices`,
