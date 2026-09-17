@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.11.0
+API version: 1.12.0
 Contact: support@zernio.com
 */
 
@@ -1697,7 +1697,7 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Breakdowns(breakdowns string) AdIns
 	return r
 }
 
-// Comma-separated Graph action breakdowns. Segments the actions[] arrays in each row.
+// Comma-separated Graph action breakdowns; segments the actions[] arrays in each row. Pass &#x60;none&#x60; to clear Meta&#39;s default action_type breakdown, required to combine some non-action breakdowns such as instagram_ads_follow_type (otherwise Meta returns a (#100) invalid-combination error).
 func (r AdInsightsAPIQueryAdInsightsRequest) ActionBreakdowns(actionBreakdowns string) AdInsightsAPIQueryAdInsightsRequest {
 	r.actionBreakdowns = &actionBreakdowns
 	return r
