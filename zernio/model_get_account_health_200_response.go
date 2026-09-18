@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.21.3
+API version: 1.22.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,12 @@ var _ MappedNullable = &GetAccountHealth200Response{}
 
 // GetAccountHealth200Response struct for GetAccountHealth200Response
 type GetAccountHealth200Response struct {
-	AccountId   *string `json:"accountId,omitempty"`
-	Platform    *string `json:"platform,omitempty"`
-	Username    *string `json:"username,omitempty"`
-	DisplayName *string `json:"displayName,omitempty"`
+	AccountId *string `json:"accountId,omitempty"`
+	Platform  *string `json:"platform,omitempty"`
+	// TikTok only. The TikTok integration the account is connected through: business (TikTok for Business, Accounts API) or developer (the original integration). Absent on other platforms.
+	IntegrationLane *string `json:"integrationLane,omitempty"`
+	Username        *string `json:"username,omitempty"`
+	DisplayName     *string `json:"displayName,omitempty"`
 	// Overall health status
 	Status      *string                                 `json:"status,omitempty"`
 	TokenStatus *GetAccountHealth200ResponseTokenStatus `json:"tokenStatus,omitempty"`
@@ -115,6 +117,38 @@ func (o *GetAccountHealth200Response) HasPlatform() bool {
 // SetPlatform gets a reference to the given string and assigns it to the Platform field.
 func (o *GetAccountHealth200Response) SetPlatform(v string) {
 	o.Platform = &v
+}
+
+// GetIntegrationLane returns the IntegrationLane field value if set, zero value otherwise.
+func (o *GetAccountHealth200Response) GetIntegrationLane() string {
+	if o == nil || IsNil(o.IntegrationLane) {
+		var ret string
+		return ret
+	}
+	return *o.IntegrationLane
+}
+
+// GetIntegrationLaneOk returns a tuple with the IntegrationLane field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAccountHealth200Response) GetIntegrationLaneOk() (*string, bool) {
+	if o == nil || IsNil(o.IntegrationLane) {
+		return nil, false
+	}
+	return o.IntegrationLane, true
+}
+
+// HasIntegrationLane returns a boolean if a field has been set.
+func (o *GetAccountHealth200Response) HasIntegrationLane() bool {
+	if o != nil && !IsNil(o.IntegrationLane) {
+		return true
+	}
+
+	return false
+}
+
+// SetIntegrationLane gets a reference to the given string and assigns it to the IntegrationLane field.
+func (o *GetAccountHealth200Response) SetIntegrationLane(v string) {
+	o.IntegrationLane = &v
 }
 
 // GetUsername returns the Username field value if set, zero value otherwise.
@@ -420,6 +454,9 @@ func (o GetAccountHealth200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
+	}
+	if !IsNil(o.IntegrationLane) {
+		toSerialize["integrationLane"] = o.IntegrationLane
 	}
 	if !IsNil(o.Username) {
 		toSerialize["username"] = o.Username
