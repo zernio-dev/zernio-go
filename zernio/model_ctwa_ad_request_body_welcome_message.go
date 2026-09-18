@@ -24,8 +24,10 @@ var _ MappedNullable = &CtwaAdRequestBodyWelcomeMessage{}
 type CtwaAdRequestBodyWelcomeMessage struct {
 	// Greeting shown when the chat opens. Replaces Meta's default (\"Hi! Can we help you?\").
 	Text string `json:"text"`
-	// Message put into the user's text input, ready to send. Replaces Meta's default (\"Hi! I want more info.\"). Lets one ad steer the opening message toward what it promotes (e.g. a specific product).
-	PrefillText string `json:"prefillText"`
+	// Message put into the user's text input, ready to send. Replaces Meta's default (\"Hi! I want more info.\"). Lets one ad steer the opening message toward what it promotes (e.g. a specific product). Exactly one of prefillText or quickReplies.
+	PrefillText *string `json:"prefillText,omitempty"`
+	// Tappable chips under the greeting instead of a prefilled message. Exactly one of prefillText or quickReplies. Put your own campaign or ad key in each payload: the tap arrives on the messages webhook with that payload even where Meta delivers no ad referral (Pages owned by an EU business under the Europe/Japan Messenger restrictions).
+	QuickReplies []CtwaAdRequestBodyWelcomeMessageQuickRepliesInner `json:"quickReplies,omitempty"`
 }
 
 type _CtwaAdRequestBodyWelcomeMessage CtwaAdRequestBodyWelcomeMessage
@@ -34,10 +36,9 @@ type _CtwaAdRequestBodyWelcomeMessage CtwaAdRequestBodyWelcomeMessage
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCtwaAdRequestBodyWelcomeMessage(text string, prefillText string) *CtwaAdRequestBodyWelcomeMessage {
+func NewCtwaAdRequestBodyWelcomeMessage(text string) *CtwaAdRequestBodyWelcomeMessage {
 	this := CtwaAdRequestBodyWelcomeMessage{}
 	this.Text = text
-	this.PrefillText = prefillText
 	return &this
 }
 
@@ -73,28 +74,68 @@ func (o *CtwaAdRequestBodyWelcomeMessage) SetText(v string) {
 	o.Text = v
 }
 
-// GetPrefillText returns the PrefillText field value
+// GetPrefillText returns the PrefillText field value if set, zero value otherwise.
 func (o *CtwaAdRequestBodyWelcomeMessage) GetPrefillText() string {
-	if o == nil {
+	if o == nil || IsNil(o.PrefillText) {
 		var ret string
 		return ret
 	}
-
-	return o.PrefillText
+	return *o.PrefillText
 }
 
-// GetPrefillTextOk returns a tuple with the PrefillText field value
+// GetPrefillTextOk returns a tuple with the PrefillText field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CtwaAdRequestBodyWelcomeMessage) GetPrefillTextOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PrefillText) {
 		return nil, false
 	}
-	return &o.PrefillText, true
+	return o.PrefillText, true
 }
 
-// SetPrefillText sets field value
+// HasPrefillText returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyWelcomeMessage) HasPrefillText() bool {
+	if o != nil && !IsNil(o.PrefillText) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrefillText gets a reference to the given string and assigns it to the PrefillText field.
 func (o *CtwaAdRequestBodyWelcomeMessage) SetPrefillText(v string) {
-	o.PrefillText = v
+	o.PrefillText = &v
+}
+
+// GetQuickReplies returns the QuickReplies field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyWelcomeMessage) GetQuickReplies() []CtwaAdRequestBodyWelcomeMessageQuickRepliesInner {
+	if o == nil || IsNil(o.QuickReplies) {
+		var ret []CtwaAdRequestBodyWelcomeMessageQuickRepliesInner
+		return ret
+	}
+	return o.QuickReplies
+}
+
+// GetQuickRepliesOk returns a tuple with the QuickReplies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyWelcomeMessage) GetQuickRepliesOk() ([]CtwaAdRequestBodyWelcomeMessageQuickRepliesInner, bool) {
+	if o == nil || IsNil(o.QuickReplies) {
+		return nil, false
+	}
+	return o.QuickReplies, true
+}
+
+// HasQuickReplies returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyWelcomeMessage) HasQuickReplies() bool {
+	if o != nil && !IsNil(o.QuickReplies) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuickReplies gets a reference to the given []CtwaAdRequestBodyWelcomeMessageQuickRepliesInner and assigns it to the QuickReplies field.
+func (o *CtwaAdRequestBodyWelcomeMessage) SetQuickReplies(v []CtwaAdRequestBodyWelcomeMessageQuickRepliesInner) {
+	o.QuickReplies = v
 }
 
 func (o CtwaAdRequestBodyWelcomeMessage) MarshalJSON() ([]byte, error) {
@@ -108,7 +149,12 @@ func (o CtwaAdRequestBodyWelcomeMessage) MarshalJSON() ([]byte, error) {
 func (o CtwaAdRequestBodyWelcomeMessage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["text"] = o.Text
-	toSerialize["prefillText"] = o.PrefillText
+	if !IsNil(o.PrefillText) {
+		toSerialize["prefillText"] = o.PrefillText
+	}
+	if !IsNil(o.QuickReplies) {
+		toSerialize["quickReplies"] = o.QuickReplies
+	}
 	return toSerialize, nil
 }
 
@@ -118,7 +164,6 @@ func (o *CtwaAdRequestBodyWelcomeMessage) UnmarshalJSON(data []byte) (err error)
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"text",
-		"prefillText",
 	}
 
 	allProperties := make(map[string]interface{})

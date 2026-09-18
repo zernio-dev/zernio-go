@@ -30,9 +30,9 @@ type CtwaAdRequestBodyCreativesInner struct {
 	// Primary text shown above the image / video.
 	Body *string `json:"body,omitempty"`
 	// Image asset. Mutually exclusive with this entry's `video`. Required if neither `video` nor an existing post reference is supplied.
-	ImageUrl       *string                          `json:"imageUrl,omitempty"`
-	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
-	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
+	ImageUrl       *string                                        `json:"imageUrl,omitempty"`
+	Video          *CreateStandaloneAdRequestVideo                `json:"video,omitempty"`
+	WelcomeMessage *CtwaAdRequestBodyCreativesInnerWelcomeMessage `json:"welcomeMessage,omitempty"`
 }
 
 // NewCtwaAdRequestBodyCreativesInner instantiates a new CtwaAdRequestBodyCreativesInner object
@@ -277,9 +277,9 @@ func (o *CtwaAdRequestBodyCreativesInner) SetVideo(v CreateStandaloneAdRequestVi
 }
 
 // GetWelcomeMessage returns the WelcomeMessage field value if set, zero value otherwise.
-func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyWelcomeMessage {
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyCreativesInnerWelcomeMessage {
 	if o == nil || IsNil(o.WelcomeMessage) {
-		var ret CtwaAdRequestBodyWelcomeMessage
+		var ret CtwaAdRequestBodyCreativesInnerWelcomeMessage
 		return ret
 	}
 	return *o.WelcomeMessage
@@ -287,7 +287,7 @@ func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyW
 
 // GetWelcomeMessageOk returns a tuple with the WelcomeMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessageOk() (*CtwaAdRequestBodyWelcomeMessage, bool) {
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessageOk() (*CtwaAdRequestBodyCreativesInnerWelcomeMessage, bool) {
 	if o == nil || IsNil(o.WelcomeMessage) {
 		return nil, false
 	}
@@ -303,8 +303,8 @@ func (o *CtwaAdRequestBodyCreativesInner) HasWelcomeMessage() bool {
 	return false
 }
 
-// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyWelcomeMessage and assigns it to the WelcomeMessage field.
-func (o *CtwaAdRequestBodyCreativesInner) SetWelcomeMessage(v CtwaAdRequestBodyWelcomeMessage) {
+// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyCreativesInnerWelcomeMessage and assigns it to the WelcomeMessage field.
+func (o *CtwaAdRequestBodyCreativesInner) SetWelcomeMessage(v CtwaAdRequestBodyCreativesInnerWelcomeMessage) {
 	o.WelcomeMessage = &v
 }
 
