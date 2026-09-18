@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.21.0
+API version: 1.21.1
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,9 @@ var _ MappedNullable = &InboxWebhookConversation{}
 
 // InboxWebhookConversation The conversation context included in inbox webhook payloads.
 type InboxWebhookConversation struct {
-	Id                     string  `json:"id"`
+	// Zernio's internal conversation id (also the message's conversationId). Accepted by every /v1/inbox/conversations/{conversationId} endpoint.
+	Id string `json:"id"`
+	// The platform's conversation id. This is the `id` GET /v1/inbox/conversations returns for the same conversation (on Instagram and Messenger it is the participant's IGSID / PSID), so key your records on it to match webhooks with list rows. Also accepted by the conversation endpoints.
 	PlatformConversationId string  `json:"platformConversationId"`
 	ParticipantId          *string `json:"participantId,omitempty"`
 	ParticipantName        *string `json:"participantName,omitempty"`
