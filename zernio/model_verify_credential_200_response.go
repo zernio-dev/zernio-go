@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.23.0
+API version: 1.24.0
 Contact: support@zernio.com
 */
 
@@ -20,9 +20,13 @@ var _ MappedNullable = &VerifyCredential200Response{}
 
 // VerifyCredential200Response struct for VerifyCredential200Response
 type VerifyCredential200Response struct {
-	Valid    *bool   `json:"valid,omitempty"`
-	UserId   *string `json:"userId,omitempty"`
-	AuthType *string `json:"authType,omitempty"`
+	Valid  *bool   `json:"valid,omitempty"`
+	UserId *string `json:"userId,omitempty"`
+	// Display name of the credential's owner.
+	Name NullableString `json:"name,omitempty"`
+	// Email of the credential's owner.
+	Email    NullableString `json:"email,omitempty"`
+	AuthType *string        `json:"authType,omitempty"`
 	// Granted OAuth scopes, space-separated. Null for API keys.
 	Scope NullableString `json:"scope,omitempty"`
 }
@@ -106,6 +110,92 @@ func (o *VerifyCredential200Response) HasUserId() bool {
 // SetUserId gets a reference to the given string and assigns it to the UserId field.
 func (o *VerifyCredential200Response) SetUserId(v string) {
 	o.UserId = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VerifyCredential200Response) GetName() string {
+	if o == nil || IsNil(o.Name.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Name.Get()
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VerifyCredential200Response) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Name.Get(), o.Name.IsSet()
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *VerifyCredential200Response) HasName() bool {
+	if o != nil && o.Name.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given NullableString and assigns it to the Name field.
+func (o *VerifyCredential200Response) SetName(v string) {
+	o.Name.Set(&v)
+}
+
+// SetNameNil sets the value for Name to be an explicit nil
+func (o *VerifyCredential200Response) SetNameNil() {
+	o.Name.Set(nil)
+}
+
+// UnsetName ensures that no value is present for Name, not even an explicit nil
+func (o *VerifyCredential200Response) UnsetName() {
+	o.Name.Unset()
+}
+
+// GetEmail returns the Email field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VerifyCredential200Response) GetEmail() string {
+	if o == nil || IsNil(o.Email.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Email.Get()
+}
+
+// GetEmailOk returns a tuple with the Email field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VerifyCredential200Response) GetEmailOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Email.Get(), o.Email.IsSet()
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (o *VerifyCredential200Response) HasEmail() bool {
+	if o != nil && o.Email.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEmail gets a reference to the given NullableString and assigns it to the Email field.
+func (o *VerifyCredential200Response) SetEmail(v string) {
+	o.Email.Set(&v)
+}
+
+// SetEmailNil sets the value for Email to be an explicit nil
+func (o *VerifyCredential200Response) SetEmailNil() {
+	o.Email.Set(nil)
+}
+
+// UnsetEmail ensures that no value is present for Email, not even an explicit nil
+func (o *VerifyCredential200Response) UnsetEmail() {
+	o.Email.Unset()
 }
 
 // GetAuthType returns the AuthType field value if set, zero value otherwise.
@@ -198,6 +288,12 @@ func (o VerifyCredential200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.UserId) {
 		toSerialize["userId"] = o.UserId
+	}
+	if o.Name.IsSet() {
+		toSerialize["name"] = o.Name.Get()
+	}
+	if o.Email.IsSet() {
+		toSerialize["email"] = o.Email.Get()
 	}
 	if !IsNil(o.AuthType) {
 		toSerialize["authType"] = o.AuthType
