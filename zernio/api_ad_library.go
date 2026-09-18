@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.21.2
+API version: 1.21.3
 Contact: support@zernio.com
 */
 
@@ -110,13 +110,13 @@ func (r AdLibraryAPISearchAdLibraryRequest) Languages(languages string) AdLibrar
 	return r
 }
 
-// Earliest delivery date (YYYY-MM-DD).
+// Meta only. Earliest delivery date (YYYY-MM-DD). LinkedIn&#39;s archive does not filter by date, so it is a 400 there: filter on details.adStatistics.firstImpressionAt / latestImpressionAt instead (EU-delivered ads only).
 func (r AdLibraryAPISearchAdLibraryRequest) Since(since string) AdLibraryAPISearchAdLibraryRequest {
 	r.since = &since
 	return r
 }
 
-// Latest delivery date (YYYY-MM-DD).
+// Meta only. Latest delivery date (YYYY-MM-DD); a 400 on LinkedIn, see since.
 func (r AdLibraryAPISearchAdLibraryRequest) Until(until string) AdLibraryAPISearchAdLibraryRequest {
 	r.until = &until
 	return r
@@ -170,8 +170,8 @@ share Zernio's Meta quota, so a `429` means back off for a minute.
 last impression. EU-delivered ads carry impression ranges and the disclosed targeting facets.
 Pages are capped at 25 ads (`limit` > 25 is a 400); `after` is the next offset.
 
-Which params apply: `q`, `countries`, `since`, `until`, `limit`, `after` on both; `pageIds`,
-`adType`, `status`, `platforms`, `mediaType`, `languages`, `searchType`, `fields` are Meta-only;
+Which params apply: `q`, `countries`, `limit`, `after` on both; `pageIds`, `adType`, `status`,
+`platforms`, `mediaType`, `languages`, `searchType`, `fields`, `since`, `until` are Meta-only;
 `advertiser` is LinkedIn-only. Passing a param the account's platform does not support is a 400
 naming the param.
 
