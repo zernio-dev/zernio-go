@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.20.3
+API version: 1.21.0
 Contact: support@zernio.com
 */
 
@@ -210,6 +210,8 @@ type CreateStandaloneAdRequest struct {
 	// Legal entity that pays for the ad. Can differ from `dsaBeneficiary` (for example, an agency paying for a client's ads). Same rules as `dsaBeneficiary`: required for EU targeting unless the ad account has a default payor.
 	DsaPayor      *string                                 `json:"dsaPayor,omitempty"`
 	BrandIdentity *CreateStandaloneAdRequestBrandIdentity `json:"brandIdentity,omitempty"`
+	// TikTok: the identity the ad runs as, from GET /v1/ads/tiktok-identities. Overrides the connected account's own identity; must be authorized on the advertiser.
+	IdentityId *string `json:"identityId,omitempty"`
 	// TikTok only. Forces the identity attribution on the ad:    - `TT_USER`: the posting account's open_id (real @username     branding). Requires a connected TikTok posting account     on the same profile.   - `CUSTOMIZED_USER`: synthetic Brand Identity (display     name + avatar). Requires a configured Brand Identity     (cached on the `tiktokads` SocialAccount via     `PATCH /v1/connect/tiktok-ads`) or an inline     `brandIdentity` to create one on the fly.  When omitted, defaults to `TT_USER` if a posting account is connected on this profile, else `CUSTOMIZED_USER`. Spark Ads (`POST /v1/ads/boost`) always use `TT_USER` regardless of this field, because TikTok requires the original organic post's author identity for Spark.
 	IdentityType *string `json:"identityType,omitempty"`
 	// TikTok only. Creates the ad as a TikTok Upgraded Smart+ campaign: TikTok automates targeting, bidding and delivery. Supports goals `conversions` (Smart+ Web Conversions), `lead_generation` (Smart+ Lead Generation with a website form on `linkUrl`; TikTok Instant Forms not supported) and `app_promotion` (Smart+ App installs; the ad's destination is the app store, so `linkUrl` is not used). The web goals require `promotedObject.pixelId` AND `promotedObject.customEventType`; `app_promotion` requires `promotedObject.applicationId` instead. Targeting works like on any TikTok ad (defaults to `countries: [\"US\"]` when omitted); TikTok automates delivery within it. The budget lives on the Smart+ campaign (Campaign Budget Optimization); a `lifetime` budget additionally requires `endDate`. Cannot be combined with `adSetId`.
@@ -3417,6 +3419,38 @@ func (o *CreateStandaloneAdRequest) SetBrandIdentity(v CreateStandaloneAdRequest
 	o.BrandIdentity = &v
 }
 
+// GetIdentityId returns the IdentityId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetIdentityId() string {
+	if o == nil || IsNil(o.IdentityId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityId
+}
+
+// GetIdentityIdOk returns a tuple with the IdentityId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetIdentityIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityId) {
+		return nil, false
+	}
+	return o.IdentityId, true
+}
+
+// HasIdentityId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasIdentityId() bool {
+	if o != nil && !IsNil(o.IdentityId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityId gets a reference to the given string and assigns it to the IdentityId field.
+func (o *CreateStandaloneAdRequest) SetIdentityId(v string) {
+	o.IdentityId = &v
+}
+
 // GetIdentityType returns the IdentityType field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetIdentityType() string {
 	if o == nil || IsNil(o.IdentityType) {
@@ -3941,6 +3975,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BrandIdentity) {
 		toSerialize["brandIdentity"] = o.BrandIdentity
+	}
+	if !IsNil(o.IdentityId) {
+		toSerialize["identityId"] = o.IdentityId
 	}
 	if !IsNil(o.IdentityType) {
 		toSerialize["identityType"] = o.IdentityType

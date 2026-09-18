@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.20.3
+API version: 1.21.0
 Contact: support@zernio.com
 */
 
@@ -42,8 +42,12 @@ type BoostPostRequest struct {
 	// Meta, or TikTok with `smartPlus: true`. Attach the boosted post to this existing ad set instead of creating a campaign. On TikTok the id is an existing Smart+ ad group: the post is added as one more Spark ad in it (up to 30 per ad group), under the identity its `sparkAuthCode` creates; goal and budget are inherited from the Smart+ campaign; a regular ad group is rejected with a 400. Meta: The ad set then owns budget, schedule and targeting; sending those too is a 400.
 	AdSetId *string `json:"adSetId,omitempty"`
 	// TikTok only. Create the ad group and the Spark ad under this existing TikTok campaign instead of creating a new campaign. The campaign keeps its own status and objective (the objective must fit `goal`). Cannot be combined with adSetId or smartPlus. On Meta use POST /v1/ads/create with existingCampaignId.
-	ExistingCampaignId *string                        `json:"existingCampaignId,omitempty"`
-	Budget             *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	ExistingCampaignId *string `json:"existingCampaignId,omitempty"`
+	// TikTok only. The identity the ad runs as (the profile shown on the ad), from GET /v1/ads/tiktok-identities. Default: the connected TikTok account's own identity. Must be authorized on the advertiser or the call fails naming the available ones.
+	IdentityId *string `json:"identityId,omitempty"`
+	// TikTok only. Type of identityId; resolved from the advertiser's identity list when omitted.
+	IdentityType *string                        `json:"identityType,omitempty"`
+	Budget       *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
 	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
 	// Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Independent of plain link CTAs and their goal. A messaging callToAction selects its destination automatically; an explicit destinationType must then match. Lead ads use ON_AD.
@@ -441,6 +445,70 @@ func (o *BoostPostRequest) HasExistingCampaignId() bool {
 // SetExistingCampaignId gets a reference to the given string and assigns it to the ExistingCampaignId field.
 func (o *BoostPostRequest) SetExistingCampaignId(v string) {
 	o.ExistingCampaignId = &v
+}
+
+// GetIdentityId returns the IdentityId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetIdentityId() string {
+	if o == nil || IsNil(o.IdentityId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityId
+}
+
+// GetIdentityIdOk returns a tuple with the IdentityId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetIdentityIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityId) {
+		return nil, false
+	}
+	return o.IdentityId, true
+}
+
+// HasIdentityId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasIdentityId() bool {
+	if o != nil && !IsNil(o.IdentityId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityId gets a reference to the given string and assigns it to the IdentityId field.
+func (o *BoostPostRequest) SetIdentityId(v string) {
+	o.IdentityId = &v
+}
+
+// GetIdentityType returns the IdentityType field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetIdentityType() string {
+	if o == nil || IsNil(o.IdentityType) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityType
+}
+
+// GetIdentityTypeOk returns a tuple with the IdentityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetIdentityTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityType) {
+		return nil, false
+	}
+	return o.IdentityType, true
+}
+
+// HasIdentityType returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasIdentityType() bool {
+	if o != nil && !IsNil(o.IdentityType) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityType gets a reference to the given string and assigns it to the IdentityType field.
+func (o *BoostPostRequest) SetIdentityType(v string) {
+	o.IdentityType = &v
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
@@ -1414,6 +1482,12 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ExistingCampaignId) {
 		toSerialize["existingCampaignId"] = o.ExistingCampaignId
+	}
+	if !IsNil(o.IdentityId) {
+		toSerialize["identityId"] = o.IdentityId
+	}
+	if !IsNil(o.IdentityType) {
+		toSerialize["identityType"] = o.IdentityType
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
