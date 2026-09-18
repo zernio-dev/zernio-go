@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.21.1
+API version: 1.21.2
 Contact: support@zernio.com
 */
 
@@ -100,7 +100,7 @@ type BoostPostRequest struct {
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On Meta a new campaign stays paused until explicitly activated; an attached ad is itself paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
 	Status *string `json:"status,omitempty"`
-	// Meta only. Explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
+	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
 
