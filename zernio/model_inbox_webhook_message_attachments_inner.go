@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.0
+API version: 1.25.1
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &InboxWebhookMessageAttachmentsInner{}
 
 // InboxWebhookMessageAttachmentsInner struct for InboxWebhookMessageAttachmentsInner
 type InboxWebhookMessageAttachmentsInner struct {
-	// Attachment type (image, video, file, sticker, audio)
+	// Attachment type (image, video, file, sticker, audio, share)
 	Type string `json:"type"`
 	// Where to fetch the attachment. The contract depends on direction and platform: inbound WhatsApp media points at the authenticated `GET /v1/whatsapp/media/{mediaId}` and requires `Authorization: Bearer <your API key>`, while outgoing media carries the URL originally supplied and Instagram / Facebook / Telegram carry direct platform CDN links that need no authentication.
 	Url string `json:"url"`
