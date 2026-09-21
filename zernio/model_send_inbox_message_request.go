@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.26.0
+API version: 1.28.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type SendInboxMessageRequest struct {
 	AttachmentUrl *string `json:"attachmentUrl,omitempty"`
 	// WhatsApp only (Meta Direct Send). Sends this message as a business-initiated UTILITY message without an approved template, for example outside the 24-hour customer service window; Meta matches or auto-creates a template asynchronously. The WhatsApp Business Account must be eligible for Direct Send, otherwise the send fails with an error telling you to use an approved message template instead. Supported only for text messages (link preview ok) and interactive messages (reply buttons, CTA URL buttons, voice-call button, header of text/image/video/document). Cannot be combined with template, attachments, location, or contacts. Utility messages only; marketing content is not allowed under this category. Accepted on the JSON body only, not on multipart requests.
 	Category *string `json:"category,omitempty"`
-	// WhatsApp only. Set false to send the message without a link-preview thumbnail for the first URL in the text. Defaults to true, which is how every WhatsApp text has been sent to date. Ignored on other platforms. Accepted on the JSON body only, not on multipart requests.
+	// WhatsApp and iMessage. Set false to send the message without a link-preview thumbnail (WhatsApp: the first URL; iMessage: every link renders as plain text). Defaults to true, which is how every WhatsApp text has been sent to date. Ignored on other platforms. Accepted on the JSON body only, not on multipart requests.
 	LinkPreview *bool `json:"linkPreview,omitempty"`
 	// Type of attachment. Defaults to file if not specified.
 	AttachmentType *string `json:"attachmentType,omitempty"`
@@ -38,6 +38,14 @@ type SendInboxMessageRequest struct {
 	AttachmentName *string `json:"attachmentName,omitempty"`
 	// WhatsApp only. When `true` on an audio attachment, the message is sent as a voice message (PTT): the recipient sees the waveform + voice-note UI instead of a basic audio attachment. The audio file MUST be `.ogg` encoded with the OPUS codec (mono) per Meta's voice-message contract; other formats are rejected by WhatsApp. Ignored for non-audio attachments.
 	VoiceNote *bool `json:"voiceNote,omitempty"`
+	// iMessage only (JSON body only). Bold title line rendered above the message text. Rejected with 400 on other platforms; ignored on voice-message sends.
+	Subject *string `json:"subject,omitempty"`
+	// iMessage only (JSON body only). Apple screen/bubble animation played when the message arrives. Rejected with 400 on other platforms.
+	Effect *string `json:"effect,omitempty"`
+	// iMessage only (JSON body only). When `true`, attaches the sender's contact card (vCard) so the recipient can save the sender. Counts as message content on its own, so `message` becomes optional.
+	ContactCard *bool `json:"contactCard,omitempty"`
+	// iMessage only (JSON body only). Overrides the delivery channel for this one send; the provider otherwise picks it automatically. The sender must carry the matching add-on (SMS, RCS or WhatsApp), or the send fails. Not a default to set on every request. Rejected with 400 on other platforms.
+	Channel *string `json:"channel,omitempty"`
 	// Quick reply buttons. Mutually exclusive with buttons. Max 13 items.
 	QuickReplies []SendInboxMessageRequestQuickRepliesInner `json:"quickReplies,omitempty"`
 	// Action buttons. Mutually exclusive with quickReplies. Max 3 items.  Instagram / Facebook: also mutually exclusive with `template`. A Meta message carries one body shape, so sending both is a 400 rather than a silent drop of the buttons.  WhatsApp: buttons always render as interactive reply buttons. Only `title` and `payload` are used; `type`, `url`, and `phone` are ignored (WhatsApp has no URL/phone button in this field; use the `interactive` field with `type: cta_url` for a link button). `payload` becomes the button reply ID delivered on the `message.received` webhook when the user taps. To send a simple reply-button message, provide `title` + `payload` and set `type: postback`, e.g. `{ \"type\": \"postback\", \"title\": \"Yes\", \"payload\": \"yes\" }`.  Combine `buttons` with `attachmentUrl` and `attachmentType` `image`, `video`, or `file` to render one WhatsApp message with a media header, body text, and reply buttons. Audio is not a supported interactive header and returns 400 when combined with buttons.
@@ -326,6 +334,134 @@ func (o *SendInboxMessageRequest) HasVoiceNote() bool {
 // SetVoiceNote gets a reference to the given bool and assigns it to the VoiceNote field.
 func (o *SendInboxMessageRequest) SetVoiceNote(v bool) {
 	o.VoiceNote = &v
+}
+
+// GetSubject returns the Subject field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetSubject() string {
+	if o == nil || IsNil(o.Subject) {
+		var ret string
+		return ret
+	}
+	return *o.Subject
+}
+
+// GetSubjectOk returns a tuple with the Subject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetSubjectOk() (*string, bool) {
+	if o == nil || IsNil(o.Subject) {
+		return nil, false
+	}
+	return o.Subject, true
+}
+
+// HasSubject returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasSubject() bool {
+	if o != nil && !IsNil(o.Subject) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubject gets a reference to the given string and assigns it to the Subject field.
+func (o *SendInboxMessageRequest) SetSubject(v string) {
+	o.Subject = &v
+}
+
+// GetEffect returns the Effect field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetEffect() string {
+	if o == nil || IsNil(o.Effect) {
+		var ret string
+		return ret
+	}
+	return *o.Effect
+}
+
+// GetEffectOk returns a tuple with the Effect field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetEffectOk() (*string, bool) {
+	if o == nil || IsNil(o.Effect) {
+		return nil, false
+	}
+	return o.Effect, true
+}
+
+// HasEffect returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasEffect() bool {
+	if o != nil && !IsNil(o.Effect) {
+		return true
+	}
+
+	return false
+}
+
+// SetEffect gets a reference to the given string and assigns it to the Effect field.
+func (o *SendInboxMessageRequest) SetEffect(v string) {
+	o.Effect = &v
+}
+
+// GetContactCard returns the ContactCard field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetContactCard() bool {
+	if o == nil || IsNil(o.ContactCard) {
+		var ret bool
+		return ret
+	}
+	return *o.ContactCard
+}
+
+// GetContactCardOk returns a tuple with the ContactCard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetContactCardOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContactCard) {
+		return nil, false
+	}
+	return o.ContactCard, true
+}
+
+// HasContactCard returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasContactCard() bool {
+	if o != nil && !IsNil(o.ContactCard) {
+		return true
+	}
+
+	return false
+}
+
+// SetContactCard gets a reference to the given bool and assigns it to the ContactCard field.
+func (o *SendInboxMessageRequest) SetContactCard(v bool) {
+	o.ContactCard = &v
+}
+
+// GetChannel returns the Channel field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetChannel() string {
+	if o == nil || IsNil(o.Channel) {
+		var ret string
+		return ret
+	}
+	return *o.Channel
+}
+
+// GetChannelOk returns a tuple with the Channel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetChannelOk() (*string, bool) {
+	if o == nil || IsNil(o.Channel) {
+		return nil, false
+	}
+	return o.Channel, true
+}
+
+// HasChannel returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasChannel() bool {
+	if o != nil && !IsNil(o.Channel) {
+		return true
+	}
+
+	return false
+}
+
+// SetChannel gets a reference to the given string and assigns it to the Channel field.
+func (o *SendInboxMessageRequest) SetChannel(v string) {
+	o.Channel = &v
 }
 
 // GetQuickReplies returns the QuickReplies field value if set, zero value otherwise.
@@ -679,6 +815,18 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VoiceNote) {
 		toSerialize["voiceNote"] = o.VoiceNote
+	}
+	if !IsNil(o.Subject) {
+		toSerialize["subject"] = o.Subject
+	}
+	if !IsNil(o.Effect) {
+		toSerialize["effect"] = o.Effect
+	}
+	if !IsNil(o.ContactCard) {
+		toSerialize["contactCard"] = o.ContactCard
+	}
+	if !IsNil(o.Channel) {
+		toSerialize["channel"] = o.Channel
 	}
 	if !IsNil(o.QuickReplies) {
 		toSerialize["quickReplies"] = o.QuickReplies

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.26.0
+API version: 1.28.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,9 @@ type ListPhoneNumbers200Response struct {
 	Numbers []ListPhoneNumbers200ResponseNumbersInner `json:"numbers,omitempty"`
 	// Connected (bring-your-own) WhatsApp numbers: your own WABA numbers linked via Embedded Signup. Not provisioned or billed by Zernio, so they are not in `numbers`; `accountId` is the social-account id used by the messaging and inbox endpoints. Included only on the default and `status=active` views.
 	Connected []ListPhoneNumbers200ResponseConnectedInner `json:"connected,omitempty"`
-	Sandbox   *ListPhoneNumbers200ResponseSandbox         `json:"sandbox,omitempty"`
+	// iMessage phone senders (see /v1/imessage/senders/order). Hosted by the iMessage provider, not on your Telnyx numbers: SMS and Calls can never be enabled on them, and they bill as iMessage senders. `handle` is null until the carrier assigns the number at activation. Included only on the default and `status=active` views.
+	Imessage []ImessageSenderLifecycle           `json:"imessage,omitempty"`
+	Sandbox  *ListPhoneNumbers200ResponseSandbox `json:"sandbox,omitempty"`
 }
 
 // NewListPhoneNumbers200Response instantiates a new ListPhoneNumbers200Response object
@@ -107,6 +109,38 @@ func (o *ListPhoneNumbers200Response) SetConnected(v []ListPhoneNumbers200Respon
 	o.Connected = v
 }
 
+// GetImessage returns the Imessage field value if set, zero value otherwise.
+func (o *ListPhoneNumbers200Response) GetImessage() []ImessageSenderLifecycle {
+	if o == nil || IsNil(o.Imessage) {
+		var ret []ImessageSenderLifecycle
+		return ret
+	}
+	return o.Imessage
+}
+
+// GetImessageOk returns a tuple with the Imessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListPhoneNumbers200Response) GetImessageOk() ([]ImessageSenderLifecycle, bool) {
+	if o == nil || IsNil(o.Imessage) {
+		return nil, false
+	}
+	return o.Imessage, true
+}
+
+// HasImessage returns a boolean if a field has been set.
+func (o *ListPhoneNumbers200Response) HasImessage() bool {
+	if o != nil && !IsNil(o.Imessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetImessage gets a reference to the given []ImessageSenderLifecycle and assigns it to the Imessage field.
+func (o *ListPhoneNumbers200Response) SetImessage(v []ImessageSenderLifecycle) {
+	o.Imessage = v
+}
+
 // GetSandbox returns the Sandbox field value if set, zero value otherwise.
 func (o *ListPhoneNumbers200Response) GetSandbox() ListPhoneNumbers200ResponseSandbox {
 	if o == nil || IsNil(o.Sandbox) {
@@ -154,6 +188,9 @@ func (o ListPhoneNumbers200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Connected) {
 		toSerialize["connected"] = o.Connected
+	}
+	if !IsNil(o.Imessage) {
+		toSerialize["imessage"] = o.Imessage
 	}
 	if !IsNil(o.Sandbox) {
 		toSerialize["sandbox"] = o.Sandbox

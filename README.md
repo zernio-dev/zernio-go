@@ -1069,6 +1069,27 @@ func main() {
 | `client.WorkflowsAPI.RestoreWorkflowVersion(ctx)` | Restore a workflow version |
 | `client.WorkflowsAPI.TriggerWorkflow(ctx)` | Manually start a workflow run |
 
+### iMessage
+| Method | Description |
+|--------|-------------|
+| `client.IMessageAPI.ListImessageAudience(ctx)` | List iMessage audience |
+| `client.IMessageAPI.ListImessageAvailableNumbers(ctx)` | List instantly available iMessage numbers |
+| `client.IMessageAPI.ListImessageSenderOrders(ctx)` | List iMessage sender orders |
+| `client.IMessageAPI.ListImessageSenders(ctx)` | List iMessage senders |
+| `client.IMessageAPI.CreateImessageGroup(ctx)` | Start an iMessage group chat |
+| `client.IMessageAPI.CreateImessageOptInLink(ctx)` | Create a tracked iMessage opt-in link |
+| `client.IMessageAPI.GetImessageGroup(ctx)` | Get an iMessage group |
+| `client.IMessageAPI.GetImessageSender(ctx)` | Get iMessage sender status |
+| `client.IMessageAPI.UpdateImessageGroup(ctx)` | Rename an iMessage group or change its photo |
+| `client.IMessageAPI.UpdateImessageSender(ctx)` | Update an iMessage sender |
+| `client.IMessageAPI.AddImessageGroupParticipant(ctx)` | Add a participant to an iMessage group |
+| `client.IMessageAPI.CancelImessageSender(ctx)` | Cancel an iMessage sender |
+| `client.IMessageAPI.OrderImessageSender(ctx)` | Order a new iMessage sender |
+| `client.IMessageAPI.RegisterImessageSender(ctx)` | Register an iMessage sender |
+| `client.IMessageAPI.RemoveImessageGroupParticipant(ctx)` | Remove a participant from an iMessage group |
+| `client.IMessageAPI.ReserveImessageAvailableNumber(ctx)` | Reserve an available iMessage number |
+| `client.IMessageAPI.SetImessageSubscription(ctx)` | Subscribe or opt out an iMessage contact |
+
 ### Invites
 | Method | Description |
 |--------|-------------|

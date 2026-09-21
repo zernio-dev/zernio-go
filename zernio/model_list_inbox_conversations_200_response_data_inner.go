@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.26.0
+API version: 1.28.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type ListInboxConversations200ResponseDataInner struct {
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
 	// WhatsApp only, present once Meta Business Agent has touched the thread. ai_agent: the agent answers and new inbound arrive flagged metadata.standby; app: you hold control; other: another partner app does. Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
 	ThreadControl *string `json:"threadControl,omitempty"`
+	// iMessage only, true for a group thread. Manage it through the /v1/imessage/groups/{conversationId} endpoints.
+	IsGroup *bool `json:"isGroup,omitempty"`
 	// Direct link to open the conversation on the platform (if available)
 	Url              NullableString                                              `json:"url,omitempty"`
 	InstagramProfile *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
@@ -510,6 +512,38 @@ func (o *ListInboxConversations200ResponseDataInner) SetThreadControl(v string) 
 	o.ThreadControl = &v
 }
 
+// GetIsGroup returns the IsGroup field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetIsGroup() bool {
+	if o == nil || IsNil(o.IsGroup) {
+		var ret bool
+		return ret
+	}
+	return *o.IsGroup
+}
+
+// GetIsGroupOk returns a tuple with the IsGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetIsGroupOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsGroup) {
+		return nil, false
+	}
+	return o.IsGroup, true
+}
+
+// HasIsGroup returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasIsGroup() bool {
+	if o != nil && !IsNil(o.IsGroup) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsGroup gets a reference to the given bool and assigns it to the IsGroup field.
+func (o *ListInboxConversations200ResponseDataInner) SetIsGroup(v bool) {
+	o.IsGroup = &v
+}
+
 // GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListInboxConversations200ResponseDataInner) GetUrl() string {
 	if o == nil || IsNil(o.Url.Get()) {
@@ -665,6 +699,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.ThreadControl) {
 		toSerialize["threadControl"] = o.ThreadControl
+	}
+	if !IsNil(o.IsGroup) {
+		toSerialize["isGroup"] = o.IsGroup
 	}
 	if o.Url.IsSet() {
 		toSerialize["url"] = o.Url.Get()

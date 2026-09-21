@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.26.0
+API version: 1.28.0
 Contact: support@zernio.com
 */
 
@@ -49,6 +49,7 @@ Add an emoji reaction to a message. Platform support:
 - WhatsApp: Supports any standard emoji (one reaction per message per sender)
 - Instagram and Facebook Messenger: Any standard emoji, subject to Meta's 24h messaging window
 - Slack: The emoji must have a Slack name (e.g. `:thumbsup:`); unnamed characters return 400
+- 'iMessage: The six Apple tapbacks (❤️ 👍 👎 😂 ‼️ ❓) render natively; any other emoji is sent as a custom emoji tapback (iOS 18+ recipients)'
 - All others: Returns 400 (not supported)
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -394,6 +395,7 @@ Delete a message from a conversation. Platform support varies:
 - X: Full delete (own DM events only)
 - Bluesky: Delete for self only (recipient still sees it)
 - Reddit: Delete from sender's view only
+- 'iMessage: Unsend (the bubble disappears for the recipient) within 2 minutes of sending (Apple”s limit; 409 `unsend_window_expired` after that). Own outbound messages only.'
 - Facebook, Instagram, WhatsApp: Not supported (returns 400)
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -523,12 +525,14 @@ func (r MessagesAPIEditInboxMessageRequest) Execute() (*EditInboxMessage200Respo
 /*
 EditInboxMessage Edit message
 
-Edit the text and/or reply markup of a previously sent Telegram message.
-Only supported for Telegram. Returns 400 for other platforms.
+Edit a previously sent message. Platform support:
+- Telegram: text and/or reply markup, any time
+- 'iMessage: text only, within 15 minutes of sending (Apple”s limit; 409 `edit_window_expired` after that). Group messages included. The stored message keeps its edit history.'
+- All others: returns 400
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID
-	@param messageId The Telegram message ID to edit
+	@param messageId The platform message ID to edit (iMessage also accepts the Zernio message id)
 	@return MessagesAPIEditInboxMessageRequest
 */
 func (a *MessagesAPIService) EditInboxMessage(ctx context.Context, conversationId string, messageId string) MessagesAPIEditInboxMessageRequest {
@@ -952,7 +956,7 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 503 {
+		if localVarHTTPResponse.StatusCode == 502 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -963,7 +967,7 @@ func (a *MessagesAPIService) GetInboxConversationMessagesExecute(r MessagesAPIGe
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 502 {
+		if localVarHTTPResponse.StatusCode == 503 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -1399,6 +1403,9 @@ For WhatsApp, this also sends read receipts (blue ticks) to the contact,
 EXCEPT on coexistence accounts (where the WhatsApp Business app on the
 customer's phone owns read state and we never override it).
 
+For iMessage, this also marks the conversation read with the contact
+(1:1 conversations only). Best-effort.
+
 This is the explicit, human-driven counterpart to `GET .../messages`,
 which is side-effect-free and does NOT mark anything read. Call this when
 a user actually views the conversation.
@@ -1534,6 +1541,7 @@ Remove a reaction from a message. Platform support:
 - WhatsApp: Send empty emoji to remove
 - Instagram and Facebook Messenger: Sends Meta's `unreact` action; the emoji does not need to be repeated
 - Slack: Removes the reaction we previously sent on that message
+- 'iMessage: Retracts your existing tapback or emoji reaction on the message (400 when you have none)'
 - All others: Returns 400 (not supported)
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2044,8 +2052,8 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 503 {
-			var v ErrorResponse
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v SendInboxMessage502Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2055,8 +2063,8 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		if localVarHTTPResponse.StatusCode == 502 {
-			var v SendInboxMessage502Response
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2113,6 +2121,7 @@ Show a typing indicator in a conversation. Platform support:
 - Instagram: Shows "typing..." to the recipient (works for both Instagram Login and Facebook Login accounts). The recipient must be signed in to Instagram to see it.
 - Telegram: Shows "Bot is typing..." for 5 seconds
 - WhatsApp: Shows "typing..." for up to 25 seconds. Requires a recent inbound message in the conversation (Meta references the inbound message id) and also marks that message as read as a side-effect.
+- iMessage: Shows a typing bubble for ~15 seconds (1:1 conversations only; requires a recent two-way exchange)
 - All others: Returns 200 but no-op (platform doesn't support it)
 
 Typing indicators are best-effort. The endpoint always returns 200 even if the platform call fails; `success` reports whether a typing indicator was actually sent to the platform (`false` on unsupported platforms or when the platform call failed).
