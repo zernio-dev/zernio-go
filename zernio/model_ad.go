@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -36,16 +36,16 @@ type Ad struct {
 	// Available goals vary by platform. Meta (Facebook/Instagram) supports all 10 (incl. `lead_conversion` = website pixel lead optimization, `catalog_sales` = Advantage+ catalog ads and `page_likes` = Page Likes conversion location under Engagement). TikTok supports engagement, traffic, awareness, video_views, lead_generation, conversions, app_promotion. LinkedIn supports all Meta goals except app_promotion / lead_conversion / catalog_sales / page_likes. X supports engagement, traffic, awareness, video_views, app_promotion. Pinterest supports only engagement, traffic, awareness, video_views. Google Ads supports only engagement, traffic, awareness (video_views is rejected at create with 422 FEATURE_NOT_AVAILABLE).
 	Goal *string `json:"goal,omitempty"`
 	// True for ads synced from platform ad managers
-	IsExternal          *bool             `json:"isExternal,omitempty"`
-	Budget              *AdBudget         `json:"budget,omitempty"`
-	Metrics             NullableAdMetrics `json:"metrics,omitempty"`
-	PlatformAdId        *string           `json:"platformAdId,omitempty"`
-	PlatformAdAccountId *string           `json:"platformAdAccountId,omitempty"`
-	PlatformCampaignId  *string           `json:"platformCampaignId,omitempty"`
-	PlatformAdSetId     *string           `json:"platformAdSetId,omitempty"`
-	CampaignName        *string           `json:"campaignName,omitempty"`
-	AdSetName           *string           `json:"adSetName,omitempty"`
-	// Raw Meta campaign objective (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC). Only present for Meta ads.
+	IsExternal          *bool                                   `json:"isExternal,omitempty"`
+	Budget              *ListAdSets200ResponseAdSetsInnerBudget `json:"budget,omitempty"`
+	Metrics             NullableAdMetrics                       `json:"metrics,omitempty"`
+	PlatformAdId        *string                                 `json:"platformAdId,omitempty"`
+	PlatformAdAccountId *string                                 `json:"platformAdAccountId,omitempty"`
+	PlatformCampaignId  *string                                 `json:"platformCampaignId,omitempty"`
+	PlatformAdSetId     *string                                 `json:"platformAdSetId,omitempty"`
+	CampaignName        *string                                 `json:"campaignName,omitempty"`
+	AdSetName           *string                                 `json:"adSetName,omitempty"`
+	// The platform's own campaign objective, verbatim, alongside the normalized `goal` it maps to. The mapping is many-to-one, so `goal` alone cannot be mapped back to it.  - Meta: campaign `objective` (e.g. OUTCOME_SALES, OUTCOME_LEADS, OUTCOME_TRAFFIC). - LinkedIn: campaign `objectiveType` (e.g. WEBSITE_VISIT, LEAD_GENERATION, BRAND_AWARENESS,   VIDEO_VIEW, ENGAGEMENT, JOB_APPLICANT, WEBSITE_CONVERSION). The list is open, so treat an   unrecognized value as valid rather than an error. - TikTok and Pinterest: their raw objective_type.  Null on platforms that report none, and on LinkedIn ads not yet re-synced.
 	PlatformObjective NullableString `json:"platformObjective,omitempty"`
 	// What the delivery system optimizes for, at ad-set level. The value space depends on `platform`:  - Meta: ad set `optimization_goal` (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION, LINK_CLICKS). - LinkedIn: the campaign's EFFECTIVE `optimizationTargetType`, refreshed from LinkedIn on every   sync rather than echoing what was passed on create. `NONE` means manual bidding, and it is a   real value, not missing data. Auto-bid values are MAX_IMPRESSION / MAX_CLICK / MAX_CONVERSION /   MAX_VIDEO_VIEW / MAX_LEAD / MAX_REACH; target-cost values are TARGET_COST_PER_CLICK /   TARGET_COST_PER_IMPRESSION / TARGET_COST_PER_VIDEO_VIEW; cost-cap values are the   CAP_COST_AND_MAXIMIZE_* family.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
@@ -66,11 +66,11 @@ type Ad struct {
 	PromotedObject   *AdPromotedObject `json:"promotedObject,omitempty"`
 	Creative         *AdCreative       `json:"creative,omitempty"`
 	// The ad set's targeting (age, gender, geo, interests, placements, audience inclusions/exclusions). For ads created through Zernio this is the spec you supplied. For external ads (synced from Meta Ads Manager, `isExternal: true`) targeting lives at the ad set and isn't stored at ingest, so on the first `GET /v1/ads/{adId}` Zernio resolves it live from Meta and caches it on the ad; the value is then Meta's raw `targeting` shape (snake_case, e.g. `geo_locations`, `age_min`), the same object Ads Manager shows. May be absent if the ad set exposes no targeting or the lookup fails.
-	Targeting       map[string]interface{} `json:"targeting,omitempty"`
-	Schedule        *AdSchedule            `json:"schedule,omitempty"`
-	RejectionReason *string                `json:"rejectionReason,omitempty"`
-	CreatedAt       *time.Time             `json:"createdAt,omitempty"`
-	UpdatedAt       *time.Time             `json:"updatedAt,omitempty"`
+	Targeting       map[string]interface{}                    `json:"targeting,omitempty"`
+	Schedule        *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
+	RejectionReason *string                                   `json:"rejectionReason,omitempty"`
+	CreatedAt       *time.Time                                `json:"createdAt,omitempty"`
+	UpdatedAt       *time.Time                                `json:"updatedAt,omitempty"`
 }
 
 // NewAd instantiates a new Ad object
@@ -433,9 +433,9 @@ func (o *Ad) SetIsExternal(v bool) {
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *Ad) GetBudget() AdBudget {
+func (o *Ad) GetBudget() ListAdSets200ResponseAdSetsInnerBudget {
 	if o == nil || IsNil(o.Budget) {
-		var ret AdBudget
+		var ret ListAdSets200ResponseAdSetsInnerBudget
 		return ret
 	}
 	return *o.Budget
@@ -443,7 +443,7 @@ func (o *Ad) GetBudget() AdBudget {
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Ad) GetBudgetOk() (*AdBudget, bool) {
+func (o *Ad) GetBudgetOk() (*ListAdSets200ResponseAdSetsInnerBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
@@ -459,8 +459,8 @@ func (o *Ad) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given AdBudget and assigns it to the Budget field.
-func (o *Ad) SetBudget(v AdBudget) {
+// SetBudget gets a reference to the given ListAdSets200ResponseAdSetsInnerBudget and assigns it to the Budget field.
+func (o *Ad) SetBudget(v ListAdSets200ResponseAdSetsInnerBudget) {
 	o.Budget = &v
 }
 
@@ -1172,9 +1172,9 @@ func (o *Ad) SetTargeting(v map[string]interface{}) {
 }
 
 // GetSchedule returns the Schedule field value if set, zero value otherwise.
-func (o *Ad) GetSchedule() AdSchedule {
+func (o *Ad) GetSchedule() ListAdSets200ResponseAdSetsInnerSchedule {
 	if o == nil || IsNil(o.Schedule) {
-		var ret AdSchedule
+		var ret ListAdSets200ResponseAdSetsInnerSchedule
 		return ret
 	}
 	return *o.Schedule
@@ -1182,7 +1182,7 @@ func (o *Ad) GetSchedule() AdSchedule {
 
 // GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Ad) GetScheduleOk() (*AdSchedule, bool) {
+func (o *Ad) GetScheduleOk() (*ListAdSets200ResponseAdSetsInnerSchedule, bool) {
 	if o == nil || IsNil(o.Schedule) {
 		return nil, false
 	}
@@ -1198,8 +1198,8 @@ func (o *Ad) HasSchedule() bool {
 	return false
 }
 
-// SetSchedule gets a reference to the given AdSchedule and assigns it to the Schedule field.
-func (o *Ad) SetSchedule(v AdSchedule) {
+// SetSchedule gets a reference to the given ListAdSets200ResponseAdSetsInnerSchedule and assigns it to the Schedule field.
+func (o *Ad) SetSchedule(v ListAdSets200ResponseAdSetsInnerSchedule) {
 	o.Schedule = &v
 }
 

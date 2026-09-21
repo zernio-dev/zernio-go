@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type EstimateAdReach200Response struct {
 	Upper NullableInt32 `json:"upper,omitempty"`
 	// Optional estimated daily reach/results at the given budget, when the platform returns it.
 	Daily NullableInt32 `json:"daily,omitempty"`
+	// LinkedIn only. LinkedIn's `audienceCounts.active`, verbatim: the active subset of the same audience `lower`/`upper` carry as its `total`. Absent when LinkedIn does not report it; `0` is a real answer, not a missing one.
+	Active NullableInt32 `json:"active,omitempty"`
 	// Currency of any monetary fields in the estimate, when applicable.
 	Currency NullableString `json:"currency,omitempty"`
 	// Meta only. False when Meta is still computing the estimate (the audience is too new); retry shortly.
@@ -209,6 +211,49 @@ func (o *EstimateAdReach200Response) UnsetDaily() {
 	o.Daily.Unset()
 }
 
+// GetActive returns the Active field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EstimateAdReach200Response) GetActive() int32 {
+	if o == nil || IsNil(o.Active.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.Active.Get()
+}
+
+// GetActiveOk returns a tuple with the Active field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EstimateAdReach200Response) GetActiveOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Active.Get(), o.Active.IsSet()
+}
+
+// HasActive returns a boolean if a field has been set.
+func (o *EstimateAdReach200Response) HasActive() bool {
+	if o != nil && o.Active.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetActive gets a reference to the given NullableInt32 and assigns it to the Active field.
+func (o *EstimateAdReach200Response) SetActive(v int32) {
+	o.Active.Set(&v)
+}
+
+// SetActiveNil sets the value for Active to be an explicit nil
+func (o *EstimateAdReach200Response) SetActiveNil() {
+	o.Active.Set(nil)
+}
+
+// UnsetActive ensures that no value is present for Active, not even an explicit nil
+func (o *EstimateAdReach200Response) UnsetActive() {
+	o.Active.Unset()
+}
+
 // GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EstimateAdReach200Response) GetCurrency() string {
 	if o == nil || IsNil(o.Currency.Get()) {
@@ -314,6 +359,9 @@ func (o EstimateAdReach200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Daily.IsSet() {
 		toSerialize["daily"] = o.Daily.Get()
+	}
+	if o.Active.IsSet() {
+		toSerialize["active"] = o.Active.Get()
 	}
 	if o.Currency.IsSet() {
 		toSerialize["currency"] = o.Currency.Get()

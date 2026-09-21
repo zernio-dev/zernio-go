@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -12,24 +12,30 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the AdBudget type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdBudget{}
 
-// AdBudget struct for AdBudget
+// AdBudget Budget amount in the ad account's native currency (see the campaign's `currency` field for the code).
 type AdBudget struct {
-	Amount *float32 `json:"amount,omitempty"`
-	Type   *string  `json:"type,omitempty"`
+	Amount float32 `json:"amount"`
+	Type   string  `json:"type"`
 }
+
+type _AdBudget AdBudget
 
 // NewAdBudget instantiates a new AdBudget object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAdBudget() *AdBudget {
+func NewAdBudget(amount float32, type_ string) *AdBudget {
 	this := AdBudget{}
+	this.Amount = amount
+	this.Type = type_
 	return &this
 }
 
@@ -41,68 +47,52 @@ func NewAdBudgetWithDefaults() *AdBudget {
 	return &this
 }
 
-// GetAmount returns the Amount field value if set, zero value otherwise.
+// GetAmount returns the Amount field value
 func (o *AdBudget) GetAmount() float32 {
-	if o == nil || IsNil(o.Amount) {
+	if o == nil {
 		var ret float32
 		return ret
 	}
-	return *o.Amount
+
+	return o.Amount
 }
 
-// GetAmountOk returns a tuple with the Amount field value if set, nil otherwise
+// GetAmountOk returns a tuple with the Amount field value
 // and a boolean to check if the value has been set.
 func (o *AdBudget) GetAmountOk() (*float32, bool) {
-	if o == nil || IsNil(o.Amount) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Amount, true
+	return &o.Amount, true
 }
 
-// HasAmount returns a boolean if a field has been set.
-func (o *AdBudget) HasAmount() bool {
-	if o != nil && !IsNil(o.Amount) {
-		return true
-	}
-
-	return false
-}
-
-// SetAmount gets a reference to the given float32 and assigns it to the Amount field.
+// SetAmount sets field value
 func (o *AdBudget) SetAmount(v float32) {
-	o.Amount = &v
+	o.Amount = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *AdBudget) GetType() string {
-	if o == nil || IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *AdBudget) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *AdBudget) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
+// SetType sets field value
 func (o *AdBudget) SetType(v string) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o AdBudget) MarshalJSON() ([]byte, error) {
@@ -115,13 +105,47 @@ func (o AdBudget) MarshalJSON() ([]byte, error) {
 
 func (o AdBudget) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Amount) {
-		toSerialize["amount"] = o.Amount
-	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["amount"] = o.Amount
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
+}
+
+func (o *AdBudget) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"amount",
+		"type",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varAdBudget := _AdBudget{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varAdBudget)
+
+	if err != nil {
+		return err
+	}
+
+	*o = AdBudget(varAdBudget)
+
+	return err
 }
 
 type NullableAdBudget struct {

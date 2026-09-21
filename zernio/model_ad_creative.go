@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -58,6 +58,8 @@ type AdCreative struct {
 	MediaUrls []string `json:"mediaUrls,omitempty"`
 	// LinkedIn only. Whether LinkedIn is currently serving this specific creative. Complements the ad-level `servingStatuses`, which describes the parent campaign.
 	IsServing NullableBool `json:"isServing,omitempty"`
+	// LinkedIn only. The LinkedIn ad format, in LinkedIn's own vocabulary: STANDARD_UPDATE, SINGLE_VIDEO, CAROUSEL, NATIVE_DOCUMENT, EVENT, TEXT_AD, SPOTLIGHT, FOLLOW_COMPANY, JOBS, SPONSORED_INMAILS and others. On an ad Zernio created this is the format it was created as; on an ad synced from Campaign Manager it is the parent campaign's raw `format`, which is what LinkedIn actually enforces on its creatives. The list is open, so treat an unrecognized value as valid. Absent on LinkedIn ads not yet re-synced, and on every other platform.
+	AdFormat NullableString `json:"adFormat,omitempty"`
 	// LinkedIn only. Why this specific creative is not being served. Empty when it is serving. A superset of the ad-level `servingStatuses`: it repeats the inherited campaign, campaign group and account holds AND adds creative-only causes such as UNDER_REVIEW, REJECTED, PROCESSING, PROCESSING_FAILED, FORM_HOLD (lead-gen-form creatives), REFERRED_CONTENT_QUALITY_HOLD, JOB_POSTING_ON_HOLD and JOB_POSTING_INVALID (job ads). Some values are format-specific and will never appear on other ad formats. The list is open, so treat unrecognized values as holds rather than errors.
 	ServingHoldReasons []string `json:"servingHoldReasons,omitempty"`
 	// Ad copy/text
@@ -821,6 +823,49 @@ func (o *AdCreative) UnsetIsServing() {
 	o.IsServing.Unset()
 }
 
+// GetAdFormat returns the AdFormat field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCreative) GetAdFormat() string {
+	if o == nil || IsNil(o.AdFormat.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AdFormat.Get()
+}
+
+// GetAdFormatOk returns a tuple with the AdFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCreative) GetAdFormatOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AdFormat.Get(), o.AdFormat.IsSet()
+}
+
+// HasAdFormat returns a boolean if a field has been set.
+func (o *AdCreative) HasAdFormat() bool {
+	if o != nil && o.AdFormat.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAdFormat gets a reference to the given NullableString and assigns it to the AdFormat field.
+func (o *AdCreative) SetAdFormat(v string) {
+	o.AdFormat.Set(&v)
+}
+
+// SetAdFormatNil sets the value for AdFormat to be an explicit nil
+func (o *AdCreative) SetAdFormatNil() {
+	o.AdFormat.Set(nil)
+}
+
+// UnsetAdFormat ensures that no value is present for AdFormat, not even an explicit nil
+func (o *AdCreative) UnsetAdFormat() {
+	o.AdFormat.Unset()
+}
+
 // GetServingHoldReasons returns the ServingHoldReasons field value if set, zero value otherwise.
 func (o *AdCreative) GetServingHoldReasons() []string {
 	if o == nil || IsNil(o.ServingHoldReasons) {
@@ -1175,6 +1220,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if o.IsServing.IsSet() {
 		toSerialize["isServing"] = o.IsServing.Get()
+	}
+	if o.AdFormat.IsSet() {
+		toSerialize["adFormat"] = o.AdFormat.Get()
 	}
 	if !IsNil(o.ServingHoldReasons) {
 		toSerialize["servingHoldReasons"] = o.ServingHoldReasons

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -21,19 +21,21 @@ var _ MappedNullable = &ListAdSets200ResponseAdSetsInner{}
 
 // ListAdSets200ResponseAdSetsInner struct for ListAdSets200ResponseAdSetsInner
 type ListAdSets200ResponseAdSetsInner struct {
-	PlatformAdSetId     *string                `json:"platformAdSetId,omitempty"`
-	Platform            *string                `json:"platform,omitempty"`
-	AdSetName           NullableString         `json:"adSetName,omitempty"`
-	Status              NullableString         `json:"status,omitempty"`
-	PlatformAdSetStatus NullableString         `json:"platformAdSetStatus,omitempty"`
-	PlatformCampaignId  NullableString         `json:"platformCampaignId,omitempty"`
-	PlatformAdAccountId *string                `json:"platformAdAccountId,omitempty"`
-	AccountId           NullableString         `json:"accountId,omitempty"`
-	ProfileId           *string                `json:"profileId,omitempty"`
-	Currency            NullableString         `json:"currency,omitempty"`
-	Budget              map[string]interface{} `json:"budget,omitempty"`
-	IsExternal          NullableBool           `json:"isExternal,omitempty"`
-	PlatformCreatedAt   NullableTime           `json:"platformCreatedAt,omitempty"`
+	PlatformAdSetId     *string                                    `json:"platformAdSetId,omitempty"`
+	Platform            *string                                    `json:"platform,omitempty"`
+	AdSetName           NullableString                             `json:"adSetName,omitempty"`
+	Status              NullableString                             `json:"status,omitempty"`
+	PlatformAdSetStatus NullableString                             `json:"platformAdSetStatus,omitempty"`
+	PlatformCampaignId  NullableString                             `json:"platformCampaignId,omitempty"`
+	PlatformAdAccountId *string                                    `json:"platformAdAccountId,omitempty"`
+	AccountId           NullableString                             `json:"accountId,omitempty"`
+	ProfileId           *string                                    `json:"profileId,omitempty"`
+	Currency            NullableString                             `json:"currency,omitempty"`
+	Budget              *ListAdSets200ResponseAdSetsInnerBudget    `json:"budget,omitempty"`
+	Schedule            *ListAdSets200ResponseAdSetsInnerSchedule  `json:"schedule,omitempty"`
+	Targeting           *ListAdSets200ResponseAdSetsInnerTargeting `json:"targeting,omitempty"`
+	IsExternal          NullableBool                               `json:"isExternal,omitempty"`
+	PlatformCreatedAt   NullableTime                               `json:"platformCreatedAt,omitempty"`
 }
 
 // NewListAdSets200ResponseAdSetsInner instantiates a new ListAdSets200ResponseAdSetsInner object
@@ -439,21 +441,20 @@ func (o *ListAdSets200ResponseAdSetsInner) UnsetCurrency() {
 	o.Currency.Unset()
 }
 
-// GetBudget returns the Budget field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ListAdSets200ResponseAdSetsInner) GetBudget() map[string]interface{} {
-	if o == nil {
-		var ret map[string]interface{}
+// GetBudget returns the Budget field value if set, zero value otherwise.
+func (o *ListAdSets200ResponseAdSetsInner) GetBudget() ListAdSets200ResponseAdSetsInnerBudget {
+	if o == nil || IsNil(o.Budget) {
+		var ret ListAdSets200ResponseAdSetsInnerBudget
 		return ret
 	}
-	return o.Budget
+	return *o.Budget
 }
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ListAdSets200ResponseAdSetsInner) GetBudgetOk() (map[string]interface{}, bool) {
+func (o *ListAdSets200ResponseAdSetsInner) GetBudgetOk() (*ListAdSets200ResponseAdSetsInnerBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Budget, true
 }
@@ -467,9 +468,73 @@ func (o *ListAdSets200ResponseAdSetsInner) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given map[string]interface{} and assigns it to the Budget field.
-func (o *ListAdSets200ResponseAdSetsInner) SetBudget(v map[string]interface{}) {
-	o.Budget = v
+// SetBudget gets a reference to the given ListAdSets200ResponseAdSetsInnerBudget and assigns it to the Budget field.
+func (o *ListAdSets200ResponseAdSetsInner) SetBudget(v ListAdSets200ResponseAdSetsInnerBudget) {
+	o.Budget = &v
+}
+
+// GetSchedule returns the Schedule field value if set, zero value otherwise.
+func (o *ListAdSets200ResponseAdSetsInner) GetSchedule() ListAdSets200ResponseAdSetsInnerSchedule {
+	if o == nil || IsNil(o.Schedule) {
+		var ret ListAdSets200ResponseAdSetsInnerSchedule
+		return ret
+	}
+	return *o.Schedule
+}
+
+// GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdSets200ResponseAdSetsInner) GetScheduleOk() (*ListAdSets200ResponseAdSetsInnerSchedule, bool) {
+	if o == nil || IsNil(o.Schedule) {
+		return nil, false
+	}
+	return o.Schedule, true
+}
+
+// HasSchedule returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasSchedule() bool {
+	if o != nil && !IsNil(o.Schedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedule gets a reference to the given ListAdSets200ResponseAdSetsInnerSchedule and assigns it to the Schedule field.
+func (o *ListAdSets200ResponseAdSetsInner) SetSchedule(v ListAdSets200ResponseAdSetsInnerSchedule) {
+	o.Schedule = &v
+}
+
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *ListAdSets200ResponseAdSetsInner) GetTargeting() ListAdSets200ResponseAdSetsInnerTargeting {
+	if o == nil || IsNil(o.Targeting) {
+		var ret ListAdSets200ResponseAdSetsInnerTargeting
+		return ret
+	}
+	return *o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdSets200ResponseAdSetsInner) GetTargetingOk() (*ListAdSets200ResponseAdSetsInnerTargeting, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return nil, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given ListAdSets200ResponseAdSetsInnerTargeting and assigns it to the Targeting field.
+func (o *ListAdSets200ResponseAdSetsInner) SetTargeting(v ListAdSets200ResponseAdSetsInnerTargeting) {
+	o.Targeting = &v
 }
 
 // GetIsExternal returns the IsExternal field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -598,8 +663,14 @@ func (o ListAdSets200ResponseAdSetsInner) ToMap() (map[string]interface{}, error
 	if o.Currency.IsSet() {
 		toSerialize["currency"] = o.Currency.Get()
 	}
-	if o.Budget != nil {
+	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
+	}
+	if !IsNil(o.Schedule) {
+		toSerialize["schedule"] = o.Schedule
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
 	}
 	if o.IsExternal.IsSet() {
 		toSerialize["isExternal"] = o.IsExternal.Get()

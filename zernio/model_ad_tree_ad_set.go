@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -26,11 +26,11 @@ type AdTreeAdSet struct {
 	// Derived from child ad statuses
 	Status *AdStatus `json:"status,omitempty"`
 	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across this ad set's ads. Not the ad set's own creation time on the platform, but a proxy usable for sorting.
-	CreatedTime NullableTime `json:"createdTime,omitempty"`
-	AdCount     *int32       `json:"adCount,omitempty"`
-	Budget      *AdBudget    `json:"budget,omitempty"`
-	AdSetBudget *AdBudget    `json:"adSetBudget,omitempty"`
-	Metrics     *AdMetrics   `json:"metrics,omitempty"`
+	CreatedTime NullableTime                            `json:"createdTime,omitempty"`
+	AdCount     *int32                                  `json:"adCount,omitempty"`
+	Budget      *ListAdSets200ResponseAdSetsInnerBudget `json:"budget,omitempty"`
+	AdSetBudget *ListAdSets200ResponseAdSetsInnerBudget `json:"adSetBudget,omitempty"`
+	Metrics     *AdMetrics                              `json:"metrics,omitempty"`
 	// What the delivery system optimizes for. Meta ad set optimization goal (e.g. OFFSITE_CONVERSIONS, VALUE, LEAD_GENERATION), or on LinkedIn the campaign's effective optimizationTargetType (NONE means manual bidding). See the `optimizationGoal` field on `Ad` for the full value spaces.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
 	// Bid strategy for this ad set (overrides campaign level when set). Meta and TikTok only; LinkedIn uses `costType` instead.
@@ -239,9 +239,9 @@ func (o *AdTreeAdSet) SetAdCount(v int32) {
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *AdTreeAdSet) GetBudget() AdBudget {
+func (o *AdTreeAdSet) GetBudget() ListAdSets200ResponseAdSetsInnerBudget {
 	if o == nil || IsNil(o.Budget) {
-		var ret AdBudget
+		var ret ListAdSets200ResponseAdSetsInnerBudget
 		return ret
 	}
 	return *o.Budget
@@ -249,7 +249,7 @@ func (o *AdTreeAdSet) GetBudget() AdBudget {
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdTreeAdSet) GetBudgetOk() (*AdBudget, bool) {
+func (o *AdTreeAdSet) GetBudgetOk() (*ListAdSets200ResponseAdSetsInnerBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
@@ -265,15 +265,15 @@ func (o *AdTreeAdSet) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given AdBudget and assigns it to the Budget field.
-func (o *AdTreeAdSet) SetBudget(v AdBudget) {
+// SetBudget gets a reference to the given ListAdSets200ResponseAdSetsInnerBudget and assigns it to the Budget field.
+func (o *AdTreeAdSet) SetBudget(v ListAdSets200ResponseAdSetsInnerBudget) {
 	o.Budget = &v
 }
 
 // GetAdSetBudget returns the AdSetBudget field value if set, zero value otherwise.
-func (o *AdTreeAdSet) GetAdSetBudget() AdBudget {
+func (o *AdTreeAdSet) GetAdSetBudget() ListAdSets200ResponseAdSetsInnerBudget {
 	if o == nil || IsNil(o.AdSetBudget) {
-		var ret AdBudget
+		var ret ListAdSets200ResponseAdSetsInnerBudget
 		return ret
 	}
 	return *o.AdSetBudget
@@ -281,7 +281,7 @@ func (o *AdTreeAdSet) GetAdSetBudget() AdBudget {
 
 // GetAdSetBudgetOk returns a tuple with the AdSetBudget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdTreeAdSet) GetAdSetBudgetOk() (*AdBudget, bool) {
+func (o *AdTreeAdSet) GetAdSetBudgetOk() (*ListAdSets200ResponseAdSetsInnerBudget, bool) {
 	if o == nil || IsNil(o.AdSetBudget) {
 		return nil, false
 	}
@@ -297,8 +297,8 @@ func (o *AdTreeAdSet) HasAdSetBudget() bool {
 	return false
 }
 
-// SetAdSetBudget gets a reference to the given AdBudget and assigns it to the AdSetBudget field.
-func (o *AdTreeAdSet) SetAdSetBudget(v AdBudget) {
+// SetAdSetBudget gets a reference to the given ListAdSets200ResponseAdSetsInnerBudget and assigns it to the AdSetBudget field.
+func (o *AdTreeAdSet) SetAdSetBudget(v ListAdSets200ResponseAdSetsInnerBudget) {
 	o.AdSetBudget = &v
 }
 

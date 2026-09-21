@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,8 @@ type CampaignAnalyticsResponseAnalytics struct {
 	Summary              *CampaignAnalyticsResponseAnalyticsSummary              `json:"summary,omitempty"`
 	ImpressionShareCache *CampaignAnalyticsResponseAnalyticsImpressionShareCache `json:"impressionShareCache,omitempty"`
 	Daily                []CampaignAnalyticsResponseAnalyticsDailyInner          `json:"daily,omitempty"`
-	Breakdowns           map[string][]map[string]interface{}                     `json:"breakdowns,omitempty"`
+	// Requested demographic breakdowns, keyed by dimension. Fetched live from the platform per request and never stored, so these rows can carry fields the stored `summary` and `daily` series do not.  LinkedIn rows carry `value` (the pivot URN), `name` (resolved label where LinkedIn provides one), the usual spend/impressions/clicks/ctr/cpc/cpm/engagement figures, plus two reach fields:  - `reach`: the segment's `approximateMemberReach`. - `audiencePenetration`: LinkedIn's own ratio of members reached to the size of   the targeted audience, passed through verbatim.  LinkedIn withholds both below its audience privacy threshold, in which case the keys are ABSENT rather than 0. `audiencePenetration` is available here only: it is not part of the stored metrics series.
+	Breakdowns map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
 }
 
 // NewCampaignAnalyticsResponseAnalytics instantiates a new CampaignAnalyticsResponseAnalytics object

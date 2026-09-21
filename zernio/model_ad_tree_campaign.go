@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.25.1
+API version: 1.26.0
 Contact: support@zernio.com
 */
 
@@ -35,10 +35,10 @@ type AdTreeCampaign struct {
 	// Platform-reported campaign issues (Meta `issues_info[]`). Populated only when the platform has delivery issues to report; contains the specific error codes and messages.
 	CampaignIssuesInfo []map[string]interface{} `json:"campaignIssuesInfo,omitempty"`
 	// Total ads across all ad sets
-	AdCount        *int32    `json:"adCount,omitempty"`
-	AdSetCount     *int32    `json:"adSetCount,omitempty"`
-	Budget         *AdBudget `json:"budget,omitempty"`
-	CampaignBudget *AdBudget `json:"campaignBudget,omitempty"`
+	AdCount        *int32                `json:"adCount,omitempty"`
+	AdSetCount     *int32                `json:"adSetCount,omitempty"`
+	Budget         *AdTreeCampaignBudget `json:"budget,omitempty"`
+	CampaignBudget *AdTreeCampaignBudget `json:"campaignBudget,omitempty"`
 	// Canonical CBO/ABO indicator. `campaign` = CBO (Advantage Campaign Budget, budget lives on the campaign). `adset` = ABO (budget lives on each ad set). Route budget updates to the matching Meta entity.
 	BudgetLevel NullableString `json:"budgetLevel,omitempty"`
 	// Meta-only. Mirrors Campaign.is_budget_schedule_enabled: true when the campaign uses budget scheduling (time-based budget changes). Independent of CBO/ABO.
@@ -444,9 +444,9 @@ func (o *AdTreeCampaign) SetAdSetCount(v int32) {
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *AdTreeCampaign) GetBudget() AdBudget {
+func (o *AdTreeCampaign) GetBudget() AdTreeCampaignBudget {
 	if o == nil || IsNil(o.Budget) {
-		var ret AdBudget
+		var ret AdTreeCampaignBudget
 		return ret
 	}
 	return *o.Budget
@@ -454,7 +454,7 @@ func (o *AdTreeCampaign) GetBudget() AdBudget {
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdTreeCampaign) GetBudgetOk() (*AdBudget, bool) {
+func (o *AdTreeCampaign) GetBudgetOk() (*AdTreeCampaignBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
@@ -470,15 +470,15 @@ func (o *AdTreeCampaign) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given AdBudget and assigns it to the Budget field.
-func (o *AdTreeCampaign) SetBudget(v AdBudget) {
+// SetBudget gets a reference to the given AdTreeCampaignBudget and assigns it to the Budget field.
+func (o *AdTreeCampaign) SetBudget(v AdTreeCampaignBudget) {
 	o.Budget = &v
 }
 
 // GetCampaignBudget returns the CampaignBudget field value if set, zero value otherwise.
-func (o *AdTreeCampaign) GetCampaignBudget() AdBudget {
+func (o *AdTreeCampaign) GetCampaignBudget() AdTreeCampaignBudget {
 	if o == nil || IsNil(o.CampaignBudget) {
-		var ret AdBudget
+		var ret AdTreeCampaignBudget
 		return ret
 	}
 	return *o.CampaignBudget
@@ -486,7 +486,7 @@ func (o *AdTreeCampaign) GetCampaignBudget() AdBudget {
 
 // GetCampaignBudgetOk returns a tuple with the CampaignBudget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AdTreeCampaign) GetCampaignBudgetOk() (*AdBudget, bool) {
+func (o *AdTreeCampaign) GetCampaignBudgetOk() (*AdTreeCampaignBudget, bool) {
 	if o == nil || IsNil(o.CampaignBudget) {
 		return nil, false
 	}
@@ -502,8 +502,8 @@ func (o *AdTreeCampaign) HasCampaignBudget() bool {
 	return false
 }
 
-// SetCampaignBudget gets a reference to the given AdBudget and assigns it to the CampaignBudget field.
-func (o *AdTreeCampaign) SetCampaignBudget(v AdBudget) {
+// SetCampaignBudget gets a reference to the given AdTreeCampaignBudget and assigns it to the CampaignBudget field.
+func (o *AdTreeCampaign) SetCampaignBudget(v AdTreeCampaignBudget) {
 	o.CampaignBudget = &v
 }
 
