@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.28.0
+API version: 1.29.0
 Contact: support@zernio.com
 */
 
@@ -50,6 +50,8 @@ type AnalyticsDeltaEntryMetrics struct {
 	ImpressionSources map[string]float32 `json:"impressionSources"`
 	// TikTok business lane: follower / nonFollower and newViewer / returnViewer shares, fractions 0 to 1. Empty object elsewhere.
 	AudienceTypes map[string]float32 `json:"audienceTypes"`
+	// TikTok business lane: viewer-country shares keyed by ISO-3166 alpha-2, fractions 0 to 1, top 20 with the tail in `other`. Empty object elsewhere.
+	AudienceCountries map[string]float32 `json:"audienceCountries"`
 }
 
 type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
@@ -58,7 +60,7 @@ type _AnalyticsDeltaEntryMetrics AnalyticsDeltaEntryMetrics
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32, completionRate float32, profileViews int32, websiteClicks int32, impressionSources map[string]float32, audienceTypes map[string]float32) *AnalyticsDeltaEntryMetrics {
+func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, comments int32, shares int32, saves int32, sends int32, clicks int32, views int32, follows int32, igReelsAvgWatchTime int32, igReelsVideoViewTotalTime int32, reposts int32, reelsSkipRate float32, completionRate float32, profileViews int32, websiteClicks int32, impressionSources map[string]float32, audienceTypes map[string]float32, audienceCountries map[string]float32) *AnalyticsDeltaEntryMetrics {
 	this := AnalyticsDeltaEntryMetrics{}
 	this.Impressions = impressions
 	this.Reach = reach
@@ -79,6 +81,7 @@ func NewAnalyticsDeltaEntryMetrics(impressions int32, reach int32, likes int32, 
 	this.WebsiteClicks = websiteClicks
 	this.ImpressionSources = impressionSources
 	this.AudienceTypes = audienceTypes
+	this.AudienceCountries = audienceCountries
 	return &this
 }
 
@@ -546,6 +549,30 @@ func (o *AnalyticsDeltaEntryMetrics) SetAudienceTypes(v map[string]float32) {
 	o.AudienceTypes = v
 }
 
+// GetAudienceCountries returns the AudienceCountries field value
+func (o *AnalyticsDeltaEntryMetrics) GetAudienceCountries() map[string]float32 {
+	if o == nil {
+		var ret map[string]float32
+		return ret
+	}
+
+	return o.AudienceCountries
+}
+
+// GetAudienceCountriesOk returns a tuple with the AudienceCountries field value
+// and a boolean to check if the value has been set.
+func (o *AnalyticsDeltaEntryMetrics) GetAudienceCountriesOk() (map[string]float32, bool) {
+	if o == nil {
+		return map[string]float32{}, false
+	}
+	return o.AudienceCountries, true
+}
+
+// SetAudienceCountries sets field value
+func (o *AnalyticsDeltaEntryMetrics) SetAudienceCountries(v map[string]float32) {
+	o.AudienceCountries = v
+}
+
 func (o AnalyticsDeltaEntryMetrics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -575,6 +602,7 @@ func (o AnalyticsDeltaEntryMetrics) ToMap() (map[string]interface{}, error) {
 	toSerialize["websiteClicks"] = o.WebsiteClicks
 	toSerialize["impressionSources"] = o.ImpressionSources
 	toSerialize["audienceTypes"] = o.AudienceTypes
+	toSerialize["audienceCountries"] = o.AudienceCountries
 	return toSerialize, nil
 }
 
@@ -602,6 +630,7 @@ func (o *AnalyticsDeltaEntryMetrics) UnmarshalJSON(data []byte) (err error) {
 		"websiteClicks",
 		"impressionSources",
 		"audienceTypes",
+		"audienceCountries",
 	}
 
 	allProperties := make(map[string]interface{})

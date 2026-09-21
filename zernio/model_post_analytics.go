@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.28.0
+API version: 1.29.0
 Contact: support@zernio.com
 */
 
@@ -48,6 +48,8 @@ type PostAnalytics struct {
 	ImpressionSources map[string]float32 `json:"impressionSources,omitempty"`
 	// TikTok accounts connected through the TikTok for Business app only: two viewer splits as fractions 0 to 1 (T+24-48h). Each pair sums to 1 when present, `follower` + `nonFollower` and `newViewer` + `returnViewer`; TikTok can report one pair without the other. Empty object when TikTok reports nothing, and for other platforms. Views-weighted across accounts like impressionSources.
 	AudienceTypes map[string]float32 `json:"audienceTypes,omitempty"`
+	// TikTok accounts connected through the TikTok for Business app only: share of views by viewer country as fractions 0 to 1, keyed by upper-case ISO-3166 alpha-2 code (T+24-48h, only for posts active in the last 7 days). At most 20 country keys plus `other`: the catch-all bucket TikTok sends, any country below 0.001 and anything past the twentieth all sum into `other`, so the values still add up to 1. Empty object when TikTok reports nothing, and for other platforms. Views-weighted across accounts like impressionSources.
+	AudienceCountries map[string]float32 `json:"audienceCountries,omitempty"`
 	// Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
 	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
@@ -629,6 +631,38 @@ func (o *PostAnalytics) SetAudienceTypes(v map[string]float32) {
 	o.AudienceTypes = v
 }
 
+// GetAudienceCountries returns the AudienceCountries field value if set, zero value otherwise.
+func (o *PostAnalytics) GetAudienceCountries() map[string]float32 {
+	if o == nil || IsNil(o.AudienceCountries) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.AudienceCountries
+}
+
+// GetAudienceCountriesOk returns a tuple with the AudienceCountries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetAudienceCountriesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.AudienceCountries) {
+		return map[string]float32{}, false
+	}
+	return o.AudienceCountries, true
+}
+
+// HasAudienceCountries returns a boolean if a field has been set.
+func (o *PostAnalytics) HasAudienceCountries() bool {
+	if o != nil && !IsNil(o.AudienceCountries) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceCountries gets a reference to the given map[string]float32 and assigns it to the AudienceCountries field.
+func (o *PostAnalytics) SetAudienceCountries(v map[string]float32) {
+	o.AudienceCountries = v
+}
+
 // GetReposts returns the Reposts field value if set, zero value otherwise.
 func (o *PostAnalytics) GetReposts() int32 {
 	if o == nil || IsNil(o.Reposts) {
@@ -828,6 +862,9 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudienceTypes) {
 		toSerialize["audienceTypes"] = o.AudienceTypes
+	}
+	if !IsNil(o.AudienceCountries) {
+		toSerialize["audienceCountries"] = o.AudienceCountries
 	}
 	if !IsNil(o.Reposts) {
 		toSerialize["reposts"] = o.Reposts

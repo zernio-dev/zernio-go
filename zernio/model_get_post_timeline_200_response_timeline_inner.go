@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.28.0
+API version: 1.29.0
 Contact: support@zernio.com
 */
 
@@ -54,6 +54,8 @@ type GetPostTimeline200ResponseTimelineInner struct {
 	ImpressionSources map[string]float32 `json:"impressionSources,omitempty"`
 	// TikTok business lane: follower / nonFollower and newViewer / returnViewer shares on this date, fractions 0 to 1; empty object elsewhere
 	AudienceTypes map[string]float32 `json:"audienceTypes,omitempty"`
+	// TikTok business lane: viewer-country shares on this date keyed by ISO-3166 alpha-2, fractions 0 to 1, top 20 with the tail in `other`; empty object elsewhere
+	AudienceCountries map[string]float32 `json:"audienceCountries,omitempty"`
 }
 
 // NewGetPostTimeline200ResponseTimelineInner instantiates a new GetPostTimeline200ResponseTimelineInner object
@@ -617,6 +619,38 @@ func (o *GetPostTimeline200ResponseTimelineInner) SetAudienceTypes(v map[string]
 	o.AudienceTypes = v
 }
 
+// GetAudienceCountries returns the AudienceCountries field value if set, zero value otherwise.
+func (o *GetPostTimeline200ResponseTimelineInner) GetAudienceCountries() map[string]float32 {
+	if o == nil || IsNil(o.AudienceCountries) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.AudienceCountries
+}
+
+// GetAudienceCountriesOk returns a tuple with the AudienceCountries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) GetAudienceCountriesOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.AudienceCountries) {
+		return map[string]float32{}, false
+	}
+	return o.AudienceCountries, true
+}
+
+// HasAudienceCountries returns a boolean if a field has been set.
+func (o *GetPostTimeline200ResponseTimelineInner) HasAudienceCountries() bool {
+	if o != nil && !IsNil(o.AudienceCountries) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceCountries gets a reference to the given map[string]float32 and assigns it to the AudienceCountries field.
+func (o *GetPostTimeline200ResponseTimelineInner) SetAudienceCountries(v map[string]float32) {
+	o.AudienceCountries = v
+}
+
 func (o GetPostTimeline200ResponseTimelineInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -677,6 +711,9 @@ func (o GetPostTimeline200ResponseTimelineInner) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.AudienceTypes) {
 		toSerialize["audienceTypes"] = o.AudienceTypes
+	}
+	if !IsNil(o.AudienceCountries) {
+		toSerialize["audienceCountries"] = o.AudienceCountries
 	}
 	return toSerialize, nil
 }

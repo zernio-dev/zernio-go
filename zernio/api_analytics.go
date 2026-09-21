@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.28.0
+API version: 1.29.0
 Contact: support@zernio.com
 */
 
@@ -3925,19 +3925,23 @@ Response shape matches /v1/analytics/instagram/account-insights. Max 89 days,
 defaults to last 30 days. Requires the Analytics add-on and the user.info.stats
 scope on the account (412 if missing).
 
-Scope intentionally narrow. TikTok's public API exposes only the four counter
-metrics below. The deep metrics that live in TikTok Studio are NOT available on any
-public TikTok API, even for Business accounts:
-  - profile_views
+Scope intentionally narrow: this ACCOUNT-level endpoint exposes only the four
+counter metrics below. These account-level figures are not on any public TikTok
+API, for any account type:
   - account-level impressions / reach
   - follower inflow / outflow breakdown
-  - video watch time, average watch time, full-watched rate
-  - impression_sources (FYP / Following / Hashtag / Search / Personal profile)
+  - account-level watch time and audience demographics
 
-TikTok's Research API doesn't expose those fields either, and is restricted to
-non-commercial academic use per TikTok's eligibility policy. There is no public
-API workaround. Post-level metrics (views, likes, comments, shares per video) are
-available via /v1/analytics?postId=... from TikTok's /v2/video/query/.
+TikTok's Research API doesn't expose them either, and is restricted to
+non-commercial academic use per TikTok's eligibility policy.
+
+PER-VIDEO is a different story on the Business lane. An account connected through
+the TikTok for Business app reports profile views, website clicks, follows,
+full-watched rate, watch time, impression sources, viewer types and viewer
+countries per video on GET /v1/analytics?postId=..., roughly 24-48h after
+publishing and only for posts active in the last 7 days. Accounts on the original
+TikTok integration get the basic counters there (views, likes, comments, shares)
+and zeros for the rest; they must reconnect through the Business app.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AnalyticsAPIGetTikTokAccountInsightsRequest
