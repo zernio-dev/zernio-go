@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.30.0
+API version: 1.31.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,9 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 	// Meta only. Minimum daily budget for the account, in the account currency's major units. This is the impressions-billed minimum; other billing events have higher minimums. Absent when the connected token cannot read it.
 	MinimumDailyBudget *float32 `json:"minimumDailyBudget,omitempty"`
+	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT when this connection's token cannot see billing on the account, which is not the same as the account having no payment method: never read the missing key as `no payment method configured`.
+	FundingSource        *string                                                     `json:"fundingSource,omitempty"`
+	FundingSourceDetails *ListAdAccounts200ResponseAccountsInnerFundingSourceDetails `json:"fundingSourceDetails,omitempty"`
 	// Meta and X only. Whether the account can create/run ads now. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta and X only. Human-readable reason when selectable is false; null when selectable.
@@ -449,6 +452,70 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetMinimumDailyBudget(v float32
 	o.MinimumDailyBudget = &v
 }
 
+// GetFundingSource returns the FundingSource field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetFundingSource() string {
+	if o == nil || IsNil(o.FundingSource) {
+		var ret string
+		return ret
+	}
+	return *o.FundingSource
+}
+
+// GetFundingSourceOk returns a tuple with the FundingSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetFundingSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.FundingSource) {
+		return nil, false
+	}
+	return o.FundingSource, true
+}
+
+// HasFundingSource returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasFundingSource() bool {
+	if o != nil && !IsNil(o.FundingSource) {
+		return true
+	}
+
+	return false
+}
+
+// SetFundingSource gets a reference to the given string and assigns it to the FundingSource field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetFundingSource(v string) {
+	o.FundingSource = &v
+}
+
+// GetFundingSourceDetails returns the FundingSourceDetails field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetFundingSourceDetails() ListAdAccounts200ResponseAccountsInnerFundingSourceDetails {
+	if o == nil || IsNil(o.FundingSourceDetails) {
+		var ret ListAdAccounts200ResponseAccountsInnerFundingSourceDetails
+		return ret
+	}
+	return *o.FundingSourceDetails
+}
+
+// GetFundingSourceDetailsOk returns a tuple with the FundingSourceDetails field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetFundingSourceDetailsOk() (*ListAdAccounts200ResponseAccountsInnerFundingSourceDetails, bool) {
+	if o == nil || IsNil(o.FundingSourceDetails) {
+		return nil, false
+	}
+	return o.FundingSourceDetails, true
+}
+
+// HasFundingSourceDetails returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasFundingSourceDetails() bool {
+	if o != nil && !IsNil(o.FundingSourceDetails) {
+		return true
+	}
+
+	return false
+}
+
+// SetFundingSourceDetails gets a reference to the given ListAdAccounts200ResponseAccountsInnerFundingSourceDetails and assigns it to the FundingSourceDetails field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetFundingSourceDetails(v ListAdAccounts200ResponseAccountsInnerFundingSourceDetails) {
+	o.FundingSourceDetails = &v
+}
+
 // GetSelectable returns the Selectable field value if set, zero value otherwise.
 func (o *ListAdAccounts200ResponseAccountsInner) GetSelectable() bool {
 	if o == nil || IsNil(o.Selectable) {
@@ -569,6 +636,12 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.MinimumDailyBudget) {
 		toSerialize["minimumDailyBudget"] = o.MinimumDailyBudget
+	}
+	if !IsNil(o.FundingSource) {
+		toSerialize["fundingSource"] = o.FundingSource
+	}
+	if !IsNil(o.FundingSourceDetails) {
+		toSerialize["fundingSourceDetails"] = o.FundingSourceDetails
 	}
 	if !IsNil(o.Selectable) {
 		toSerialize["selectable"] = o.Selectable
