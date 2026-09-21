@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.32.1
+API version: 1.33.0
 Contact: support@zernio.com
 */
 
@@ -152,6 +152,8 @@ type CreateStandaloneAdRequest struct {
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Meta only. Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already available on `POST /v1/ads/boost`.)
 	StartDate *time.Time `json:"startDate,omitempty"`
+	// Meta only. The Facebook Page the ad runs as (`object_story_spec.page_id`). Defaults to the Page bound to the connection. Pass another Page ID to run the ad as that Page: any Page granted to the connection is accepted (for a business-login connection, every Page granted in Meta's dialog; list them with GET /v1/ads/instagram-accounts). The Instagram identity is re-resolved for that Page unless `instagramAccountId` is set. A Page the connection cannot see is a 400 on `pageId` naming the granted Pages.
+	PageId *string `json:"pageId,omitempty"`
 	// Meta only. Override the Instagram account the ad is delivered as. Pass an Instagram Business Account ID (e.g. 17841...), mapped to the creative's `instagram_user_id`. When omitted we use the Instagram actor Meta already runs the Page's other ads as, falling back to the Page's page-backed Instagram account. Useful when a Page has more than one eligible IG account.
 	InstagramAccountId *string                                   `json:"instagramAccountId,omitempty"`
 	DynamicCreative    *CreateStandaloneAdRequestDynamicCreative `json:"dynamicCreative,omitempty"`
@@ -2450,6 +2452,38 @@ func (o *CreateStandaloneAdRequest) SetStartDate(v time.Time) {
 	o.StartDate = &v
 }
 
+// GetPageId returns the PageId field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetPageId() string {
+	if o == nil || IsNil(o.PageId) {
+		var ret string
+		return ret
+	}
+	return *o.PageId
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetPageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PageId) {
+		return nil, false
+	}
+	return o.PageId, true
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasPageId() bool {
+	if o != nil && !IsNil(o.PageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given string and assigns it to the PageId field.
+func (o *CreateStandaloneAdRequest) SetPageId(v string) {
+	o.PageId = &v
+}
+
 // GetInstagramAccountId returns the InstagramAccountId field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetInstagramAccountId() string {
 	if o == nil || IsNil(o.InstagramAccountId) {
@@ -3885,6 +3919,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.StartDate) {
 		toSerialize["startDate"] = o.StartDate
+	}
+	if !IsNil(o.PageId) {
+		toSerialize["pageId"] = o.PageId
 	}
 	if !IsNil(o.InstagramAccountId) {
 		toSerialize["instagramAccountId"] = o.InstagramAccountId
