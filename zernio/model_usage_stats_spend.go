@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.32.0
+API version: 1.32.1
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type UsageStatsSpend struct {
 	CreditsRemainingCents *int32 `json:"creditsRemainingCents,omitempty"`
 	// Current-period X API spend in cents, summed from `xApiCallsByOperation` × per-operation prices. Tier-agnostic (covers every price including the $0.200 URL tier). Rounded up for conservative enforcement against `xSpendLimitCents`.
 	XSpendCents *int32 `json:"xSpendCents,omitempty"`
-	// Monthly X spend cap set by the account owner, or null if no cap. When current X spend hits this cap, analytics and inbox sync are auto-paused for X accounts. Publishing is never blocked by this cap.
+	// Monthly X spend cap set by the account owner, or null if no cap. When current X spend hits this cap, all billable X API activity is paused until the billing period resets or the cap is raised, including publishing, analytics and inbox sync, and likes, reposts and follows.
 	XSpendLimitCents NullableInt32 `json:"xSpendLimitCents,omitempty"`
 }
 
