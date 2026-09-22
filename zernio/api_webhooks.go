@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.43.0
+API version: 1.44.0
 Contact: support@zernio.com
 */
 
@@ -173,10 +173,18 @@ func (a *WebhooksAPIService) CreateWebhookSettingsExecute(r WebhooksAPICreateWeb
 type WebhooksAPIDeleteWebhookSettingsRequest struct {
 	ctx        context.Context
 	ApiService *WebhooksAPIService
+	webhookId  *string
 	id         *string
 }
 
-// Webhook ID to delete
+// Webhook ID to delete, the same name the other /v1/webhooks operations use (logs, redeliver, test). Required unless the deprecated &#x60;id&#x60; is sent instead.
+func (r WebhooksAPIDeleteWebhookSettingsRequest) WebhookId(webhookId string) WebhooksAPIDeleteWebhookSettingsRequest {
+	r.webhookId = &webhookId
+	return r
+}
+
+// Alias of webhookId, kept for existing callers
+// Deprecated
 func (r WebhooksAPIDeleteWebhookSettingsRequest) Id(id string) WebhooksAPIDeleteWebhookSettingsRequest {
 	r.id = &id
 	return r
@@ -222,11 +230,13 @@ func (a *WebhooksAPIService) DeleteWebhookSettingsExecute(r WebhooksAPIDeleteWeb
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.id == nil {
-		return localVarReturnValue, nil, reportError("id is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
+	if r.webhookId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "webhookId", r.webhookId, "form", "")
+	}
+	if r.id != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -944,7 +954,7 @@ func (r WebhooksAPIUpdateWebhookSettingsRequest) Execute() (*UpdateWebhookSettin
 /*
 UpdateWebhookSettings Update webhook
 
-Update an existing webhook configuration. All fields except `_id` are optional; only provided fields will be updated.
+Update an existing webhook configuration. All fields except `webhookId` are optional; only provided fields will be updated. `webhookId` is the same name the other /v1/webhooks operations use (logs, redeliver, test); the deprecated `_id` is still accepted in its place.
 
 When provided, `name` must be 1-50 characters, `url` must be a valid URL, and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
 

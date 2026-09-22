@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.43.0
+API version: 1.44.0
 Contact: support@zernio.com
 */
 
@@ -12,9 +12,7 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the UpdateWebhookSettingsRequest type satisfies the MappedNullable interface at compile time
@@ -22,8 +20,11 @@ var _ MappedNullable = &UpdateWebhookSettingsRequest{}
 
 // UpdateWebhookSettingsRequest struct for UpdateWebhookSettingsRequest
 type UpdateWebhookSettingsRequest struct {
-	// Webhook ID to update (required)
-	Id string `json:"_id"`
+	// Webhook ID to update. Required unless the deprecated `_id` is sent instead.
+	WebhookId *string `json:"webhookId,omitempty"`
+	// Alias of webhookId, kept for existing callers
+	// Deprecated
+	Id *string `json:"_id,omitempty"`
 	// Webhook name (1-50 characters). Must be non-empty if provided.
 	Name *string `json:"name,omitempty"`
 	// Webhook endpoint URL (must be a valid URL, whitespace trimmed). Must be a valid URL if provided.
@@ -40,15 +41,12 @@ type UpdateWebhookSettingsRequest struct {
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 }
 
-type _UpdateWebhookSettingsRequest UpdateWebhookSettingsRequest
-
 // NewUpdateWebhookSettingsRequest instantiates a new UpdateWebhookSettingsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateWebhookSettingsRequest(id string) *UpdateWebhookSettingsRequest {
+func NewUpdateWebhookSettingsRequest() *UpdateWebhookSettingsRequest {
 	this := UpdateWebhookSettingsRequest{}
-	this.Id = id
 	return &this
 }
 
@@ -60,28 +58,71 @@ func NewUpdateWebhookSettingsRequestWithDefaults() *UpdateWebhookSettingsRequest
 	return &this
 }
 
-// GetId returns the Id field value
-func (o *UpdateWebhookSettingsRequest) GetId() string {
-	if o == nil {
+// GetWebhookId returns the WebhookId field value if set, zero value otherwise.
+func (o *UpdateWebhookSettingsRequest) GetWebhookId() string {
+	if o == nil || IsNil(o.WebhookId) {
 		var ret string
 		return ret
 	}
-
-	return o.Id
+	return *o.WebhookId
 }
 
-// GetIdOk returns a tuple with the Id field value
+// GetWebhookIdOk returns a tuple with the WebhookId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateWebhookSettingsRequest) GetIdOk() (*string, bool) {
-	if o == nil {
+func (o *UpdateWebhookSettingsRequest) GetWebhookIdOk() (*string, bool) {
+	if o == nil || IsNil(o.WebhookId) {
 		return nil, false
 	}
-	return &o.Id, true
+	return o.WebhookId, true
 }
 
-// SetId sets field value
+// HasWebhookId returns a boolean if a field has been set.
+func (o *UpdateWebhookSettingsRequest) HasWebhookId() bool {
+	if o != nil && !IsNil(o.WebhookId) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebhookId gets a reference to the given string and assigns it to the WebhookId field.
+func (o *UpdateWebhookSettingsRequest) SetWebhookId(v string) {
+	o.WebhookId = &v
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+// Deprecated
+func (o *UpdateWebhookSettingsRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// Deprecated
+func (o *UpdateWebhookSettingsRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *UpdateWebhookSettingsRequest) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+// Deprecated
 func (o *UpdateWebhookSettingsRequest) SetId(v string) {
-	o.Id = v
+	o.Id = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -318,7 +359,12 @@ func (o UpdateWebhookSettingsRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateWebhookSettingsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["_id"] = o.Id
+	if !IsNil(o.WebhookId) {
+		toSerialize["webhookId"] = o.WebhookId
+	}
+	if !IsNil(o.Id) {
+		toSerialize["_id"] = o.Id
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
@@ -341,43 +387,6 @@ func (o UpdateWebhookSettingsRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	return toSerialize, nil
-}
-
-func (o *UpdateWebhookSettingsRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"_id",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varUpdateWebhookSettingsRequest := _UpdateWebhookSettingsRequest{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUpdateWebhookSettingsRequest)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UpdateWebhookSettingsRequest(varUpdateWebhookSettingsRequest)
-
-	return err
 }
 
 type NullableUpdateWebhookSettingsRequest struct {
