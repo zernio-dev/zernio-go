@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.45.0
+API version: 1.45.1
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ type CommentAutomationFollowGate struct {
 	Message *string `json:"message,omitempty"`
 	// Confirm button label. Defaults to \"I'm following\".
 	ButtonLabel *string `json:"buttonLabel,omitempty"`
-	// Sent to a commenter we know does not follow (followerStatus=follower). Omit to stay silent on a keyword comment; a confirm tap always gets an answer.
+	// Sent to a commenter we know does not follow (followerStatus=follower), and after a confirm tap that does not unlock the DM. When following is what would unlock it, the message carries the confirm button so they can re-check once they follow; above 640 characters it goes out as plain text without the button. Omit to stay silent on a keyword comment; a confirm tap always gets an answer (a default message is used).
 	NotFollowingMessage *string `json:"notFollowingMessage,omitempty"`
 }
 
