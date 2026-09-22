@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.33.2
+API version: 1.34.0
 Contact: support@zernio.com
 */
 
@@ -168,7 +168,7 @@ func (r APIKeysAPIDeleteApiKeyRequest) Execute() (*DeleteAccountGroup200Response
 /*
 DeleteApiKey Delete key
 
-Permanently revokes and deletes an API key.
+Permanently revokes and deletes an API key. The team owner can revoke any team member's key; a non-owner member can only revoke their own.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param keyId
@@ -303,7 +303,7 @@ func (r APIKeysAPIListApiKeysRequest) Execute() (*ListApiKeys200Response, *http.
 /*
 ListApiKeys List keys
 
-Returns all API keys for the authenticated user. Keys are returned with a preview only, not the full key value.
+Returns API keys with a preview only, not the full key value. For a regular team member this is their own keys; for the team owner this is every team member's keys, each carrying a `createdBy` field.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return APIKeysAPIListApiKeysRequest

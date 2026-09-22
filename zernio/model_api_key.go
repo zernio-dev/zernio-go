@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.33.2
+API version: 1.34.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,8 @@ type ApiKey struct {
 	// 'read-write' allows all operations, 'read' restricts to GET requests only
 	Permission *string `json:"permission,omitempty"`
 	// Resource groups this key can NOT access (opt-out denylist). Absent or empty means legacy full access. A key with any group disabled is a restricted key (zrk_ prefix) and can never manage API keys, invites, or member identity. Each operation's group is published as x-resource-group. With 'messages' disabled, the key cannot read or send direct messages through any API surface, and it cannot create or edit a webhook subscription broader than itself: it cannot subscribe to, test-fire, redeliver, or read delivery logs for message events. Subscriptions created earlier, from the dashboard, or with a full-access key keep delivering whatever their own `disabledResourceGroups` allows, so restricting an existing integration end to end means restricting the subscription too. OAuth connector tokens (AI assistants and MCP clients) resolve against the same registry, but their groups are not settable yet: treat an authorized connector as full access.
-	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
+	DisabledResourceGroups []string         `json:"disabledResourceGroups,omitempty"`
+	CreatedBy              *ApiKeyCreatedBy `json:"createdBy,omitempty"`
 }
 
 // NewApiKey instantiates a new ApiKey object
@@ -383,6 +384,38 @@ func (o *ApiKey) SetDisabledResourceGroups(v []string) {
 	o.DisabledResourceGroups = v
 }
 
+// GetCreatedBy returns the CreatedBy field value if set, zero value otherwise.
+func (o *ApiKey) GetCreatedBy() ApiKeyCreatedBy {
+	if o == nil || IsNil(o.CreatedBy) {
+		var ret ApiKeyCreatedBy
+		return ret
+	}
+	return *o.CreatedBy
+}
+
+// GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiKey) GetCreatedByOk() (*ApiKeyCreatedBy, bool) {
+	if o == nil || IsNil(o.CreatedBy) {
+		return nil, false
+	}
+	return o.CreatedBy, true
+}
+
+// HasCreatedBy returns a boolean if a field has been set.
+func (o *ApiKey) HasCreatedBy() bool {
+	if o != nil && !IsNil(o.CreatedBy) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedBy gets a reference to the given ApiKeyCreatedBy and assigns it to the CreatedBy field.
+func (o *ApiKey) SetCreatedBy(v ApiKeyCreatedBy) {
+	o.CreatedBy = &v
+}
+
 func (o ApiKey) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -422,6 +455,9 @@ func (o ApiKey) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisabledResourceGroups) {
 		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
+	}
+	if !IsNil(o.CreatedBy) {
+		toSerialize["createdBy"] = o.CreatedBy
 	}
 	return toSerialize, nil
 }
