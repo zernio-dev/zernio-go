@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.45.1
+API version: 1.46.0
 Contact: support@zernio.com
 */
 
@@ -812,6 +812,7 @@ type AdInsightsAPIGetAdsSearchTermsRequest struct {
 	fromDate   *string
 	toDate     *string
 	campaignId *string
+	adSetId    *string
 	adGroupId  *string
 	pageToken  *string
 }
@@ -846,7 +847,14 @@ func (r AdInsightsAPIGetAdsSearchTermsRequest) CampaignId(campaignId string) AdI
 	return r
 }
 
-// Numeric Google ad group id filter.
+// Platform ad set ID (Google ad group). Same value as adSetId on listAdKeywords and /ad-sets/{adSetId}/assets.
+func (r AdInsightsAPIGetAdsSearchTermsRequest) AdSetId(adSetId string) AdInsightsAPIGetAdsSearchTermsRequest {
+	r.adSetId = &adSetId
+	return r
+}
+
+// Alias of adSetId, kept for existing callers.
+// Deprecated
 func (r AdInsightsAPIGetAdsSearchTermsRequest) AdGroupId(adGroupId string) AdInsightsAPIGetAdsSearchTermsRequest {
 	r.adGroupId = &adGroupId
 	return r
@@ -920,6 +928,9 @@ func (a *AdInsightsAPIService) GetAdsSearchTermsExecute(r AdInsightsAPIGetAdsSea
 	}
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.adSetId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adSetId", r.adSetId, "form", "")
 	}
 	if r.adGroupId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adGroupId", r.adGroupId, "form", "")
