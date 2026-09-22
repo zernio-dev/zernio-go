@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.44.0
+API version: 1.45.0
 Contact: support@zernio.com
 */
 
@@ -957,11 +957,14 @@ type PostsAPIListPostsRequest struct {
 	ApiService    *PostsAPIService
 	page          *int32
 	limit         *int32
+	offset        *int32
 	source        *string
 	status        *string
 	platform      *string
 	profileId     *string
 	createdBy     *string
+	fromDate      *string
+	toDate        *string
 	dateFrom      *string
 	dateTo        *string
 	includeHidden *bool
@@ -979,6 +982,12 @@ func (r PostsAPIListPostsRequest) Page(page int32) PostsAPIListPostsRequest {
 // Page size. Values above the maximum return 400 rather than being clamped.
 func (r PostsAPIListPostsRequest) Limit(limit int32) PostsAPIListPostsRequest {
 	r.limit = &limit
+	return r
+}
+
+// Row offset. Takes precedence over page when both are sent; the response pagination.page is derived from it.
+func (r PostsAPIListPostsRequest) Offset(offset int32) PostsAPIListPostsRequest {
+	r.offset = &offset
 	return r
 }
 
@@ -1010,13 +1019,27 @@ func (r PostsAPIListPostsRequest) CreatedBy(createdBy string) PostsAPIListPostsR
 	return r
 }
 
-// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400.
+// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400. The same name the other date-window filters use (ads, analytics).
+func (r PostsAPIListPostsRequest) FromDate(fromDate string) PostsAPIListPostsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400. The same name the other date-window filters use (ads, analytics).
+func (r PostsAPIListPostsRequest) ToDate(toDate string) PostsAPIListPostsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r PostsAPIListPostsRequest) DateFrom(dateFrom string) PostsAPIListPostsRequest {
 	r.dateFrom = &dateFrom
 	return r
 }
 
-// Zero-padded YYYY-MM-DD, or a full ISO 8601 datetime. An empty value means no date filter; any other malformed value returns 400.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r PostsAPIListPostsRequest) DateTo(dateTo string) PostsAPIListPostsRequest {
 	r.dateTo = &dateTo
 	return r
@@ -1052,7 +1075,7 @@ func (r PostsAPIListPostsRequest) Execute() (*PostsListResponse, *http.Response,
 /*
 ListPosts List posts
 
-Returns a paginated list of posts. Published posts include platformPostUrl with the public URL on each platform.
+Returns a paginated list of posts. Published posts include platformPostUrl with the public URL on each platform. A query parameter that is not listed here returns 400 naming it and the accepted parameters, so a misspelled filter never silently returns the unfiltered list.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PostsAPIListPostsRequest
@@ -1100,6 +1123,9 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
 	}
+	if r.offset != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "offset", r.offset, "form", "")
+	}
 	if r.source != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
 	} else {
@@ -1118,6 +1144,12 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.createdBy != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "createdBy", r.createdBy, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.dateFrom != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "dateFrom", r.dateFrom, "form", "")
