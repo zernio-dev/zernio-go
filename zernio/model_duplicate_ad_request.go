@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.35.0
+API version: 1.36.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type DuplicateAdRequest struct {
 	RenamePrefix   *string `json:"renamePrefix,omitempty"`
 	RenameSuffix   *string `json:"renameSuffix,omitempty"`
 	SyncAfter      *bool   `json:"syncAfter,omitempty"`
+	// Point the copy at the source ad's creative object instead of copying it, so the copy keeps the same Facebook post, the same Instagram media, their existing likes, comments and shares, and the full creative setup (text variations included). This is what Ads Manager's \"show existing reactions, comments and shares\" does. Meta's native copy always publishes new posts. A creative belongs to one ad account, so `adSetId` must be in the source ad's account. 400 when the source ad has no creative yet.
+	ReuseSourceCreative *bool `json:"reuseSourceCreative,omitempty"`
 }
 
 // NewDuplicateAdRequest instantiates a new DuplicateAdRequest object
@@ -39,6 +41,8 @@ func NewDuplicateAdRequest() *DuplicateAdRequest {
 	this.StatusOption = &statusOption
 	var syncAfter bool = true
 	this.SyncAfter = &syncAfter
+	var reuseSourceCreative bool = false
+	this.ReuseSourceCreative = &reuseSourceCreative
 	return &this
 }
 
@@ -51,6 +55,8 @@ func NewDuplicateAdRequestWithDefaults() *DuplicateAdRequest {
 	this.StatusOption = &statusOption
 	var syncAfter bool = true
 	this.SyncAfter = &syncAfter
+	var reuseSourceCreative bool = false
+	this.ReuseSourceCreative = &reuseSourceCreative
 	return &this
 }
 
@@ -246,6 +252,38 @@ func (o *DuplicateAdRequest) SetSyncAfter(v bool) {
 	o.SyncAfter = &v
 }
 
+// GetReuseSourceCreative returns the ReuseSourceCreative field value if set, zero value otherwise.
+func (o *DuplicateAdRequest) GetReuseSourceCreative() bool {
+	if o == nil || IsNil(o.ReuseSourceCreative) {
+		var ret bool
+		return ret
+	}
+	return *o.ReuseSourceCreative
+}
+
+// GetReuseSourceCreativeOk returns a tuple with the ReuseSourceCreative field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DuplicateAdRequest) GetReuseSourceCreativeOk() (*bool, bool) {
+	if o == nil || IsNil(o.ReuseSourceCreative) {
+		return nil, false
+	}
+	return o.ReuseSourceCreative, true
+}
+
+// HasReuseSourceCreative returns a boolean if a field has been set.
+func (o *DuplicateAdRequest) HasReuseSourceCreative() bool {
+	if o != nil && !IsNil(o.ReuseSourceCreative) {
+		return true
+	}
+
+	return false
+}
+
+// SetReuseSourceCreative gets a reference to the given bool and assigns it to the ReuseSourceCreative field.
+func (o *DuplicateAdRequest) SetReuseSourceCreative(v bool) {
+	o.ReuseSourceCreative = &v
+}
+
 func (o DuplicateAdRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -273,6 +311,9 @@ func (o DuplicateAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SyncAfter) {
 		toSerialize["syncAfter"] = o.SyncAfter
+	}
+	if !IsNil(o.ReuseSourceCreative) {
+		toSerialize["reuseSourceCreative"] = o.ReuseSourceCreative
 	}
 	return toSerialize, nil
 }
