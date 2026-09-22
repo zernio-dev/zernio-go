@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.41.0
+API version: 1.42.0
 Contact: support@zernio.com
 */
 
@@ -275,6 +275,7 @@ type TwitterEngagementAPIGetTweetRequest struct {
 	ctx        context.Context
 	ApiService *TwitterEngagementAPIService
 	accountId  *string
+	tweetId    *string
 	id         *string
 }
 
@@ -284,7 +285,14 @@ func (r TwitterEngagementAPIGetTweetRequest) AccountId(accountId string) Twitter
 	return r
 }
 
-// Numeric tweet ID or a tweet URL (e.g. https://x.com/user/status/123...)
+// Numeric tweet ID or a tweet URL (e.g. https://x.com/user/status/123...). The same name the other /v1/twitter operations use (retweet, bookmark).
+func (r TwitterEngagementAPIGetTweetRequest) TweetId(tweetId string) TwitterEngagementAPIGetTweetRequest {
+	r.tweetId = &tweetId
+	return r
+}
+
+// Alias of tweetId, kept for existing callers
+// Deprecated
 func (r TwitterEngagementAPIGetTweetRequest) Id(id string) TwitterEngagementAPIGetTweetRequest {
 	r.id = &id
 	return r
@@ -340,12 +348,15 @@ func (a *TwitterEngagementAPIService) GetTweetExecute(r TwitterEngagementAPIGetT
 	if r.accountId == nil {
 		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
-	if r.id == nil {
-		return localVarReturnValue, nil, reportError("id is required and must be specified")
+	if r.tweetId == nil {
+		return localVarReturnValue, nil, reportError("tweetId is required and must be specified")
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "tweetId", r.tweetId, "form", "")
+	if r.id != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -384,17 +395,6 @@ func (a *TwitterEngagementAPIService) GetTweetExecute(r TwitterEngagementAPIGetT
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
