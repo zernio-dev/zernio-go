@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.33.1
+API version: 1.33.2
 Contact: support@zernio.com
 */
 
@@ -1931,6 +1931,10 @@ set. Accepts the Zernio ad id or the platform ad id. Sync discovery is triggered
 automatically (`syncAfter: false` to skip). Creative settings returned by Meta,
 including explicit promotion metadata and creativeFeatures, are preserved when the
 native copy requires a creative rebuild. Metadata Meta does not return cannot be recovered.
+When Meta refuses the native copy with its capability error (code 3), which happens for
+some creatives built by other tools, the ad is rebuilt instead: a new creative from the
+source's returned spec and a new ad in the target ad set, carrying the source name,
+status option, rename options and tracking specs.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad ID or platform ad ID
