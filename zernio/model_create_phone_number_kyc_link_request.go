@@ -26,7 +26,9 @@ type CreatePhoneNumberKycLinkRequest struct {
 	// ISO 3166-1 alpha-2 country code (must be a regulated/KYC country).
 	Country string `json:"country"`
 	// Area code (NDC) the eventual number must be in. Hard constraint carried by the link; the end customer filling the form makes no area choice. Options come from GET /v1/phone-numbers/availability (areaOptions).
-	AreaCode *string                                  `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// Language of the hosted page: its copy, the carrier requirement texts (translated once per country and cached), the pre-submit review notes and the status emails to the end customer. Omitted: the browser language of the end customer, falling back to English. The end customer can also switch with `?lang=` on the page.
+	Language *string                                  `json:"language,omitempty"`
 	Branding *CreatePhoneNumberKycLinkRequestBranding `json:"branding,omitempty"`
 	// Where to send the end customer's browser after a successful submit. On completion Zernio appends `kyc=submitted` and `country=<ISO-2>` as query params. When omitted, the hosted page shows a built-in confirmation screen instead.
 	RedirectUrl *string `json:"redirect_url,omitempty"`
@@ -133,6 +135,38 @@ func (o *CreatePhoneNumberKycLinkRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
 }
 
+// GetLanguage returns the Language field value if set, zero value otherwise.
+func (o *CreatePhoneNumberKycLinkRequest) GetLanguage() string {
+	if o == nil || IsNil(o.Language) {
+		var ret string
+		return ret
+	}
+	return *o.Language
+}
+
+// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePhoneNumberKycLinkRequest) GetLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.Language) {
+		return nil, false
+	}
+	return o.Language, true
+}
+
+// HasLanguage returns a boolean if a field has been set.
+func (o *CreatePhoneNumberKycLinkRequest) HasLanguage() bool {
+	if o != nil && !IsNil(o.Language) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguage gets a reference to the given string and assigns it to the Language field.
+func (o *CreatePhoneNumberKycLinkRequest) SetLanguage(v string) {
+	o.Language = &v
+}
+
 // GetBranding returns the Branding field value if set, zero value otherwise.
 func (o *CreatePhoneNumberKycLinkRequest) GetBranding() CreatePhoneNumberKycLinkRequestBranding {
 	if o == nil || IsNil(o.Branding) {
@@ -211,6 +245,9 @@ func (o CreatePhoneNumberKycLinkRequest) ToMap() (map[string]interface{}, error)
 	toSerialize["country"] = o.Country
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.Language) {
+		toSerialize["language"] = o.Language
 	}
 	if !IsNil(o.Branding) {
 		toSerialize["branding"] = o.Branding
