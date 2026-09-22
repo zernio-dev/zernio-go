@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.40.0
+API version: 1.41.0
 Contact: support@zernio.com
 */
 
@@ -2953,6 +2953,8 @@ type PhoneNumbersAPISearchAvailablePhoneNumbersRequest struct {
 	ctx        context.Context
 	ApiService *PhoneNumbersAPIService
 	country    *string
+	numberType *string
+	areaCode   *string
 	type_      *string
 	prefix     *string
 	locality   *string
@@ -2966,13 +2968,27 @@ func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Country(country strin
 	return r
 }
 
-// Number type; defaults to the country&#39;s WhatsApp-safe type
+// Number type; defaults to the country&#39;s WhatsApp-safe type (the same name as on purchase, availability and kyc)
+func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) NumberType(numberType string) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
+	r.numberType = &numberType
+	return r
+}
+
+// Area code or national dialing code the number must start with, e.g. 415 or 91
+func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) AreaCode(areaCode string) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
+	r.areaCode = &areaCode
+	return r
+}
+
+// Alias of numberType, kept for existing callers
+// Deprecated
 func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Type_(type_ string) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
 	r.type_ = &type_
 	return r
 }
 
-// Area code
+// Alias of areaCode, kept for existing callers
+// Deprecated
 func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Prefix(prefix string) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
 	r.prefix = &prefix
 	return r
@@ -3054,6 +3070,12 @@ func (a *PhoneNumbersAPIService) SearchAvailablePhoneNumbersExecute(r PhoneNumbe
 		var defaultValue string = "US"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "country", defaultValue, "form", "")
 		r.country = &defaultValue
+	}
+	if r.numberType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "numberType", r.numberType, "form", "")
+	}
+	if r.areaCode != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "areaCode", r.areaCode, "form", "")
 	}
 	if r.type_ != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
