@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.46.0
+API version: 1.47.0
 Contact: support@zernio.com
 */
 
@@ -24,24 +24,29 @@ import (
 type LogsAPIService service
 
 type LogsAPIListLogsRequest struct {
-	ctx                 context.Context
-	ApiService          *LogsAPIService
-	type_               *string
-	status              *string
-	platform            *string
-	action              *string
-	search              *string
-	days                *int32
-	limit               *int32
-	skip                *int32
-	accountId           *string
-	event               *string
-	requestId           *string
-	from                *time.Time
-	to                  *time.Time
-	statusCode          *int32
-	apiKeyId            *string
-	includeReadReceipts *bool
+	ctx                  context.Context
+	ApiService           *LogsAPIService
+	type_                *string
+	status               *string
+	platform             *string
+	action               *string
+	search               *string
+	days                 *int32
+	limit                *int32
+	skip                 *int32
+	accountId            *string
+	accountId2           *string
+	event                *string
+	requestId            *string
+	requestId2           *string
+	from                 *time.Time
+	to                   *time.Time
+	statusCode           *int32
+	statusCode2          *int32
+	apiKeyId             *string
+	apiKeyId2            *string
+	includeReadReceipts  *bool
+	includeReadReceipts2 *bool
 }
 
 // Log category to query. Use &#x60;all&#x60; for the unified view across every category, or &#x60;api_request&#x60; for your API request logs (method, path, status, latency).
@@ -98,6 +103,13 @@ func (r LogsAPIListLogsRequest) AccountId(accountId string) LogsAPIListLogsReque
 	return r
 }
 
+// Alias of accountId, kept for existing callers
+// Deprecated
+func (r LogsAPIListLogsRequest) AccountId2(accountId2 string) LogsAPIListLogsRequest {
+	r.accountId2 = &accountId2
+	return r
+}
+
 // Filter webhook logs by event (e.g. post.published, message.received)
 func (r LogsAPIListLogsRequest) Event(event string) LogsAPIListLogsRequest {
 	r.event = &event
@@ -107,6 +119,13 @@ func (r LogsAPIListLogsRequest) Event(event string) LogsAPIListLogsRequest {
 // Correlation ID. Returns every log spawned by a single API request
 func (r LogsAPIListLogsRequest) RequestId(requestId string) LogsAPIListLogsRequest {
 	r.requestId = &requestId
+	return r
+}
+
+// Alias of requestId, kept for existing callers
+// Deprecated
+func (r LogsAPIListLogsRequest) RequestId2(requestId2 string) LogsAPIListLogsRequest {
+	r.requestId2 = &requestId2
 	return r
 }
 
@@ -128,15 +147,36 @@ func (r LogsAPIListLogsRequest) StatusCode(statusCode int32) LogsAPIListLogsRequ
 	return r
 }
 
+// Alias of statusCode, kept for existing callers
+// Deprecated
+func (r LogsAPIListLogsRequest) StatusCode2(statusCode2 int32) LogsAPIListLogsRequest {
+	r.statusCode2 = &statusCode2
+	return r
+}
+
 // Filter by the API key that made the request (api_request logs)
 func (r LogsAPIListLogsRequest) ApiKeyId(apiKeyId string) LogsAPIListLogsRequest {
 	r.apiKeyId = &apiKeyId
 	return r
 }
 
+// Alias of apiKeyId, kept for existing callers
+// Deprecated
+func (r LogsAPIListLogsRequest) ApiKeyId2(apiKeyId2 string) LogsAPIListLogsRequest {
+	r.apiKeyId2 = &apiKeyId2
+	return r
+}
+
 // Include message.read / message.delivered events (hidden by default for messaging logs)
 func (r LogsAPIListLogsRequest) IncludeReadReceipts(includeReadReceipts bool) LogsAPIListLogsRequest {
 	r.includeReadReceipts = &includeReadReceipts
+	return r
+}
+
+// Alias of includeReadReceipts, kept for existing callers
+// Deprecated
+func (r LogsAPIListLogsRequest) IncludeReadReceipts2(includeReadReceipts2 bool) LogsAPIListLogsRequest {
+	r.includeReadReceipts2 = &includeReadReceipts2
 	return r
 }
 
@@ -223,13 +263,19 @@ func (a *LogsAPIService) ListLogsExecute(r LogsAPIListLogsRequest) (*ListLogs200
 		r.skip = &defaultValue
 	}
 	if r.accountId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "account_id", r.accountId, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.accountId2 != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "account_id", r.accountId2, "form", "")
 	}
 	if r.event != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "event", r.event, "form", "")
 	}
 	if r.requestId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "request_id", r.requestId, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "requestId", r.requestId, "form", "")
+	}
+	if r.requestId2 != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "request_id", r.requestId2, "form", "")
 	}
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
@@ -238,17 +284,30 @@ func (a *LogsAPIService) ListLogsExecute(r LogsAPIListLogsRequest) (*ListLogs200
 		parameterAddToHeaderOrQuery(localVarQueryParams, "to", r.to, "form", "")
 	}
 	if r.statusCode != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "status_code", r.statusCode, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "statusCode", r.statusCode, "form", "")
+	}
+	if r.statusCode2 != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status_code", r.statusCode2, "form", "")
 	}
 	if r.apiKeyId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "api_key_id", r.apiKeyId, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "apiKeyId", r.apiKeyId, "form", "")
+	}
+	if r.apiKeyId2 != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "api_key_id", r.apiKeyId2, "form", "")
 	}
 	if r.includeReadReceipts != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "include_read_receipts", r.includeReadReceipts, "form", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeReadReceipts", r.includeReadReceipts, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeReadReceipts", defaultValue, "form", "")
+		r.includeReadReceipts = &defaultValue
+	}
+	if r.includeReadReceipts2 != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_read_receipts", r.includeReadReceipts2, "form", "")
 	} else {
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_read_receipts", defaultValue, "form", "")
-		r.includeReadReceipts = &defaultValue
+		r.includeReadReceipts2 = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
