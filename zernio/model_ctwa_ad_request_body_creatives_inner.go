@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.42.0
+API version: 1.43.0
 Contact: support@zernio.com
 */
 
@@ -20,9 +20,12 @@ var _ MappedNullable = &CtwaAdRequestBodyCreativesInner{}
 
 // CtwaAdRequestBodyCreativesInner Supply headline, body, and image/video, or exactly one existing post reference. References cannot be combined with fresh creative fields.
 type CtwaAdRequestBodyCreativesInner struct {
-	// Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+	// Messaging and CTWA only. Platform post or reel ID, the same input boostPost takes as platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+	PlatformPostId *string `json:"platformPostId,omitempty"`
+	// Alias of platformPostId, kept for existing callers. Sending both with different values is a 400.
+	// Deprecated
 	ExistingPostId *string `json:"existingPostId,omitempty"`
-	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
+	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with platformPostId and fresh creative fields.
 	ObjectStoryId *string `json:"objectStoryId,omitempty" validate:"regexp=^\\\\d+_\\\\d+$"`
 	// Replaces the top-level creativeFeatures map for this item. Omit to inherit; an empty object clears inherited enrollment choices.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
@@ -52,7 +55,40 @@ func NewCtwaAdRequestBodyCreativesInnerWithDefaults() *CtwaAdRequestBodyCreative
 	return &this
 }
 
+// GetPlatformPostId returns the PlatformPostId field value if set, zero value otherwise.
+func (o *CtwaAdRequestBodyCreativesInner) GetPlatformPostId() string {
+	if o == nil || IsNil(o.PlatformPostId) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformPostId
+}
+
+// GetPlatformPostIdOk returns a tuple with the PlatformPostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBodyCreativesInner) GetPlatformPostIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformPostId) {
+		return nil, false
+	}
+	return o.PlatformPostId, true
+}
+
+// HasPlatformPostId returns a boolean if a field has been set.
+func (o *CtwaAdRequestBodyCreativesInner) HasPlatformPostId() bool {
+	if o != nil && !IsNil(o.PlatformPostId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformPostId gets a reference to the given string and assigns it to the PlatformPostId field.
+func (o *CtwaAdRequestBodyCreativesInner) SetPlatformPostId(v string) {
+	o.PlatformPostId = &v
+}
+
 // GetExistingPostId returns the ExistingPostId field value if set, zero value otherwise.
+// Deprecated
 func (o *CtwaAdRequestBodyCreativesInner) GetExistingPostId() string {
 	if o == nil || IsNil(o.ExistingPostId) {
 		var ret string
@@ -63,6 +99,7 @@ func (o *CtwaAdRequestBodyCreativesInner) GetExistingPostId() string {
 
 // GetExistingPostIdOk returns a tuple with the ExistingPostId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CtwaAdRequestBodyCreativesInner) GetExistingPostIdOk() (*string, bool) {
 	if o == nil || IsNil(o.ExistingPostId) {
 		return nil, false
@@ -80,6 +117,7 @@ func (o *CtwaAdRequestBodyCreativesInner) HasExistingPostId() bool {
 }
 
 // SetExistingPostId gets a reference to the given string and assigns it to the ExistingPostId field.
+// Deprecated
 func (o *CtwaAdRequestBodyCreativesInner) SetExistingPostId(v string) {
 	o.ExistingPostId = &v
 }
@@ -318,6 +356,9 @@ func (o CtwaAdRequestBodyCreativesInner) MarshalJSON() ([]byte, error) {
 
 func (o CtwaAdRequestBodyCreativesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.PlatformPostId) {
+		toSerialize["platformPostId"] = o.PlatformPostId
+	}
 	if !IsNil(o.ExistingPostId) {
 		toSerialize["existingPostId"] = o.ExistingPostId
 	}

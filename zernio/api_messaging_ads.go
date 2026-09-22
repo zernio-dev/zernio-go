@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.42.0
+API version: 1.43.0
 Contact: support@zernio.com
 */
 
@@ -193,15 +193,15 @@ Creates one or more Click-to-WhatsApp (CTWA) ads on Meta under a single campaign
 
 Supports two mutually-exclusive shapes:
 
-- **Single-creative**: supply top-level `headline`, `body`, and one of `imageUrl` / `video`, or an `existingPostId` / `objectStoryId` reference. Creates 1 campaign + 1 ad set + 1 ad.
+- **Single-creative**: supply top-level `headline`, `body`, and one of `imageUrl` / `video`, or a `platformPostId` / `objectStoryId` reference. Creates 1 campaign + 1 ad set + 1 ad.
 
 - **Multi-creative**: supply a `creatives[]` array with N entries (each carrying fresh media and copy or an existing post reference). Creates 1 campaign + 1 ad set + N ads sharing budget and targeting so Meta A/Bs the creatives inside a single auction instead of fragmenting budget across N parallel campaigns. Recommended when launching multiple creative variants for the same campaign.
 
 **Attach shape.** Send `adSetId` (with either creative shape) to add the ads to an EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase, the way to refresh a CTWA creative without resetting delivery. The ad set then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests` and `audienceId` are rejected with a 400 alongside it rather than silently dropped. The target ad set's `destination_type` must match the ad's destination (a WhatsApp ad needs a `WHATSAPP` ad set), otherwise Meta would accept an ad that never delivers.
 
 Prerequisites enforced by Meta (surfaced as platform_error on failure): the Facebook Page must be paired with a verified WhatsApp Business number, the WhatsApp Business Account must be business-verified, and the Meta access token must carry ads_management.
-Existing posts and reels are supported through `existingPostId` or
-`objectStoryId`, either per creative or at the top level. Omit fresh
+Existing posts and reels are supported through `platformPostId` (alias
+`existingPostId`) or `objectStoryId`, either per creative or at the top level. Omit fresh
 media and copy for that creative. Optional `whatsappPhoneNumber` selects
 a number already paired with the Page (WhatsApp destination only).
 
@@ -357,8 +357,8 @@ The ad set is created with the matching destination_type and
 CONVERSATIONS optimization; the campaign objective defaults to OUTCOME_ENGAGEMENT.
 Supports single-creative and multi-creative shapes. Supersedes POST /v1/ads/ctwa
 (deprecated, equivalent to `destination: whatsapp`).
-Existing posts and reels are supported through `existingPostId` or
-`objectStoryId`, either per creative or at the top level. Omit fresh
+Existing posts and reels are supported through `platformPostId` (alias
+`existingPostId`) or `objectStoryId`, either per creative or at the top level. Omit fresh
 media and copy for that creative. Optional `whatsappPhoneNumber` selects
 a number already paired with the Page (WhatsApp destination only).
 `accountId` is a Facebook, Instagram or Meta ads (business login) connection;
