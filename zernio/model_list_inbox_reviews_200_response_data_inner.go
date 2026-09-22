@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.36.0
+API version: 1.37.0
 Contact: support@zernio.com
 */
 
@@ -32,9 +32,11 @@ type ListInboxReviews200ResponseDataInner struct {
 	LocationName NullableString                                `json:"locationName,omitempty"`
 	Reviewer     *ListInboxReviews200ResponseDataInnerReviewer `json:"reviewer,omitempty"`
 	Rating       *int32                                        `json:"rating,omitempty"`
-	Text         *string                                       `json:"text,omitempty"`
-	Created      *time.Time                                    `json:"created,omitempty"`
-	Replied      *bool                                         `json:"hasReply,omitempty"`
+	// Facebook recommendation: positive means recommends, negative means does not recommend. Null or absent when unavailable; absent for other platforms. Independent of the numeric rating.
+	RecommendationType NullableString `json:"recommendationType,omitempty"`
+	Text               *string        `json:"text,omitempty"`
+	Created            *time.Time     `json:"created,omitempty"`
+	Replied            *bool          `json:"hasReply,omitempty"`
 	// Whether the review has at least one photo. Google Business Profile only; always false for other platforms.
 	PhotosPresent *bool `json:"hasPhotos,omitempty"`
 	// Number of photos attached to the review (photos only; videos are not counted). Google Business Profile only; 0 for other platforms.
@@ -327,6 +329,49 @@ func (o *ListInboxReviews200ResponseDataInner) HasRating() bool {
 // SetRating gets a reference to the given int32 and assigns it to the Rating field.
 func (o *ListInboxReviews200ResponseDataInner) SetRating(v int32) {
 	o.Rating = &v
+}
+
+// GetRecommendationType returns the RecommendationType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxReviews200ResponseDataInner) GetRecommendationType() string {
+	if o == nil || IsNil(o.RecommendationType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.RecommendationType.Get()
+}
+
+// GetRecommendationTypeOk returns a tuple with the RecommendationType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxReviews200ResponseDataInner) GetRecommendationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RecommendationType.Get(), o.RecommendationType.IsSet()
+}
+
+// HasRecommendationType returns a boolean if a field has been set.
+func (o *ListInboxReviews200ResponseDataInner) HasRecommendationType() bool {
+	if o != nil && o.RecommendationType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRecommendationType gets a reference to the given NullableString and assigns it to the RecommendationType field.
+func (o *ListInboxReviews200ResponseDataInner) SetRecommendationType(v string) {
+	o.RecommendationType.Set(&v)
+}
+
+// SetRecommendationTypeNil sets the value for RecommendationType to be an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) SetRecommendationTypeNil() {
+	o.RecommendationType.Set(nil)
+}
+
+// UnsetRecommendationType ensures that no value is present for RecommendationType, not even an explicit nil
+func (o *ListInboxReviews200ResponseDataInner) UnsetRecommendationType() {
+	o.RecommendationType.Unset()
 }
 
 // GetText returns the Text field value if set, zero value otherwise.
@@ -629,6 +674,9 @@ func (o ListInboxReviews200ResponseDataInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Rating) {
 		toSerialize["rating"] = o.Rating
+	}
+	if o.RecommendationType.IsSet() {
+		toSerialize["recommendationType"] = o.RecommendationType.Get()
 	}
 	if !IsNil(o.Text) {
 		toSerialize["text"] = o.Text
