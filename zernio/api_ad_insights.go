@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -805,16 +805,17 @@ func (a *AdInsightsAPIService) GetAdInsightsReportExecute(r AdInsightsAPIGetAdIn
 }
 
 type AdInsightsAPIGetAdsSearchTermsRequest struct {
-	ctx        context.Context
-	ApiService *AdInsightsAPIService
-	accountId  *string
-	customerId *string
-	fromDate   *string
-	toDate     *string
-	campaignId *string
-	adSetId    *string
-	adGroupId  *string
-	pageToken  *string
+	ctx         context.Context
+	ApiService  *AdInsightsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	fromDate    *string
+	toDate      *string
+	campaignId  *string
+	adSetId     *string
+	adGroupId   *string
+	pageToken   *string
 }
 
 // Google ads SocialAccount id.
@@ -823,7 +824,14 @@ func (r AdInsightsAPIGetAdsSearchTermsRequest) AccountId(accountId string) AdIns
 	return r
 }
 
-// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+// Platform ad account ID (Google customer ID, digits only). Defaults to the account&#39;s connected customer.
+func (r AdInsightsAPIGetAdsSearchTermsRequest) AdAccountId(adAccountId string) AdInsightsAPIGetAdsSearchTermsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdInsightsAPIGetAdsSearchTermsRequest) CustomerId(customerId string) AdInsightsAPIGetAdsSearchTermsRequest {
 	r.customerId = &customerId
 	return r
@@ -917,6 +925,9 @@ func (a *AdInsightsAPIService) GetAdsSearchTermsExecute(r AdInsightsAPIGetAdsSea
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -1225,12 +1236,13 @@ func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCam
 }
 
 type AdInsightsAPIListLocalServicesLeadConversationsRequest struct {
-	ctx        context.Context
-	ApiService *AdInsightsAPIService
-	leadId     string
-	accountId  *string
-	customerId *string
-	pageToken  *string
+	ctx         context.Context
+	ApiService  *AdInsightsAPIService
+	leadId      string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	pageToken   *string
 }
 
 // Google ads SocialAccount id.
@@ -1239,7 +1251,14 @@ func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) AccountId(accoun
 	return r
 }
 
-// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+// Platform ad account ID (Google customer ID, digits only). Defaults to the account&#39;s connected customer.
+func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) AdAccountId(adAccountId string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) CustomerId(customerId string) AdInsightsAPIListLocalServicesLeadConversationsRequest {
 	r.customerId = &customerId
 	return r
@@ -1303,6 +1322,9 @@ func (a *AdInsightsAPIService) ListLocalServicesLeadConversationsExecute(r AdIns
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -1411,6 +1433,7 @@ type AdInsightsAPIListLocalServicesLeadsRequest struct {
 	ctx         context.Context
 	ApiService  *AdInsightsAPIService
 	accountId   *string
+	adAccountId *string
 	customerId  *string
 	fromDate    *string
 	toDate      *string
@@ -1426,7 +1449,14 @@ func (r AdInsightsAPIListLocalServicesLeadsRequest) AccountId(accountId string) 
 	return r
 }
 
-// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+// Platform ad account ID (Google customer ID, digits only). Defaults to the account&#39;s connected customer.
+func (r AdInsightsAPIListLocalServicesLeadsRequest) AdAccountId(adAccountId string) AdInsightsAPIListLocalServicesLeadsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdInsightsAPIListLocalServicesLeadsRequest) CustomerId(customerId string) AdInsightsAPIListLocalServicesLeadsRequest {
 	r.customerId = &customerId
 	return r
@@ -1517,6 +1547,9 @@ func (a *AdInsightsAPIService) ListLocalServicesLeadsExecute(r AdInsightsAPIList
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -1642,6 +1675,7 @@ type AdInsightsAPIQueryAdInsightsRequest struct {
 	accountId                    *string
 	objectId                     *string
 	query                        *string
+	adAccountId                  *string
 	customerId                   *string
 	pageToken                    *string
 	level                        *string
@@ -1678,7 +1712,14 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Query(query string) AdInsightsAPIQu
 	return r
 }
 
-// Google only: numeric customer id (no dashes) when the connection has several Google Ads accounts.
+// Google only: platform ad account ID (Google customer ID, digits only) when the connection has several Google Ads accounts.
+func (r AdInsightsAPIQueryAdInsightsRequest) AdAccountId(adAccountId string) AdInsightsAPIQueryAdInsightsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdInsightsAPIQueryAdInsightsRequest) CustomerId(customerId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.customerId = &customerId
 	return r
@@ -1792,7 +1833,7 @@ accounts prefer the async variant (POST /v1/ads/insights/reports).
 **Google Ads (googleads)**: raw GAQL passthrough. Send any read-only GAQL SELECT via `query`
 (campaign/keyword/search-term/geo/demographic/asset/shopping resources, `change_event`, any
 `segments.*`) and rows come back verbatim (camelCase, counters as strings). Results are paged
-at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`. `customerId` is only
+at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`. `adAccountId` (alias `customerId`) is only
 needed when the connection has several Google Ads accounts. Semantic validation is Google's:
 an invalid query returns a 400 carrying Google's message (note: selecting `segments.date`
 requires a finite date filter).
@@ -1838,6 +1879,9 @@ func (a *AdInsightsAPIService) QueryAdInsightsExecute(r AdInsightsAPIQueryAdInsi
 	}
 	if r.query != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
+	}
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")

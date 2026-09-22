@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,10 @@ var _ MappedNullable = &CreateConversionActionRequest{}
 type CreateConversionActionRequest struct {
 	// SocialAccount ID. Must be a `googleads` account.
 	AccountId string `json:"accountId"`
-	// Google Ads customer id (digits only). Resolved automatically when the connection has exactly one accessible customer.
+	// Platform ad account ID (Google customer ID, digits only). Resolved automatically when the connection has exactly one accessible customer.
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	// Alias of adAccountId, kept for existing callers
+	// Deprecated
 	CustomerId *string `json:"customerId,omitempty"`
 	Name       string  `json:"name"`
 	// Only WEBPAGE is supported for creation today.
@@ -81,7 +84,40 @@ func (o *CreateConversionActionRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *CreateConversionActionRequest) SetAdAccountId(v string) {
+	o.AdAccountId = &v
+}
+
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateConversionActionRequest) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
@@ -92,6 +128,7 @@ func (o *CreateConversionActionRequest) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateConversionActionRequest) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
@@ -109,6 +146,7 @@ func (o *CreateConversionActionRequest) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
+// Deprecated
 func (o *CreateConversionActionRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
@@ -236,6 +274,9 @@ func (o CreateConversionActionRequest) MarshalJSON() ([]byte, error) {
 func (o CreateConversionActionRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
+	}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
 	}

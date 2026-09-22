@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -1340,11 +1340,12 @@ func (a *ConversionsAPIService) GetConversionsQualityExecute(r ConversionsAPIGet
 }
 
 type ConversionsAPIListConversionActionsRequest struct {
-	ctx        context.Context
-	ApiService *ConversionsAPIService
-	accountId  *string
-	customerId *string
-	type_      *string
+	ctx         context.Context
+	ApiService  *ConversionsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	type_       *string
 }
 
 // SocialAccount _id (must be a googleads account).
@@ -1353,7 +1354,14 @@ func (r ConversionsAPIListConversionActionsRequest) AccountId(accountId string) 
 	return r
 }
 
-// Google Ads customer id (digits only). Resolved automatically when the connection has exactly one accessible customer.
+// Platform ad account ID (Google customer ID, digits only). Resolved automatically when the connection has exactly one accessible customer.
+func (r ConversionsAPIListConversionActionsRequest) AdAccountId(adAccountId string) ConversionsAPIListConversionActionsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r ConversionsAPIListConversionActionsRequest) CustomerId(customerId string) ConversionsAPIListConversionActionsRequest {
 	r.customerId = &customerId
 	return r
@@ -1377,9 +1385,9 @@ default. Each action's `tagSnippets` (global site tag + event snippet) is
 included when Google has them for that action's type, e.g. `WEBPAGE`.
 Google-only; other platforms return `501`. Requires the Ads add-on.
 
-`customerId` is optional: when omitted, it is resolved from the connection's
+`adAccountId` (alias `customerId`) is optional: when omitted, it is resolved from the connection's
 accessible Google Ads customers, and the call fails with `400` when more than
-one is accessible (pass `customerId` to disambiguate).
+one is accessible (pass `adAccountId` to disambiguate).
 
 The list itself is cached for the quota window (1 hour fresh, up to 7 days
 last-good; the cache key does not vary on `type`). The response carries
@@ -1422,6 +1430,9 @@ func (a *ConversionsAPIService) ListConversionActionsExecute(r ConversionsAPILis
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}

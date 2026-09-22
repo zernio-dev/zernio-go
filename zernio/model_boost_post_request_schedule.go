@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -19,10 +19,13 @@ import (
 // checks if the BoostPostRequestSchedule type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BoostPostRequestSchedule{}
 
-// BoostPostRequestSchedule struct for BoostPostRequestSchedule
+// BoostPostRequestSchedule Alias of the top-level `startDate` / `endDate`, kept for existing callers. Sending both forms with differing values is a 400.
 type BoostPostRequestSchedule struct {
+	// Alias of startDate, kept for existing callers
+	// Deprecated
 	StartDate *time.Time `json:"startDate,omitempty"`
-	// Required for lifetime budgets
+	// Alias of endDate, kept for existing callers
+	// Deprecated
 	EndDate *time.Time `json:"endDate,omitempty"`
 }
 
@@ -44,6 +47,7 @@ func NewBoostPostRequestScheduleWithDefaults() *BoostPostRequestSchedule {
 }
 
 // GetStartDate returns the StartDate field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequestSchedule) GetStartDate() time.Time {
 	if o == nil || IsNil(o.StartDate) {
 		var ret time.Time
@@ -54,6 +58,7 @@ func (o *BoostPostRequestSchedule) GetStartDate() time.Time {
 
 // GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequestSchedule) GetStartDateOk() (*time.Time, bool) {
 	if o == nil || IsNil(o.StartDate) {
 		return nil, false
@@ -71,11 +76,13 @@ func (o *BoostPostRequestSchedule) HasStartDate() bool {
 }
 
 // SetStartDate gets a reference to the given time.Time and assigns it to the StartDate field.
+// Deprecated
 func (o *BoostPostRequestSchedule) SetStartDate(v time.Time) {
 	o.StartDate = &v
 }
 
 // GetEndDate returns the EndDate field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequestSchedule) GetEndDate() time.Time {
 	if o == nil || IsNil(o.EndDate) {
 		var ret time.Time
@@ -86,6 +93,7 @@ func (o *BoostPostRequestSchedule) GetEndDate() time.Time {
 
 // GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequestSchedule) GetEndDateOk() (*time.Time, bool) {
 	if o == nil || IsNil(o.EndDate) {
 		return nil, false
@@ -103,6 +111,7 @@ func (o *BoostPostRequestSchedule) HasEndDate() bool {
 }
 
 // SetEndDate gets a reference to the given time.Time and assigns it to the EndDate field.
+// Deprecated
 func (o *BoostPostRequestSchedule) SetEndDate(v time.Time) {
 	o.EndDate = &v
 }

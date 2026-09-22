@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -150,7 +150,7 @@ type CreateStandaloneAdRequest struct {
 	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
 	// Required for lifetime budgets
 	EndDate *time.Time `json:"endDate,omitempty"`
-	// Meta only. Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. (Same `schedule.startDate` semantics already available on `POST /v1/ads/boost`.)
+	// Meta only. Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. Same field as on `POST /v1/ads/boost`.
 	StartDate *time.Time `json:"startDate,omitempty"`
 	// Meta only. The Facebook Page the ad runs as (`object_story_spec.page_id`). Defaults to the Page bound to the connection. Pass another Page ID to run the ad as that Page: any Page granted to the connection is accepted (for a business-login connection, every Page granted in Meta's dialog; list them with GET /v1/ads/instagram-accounts). The Instagram identity is re-resolved for that Page unless `instagramAccountId` is set. A Page the connection cannot see is a 400 on `pageId` naming the granted Pages.
 	PageId *string `json:"pageId,omitempty"`

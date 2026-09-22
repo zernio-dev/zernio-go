@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -32,8 +32,8 @@ type ConnectWhatsAppEmbeddedSignupRequest struct {
 	IsCoexistence *bool `json:"isCoexistence,omitempty"`
 	// Rejects the connect when Meta returns a different number
 	ExpectedPhoneNumber *string `json:"expectedPhoneNumber,omitempty"`
-	// Hosted signup page only. When present, the response also carries `redirectUrl`, the URL the user should land on, with the outcome mapped exactly like the redirect flow (success params, or `error` and `platform` with the same values). Must be an absolute http(s) URL or a custom app scheme.
-	RedirectUrl *string `json:"redirectUrl,omitempty"`
+	// Hosted signup page only. When present, the response also carries `redirectUrl`, the URL the user should land on, with the outcome mapped exactly like the redirect flow (success params, or `error` and `platform` with the same values). Must be an absolute http(s) URL or a custom app scheme. The legacy spelling `redirectUrl` remains accepted as an alias.
+	RedirectUrl *string `json:"redirect_url,omitempty"`
 	// Hosted signup page only. Append the connect token to the success redirect, as the redirect flow does for API-key callers.
 	EchoConnectToken *bool `json:"echoConnectToken,omitempty"`
 }
@@ -324,7 +324,7 @@ func (o ConnectWhatsAppEmbeddedSignupRequest) ToMap() (map[string]interface{}, e
 		toSerialize["expectedPhoneNumber"] = o.ExpectedPhoneNumber
 	}
 	if !IsNil(o.RedirectUrl) {
-		toSerialize["redirectUrl"] = o.RedirectUrl
+		toSerialize["redirect_url"] = o.RedirectUrl
 	}
 	if !IsNil(o.EchoConnectToken) {
 		toSerialize["echoConnectToken"] = o.EchoConnectToken

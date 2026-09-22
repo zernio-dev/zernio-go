@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -1145,6 +1145,8 @@ type AnalyticsAPIGetFacebookPageInsightsRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -1163,12 +1165,26 @@ func (r AnalyticsAPIGetFacebookPageInsightsRequest) Metrics(metrics string) Anal
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetFacebookPageInsightsRequest) FromDate(fromDate string) AnalyticsAPIGetFacebookPageInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetFacebookPageInsightsRequest) ToDate(toDate string) AnalyticsAPIGetFacebookPageInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetFacebookPageInsightsRequest) Since(since string) AnalyticsAPIGetFacebookPageInsightsRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetFacebookPageInsightsRequest) Until(until string) AnalyticsAPIGetFacebookPageInsightsRequest {
 	r.until = &until
 	return r
@@ -1237,6 +1253,12 @@ func (a *AnalyticsAPIService) GetFacebookPageInsightsExecute(r AnalyticsAPIGetFa
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -1786,6 +1808,8 @@ type AnalyticsAPIGetGoogleBusinessPerformanceRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	startDate  *string
 	endDate    *string
 }
@@ -1803,12 +1827,26 @@ func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) Metrics(metrics string)
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago. Max 18 months back.
+func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) FromDate(fromDate string) AnalyticsAPIGetGoogleBusinessPerformanceRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) ToDate(toDate string) AnalyticsAPIGetGoogleBusinessPerformanceRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) StartDate(startDate string) AnalyticsAPIGetGoogleBusinessPerformanceRequest {
 	r.startDate = &startDate
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetGoogleBusinessPerformanceRequest) EndDate(endDate string) AnalyticsAPIGetGoogleBusinessPerformanceRequest {
 	r.endDate = &endDate
 	return r
@@ -1865,6 +1903,12 @@ func (a *AnalyticsAPIService) GetGoogleBusinessPerformanceExecute(r AnalyticsAPI
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.startDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
@@ -2194,6 +2238,8 @@ type AnalyticsAPIGetInstagramAccountInsightsRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -2213,12 +2259,26 @@ func (r AnalyticsAPIGetInstagramAccountInsightsRequest) Metrics(metrics string) 
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetInstagramAccountInsightsRequest) FromDate(fromDate string) AnalyticsAPIGetInstagramAccountInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetInstagramAccountInsightsRequest) ToDate(toDate string) AnalyticsAPIGetInstagramAccountInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetInstagramAccountInsightsRequest) Since(since string) AnalyticsAPIGetInstagramAccountInsightsRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetInstagramAccountInsightsRequest) Until(until string) AnalyticsAPIGetInstagramAccountInsightsRequest {
 	r.until = &until
 	return r
@@ -2286,6 +2346,12 @@ func (a *AnalyticsAPIService) GetInstagramAccountInsightsExecute(r AnalyticsAPIG
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -2621,6 +2687,8 @@ type AnalyticsAPIGetInstagramFollowerHistoryRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -2639,12 +2707,26 @@ func (r AnalyticsAPIGetInstagramFollowerHistoryRequest) Metrics(metrics string) 
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetInstagramFollowerHistoryRequest) FromDate(fromDate string) AnalyticsAPIGetInstagramFollowerHistoryRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetInstagramFollowerHistoryRequest) ToDate(toDate string) AnalyticsAPIGetInstagramFollowerHistoryRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetInstagramFollowerHistoryRequest) Since(since string) AnalyticsAPIGetInstagramFollowerHistoryRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetInstagramFollowerHistoryRequest) Until(until string) AnalyticsAPIGetInstagramFollowerHistoryRequest {
 	r.until = &until
 	return r
@@ -2709,6 +2791,12 @@ func (a *AnalyticsAPIService) GetInstagramFollowerHistoryExecute(r AnalyticsAPIG
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -2793,6 +2881,8 @@ type AnalyticsAPIGetLinkedInAggregateAnalyticsRequest struct {
 	ApiService  *AnalyticsAPIService
 	accountId   string
 	aggregation *string
+	fromDate    *string
+	toDate      *string
 	startDate   *string
 	endDate     *string
 	metrics     *string
@@ -2805,12 +2895,26 @@ func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) Aggregation(aggregatio
 }
 
 // Start date (YYYY-MM-DD). If omitted, returns lifetime analytics.
+func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) FromDate(fromDate string) AnalyticsAPIGetLinkedInAggregateAnalyticsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD, exclusive). Defaults to today if omitted.
+func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) ToDate(toDate string) AnalyticsAPIGetLinkedInAggregateAnalyticsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) StartDate(startDate string) AnalyticsAPIGetLinkedInAggregateAnalyticsRequest {
 	r.startDate = &startDate
 	return r
 }
 
-// End date (YYYY-MM-DD, exclusive). Defaults to today if omitted.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetLinkedInAggregateAnalyticsRequest) EndDate(endDate string) AnalyticsAPIGetLinkedInAggregateAnalyticsRequest {
 	r.endDate = &endDate
 	return r
@@ -2872,6 +2976,12 @@ func (a *AnalyticsAPIService) GetLinkedInAggregateAnalyticsExecute(r AnalyticsAP
 		var defaultValue string = "TOTAL"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "aggregation", defaultValue, "form", "")
 		r.aggregation = &defaultValue
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.startDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
@@ -2985,6 +3095,8 @@ type AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -3003,12 +3115,26 @@ func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) Metrics(metrics str
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) FromDate(fromDate string) AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) ToDate(toDate string) AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) Since(since string) AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest) Until(until string) AnalyticsAPIGetLinkedInOrgAggregateAnalyticsRequest {
 	r.until = &until
 	return r
@@ -3089,6 +3215,12 @@ func (a *AnalyticsAPIService) GetLinkedInOrgAggregateAnalyticsExecute(r Analytic
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -3876,6 +4008,8 @@ type AnalyticsAPIGetTikTokAccountInsightsRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -3894,12 +4028,26 @@ func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Metrics(metrics string) Ana
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetTikTokAccountInsightsRequest) FromDate(fromDate string) AnalyticsAPIGetTikTokAccountInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today.
+func (r AnalyticsAPIGetTikTokAccountInsightsRequest) ToDate(toDate string) AnalyticsAPIGetTikTokAccountInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Since(since string) AnalyticsAPIGetTikTokAccountInsightsRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetTikTokAccountInsightsRequest) Until(until string) AnalyticsAPIGetTikTokAccountInsightsRequest {
 	r.until = &until
 	return r
@@ -3981,6 +4129,12 @@ func (a *AnalyticsAPIService) GetTikTokAccountInsightsExecute(r AnalyticsAPIGetT
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -4065,6 +4219,8 @@ type AnalyticsAPIGetYouTubeChannelInsightsRequest struct {
 	ApiService *AnalyticsAPIService
 	accountId  *string
 	metrics    *string
+	fromDate   *string
+	toDate     *string
 	since      *string
 	until      *string
 	metricType *string
@@ -4083,12 +4239,26 @@ func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) Metrics(metrics string) An
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) FromDate(fromDate string) AnalyticsAPIGetYouTubeChannelInsightsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to today. YouTube Analytics has a 2-3 day delay, so the fetch is internally clamped to 3 days ago; any requested range extending beyond that returns zero values for the tail days. The response&#39;s dateRange.until field reflects your requested value.
+func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) ToDate(toDate string) AnalyticsAPIGetYouTubeChannelInsightsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) Since(since string) AnalyticsAPIGetYouTubeChannelInsightsRequest {
 	r.since = &since
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to today. YouTube Analytics has a 2-3 day delay, so the fetch is internally clamped to 3 days ago; any requested range extending beyond that returns zero values for the tail days. The response&#39;s dateRange.until field reflects your requested value.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeChannelInsightsRequest) Until(until string) AnalyticsAPIGetYouTubeChannelInsightsRequest {
 	r.until = &until
 	return r
@@ -4159,6 +4329,12 @@ func (a *AnalyticsAPIService) GetYouTubeChannelInsightsExecute(r AnalyticsAPIGet
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.metrics != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.since != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "since", r.since, "form", "")
@@ -4275,6 +4451,8 @@ type AnalyticsAPIGetYouTubeDailyViewsRequest struct {
 	ApiService *AnalyticsAPIService
 	videoId    *string
 	accountId  *string
+	fromDate   *string
+	toDate     *string
 	startDate  *string
 	endDate    *string
 }
@@ -4292,12 +4470,26 @@ func (r AnalyticsAPIGetYouTubeDailyViewsRequest) AccountId(accountId string) Ana
 }
 
 // Start date (YYYY-MM-DD). Defaults to 30 days ago.
+func (r AnalyticsAPIGetYouTubeDailyViewsRequest) FromDate(fromDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit toDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response), and days YouTube has not processed yet are omitted from dailyViews.
+func (r AnalyticsAPIGetYouTubeDailyViewsRequest) ToDate(toDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeDailyViewsRequest) StartDate(startDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
 	r.startDate = &startDate
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response), and days YouTube has not processed yet are omitted from dailyViews.
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeDailyViewsRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeDailyViewsRequest {
 	r.endDate = &endDate
 	return r
@@ -4355,6 +4547,12 @@ func (a *AnalyticsAPIService) GetYouTubeDailyViewsExecute(r AnalyticsAPIGetYouTu
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "videoId", r.videoId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
 	if r.startDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
 	}
@@ -4486,6 +4684,8 @@ type AnalyticsAPIGetYouTubeDemographicsRequest struct {
 	accountId  *string
 	videoId    *string
 	breakdown  *string
+	fromDate   *string
+	toDate     *string
 	startDate  *string
 	endDate    *string
 }
@@ -4509,12 +4709,26 @@ func (r AnalyticsAPIGetYouTubeDemographicsRequest) Breakdown(breakdown string) A
 }
 
 // Start date in YYYY-MM-DD format. Defaults to 90 days ago, or to the video&#39;s publish date (lifetime) when videoId is provided.
+func (r AnalyticsAPIGetYouTubeDemographicsRequest) FromDate(fromDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit toDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
+func (r AnalyticsAPIGetYouTubeDemographicsRequest) ToDate(toDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeDemographicsRequest) StartDate(startDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
 	r.startDate = &startDate
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeDemographicsRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeDemographicsRequest {
 	r.endDate = &endDate
 	return r
@@ -4575,6 +4789,12 @@ func (a *AnalyticsAPIService) GetYouTubeDemographicsExecute(r AnalyticsAPIGetYou
 	}
 	if r.breakdown != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "breakdown", r.breakdown, "form", "")
+	}
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
 	}
 	if r.startDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
@@ -4728,6 +4948,8 @@ type AnalyticsAPIGetYouTubeVideoRetentionRequest struct {
 	ApiService *AnalyticsAPIService
 	videoId    *string
 	accountId  *string
+	fromDate   *string
+	toDate     *string
 	startDate  *string
 	endDate    *string
 }
@@ -4745,12 +4967,26 @@ func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) AccountId(accountId string)
 }
 
 // Start date (YYYY-MM-DD). Defaults to the video&#39;s publish date (lifetime curve).
+func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) FromDate(fromDate string) AnalyticsAPIGetYouTubeVideoRetentionRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit toDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
+func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) ToDate(toDate string) AnalyticsAPIGetYouTubeVideoRetentionRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Alias of fromDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) StartDate(startDate string) AnalyticsAPIGetYouTubeVideoRetentionRequest {
 	r.startDate = &startDate
 	return r
 }
 
-// End date (YYYY-MM-DD). Defaults to 3 days ago, the newest fully finalized day (YouTube finalizes analytics with a ~3-day delay). An explicit endDate is honored up to today: days inside the delay window are provisional and may still be revised by YouTube (see provisionalSince in the response).
+// Alias of toDate, kept for existing callers
+// Deprecated
 func (r AnalyticsAPIGetYouTubeVideoRetentionRequest) EndDate(endDate string) AnalyticsAPIGetYouTubeVideoRetentionRequest {
 	r.endDate = &endDate
 	return r
@@ -4816,6 +5052,12 @@ func (a *AnalyticsAPIService) GetYouTubeVideoRetentionExecute(r AnalyticsAPIGetY
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "videoId", r.videoId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.fromDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	}
+	if r.toDate != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	}
 	if r.startDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
 	}

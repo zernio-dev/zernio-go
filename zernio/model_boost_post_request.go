@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the BoostPostRequest type satisfies the MappedNullable interface at compile time
@@ -46,8 +47,13 @@ type BoostPostRequest struct {
 	// TikTok only. The identity the ad runs as (the profile shown on the ad), from GET /v1/ads/tiktok-identities. Default: the connected TikTok account's own identity. Must be authorized on the advertiser or the call fails naming the available ones.
 	IdentityId *string `json:"identityId,omitempty"`
 	// TikTok only. Type of identityId; resolved from the advertiser's identity list when omitted.
-	IdentityType *string                        `json:"identityType,omitempty"`
-	Budget       *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	IdentityType *string `json:"identityType,omitempty"`
+	// Budget in whole currency units, the same flat field as POST /v1/ads/create. Required unless adSetId is set. Minimum varies: TikTok=$20, Pinterest=$5, others=$1
+	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
+	// Goes together with budgetAmount. lifetime requires schedule.endDate.
+	BudgetType *string `json:"budgetType,omitempty"`
+	// Deprecated
+	Budget *BoostPostRequestBudget `json:"budget,omitempty"`
 	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
 	InstagramAccountId *string `json:"instagramAccountId,omitempty"`
 	// Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Independent of plain link CTAs and their goal. A messaging callToAction selects its destination automatically; an explicit destinationType must then match. Lead ads use ON_AD.
@@ -55,7 +61,12 @@ type BoostPostRequest struct {
 	// Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP_MESSAGE callToAction. Stored as creative.whatsappPhoneNumber on the ad.
 	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// ISO 4217 currency code matching the ad account's currency. Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
-	Currency  *string                    `json:"currency,omitempty"`
+	Currency *string `json:"currency,omitempty"`
+	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. Same field as on POST /v1/ads/create.
+	StartDate *time.Time `json:"startDate,omitempty"`
+	// Ad-set end time (ISO 8601), mapped to the ad set's `end_time`. Required for lifetime budgets. Same field as on POST /v1/ads/create.
+	EndDate *time.Time `json:"endDate,omitempty"`
+	// Deprecated
 	Schedule  *BoostPostRequestSchedule  `json:"schedule,omitempty"`
 	Targeting *BoostPostRequestTargeting `json:"targeting,omitempty"`
 	// Meta only. A Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`). Sent alone it is forwarded unchanged. Use for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places, user_os, wireless_carrier).  Can be combined with `targeting`: rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key (camelCase wins on collision). The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (built sub-keys win; raw-only sub-keys such as `location_types` survive). Array values (`flexible_spec`, ...) are replaced as a whole key, never element-merged.  When `rawTargeting` is present the `advantage_audience: 0` default that Zernio normally applies is no longer emitted, so it cannot clobber a `targeting_automation` sent in the raw spec. Meta requires `targeting_automation` on ad set creation, so include it in the raw spec, or send `targeting.advantage_audience` (0 or 1), which is merged over raw as `targeting_automation`.
@@ -511,10 +522,75 @@ func (o *BoostPostRequest) SetIdentityType(v string) {
 	o.IdentityType = &v
 }
 
+// GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetBudgetAmount() float32 {
+	if o == nil || IsNil(o.BudgetAmount) {
+		var ret float32
+		return ret
+	}
+	return *o.BudgetAmount
+}
+
+// GetBudgetAmountOk returns a tuple with the BudgetAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetBudgetAmountOk() (*float32, bool) {
+	if o == nil || IsNil(o.BudgetAmount) {
+		return nil, false
+	}
+	return o.BudgetAmount, true
+}
+
+// HasBudgetAmount returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasBudgetAmount() bool {
+	if o != nil && !IsNil(o.BudgetAmount) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetAmount gets a reference to the given float32 and assigns it to the BudgetAmount field.
+func (o *BoostPostRequest) SetBudgetAmount(v float32) {
+	o.BudgetAmount = &v
+}
+
+// GetBudgetType returns the BudgetType field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetBudgetType() string {
+	if o == nil || IsNil(o.BudgetType) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetType
+}
+
+// GetBudgetTypeOk returns a tuple with the BudgetType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetBudgetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetType) {
+		return nil, false
+	}
+	return o.BudgetType, true
+}
+
+// HasBudgetType returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasBudgetType() bool {
+	if o != nil && !IsNil(o.BudgetType) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetType gets a reference to the given string and assigns it to the BudgetType field.
+func (o *BoostPostRequest) SetBudgetType(v string) {
+	o.BudgetType = &v
+}
+
 // GetBudget returns the Budget field value if set, zero value otherwise.
-func (o *BoostPostRequest) GetBudget() UpdateAdCampaignRequestBudget {
+// Deprecated
+func (o *BoostPostRequest) GetBudget() BoostPostRequestBudget {
 	if o == nil || IsNil(o.Budget) {
-		var ret UpdateAdCampaignRequestBudget
+		var ret BoostPostRequestBudget
 		return ret
 	}
 	return *o.Budget
@@ -522,7 +598,8 @@ func (o *BoostPostRequest) GetBudget() UpdateAdCampaignRequestBudget {
 
 // GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BoostPostRequest) GetBudgetOk() (*UpdateAdCampaignRequestBudget, bool) {
+// Deprecated
+func (o *BoostPostRequest) GetBudgetOk() (*BoostPostRequestBudget, bool) {
 	if o == nil || IsNil(o.Budget) {
 		return nil, false
 	}
@@ -538,8 +615,9 @@ func (o *BoostPostRequest) HasBudget() bool {
 	return false
 }
 
-// SetBudget gets a reference to the given UpdateAdCampaignRequestBudget and assigns it to the Budget field.
-func (o *BoostPostRequest) SetBudget(v UpdateAdCampaignRequestBudget) {
+// SetBudget gets a reference to the given BoostPostRequestBudget and assigns it to the Budget field.
+// Deprecated
+func (o *BoostPostRequest) SetBudget(v BoostPostRequestBudget) {
 	o.Budget = &v
 }
 
@@ -671,7 +749,72 @@ func (o *BoostPostRequest) SetCurrency(v string) {
 	o.Currency = &v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetStartDate() time.Time {
+	if o == nil || IsNil(o.StartDate) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetStartDateOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given time.Time and assigns it to the StartDate field.
+func (o *BoostPostRequest) SetStartDate(v time.Time) {
+	o.StartDate = &v
+}
+
+// GetEndDate returns the EndDate field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetEndDate() time.Time {
+	if o == nil || IsNil(o.EndDate) {
+		var ret time.Time
+		return ret
+	}
+	return *o.EndDate
+}
+
+// GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetEndDateOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.EndDate) {
+		return nil, false
+	}
+	return o.EndDate, true
+}
+
+// HasEndDate returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasEndDate() bool {
+	if o != nil && !IsNil(o.EndDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndDate gets a reference to the given time.Time and assigns it to the EndDate field.
+func (o *BoostPostRequest) SetEndDate(v time.Time) {
+	o.EndDate = &v
+}
+
 // GetSchedule returns the Schedule field value if set, zero value otherwise.
+// Deprecated
 func (o *BoostPostRequest) GetSchedule() BoostPostRequestSchedule {
 	if o == nil || IsNil(o.Schedule) {
 		var ret BoostPostRequestSchedule
@@ -682,6 +825,7 @@ func (o *BoostPostRequest) GetSchedule() BoostPostRequestSchedule {
 
 // GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *BoostPostRequest) GetScheduleOk() (*BoostPostRequestSchedule, bool) {
 	if o == nil || IsNil(o.Schedule) {
 		return nil, false
@@ -699,6 +843,7 @@ func (o *BoostPostRequest) HasSchedule() bool {
 }
 
 // SetSchedule gets a reference to the given BoostPostRequestSchedule and assigns it to the Schedule field.
+// Deprecated
 func (o *BoostPostRequest) SetSchedule(v BoostPostRequestSchedule) {
 	o.Schedule = &v
 }
@@ -1489,6 +1634,12 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.IdentityType) {
 		toSerialize["identityType"] = o.IdentityType
 	}
+	if !IsNil(o.BudgetAmount) {
+		toSerialize["budgetAmount"] = o.BudgetAmount
+	}
+	if !IsNil(o.BudgetType) {
+		toSerialize["budgetType"] = o.BudgetType
+	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
 	}
@@ -1503,6 +1654,12 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
+	}
+	if !IsNil(o.EndDate) {
+		toSerialize["endDate"] = o.EndDate
 	}
 	if !IsNil(o.Schedule) {
 		toSerialize["schedule"] = o.Schedule

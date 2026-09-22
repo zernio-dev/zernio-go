@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,10 @@ type CreateAdSetRequest struct {
 	CampaignId string  `json:"campaignId"`
 	Name       string  `json:"name"`
 	Status     *string `json:"status,omitempty"`
-	// Numeric Google Ads customer id. Only required when the connection has more than one.
+	// Platform ad account ID (Google customer ID, digits only). Only required when the connection has more than one.
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	// Alias of adAccountId, kept for existing callers
+	// Deprecated
 	CustomerId *string `json:"customerId,omitempty"`
 }
 
@@ -189,7 +192,40 @@ func (o *CreateAdSetRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *CreateAdSetRequest) SetAdAccountId(v string) {
+	o.AdAccountId = &v
+}
+
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
+// Deprecated
 func (o *CreateAdSetRequest) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
@@ -200,6 +236,7 @@ func (o *CreateAdSetRequest) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CreateAdSetRequest) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
@@ -217,6 +254,7 @@ func (o *CreateAdSetRequest) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
+// Deprecated
 func (o *CreateAdSetRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
@@ -237,6 +275,9 @@ func (o CreateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
 	}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId

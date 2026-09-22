@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -353,6 +353,7 @@ CreateMessagingAd Create messaging ad
 
 Creates a click-to-message ad; `destination` selects where the tapped ad opens a
 conversation: WhatsApp, the Page's Messenger inbox or the linked Instagram account's Direct inbox.
+`destinations` puts two or three of them on one ad set and lets Meta pick the app per viewer.
 The ad set is created with the matching destination_type and
 CONVERSATIONS optimization; the campaign objective defaults to OUTCOME_ENGAGEMENT.
 Supports single-creative and multi-creative shapes. Supersedes POST /v1/ads/ctwa

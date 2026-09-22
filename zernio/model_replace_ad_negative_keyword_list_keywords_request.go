@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,10 @@ var _ MappedNullable = &ReplaceAdNegativeKeywordListKeywordsRequest{}
 type ReplaceAdNegativeKeywordListKeywordsRequest struct {
 	// Zernio SocialAccount id.
 	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
-	// Connected Google Ads customer id, without dashes. Required when the connection has multiple customers.
+	// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+	AdAccountId *string `json:"adAccountId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Alias of adAccountId, kept for existing callers
+	// Deprecated
 	CustomerId *string `json:"customerId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Optional courtesy field. The resolved account or campaign determines support; other platforms return 501.
 	Platform *string `json:"platform,omitempty"`
@@ -77,7 +80,40 @@ func (o *ReplaceAdNegativeKeywordListKeywordsRequest) SetAccountId(v string) {
 	o.AccountId = v
 }
 
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *ReplaceAdNegativeKeywordListKeywordsRequest) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ReplaceAdNegativeKeywordListKeywordsRequest) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *ReplaceAdNegativeKeywordListKeywordsRequest) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *ReplaceAdNegativeKeywordListKeywordsRequest) SetAdAccountId(v string) {
+	o.AdAccountId = &v
+}
+
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
+// Deprecated
 func (o *ReplaceAdNegativeKeywordListKeywordsRequest) GetCustomerId() string {
 	if o == nil || IsNil(o.CustomerId) {
 		var ret string
@@ -88,6 +124,7 @@ func (o *ReplaceAdNegativeKeywordListKeywordsRequest) GetCustomerId() string {
 
 // GetCustomerIdOk returns a tuple with the CustomerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *ReplaceAdNegativeKeywordListKeywordsRequest) GetCustomerIdOk() (*string, bool) {
 	if o == nil || IsNil(o.CustomerId) {
 		return nil, false
@@ -105,6 +142,7 @@ func (o *ReplaceAdNegativeKeywordListKeywordsRequest) HasCustomerId() bool {
 }
 
 // SetCustomerId gets a reference to the given string and assigns it to the CustomerId field.
+// Deprecated
 func (o *ReplaceAdNegativeKeywordListKeywordsRequest) SetCustomerId(v string) {
 	o.CustomerId = &v
 }
@@ -176,6 +214,9 @@ func (o ReplaceAdNegativeKeywordListKeywordsRequest) MarshalJSON() ([]byte, erro
 func (o ReplaceAdNegativeKeywordListKeywordsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
+	}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
 	}
@@ -228,6 +269,7 @@ func (o *ReplaceAdNegativeKeywordListKeywordsRequest) UnmarshalJSON(data []byte)
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "accountId")
+		delete(additionalProperties, "adAccountId")
 		delete(additionalProperties, "customerId")
 		delete(additionalProperties, "platform")
 		delete(additionalProperties, "keywords")

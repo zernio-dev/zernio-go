@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -3550,12 +3550,13 @@ func (a *AdCampaignsAPIService) GetCampaignAdScheduleExecute(r AdCampaignsAPIGet
 }
 
 type AdCampaignsAPIGetCampaignBiddingRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	campaignId string
-	accountId  *string
-	platform   *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	campaignId  string
+	accountId   *string
+	platform    *string
+	adAccountId *string
+	customerId  *string
 }
 
 // Zernio Google Ads SocialAccount id: resolves the customer id + refresh token.
@@ -3570,7 +3571,14 @@ func (r AdCampaignsAPIGetCampaignBiddingRequest) Platform(platform string) AdCam
 	return r
 }
 
-// Numeric Google Ads customer id (no dashes). Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+func (r AdCampaignsAPIGetCampaignBiddingRequest) AdAccountId(adAccountId string) AdCampaignsAPIGetCampaignBiddingRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdCampaignsAPIGetCampaignBiddingRequest) CustomerId(customerId string) AdCampaignsAPIGetCampaignBiddingRequest {
 	r.customerId = &customerId
 	return r
@@ -3640,6 +3648,9 @@ func (a *AdCampaignsAPIService) GetCampaignBiddingExecute(r AdCampaignsAPIGetCam
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -4174,11 +4185,12 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 }
 
 type AdCampaignsAPIListAdGroupAssetsRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	adSetId    string
-	accountId  *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	adSetId     string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
 }
 
 func (r AdCampaignsAPIListAdGroupAssetsRequest) AccountId(accountId string) AdCampaignsAPIListAdGroupAssetsRequest {
@@ -4186,6 +4198,12 @@ func (r AdCampaignsAPIListAdGroupAssetsRequest) AccountId(accountId string) AdCa
 	return r
 }
 
+func (r AdCampaignsAPIListAdGroupAssetsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdGroupAssetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdCampaignsAPIListAdGroupAssetsRequest) CustomerId(customerId string) AdCampaignsAPIListAdGroupAssetsRequest {
 	r.customerId = &customerId
 	return r
@@ -4239,6 +4257,9 @@ func (a *AdCampaignsAPIService) ListAdGroupAssetsExecute(r AdCampaignsAPIListAdG
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -5044,12 +5065,13 @@ func (a *AdCampaignsAPIService) ListAdsExecute(r AdCampaignsAPIListAdsRequest) (
 }
 
 type AdCampaignsAPIListBidStrategiesRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	accountId  *string
-	customerId *string
-	fromDate   *string
-	toDate     *string
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	fromDate    *string
+	toDate      *string
 }
 
 // Google ads SocialAccount id.
@@ -5058,7 +5080,14 @@ func (r AdCampaignsAPIListBidStrategiesRequest) AccountId(accountId string) AdCa
 	return r
 }
 
-// Numeric Google Ads customer id (no dashes). Defaults to the account&#39;s connected customer.
+// Platform ad account ID (Google customer ID, digits only). Defaults to the account&#39;s connected customer.
+func (r AdCampaignsAPIListBidStrategiesRequest) AdAccountId(adAccountId string) AdCampaignsAPIListBidStrategiesRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdCampaignsAPIListBidStrategiesRequest) CustomerId(customerId string) AdCampaignsAPIListBidStrategiesRequest {
 	r.customerId = &customerId
 	return r
@@ -5121,6 +5150,9 @@ func (a *AdCampaignsAPIService) ListBidStrategiesExecute(r AdCampaignsAPIListBid
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -5229,11 +5261,12 @@ func (a *AdCampaignsAPIService) ListBidStrategiesExecute(r AdCampaignsAPIListBid
 }
 
 type AdCampaignsAPIListCampaignAssetsRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	campaignId string
-	accountId  *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	campaignId  string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
 }
 
 func (r AdCampaignsAPIListCampaignAssetsRequest) AccountId(accountId string) AdCampaignsAPIListCampaignAssetsRequest {
@@ -5241,6 +5274,12 @@ func (r AdCampaignsAPIListCampaignAssetsRequest) AccountId(accountId string) AdC
 	return r
 }
 
+func (r AdCampaignsAPIListCampaignAssetsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListCampaignAssetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdCampaignsAPIListCampaignAssetsRequest) CustomerId(customerId string) AdCampaignsAPIListCampaignAssetsRequest {
 	r.customerId = &customerId
 	return r
@@ -5294,6 +5333,9 @@ func (a *AdCampaignsAPIService) ListCampaignAssetsExecute(r AdCampaignsAPIListCa
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}

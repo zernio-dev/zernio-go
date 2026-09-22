@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -1485,12 +1485,13 @@ func (a *AdAccountsAPIService) DeleteAdCommentExecute(r AdAccountsAPIDeleteAdCom
 }
 
 type AdAccountsAPIDeleteAdNegativeKeywordListRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	listId     string
-	accountId  *string
-	customerId *string
-	platform   *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	listId      string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	platform    *string
 }
 
 func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) AccountId(accountId string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
@@ -1498,6 +1499,12 @@ func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) AccountId(accountId str
 	return r
 }
 
+func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) AdAccountId(adAccountId string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) CustomerId(customerId string) AdAccountsAPIDeleteAdNegativeKeywordListRequest {
 	r.customerId = &customerId
 	return r
@@ -1556,6 +1563,9 @@ func (a *AdAccountsAPIService) DeleteAdNegativeKeywordListExecute(r AdAccountsAP
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -2184,12 +2194,13 @@ func (a *AdAccountsAPIService) GetAdCommentsExecute(r AdAccountsAPIGetAdComments
 }
 
 type AdAccountsAPIGetAdNegativeKeywordListRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	listId     string
-	accountId  *string
-	customerId *string
-	platform   *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	listId      string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	platform    *string
 }
 
 func (r AdAccountsAPIGetAdNegativeKeywordListRequest) AccountId(accountId string) AdAccountsAPIGetAdNegativeKeywordListRequest {
@@ -2197,6 +2208,12 @@ func (r AdAccountsAPIGetAdNegativeKeywordListRequest) AccountId(accountId string
 	return r
 }
 
+func (r AdAccountsAPIGetAdNegativeKeywordListRequest) AdAccountId(adAccountId string) AdAccountsAPIGetAdNegativeKeywordListRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIGetAdNegativeKeywordListRequest) CustomerId(customerId string) AdAccountsAPIGetAdNegativeKeywordListRequest {
 	r.customerId = &customerId
 	return r
@@ -2255,6 +2272,9 @@ func (a *AdAccountsAPIService) GetAdNegativeKeywordListExecute(r AdAccountsAPIGe
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -3379,10 +3399,11 @@ func (a *AdAccountsAPIService) HideAdCommentExecute(r AdAccountsAPIHideAdComment
 }
 
 type AdAccountsAPIListAccountCalloutsRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	accountId  *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
 }
 
 func (r AdAccountsAPIListAccountCalloutsRequest) AccountId(accountId string) AdAccountsAPIListAccountCalloutsRequest {
@@ -3390,6 +3411,12 @@ func (r AdAccountsAPIListAccountCalloutsRequest) AccountId(accountId string) AdA
 	return r
 }
 
+func (r AdAccountsAPIListAccountCalloutsRequest) AdAccountId(adAccountId string) AdAccountsAPIListAccountCalloutsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIListAccountCalloutsRequest) CustomerId(customerId string) AdAccountsAPIListAccountCalloutsRequest {
 	r.customerId = &customerId
 	return r
@@ -3440,6 +3467,9 @@ func (a *AdAccountsAPIService) ListAccountCalloutsExecute(r AdAccountsAPIListAcc
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -3542,10 +3572,11 @@ func (a *AdAccountsAPIService) ListAccountCalloutsExecute(r AdAccountsAPIListAcc
 }
 
 type AdAccountsAPIListAccountSitelinksRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	accountId  *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
 }
 
 func (r AdAccountsAPIListAccountSitelinksRequest) AccountId(accountId string) AdAccountsAPIListAccountSitelinksRequest {
@@ -3553,6 +3584,12 @@ func (r AdAccountsAPIListAccountSitelinksRequest) AccountId(accountId string) Ad
 	return r
 }
 
+func (r AdAccountsAPIListAccountSitelinksRequest) AdAccountId(adAccountId string) AdAccountsAPIListAccountSitelinksRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIListAccountSitelinksRequest) CustomerId(customerId string) AdAccountsAPIListAccountSitelinksRequest {
 	r.customerId = &customerId
 	return r
@@ -3603,6 +3640,9 @@ func (a *AdAccountsAPIService) ListAccountSitelinksExecute(r AdAccountsAPIListAc
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -3705,10 +3745,11 @@ func (a *AdAccountsAPIService) ListAccountSitelinksExecute(r AdAccountsAPIListAc
 }
 
 type AdAccountsAPIListAccountStructuredSnippetsRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	accountId  *string
-	customerId *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
 }
 
 func (r AdAccountsAPIListAccountStructuredSnippetsRequest) AccountId(accountId string) AdAccountsAPIListAccountStructuredSnippetsRequest {
@@ -3716,6 +3757,12 @@ func (r AdAccountsAPIListAccountStructuredSnippetsRequest) AccountId(accountId s
 	return r
 }
 
+func (r AdAccountsAPIListAccountStructuredSnippetsRequest) AdAccountId(adAccountId string) AdAccountsAPIListAccountStructuredSnippetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIListAccountStructuredSnippetsRequest) CustomerId(customerId string) AdAccountsAPIListAccountStructuredSnippetsRequest {
 	r.customerId = &customerId
 	return r
@@ -3766,6 +3813,9 @@ func (a *AdAccountsAPIService) ListAccountStructuredSnippetsExecute(r AdAccounts
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -4246,11 +4296,12 @@ func (a *AdAccountsAPIService) ListAdLabelsExecute(r AdAccountsAPIListAdLabelsRe
 }
 
 type AdAccountsAPIListAdNegativeKeywordListsRequest struct {
-	ctx        context.Context
-	ApiService *AdAccountsAPIService
-	accountId  *string
-	customerId *string
-	platform   *string
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	platform    *string
 }
 
 func (r AdAccountsAPIListAdNegativeKeywordListsRequest) AccountId(accountId string) AdAccountsAPIListAdNegativeKeywordListsRequest {
@@ -4258,6 +4309,12 @@ func (r AdAccountsAPIListAdNegativeKeywordListsRequest) AccountId(accountId stri
 	return r
 }
 
+func (r AdAccountsAPIListAdNegativeKeywordListsRequest) AdAccountId(adAccountId string) AdAccountsAPIListAdNegativeKeywordListsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Deprecated
 func (r AdAccountsAPIListAdNegativeKeywordListsRequest) CustomerId(customerId string) AdAccountsAPIListAdNegativeKeywordListsRequest {
 	r.customerId = &customerId
 	return r
@@ -4313,6 +4370,9 @@ func (a *AdAccountsAPIService) ListAdNegativeKeywordListsExecute(r AdAccountsAPI
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
 	}
@@ -5800,6 +5860,7 @@ type AdAccountsAPIListTikTokAdPixelsRequest struct {
 	ctx          context.Context
 	ApiService   *AdAccountsAPIService
 	accountId    *string
+	adAccountId  *string
 	advertiserId *string
 	code         *string
 }
@@ -5810,7 +5871,14 @@ func (r AdAccountsAPIListTikTokAdPixelsRequest) AccountId(accountId string) AdAc
 	return r
 }
 
-// Advertiser belonging to this connection.
+// Platform ad account ID (TikTok advertiser id, digits only). Defaults to the first advertiser on the connection.
+func (r AdAccountsAPIListTikTokAdPixelsRequest) AdAccountId(adAccountId string) AdAccountsAPIListTikTokAdPixelsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
 func (r AdAccountsAPIListTikTokAdPixelsRequest) AdvertiserId(advertiserId string) AdAccountsAPIListTikTokAdPixelsRequest {
 	r.advertiserId = &advertiserId
 	return r
@@ -5867,6 +5935,9 @@ func (a *AdAccountsAPIService) ListTikTokAdPixelsExecute(r AdAccountsAPIListTikT
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.advertiserId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "advertiserId", r.advertiserId, "form", "")
 	}

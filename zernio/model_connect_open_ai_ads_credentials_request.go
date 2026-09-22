@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,10 @@ type ConnectOpenAIAdsCredentialsRequest struct {
 	ProfileId string `json:"profileId"`
 	// Optional state passthrough for the connect flow.
 	State *string `json:"state,omitempty"`
-	// Optional URL to redirect to after successful connection
+	// Optional URL to redirect to after successful connection, echoed back as redirectUrl.
+	RedirectUrl *string `json:"redirect_url,omitempty"`
+	// Alias of redirect_url, kept for existing callers
+	// Deprecated
 	RedirectUri *string `json:"redirectUri,omitempty"`
 }
 
@@ -133,7 +136,40 @@ func (o *ConnectOpenAIAdsCredentialsRequest) SetState(v string) {
 	o.State = &v
 }
 
+// GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.
+func (o *ConnectOpenAIAdsCredentialsRequest) GetRedirectUrl() string {
+	if o == nil || IsNil(o.RedirectUrl) {
+		var ret string
+		return ret
+	}
+	return *o.RedirectUrl
+}
+
+// GetRedirectUrlOk returns a tuple with the RedirectUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectOpenAIAdsCredentialsRequest) GetRedirectUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.RedirectUrl) {
+		return nil, false
+	}
+	return o.RedirectUrl, true
+}
+
+// HasRedirectUrl returns a boolean if a field has been set.
+func (o *ConnectOpenAIAdsCredentialsRequest) HasRedirectUrl() bool {
+	if o != nil && !IsNil(o.RedirectUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetRedirectUrl gets a reference to the given string and assigns it to the RedirectUrl field.
+func (o *ConnectOpenAIAdsCredentialsRequest) SetRedirectUrl(v string) {
+	o.RedirectUrl = &v
+}
+
 // GetRedirectUri returns the RedirectUri field value if set, zero value otherwise.
+// Deprecated
 func (o *ConnectOpenAIAdsCredentialsRequest) GetRedirectUri() string {
 	if o == nil || IsNil(o.RedirectUri) {
 		var ret string
@@ -144,6 +180,7 @@ func (o *ConnectOpenAIAdsCredentialsRequest) GetRedirectUri() string {
 
 // GetRedirectUriOk returns a tuple with the RedirectUri field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *ConnectOpenAIAdsCredentialsRequest) GetRedirectUriOk() (*string, bool) {
 	if o == nil || IsNil(o.RedirectUri) {
 		return nil, false
@@ -161,6 +198,7 @@ func (o *ConnectOpenAIAdsCredentialsRequest) HasRedirectUri() bool {
 }
 
 // SetRedirectUri gets a reference to the given string and assigns it to the RedirectUri field.
+// Deprecated
 func (o *ConnectOpenAIAdsCredentialsRequest) SetRedirectUri(v string) {
 	o.RedirectUri = &v
 }
@@ -179,6 +217,9 @@ func (o ConnectOpenAIAdsCredentialsRequest) ToMap() (map[string]interface{}, err
 	toSerialize["profileId"] = o.ProfileId
 	if !IsNil(o.State) {
 		toSerialize["state"] = o.State
+	}
+	if !IsNil(o.RedirectUrl) {
+		toSerialize["redirect_url"] = o.RedirectUrl
 	}
 	if !IsNil(o.RedirectUri) {
 		toSerialize["redirectUri"] = o.RedirectUri

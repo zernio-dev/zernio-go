@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -109,8 +109,10 @@ type CreateMessagingAdRequest struct {
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Beneficiary/payer entity IDs required alongside regionalRegulatedCategories. Values are numeric IDs from the advertiser's Meta verification/authorization setup. Keys depend on the declared category: BRAZIL_REGULATION and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer. Both beneficiary and payer must be included. If omitted and the advertiser has set defaults in Meta Ads Manager advertising settings, Meta auto-fills them.
 	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
-	// Where the conversation opens when the ad is tapped.
-	Destination string `json:"destination"`
+	// Where the conversation opens when the ad is tapped. Set this OR `destinations`, not both.
+	Destination *string `json:"destination,omitempty"`
+	// Two or three messaging apps on ONE ad set, like Ads Manager's \"all messaging apps\": the ad set gets Meta's combined destination_type (e.g. MESSAGING_INSTAGRAM_DIRECT_MESSENGER_WHATSAPP) and the creative one CTA per app, so Meta opens the app each viewer is likeliest to answer from. WhatsApp in the list still needs the Page paired with a WhatsApp Business number. With `adSetId`, the existing ad set must already use that combined destination_type. Set this OR `destination`, not both.
+	Destinations []string `json:"destinations,omitempty"`
 }
 
 type _CreateMessagingAdRequest CreateMessagingAdRequest
@@ -119,12 +121,11 @@ type _CreateMessagingAdRequest CreateMessagingAdRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateMessagingAdRequest(accountId string, adAccountId string, name string, destination string) *CreateMessagingAdRequest {
+func NewCreateMessagingAdRequest(accountId string, adAccountId string, name string) *CreateMessagingAdRequest {
 	this := CreateMessagingAdRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
-	this.Destination = destination
 	return &this
 }
 
@@ -1587,28 +1588,68 @@ func (o *CreateMessagingAdRequest) SetRegionalRegulationIdentities(v map[string]
 	o.RegionalRegulationIdentities = v
 }
 
-// GetDestination returns the Destination field value
+// GetDestination returns the Destination field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetDestination() string {
-	if o == nil {
+	if o == nil || IsNil(o.Destination) {
 		var ret string
 		return ret
 	}
-
-	return o.Destination
+	return *o.Destination
 }
 
-// GetDestinationOk returns a tuple with the Destination field value
+// GetDestinationOk returns a tuple with the Destination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateMessagingAdRequest) GetDestinationOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Destination) {
 		return nil, false
 	}
-	return &o.Destination, true
+	return o.Destination, true
 }
 
-// SetDestination sets field value
+// HasDestination returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasDestination() bool {
+	if o != nil && !IsNil(o.Destination) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestination gets a reference to the given string and assigns it to the Destination field.
 func (o *CreateMessagingAdRequest) SetDestination(v string) {
-	o.Destination = v
+	o.Destination = &v
+}
+
+// GetDestinations returns the Destinations field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetDestinations() []string {
+	if o == nil || IsNil(o.Destinations) {
+		var ret []string
+		return ret
+	}
+	return o.Destinations
+}
+
+// GetDestinationsOk returns a tuple with the Destinations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetDestinationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Destinations) {
+		return nil, false
+	}
+	return o.Destinations, true
+}
+
+// HasDestinations returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasDestinations() bool {
+	if o != nil && !IsNil(o.Destinations) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinations gets a reference to the given []string and assigns it to the Destinations field.
+func (o *CreateMessagingAdRequest) SetDestinations(v []string) {
+	o.Destinations = v
 }
 
 func (o CreateMessagingAdRequest) MarshalJSON() ([]byte, error) {
@@ -1753,7 +1794,12 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.RegionalRegulationIdentities) {
 		toSerialize["regionalRegulationIdentities"] = o.RegionalRegulationIdentities
 	}
-	toSerialize["destination"] = o.Destination
+	if !IsNil(o.Destination) {
+		toSerialize["destination"] = o.Destination
+	}
+	if !IsNil(o.Destinations) {
+		toSerialize["destinations"] = o.Destinations
+	}
 	return toSerialize, nil
 }
 
@@ -1765,7 +1811,6 @@ func (o *CreateMessagingAdRequest) UnmarshalJSON(data []byte) (err error) {
 		"accountId",
 		"adAccountId",
 		"name",
-		"destination",
 	}
 
 	allProperties := make(map[string]interface{})

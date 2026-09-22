@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.47.0
+API version: 1.52.1
 Contact: support@zernio.com
 */
 
@@ -20,9 +20,11 @@ var _ MappedNullable = &GetLinkedInAggregateAnalytics400Response{}
 
 // GetLinkedInAggregateAnalytics400Response struct for GetLinkedInAggregateAnalytics400Response
 type GetLinkedInAggregateAnalytics400Response struct {
-	Error        *string  `json:"error,omitempty"`
-	Code         *string  `json:"code,omitempty"`
-	ValidOptions []string `json:"validOptions,omitempty"`
+	Error *string `json:"error,omitempty"`
+	Code  *string `json:"code,omitempty"`
+	// The query parameter at fault on a validation failure
+	Param *string `json:"param,omitempty"`
+	Type  *string `json:"type,omitempty"`
 }
 
 // NewGetLinkedInAggregateAnalytics400Response instantiates a new GetLinkedInAggregateAnalytics400Response object
@@ -106,36 +108,68 @@ func (o *GetLinkedInAggregateAnalytics400Response) SetCode(v string) {
 	o.Code = &v
 }
 
-// GetValidOptions returns the ValidOptions field value if set, zero value otherwise.
-func (o *GetLinkedInAggregateAnalytics400Response) GetValidOptions() []string {
-	if o == nil || IsNil(o.ValidOptions) {
-		var ret []string
+// GetParam returns the Param field value if set, zero value otherwise.
+func (o *GetLinkedInAggregateAnalytics400Response) GetParam() string {
+	if o == nil || IsNil(o.Param) {
+		var ret string
 		return ret
 	}
-	return o.ValidOptions
+	return *o.Param
 }
 
-// GetValidOptionsOk returns a tuple with the ValidOptions field value if set, nil otherwise
+// GetParamOk returns a tuple with the Param field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetLinkedInAggregateAnalytics400Response) GetValidOptionsOk() ([]string, bool) {
-	if o == nil || IsNil(o.ValidOptions) {
+func (o *GetLinkedInAggregateAnalytics400Response) GetParamOk() (*string, bool) {
+	if o == nil || IsNil(o.Param) {
 		return nil, false
 	}
-	return o.ValidOptions, true
+	return o.Param, true
 }
 
-// HasValidOptions returns a boolean if a field has been set.
-func (o *GetLinkedInAggregateAnalytics400Response) HasValidOptions() bool {
-	if o != nil && !IsNil(o.ValidOptions) {
+// HasParam returns a boolean if a field has been set.
+func (o *GetLinkedInAggregateAnalytics400Response) HasParam() bool {
+	if o != nil && !IsNil(o.Param) {
 		return true
 	}
 
 	return false
 }
 
-// SetValidOptions gets a reference to the given []string and assigns it to the ValidOptions field.
-func (o *GetLinkedInAggregateAnalytics400Response) SetValidOptions(v []string) {
-	o.ValidOptions = v
+// SetParam gets a reference to the given string and assigns it to the Param field.
+func (o *GetLinkedInAggregateAnalytics400Response) SetParam(v string) {
+	o.Param = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *GetLinkedInAggregateAnalytics400Response) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetLinkedInAggregateAnalytics400Response) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *GetLinkedInAggregateAnalytics400Response) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *GetLinkedInAggregateAnalytics400Response) SetType(v string) {
+	o.Type = &v
 }
 
 func (o GetLinkedInAggregateAnalytics400Response) MarshalJSON() ([]byte, error) {
@@ -154,8 +188,11 @@ func (o GetLinkedInAggregateAnalytics400Response) ToMap() (map[string]interface{
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
 	}
-	if !IsNil(o.ValidOptions) {
-		toSerialize["validOptions"] = o.ValidOptions
+	if !IsNil(o.Param) {
+		toSerialize["param"] = o.Param
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
