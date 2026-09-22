@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.33.0
+API version: 1.33.1
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	Path []string `json:"path,omitempty"`
 	// Optional estimated reachable users for this option, when the platform returns it.
 	AudienceSize NullableInt32 `json:"audienceSize,omitempty"`
+	// ISO-3166 alpha-2 of the country a sub-country geo result (city, region, zip, metro) belongs to, when the platform reports it (Meta does). Useful to know whether a location falls under the EU DSA disclosure rules before creating the ad.
+	CountryCode *string `json:"countryCode,omitempty"`
 }
 
 type _SearchAdTargeting200ResponseResultsInner SearchAdTargeting200ResponseResultsInner
@@ -203,6 +205,38 @@ func (o *SearchAdTargeting200ResponseResultsInner) UnsetAudienceSize() {
 	o.AudienceSize.Unset()
 }
 
+// GetCountryCode returns the CountryCode field value if set, zero value otherwise.
+func (o *SearchAdTargeting200ResponseResultsInner) GetCountryCode() string {
+	if o == nil || IsNil(o.CountryCode) {
+		var ret string
+		return ret
+	}
+	return *o.CountryCode
+}
+
+// GetCountryCodeOk returns a tuple with the CountryCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) GetCountryCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.CountryCode) {
+		return nil, false
+	}
+	return o.CountryCode, true
+}
+
+// HasCountryCode returns a boolean if a field has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) HasCountryCode() bool {
+	if o != nil && !IsNil(o.CountryCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountryCode gets a reference to the given string and assigns it to the CountryCode field.
+func (o *SearchAdTargeting200ResponseResultsInner) SetCountryCode(v string) {
+	o.CountryCode = &v
+}
+
 func (o SearchAdTargeting200ResponseResultsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -221,6 +255,9 @@ func (o SearchAdTargeting200ResponseResultsInner) ToMap() (map[string]interface{
 	}
 	if o.AudienceSize.IsSet() {
 		toSerialize["audienceSize"] = o.AudienceSize.Get()
+	}
+	if !IsNil(o.CountryCode) {
+		toSerialize["countryCode"] = o.CountryCode
 	}
 	return toSerialize, nil
 }
