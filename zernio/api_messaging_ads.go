@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.37.0
+API version: 1.38.0
 Contact: support@zernio.com
 */
 
@@ -361,6 +361,8 @@ Existing posts and reels are supported through `existingPostId` or
 `objectStoryId`, either per creative or at the top level. Omit fresh
 media and copy for that creative. Optional `whatsappPhoneNumber` selects
 a number already paired with the Page (WhatsApp destination only).
+`accountId` is a Facebook, Instagram or Meta ads (business login) connection;
+`pageId` picks the Page when that connection was granted several.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateMessagingAdRequest

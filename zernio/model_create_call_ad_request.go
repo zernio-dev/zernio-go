@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.37.0
+API version: 1.38.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,8 @@ type CreateCallAdRequest struct {
 	ExistingPostId *string `json:"existingPostId,omitempty"`
 	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
 	ObjectStoryId *string `json:"objectStoryId,omitempty" validate:"regexp=^\\\\d+_\\\\d+$"`
+	// Facebook Page the ad runs as, when the connection was granted several Pages. Defaults to the Page bound to the connection. Any Page granted to the connection is accepted; other ids answer 400 listing the granted Pages. Same semantics as `pageId` on POST /v1/ads/create.
+	PageId *string `json:"pageId,omitempty"`
 	// WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Attach requests do not change the existing ad set. Stored as creative.whatsappPhoneNumber on every created ad.
 	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// Single-creative shape only. Mutually exclusive with `creatives[]`.
@@ -328,6 +330,38 @@ func (o *CreateCallAdRequest) HasObjectStoryId() bool {
 // SetObjectStoryId gets a reference to the given string and assigns it to the ObjectStoryId field.
 func (o *CreateCallAdRequest) SetObjectStoryId(v string) {
 	o.ObjectStoryId = &v
+}
+
+// GetPageId returns the PageId field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetPageId() string {
+	if o == nil || IsNil(o.PageId) {
+		var ret string
+		return ret
+	}
+	return *o.PageId
+}
+
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetPageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PageId) {
+		return nil, false
+	}
+	return o.PageId, true
+}
+
+// HasPageId returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasPageId() bool {
+	if o != nil && !IsNil(o.PageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given string and assigns it to the PageId field.
+func (o *CreateCallAdRequest) SetPageId(v string) {
+	o.PageId = &v
 }
 
 // GetWhatsappPhoneNumber returns the WhatsappPhoneNumber field value if set, zero value otherwise.
@@ -1522,6 +1556,9 @@ func (o CreateCallAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ObjectStoryId) {
 		toSerialize["objectStoryId"] = o.ObjectStoryId
+	}
+	if !IsNil(o.PageId) {
+		toSerialize["pageId"] = o.PageId
 	}
 	if !IsNil(o.WhatsappPhoneNumber) {
 		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
