@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.39.0
+API version: 1.40.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,10 @@ type CreateCallAdRequest struct {
 	AdAccountId string `json:"adAccountId"`
 	// Ad display name. Used to derive campaign / ad set names. On the multi-creative shape, each ad's Meta name gets a \" #N\" suffix (1-indexed) so Ads Manager shows them as a numbered batch.
 	Name string `json:"name"`
+	// Exact name for the campaign this request provisions. Omitted keeps `<name> - Campaign`. Ignored with `adSetId` (the ad set already has a campaign).
+	CampaignName *string `json:"campaignName,omitempty"`
+	// Exact name for the ad set this request provisions. Omitted keeps `<name> - Ad Set`. Ignored with `adSetId`.
+	AdSetName *string `json:"adSetName,omitempty"`
 	// Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
 	ExistingPostId *string `json:"existingPostId,omitempty"`
 	// Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
@@ -266,6 +270,70 @@ func (o *CreateCallAdRequest) GetNameOk() (*string, bool) {
 // SetName sets field value
 func (o *CreateCallAdRequest) SetName(v string) {
 	o.Name = v
+}
+
+// GetCampaignName returns the CampaignName field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetCampaignName() string {
+	if o == nil || IsNil(o.CampaignName) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignName
+}
+
+// GetCampaignNameOk returns a tuple with the CampaignName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetCampaignNameOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignName) {
+		return nil, false
+	}
+	return o.CampaignName, true
+}
+
+// HasCampaignName returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasCampaignName() bool {
+	if o != nil && !IsNil(o.CampaignName) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignName gets a reference to the given string and assigns it to the CampaignName field.
+func (o *CreateCallAdRequest) SetCampaignName(v string) {
+	o.CampaignName = &v
+}
+
+// GetAdSetName returns the AdSetName field value if set, zero value otherwise.
+func (o *CreateCallAdRequest) GetAdSetName() string {
+	if o == nil || IsNil(o.AdSetName) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetName
+}
+
+// GetAdSetNameOk returns a tuple with the AdSetName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCallAdRequest) GetAdSetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetName) {
+		return nil, false
+	}
+	return o.AdSetName, true
+}
+
+// HasAdSetName returns a boolean if a field has been set.
+func (o *CreateCallAdRequest) HasAdSetName() bool {
+	if o != nil && !IsNil(o.AdSetName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetName gets a reference to the given string and assigns it to the AdSetName field.
+func (o *CreateCallAdRequest) SetAdSetName(v string) {
+	o.AdSetName = &v
 }
 
 // GetExistingPostId returns the ExistingPostId field value if set, zero value otherwise.
@@ -1551,6 +1619,12 @@ func (o CreateCallAdRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
 	toSerialize["name"] = o.Name
+	if !IsNil(o.CampaignName) {
+		toSerialize["campaignName"] = o.CampaignName
+	}
+	if !IsNil(o.AdSetName) {
+		toSerialize["adSetName"] = o.AdSetName
+	}
 	if !IsNil(o.ExistingPostId) {
 		toSerialize["existingPostId"] = o.ExistingPostId
 	}
