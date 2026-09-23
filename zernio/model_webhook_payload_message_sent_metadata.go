@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.59.0
+API version: 1.60.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,11 @@ import (
 // checks if the WebhookPayloadMessageSentMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadMessageSentMetadata{}
 
-// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards or the TikTok message type. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
+// WebhookPayloadMessageSentMetadata Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin, WhatsApp contact cards, the TikTok message type, or outgoing Instagram/Facebook buttons, quick replies and template. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
 type WebhookPayloadMessageSentMetadata struct {
-	Location *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
+	// Instagram/Facebook only. The buttons, quickReplies and/or template this outgoing message carried, as sent (tracked urls included when link tracking wrapped a button). Absent when the send carried none.
+	MetaInteractive map[string]interface{}                 `json:"metaInteractive,omitempty"`
+	Location        *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
 	// WhatsApp only. The contact cards this message carries. On API sends this is the `contacts` array exactly as given to the inbox send API (`name`, `phones[].phone` / `type`, `emails[]`); on Coexistence echoes of a card shared from the WhatsApp Business app it is Meta's shape (`phones[].wa_id`, `vcard`). The message `text` is only the emoji preview (`👤 <name>`); the cards live here.
 	Contacts []map[string]interface{} `json:"contacts,omitempty"`
 	// `platformMessageId` of the message this send is a quote-reply to.  Present when the reply was sent through Zernio with `replyTo` on the inbox send API (WhatsApp and Telegram). A WhatsApp API send fires its `message.sent` off the delivery status, and the quote reference is forwarded from the stored send there, so it arrives on the same `message.sent` as any other WhatsApp send.  Not delivered on Instagram echoes. Zernio forwards `reply_to.mid` whenever Meta puts it on an echo, but on Instagram Meta does not send it, so a reply the operator quoted in the Instagram app arrives with no `quotedMessageId`. Facebook Messenger rides a separate subscription (`message_echoes`) and has not been measured, so treat it as unverified rather than supported.  Absent on WhatsApp Coexistence echoes. Meta omits the quote context from `smb_message_echoes`, so a reply the operator sent from the WhatsApp Business app arrives with no `quotedMessageId` even though WhatsApp shows it as a quote-reply. Do not read the absence of this field as \"not a reply\".
@@ -46,6 +48,38 @@ func NewWebhookPayloadMessageSentMetadata() *WebhookPayloadMessageSentMetadata {
 func NewWebhookPayloadMessageSentMetadataWithDefaults() *WebhookPayloadMessageSentMetadata {
 	this := WebhookPayloadMessageSentMetadata{}
 	return &this
+}
+
+// GetMetaInteractive returns the MetaInteractive field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSentMetadata) GetMetaInteractive() map[string]interface{} {
+	if o == nil || IsNil(o.MetaInteractive) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.MetaInteractive
+}
+
+// GetMetaInteractiveOk returns a tuple with the MetaInteractive field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSentMetadata) GetMetaInteractiveOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.MetaInteractive) {
+		return map[string]interface{}{}, false
+	}
+	return o.MetaInteractive, true
+}
+
+// HasMetaInteractive returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMetadata) HasMetaInteractive() bool {
+	if o != nil && !IsNil(o.MetaInteractive) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaInteractive gets a reference to the given map[string]interface{} and assigns it to the MetaInteractive field.
+func (o *WebhookPayloadMessageSentMetadata) SetMetaInteractive(v map[string]interface{}) {
+	o.MetaInteractive = v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise.
@@ -218,6 +252,9 @@ func (o WebhookPayloadMessageSentMetadata) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadMessageSentMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.MetaInteractive) {
+		toSerialize["metaInteractive"] = o.MetaInteractive
+	}
 	if !IsNil(o.Location) {
 		toSerialize["location"] = o.Location
 	}

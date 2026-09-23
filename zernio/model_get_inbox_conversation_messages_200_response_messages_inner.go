@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.59.0
+API version: 1.60.0
 Contact: support@zernio.com
 */
 
@@ -60,7 +60,7 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	DeliveryError *GetInboxConversationMessages200ResponseMessagesInnerDeliveryError `json:"deliveryError,omitempty"`
 	// Emoji reactions on this message (WhatsApp / Telegram). At most one per party in a 1:1 thread.
 	Reactions []GetInboxConversationMessages200ResponseMessagesInnerReactionsInner `json:"reactions,omitempty"`
-	// Platform-specific extras. Free-form, but commonly includes: `quotedMessageId` (the `id` of the message this one replies to, delivered as `message.platformMessageId` on webhooks), `waInteractive` (a compact descriptor of WhatsApp interactive content sent: buttons / list / cta_url / flow / location_request), and for inbound interactive taps `interactiveType` / `interactiveId`. It can also carry `source` (`whatsapp_business_app` / `coexistence_history` on a WhatsApp Coexistence number, `bulk-api` on a POST /v1/whatsapp/bulk send), which is where the message reached us from rather than who produced it: read `sentVia` for that.
+	// Platform-specific extras. Free-form, but commonly includes: `quotedMessageId` (the `id` of the message this one replies to, delivered as `message.platformMessageId` on webhooks), `waInteractive` (a compact descriptor of WhatsApp interactive content sent: buttons / list / cta_url / flow / location_request), `metaInteractive` (outgoing Instagram/Facebook buttons, quickReplies and template, as sent), and for inbound interactive taps `interactiveType` / `interactiveId`. It can also carry `source` (`whatsapp_business_app` / `coexistence_history` on a WhatsApp Coexistence number, `bulk-api` on a POST /v1/whatsapp/bulk send), which is where the message reached us from rather than who produced it: read `sentVia` for that.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 	// Which Zernio surface produced this outgoing message: `human` (an operator in the Zernio inbox), `api` (a call to this API), `broadcast`, `sequence`, `workflow`, `comment_automation`, or `bulk-api` (POST /v1/whatsapp/bulk). Same vocabulary as the `source` filter on the inbox analytics endpoints.  Always present, and `null` whenever the lineage is unknown: every incoming message, any outgoing message sent from the platform's own app, and every message stored before this field shipped (2026-08). Existing messages are NOT backfilled, so treat `null` as \"unknown\", never as \"sent by a human\".
 	SentVia NullableString `json:"sentVia,omitempty"`
