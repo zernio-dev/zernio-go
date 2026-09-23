@@ -26,6 +26,8 @@ type InlineObject2Details struct {
 	CurrentAccountCount *int32 `json:"current_account_count,omitempty"`
 	// Whether the team currently has a card on file in Stripe. Set when reason=free_tier_exceeded or reason=twitter_passthrough.
 	HasPaymentMethod *bool `json:"has_payment_method,omitempty"`
+	// One-time card verification charge in USD cents, credited to usage. Only set when reason=card_verification_required.
+	VerificationAmountCents *int32 `json:"verification_amount_cents,omitempty"`
 	// The negotiated connected-account cap from the team's enterprise contract. Self-service teams have no cap and never receive this reason. Only set when reason=enterprise_required.
 	EffectiveAccountLimit *int32 `json:"effective_account_limit,omitempty"`
 }
@@ -143,6 +145,38 @@ func (o *InlineObject2Details) SetHasPaymentMethod(v bool) {
 	o.HasPaymentMethod = &v
 }
 
+// GetVerificationAmountCents returns the VerificationAmountCents field value if set, zero value otherwise.
+func (o *InlineObject2Details) GetVerificationAmountCents() int32 {
+	if o == nil || IsNil(o.VerificationAmountCents) {
+		var ret int32
+		return ret
+	}
+	return *o.VerificationAmountCents
+}
+
+// GetVerificationAmountCentsOk returns a tuple with the VerificationAmountCents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InlineObject2Details) GetVerificationAmountCentsOk() (*int32, bool) {
+	if o == nil || IsNil(o.VerificationAmountCents) {
+		return nil, false
+	}
+	return o.VerificationAmountCents, true
+}
+
+// HasVerificationAmountCents returns a boolean if a field has been set.
+func (o *InlineObject2Details) HasVerificationAmountCents() bool {
+	if o != nil && !IsNil(o.VerificationAmountCents) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerificationAmountCents gets a reference to the given int32 and assigns it to the VerificationAmountCents field.
+func (o *InlineObject2Details) SetVerificationAmountCents(v int32) {
+	o.VerificationAmountCents = &v
+}
+
 // GetEffectiveAccountLimit returns the EffectiveAccountLimit field value if set, zero value otherwise.
 func (o *InlineObject2Details) GetEffectiveAccountLimit() int32 {
 	if o == nil || IsNil(o.EffectiveAccountLimit) {
@@ -193,6 +227,9 @@ func (o InlineObject2Details) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.HasPaymentMethod) {
 		toSerialize["has_payment_method"] = o.HasPaymentMethod
+	}
+	if !IsNil(o.VerificationAmountCents) {
+		toSerialize["verification_amount_cents"] = o.VerificationAmountCents
 	}
 	if !IsNil(o.EffectiveAccountLimit) {
 		toSerialize["effective_account_limit"] = o.EffectiveAccountLimit
