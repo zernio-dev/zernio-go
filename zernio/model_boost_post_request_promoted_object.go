@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.52.3
+API version: 1.53.0
 Contact: support@zernio.com
 */
 
@@ -12,32 +12,30 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
 // checks if the BoostPostRequestPromotedObject type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BoostPostRequestPromotedObject{}
 
-// BoostPostRequestPromotedObject TikTok-only on this endpoint. The pixel a Website Conversion ad group optimizes toward, so a Spark Ad built from an existing organic post can optimize for a conversion instead of only engagement or traffic.  Required when `goal` is `conversions`, and BOTH fields are required: TikTok refuses a conversion ad group with no pixel (\"Please select a pixel\") and equally one that has a pixel but no event (\"Select a pixel event.\"), because the event is what the ad group optimizes toward. Ignored on every other goal, since only a WEB_CONVERSIONS ad group accepts them.  Combine freely with `platformPostId` + `sparkAuthCode`: the pixel lives on the ad group and the Spark item on the creative, so they never conflict.
+// BoostPostRequestPromotedObject Meta and TikTok. What the conversion ad set optimizes toward, so a boost of an existing organic post can run for a conversion instead of only engagement or traffic. Required when `goal` is `conversions` (Meta also `lead_conversion`); ignored on goals that do not optimize for a conversion.  Meta: `pixelId` + `customEventType` (a commerce event such as PURCHASE under `conversions`, a leads-class event such as LEAD under `lead_conversion`), or `customConversionId` to optimize against a Custom Conversion, or `customEventType: OTHER` + `customEventStr` for a pixel custom event. Becomes the ad set `promoted_object`; without it Meta rejects the ad set (\"Please select a promoted object\", subcode 1815430). With `adSetId` the existing ad set already carries it.  TikTok: BOTH `pixelId` and `customEventType` are required. TikTok refuses a conversion ad group with no pixel (\"Please select a pixel\") and one with a pixel but no event (\"Select a pixel event.\"). Combine freely with `platformPostId` + `sparkAuthCode`: the pixel lives on the ad group and the Spark item on the creative.
 type BoostPostRequestPromotedObject struct {
-	// TikTok Pixel. Either the numeric pixel id or the alphanumeric pixel code from Events Manager, which is resolved for you.
-	PixelId string `json:"pixelId"`
-	// Optimization event, as a TikTok optimization_event code (e.g. ON_WEB_ORDER, SHOPPING, FORM) or the exact event name shown in Events Manager, which is resolved to its code. The event must already exist on that pixel, or TikTok rejects the ad group.
-	CustomEventType string `json:"customEventType"`
+	// Meta Pixel id, or TikTok Pixel (numeric id or the alphanumeric pixel code from Events Manager, resolved for you).
+	PixelId *string `json:"pixelId,omitempty"`
+	// Meta: standard pixel event (PURCHASE, LEAD, ...) or OTHER with customEventStr. TikTok: optimization_event code (e.g. ON_WEB_ORDER, SHOPPING, FORM) or the exact event name shown in Events Manager, resolved to its code; the event must already exist on that pixel.
+	CustomEventType *string `json:"customEventType,omitempty"`
+	// Meta only. Pixel custom event name as it appears in Events Manager; requires customEventType OTHER.
+	CustomEventStr *string `json:"customEventStr,omitempty"`
+	// Meta only. Custom Conversion to optimize against, instead of pixelId + customEventType.
+	CustomConversionId *string `json:"customConversionId,omitempty"`
 }
-
-type _BoostPostRequestPromotedObject BoostPostRequestPromotedObject
 
 // NewBoostPostRequestPromotedObject instantiates a new BoostPostRequestPromotedObject object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBoostPostRequestPromotedObject(pixelId string, customEventType string) *BoostPostRequestPromotedObject {
+func NewBoostPostRequestPromotedObject() *BoostPostRequestPromotedObject {
 	this := BoostPostRequestPromotedObject{}
-	this.PixelId = pixelId
-	this.CustomEventType = customEventType
 	return &this
 }
 
@@ -49,52 +47,132 @@ func NewBoostPostRequestPromotedObjectWithDefaults() *BoostPostRequestPromotedOb
 	return &this
 }
 
-// GetPixelId returns the PixelId field value
+// GetPixelId returns the PixelId field value if set, zero value otherwise.
 func (o *BoostPostRequestPromotedObject) GetPixelId() string {
-	if o == nil {
+	if o == nil || IsNil(o.PixelId) {
 		var ret string
 		return ret
 	}
-
-	return o.PixelId
+	return *o.PixelId
 }
 
-// GetPixelIdOk returns a tuple with the PixelId field value
+// GetPixelIdOk returns a tuple with the PixelId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BoostPostRequestPromotedObject) GetPixelIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PixelId) {
 		return nil, false
 	}
-	return &o.PixelId, true
+	return o.PixelId, true
 }
 
-// SetPixelId sets field value
+// HasPixelId returns a boolean if a field has been set.
+func (o *BoostPostRequestPromotedObject) HasPixelId() bool {
+	if o != nil && !IsNil(o.PixelId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPixelId gets a reference to the given string and assigns it to the PixelId field.
 func (o *BoostPostRequestPromotedObject) SetPixelId(v string) {
-	o.PixelId = v
+	o.PixelId = &v
 }
 
-// GetCustomEventType returns the CustomEventType field value
+// GetCustomEventType returns the CustomEventType field value if set, zero value otherwise.
 func (o *BoostPostRequestPromotedObject) GetCustomEventType() string {
-	if o == nil {
+	if o == nil || IsNil(o.CustomEventType) {
 		var ret string
 		return ret
 	}
-
-	return o.CustomEventType
+	return *o.CustomEventType
 }
 
-// GetCustomEventTypeOk returns a tuple with the CustomEventType field value
+// GetCustomEventTypeOk returns a tuple with the CustomEventType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BoostPostRequestPromotedObject) GetCustomEventTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.CustomEventType) {
 		return nil, false
 	}
-	return &o.CustomEventType, true
+	return o.CustomEventType, true
 }
 
-// SetCustomEventType sets field value
+// HasCustomEventType returns a boolean if a field has been set.
+func (o *BoostPostRequestPromotedObject) HasCustomEventType() bool {
+	if o != nil && !IsNil(o.CustomEventType) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomEventType gets a reference to the given string and assigns it to the CustomEventType field.
 func (o *BoostPostRequestPromotedObject) SetCustomEventType(v string) {
-	o.CustomEventType = v
+	o.CustomEventType = &v
+}
+
+// GetCustomEventStr returns the CustomEventStr field value if set, zero value otherwise.
+func (o *BoostPostRequestPromotedObject) GetCustomEventStr() string {
+	if o == nil || IsNil(o.CustomEventStr) {
+		var ret string
+		return ret
+	}
+	return *o.CustomEventStr
+}
+
+// GetCustomEventStrOk returns a tuple with the CustomEventStr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequestPromotedObject) GetCustomEventStrOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomEventStr) {
+		return nil, false
+	}
+	return o.CustomEventStr, true
+}
+
+// HasCustomEventStr returns a boolean if a field has been set.
+func (o *BoostPostRequestPromotedObject) HasCustomEventStr() bool {
+	if o != nil && !IsNil(o.CustomEventStr) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomEventStr gets a reference to the given string and assigns it to the CustomEventStr field.
+func (o *BoostPostRequestPromotedObject) SetCustomEventStr(v string) {
+	o.CustomEventStr = &v
+}
+
+// GetCustomConversionId returns the CustomConversionId field value if set, zero value otherwise.
+func (o *BoostPostRequestPromotedObject) GetCustomConversionId() string {
+	if o == nil || IsNil(o.CustomConversionId) {
+		var ret string
+		return ret
+	}
+	return *o.CustomConversionId
+}
+
+// GetCustomConversionIdOk returns a tuple with the CustomConversionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequestPromotedObject) GetCustomConversionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CustomConversionId) {
+		return nil, false
+	}
+	return o.CustomConversionId, true
+}
+
+// HasCustomConversionId returns a boolean if a field has been set.
+func (o *BoostPostRequestPromotedObject) HasCustomConversionId() bool {
+	if o != nil && !IsNil(o.CustomConversionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomConversionId gets a reference to the given string and assigns it to the CustomConversionId field.
+func (o *BoostPostRequestPromotedObject) SetCustomConversionId(v string) {
+	o.CustomConversionId = &v
 }
 
 func (o BoostPostRequestPromotedObject) MarshalJSON() ([]byte, error) {
@@ -107,47 +185,19 @@ func (o BoostPostRequestPromotedObject) MarshalJSON() ([]byte, error) {
 
 func (o BoostPostRequestPromotedObject) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["pixelId"] = o.PixelId
-	toSerialize["customEventType"] = o.CustomEventType
+	if !IsNil(o.PixelId) {
+		toSerialize["pixelId"] = o.PixelId
+	}
+	if !IsNil(o.CustomEventType) {
+		toSerialize["customEventType"] = o.CustomEventType
+	}
+	if !IsNil(o.CustomEventStr) {
+		toSerialize["customEventStr"] = o.CustomEventStr
+	}
+	if !IsNil(o.CustomConversionId) {
+		toSerialize["customConversionId"] = o.CustomConversionId
+	}
 	return toSerialize, nil
-}
-
-func (o *BoostPostRequestPromotedObject) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"pixelId",
-		"customEventType",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varBoostPostRequestPromotedObject := _BoostPostRequestPromotedObject{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBoostPostRequestPromotedObject)
-
-	if err != nil {
-		return err
-	}
-
-	*o = BoostPostRequestPromotedObject(varBoostPostRequestPromotedObject)
-
-	return err
 }
 
 type NullableBoostPostRequestPromotedObject struct {
