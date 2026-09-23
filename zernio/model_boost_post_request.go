@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.53.0
+API version: 1.53.1
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,7 @@ type BoostPostRequest struct {
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
 	// Zernio post ID (provide this or platformPostId)
 	PostId *string `json:"postId,omitempty"`
-	// Platform post ID (alternative to postId)
+	// Platform post ID (alternative to postId). Meta: a Page post id (`<pageId>_<postId>` or the bare post id) or an Instagram media id. On a Meta Ads business-login connection (platform metaads) the id is resolved live: an Instagram media id is boosted as that media, running as the Instagram account that owns it.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
 	// Zernio account id. Normally the connected posting account (facebook, instagram, tiktok, linkedin, pinterest, twitter) or a googleads account. TikTok: the TikTok Ads connection (platform tiktokads) is accepted too when the post brings its own authorization (sparkAuthCode or sparkPosts), so Spark ads need no organic TikTok account connected; such a call must use platformPostId, not postId.
 	AccountId string `json:"accountId"`
