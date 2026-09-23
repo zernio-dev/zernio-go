@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.61.1
+API version: 1.62.0
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,7 @@ type GetCommentAutomation200ResponseLogsInner struct {
 	// DM error message if status is failed
 	Error         *string                                                `json:"error,omitempty"`
 	PlatformError *GetCommentAutomation200ResponseLogsInnerPlatformError `json:"platformError,omitempty"`
-	// True when the failed send spent the comment's single Instagram private reply (subcode 1545133 or 2534023), the same rule as `details.privateReplyConsumed` on the private-reply endpoint. Absent on direct DMs, on Facebook, and on rows written before this field existed.
+	// True when the failed send spent the comment's single private reply (Instagram subcode 1545133 or 2534023, or Meta code 10900 on Instagram and Facebook), the same rule as `details.privateReplyConsumed` on the private-reply endpoint. Absent on direct DMs and on rows written before this field existed.
 	PrivateReplyConsumed *bool `json:"privateReplyConsumed,omitempty"`
 	// Outcome of the optional public reply on the triggering comment. 'skipped' if no commentReply was configured or if the DM failed (the public reply is not attempted in that case).
 	CommentReplyStatus *string `json:"commentReplyStatus,omitempty"`
