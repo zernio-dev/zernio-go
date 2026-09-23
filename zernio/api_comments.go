@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.60.0
+API version: 1.60.1
 Contact: support@zernio.com
 */
 
@@ -366,9 +366,10 @@ GetInboxPostComments Get post comments
 
 Fetch comments for a specific post. Requires accountId query parameter.
 
-On Facebook and Instagram, passing a COMMENT id as `postId` is also supported and
-returns that comment's replies instead of the post's top-level comments. This is not
-available on YouTube, where `postId` must be a video id.
+On Facebook, passing a COMMENT id as `postId` is also supported and returns that
+comment's replies instead of the post's top-level comments. Instagram does not support
+this and returns 400: its replies come nested in each comment's `replies` array, with no
+separate paging. YouTube does not support it either, `postId` must be a video id.
 
 Responses are cached for up to 10 minutes, so a page may lag new comments by that
 window. Do not poll this endpoint for real-time updates: subscribe to the
@@ -380,8 +381,13 @@ is the TikTok video id, each top-level comment carries up to three inline replie
 `commentId` pages the full reply list of one comment. Developer-app TikTok accounts
 return 400 with code `PLATFORM_LIMITATION`.
 
+Hidden comments: Facebook Pages and Instagram accounts connected through Instagram Login
+return them with `isHidden: true`. Instagram accounts connected through Facebook Login do
+not return them at all (Meta omits them, together with their replies), so a hidden comment
+and a deleted one look the same on this read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook and Instagram, a comment ID is also accepted here and returns that comment's replies.
+	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook, a comment ID is also accepted here and returns that comment's replies (not supported on Instagram).
 	@return CommentsAPIGetInboxPostCommentsRequest
 */
 func (a *CommentsAPIService) GetInboxPostComments(ctx context.Context, postId string) CommentsAPIGetInboxPostCommentsRequest {

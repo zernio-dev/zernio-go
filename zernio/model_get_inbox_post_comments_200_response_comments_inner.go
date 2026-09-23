@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.60.0
+API version: 1.60.1
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ type GetInboxPostComments200ResponseCommentsInner struct {
 	CanHide *bool `json:"canHide,omitempty"`
 	// Whether this comment can be liked (Facebook, X, Bluesky, Reddit, LinkedIn)
 	CanLike *bool `json:"canLike,omitempty"`
-	// Whether the comment is currently hidden
+	// Whether the comment is currently hidden. On Instagram accounts connected through Facebook Login, Meta leaves hidden comments (and their replies) out of the list entirely, so they never appear with isHidden true; Instagram Login accounts and Facebook Pages return them with isHidden true.
 	IsHidden *bool `json:"isHidden,omitempty"`
 	// Whether the current user has liked this comment
 	IsLiked *bool `json:"isLiked,omitempty"`
