@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.62.0
+API version: 1.63.0
 Contact: support@zernio.com
 */
 
@@ -437,10 +437,11 @@ func (r IMessageAPICreateImessageOptInLinkRequest) Execute() (*CreateImessageOpt
 CreateImessageOptInLink Create a tracked iMessage opt-in link
 
 Generates a per-campaign link that opens Messages on this sender with
-`body` prefilled. iMessage is send-first: a sender can only message a
-contact who has written to it (a send to anyone else fails with
-`recipient_must_message_first`), and the contact's tap-and-send is
-what opens that door.
+`body` prefilled. A thread the contact opens skips the pacing and the
+first-message content rule that apply when the sender writes first,
+and it is the only way in for senders without the add-on for new
+contacts (their sends to anyone else fail with
+`recipient_must_message_first`).
 
 Each link carries a unique code in place of the `[opt-in-code]`
 placeholder; when the contact sends it, the resulting `message.received`
