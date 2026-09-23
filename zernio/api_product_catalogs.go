@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.56.0
+API version: 1.57.0
 Contact: support@zernio.com
 */
 
@@ -2728,7 +2728,7 @@ func (r ProductCatalogsAPIListAdCatalogsRequest) AdAccountId(adAccountId string)
 	return r
 }
 
-// Meta business portfolio ID to list
+// Meta business portfolio ID to list. When it is omitted and the Meta login can see several portfolios, the 400 carries &#x60;details.businesses&#x60; (id + name) so a client can offer the choice.
 func (r ProductCatalogsAPIListAdCatalogsRequest) BusinessId(businessId string) ProductCatalogsAPIListAdCatalogsRequest {
 	r.businessId = &businessId
 	return r
