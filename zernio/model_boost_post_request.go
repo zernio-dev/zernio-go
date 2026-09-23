@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.53.1
+API version: 1.54.0
 Contact: support@zernio.com
 */
 
@@ -111,6 +111,12 @@ type BoostPostRequest struct {
 	LeadGenFormId *string `json:"leadGenFormId,omitempty"`
 	// Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On Meta a new campaign stays paused until explicitly activated; an attached ad is itself paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
 	Status *string `json:"status,omitempty"`
+	// Meta only, same semantics as POST /v1/ads/create: campaign = Advantage campaign budget (CBO), the budget and bid strategy sit on the campaign and the ad set inherits them. Default adset. Not allowed with adSetId.
+	BudgetLevel *string `json:"budgetLevel,omitempty"`
+	// Meta only. Ad-set attribution windows, same shape as POST /v1/ads/create. Applied on OUTCOME_SALES, OUTCOME_LEADS and OUTCOME_APP_PROMOTION campaigns (conversions, lead_conversion, lead_generation, app_promotion); other objectives keep Meta's default. Not allowed with adSetId.
+	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
+	// Meta only. Extra primary-text options Meta rotates on the boosted post (asset_feed_spec.bodies with DEGREES_OF_FREEDOM); the post keeps its own text as one of the options. Works for Facebook posts and Instagram media. Under a conversions or traffic goal Meta also wants a website URL on the options, taken from `linkUrl` (send it with a `callToAction`); engagement boosts need none.
+	Bodies []string `json:"bodies,omitempty"`
 	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
@@ -1561,6 +1567,102 @@ func (o *BoostPostRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetBudgetLevel returns the BudgetLevel field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetBudgetLevel() string {
+	if o == nil || IsNil(o.BudgetLevel) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetLevel
+}
+
+// GetBudgetLevelOk returns a tuple with the BudgetLevel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetBudgetLevelOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetLevel) {
+		return nil, false
+	}
+	return o.BudgetLevel, true
+}
+
+// HasBudgetLevel returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasBudgetLevel() bool {
+	if o != nil && !IsNil(o.BudgetLevel) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetLevel gets a reference to the given string and assigns it to the BudgetLevel field.
+func (o *BoostPostRequest) SetBudgetLevel(v string) {
+	o.BudgetLevel = &v
+}
+
+// GetAttributionSpec returns the AttributionSpec field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetAttributionSpec() []BoostPostRequestAttributionSpecInner {
+	if o == nil || IsNil(o.AttributionSpec) {
+		var ret []BoostPostRequestAttributionSpecInner
+		return ret
+	}
+	return o.AttributionSpec
+}
+
+// GetAttributionSpecOk returns a tuple with the AttributionSpec field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetAttributionSpecOk() ([]BoostPostRequestAttributionSpecInner, bool) {
+	if o == nil || IsNil(o.AttributionSpec) {
+		return nil, false
+	}
+	return o.AttributionSpec, true
+}
+
+// HasAttributionSpec returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasAttributionSpec() bool {
+	if o != nil && !IsNil(o.AttributionSpec) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttributionSpec gets a reference to the given []BoostPostRequestAttributionSpecInner and assigns it to the AttributionSpec field.
+func (o *BoostPostRequest) SetAttributionSpec(v []BoostPostRequestAttributionSpecInner) {
+	o.AttributionSpec = v
+}
+
+// GetBodies returns the Bodies field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetBodies() []string {
+	if o == nil || IsNil(o.Bodies) {
+		var ret []string
+		return ret
+	}
+	return o.Bodies
+}
+
+// GetBodiesOk returns a tuple with the Bodies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetBodiesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Bodies) {
+		return nil, false
+	}
+	return o.Bodies, true
+}
+
+// HasBodies returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasBodies() bool {
+	if o != nil && !IsNil(o.Bodies) {
+		return true
+	}
+
+	return false
+}
+
+// SetBodies gets a reference to the given []string and assigns it to the Bodies field.
+func (o *BoostPostRequest) SetBodies(v []string) {
+	o.Bodies = v
+}
+
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetOptimizationGoal() string {
 	if o == nil || IsNil(o.OptimizationGoal) {
@@ -1729,6 +1831,15 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.BudgetLevel) {
+		toSerialize["budgetLevel"] = o.BudgetLevel
+	}
+	if !IsNil(o.AttributionSpec) {
+		toSerialize["attributionSpec"] = o.AttributionSpec
+	}
+	if !IsNil(o.Bodies) {
+		toSerialize["bodies"] = o.Bodies
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal

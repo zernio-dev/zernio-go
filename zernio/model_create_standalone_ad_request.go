@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.53.1
+API version: 1.54.0
 Contact: support@zernio.com
 */
 
@@ -188,7 +188,7 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Controls the Advantage audience feature (targeting_automation). 0 = disabled (default), 1 = enabled. Meta Marketing API requires this field on all ad set creation requests.
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Meta only. Conversion attribution window for the ad set, mapping 1:1 to Meta's ad-set `attribution_spec`. Only honored for conversion goals (`conversions`, `lead_generation`, `app_promotion`); ignored for awareness/traffic/engagement. Omit to use Meta's default (`7-day click` + `1-day view`). Meta enforces the valid combinations: `VIEW_THROUGH` only allows `windowDays: 1` (7d/28d view windows were removed Jan 2026); `ENGAGED_VIDEO_VIEW` only `1` and only alongside `VIEW_THROUGH: 1`; `CLICK_THROUGH: 28` only on certain objectives. Invalid combos surface as a Meta 400. Example: `[{ \"eventType\": \"CLICK_THROUGH\", \"windowDays\": 7 }, { \"eventType\": \"VIEW_THROUGH\", \"windowDays\": 1 }]`
-	AttributionSpec []CreateStandaloneAdRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
+	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Restrict the audience by gender. 'male' targets men only, 'female' targets women only, 'all' (default) targets everyone. Applied on Meta, TikTok and Pinterest. Ignored on Google, LinkedIn and X.
 	Gender *string `json:"gender,omitempty"`
 	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Meta bid strategy applied to the ad set.  OpenAI Ads: required on every ad group via this flat field, the only channel it supports (`platformSpecificData` is Meta/LinkedIn-only and returns 400 for OpenAI). No auto-bid option exists; send `LOWEST_COST_WITH_BID_CAP` or `COST_CAP` together with `bidAmount`, omitting it returns 400.  Google (not deprecated there, this shared flat field is Google's only shape): applied to the campaign this call creates. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead. Omitted, the campaign falls back to a goal-based default.
@@ -3061,9 +3061,9 @@ func (o *CreateStandaloneAdRequest) SetAdvantageAudience(v int32) {
 }
 
 // GetAttributionSpec returns the AttributionSpec field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequest) GetAttributionSpec() []CreateStandaloneAdRequestAttributionSpecInner {
+func (o *CreateStandaloneAdRequest) GetAttributionSpec() []BoostPostRequestAttributionSpecInner {
 	if o == nil || IsNil(o.AttributionSpec) {
-		var ret []CreateStandaloneAdRequestAttributionSpecInner
+		var ret []BoostPostRequestAttributionSpecInner
 		return ret
 	}
 	return o.AttributionSpec
@@ -3071,7 +3071,7 @@ func (o *CreateStandaloneAdRequest) GetAttributionSpec() []CreateStandaloneAdReq
 
 // GetAttributionSpecOk returns a tuple with the AttributionSpec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequest) GetAttributionSpecOk() ([]CreateStandaloneAdRequestAttributionSpecInner, bool) {
+func (o *CreateStandaloneAdRequest) GetAttributionSpecOk() ([]BoostPostRequestAttributionSpecInner, bool) {
 	if o == nil || IsNil(o.AttributionSpec) {
 		return nil, false
 	}
@@ -3087,8 +3087,8 @@ func (o *CreateStandaloneAdRequest) HasAttributionSpec() bool {
 	return false
 }
 
-// SetAttributionSpec gets a reference to the given []CreateStandaloneAdRequestAttributionSpecInner and assigns it to the AttributionSpec field.
-func (o *CreateStandaloneAdRequest) SetAttributionSpec(v []CreateStandaloneAdRequestAttributionSpecInner) {
+// SetAttributionSpec gets a reference to the given []BoostPostRequestAttributionSpecInner and assigns it to the AttributionSpec field.
+func (o *CreateStandaloneAdRequest) SetAttributionSpec(v []BoostPostRequestAttributionSpecInner) {
 	o.AttributionSpec = v
 }
 
