@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.72.0
+API version: 1.72.1
 Contact: support@zernio.com
 */
 
@@ -368,11 +368,9 @@ func (r TrackingTagsAPIGetAdTrackingTagsRequest) Execute() (*GetAdTrackingTags20
 GetAdTrackingTags Get ad tracking tags
 
 Unified read of the platform's native click-URL tracking params.
-  - Meta (facebook/instagram): the creative's `url_tags` (and template_url_spec).
-  - Google (googleads): the campaign's `trackingUrlTemplate` + `finalUrlSuffix`.
-    Subject to the Google Ads API access-tier daily quota; bulk audits need Standard access.
-  - LinkedIn (linkedinads): the campaign's Dynamic UTM `dynamicValueParameters` + `customValueParameters`.
-
+- Meta (facebook/instagram): the creative's `url_tags` (and template_url_spec).
+- Google (googleads): the campaign's `trackingUrlTemplate` + `finalUrlSuffix`.
+- LinkedIn (linkedinads): the campaign's Dynamic UTM `dynamicValueParameters` + `customValueParameters`.
 Returns 405 for platforms without a click-URL tracking surface (TikTok, X, Pinterest).
 
 **Not pixels.** Despite the shared path segment, this endpoint has nothing to do with
