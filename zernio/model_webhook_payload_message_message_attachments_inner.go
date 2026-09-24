@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.70.0
+API version: 1.71.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &WebhookPayloadMessageMessageAttachmentsInner{}
 
 // WebhookPayloadMessageMessageAttachmentsInner struct for WebhookPayloadMessageMessageAttachmentsInner
 type WebhookPayloadMessageMessageAttachmentsInner struct {
-	// Attachment type (image, video, file, sticker, audio, share)
+	// Attachment type (image, video, file, sticker, audio, share).  Instagram and Facebook deliver a shared reel, post or ad with no type of its own (Meta's `unsupported_type`). Zernio resolves it from the media's Content-Type at ingest, so it arrives as `image`, `video`, `audio` or `file` with `originalType: \"unsupported_type\"`. `type: \"unsupported_type\"` itself is emitted only when the CDN could not be classified in time; the `url` still works.
 	Type string `json:"type"`
-	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own attachment type before Zernio normalized it: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` all become `share`.  Read it before rendering, because `type: \"share\"` alone is ambiguous. In particular a story mention arrives as `type: \"share\"` with `originalType: \"story_mention\"`; treating an unrecognized type as a generic document shows your agent \"document received\" for what is usually a lead.
+	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own attachment type before Zernio normalized it: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` all become `share`.  Read it before rendering, because `type: \"share\"` alone is ambiguous. In particular a story mention arrives as `type: \"share\"` with `originalType: \"story_mention\"`; treating an unrecognized type as a generic document shows your agent \"document received\" for what is usually a lead.  `originalType: \"unsupported_type\"` marks a share Meta did not classify, resolved by content type. **Download it on receipt**: Meta answers `is_unsupported` with no attachments when the message node is read back, so the attachment-resolve endpoint cannot re-mint this url once it expires.
 	OriginalType *string `json:"originalType,omitempty"`
+	// MIME type of the media when Zernio knows it. On Instagram and Facebook it is set for shares resolved by content type (`originalType: \"unsupported_type\"`).
+	MimeType *string `json:"mimeType,omitempty"`
 	// Where to fetch the attachment. **The contract differs by platform.**  - **WhatsApp**: points at `GET /v1/whatsapp/media/{mediaId}`, an   authenticated Zernio endpoint. You MUST send   `Authorization: Bearer <your API key>`; fetching it without that   header returns `401`. Download and store the bytes when this   webhook arrives: Meta drops inbound media after a limited   retention window, after which the endpoint answers `400`   permanently and the media is unrecoverable. - **Instagram / Facebook / Telegram**: a direct platform CDN link   that needs no authentication and expires on the platform's own   schedule.  **Webhook attachments carry no `refreshUrl`.** That field is stamped only when you read a message back over REST (`GET /v1/inbox/conversations/{conversationId}/messages`). On Instagram and Facebook the url above is a signed Meta CDN link that expires, so do not persist it: store the message id and resolve the media through `GET /v1/inbox/conversations/{conversationId}/messages/{messageId}/attachments/{index}?accountId={accountId}`, which re-mints it on demand. Every value that URL needs is already in this payload: `message.conversationId`, `message.platformMessageId`, `account.accountId`, and the attachment's zero-based position in this array.
 	Url string `json:"url"`
 	// Additional attachment metadata
@@ -109,6 +111,38 @@ func (o *WebhookPayloadMessageMessageAttachmentsInner) SetOriginalType(v string)
 	o.OriginalType = &v
 }
 
+// GetMimeType returns the MimeType field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMessageAttachmentsInner) GetMimeType() string {
+	if o == nil || IsNil(o.MimeType) {
+		var ret string
+		return ret
+	}
+	return *o.MimeType
+}
+
+// GetMimeTypeOk returns a tuple with the MimeType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMessageAttachmentsInner) GetMimeTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MimeType) {
+		return nil, false
+	}
+	return o.MimeType, true
+}
+
+// HasMimeType returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMessageAttachmentsInner) HasMimeType() bool {
+	if o != nil && !IsNil(o.MimeType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMimeType gets a reference to the given string and assigns it to the MimeType field.
+func (o *WebhookPayloadMessageMessageAttachmentsInner) SetMimeType(v string) {
+	o.MimeType = &v
+}
+
 // GetUrl returns the Url field value
 func (o *WebhookPayloadMessageMessageAttachmentsInner) GetUrl() string {
 	if o == nil {
@@ -178,6 +212,9 @@ func (o WebhookPayloadMessageMessageAttachmentsInner) ToMap() (map[string]interf
 	toSerialize["type"] = o.Type
 	if !IsNil(o.OriginalType) {
 		toSerialize["originalType"] = o.OriginalType
+	}
+	if !IsNil(o.MimeType) {
+		toSerialize["mimeType"] = o.MimeType
 	}
 	toSerialize["url"] = o.Url
 	if !IsNil(o.Payload) {

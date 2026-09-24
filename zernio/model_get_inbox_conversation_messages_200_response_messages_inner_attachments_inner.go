@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.70.0
+API version: 1.71.0
 Contact: support@zernio.com
 */
 
@@ -20,13 +20,16 @@ var _ MappedNullable = &GetInboxConversationMessages200ResponseMessagesInnerAtta
 
 // GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct for GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner
 type GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner struct {
-	Id   *string `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
+	// On Instagram and Facebook a shared reel, post or ad reaches Zernio with no type of its own (Meta's `unsupported_type`) and is resolved from the media's Content-Type at ingest into `image`, `video`, `audio` or `file` with `originalType: \"unsupported_type\"`. `unsupported_type` is returned only when the CDN could not be classified in time.
 	Type *string `json:"type,omitempty"`
-	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own type before normalization: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` become `share`. A story mention is `type: \"share\"` with `originalType: \"story_mention\"`; render on this field, since `share` alone is ambiguous.
+	// Instagram and Facebook only, and present only when it differs from `type`. Meta's own type before normalization: `ig_reel` and `reel` become `video`, while `ig_post`, `post`, `ig_story` and `story_mention` become `share`. A story mention is `type: \"share\"` with `originalType: \"story_mention\"`; render on this field, since `share` alone is ambiguous. `originalType: \"unsupported_type\"` marks a share Meta did not classify, resolved by content type: `refreshUrl` cannot re-mint it (Meta answers `is_unsupported` with no attachments for the message node), so download it when the `message.received` webhook arrives.
 	OriginalType *string `json:"originalType,omitempty"`
+	// MIME type of the media when Zernio knows it. On Instagram and Facebook it is set for shares resolved by content type (`originalType: \"unsupported_type\"`).
+	MimeType *string `json:"mimeType,omitempty"`
 	// Direct media link. On Instagram and Facebook this is a signed Meta CDN url that EXPIRES: use it now, do not store it. Persist `refreshUrl` instead.
 	Url *string `json:"url,omitempty"`
-	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely.
+	// Instagram and Facebook only. Endpoint that resolves this attachment to a working url every time, re-minting it from Meta when the stored one has expired. Safe to store and render indefinitely, except for an attachment with `originalType: \"unsupported_type\"`: Meta cannot re-serve those, so the endpoint answers 404 once the url has expired.
 	RefreshUrl NullableString `json:"refreshUrl,omitempty"`
 	Filename   NullableString `json:"filename,omitempty"`
 	PreviewUrl NullableString `json:"previewUrl,omitempty"`
@@ -145,6 +148,38 @@ func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) H
 // SetOriginalType gets a reference to the given string and assigns it to the OriginalType field.
 func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetOriginalType(v string) {
 	o.OriginalType = &v
+}
+
+// GetMimeType returns the MimeType field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetMimeType() string {
+	if o == nil || IsNil(o.MimeType) {
+		var ret string
+		return ret
+	}
+	return *o.MimeType
+}
+
+// GetMimeTypeOk returns a tuple with the MimeType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) GetMimeTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MimeType) {
+		return nil, false
+	}
+	return o.MimeType, true
+}
+
+// HasMimeType returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) HasMimeType() bool {
+	if o != nil && !IsNil(o.MimeType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMimeType gets a reference to the given string and assigns it to the MimeType field.
+func (o *GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) SetMimeType(v string) {
+	o.MimeType = &v
 }
 
 // GetUrl returns the Url field value if set, zero value otherwise.
@@ -358,6 +393,9 @@ func (o GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner) To
 	}
 	if !IsNil(o.OriginalType) {
 		toSerialize["originalType"] = o.OriginalType
+	}
+	if !IsNil(o.MimeType) {
+		toSerialize["mimeType"] = o.MimeType
 	}
 	if !IsNil(o.Url) {
 		toSerialize["url"] = o.Url
