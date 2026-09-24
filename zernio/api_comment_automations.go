@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.68.1
+API version: 1.69.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,15 @@ CreateCommentAutomation Create comment-to-DM automation
 Create a keyword-triggered DM automation on an Instagram or Facebook account.
 When someone comments a matching keyword (or, with `trigger: story_reply`, replies
 to your Instagram story with one), they automatically receive a DM.
+
+To continue into a specific workflow after the recipient taps a button, use
+`{"type":"postback","title":"Send it","payload":"zernio:workflow:<workflowId>"}`.
+The target must be active and belong to the same account and profile. This also
+works for product-card buttons. The tap starts that workflow directly, without
+matching its keyword or first-message condition. A different live workflow in
+the conversation is exited; tapping the same live workflow does not restart it
+or consume a pending reply. Stale or invalid targets do nothing. The initial
+comment DM alone does not start the workflow: the recipient must tap.
 
 Triggers (`trigger`):
   - `comment` (default): fires on keyword comments on a post or reel.
