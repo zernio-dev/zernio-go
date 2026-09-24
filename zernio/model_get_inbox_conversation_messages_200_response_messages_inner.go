@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.69.0
+API version: 1.70.0
 Contact: support@zernio.com
 */
 
@@ -35,11 +35,12 @@ type GetInboxConversationMessages200ResponseMessagesInner struct {
 	CreatedAt          *time.Time                                                             `json:"createdAt,omitempty"`
 	Attachments        []GetInboxConversationMessages200ResponseMessagesInnerAttachmentsInner `json:"attachments,omitempty"`
 	// Reddit message subject
-	Subject NullableString `json:"subject,omitempty"`
-	// Instagram story reply
-	StoryReply NullableBool `json:"storyReply,omitempty"`
-	// Instagram story mention
-	IsStoryMention NullableBool `json:"isStoryMention,omitempty"`
+	Subject    NullableString                                                  `json:"subject,omitempty"`
+	StoryReply *GetInboxConversationMessages200ResponseMessagesInnerStoryReply `json:"storyReply,omitempty"`
+	// Instagram only. True when the message is the user mentioning the account in their own story. The story itself is the `share` attachment with `originalType: \"story_mention\"`. Also set on imported history, read off Meta's `story.mention`.
+	IsStoryMention *bool `json:"isStoryMention,omitempty"`
+	// Instagram and Facebook Messenger only. True when Meta withholds the content of this message from the API (its `is_unsupported` flag): `message` is empty, `attachments` is empty, and there is nothing to fetch, now or later. Distinguishes such a message from an ordinary empty one such as a story reply with no text. Absent on other platforms.
+	NoRenderableContent *bool `json:"noRenderableContent,omitempty"`
 	// True if the sender has edited this message at least once.
 	IsEdited *bool `json:"isEdited,omitempty"`
 	// When the most recent edit happened.
@@ -500,90 +501,100 @@ func (o *GetInboxConversationMessages200ResponseMessagesInner) UnsetSubject() {
 	o.Subject.Unset()
 }
 
-// GetStoryReply returns the StoryReply field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GetInboxConversationMessages200ResponseMessagesInner) GetStoryReply() bool {
-	if o == nil || IsNil(o.StoryReply.Get()) {
-		var ret bool
+// GetStoryReply returns the StoryReply field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetStoryReply() GetInboxConversationMessages200ResponseMessagesInnerStoryReply {
+	if o == nil || IsNil(o.StoryReply) {
+		var ret GetInboxConversationMessages200ResponseMessagesInnerStoryReply
 		return ret
 	}
-	return *o.StoryReply.Get()
+	return *o.StoryReply
 }
 
 // GetStoryReplyOk returns a tuple with the StoryReply field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GetInboxConversationMessages200ResponseMessagesInner) GetStoryReplyOk() (*bool, bool) {
-	if o == nil {
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetStoryReplyOk() (*GetInboxConversationMessages200ResponseMessagesInnerStoryReply, bool) {
+	if o == nil || IsNil(o.StoryReply) {
 		return nil, false
 	}
-	return o.StoryReply.Get(), o.StoryReply.IsSet()
+	return o.StoryReply, true
 }
 
 // HasStoryReply returns a boolean if a field has been set.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) HasStoryReply() bool {
-	if o != nil && o.StoryReply.IsSet() {
+	if o != nil && !IsNil(o.StoryReply) {
 		return true
 	}
 
 	return false
 }
 
-// SetStoryReply gets a reference to the given NullableBool and assigns it to the StoryReply field.
-func (o *GetInboxConversationMessages200ResponseMessagesInner) SetStoryReply(v bool) {
-	o.StoryReply.Set(&v)
+// SetStoryReply gets a reference to the given GetInboxConversationMessages200ResponseMessagesInnerStoryReply and assigns it to the StoryReply field.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetStoryReply(v GetInboxConversationMessages200ResponseMessagesInnerStoryReply) {
+	o.StoryReply = &v
 }
 
-// SetStoryReplyNil sets the value for StoryReply to be an explicit nil
-func (o *GetInboxConversationMessages200ResponseMessagesInner) SetStoryReplyNil() {
-	o.StoryReply.Set(nil)
-}
-
-// UnsetStoryReply ensures that no value is present for StoryReply, not even an explicit nil
-func (o *GetInboxConversationMessages200ResponseMessagesInner) UnsetStoryReply() {
-	o.StoryReply.Unset()
-}
-
-// GetIsStoryMention returns the IsStoryMention field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetIsStoryMention returns the IsStoryMention field value if set, zero value otherwise.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) GetIsStoryMention() bool {
-	if o == nil || IsNil(o.IsStoryMention.Get()) {
+	if o == nil || IsNil(o.IsStoryMention) {
 		var ret bool
 		return ret
 	}
-	return *o.IsStoryMention.Get()
+	return *o.IsStoryMention
 }
 
 // GetIsStoryMentionOk returns a tuple with the IsStoryMention field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetInboxConversationMessages200ResponseMessagesInner) GetIsStoryMentionOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.IsStoryMention) {
 		return nil, false
 	}
-	return o.IsStoryMention.Get(), o.IsStoryMention.IsSet()
+	return o.IsStoryMention, true
 }
 
 // HasIsStoryMention returns a boolean if a field has been set.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) HasIsStoryMention() bool {
-	if o != nil && o.IsStoryMention.IsSet() {
+	if o != nil && !IsNil(o.IsStoryMention) {
 		return true
 	}
 
 	return false
 }
 
-// SetIsStoryMention gets a reference to the given NullableBool and assigns it to the IsStoryMention field.
+// SetIsStoryMention gets a reference to the given bool and assigns it to the IsStoryMention field.
 func (o *GetInboxConversationMessages200ResponseMessagesInner) SetIsStoryMention(v bool) {
-	o.IsStoryMention.Set(&v)
+	o.IsStoryMention = &v
 }
 
-// SetIsStoryMentionNil sets the value for IsStoryMention to be an explicit nil
-func (o *GetInboxConversationMessages200ResponseMessagesInner) SetIsStoryMentionNil() {
-	o.IsStoryMention.Set(nil)
+// GetNoRenderableContent returns the NoRenderableContent field value if set, zero value otherwise.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetNoRenderableContent() bool {
+	if o == nil || IsNil(o.NoRenderableContent) {
+		var ret bool
+		return ret
+	}
+	return *o.NoRenderableContent
 }
 
-// UnsetIsStoryMention ensures that no value is present for IsStoryMention, not even an explicit nil
-func (o *GetInboxConversationMessages200ResponseMessagesInner) UnsetIsStoryMention() {
-	o.IsStoryMention.Unset()
+// GetNoRenderableContentOk returns a tuple with the NoRenderableContent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) GetNoRenderableContentOk() (*bool, bool) {
+	if o == nil || IsNil(o.NoRenderableContent) {
+		return nil, false
+	}
+	return o.NoRenderableContent, true
+}
+
+// HasNoRenderableContent returns a boolean if a field has been set.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) HasNoRenderableContent() bool {
+	if o != nil && !IsNil(o.NoRenderableContent) {
+		return true
+	}
+
+	return false
+}
+
+// SetNoRenderableContent gets a reference to the given bool and assigns it to the NoRenderableContent field.
+func (o *GetInboxConversationMessages200ResponseMessagesInner) SetNoRenderableContent(v bool) {
+	o.NoRenderableContent = &v
 }
 
 // GetIsEdited returns the IsEdited field value if set, zero value otherwise.
@@ -1157,11 +1168,14 @@ func (o GetInboxConversationMessages200ResponseMessagesInner) ToMap() (map[strin
 	if o.Subject.IsSet() {
 		toSerialize["subject"] = o.Subject.Get()
 	}
-	if o.StoryReply.IsSet() {
-		toSerialize["storyReply"] = o.StoryReply.Get()
+	if !IsNil(o.StoryReply) {
+		toSerialize["storyReply"] = o.StoryReply
 	}
-	if o.IsStoryMention.IsSet() {
-		toSerialize["isStoryMention"] = o.IsStoryMention.Get()
+	if !IsNil(o.IsStoryMention) {
+		toSerialize["isStoryMention"] = o.IsStoryMention
+	}
+	if !IsNil(o.NoRenderableContent) {
+		toSerialize["noRenderableContent"] = o.NoRenderableContent
 	}
 	if !IsNil(o.IsEdited) {
 		toSerialize["isEdited"] = o.IsEdited
