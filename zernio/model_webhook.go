@@ -41,6 +41,8 @@ type Webhook struct {
 	CustomHeaders map[string]string `json:"customHeaders,omitempty"`
 	// Resource groups this subscription does not receive (opt-out denylist, same vocabulary and same semantics as the field on API keys). Absent or empty means the subscription receives every event listed in `events`, which is how every subscription created before this field existed behaves. An event whose group is listed here is dropped before delivery even when it is still present in `events`, and the same check runs on every replay path (test fire, redelivery, dead-letter requeue). Editing the denylist applies to every event emitted afterwards; events already queued when the edit landed can still be delivered for up to five minutes after they were enqueued.
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
+	// Profiles this subscription receives events for (allowlist). Absent or empty means every profile, which is how every subscription created before this field existed behaves. A scoped subscription is only sent events attributable to a listed profile; events with no profile behind them (`verification.*`, `phone_number.*`) are not delivered to it. Applied when the event is emitted: a redelivery replays a delivery already made to this endpoint, and a test fire ignores the list.
+	ProfileIds []string `json:"profileIds,omitempty"`
 }
 
 // NewWebhook instantiates a new Webhook object
@@ -380,6 +382,38 @@ func (o *Webhook) SetDisabledResourceGroups(v []string) {
 	o.DisabledResourceGroups = v
 }
 
+// GetProfileIds returns the ProfileIds field value if set, zero value otherwise.
+func (o *Webhook) GetProfileIds() []string {
+	if o == nil || IsNil(o.ProfileIds) {
+		var ret []string
+		return ret
+	}
+	return o.ProfileIds
+}
+
+// GetProfileIdsOk returns a tuple with the ProfileIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Webhook) GetProfileIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ProfileIds) {
+		return nil, false
+	}
+	return o.ProfileIds, true
+}
+
+// HasProfileIds returns a boolean if a field has been set.
+func (o *Webhook) HasProfileIds() bool {
+	if o != nil && !IsNil(o.ProfileIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileIds gets a reference to the given []string and assigns it to the ProfileIds field.
+func (o *Webhook) SetProfileIds(v []string) {
+	o.ProfileIds = v
+}
+
 func (o Webhook) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -419,6 +453,9 @@ func (o Webhook) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisabledResourceGroups) {
 		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
+	}
+	if !IsNil(o.ProfileIds) {
+		toSerialize["profileIds"] = o.ProfileIds
 	}
 	return toSerialize, nil
 }

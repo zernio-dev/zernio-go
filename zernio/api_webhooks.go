@@ -58,6 +58,11 @@ before delivery to this endpoint, on live delivery and on every replay path
 subscriptions behave. A restricted key's own disabled groups are always
 unioned in.
 
+`profileIds` pins the subscription to a set of profiles: only events
+attributable to one of them are delivered. Use it to send the profile
+holding your test accounts to a staging endpoint. Ids outside your team
+are rejected with 404 `profile_not_found`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPICreateWebhookSettingsRequest
 */
@@ -154,6 +159,7 @@ func (a *WebhooksAPIService) CreateWebhookSettingsExecute(r WebhooksAPICreateWeb
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -977,6 +983,9 @@ to five minutes after they were enqueued, because the delivery worker
 trusts a five-minute enqueue-time snapshot before re-checking the
 subscription. Retries beyond that window, dead-letter replays, test fires,
 and redeliveries are all checked against the current denylist.
+
+`profileIds` replaces the subscription's profile allowlist; an empty array
+clears it. Ids outside your team are rejected with 404 `profile_not_found`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIUpdateWebhookSettingsRequest

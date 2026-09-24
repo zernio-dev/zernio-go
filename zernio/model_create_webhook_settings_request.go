@@ -36,6 +36,8 @@ type CreateWebhookSettingsRequest struct {
 	CustomHeaders map[string]string `json:"customHeaders,omitempty"`
 	// Resource groups this subscription does not receive (opt-out denylist). Omit or send an empty array to receive every event in `events`. Listing a group here drops its events before delivery and on every replay path. Set at creation it applies to everything this subscription ever receives; changed later via PUT it applies to events emitted after the change, with a five-minute tail for events already queued (see that operation). When the caller is a restricted (zrk_) key, that key's own disabled groups are unioned into whatever you send here, so a restricted key can never create a subscription wider than itself.
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
+	// Profiles this subscription receives events for. Omit or send an empty array to receive every profile. Every id must be a profile in your team, otherwise the request fails with 404 `profile_not_found` and nothing is created. Typical use is routing the profile that holds test accounts to a staging endpoint.
+	ProfileIds []string `json:"profileIds,omitempty"`
 }
 
 type _CreateWebhookSettingsRequest CreateWebhookSettingsRequest
@@ -264,6 +266,38 @@ func (o *CreateWebhookSettingsRequest) SetDisabledResourceGroups(v []string) {
 	o.DisabledResourceGroups = v
 }
 
+// GetProfileIds returns the ProfileIds field value if set, zero value otherwise.
+func (o *CreateWebhookSettingsRequest) GetProfileIds() []string {
+	if o == nil || IsNil(o.ProfileIds) {
+		var ret []string
+		return ret
+	}
+	return o.ProfileIds
+}
+
+// GetProfileIdsOk returns a tuple with the ProfileIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWebhookSettingsRequest) GetProfileIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ProfileIds) {
+		return nil, false
+	}
+	return o.ProfileIds, true
+}
+
+// HasProfileIds returns a boolean if a field has been set.
+func (o *CreateWebhookSettingsRequest) HasProfileIds() bool {
+	if o != nil && !IsNil(o.ProfileIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileIds gets a reference to the given []string and assigns it to the ProfileIds field.
+func (o *CreateWebhookSettingsRequest) SetProfileIds(v []string) {
+	o.ProfileIds = v
+}
+
 func (o CreateWebhookSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -288,6 +322,9 @@ func (o CreateWebhookSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisabledResourceGroups) {
 		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
+	}
+	if !IsNil(o.ProfileIds) {
+		toSerialize["profileIds"] = o.ProfileIds
 	}
 	return toSerialize, nil
 }
