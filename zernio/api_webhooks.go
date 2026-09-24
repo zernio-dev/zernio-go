@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.66.0
+API version: 1.67.0
 Contact: support@zernio.com
 */
 
@@ -58,10 +58,12 @@ before delivery to this endpoint, on live delivery and on every replay path
 subscriptions behave. A restricted key's own disabled groups are always
 unioned in.
 
-`profileIds` pins the subscription to a set of profiles: only events
-attributable to one of them are delivered. Use it to send the profile
-holding your test accounts to a staging endpoint. Ids outside your team
-are rejected with 404 `profile_not_found`.
+`profileIds` pins the subscription to a set of profiles and `accountIds`
+to a set of connected accounts: only events attributable to one of the
+listed ids are delivered, and a subscription with both lists must match
+on both. Use them to send test accounts to a staging endpoint. Ids
+outside your team are rejected with 404 (`profile_not_found`,
+`account_not_found`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPICreateWebhookSettingsRequest
@@ -984,8 +986,9 @@ trusts a five-minute enqueue-time snapshot before re-checking the
 subscription. Retries beyond that window, dead-letter replays, test fires,
 and redeliveries are all checked against the current denylist.
 
-`profileIds` replaces the subscription's profile allowlist; an empty array
-clears it. Ids outside your team are rejected with 404 `profile_not_found`.
+`profileIds` and `accountIds` replace the subscription's allowlists; an
+empty array clears one. Ids outside your team are rejected with 404
+(`profile_not_found`, `account_not_found`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhooksAPIUpdateWebhookSettingsRequest

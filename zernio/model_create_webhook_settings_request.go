@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.66.0
+API version: 1.67.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type CreateWebhookSettingsRequest struct {
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 	// Profiles this subscription receives events for. Omit or send an empty array to receive every profile. Every id must be a profile in your team, otherwise the request fails with 404 `profile_not_found` and nothing is created. Typical use is routing the profile that holds test accounts to a staging endpoint.
 	ProfileIds []string `json:"profileIds,omitempty"`
+	// Connected accounts this subscription receives events for. Omit or send an empty array to receive every account. Every id must be an account in your team, otherwise the request fails with 404 `account_not_found` and nothing is created. Combine with `profileIds` to narrow further; both must match.
+	AccountIds []string `json:"accountIds,omitempty"`
 }
 
 type _CreateWebhookSettingsRequest CreateWebhookSettingsRequest
@@ -298,6 +300,38 @@ func (o *CreateWebhookSettingsRequest) SetProfileIds(v []string) {
 	o.ProfileIds = v
 }
 
+// GetAccountIds returns the AccountIds field value if set, zero value otherwise.
+func (o *CreateWebhookSettingsRequest) GetAccountIds() []string {
+	if o == nil || IsNil(o.AccountIds) {
+		var ret []string
+		return ret
+	}
+	return o.AccountIds
+}
+
+// GetAccountIdsOk returns a tuple with the AccountIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateWebhookSettingsRequest) GetAccountIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.AccountIds) {
+		return nil, false
+	}
+	return o.AccountIds, true
+}
+
+// HasAccountIds returns a boolean if a field has been set.
+func (o *CreateWebhookSettingsRequest) HasAccountIds() bool {
+	if o != nil && !IsNil(o.AccountIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountIds gets a reference to the given []string and assigns it to the AccountIds field.
+func (o *CreateWebhookSettingsRequest) SetAccountIds(v []string) {
+	o.AccountIds = v
+}
+
 func (o CreateWebhookSettingsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -325,6 +359,9 @@ func (o CreateWebhookSettingsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ProfileIds) {
 		toSerialize["profileIds"] = o.ProfileIds
+	}
+	if !IsNil(o.AccountIds) {
+		toSerialize["accountIds"] = o.AccountIds
 	}
 	return toSerialize, nil
 }
