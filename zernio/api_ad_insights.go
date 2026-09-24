@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.63.0
+API version: 1.64.0
 Contact: support@zernio.com
 */
 
@@ -1219,6 +1219,253 @@ func (a *AdInsightsAPIService) GetCampaignAnalyticsExecute(r AdInsightsAPIGetCam
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest struct {
+	ctx            context.Context
+	ApiService     *AdInsightsAPIService
+	accountId      *string
+	adAccountId    *string
+	startDate      *string
+	endDate        *string
+	level          *string
+	smartPlusAdIds *string
+	adGroupIds     *string
+	page           *int32
+	pageSize       *int32
+}
+
+// A tiktok or tiktokads account ID
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) AccountId(accountId string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// TikTok advertiser ID
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) AdAccountId(adAccountId string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// YYYY-MM-DD, in the advertiser&#39;s time zone
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) StartDate(startDate string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.startDate = &startDate
+	return r
+}
+
+// YYYY-MM-DD, on or after startDate
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) EndDate(endDate string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.endDate = &endDate
+	return r
+}
+
+// Key each row by Smart+ ad or by ad group
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) Level(level string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.level = &level
+	return r
+}
+
+// Comma-separated Smart+ ad ids to filter by (up to 100)
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) SmartPlusAdIds(smartPlusAdIds string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.smartPlusAdIds = &smartPlusAdIds
+	return r
+}
+
+// Comma-separated ad group ids to filter by (up to 100)
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) AdGroupIds(adGroupIds string) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.adGroupIds = &adGroupIds
+	return r
+}
+
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) Page(page int32) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.page = &page
+	return r
+}
+
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) PageSize(pageSize int32) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	r.pageSize = &pageSize
+	return r
+}
+
+func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) Execute() (*GetTikTokSmartPlusMaterialReport200Response, *http.Response, error) {
+	return r.ApiService.GetTikTokSmartPlusMaterialReportExecute(r)
+}
+
+/*
+GetTikTokSmartPlusMaterialReport Per-creative performance inside TikTok Smart+ ads
+
+Breaks a Smart+ ad (or ad group) down by creative material, one row per Spark post, video or image, from TikTok's Smart+ material report. For a Spark post `tiktokItemId` is the TikTok post id. Conversion metrics are TikTok web (pixel) events. TikTok allows two dimensions per report, so rows are keyed by the Smart+ ad (`level=ad`) or by the ad group (`level=adGroup`), not both. Metrics TikTok returns empty come back as null.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest
+*/
+func (a *AdInsightsAPIService) GetTikTokSmartPlusMaterialReport(ctx context.Context) AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest {
+	return AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetTikTokSmartPlusMaterialReport200Response
+func (a *AdInsightsAPIService) GetTikTokSmartPlusMaterialReportExecute(r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) (*GetTikTokSmartPlusMaterialReport200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetTikTokSmartPlusMaterialReport200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdInsightsAPIService.GetTikTokSmartPlusMaterialReport")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/tiktok-smart-plus-materials"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+	if r.startDate == nil {
+		return localVarReturnValue, nil, reportError("startDate is required and must be specified")
+	}
+	if r.endDate == nil {
+		return localVarReturnValue, nil, reportError("endDate is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "startDate", r.startDate, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "endDate", r.endDate, "form", "")
+	if r.level != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "level", r.level, "form", "")
+	} else {
+		var defaultValue string = "ad"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "level", defaultValue, "form", "")
+		r.level = &defaultValue
+	}
+	if r.smartPlusAdIds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "smartPlusAdIds", r.smartPlusAdIds, "form", "")
+	}
+	if r.adGroupIds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adGroupIds", r.adGroupIds, "form", "")
+	}
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	} else {
+		var defaultValue int32 = 1
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", defaultValue, "form", "")
+		r.page = &defaultValue
+	}
+	if r.pageSize != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", r.pageSize, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", defaultValue, "form", "")
+		r.pageSize = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
