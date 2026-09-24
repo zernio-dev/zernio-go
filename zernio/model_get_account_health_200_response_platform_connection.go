@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.71.0
+API version: 1.72.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type GetAccountHealth200ResponsePlatformConnection struct {
 	// Meta's own `status` field from the phone-number node (for example CONNECTED), when the object was readable
 	PhoneStatus NullableString                                          `json:"phoneStatus,omitempty"`
 	MetaError   *GetAccountHealth200ResponsePlatformConnectionMetaError `json:"metaError,omitempty"`
+	// From the phone number's Meta health_status. `false` = Meta says Zernio is not subscribed to the message webhook for this number, so inbound messages are not delivered even though the number is CONNECTED and can still send. Fix by re-subscribing (reconnect the number); if it stays `false`, the number is routed to a different WhatsApp Business Account (typically after linking it to a Facebook Page). `true` = Meta reports no such problem. `null` = Meta did not report it (read failed or no health_status), not evidence either way.
+	InboundWebhookSubscribed NullableBool `json:"inboundWebhookSubscribed,omitempty"`
 }
 
 // NewGetAccountHealth200ResponsePlatformConnection instantiates a new GetAccountHealth200ResponsePlatformConnection object
@@ -186,6 +188,49 @@ func (o *GetAccountHealth200ResponsePlatformConnection) SetMetaError(v GetAccoun
 	o.MetaError = &v
 }
 
+// GetInboundWebhookSubscribed returns the InboundWebhookSubscribed field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAccountHealth200ResponsePlatformConnection) GetInboundWebhookSubscribed() bool {
+	if o == nil || IsNil(o.InboundWebhookSubscribed.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.InboundWebhookSubscribed.Get()
+}
+
+// GetInboundWebhookSubscribedOk returns a tuple with the InboundWebhookSubscribed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAccountHealth200ResponsePlatformConnection) GetInboundWebhookSubscribedOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InboundWebhookSubscribed.Get(), o.InboundWebhookSubscribed.IsSet()
+}
+
+// HasInboundWebhookSubscribed returns a boolean if a field has been set.
+func (o *GetAccountHealth200ResponsePlatformConnection) HasInboundWebhookSubscribed() bool {
+	if o != nil && o.InboundWebhookSubscribed.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInboundWebhookSubscribed gets a reference to the given NullableBool and assigns it to the InboundWebhookSubscribed field.
+func (o *GetAccountHealth200ResponsePlatformConnection) SetInboundWebhookSubscribed(v bool) {
+	o.InboundWebhookSubscribed.Set(&v)
+}
+
+// SetInboundWebhookSubscribedNil sets the value for InboundWebhookSubscribed to be an explicit nil
+func (o *GetAccountHealth200ResponsePlatformConnection) SetInboundWebhookSubscribedNil() {
+	o.InboundWebhookSubscribed.Set(nil)
+}
+
+// UnsetInboundWebhookSubscribed ensures that no value is present for InboundWebhookSubscribed, not even an explicit nil
+func (o *GetAccountHealth200ResponsePlatformConnection) UnsetInboundWebhookSubscribed() {
+	o.InboundWebhookSubscribed.Unset()
+}
+
 func (o GetAccountHealth200ResponsePlatformConnection) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -207,6 +252,9 @@ func (o GetAccountHealth200ResponsePlatformConnection) ToMap() (map[string]inter
 	}
 	if !IsNil(o.MetaError) {
 		toSerialize["metaError"] = o.MetaError
+	}
+	if o.InboundWebhookSubscribed.IsSet() {
+		toSerialize["inboundWebhookSubscribed"] = o.InboundWebhookSubscribed.Get()
 	}
 	return toSerialize, nil
 }

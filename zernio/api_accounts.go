@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.71.0
+API version: 1.72.0
 Contact: support@zernio.com
 */
 
@@ -168,7 +168,9 @@ Meta link behind the channel (the same read as `GET /v1/whatsapp/number-info`). 
 token can be perfectly valid while Meta refuses to serve the phone-number object (for
 example after a phone-side coexistence disconnect), so `tokenStatus` alone is not a
 liveness signal for WhatsApp. When the Meta link is dead, `platformConnection.status` is
-`disconnected` and the overall `status` is `error`.
+`disconnected` and the overall `status` is `error`. When Meta reports that the number's
+inbound message webhook does not reach Zernio, `platformConnection.inboundWebhookSubscribed`
+is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The account ID to check
