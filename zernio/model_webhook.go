@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.68.0
+API version: 1.68.1
 Contact: support@zernio.com
 */
 
@@ -43,7 +43,7 @@ type Webhook struct {
 	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 	// Profiles this subscription receives events for (allowlist). Absent or empty means every profile, which is how every subscription created before this field existed behaves. A scoped subscription is only sent events attributable to a listed profile. An aggregate `post.*` event is attributed to the profile of every account the post targets, so a post spanning two scoped endpoints' profiles reaches both. Events with no profile behind them (`verification.*`, `phone_number.*`, a legacy post whose accounts were deleted) are not delivered to it. Applied when the event is emitted: a redelivery replays a delivery already made to this endpoint, and a test fire ignores the list.
 	ProfileIds []string `json:"profileIds,omitempty"`
-	// Connected accounts this subscription receives events for (allowlist). Absent or empty means every account. Same semantics as `profileIds`, keyed on the account: an aggregate `post.*` event is attributed to every account the post targets. A subscription with both lists must be satisfied on both. Applied when the event is emitted; a redelivery replays a delivery already made to this endpoint and a test fire ignores the list.
+	// Connected accounts this subscription receives events for (allowlist). Absent or empty means every account. Same semantics as `profileIds`, keyed on the account: an aggregate `post.*` event is attributed to every account the post targets. Events that name no connected account (`verification.*`, `phone_number.*`, and `whatsapp.number.*`, which carry the phone number) are not delivered to an account-scoped subscription. A subscription with both lists must be satisfied on both. Applied when the event is emitted; a redelivery replays a delivery already made to this endpoint and a test fire ignores the list.
 	AccountIds []string `json:"accountIds,omitempty"`
 }
 
