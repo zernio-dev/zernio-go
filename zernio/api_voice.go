@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.86.0
+API version: 1.87.0
 Contact: support@zernio.com
 */
 
@@ -1211,7 +1211,9 @@ func (r VoiceAPIEndVoiceCallRequest) Execute() (*EndVoiceCall200Response, *http.
 /*
 EndVoiceCall Hang up a live call
 
-Hangs up a live call on demand. Idempotent: ending a call that already
+Hangs up a live call on demand, including an outbound call that is
+still ringing and has not been answered yet (the callee stops ringing
+immediately). Idempotent: ending a call that already
 ended (or never connected) returns success with the call's current
 status. Final duration/cost are written asynchronously when the hangup
 event lands, so the call doc may briefly still show its prior status.
