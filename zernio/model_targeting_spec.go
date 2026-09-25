@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -26,14 +26,14 @@ type TargetingSpec struct {
 	UserDevice []string `json:"userDevice,omitempty"`
 	// ISO 3166-1 alpha-2 country codes (e.g. ['US']).
 	Countries []string `json:"countries,omitempty"`
-	// Region/state targeting. `key` is the platform location ID from /v1/ads/targeting/search?dimension=geo&geoType=region.
+	// Region/state targeting. `key` is the platform location ID from /v1/ads/targeting/search?dimension=geo&geoType=region. An entry may also be that id as a plain string (`\"20321\"` is `{ key: \"20321\" }`).
 	Regions []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"regions,omitempty"`
-	// City targeting. Optional `radius` + `distanceUnit` extend beyond the city limits; both must be set together or both omitted. `radius` is only honoured on platforms whose capability map allows city radius (Meta).
-	Cities []BoostPostRequestTargetingCitiesInner `json:"cities,omitempty"`
+	// City targeting. Optional `radius` + `distanceUnit` extend beyond the city limits; both must be set together or both omitted. `radius` is only honoured on platforms whose capability map allows city radius (Meta). An entry may also be the city id as a plain string (`\"1006410\"` is `{ key: \"1006410\" }`).
+	Cities []TargetingSpecCitiesInner `json:"cities,omitempty"`
 	// Postal/ZIP targeting. `key` is the platform's postal location ID (e.g. Meta `US:94304`). Supported on Meta, Google, TikTok, Pinterest, X.
-	Zips []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"zips,omitempty"`
+	Zips []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf `json:"zips,omitempty"`
 	// DMA / metro-area targeting. `key` is the platform's metro ID (e.g. Meta `DMA:807`).
-	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"metros,omitempty"`
+	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf `json:"metros,omitempty"`
 	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it, and is also accepted under `excludedLocations`. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
 	CountryGroups []string `json:"countryGroups,omitempty"`
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
@@ -219,9 +219,9 @@ func (o *TargetingSpec) SetRegions(v []UpdateCampaignTargetingRequestTargetingLo
 }
 
 // GetCities returns the Cities field value if set, zero value otherwise.
-func (o *TargetingSpec) GetCities() []BoostPostRequestTargetingCitiesInner {
+func (o *TargetingSpec) GetCities() []TargetingSpecCitiesInner {
 	if o == nil || IsNil(o.Cities) {
-		var ret []BoostPostRequestTargetingCitiesInner
+		var ret []TargetingSpecCitiesInner
 		return ret
 	}
 	return o.Cities
@@ -229,7 +229,7 @@ func (o *TargetingSpec) GetCities() []BoostPostRequestTargetingCitiesInner {
 
 // GetCitiesOk returns a tuple with the Cities field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpec) GetCitiesOk() ([]BoostPostRequestTargetingCitiesInner, bool) {
+func (o *TargetingSpec) GetCitiesOk() ([]TargetingSpecCitiesInner, bool) {
 	if o == nil || IsNil(o.Cities) {
 		return nil, false
 	}
@@ -245,15 +245,15 @@ func (o *TargetingSpec) HasCities() bool {
 	return false
 }
 
-// SetCities gets a reference to the given []BoostPostRequestTargetingCitiesInner and assigns it to the Cities field.
-func (o *TargetingSpec) SetCities(v []BoostPostRequestTargetingCitiesInner) {
+// SetCities gets a reference to the given []TargetingSpecCitiesInner and assigns it to the Cities field.
+func (o *TargetingSpec) SetCities(v []TargetingSpecCitiesInner) {
 	o.Cities = v
 }
 
 // GetZips returns the Zips field value if set, zero value otherwise.
-func (o *TargetingSpec) GetZips() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner {
+func (o *TargetingSpec) GetZips() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf {
 	if o == nil || IsNil(o.Zips) {
-		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner
+		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf
 		return ret
 	}
 	return o.Zips
@@ -261,7 +261,7 @@ func (o *TargetingSpec) GetZips() []UpdateCampaignTargetingRequestTargetingLocat
 
 // GetZipsOk returns a tuple with the Zips field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpec) GetZipsOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner, bool) {
+func (o *TargetingSpec) GetZipsOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf, bool) {
 	if o == nil || IsNil(o.Zips) {
 		return nil, false
 	}
@@ -277,15 +277,15 @@ func (o *TargetingSpec) HasZips() bool {
 	return false
 }
 
-// SetZips gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner and assigns it to the Zips field.
-func (o *TargetingSpec) SetZips(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner) {
+// SetZips gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf and assigns it to the Zips field.
+func (o *TargetingSpec) SetZips(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf) {
 	o.Zips = v
 }
 
 // GetMetros returns the Metros field value if set, zero value otherwise.
-func (o *TargetingSpec) GetMetros() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner {
+func (o *TargetingSpec) GetMetros() []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf {
 	if o == nil || IsNil(o.Metros) {
-		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner
+		var ret []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf
 		return ret
 	}
 	return o.Metros
@@ -293,7 +293,7 @@ func (o *TargetingSpec) GetMetros() []UpdateCampaignTargetingRequestTargetingLoc
 
 // GetMetrosOk returns a tuple with the Metros field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TargetingSpec) GetMetrosOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner, bool) {
+func (o *TargetingSpec) GetMetrosOk() ([]UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf, bool) {
 	if o == nil || IsNil(o.Metros) {
 		return nil, false
 	}
@@ -309,8 +309,8 @@ func (o *TargetingSpec) HasMetros() bool {
 	return false
 }
 
-// SetMetros gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner and assigns it to the Metros field.
-func (o *TargetingSpec) SetMetros(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner) {
+// SetMetros gets a reference to the given []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf and assigns it to the Metros field.
+func (o *TargetingSpec) SetMetros(v []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInnerOneOf) {
 	o.Metros = v
 }
 

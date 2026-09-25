@@ -1,9 +1,9 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.0.4
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -12,222 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the TargetingSpecCitiesInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &TargetingSpecCitiesInner{}
-
-// TargetingSpecCitiesInner struct for TargetingSpecCitiesInner
+// TargetingSpecCitiesInner - struct for TargetingSpecCitiesInner
 type TargetingSpecCitiesInner struct {
-	Key  string  `json:"key"`
-	Name *string `json:"name,omitempty"`
-	// Radius around the city. Requires distance_unit.
-	Radius *float32 `json:"radius,omitempty"`
-	// Required if radius is set.
-	DistanceUnit *string `json:"distance_unit,omitempty"`
+	BoostPostRequestTargetingCitiesInner *BoostPostRequestTargetingCitiesInner
+	String                               *string
 }
 
-type _TargetingSpecCitiesInner TargetingSpecCitiesInner
-
-// NewTargetingSpecCitiesInner instantiates a new TargetingSpecCitiesInner object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTargetingSpecCitiesInner(key string) *TargetingSpecCitiesInner {
-	this := TargetingSpecCitiesInner{}
-	this.Key = key
-	return &this
-}
-
-// NewTargetingSpecCitiesInnerWithDefaults instantiates a new TargetingSpecCitiesInner object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewTargetingSpecCitiesInnerWithDefaults() *TargetingSpecCitiesInner {
-	this := TargetingSpecCitiesInner{}
-	return &this
-}
-
-// GetKey returns the Key field value
-func (o *TargetingSpecCitiesInner) GetKey() string {
-	if o == nil {
-		var ret string
-		return ret
+// BoostPostRequestTargetingCitiesInnerAsTargetingSpecCitiesInner is a convenience function that returns BoostPostRequestTargetingCitiesInner wrapped in TargetingSpecCitiesInner
+func BoostPostRequestTargetingCitiesInnerAsTargetingSpecCitiesInner(v *BoostPostRequestTargetingCitiesInner) TargetingSpecCitiesInner {
+	return TargetingSpecCitiesInner{
+		BoostPostRequestTargetingCitiesInner: v,
 	}
-
-	return o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value
-// and a boolean to check if the value has been set.
-func (o *TargetingSpecCitiesInner) GetKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// stringAsTargetingSpecCitiesInner is a convenience function that returns string wrapped in TargetingSpecCitiesInner
+func StringAsTargetingSpecCitiesInner(v *string) TargetingSpecCitiesInner {
+	return TargetingSpecCitiesInner{
+		String: v,
 	}
-	return &o.Key, true
 }
 
-// SetKey sets field value
-func (o *TargetingSpecCitiesInner) SetKey(v string) {
-	o.Key = v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *TargetingSpecCitiesInner) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TargetingSpecCitiesInner) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *TargetingSpecCitiesInner) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *TargetingSpecCitiesInner) SetName(v string) {
-	o.Name = &v
-}
-
-// GetRadius returns the Radius field value if set, zero value otherwise.
-func (o *TargetingSpecCitiesInner) GetRadius() float32 {
-	if o == nil || IsNil(o.Radius) {
-		var ret float32
-		return ret
-	}
-	return *o.Radius
-}
-
-// GetRadiusOk returns a tuple with the Radius field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TargetingSpecCitiesInner) GetRadiusOk() (*float32, bool) {
-	if o == nil || IsNil(o.Radius) {
-		return nil, false
-	}
-	return o.Radius, true
-}
-
-// HasRadius returns a boolean if a field has been set.
-func (o *TargetingSpecCitiesInner) HasRadius() bool {
-	if o != nil && !IsNil(o.Radius) {
-		return true
-	}
-
-	return false
-}
-
-// SetRadius gets a reference to the given float32 and assigns it to the Radius field.
-func (o *TargetingSpecCitiesInner) SetRadius(v float32) {
-	o.Radius = &v
-}
-
-// GetDistanceUnit returns the DistanceUnit field value if set, zero value otherwise.
-func (o *TargetingSpecCitiesInner) GetDistanceUnit() string {
-	if o == nil || IsNil(o.DistanceUnit) {
-		var ret string
-		return ret
-	}
-	return *o.DistanceUnit
-}
-
-// GetDistanceUnitOk returns a tuple with the DistanceUnit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TargetingSpecCitiesInner) GetDistanceUnitOk() (*string, bool) {
-	if o == nil || IsNil(o.DistanceUnit) {
-		return nil, false
-	}
-	return o.DistanceUnit, true
-}
-
-// HasDistanceUnit returns a boolean if a field has been set.
-func (o *TargetingSpecCitiesInner) HasDistanceUnit() bool {
-	if o != nil && !IsNil(o.DistanceUnit) {
-		return true
-	}
-
-	return false
-}
-
-// SetDistanceUnit gets a reference to the given string and assigns it to the DistanceUnit field.
-func (o *TargetingSpecCitiesInner) SetDistanceUnit(v string) {
-	o.DistanceUnit = &v
-}
-
-func (o TargetingSpecCitiesInner) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o TargetingSpecCitiesInner) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["key"] = o.Key
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Radius) {
-		toSerialize["radius"] = o.Radius
-	}
-	if !IsNil(o.DistanceUnit) {
-		toSerialize["distance_unit"] = o.DistanceUnit
-	}
-	return toSerialize, nil
-}
-
-func (o *TargetingSpecCitiesInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"key",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *TargetingSpecCitiesInner) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into BoostPostRequestTargetingCitiesInner
+	err = newStrictDecoder(data).Decode(&dst.BoostPostRequestTargetingCitiesInner)
+	if err == nil {
+		jsonBoostPostRequestTargetingCitiesInner, _ := json.Marshal(dst.BoostPostRequestTargetingCitiesInner)
+		if string(jsonBoostPostRequestTargetingCitiesInner) == "{}" { // empty struct
+			dst.BoostPostRequestTargetingCitiesInner = nil
+		} else {
+			if err = validator.Validate(dst.BoostPostRequestTargetingCitiesInner); err != nil {
+				dst.BoostPostRequestTargetingCitiesInner = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.BoostPostRequestTargetingCitiesInner = nil
 	}
 
-	varTargetingSpecCitiesInner := _TargetingSpecCitiesInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varTargetingSpecCitiesInner)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into String
+	err = newStrictDecoder(data).Decode(&dst.String)
+	if err == nil {
+		jsonString, _ := json.Marshal(dst.String)
+		if string(jsonString) == "{}" { // empty struct
+			dst.String = nil
+		} else {
+			if err = validator.Validate(dst.String); err != nil {
+				dst.String = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.String = nil
 	}
 
-	*o = TargetingSpecCitiesInner(varTargetingSpecCitiesInner)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.BoostPostRequestTargetingCitiesInner = nil
+		dst.String = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(TargetingSpecCitiesInner)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(TargetingSpecCitiesInner)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src TargetingSpecCitiesInner) MarshalJSON() ([]byte, error) {
+	if src.BoostPostRequestTargetingCitiesInner != nil {
+		return json.Marshal(&src.BoostPostRequestTargetingCitiesInner)
+	}
+
+	if src.String != nil {
+		return json.Marshal(&src.String)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *TargetingSpecCitiesInner) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.BoostPostRequestTargetingCitiesInner != nil {
+		return obj.BoostPostRequestTargetingCitiesInner
+	}
+
+	if obj.String != nil {
+		return obj.String
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj TargetingSpecCitiesInner) GetActualInstanceValue() interface{} {
+	if obj.BoostPostRequestTargetingCitiesInner != nil {
+		return *obj.BoostPostRequestTargetingCitiesInner
+	}
+
+	if obj.String != nil {
+		return *obj.String
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableTargetingSpecCitiesInner struct {

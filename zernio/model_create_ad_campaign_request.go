@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ type CreateAdCampaignRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
+	// Google only (400 elsewhere). Written on the new campaign.
+	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level on Meta, set the strategy there instead. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. On Meta, validated here but NOT stored: the campaign object has no bid_amount field, only bid_strategy lives on it, and the amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there. On Google, stored directly on the campaign's bidding strategy.
@@ -430,6 +432,38 @@ func (o *CreateAdCampaignRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetLocationTargetingType() GoogleLocationTargetingType {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		var ret GoogleLocationTargetingType
+		return ret
+	}
+	return *o.LocationTargetingType
+}
+
+// GetLocationTargetingTypeOk returns a tuple with the LocationTargetingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetLocationTargetingTypeOk() (*GoogleLocationTargetingType, bool) {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		return nil, false
+	}
+	return o.LocationTargetingType, true
+}
+
+// HasLocationTargetingType returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasLocationTargetingType() bool {
+	if o != nil && !IsNil(o.LocationTargetingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationTargetingType gets a reference to the given GoogleLocationTargetingType and assigns it to the LocationTargetingType field.
+func (o *CreateAdCampaignRequest) SetLocationTargetingType(v GoogleLocationTargetingType) {
+	o.LocationTargetingType = &v
+}
+
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
 func (o *CreateAdCampaignRequest) GetBidStrategy() string {
 	if o == nil || IsNil(o.BidStrategy) {
@@ -595,6 +629,9 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.LocationTargetingType) {
+		toSerialize["locationTargetingType"] = o.LocationTargetingType
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy

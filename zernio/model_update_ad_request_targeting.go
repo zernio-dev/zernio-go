@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -29,8 +29,8 @@ type UpdateAdRequestTargeting struct {
 	AgeMin  *int32                                 `json:"ageMin,omitempty"`
 	AgeMax  *int32                                 `json:"ageMax,omitempty"`
 	// ISO 3166-1 alpha-2 codes. On Google this is the FULL new country set for the campaign (same contract as `locations`); on LinkedIn it replaces the campaign's geo criteria.
-	Countries []string                                          `json:"countries,omitempty"`
-	Locations *UpdateCampaignTargetingRequestTargetingLocations `json:"locations,omitempty"`
+	Countries []string                           `json:"countries,omitempty"`
+	Locations *UpdateAdRequestTargetingLocations `json:"locations,omitempty"`
 	// Google only. The FULL new language set for the campaign, as Google language codes (ISO 639-1, plus variants such as `zh_CN`). An unknown code returns 400.
 	Languages []string `json:"languages,omitempty"`
 	// Interest objects from /v1/ads/interests. Each must include id and name.
@@ -249,9 +249,9 @@ func (o *UpdateAdRequestTargeting) SetCountries(v []string) {
 }
 
 // GetLocations returns the Locations field value if set, zero value otherwise.
-func (o *UpdateAdRequestTargeting) GetLocations() UpdateCampaignTargetingRequestTargetingLocations {
+func (o *UpdateAdRequestTargeting) GetLocations() UpdateAdRequestTargetingLocations {
 	if o == nil || IsNil(o.Locations) {
-		var ret UpdateCampaignTargetingRequestTargetingLocations
+		var ret UpdateAdRequestTargetingLocations
 		return ret
 	}
 	return *o.Locations
@@ -259,7 +259,7 @@ func (o *UpdateAdRequestTargeting) GetLocations() UpdateCampaignTargetingRequest
 
 // GetLocationsOk returns a tuple with the Locations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAdRequestTargeting) GetLocationsOk() (*UpdateCampaignTargetingRequestTargetingLocations, bool) {
+func (o *UpdateAdRequestTargeting) GetLocationsOk() (*UpdateAdRequestTargetingLocations, bool) {
 	if o == nil || IsNil(o.Locations) {
 		return nil, false
 	}
@@ -275,8 +275,8 @@ func (o *UpdateAdRequestTargeting) HasLocations() bool {
 	return false
 }
 
-// SetLocations gets a reference to the given UpdateCampaignTargetingRequestTargetingLocations and assigns it to the Locations field.
-func (o *UpdateAdRequestTargeting) SetLocations(v UpdateCampaignTargetingRequestTargetingLocations) {
+// SetLocations gets a reference to the given UpdateAdRequestTargetingLocations and assigns it to the Locations field.
+func (o *UpdateAdRequestTargeting) SetLocations(v UpdateAdRequestTargetingLocations) {
 	o.Locations = &v
 }
 

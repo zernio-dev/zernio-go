@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type GetCampaignTargeting200Response struct {
 	Devices   []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
 	Locations []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
 	Languages []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
+	// Who the location targeting reaches, see GoogleLocationTargetingType. Null when Google reports a legacy value (SEARCH_INTEREST) this API does not set.
+	LocationTargetingType NullableString `json:"locationTargetingType,omitempty"`
 	// When this targeting was fetched from Google. Null when it was never served from cache.
 	CachedAt NullableTime `json:"cachedAt,omitempty"`
 	// True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
@@ -143,6 +145,49 @@ func (o *GetCampaignTargeting200Response) SetLanguages(v []GetCampaignTargeting2
 	o.Languages = v
 }
 
+// GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetCampaignTargeting200Response) GetLocationTargetingType() string {
+	if o == nil || IsNil(o.LocationTargetingType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LocationTargetingType.Get()
+}
+
+// GetLocationTargetingTypeOk returns a tuple with the LocationTargetingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetCampaignTargeting200Response) GetLocationTargetingTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LocationTargetingType.Get(), o.LocationTargetingType.IsSet()
+}
+
+// HasLocationTargetingType returns a boolean if a field has been set.
+func (o *GetCampaignTargeting200Response) HasLocationTargetingType() bool {
+	if o != nil && o.LocationTargetingType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationTargetingType gets a reference to the given NullableString and assigns it to the LocationTargetingType field.
+func (o *GetCampaignTargeting200Response) SetLocationTargetingType(v string) {
+	o.LocationTargetingType.Set(&v)
+}
+
+// SetLocationTargetingTypeNil sets the value for LocationTargetingType to be an explicit nil
+func (o *GetCampaignTargeting200Response) SetLocationTargetingTypeNil() {
+	o.LocationTargetingType.Set(nil)
+}
+
+// UnsetLocationTargetingType ensures that no value is present for LocationTargetingType, not even an explicit nil
+func (o *GetCampaignTargeting200Response) UnsetLocationTargetingType() {
+	o.LocationTargetingType.Unset()
+}
+
 // GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetCampaignTargeting200Response) GetCachedAt() time.Time {
 	if o == nil || IsNil(o.CachedAt.Get()) {
@@ -236,6 +281,9 @@ func (o GetCampaignTargeting200Response) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.Languages) {
 		toSerialize["languages"] = o.Languages
+	}
+	if o.LocationTargetingType.IsSet() {
+		toSerialize["locationTargetingType"] = o.LocationTargetingType.Get()
 	}
 	if o.CachedAt.IsSet() {
 		toSerialize["cachedAt"] = o.CachedAt.Get()

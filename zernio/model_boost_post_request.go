@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -69,6 +69,8 @@ type BoostPostRequest struct {
 	// Deprecated
 	Schedule  *BoostPostRequestSchedule  `json:"schedule,omitempty"`
 	Targeting *BoostPostRequestTargeting `json:"targeting,omitempty"`
+	// Google only (400 elsewhere). Written on the campaign the boost creates.
+	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	// Meta only. A Meta-native targeting spec (e.g. `{ \"geo_locations\": { \"cities\": [{ \"key\": \"...\", \"radius\": 15, \"distance_unit\": \"kilometer\" }] } }`). Sent alone it is forwarded unchanged. Use for advanced fields the structured object does not expose (flexible_spec, excluded audiences, business places, user_os, wireless_carrier).  Can be combined with `targeting`: rawTargeting is the BASE layer and the built camelCase spec is merged on top, key by key (camelCase wins on collision). The merge goes one level deep inside `geo_locations` and `excluded_geo_locations` (built sub-keys win; raw-only sub-keys such as `location_types` survive). Array values (`flexible_spec`, ...) are replaced as a whole key, never element-merged.  When `rawTargeting` is present the `advantage_audience: 0` default that Zernio normally applies is no longer emitted, so it cannot clobber a `targeting_automation` sent in the raw spec. Meta requires `targeting_automation` on ad set creation, so include it in the raw spec, or send `targeting.advantage_audience` (0 or 1), which is merged over raw as `targeting_automation`.
 	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
 	// Deprecated: send it inside `platformSpecificData` instead (Meta today; TikTok's nested shape is planned). The flat field keeps working during the deprecation window; sending both shapes returns a 400.  Meta bid strategy applied to the ad set. On TikTok, mapped to `bid_type` / `bid_price` / `deep_bid_type` automatically.
@@ -884,6 +886,38 @@ func (o *BoostPostRequest) HasTargeting() bool {
 // SetTargeting gets a reference to the given BoostPostRequestTargeting and assigns it to the Targeting field.
 func (o *BoostPostRequest) SetTargeting(v BoostPostRequestTargeting) {
 	o.Targeting = &v
+}
+
+// GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetLocationTargetingType() GoogleLocationTargetingType {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		var ret GoogleLocationTargetingType
+		return ret
+	}
+	return *o.LocationTargetingType
+}
+
+// GetLocationTargetingTypeOk returns a tuple with the LocationTargetingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetLocationTargetingTypeOk() (*GoogleLocationTargetingType, bool) {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		return nil, false
+	}
+	return o.LocationTargetingType, true
+}
+
+// HasLocationTargetingType returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasLocationTargetingType() bool {
+	if o != nil && !IsNil(o.LocationTargetingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationTargetingType gets a reference to the given GoogleLocationTargetingType and assigns it to the LocationTargetingType field.
+func (o *BoostPostRequest) SetLocationTargetingType(v GoogleLocationTargetingType) {
+	o.LocationTargetingType = &v
 }
 
 // GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
@@ -1768,6 +1802,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Targeting) {
 		toSerialize["targeting"] = o.Targeting
+	}
+	if !IsNil(o.LocationTargetingType) {
+		toSerialize["locationTargetingType"] = o.LocationTargetingType
 	}
 	if !IsNil(o.RawTargeting) {
 		toSerialize["rawTargeting"] = o.RawTargeting

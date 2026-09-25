@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &UpdateCampaignTargeting200Response{}
 type UpdateCampaignTargeting200Response struct {
 	CampaignId *string `json:"campaignId,omitempty"`
 	// Which targeting fields were applied.
-	Updated   []string                                        `json:"updated,omitempty"`
-	Devices   []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
-	Locations []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
-	Languages []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
+	Updated []string `json:"updated,omitempty"`
+	// The value read back from Google after the edit.
+	LocationTargetingType NullableString                                  `json:"locationTargetingType,omitempty"`
+	Devices               []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
+	Locations             []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
+	Languages             []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
 }
 
 // NewUpdateCampaignTargeting200Response instantiates a new UpdateCampaignTargeting200Response object
@@ -107,6 +109,49 @@ func (o *UpdateCampaignTargeting200Response) HasUpdated() bool {
 // SetUpdated gets a reference to the given []string and assigns it to the Updated field.
 func (o *UpdateCampaignTargeting200Response) SetUpdated(v []string) {
 	o.Updated = v
+}
+
+// GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCampaignTargeting200Response) GetLocationTargetingType() string {
+	if o == nil || IsNil(o.LocationTargetingType.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.LocationTargetingType.Get()
+}
+
+// GetLocationTargetingTypeOk returns a tuple with the LocationTargetingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCampaignTargeting200Response) GetLocationTargetingTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LocationTargetingType.Get(), o.LocationTargetingType.IsSet()
+}
+
+// HasLocationTargetingType returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasLocationTargetingType() bool {
+	if o != nil && o.LocationTargetingType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationTargetingType gets a reference to the given NullableString and assigns it to the LocationTargetingType field.
+func (o *UpdateCampaignTargeting200Response) SetLocationTargetingType(v string) {
+	o.LocationTargetingType.Set(&v)
+}
+
+// SetLocationTargetingTypeNil sets the value for LocationTargetingType to be an explicit nil
+func (o *UpdateCampaignTargeting200Response) SetLocationTargetingTypeNil() {
+	o.LocationTargetingType.Set(nil)
+}
+
+// UnsetLocationTargetingType ensures that no value is present for LocationTargetingType, not even an explicit nil
+func (o *UpdateCampaignTargeting200Response) UnsetLocationTargetingType() {
+	o.LocationTargetingType.Unset()
 }
 
 // GetDevices returns the Devices field value if set, zero value otherwise.
@@ -220,6 +265,9 @@ func (o UpdateCampaignTargeting200Response) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Updated) {
 		toSerialize["updated"] = o.Updated
+	}
+	if o.LocationTargetingType.IsSet() {
+		toSerialize["locationTargetingType"] = o.LocationTargetingType.Get()
 	}
 	if !IsNil(o.Devices) {
 		toSerialize["devices"] = o.Devices

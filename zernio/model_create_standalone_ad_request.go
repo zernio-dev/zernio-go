@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -109,9 +109,9 @@ type CreateStandaloneAdRequest struct {
 	Countries []string `json:"countries,omitempty"`
 	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
 	CountryGroups []string `json:"countryGroups,omitempty"`
-	// City-level geo targeting (Meta and TikTok). Each city is targeted by the platform's opaque `key` (the city ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`. Optional `radius` + `distance_unit` (Meta only) extend the targeting beyond the city limits (e.g. radius 25 km around the city center). Both must be set together, or both omitted (Meta defaults to ~16 km when omitted).  On Meta, cannot overlap with the same country in `countries` (Meta returns a \"locations overlap\" error). Either drop the country or scope it to a different country. On TikTok, keys are numeric location ids and can be sent without `countries`.
+	// City-level geo targeting (Meta, Google and TikTok). An entry is either `{ key }` or the key alone as a plain string (`[\"1006410\"]`). Each city is targeted by the platform's opaque `key` (the city ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`. Optional `radius` + `distance_unit` (Meta only) extend the targeting beyond the city limits (e.g. radius 25 km around the city center). Both must be set together, or both omitted (Meta defaults to ~16 km when omitted).  On Meta, cannot overlap with the same country in `countries` (Meta returns a \"locations overlap\" error). Either drop the country or scope it to a different country. On TikTok, keys are numeric location ids and can be sent without `countries`.
 	Cities []CreateStandaloneAdRequestCitiesInner `json:"cities,omitempty"`
-	// Region-level (state/province) geo targeting (Meta and TikTok). Each region is targeted by the platform's opaque `key` (the region ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`.
+	// Region-level (state/province) geo targeting (Meta, Google and TikTok). Each region is targeted by the platform's opaque `key` (the region ID) which can be looked up via `GET /v1/ads/targeting/search?dimension=geo&q=<name>&countryCode=<ISO>`. An entry may also be the key alone as a plain string.
 	Regions []CreateStandaloneAdRequestRegionsInner `json:"regions,omitempty"`
 	AgeMin  *int32                                  `json:"ageMin,omitempty"`
 	AgeMax  *int32                                  `json:"ageMax,omitempty"`
@@ -167,8 +167,10 @@ type CreateStandaloneAdRequest struct {
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
 	// Google only. Performance Max requires assetGroup and is always created PAUSED.
-	CampaignType *string                    `json:"campaignType,omitempty"`
-	AssetGroup   *GooglePmaxAssetGroupInput `json:"assetGroup,omitempty"`
+	CampaignType *string `json:"campaignType,omitempty"`
+	// Google only (400 elsewhere). Set on the new campaign; a request that joins an existing campaign (`existingCampaignId` or `adSetId`) returns 400, change that campaign with PUT /v1/ads/campaigns/{campaignId}/targeting instead. `presence` reaches only people in or regularly in the targeted locations.
+	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
+	AssetGroup            *GooglePmaxAssetGroupInput   `json:"assetGroup,omitempty"`
 	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
 	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
@@ -2740,6 +2742,38 @@ func (o *CreateStandaloneAdRequest) SetCampaignType(v string) {
 	o.CampaignType = &v
 }
 
+// GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetLocationTargetingType() GoogleLocationTargetingType {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		var ret GoogleLocationTargetingType
+		return ret
+	}
+	return *o.LocationTargetingType
+}
+
+// GetLocationTargetingTypeOk returns a tuple with the LocationTargetingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetLocationTargetingTypeOk() (*GoogleLocationTargetingType, bool) {
+	if o == nil || IsNil(o.LocationTargetingType) {
+		return nil, false
+	}
+	return o.LocationTargetingType, true
+}
+
+// HasLocationTargetingType returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasLocationTargetingType() bool {
+	if o != nil && !IsNil(o.LocationTargetingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationTargetingType gets a reference to the given GoogleLocationTargetingType and assigns it to the LocationTargetingType field.
+func (o *CreateStandaloneAdRequest) SetLocationTargetingType(v GoogleLocationTargetingType) {
+	o.LocationTargetingType = &v
+}
+
 // GetAssetGroup returns the AssetGroup field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetAssetGroup() GooglePmaxAssetGroupInput {
 	if o == nil || IsNil(o.AssetGroup) {
@@ -3946,6 +3980,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CampaignType) {
 		toSerialize["campaignType"] = o.CampaignType
+	}
+	if !IsNil(o.LocationTargetingType) {
+		toSerialize["locationTargetingType"] = o.LocationTargetingType
 	}
 	if !IsNil(o.AssetGroup) {
 		toSerialize["assetGroup"] = o.AssetGroup

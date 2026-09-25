@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -12,187 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the CreateStandaloneAdRequestCitiesInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateStandaloneAdRequestCitiesInner{}
-
-// CreateStandaloneAdRequestCitiesInner struct for CreateStandaloneAdRequestCitiesInner
+// CreateStandaloneAdRequestCitiesInner - struct for CreateStandaloneAdRequestCitiesInner
 type CreateStandaloneAdRequestCitiesInner struct {
-	// Meta city ID, from /v1/ads/targeting/search results.
-	Key string `json:"key"`
-	// Optional radius around the city. Must be set together with distance_unit. Meta enforces a minimum city radius (~17 km / 10 mi); smaller values resolve to a 0-size audience and the ad fails at launch. For a tighter catchment use customLocations (lat/lng).
-	Radius *float32 `json:"radius,omitempty"`
-	// Unit for radius. Required if radius is set.
-	DistanceUnit *string `json:"distance_unit,omitempty"`
+	CreateStandaloneAdRequestCitiesInnerOneOf *CreateStandaloneAdRequestCitiesInnerOneOf
+	String                                    *string
 }
 
-type _CreateStandaloneAdRequestCitiesInner CreateStandaloneAdRequestCitiesInner
-
-// NewCreateStandaloneAdRequestCitiesInner instantiates a new CreateStandaloneAdRequestCitiesInner object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestCitiesInner(key string) *CreateStandaloneAdRequestCitiesInner {
-	this := CreateStandaloneAdRequestCitiesInner{}
-	this.Key = key
-	return &this
-}
-
-// NewCreateStandaloneAdRequestCitiesInnerWithDefaults instantiates a new CreateStandaloneAdRequestCitiesInner object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreateStandaloneAdRequestCitiesInnerWithDefaults() *CreateStandaloneAdRequestCitiesInner {
-	this := CreateStandaloneAdRequestCitiesInner{}
-	return &this
-}
-
-// GetKey returns the Key field value
-func (o *CreateStandaloneAdRequestCitiesInner) GetKey() string {
-	if o == nil {
-		var ret string
-		return ret
+// CreateStandaloneAdRequestCitiesInnerOneOfAsCreateStandaloneAdRequestCitiesInner is a convenience function that returns CreateStandaloneAdRequestCitiesInnerOneOf wrapped in CreateStandaloneAdRequestCitiesInner
+func CreateStandaloneAdRequestCitiesInnerOneOfAsCreateStandaloneAdRequestCitiesInner(v *CreateStandaloneAdRequestCitiesInnerOneOf) CreateStandaloneAdRequestCitiesInner {
+	return CreateStandaloneAdRequestCitiesInner{
+		CreateStandaloneAdRequestCitiesInnerOneOf: v,
 	}
-
-	return o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// stringAsCreateStandaloneAdRequestCitiesInner is a convenience function that returns string wrapped in CreateStandaloneAdRequestCitiesInner
+func StringAsCreateStandaloneAdRequestCitiesInner(v *string) CreateStandaloneAdRequestCitiesInner {
+	return CreateStandaloneAdRequestCitiesInner{
+		String: v,
 	}
-	return &o.Key, true
 }
 
-// SetKey sets field value
-func (o *CreateStandaloneAdRequestCitiesInner) SetKey(v string) {
-	o.Key = v
-}
-
-// GetRadius returns the Radius field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCitiesInner) GetRadius() float32 {
-	if o == nil || IsNil(o.Radius) {
-		var ret float32
-		return ret
-	}
-	return *o.Radius
-}
-
-// GetRadiusOk returns a tuple with the Radius field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetRadiusOk() (*float32, bool) {
-	if o == nil || IsNil(o.Radius) {
-		return nil, false
-	}
-	return o.Radius, true
-}
-
-// HasRadius returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) HasRadius() bool {
-	if o != nil && !IsNil(o.Radius) {
-		return true
-	}
-
-	return false
-}
-
-// SetRadius gets a reference to the given float32 and assigns it to the Radius field.
-func (o *CreateStandaloneAdRequestCitiesInner) SetRadius(v float32) {
-	o.Radius = &v
-}
-
-// GetDistanceUnit returns the DistanceUnit field value if set, zero value otherwise.
-func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnit() string {
-	if o == nil || IsNil(o.DistanceUnit) {
-		var ret string
-		return ret
-	}
-	return *o.DistanceUnit
-}
-
-// GetDistanceUnitOk returns a tuple with the DistanceUnit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) GetDistanceUnitOk() (*string, bool) {
-	if o == nil || IsNil(o.DistanceUnit) {
-		return nil, false
-	}
-	return o.DistanceUnit, true
-}
-
-// HasDistanceUnit returns a boolean if a field has been set.
-func (o *CreateStandaloneAdRequestCitiesInner) HasDistanceUnit() bool {
-	if o != nil && !IsNil(o.DistanceUnit) {
-		return true
-	}
-
-	return false
-}
-
-// SetDistanceUnit gets a reference to the given string and assigns it to the DistanceUnit field.
-func (o *CreateStandaloneAdRequestCitiesInner) SetDistanceUnit(v string) {
-	o.DistanceUnit = &v
-}
-
-func (o CreateStandaloneAdRequestCitiesInner) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o CreateStandaloneAdRequestCitiesInner) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["key"] = o.Key
-	if !IsNil(o.Radius) {
-		toSerialize["radius"] = o.Radius
-	}
-	if !IsNil(o.DistanceUnit) {
-		toSerialize["distance_unit"] = o.DistanceUnit
-	}
-	return toSerialize, nil
-}
-
-func (o *CreateStandaloneAdRequestCitiesInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"key",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *CreateStandaloneAdRequestCitiesInner) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into CreateStandaloneAdRequestCitiesInnerOneOf
+	err = newStrictDecoder(data).Decode(&dst.CreateStandaloneAdRequestCitiesInnerOneOf)
+	if err == nil {
+		jsonCreateStandaloneAdRequestCitiesInnerOneOf, _ := json.Marshal(dst.CreateStandaloneAdRequestCitiesInnerOneOf)
+		if string(jsonCreateStandaloneAdRequestCitiesInnerOneOf) == "{}" { // empty struct
+			dst.CreateStandaloneAdRequestCitiesInnerOneOf = nil
+		} else {
+			if err = validator.Validate(dst.CreateStandaloneAdRequestCitiesInnerOneOf); err != nil {
+				dst.CreateStandaloneAdRequestCitiesInnerOneOf = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.CreateStandaloneAdRequestCitiesInnerOneOf = nil
 	}
 
-	varCreateStandaloneAdRequestCitiesInner := _CreateStandaloneAdRequestCitiesInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestCitiesInner)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into String
+	err = newStrictDecoder(data).Decode(&dst.String)
+	if err == nil {
+		jsonString, _ := json.Marshal(dst.String)
+		if string(jsonString) == "{}" { // empty struct
+			dst.String = nil
+		} else {
+			if err = validator.Validate(dst.String); err != nil {
+				dst.String = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.String = nil
 	}
 
-	*o = CreateStandaloneAdRequestCitiesInner(varCreateStandaloneAdRequestCitiesInner)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.CreateStandaloneAdRequestCitiesInnerOneOf = nil
+		dst.String = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(CreateStandaloneAdRequestCitiesInner)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(CreateStandaloneAdRequestCitiesInner)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreateStandaloneAdRequestCitiesInner) MarshalJSON() ([]byte, error) {
+	if src.CreateStandaloneAdRequestCitiesInnerOneOf != nil {
+		return json.Marshal(&src.CreateStandaloneAdRequestCitiesInnerOneOf)
+	}
+
+	if src.String != nil {
+		return json.Marshal(&src.String)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *CreateStandaloneAdRequestCitiesInner) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.CreateStandaloneAdRequestCitiesInnerOneOf != nil {
+		return obj.CreateStandaloneAdRequestCitiesInnerOneOf
+	}
+
+	if obj.String != nil {
+		return obj.String
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj CreateStandaloneAdRequestCitiesInner) GetActualInstanceValue() interface{} {
+	if obj.CreateStandaloneAdRequestCitiesInnerOneOf != nil {
+		return *obj.CreateStandaloneAdRequestCitiesInnerOneOf
+	}
+
+	if obj.String != nil {
+		return *obj.String
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableCreateStandaloneAdRequestCitiesInner struct {

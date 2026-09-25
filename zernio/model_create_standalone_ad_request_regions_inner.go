@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -12,113 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the CreateStandaloneAdRequestRegionsInner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateStandaloneAdRequestRegionsInner{}
-
-// CreateStandaloneAdRequestRegionsInner struct for CreateStandaloneAdRequestRegionsInner
+// CreateStandaloneAdRequestRegionsInner - struct for CreateStandaloneAdRequestRegionsInner
 type CreateStandaloneAdRequestRegionsInner struct {
-	// Platform region ID, from /v1/ads/targeting/search results.
-	Key string `json:"key"`
+	CreateStandaloneAdRequestRegionsInnerOneOf *CreateStandaloneAdRequestRegionsInnerOneOf
+	String                                     *string
 }
 
-type _CreateStandaloneAdRequestRegionsInner CreateStandaloneAdRequestRegionsInner
-
-// NewCreateStandaloneAdRequestRegionsInner instantiates a new CreateStandaloneAdRequestRegionsInner object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreateStandaloneAdRequestRegionsInner(key string) *CreateStandaloneAdRequestRegionsInner {
-	this := CreateStandaloneAdRequestRegionsInner{}
-	this.Key = key
-	return &this
-}
-
-// NewCreateStandaloneAdRequestRegionsInnerWithDefaults instantiates a new CreateStandaloneAdRequestRegionsInner object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreateStandaloneAdRequestRegionsInnerWithDefaults() *CreateStandaloneAdRequestRegionsInner {
-	this := CreateStandaloneAdRequestRegionsInner{}
-	return &this
-}
-
-// GetKey returns the Key field value
-func (o *CreateStandaloneAdRequestRegionsInner) GetKey() string {
-	if o == nil {
-		var ret string
-		return ret
+// CreateStandaloneAdRequestRegionsInnerOneOfAsCreateStandaloneAdRequestRegionsInner is a convenience function that returns CreateStandaloneAdRequestRegionsInnerOneOf wrapped in CreateStandaloneAdRequestRegionsInner
+func CreateStandaloneAdRequestRegionsInnerOneOfAsCreateStandaloneAdRequestRegionsInner(v *CreateStandaloneAdRequestRegionsInnerOneOf) CreateStandaloneAdRequestRegionsInner {
+	return CreateStandaloneAdRequestRegionsInner{
+		CreateStandaloneAdRequestRegionsInnerOneOf: v,
 	}
-
-	return o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value
-// and a boolean to check if the value has been set.
-func (o *CreateStandaloneAdRequestRegionsInner) GetKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// stringAsCreateStandaloneAdRequestRegionsInner is a convenience function that returns string wrapped in CreateStandaloneAdRequestRegionsInner
+func StringAsCreateStandaloneAdRequestRegionsInner(v *string) CreateStandaloneAdRequestRegionsInner {
+	return CreateStandaloneAdRequestRegionsInner{
+		String: v,
 	}
-	return &o.Key, true
 }
 
-// SetKey sets field value
-func (o *CreateStandaloneAdRequestRegionsInner) SetKey(v string) {
-	o.Key = v
-}
-
-func (o CreateStandaloneAdRequestRegionsInner) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o CreateStandaloneAdRequestRegionsInner) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["key"] = o.Key
-	return toSerialize, nil
-}
-
-func (o *CreateStandaloneAdRequestRegionsInner) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"key",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *CreateStandaloneAdRequestRegionsInner) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into CreateStandaloneAdRequestRegionsInnerOneOf
+	err = newStrictDecoder(data).Decode(&dst.CreateStandaloneAdRequestRegionsInnerOneOf)
+	if err == nil {
+		jsonCreateStandaloneAdRequestRegionsInnerOneOf, _ := json.Marshal(dst.CreateStandaloneAdRequestRegionsInnerOneOf)
+		if string(jsonCreateStandaloneAdRequestRegionsInnerOneOf) == "{}" { // empty struct
+			dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+		} else {
+			if err = validator.Validate(dst.CreateStandaloneAdRequestRegionsInnerOneOf); err != nil {
+				dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
 	}
 
-	varCreateStandaloneAdRequestRegionsInner := _CreateStandaloneAdRequestRegionsInner{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateStandaloneAdRequestRegionsInner)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into String
+	err = newStrictDecoder(data).Decode(&dst.String)
+	if err == nil {
+		jsonString, _ := json.Marshal(dst.String)
+		if string(jsonString) == "{}" { // empty struct
+			dst.String = nil
+		} else {
+			if err = validator.Validate(dst.String); err != nil {
+				dst.String = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.String = nil
 	}
 
-	*o = CreateStandaloneAdRequestRegionsInner(varCreateStandaloneAdRequestRegionsInner)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.CreateStandaloneAdRequestRegionsInnerOneOf = nil
+		dst.String = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(CreateStandaloneAdRequestRegionsInner)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(CreateStandaloneAdRequestRegionsInner)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreateStandaloneAdRequestRegionsInner) MarshalJSON() ([]byte, error) {
+	if src.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
+		return json.Marshal(&src.CreateStandaloneAdRequestRegionsInnerOneOf)
+	}
+
+	if src.String != nil {
+		return json.Marshal(&src.String)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *CreateStandaloneAdRequestRegionsInner) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
+		return obj.CreateStandaloneAdRequestRegionsInnerOneOf
+	}
+
+	if obj.String != nil {
+		return obj.String
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj CreateStandaloneAdRequestRegionsInner) GetActualInstanceValue() interface{} {
+	if obj.CreateStandaloneAdRequestRegionsInnerOneOf != nil {
+		return *obj.CreateStandaloneAdRequestRegionsInnerOneOf
+	}
+
+	if obj.String != nil {
+		return *obj.String
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableCreateStandaloneAdRequestRegionsInner struct {

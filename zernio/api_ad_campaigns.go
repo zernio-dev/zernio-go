@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.88.0
+API version: 1.89.0
 Contact: support@zernio.com
 */
 
@@ -8430,7 +8430,7 @@ UpdateCampaignTargeting Edit a Google campaign's device, location, or language t
 
 Google Ads compliance row M.10: geo and language targeting set at
 creation must stay editable afterwards. Send at least one of `devices`,
-`locations`, `languages`; each provided field REPLACES that field's
+`locations`, `languages`, `locationTargetingType`; each provided field REPLACES that field's
 existing criteria on the campaign (a full set, not a delta). Fields left
 out of the body are untouched. Google only; every other platform returns
 501.
@@ -8452,6 +8452,11 @@ edit leaves the campaign's previous set intact rather than a half-applied one.
 
 `languages` is an array of Google's language codes (ISO 639-1, plus variants
 such as `zh_CN`); an unknown code returns 400.
+
+`locationTargetingType` switches who the location targeting reaches:
+`presence` (people in or regularly in the locations) or `presence_or_interest`
+(also people searching for or interested in them). Example:
+`{ "platform": "google", "targeting": { "locationTargetingType": "presence" } }`.
 
 The response includes the refreshed `devices`/`locations`/`languages` state
 read back from Google after the edit, and invalidates the cached copy
