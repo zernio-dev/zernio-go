@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.77.0
+API version: 1.77.1
 Contact: support@zernio.com
 */
 
@@ -164,7 +164,9 @@ CancelImessageSender Cancel an iMessage sender
 
 Cancels the sender at the provider and deactivates its messaging
 account. Billing stops with the current month (no proration or
-refunds, matching phone numbers).
+refunds, matching phone numbers). A sender still being set up
+(status ordering or activating) cannot be canceled; contact support
+to change the order.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param senderId
