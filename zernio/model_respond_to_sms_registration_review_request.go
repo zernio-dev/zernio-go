@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.90.0
+API version: 1.91.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,10 @@ type RespondToSmsRegistrationReviewRequest struct {
 	Note *string `json:"note,omitempty"`
 	// Hosted document URLs returned by POST /v1/sms/opt-in-proof.
 	Files []string `json:"files,omitempty"`
+	// The `reviewRequest.id` you are answering. When it no longer matches the open request the reply is refused with 409.
+	RequestId *string `json:"requestId,omitempty"`
+	// One answer per point of the open `reviewRequest`, each point at most once. Required (every point) when the request has points; a missing, repeated or unknown point is a 400 naming the point ids. At most 10 files per reply.
+	Answers []RespondToSmsRegistrationReviewRequestAnswersInner `json:"answers,omitempty"`
 }
 
 // NewRespondToSmsRegistrationReviewRequest instantiates a new RespondToSmsRegistrationReviewRequest object
@@ -107,6 +111,70 @@ func (o *RespondToSmsRegistrationReviewRequest) SetFiles(v []string) {
 	o.Files = v
 }
 
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *RespondToSmsRegistrationReviewRequest) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RespondToSmsRegistrationReviewRequest) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *RespondToSmsRegistrationReviewRequest) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *RespondToSmsRegistrationReviewRequest) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
+// GetAnswers returns the Answers field value if set, zero value otherwise.
+func (o *RespondToSmsRegistrationReviewRequest) GetAnswers() []RespondToSmsRegistrationReviewRequestAnswersInner {
+	if o == nil || IsNil(o.Answers) {
+		var ret []RespondToSmsRegistrationReviewRequestAnswersInner
+		return ret
+	}
+	return o.Answers
+}
+
+// GetAnswersOk returns a tuple with the Answers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RespondToSmsRegistrationReviewRequest) GetAnswersOk() ([]RespondToSmsRegistrationReviewRequestAnswersInner, bool) {
+	if o == nil || IsNil(o.Answers) {
+		return nil, false
+	}
+	return o.Answers, true
+}
+
+// HasAnswers returns a boolean if a field has been set.
+func (o *RespondToSmsRegistrationReviewRequest) HasAnswers() bool {
+	if o != nil && !IsNil(o.Answers) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnswers gets a reference to the given []RespondToSmsRegistrationReviewRequestAnswersInner and assigns it to the Answers field.
+func (o *RespondToSmsRegistrationReviewRequest) SetAnswers(v []RespondToSmsRegistrationReviewRequestAnswersInner) {
+	o.Answers = v
+}
+
 func (o RespondToSmsRegistrationReviewRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -122,6 +190,12 @@ func (o RespondToSmsRegistrationReviewRequest) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Files) {
 		toSerialize["files"] = o.Files
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["requestId"] = o.RequestId
+	}
+	if !IsNil(o.Answers) {
+		toSerialize["answers"] = o.Answers
 	}
 	return toSerialize, nil
 }

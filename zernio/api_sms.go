@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.90.0
+API version: 1.91.0
 Contact: support@zernio.com
 */
 
@@ -1853,7 +1853,9 @@ RespondToSmsRegistrationReview Reply to a change request
 
 Replies to a reviewer change request on a registration in
 `changes_requested` state: a note, hosted document URLs (from
-`POST /v1/sms/opt-in-proof`), or both, sent together. The registration
+`POST /v1/sms/opt-in-proof`), or both, sent together. When the request
+was written as points (`reviewRequest` on the registration), send one
+entry in `answers` per point. The registration
 returns to `requested` (back in review), and you do not need to resubmit the
 whole registration. To change the submitted brand/campaign fields
 themselves, resubmit via `POST /v1/sms/registrations` with

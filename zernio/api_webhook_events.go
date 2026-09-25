@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.90.0
+API version: 1.91.0
 Contact: support@zernio.com
 */
 
@@ -3914,6 +3914,111 @@ func (a *WebhookEventsAPIService) OnReviewUpdatedExecute(r WebhookEventsAPIOnRev
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadReviewUpdated
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnSmsRegistrationActionRequiredRequest struct {
+	ctx                                    context.Context
+	ApiService                             *WebhookEventsAPIService
+	onSmsRegistrationActionRequiredRequest *OnSmsRegistrationActionRequiredRequest
+}
+
+func (r WebhookEventsAPIOnSmsRegistrationActionRequiredRequest) OnSmsRegistrationActionRequiredRequest(onSmsRegistrationActionRequiredRequest OnSmsRegistrationActionRequiredRequest) WebhookEventsAPIOnSmsRegistrationActionRequiredRequest {
+	r.onSmsRegistrationActionRequiredRequest = &onSmsRegistrationActionRequiredRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnSmsRegistrationActionRequiredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnSmsRegistrationActionRequiredExecute(r)
+}
+
+/*
+OnSmsRegistrationActionRequired SMS registration action required event
+
+Fired when an SMS registration starts waiting on its owner. `reason` says why:
+`changes_requested` (our review asked for changes; `message` is the reviewer's note,
+answer with POST /v1/sms/registrations/{id}/respond), `otp_required` (a sole-proprietor
+brand needs the code texted to its mobile, submit it with
+POST /v1/sms/registrations/{id}/verify-otp), `carrier_info_required` (the toll-free
+carrier asked for more information; the request expires after 7 days) or `rejected`
+(the carriers rejected it; `message` is the reason). Fires once per new request (not on follow-up messages) and once per OTP or carrier request.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnSmsRegistrationActionRequiredRequest
+*/
+func (a *WebhookEventsAPIService) OnSmsRegistrationActionRequired(ctx context.Context) WebhookEventsAPIOnSmsRegistrationActionRequiredRequest {
+	return WebhookEventsAPIOnSmsRegistrationActionRequiredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnSmsRegistrationActionRequiredExecute(r WebhookEventsAPIOnSmsRegistrationActionRequiredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnSmsRegistrationActionRequired")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/sms.registration.action_required"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onSmsRegistrationActionRequiredRequest == nil {
+		return nil, reportError("onSmsRegistrationActionRequiredRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onSmsRegistrationActionRequiredRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

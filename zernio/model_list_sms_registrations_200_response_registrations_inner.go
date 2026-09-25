@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.90.0
+API version: 1.91.0
 Contact: support@zernio.com
 */
 
@@ -39,6 +39,10 @@ type ListSmsRegistrations200ResponseRegistrationsInner struct {
 	PhoneNumbers       []string     `json:"phoneNumbers,omitempty"`
 	// Sole-prop 10DLC only; the OTP step is still pending.
 	AwaitingOtp *bool `json:"awaitingOtp,omitempty"`
+	// The open change request as text (status changes_requested).
+	AdminReviewNote NullableString `json:"adminReviewNote,omitempty"`
+	// The same change request as points, when the reviewer wrote it that way; null otherwise.
+	ReviewRequest NullableSmsRegistrationReviewRequest `json:"reviewRequest,omitempty"`
 	// Carrier-assigned brand trust score; drives throughput.
 	TrustScore NullableFloat32                                              `json:"trustScore,omitempty"`
 	Throughput *ListSmsRegistrations200ResponseRegistrationsInnerThroughput `json:"throughput,omitempty"`
@@ -500,6 +504,92 @@ func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetAwaitingOtp(v boo
 	o.AwaitingOtp = &v
 }
 
+// GetAdminReviewNote returns the AdminReviewNote field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetAdminReviewNote() string {
+	if o == nil || IsNil(o.AdminReviewNote.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AdminReviewNote.Get()
+}
+
+// GetAdminReviewNoteOk returns a tuple with the AdminReviewNote field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetAdminReviewNoteOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AdminReviewNote.Get(), o.AdminReviewNote.IsSet()
+}
+
+// HasAdminReviewNote returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasAdminReviewNote() bool {
+	if o != nil && o.AdminReviewNote.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAdminReviewNote gets a reference to the given NullableString and assigns it to the AdminReviewNote field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetAdminReviewNote(v string) {
+	o.AdminReviewNote.Set(&v)
+}
+
+// SetAdminReviewNoteNil sets the value for AdminReviewNote to be an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetAdminReviewNoteNil() {
+	o.AdminReviewNote.Set(nil)
+}
+
+// UnsetAdminReviewNote ensures that no value is present for AdminReviewNote, not even an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetAdminReviewNote() {
+	o.AdminReviewNote.Unset()
+}
+
+// GetReviewRequest returns the ReviewRequest field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetReviewRequest() SmsRegistrationReviewRequest {
+	if o == nil || IsNil(o.ReviewRequest.Get()) {
+		var ret SmsRegistrationReviewRequest
+		return ret
+	}
+	return *o.ReviewRequest.Get()
+}
+
+// GetReviewRequestOk returns a tuple with the ReviewRequest field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetReviewRequestOk() (*SmsRegistrationReviewRequest, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ReviewRequest.Get(), o.ReviewRequest.IsSet()
+}
+
+// HasReviewRequest returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasReviewRequest() bool {
+	if o != nil && o.ReviewRequest.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetReviewRequest gets a reference to the given NullableSmsRegistrationReviewRequest and assigns it to the ReviewRequest field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetReviewRequest(v SmsRegistrationReviewRequest) {
+	o.ReviewRequest.Set(&v)
+}
+
+// SetReviewRequestNil sets the value for ReviewRequest to be an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetReviewRequestNil() {
+	o.ReviewRequest.Set(nil)
+}
+
+// UnsetReviewRequest ensures that no value is present for ReviewRequest, not even an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetReviewRequest() {
+	o.ReviewRequest.Unset()
+}
+
 // GetTrustScore returns the TrustScore field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetTrustScore() float32 {
 	if o == nil || IsNil(o.TrustScore.Get()) {
@@ -620,6 +710,12 @@ func (o ListSmsRegistrations200ResponseRegistrationsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.AwaitingOtp) {
 		toSerialize["awaitingOtp"] = o.AwaitingOtp
+	}
+	if o.AdminReviewNote.IsSet() {
+		toSerialize["adminReviewNote"] = o.AdminReviewNote.Get()
+	}
+	if o.ReviewRequest.IsSet() {
+		toSerialize["reviewRequest"] = o.ReviewRequest.Get()
 	}
 	if o.TrustScore.IsSet() {
 		toSerialize["trustScore"] = o.TrustScore.Get()
