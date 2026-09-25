@@ -25,6 +25,14 @@ type SearchAvailablePhoneNumbers200Response struct {
 	// Echo of the `sms` filter applied to this search.
 	RequireSms *bool                                                `json:"requireSms,omitempty"`
 	Numbers    []SearchAvailablePhoneNumbers200ResponseNumbersInner `json:"numbers,omitempty"`
+	// true on keyless calls.
+	Masked *bool `json:"masked,omitempty"`
+	// With `country=auto`: the caller's city the results were narrowed to, or null when there was no stock there.
+	Near NullableString `json:"near,omitempty"`
+	// Keyless calls only: a claim for any number matching this search's country, type and area.
+	ClaimId *string `json:"claimId,omitempty"`
+	// Keyless calls only: signup link for any number matching this search.
+	ClaimUrl *string `json:"claimUrl,omitempty"`
 }
 
 // NewSearchAvailablePhoneNumbers200Response instantiates a new SearchAvailablePhoneNumbers200Response object
@@ -172,6 +180,145 @@ func (o *SearchAvailablePhoneNumbers200Response) SetNumbers(v []SearchAvailableP
 	o.Numbers = v
 }
 
+// GetMasked returns the Masked field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200Response) GetMasked() bool {
+	if o == nil || IsNil(o.Masked) {
+		var ret bool
+		return ret
+	}
+	return *o.Masked
+}
+
+// GetMaskedOk returns a tuple with the Masked field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200Response) GetMaskedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Masked) {
+		return nil, false
+	}
+	return o.Masked, true
+}
+
+// HasMasked returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200Response) HasMasked() bool {
+	if o != nil && !IsNil(o.Masked) {
+		return true
+	}
+
+	return false
+}
+
+// SetMasked gets a reference to the given bool and assigns it to the Masked field.
+func (o *SearchAvailablePhoneNumbers200Response) SetMasked(v bool) {
+	o.Masked = &v
+}
+
+// GetNear returns the Near field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SearchAvailablePhoneNumbers200Response) GetNear() string {
+	if o == nil || IsNil(o.Near.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Near.Get()
+}
+
+// GetNearOk returns a tuple with the Near field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SearchAvailablePhoneNumbers200Response) GetNearOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Near.Get(), o.Near.IsSet()
+}
+
+// HasNear returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200Response) HasNear() bool {
+	if o != nil && o.Near.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNear gets a reference to the given NullableString and assigns it to the Near field.
+func (o *SearchAvailablePhoneNumbers200Response) SetNear(v string) {
+	o.Near.Set(&v)
+}
+
+// SetNearNil sets the value for Near to be an explicit nil
+func (o *SearchAvailablePhoneNumbers200Response) SetNearNil() {
+	o.Near.Set(nil)
+}
+
+// UnsetNear ensures that no value is present for Near, not even an explicit nil
+func (o *SearchAvailablePhoneNumbers200Response) UnsetNear() {
+	o.Near.Unset()
+}
+
+// GetClaimId returns the ClaimId field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200Response) GetClaimId() string {
+	if o == nil || IsNil(o.ClaimId) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimId
+}
+
+// GetClaimIdOk returns a tuple with the ClaimId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200Response) GetClaimIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimId) {
+		return nil, false
+	}
+	return o.ClaimId, true
+}
+
+// HasClaimId returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200Response) HasClaimId() bool {
+	if o != nil && !IsNil(o.ClaimId) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimId gets a reference to the given string and assigns it to the ClaimId field.
+func (o *SearchAvailablePhoneNumbers200Response) SetClaimId(v string) {
+	o.ClaimId = &v
+}
+
+// GetClaimUrl returns the ClaimUrl field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200Response) GetClaimUrl() string {
+	if o == nil || IsNil(o.ClaimUrl) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimUrl
+}
+
+// GetClaimUrlOk returns a tuple with the ClaimUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200Response) GetClaimUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimUrl) {
+		return nil, false
+	}
+	return o.ClaimUrl, true
+}
+
+// HasClaimUrl returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200Response) HasClaimUrl() bool {
+	if o != nil && !IsNil(o.ClaimUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimUrl gets a reference to the given string and assigns it to the ClaimUrl field.
+func (o *SearchAvailablePhoneNumbers200Response) SetClaimUrl(v string) {
+	o.ClaimUrl = &v
+}
+
 func (o SearchAvailablePhoneNumbers200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -193,6 +340,18 @@ func (o SearchAvailablePhoneNumbers200Response) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Numbers) {
 		toSerialize["numbers"] = o.Numbers
+	}
+	if !IsNil(o.Masked) {
+		toSerialize["masked"] = o.Masked
+	}
+	if o.Near.IsSet() {
+		toSerialize["near"] = o.Near.Get()
+	}
+	if !IsNil(o.ClaimId) {
+		toSerialize["claimId"] = o.ClaimId
+	}
+	if !IsNil(o.ClaimUrl) {
+		toSerialize["claimUrl"] = o.ClaimUrl
 	}
 	return toSerialize, nil
 }

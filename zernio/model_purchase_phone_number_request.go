@@ -30,6 +30,8 @@ type PurchasePhoneNumberRequest struct {
 	NumberType *string `json:"numberType,omitempty"`
 	// Area code (national destination code, e.g. 11 for Sao Paulo) the number must be in. Hard constraint: when the area has no deliverable inventory the purchase fails with 409 code AREA_CODE_UNAVAILABLE instead of assigning a number from another area, and later replacements stay in this area too. Omit for any area. Get live options from GET /v1/phone-numbers/availability (areaOptions).
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// Keyless calls only: a `claimId` from a keyless GET /v1/phone-numbers/available. The 401 then carries a `claimUrl` for that exact number. Ignored when an API key is sent.
+	ClaimId *string `json:"claimId,omitempty"`
 	// One exact number to buy, in E.164, taken from GET /v1/phone-numbers/available. Hard constraint: when it is no longer available (bought by someone else, or WhatsApp's buy-time check rejects it) the purchase fails with 409 code PHONE_NUMBER_UNAVAILABLE instead of assigning another number; search again and pick another. Only for countries and types that activate instantly: a regulated one (202 kyc_required) returns 400 when phoneNumber is set.
 	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// A phone number is the unit; WhatsApp is one optional feature. Pass false to buy a STANDALONE number (Calls/SMS only): provisioning skips the Meta pre-verify/OTP steps and the number activates immediately. Omitted defaults to the WhatsApp provisioning path. WhatsApp can be connected to a standalone number later from the connect flow.
@@ -202,6 +204,38 @@ func (o *PurchasePhoneNumberRequest) HasAreaCode() bool {
 // SetAreaCode gets a reference to the given string and assigns it to the AreaCode field.
 func (o *PurchasePhoneNumberRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
+}
+
+// GetClaimId returns the ClaimId field value if set, zero value otherwise.
+func (o *PurchasePhoneNumberRequest) GetClaimId() string {
+	if o == nil || IsNil(o.ClaimId) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimId
+}
+
+// GetClaimIdOk returns a tuple with the ClaimId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PurchasePhoneNumberRequest) GetClaimIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimId) {
+		return nil, false
+	}
+	return o.ClaimId, true
+}
+
+// HasClaimId returns a boolean if a field has been set.
+func (o *PurchasePhoneNumberRequest) HasClaimId() bool {
+	if o != nil && !IsNil(o.ClaimId) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimId gets a reference to the given string and assigns it to the ClaimId field.
+func (o *PurchasePhoneNumberRequest) SetClaimId(v string) {
+	o.ClaimId = &v
 }
 
 // GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
@@ -415,6 +449,9 @@ func (o PurchasePhoneNumberRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.ClaimId) {
+		toSerialize["claimId"] = o.ClaimId
 	}
 	if !IsNil(o.PhoneNumber) {
 		toSerialize["phoneNumber"] = o.PhoneNumber

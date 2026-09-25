@@ -187,6 +187,10 @@ deliverable inventory, and what address the customer needs:
 
 Call this before starting the KYC form for regulated countries.
 
+Without an API key it answers from cache only and returns just
+`country`, `numberType` and `areaOptions`, for building an area
+picker before signup.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPICheckPhoneNumberAvailabilityRequest
 */
@@ -1113,6 +1117,136 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberExecute(r PhoneNumbersAPIGetPhone
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type PhoneNumbersAPIGetPhoneNumberClaimRequest struct {
+	ctx        context.Context
+	ApiService *PhoneNumbersAPIService
+	claimId    string
+}
+
+func (r PhoneNumbersAPIGetPhoneNumberClaimRequest) Execute() (*GetPhoneNumberClaim200Response, *http.Response, error) {
+	return r.ApiService.GetPhoneNumberClaimExecute(r)
+}
+
+/*
+GetPhoneNumberClaim Resolve a number claim
+
+Resolves a `claimId` from a keyless search or purchase into the
+selection it carries (country, number type, area and exact number)
+priced at today's rate. The dashboard calls it when a person lands
+from a `claimUrl`. The number is not held, so buying it can still fail
+with 409 PHONE_NUMBER_UNAVAILABLE.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param claimId
+	@return PhoneNumbersAPIGetPhoneNumberClaimRequest
+*/
+func (a *PhoneNumbersAPIService) GetPhoneNumberClaim(ctx context.Context, claimId string) PhoneNumbersAPIGetPhoneNumberClaimRequest {
+	return PhoneNumbersAPIGetPhoneNumberClaimRequest{
+		ApiService: a,
+		ctx:        ctx,
+		claimId:    claimId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetPhoneNumberClaim200Response
+func (a *PhoneNumbersAPIService) GetPhoneNumberClaimExecute(r PhoneNumbersAPIGetPhoneNumberClaimRequest) (*GetPhoneNumberClaim200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetPhoneNumberClaim200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.GetPhoneNumberClaim")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/claims/{claimId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"claimId"+"}", url.PathEscape(parameterValueToString(r.claimId, "claimId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type PhoneNumbersAPIGetPhoneNumberKycFormRequest struct {
 	ctx        context.Context
 	ApiService *PhoneNumbersAPIService
@@ -1668,7 +1802,8 @@ The phone number countries available to purchase, each with its flat
 monthly price (cents), regulatory tier, whether it needs end-user KYC
 (Tier 3/4), and per-feature availability (PSTN calls, WhatsApp, SMS,
 and WhatsApp Business Calling outbound). Drives the country picker.
-Tier-4 countries appear only when enabled.
+Tier-4 countries appear only when enabled. No API key needed: the
+catalog is public so you can browse it before you have an account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPIListPhoneNumberCountriesRequest
@@ -1740,16 +1875,6 @@ func (a *PhoneNumbersAPIService) ListPhoneNumberCountriesExecute(r PhoneNumbersA
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2227,7 +2352,7 @@ func (a *PhoneNumbersAPIService) PurchasePhoneNumberExecute(r PhoneNumbersAPIPur
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
+			var v PurchasePhoneNumber401Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -2961,8 +3086,10 @@ type PhoneNumbersAPISearchAvailablePhoneNumbersRequest struct {
 	contains   *string
 	sms        *bool
 	limit      *int32
+	masked     *bool
 }
 
+// ISO code, or &#x60;auto&#x60; on the keyless shape to search the caller&#39;s own country (from their IP) near their city, falling back to US.
 func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Country(country string) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
 	r.country = &country
 	return r
@@ -3017,6 +3144,12 @@ func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Limit(limit int32) Ph
 	return r
 }
 
+// true returns the keyless shape (masked numbers with claimId and claimUrl) even when you send an API key, e.g. to hand a user a signup link for a number.
+func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Masked(masked bool) PhoneNumbersAPISearchAvailablePhoneNumbersRequest {
+	r.masked = &masked
+	return r
+}
+
 func (r PhoneNumbersAPISearchAvailablePhoneNumbersRequest) Execute() (*SearchAvailablePhoneNumbers200Response, *http.Response, error) {
 	return r.ApiService.SearchAvailablePhoneNumbersExecute(r)
 }
@@ -3031,6 +3164,14 @@ capability is always required; pass `sms=true` to only see numbers that
 can also text (SMS support is per-number, not per-country). Numbers a
 purchase would refuse are left out, and any result's `phoneNumber` can
 be bought exactly by passing it to POST /v1/phone-numbers/purchase.
+
+Works without an API key. Keyless calls get up to 12 results with the
+middle digits masked (`maskedNumber`), each with a `claimId` and a
+`claimUrl`: a signup link that lands a person on the dashboard's
+confirm step with that number picked, so an agent can search for a
+user and hand them one link. Keyless calls are rate limited per IP and
+results are cached for a few minutes. With an API key you get full
+numbers and no claim fields.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPISearchAvailablePhoneNumbersRequest
@@ -3099,6 +3240,9 @@ func (a *PhoneNumbersAPIService) SearchAvailablePhoneNumbersExecute(r PhoneNumbe
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
 		r.limit = &defaultValue
 	}
+	if r.masked != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "masked", r.masked, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -3147,6 +3291,7 @@ func (a *PhoneNumbersAPIService) SearchAvailablePhoneNumbersExecute(r PhoneNumbe
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

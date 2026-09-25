@@ -28,6 +28,14 @@ type SearchAvailablePhoneNumbers200ResponseNumbersInner struct {
 	Locality *string `json:"locality,omitempty"`
 	// true when the carrier added this number because too few matched your filters, so it may be outside the requested prefix or locality.
 	BestEffort *bool `json:"bestEffort,omitempty"`
+	// Keyless calls only, in place of `phoneNumber`: the number with its middle digits masked, e.g. +44 20 •••• 0123.
+	MaskedNumber *string `json:"maskedNumber,omitempty"`
+	// Keyless calls only. Without a `numberType` filter a keyless search mixes every type the country sells, so each result names its own.
+	NumberType *string `json:"numberType,omitempty"`
+	// Keyless calls only. Opaque, expires after 7 days. Pass it as `claimId` on a keyless POST /v1/phone-numbers/purchase.
+	ClaimId *string `json:"claimId,omitempty"`
+	// Keyless calls only. Signup link that opens the dashboard's confirm step for this number. The number is not held: if it is gone by then, the buyer picks another in the same area.
+	ClaimUrl *string `json:"claimUrl,omitempty"`
 }
 
 // NewSearchAvailablePhoneNumbers200ResponseNumbersInner instantiates a new SearchAvailablePhoneNumbers200ResponseNumbersInner object
@@ -175,6 +183,134 @@ func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetBestEffort(v boo
 	o.BestEffort = &v
 }
 
+// GetMaskedNumber returns the MaskedNumber field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetMaskedNumber() string {
+	if o == nil || IsNil(o.MaskedNumber) {
+		var ret string
+		return ret
+	}
+	return *o.MaskedNumber
+}
+
+// GetMaskedNumberOk returns a tuple with the MaskedNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetMaskedNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.MaskedNumber) {
+		return nil, false
+	}
+	return o.MaskedNumber, true
+}
+
+// HasMaskedNumber returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasMaskedNumber() bool {
+	if o != nil && !IsNil(o.MaskedNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaskedNumber gets a reference to the given string and assigns it to the MaskedNumber field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetMaskedNumber(v string) {
+	o.MaskedNumber = &v
+}
+
+// GetNumberType returns the NumberType field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetNumberType() string {
+	if o == nil || IsNil(o.NumberType) {
+		var ret string
+		return ret
+	}
+	return *o.NumberType
+}
+
+// GetNumberTypeOk returns a tuple with the NumberType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetNumberTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.NumberType) {
+		return nil, false
+	}
+	return o.NumberType, true
+}
+
+// HasNumberType returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasNumberType() bool {
+	if o != nil && !IsNil(o.NumberType) {
+		return true
+	}
+
+	return false
+}
+
+// SetNumberType gets a reference to the given string and assigns it to the NumberType field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetNumberType(v string) {
+	o.NumberType = &v
+}
+
+// GetClaimId returns the ClaimId field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetClaimId() string {
+	if o == nil || IsNil(o.ClaimId) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimId
+}
+
+// GetClaimIdOk returns a tuple with the ClaimId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetClaimIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimId) {
+		return nil, false
+	}
+	return o.ClaimId, true
+}
+
+// HasClaimId returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasClaimId() bool {
+	if o != nil && !IsNil(o.ClaimId) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimId gets a reference to the given string and assigns it to the ClaimId field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetClaimId(v string) {
+	o.ClaimId = &v
+}
+
+// GetClaimUrl returns the ClaimUrl field value if set, zero value otherwise.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetClaimUrl() string {
+	if o == nil || IsNil(o.ClaimUrl) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimUrl
+}
+
+// GetClaimUrlOk returns a tuple with the ClaimUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) GetClaimUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimUrl) {
+		return nil, false
+	}
+	return o.ClaimUrl, true
+}
+
+// HasClaimUrl returns a boolean if a field has been set.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) HasClaimUrl() bool {
+	if o != nil && !IsNil(o.ClaimUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimUrl gets a reference to the given string and assigns it to the ClaimUrl field.
+func (o *SearchAvailablePhoneNumbers200ResponseNumbersInner) SetClaimUrl(v string) {
+	o.ClaimUrl = &v
+}
+
 func (o SearchAvailablePhoneNumbers200ResponseNumbersInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -196,6 +332,18 @@ func (o SearchAvailablePhoneNumbers200ResponseNumbersInner) ToMap() (map[string]
 	}
 	if !IsNil(o.BestEffort) {
 		toSerialize["bestEffort"] = o.BestEffort
+	}
+	if !IsNil(o.MaskedNumber) {
+		toSerialize["maskedNumber"] = o.MaskedNumber
+	}
+	if !IsNil(o.NumberType) {
+		toSerialize["numberType"] = o.NumberType
+	}
+	if !IsNil(o.ClaimId) {
+		toSerialize["claimId"] = o.ClaimId
+	}
+	if !IsNil(o.ClaimUrl) {
+		toSerialize["claimUrl"] = o.ClaimUrl
 	}
 	return toSerialize, nil
 }
