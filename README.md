@@ -761,6 +761,7 @@ func main() {
 | `client.PhoneNumbersAPI.GetPhoneNumber(ctx)` | Get phone number |
 | `client.PhoneNumbersAPI.GetPhoneNumberClaim(ctx)` | Resolve a number claim |
 | `client.PhoneNumbersAPI.GetPhoneNumberKycForm(ctx)` | Get KYC form spec |
+| `client.PhoneNumbersAPI.GetPhoneNumberPortClaim(ctx)` | Resolve a port claim |
 | `client.PhoneNumbersAPI.GetPhoneNumberPortInOrderRequirements(ctx)` | A port-in order's pending requirements |
 | `client.PhoneNumbersAPI.GetPhoneNumberPortInRequirements(ctx)` | Country porting requirements |
 | `client.PhoneNumbersAPI.GetPhoneNumberRemediation(ctx)` | Get declined requirements |

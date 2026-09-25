@@ -24,14 +24,22 @@ type CheckPhoneNumberPortability200ResponseResultsInner struct {
 	Portable    *bool   `json:"portable,omitempty"`
 	// Qualifies for the carrier's accelerated FastPort lane.
 	FastPortable *bool `json:"fastPortable,omitempty"`
-	// Line type when known (mobile, landline, voip…). A US/CA mobile number requires the transfer PIN at submit.
+	// Whether texting can be enabled on the number once ported; null when the carrier does not say.
+	MessagingCapable NullableBool `json:"messagingCapable,omitempty"`
+	// Line type when known (mobile, landline, voip, toll-free, unknown). US/CA portable numbers only. A US/CA mobile number requires the transfer PIN at submit.
 	LineType NullableString `json:"lineType,omitempty"`
+	// The number's current carrier, when the lookup knows it. US/CA portable numbers only.
+	CarrierName NullableString `json:"carrierName,omitempty"`
 	// ISO country of the number. Pass it to GET /v1/phone-numbers/port-in/requirements for international numbers.
 	CountryCode NullableString `json:"countryCode,omitempty"`
-	// Carrier number-type classification (local, mobile, national, toll_free…), the numberType for the requirements endpoint.
+	// Carrier number-type classification (local, mobile, national, toll_free...), the numberType for the requirements endpoint.
 	PhoneNumberType NullableString `json:"phoneNumberType,omitempty"`
 	// Carrier reason when not portable; null when portable.
 	NotPortableReason NullableString `json:"notPortableReason,omitempty"`
+	// Keyless calls and claimLinks=true only, on portable results. Resolve it with GET /v1/phone-numbers/port-in/claims/{claimId}. Expires after 7 days.
+	ClaimId *string `json:"claimId,omitempty"`
+	// Keyless calls and claimLinks=true only, on portable results. A signup link that lands on the dashboard's port form with this number filled in.
+	ClaimUrl *string `json:"claimUrl,omitempty"`
 }
 
 // NewCheckPhoneNumberPortability200ResponseResultsInner instantiates a new CheckPhoneNumberPortability200ResponseResultsInner object
@@ -147,6 +155,49 @@ func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetFastPortable(v b
 	o.FastPortable = &v
 }
 
+// GetMessagingCapable returns the MessagingCapable field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetMessagingCapable() bool {
+	if o == nil || IsNil(o.MessagingCapable.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.MessagingCapable.Get()
+}
+
+// GetMessagingCapableOk returns a tuple with the MessagingCapable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetMessagingCapableOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MessagingCapable.Get(), o.MessagingCapable.IsSet()
+}
+
+// HasMessagingCapable returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasMessagingCapable() bool {
+	if o != nil && o.MessagingCapable.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMessagingCapable gets a reference to the given NullableBool and assigns it to the MessagingCapable field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetMessagingCapable(v bool) {
+	o.MessagingCapable.Set(&v)
+}
+
+// SetMessagingCapableNil sets the value for MessagingCapable to be an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetMessagingCapableNil() {
+	o.MessagingCapable.Set(nil)
+}
+
+// UnsetMessagingCapable ensures that no value is present for MessagingCapable, not even an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetMessagingCapable() {
+	o.MessagingCapable.Unset()
+}
+
 // GetLineType returns the LineType field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetLineType() string {
 	if o == nil || IsNil(o.LineType.Get()) {
@@ -188,6 +239,49 @@ func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetLineTypeNil() {
 // UnsetLineType ensures that no value is present for LineType, not even an explicit nil
 func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetLineType() {
 	o.LineType.Unset()
+}
+
+// GetCarrierName returns the CarrierName field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetCarrierName() string {
+	if o == nil || IsNil(o.CarrierName.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CarrierName.Get()
+}
+
+// GetCarrierNameOk returns a tuple with the CarrierName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetCarrierNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CarrierName.Get(), o.CarrierName.IsSet()
+}
+
+// HasCarrierName returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasCarrierName() bool {
+	if o != nil && o.CarrierName.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCarrierName gets a reference to the given NullableString and assigns it to the CarrierName field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetCarrierName(v string) {
+	o.CarrierName.Set(&v)
+}
+
+// SetCarrierNameNil sets the value for CarrierName to be an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetCarrierNameNil() {
+	o.CarrierName.Set(nil)
+}
+
+// UnsetCarrierName ensures that no value is present for CarrierName, not even an explicit nil
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetCarrierName() {
+	o.CarrierName.Unset()
 }
 
 // GetCountryCode returns the CountryCode field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -319,6 +413,70 @@ func (o *CheckPhoneNumberPortability200ResponseResultsInner) UnsetNotPortableRea
 	o.NotPortableReason.Unset()
 }
 
+// GetClaimId returns the ClaimId field value if set, zero value otherwise.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetClaimId() string {
+	if o == nil || IsNil(o.ClaimId) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimId
+}
+
+// GetClaimIdOk returns a tuple with the ClaimId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetClaimIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimId) {
+		return nil, false
+	}
+	return o.ClaimId, true
+}
+
+// HasClaimId returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasClaimId() bool {
+	if o != nil && !IsNil(o.ClaimId) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimId gets a reference to the given string and assigns it to the ClaimId field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetClaimId(v string) {
+	o.ClaimId = &v
+}
+
+// GetClaimUrl returns the ClaimUrl field value if set, zero value otherwise.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetClaimUrl() string {
+	if o == nil || IsNil(o.ClaimUrl) {
+		var ret string
+		return ret
+	}
+	return *o.ClaimUrl
+}
+
+// GetClaimUrlOk returns a tuple with the ClaimUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) GetClaimUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.ClaimUrl) {
+		return nil, false
+	}
+	return o.ClaimUrl, true
+}
+
+// HasClaimUrl returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) HasClaimUrl() bool {
+	if o != nil && !IsNil(o.ClaimUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimUrl gets a reference to the given string and assigns it to the ClaimUrl field.
+func (o *CheckPhoneNumberPortability200ResponseResultsInner) SetClaimUrl(v string) {
+	o.ClaimUrl = &v
+}
+
 func (o CheckPhoneNumberPortability200ResponseResultsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -338,8 +496,14 @@ func (o CheckPhoneNumberPortability200ResponseResultsInner) ToMap() (map[string]
 	if !IsNil(o.FastPortable) {
 		toSerialize["fastPortable"] = o.FastPortable
 	}
+	if o.MessagingCapable.IsSet() {
+		toSerialize["messagingCapable"] = o.MessagingCapable.Get()
+	}
 	if o.LineType.IsSet() {
 		toSerialize["lineType"] = o.LineType.Get()
+	}
+	if o.CarrierName.IsSet() {
+		toSerialize["carrierName"] = o.CarrierName.Get()
 	}
 	if o.CountryCode.IsSet() {
 		toSerialize["countryCode"] = o.CountryCode.Get()
@@ -349,6 +513,12 @@ func (o CheckPhoneNumberPortability200ResponseResultsInner) ToMap() (map[string]
 	}
 	if o.NotPortableReason.IsSet() {
 		toSerialize["notPortableReason"] = o.NotPortableReason.Get()
+	}
+	if !IsNil(o.ClaimId) {
+		toSerialize["claimId"] = o.ClaimId
+	}
+	if !IsNil(o.ClaimUrl) {
+		toSerialize["claimUrl"] = o.ClaimUrl
 	}
 	return toSerialize, nil
 }

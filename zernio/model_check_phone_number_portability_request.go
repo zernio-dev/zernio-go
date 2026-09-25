@@ -22,8 +22,10 @@ var _ MappedNullable = &CheckPhoneNumberPortabilityRequest{}
 
 // CheckPhoneNumberPortabilityRequest struct for CheckPhoneNumberPortabilityRequest
 type CheckPhoneNumberPortabilityRequest struct {
-	// E.164 numbers to check, e.g. +13035550000.
+	// E.164 numbers to check, e.g. +13035550000. At most one without an API key.
 	PhoneNumbers []string `json:"phoneNumbers"`
+	// true adds `claimId` and `claimUrl` to portable results even when you send an API key, e.g. to hand a user a signup link that opens the port form with their number.
+	ClaimLinks *bool `json:"claimLinks,omitempty"`
 }
 
 type _CheckPhoneNumberPortabilityRequest CheckPhoneNumberPortabilityRequest
@@ -70,6 +72,38 @@ func (o *CheckPhoneNumberPortabilityRequest) SetPhoneNumbers(v []string) {
 	o.PhoneNumbers = v
 }
 
+// GetClaimLinks returns the ClaimLinks field value if set, zero value otherwise.
+func (o *CheckPhoneNumberPortabilityRequest) GetClaimLinks() bool {
+	if o == nil || IsNil(o.ClaimLinks) {
+		var ret bool
+		return ret
+	}
+	return *o.ClaimLinks
+}
+
+// GetClaimLinksOk returns a tuple with the ClaimLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberPortabilityRequest) GetClaimLinksOk() (*bool, bool) {
+	if o == nil || IsNil(o.ClaimLinks) {
+		return nil, false
+	}
+	return o.ClaimLinks, true
+}
+
+// HasClaimLinks returns a boolean if a field has been set.
+func (o *CheckPhoneNumberPortabilityRequest) HasClaimLinks() bool {
+	if o != nil && !IsNil(o.ClaimLinks) {
+		return true
+	}
+
+	return false
+}
+
+// SetClaimLinks gets a reference to the given bool and assigns it to the ClaimLinks field.
+func (o *CheckPhoneNumberPortabilityRequest) SetClaimLinks(v bool) {
+	o.ClaimLinks = &v
+}
+
 func (o CheckPhoneNumberPortabilityRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o CheckPhoneNumberPortabilityRequest) MarshalJSON() ([]byte, error) {
 func (o CheckPhoneNumberPortabilityRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["phoneNumbers"] = o.PhoneNumbers
+	if !IsNil(o.ClaimLinks) {
+		toSerialize["claimLinks"] = o.ClaimLinks
+	}
 	return toSerialize, nil
 }
 

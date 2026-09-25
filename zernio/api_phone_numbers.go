@@ -316,10 +316,21 @@ func (r PhoneNumbersAPICheckPhoneNumberPortabilityRequest) Execute() (*CheckPhon
 /*
 CheckPhoneNumberPortability Check portability
 
-Pre-flight portability check: whether each number can be ported in and
-whether it qualifies for FastPort, BEFORE the user commits to a port
-order (LOA, invoice, service address). Read-only; creates no order and
-bills nothing.
+Pre-flight portability check: whether each number can be ported in,
+whether it qualifies for FastPort, and its current carrier and line
+type where the carrier lookup knows them, BEFORE the user commits to a
+port order (LOA, invoice, service address). Read-only; creates no
+order and bills nothing.
+
+Works without an API key for one number per request. Keyless calls
+are what the checker at https://zernio.com/port-your-number makes:
+they must come from that page (a browser bot check rejects scripted
+callers with 401), are limited per IP (3 a minute, 10 a day) and by a
+shared daily budget (429 once spent), because each check runs a paid
+carrier lookup. Each portable keyless result carries a `claimId` and
+a `claimUrl`: a signup link that opens the dashboard's port form with
+the number filled in. Send an API key to check up to 50 numbers
+without those limits.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return PhoneNumbersAPICheckPhoneNumberPortabilityRequest
@@ -397,6 +408,17 @@ func (a *PhoneNumbersAPIService) CheckPhoneNumberPortabilityExecute(r PhoneNumbe
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -406,6 +428,7 @@ func (a *PhoneNumbersAPIService) CheckPhoneNumberPortabilityExecute(r PhoneNumbe
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1363,6 +1386,135 @@ func (a *PhoneNumbersAPIService) GetPhoneNumberKycFormExecute(r PhoneNumbersAPIG
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type PhoneNumbersAPIGetPhoneNumberPortClaimRequest struct {
+	ctx        context.Context
+	ApiService *PhoneNumbersAPIService
+	claimId    string
+}
+
+func (r PhoneNumbersAPIGetPhoneNumberPortClaimRequest) Execute() (*GetPhoneNumberPortClaim200Response, *http.Response, error) {
+	return r.ApiService.GetPhoneNumberPortClaimExecute(r)
+}
+
+/*
+GetPhoneNumberPortClaim Resolve a port claim
+
+Resolves a `claimId` from a keyless portability check into the number
+it carries. The dashboard calls it when a person lands from a port
+`claimUrl`, to open the port form with that number filled in. It does
+not start a port.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param claimId
+	@return PhoneNumbersAPIGetPhoneNumberPortClaimRequest
+*/
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortClaim(ctx context.Context, claimId string) PhoneNumbersAPIGetPhoneNumberPortClaimRequest {
+	return PhoneNumbersAPIGetPhoneNumberPortClaimRequest{
+		ApiService: a,
+		ctx:        ctx,
+		claimId:    claimId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetPhoneNumberPortClaim200Response
+func (a *PhoneNumbersAPIService) GetPhoneNumberPortClaimExecute(r PhoneNumbersAPIGetPhoneNumberPortClaimRequest) (*GetPhoneNumberPortClaim200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetPhoneNumberPortClaim200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.GetPhoneNumberPortClaim")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/phone-numbers/port-in/claims/{claimId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"claimId"+"}", url.PathEscape(parameterValueToString(r.claimId, "claimId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
