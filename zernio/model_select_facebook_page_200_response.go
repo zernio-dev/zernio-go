@@ -1,9 +1,9 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.78.0
+API version: 1.79.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,11 @@ var _ MappedNullable = &SelectFacebookPage200Response{}
 // SelectFacebookPage200Response struct for SelectFacebookPage200Response
 type SelectFacebookPage200Response struct {
 	Message *string `json:"message,omitempty"`
-	// Redirect URL when a custom redirect_url was provided or a business Page was selected.
-	RedirectUrl *string                               `json:"redirect_url,omitempty"`
-	Account     *SelectFacebookPage200ResponseAccount `json:"account,omitempty"`
+	// Redirect URL when a custom redirect_url was provided or a business Page was selected. On an ads connect it also carries `adsAccountId`.
+	RedirectUrl *string `json:"redirect_url,omitempty"`
+	// Ads connect only (the redirect_url carries adsConnect=true, as it does after GET /v1/connect/{platform}/ads). The metaads SocialAccount ID to use with the /v1/ads endpoints. `account.accountId` is the Facebook posting account. Absent when the ads account could not be created.
+	AdsAccountId *string                               `json:"adsAccountId,omitempty"`
+	Account      *SelectFacebookPage200ResponseAccount `json:"account,omitempty"`
 }
 
 // NewSelectFacebookPage200Response instantiates a new SelectFacebookPage200Response object
@@ -107,6 +109,38 @@ func (o *SelectFacebookPage200Response) SetRedirectUrl(v string) {
 	o.RedirectUrl = &v
 }
 
+// GetAdsAccountId returns the AdsAccountId field value if set, zero value otherwise.
+func (o *SelectFacebookPage200Response) GetAdsAccountId() string {
+	if o == nil || IsNil(o.AdsAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdsAccountId
+}
+
+// GetAdsAccountIdOk returns a tuple with the AdsAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectFacebookPage200Response) GetAdsAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdsAccountId) {
+		return nil, false
+	}
+	return o.AdsAccountId, true
+}
+
+// HasAdsAccountId returns a boolean if a field has been set.
+func (o *SelectFacebookPage200Response) HasAdsAccountId() bool {
+	if o != nil && !IsNil(o.AdsAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdsAccountId gets a reference to the given string and assigns it to the AdsAccountId field.
+func (o *SelectFacebookPage200Response) SetAdsAccountId(v string) {
+	o.AdsAccountId = &v
+}
+
 // GetAccount returns the Account field value if set, zero value otherwise.
 func (o *SelectFacebookPage200Response) GetAccount() SelectFacebookPage200ResponseAccount {
 	if o == nil || IsNil(o.Account) {
@@ -154,6 +188,9 @@ func (o SelectFacebookPage200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RedirectUrl) {
 		toSerialize["redirect_url"] = o.RedirectUrl
+	}
+	if !IsNil(o.AdsAccountId) {
+		toSerialize["adsAccountId"] = o.AdsAccountId
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account
