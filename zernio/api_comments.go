@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.87.0
+API version: 1.88.0
 Contact: support@zernio.com
 */
 
@@ -351,7 +351,7 @@ func (r CommentsAPIGetInboxPostCommentsRequest) Cursor(cursor string) CommentsAP
 	return r
 }
 
-// (Reddit and TikTok only) Get replies to a specific comment
+// (Facebook, Instagram, Reddit and TikTok) Get replies to a specific comment. On Facebook and Instagram, the requested comment is returned in the top-level &#x60;comment&#x60; field and comments[] holds its replies.
 func (r CommentsAPIGetInboxPostCommentsRequest) CommentId(commentId string) CommentsAPIGetInboxPostCommentsRequest {
 	r.commentId = &commentId
 	return r
@@ -366,10 +366,17 @@ GetInboxPostComments Get post comments
 
 Fetch comments for a specific post. Requires accountId query parameter.
 
-On Facebook, passing a COMMENT id as `postId` is also supported and returns that
-comment's replies instead of the post's top-level comments. Instagram does not support
-this and returns 400: its replies come nested in each comment's `replies` array, with no
-separate paging. YouTube does not support it either, `postId` must be a video id.
+Pass `commentId` (Facebook, Instagram, Reddit, TikTok) to fetch replies to a specific
+comment instead of the post's top-level comments. Facebook, Instagram and TikTok return
+the comment's replies, paged by `limit`/`cursor`; Reddit returns the focused comment
+thread instead. On Facebook and Instagram the requested comment itself comes back in the
+top-level `comment` field.
+
+On Facebook, passing a COMMENT id as `postId` (instead of using `commentId`) is also
+supported for backwards compatibility and returns that comment's replies the same way.
+Prefer `commentId` for new integrations; it also works on Instagram, which rejects a
+comment id passed as `postId`. YouTube does not support either form, `postId` must be a
+video id.
 
 Responses are cached for up to 10 minutes, so a page may lag new comments by that
 window. Do not poll this endpoint for real-time updates: subscribe to the
@@ -387,7 +394,7 @@ not return them at all (Meta omits them, together with their replies), so a hidd
 and a deleted one look the same on this read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook, a comment ID is also accepted here and returns that comment's replies (not supported on Instagram).
+	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook, a comment ID is also accepted here and returns that comment's replies, kept for backwards compatibility; prefer the `commentId` query parameter, which also works on Instagram.
 	@return CommentsAPIGetInboxPostCommentsRequest
 */
 func (a *CommentsAPIService) GetInboxPostComments(ctx context.Context, postId string) CommentsAPIGetInboxPostCommentsRequest {
