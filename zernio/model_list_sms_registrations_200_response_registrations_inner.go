@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.91.0
+API version: 1.92.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,16 @@ type ListSmsRegistrations200ResponseRegistrationsInner struct {
 	AwaitingOtp *bool `json:"awaitingOtp,omitempty"`
 	// The open change request as text (status changes_requested).
 	AdminReviewNote NullableString `json:"adminReviewNote,omitempty"`
+	// When you last answered a change request.
+	LastResponseAt NullableTime `json:"lastResponseAt,omitempty"`
+	// Rejected by the carriers at least once. A pending registration with this set is our fix, back with the carriers.
+	PreviouslyRejected *bool `json:"previouslyRejected,omitempty"`
+	// When the carriers last rejected it.
+	LastRejectedAt NullableTime `json:"lastRejectedAt,omitempty"`
+	// Rejected in our review before anything was filed with the carriers (not a carrier rejection; nothing to fix or appeal).
+	RejectedBeforeSubmission *bool `json:"rejectedBeforeSubmission,omitempty"`
+	// Sole proprietor only: the verification code was never entered within 30 days. Start SMS setup again; it revives the same brand with no second brand fee.
+	OtpExpired *bool `json:"otpExpired,omitempty"`
 	// The same change request as points, when the reviewer wrote it that way; null otherwise.
 	ReviewRequest NullableSmsRegistrationReviewRequest `json:"reviewRequest,omitempty"`
 	// Carrier-assigned brand trust score; drives throughput.
@@ -547,6 +557,188 @@ func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetAdminReviewNote
 	o.AdminReviewNote.Unset()
 }
 
+// GetLastResponseAt returns the LastResponseAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetLastResponseAt() time.Time {
+	if o == nil || IsNil(o.LastResponseAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastResponseAt.Get()
+}
+
+// GetLastResponseAtOk returns a tuple with the LastResponseAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetLastResponseAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastResponseAt.Get(), o.LastResponseAt.IsSet()
+}
+
+// HasLastResponseAt returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasLastResponseAt() bool {
+	if o != nil && o.LastResponseAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLastResponseAt gets a reference to the given NullableTime and assigns it to the LastResponseAt field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetLastResponseAt(v time.Time) {
+	o.LastResponseAt.Set(&v)
+}
+
+// SetLastResponseAtNil sets the value for LastResponseAt to be an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetLastResponseAtNil() {
+	o.LastResponseAt.Set(nil)
+}
+
+// UnsetLastResponseAt ensures that no value is present for LastResponseAt, not even an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetLastResponseAt() {
+	o.LastResponseAt.Unset()
+}
+
+// GetPreviouslyRejected returns the PreviouslyRejected field value if set, zero value otherwise.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetPreviouslyRejected() bool {
+	if o == nil || IsNil(o.PreviouslyRejected) {
+		var ret bool
+		return ret
+	}
+	return *o.PreviouslyRejected
+}
+
+// GetPreviouslyRejectedOk returns a tuple with the PreviouslyRejected field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetPreviouslyRejectedOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreviouslyRejected) {
+		return nil, false
+	}
+	return o.PreviouslyRejected, true
+}
+
+// HasPreviouslyRejected returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasPreviouslyRejected() bool {
+	if o != nil && !IsNil(o.PreviouslyRejected) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreviouslyRejected gets a reference to the given bool and assigns it to the PreviouslyRejected field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetPreviouslyRejected(v bool) {
+	o.PreviouslyRejected = &v
+}
+
+// GetLastRejectedAt returns the LastRejectedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetLastRejectedAt() time.Time {
+	if o == nil || IsNil(o.LastRejectedAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastRejectedAt.Get()
+}
+
+// GetLastRejectedAtOk returns a tuple with the LastRejectedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetLastRejectedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastRejectedAt.Get(), o.LastRejectedAt.IsSet()
+}
+
+// HasLastRejectedAt returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasLastRejectedAt() bool {
+	if o != nil && o.LastRejectedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLastRejectedAt gets a reference to the given NullableTime and assigns it to the LastRejectedAt field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetLastRejectedAt(v time.Time) {
+	o.LastRejectedAt.Set(&v)
+}
+
+// SetLastRejectedAtNil sets the value for LastRejectedAt to be an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetLastRejectedAtNil() {
+	o.LastRejectedAt.Set(nil)
+}
+
+// UnsetLastRejectedAt ensures that no value is present for LastRejectedAt, not even an explicit nil
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) UnsetLastRejectedAt() {
+	o.LastRejectedAt.Unset()
+}
+
+// GetRejectedBeforeSubmission returns the RejectedBeforeSubmission field value if set, zero value otherwise.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetRejectedBeforeSubmission() bool {
+	if o == nil || IsNil(o.RejectedBeforeSubmission) {
+		var ret bool
+		return ret
+	}
+	return *o.RejectedBeforeSubmission
+}
+
+// GetRejectedBeforeSubmissionOk returns a tuple with the RejectedBeforeSubmission field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetRejectedBeforeSubmissionOk() (*bool, bool) {
+	if o == nil || IsNil(o.RejectedBeforeSubmission) {
+		return nil, false
+	}
+	return o.RejectedBeforeSubmission, true
+}
+
+// HasRejectedBeforeSubmission returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasRejectedBeforeSubmission() bool {
+	if o != nil && !IsNil(o.RejectedBeforeSubmission) {
+		return true
+	}
+
+	return false
+}
+
+// SetRejectedBeforeSubmission gets a reference to the given bool and assigns it to the RejectedBeforeSubmission field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetRejectedBeforeSubmission(v bool) {
+	o.RejectedBeforeSubmission = &v
+}
+
+// GetOtpExpired returns the OtpExpired field value if set, zero value otherwise.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetOtpExpired() bool {
+	if o == nil || IsNil(o.OtpExpired) {
+		var ret bool
+		return ret
+	}
+	return *o.OtpExpired
+}
+
+// GetOtpExpiredOk returns a tuple with the OtpExpired field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetOtpExpiredOk() (*bool, bool) {
+	if o == nil || IsNil(o.OtpExpired) {
+		return nil, false
+	}
+	return o.OtpExpired, true
+}
+
+// HasOtpExpired returns a boolean if a field has been set.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) HasOtpExpired() bool {
+	if o != nil && !IsNil(o.OtpExpired) {
+		return true
+	}
+
+	return false
+}
+
+// SetOtpExpired gets a reference to the given bool and assigns it to the OtpExpired field.
+func (o *ListSmsRegistrations200ResponseRegistrationsInner) SetOtpExpired(v bool) {
+	o.OtpExpired = &v
+}
+
 // GetReviewRequest returns the ReviewRequest field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListSmsRegistrations200ResponseRegistrationsInner) GetReviewRequest() SmsRegistrationReviewRequest {
 	if o == nil || IsNil(o.ReviewRequest.Get()) {
@@ -713,6 +905,21 @@ func (o ListSmsRegistrations200ResponseRegistrationsInner) ToMap() (map[string]i
 	}
 	if o.AdminReviewNote.IsSet() {
 		toSerialize["adminReviewNote"] = o.AdminReviewNote.Get()
+	}
+	if o.LastResponseAt.IsSet() {
+		toSerialize["lastResponseAt"] = o.LastResponseAt.Get()
+	}
+	if !IsNil(o.PreviouslyRejected) {
+		toSerialize["previouslyRejected"] = o.PreviouslyRejected
+	}
+	if o.LastRejectedAt.IsSet() {
+		toSerialize["lastRejectedAt"] = o.LastRejectedAt.Get()
+	}
+	if !IsNil(o.RejectedBeforeSubmission) {
+		toSerialize["rejectedBeforeSubmission"] = o.RejectedBeforeSubmission
+	}
+	if !IsNil(o.OtpExpired) {
+		toSerialize["otpExpired"] = o.OtpExpired
 	}
 	if o.ReviewRequest.IsSet() {
 		toSerialize["reviewRequest"] = o.ReviewRequest.Get()
