@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.81.0
+API version: 1.82.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the ListAdAccounts200ResponseAccountsInnerFundingSourceDetails type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListAdAccounts200ResponseAccountsInnerFundingSourceDetails{}
 
-// ListAdAccounts200ResponseAccountsInnerFundingSourceDetails Meta only. Meta's `funding_source_details` object, forwarded unchanged. ABSENT under exactly the same condition as `fundingSource`: this connection's token cannot see billing on the ad account. It is never sent as null or as an empty object, so treat the missing key as 'unknown', never as 'no payment method configured'.
+// ListAdAccounts200ResponseAccountsInnerFundingSourceDetails Meta only. Meta's `funding_source_details` object, forwarded unchanged. ABSENT under exactly the same conditions as `fundingSource`, never sent as null or as an empty object. Read `billingStatus` for what the absence means.
 type ListAdAccounts200ResponseAccountsInnerFundingSourceDetails struct {
 	// Meta's ID for the funding instrument. Matches `fundingSource`.
 	Id *string `json:"id,omitempty"`

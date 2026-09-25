@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.81.0
+API version: 1.82.0
 Contact: support@zernio.com
 */
 
@@ -18,8 +18,15 @@ import (
 // checks if the ErrorResponseDetails type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ErrorResponseDetails{}
 
-// ErrorResponseDetails Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.  On a Google Ads 429 it carries `quotaExhausted: true`, which marks the failure as Google's own ads quota rather than a Zernio rate limit, so you can keep calling other platforms instead of backing off everywhere. When Google names the scope it also carries `quotaScope`: `DEVELOPER` means the shared developer-token budget (every Google account is affected and there is nothing to change on your side), `ACCOUNT` means your own ad account. A Meta 429 carries neither field.  A Zernio Google Ads budget 429 carries `budgetScope` instead, and never `quotaExhausted`: these are Zernio's own limits, applied before the call reaches Google. `user` is your own burst or daily allowance, so the work is yours to reschedule; `platform` is the fleet-wide daily budget shared with every other customer, so only waiting for the reset clears it. The two scopes are separate axes from `quotaScope`, not the same pool named twice.
+// ErrorResponseDetails Additional structured context (e.g. field-level validation errors), for example `privateReplyConsumed` on the private-reply endpoint's 400 when the comment's single reply is already spent.  On a Google Ads 429 it carries `quotaExhausted: true`, which marks the failure as Google's own ads quota rather than a Zernio rate limit, so you can keep calling other platforms instead of backing off everywhere. When Google names the scope it also carries `quotaScope`: `DEVELOPER` means the shared developer-token budget (every Google account is affected and there is nothing to change on your side), `ACCOUNT` means your own ad account. A Meta 429 carries neither field.  A Zernio Google Ads budget 429 carries `budgetScope` instead, and never `quotaExhausted`: these are Zernio's own limits, applied before the call reaches Google. `user` is your own burst or daily allowance, so the work is yours to reschedule; `platform` is the fleet-wide daily budget shared with every other customer, so only waiting for the reset clears it. The two scopes are separate axes from `quotaScope`, not the same pool named twice.  A failed Meta ad create (`POST /v1/ads/create`, `POST /v1/ads/boost`, `POST /v1/ads/ctwa`) carries `stage`, `adAccountId` and `createdObjects`: where it failed, on which ad account, and every object this request had already created with what cleanup did to it. `left_behind` objects still exist on the ad account (Meta refused the delete, typically on a held account), so delete them yourself or reuse them. `unconfirmedWrite` is set when Meta answered a create with a 5xx or dropped the connection and Zernio could not confirm whether the object exists: check that parent before creating it again.
 type ErrorResponseDetails struct {
+	// Meta ad create failures only. The step that failed: `media` (image/video download or upload), `campaign`, `adset`, `creative`, `ad` (the ad POST itself, where Meta's code 31 / 3858385 hold and 100 / 1359188 payment rejections land), `activation` (switching the created objects on), or `other` (a read or check before any write).
+	Stage *string `json:"stage,omitempty"`
+	// Meta ad create failures only. The ad account the request wrote to (`act_...`).
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	// Meta ad create failures only. Every object this request created before failing, in creation order. Objects you referenced (an existing campaign, ad set, creative or video) are never listed and never deleted.
+	CreatedObjects   []ErrorResponseDetailsCreatedObjectsInner `json:"createdObjects,omitempty"`
+	UnconfirmedWrite *ErrorResponseDetailsUnconfirmedWrite     `json:"unconfirmedWrite,omitempty"`
 	// Google Ads 429 only. True when the upstream Google Ads quota is spent rather than a Zernio limit.
 	QuotaExhausted *bool `json:"quotaExhausted,omitempty"`
 	// Google Ads 429 only, when Google names the scope. DEVELOPER is the shared developer-token budget; ACCOUNT is your ad account.
@@ -46,6 +53,134 @@ func NewErrorResponseDetails() *ErrorResponseDetails {
 func NewErrorResponseDetailsWithDefaults() *ErrorResponseDetails {
 	this := ErrorResponseDetails{}
 	return &this
+}
+
+// GetStage returns the Stage field value if set, zero value otherwise.
+func (o *ErrorResponseDetails) GetStage() string {
+	if o == nil || IsNil(o.Stage) {
+		var ret string
+		return ret
+	}
+	return *o.Stage
+}
+
+// GetStageOk returns a tuple with the Stage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponseDetails) GetStageOk() (*string, bool) {
+	if o == nil || IsNil(o.Stage) {
+		return nil, false
+	}
+	return o.Stage, true
+}
+
+// HasStage returns a boolean if a field has been set.
+func (o *ErrorResponseDetails) HasStage() bool {
+	if o != nil && !IsNil(o.Stage) {
+		return true
+	}
+
+	return false
+}
+
+// SetStage gets a reference to the given string and assigns it to the Stage field.
+func (o *ErrorResponseDetails) SetStage(v string) {
+	o.Stage = &v
+}
+
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *ErrorResponseDetails) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponseDetails) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *ErrorResponseDetails) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *ErrorResponseDetails) SetAdAccountId(v string) {
+	o.AdAccountId = &v
+}
+
+// GetCreatedObjects returns the CreatedObjects field value if set, zero value otherwise.
+func (o *ErrorResponseDetails) GetCreatedObjects() []ErrorResponseDetailsCreatedObjectsInner {
+	if o == nil || IsNil(o.CreatedObjects) {
+		var ret []ErrorResponseDetailsCreatedObjectsInner
+		return ret
+	}
+	return o.CreatedObjects
+}
+
+// GetCreatedObjectsOk returns a tuple with the CreatedObjects field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponseDetails) GetCreatedObjectsOk() ([]ErrorResponseDetailsCreatedObjectsInner, bool) {
+	if o == nil || IsNil(o.CreatedObjects) {
+		return nil, false
+	}
+	return o.CreatedObjects, true
+}
+
+// HasCreatedObjects returns a boolean if a field has been set.
+func (o *ErrorResponseDetails) HasCreatedObjects() bool {
+	if o != nil && !IsNil(o.CreatedObjects) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedObjects gets a reference to the given []ErrorResponseDetailsCreatedObjectsInner and assigns it to the CreatedObjects field.
+func (o *ErrorResponseDetails) SetCreatedObjects(v []ErrorResponseDetailsCreatedObjectsInner) {
+	o.CreatedObjects = v
+}
+
+// GetUnconfirmedWrite returns the UnconfirmedWrite field value if set, zero value otherwise.
+func (o *ErrorResponseDetails) GetUnconfirmedWrite() ErrorResponseDetailsUnconfirmedWrite {
+	if o == nil || IsNil(o.UnconfirmedWrite) {
+		var ret ErrorResponseDetailsUnconfirmedWrite
+		return ret
+	}
+	return *o.UnconfirmedWrite
+}
+
+// GetUnconfirmedWriteOk returns a tuple with the UnconfirmedWrite field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponseDetails) GetUnconfirmedWriteOk() (*ErrorResponseDetailsUnconfirmedWrite, bool) {
+	if o == nil || IsNil(o.UnconfirmedWrite) {
+		return nil, false
+	}
+	return o.UnconfirmedWrite, true
+}
+
+// HasUnconfirmedWrite returns a boolean if a field has been set.
+func (o *ErrorResponseDetails) HasUnconfirmedWrite() bool {
+	if o != nil && !IsNil(o.UnconfirmedWrite) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnconfirmedWrite gets a reference to the given ErrorResponseDetailsUnconfirmedWrite and assigns it to the UnconfirmedWrite field.
+func (o *ErrorResponseDetails) SetUnconfirmedWrite(v ErrorResponseDetailsUnconfirmedWrite) {
+	o.UnconfirmedWrite = &v
 }
 
 // GetQuotaExhausted returns the QuotaExhausted field value if set, zero value otherwise.
@@ -154,6 +289,18 @@ func (o ErrorResponseDetails) MarshalJSON() ([]byte, error) {
 
 func (o ErrorResponseDetails) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Stage) {
+		toSerialize["stage"] = o.Stage
+	}
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
+	}
+	if !IsNil(o.CreatedObjects) {
+		toSerialize["createdObjects"] = o.CreatedObjects
+	}
+	if !IsNil(o.UnconfirmedWrite) {
+		toSerialize["unconfirmedWrite"] = o.UnconfirmedWrite
+	}
 	if !IsNil(o.QuotaExhausted) {
 		toSerialize["quotaExhausted"] = o.QuotaExhausted
 	}
@@ -185,6 +332,10 @@ func (o *ErrorResponseDetails) UnmarshalJSON(data []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "stage")
+		delete(additionalProperties, "adAccountId")
+		delete(additionalProperties, "createdObjects")
+		delete(additionalProperties, "unconfirmedWrite")
 		delete(additionalProperties, "quotaExhausted")
 		delete(additionalProperties, "quotaScope")
 		delete(additionalProperties, "budgetScope")

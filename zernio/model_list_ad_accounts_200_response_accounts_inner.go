@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.81.0
+API version: 1.82.0
 Contact: support@zernio.com
 */
 
@@ -41,9 +41,11 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	TimezoneOffsetHoursUtc *float32 `json:"timezoneOffsetHoursUtc,omitempty"`
 	// Meta only. Minimum daily budget for the account, in the account currency's major units. This is the impressions-billed minimum; other billing events have higher minimums. Absent when the connected token cannot read it.
 	MinimumDailyBudget *float32 `json:"minimumDailyBudget,omitempty"`
-	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT when this connection's token cannot see billing on the account, which is not the same as the account having no payment method: never read the missing key as `no payment method configured`.
+	// Meta only. Meta's `funding_source` ID for the ad account, forwarded unchanged. ABSENT both when this connection's token cannot see billing and when the account has no payment method; read `billingStatus` to tell the two apart.
 	FundingSource        *string                                                     `json:"fundingSource,omitempty"`
 	FundingSourceDetails *ListAdAccounts200ResponseAccountsInnerFundingSourceDetails `json:"fundingSourceDetails,omitempty"`
+	// Meta only. Whether the ad account has a payment method, derived as follows: - `missing` when `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD),   when `disableReason` is `3` (RISK_PAYMENT), or when the connected person   has the MANAGE task on the account (admin, who always sees billing) and   Meta returns no funding source. Ad creation on such an account fails at   the ad step with Meta code 100 / subcode 1359188: add a payment method in   Meta's Billing & payments center. - `ok` when Meta returns a funding source. This is presence, not validity:   Meta can still refuse the card or balance at ad creation. - `unknown` when the connected person is not an admin of the account, or   the token cannot read the billing fields.
+	BillingStatus *string `json:"billingStatus,omitempty"`
 	// Meta and X only. Whether the account can create/run ads now. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta and X only. Human-readable reason when selectable is false; null when selectable.
@@ -516,6 +518,38 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetFundingSourceDetails(v ListA
 	o.FundingSourceDetails = &v
 }
 
+// GetBillingStatus returns the BillingStatus field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBillingStatus() string {
+	if o == nil || IsNil(o.BillingStatus) {
+		var ret string
+		return ret
+	}
+	return *o.BillingStatus
+}
+
+// GetBillingStatusOk returns a tuple with the BillingStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBillingStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.BillingStatus) {
+		return nil, false
+	}
+	return o.BillingStatus, true
+}
+
+// HasBillingStatus returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasBillingStatus() bool {
+	if o != nil && !IsNil(o.BillingStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetBillingStatus gets a reference to the given string and assigns it to the BillingStatus field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetBillingStatus(v string) {
+	o.BillingStatus = &v
+}
+
 // GetSelectable returns the Selectable field value if set, zero value otherwise.
 func (o *ListAdAccounts200ResponseAccountsInner) GetSelectable() bool {
 	if o == nil || IsNil(o.Selectable) {
@@ -642,6 +676,9 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.FundingSourceDetails) {
 		toSerialize["fundingSourceDetails"] = o.FundingSourceDetails
+	}
+	if !IsNil(o.BillingStatus) {
+		toSerialize["billingStatus"] = o.BillingStatus
 	}
 	if !IsNil(o.Selectable) {
 		toSerialize["selectable"] = o.Selectable
