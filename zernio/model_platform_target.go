@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.75.0
+API version: 1.76.0
 Contact: support@zernio.com
 */
 
@@ -50,7 +50,8 @@ type PlatformTarget struct {
 	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), platform_rate_limit (platform throttling, retried automatically), quota_exhausted (a shared quota pool the integration draws on is empty, including our own capacity gate in front of one; not caused by your content or account, and safe to retry once the pool frees up), system_error (Zernio infra), unknown
 	ErrorCategory *string `json:"errorCategory,omitempty"`
 	// Who caused the error: user (fix content/reconnect), platform (outage/API change), system (Zernio issue, rare)
-	ErrorSource *string `json:"errorSource,omitempty"`
+	ErrorSource   *string            `json:"errorSource,omitempty"`
+	PlatformError *PostPlatformError `json:"platformError,omitempty"`
 }
 
 // NewPlatformTarget instantiates a new PlatformTarget object
@@ -604,6 +605,38 @@ func (o *PlatformTarget) SetErrorSource(v string) {
 	o.ErrorSource = &v
 }
 
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *PlatformTarget) GetPlatformError() PostPlatformError {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret PostPlatformError
+		return ret
+	}
+	return *o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PlatformTarget) GetPlatformErrorOk() (*PostPlatformError, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return nil, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *PlatformTarget) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given PostPlatformError and assigns it to the PlatformError field.
+func (o *PlatformTarget) SetPlatformError(v PostPlatformError) {
+	o.PlatformError = &v
+}
+
 func (o PlatformTarget) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -661,6 +694,9 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ErrorSource) {
 		toSerialize["errorSource"] = o.ErrorSource
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
 	}
 	return toSerialize, nil
 }

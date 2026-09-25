@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.75.0
+API version: 1.76.0
 Contact: support@zernio.com
 */
 
@@ -25,10 +25,11 @@ type WebhookPayloadPostPostPlatformsInner struct {
 	Platform string `json:"platform"`
 	Status   string `json:"status"`
 	// SocialAccount id this platform target published through. Use it to route events by connected account (e.g. separate staging vs production endpoints). A post can span multiple accounts.
-	AccountId      *string `json:"accountId,omitempty"`
-	PlatformPostId *string `json:"platformPostId,omitempty"`
-	PublishedUrl   *string `json:"publishedUrl,omitempty"`
-	Error          *string `json:"error,omitempty"`
+	AccountId      *string            `json:"accountId,omitempty"`
+	PlatformPostId *string            `json:"platformPostId,omitempty"`
+	PublishedUrl   *string            `json:"publishedUrl,omitempty"`
+	Error          *string            `json:"error,omitempty"`
+	PlatformError  *PostPlatformError `json:"platformError,omitempty"`
 }
 
 type _WebhookPayloadPostPostPlatformsInner WebhookPayloadPostPostPlatformsInner
@@ -228,6 +229,38 @@ func (o *WebhookPayloadPostPostPlatformsInner) SetError(v string) {
 	o.Error = &v
 }
 
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPostPlatformsInner) GetPlatformError() PostPlatformError {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret PostPlatformError
+		return ret
+	}
+	return *o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) GetPlatformErrorOk() (*PostPlatformError, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return nil, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given PostPlatformError and assigns it to the PlatformError field.
+func (o *WebhookPayloadPostPostPlatformsInner) SetPlatformError(v PostPlatformError) {
+	o.PlatformError = &v
+}
+
 func (o WebhookPayloadPostPostPlatformsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -251,6 +284,9 @@ func (o WebhookPayloadPostPostPlatformsInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
 	}
 	return toSerialize, nil
 }

@@ -1394,6 +1394,7 @@ model_post_analytics.go
 model_post_create_response.go
 model_post_delete_response.go
 model_post_get_response.go
+model_post_platform_error.go
 model_post_publish_incomplete_response.go
 model_post_publish_incomplete_response_platform_results_inner.go
 model_post_retry_response.go
