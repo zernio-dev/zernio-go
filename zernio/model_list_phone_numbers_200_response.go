@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.95.0
+API version: 1.96.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &ListPhoneNumbers200Response{}
 
 // ListPhoneNumbers200Response struct for ListPhoneNumbers200Response
 type ListPhoneNumbers200Response struct {
-	Numbers []ListPhoneNumbers200ResponseNumbersInner `json:"numbers,omitempty"`
+	Numbers []OwnedPhoneNumber `json:"numbers,omitempty"`
 	// Connected (bring-your-own) WhatsApp numbers: your own WABA numbers linked via Embedded Signup. Not provisioned or billed by Zernio, so they are not in `numbers`; `accountId` is the social-account id used by the messaging and inbox endpoints. Included only on the default and `status=active` views.
 	Connected []ListPhoneNumbers200ResponseConnectedInner `json:"connected,omitempty"`
 	// iMessage phone senders (see /v1/imessage/senders/order). Hosted by the iMessage provider, not on your Telnyx numbers: SMS and Calls can never be enabled on them, and they bill as iMessage senders. `handle` is null until the carrier assigns the number at activation. Included only on the default and `status=active` views.
@@ -46,9 +46,9 @@ func NewListPhoneNumbers200ResponseWithDefaults() *ListPhoneNumbers200Response {
 }
 
 // GetNumbers returns the Numbers field value if set, zero value otherwise.
-func (o *ListPhoneNumbers200Response) GetNumbers() []ListPhoneNumbers200ResponseNumbersInner {
+func (o *ListPhoneNumbers200Response) GetNumbers() []OwnedPhoneNumber {
 	if o == nil || IsNil(o.Numbers) {
-		var ret []ListPhoneNumbers200ResponseNumbersInner
+		var ret []OwnedPhoneNumber
 		return ret
 	}
 	return o.Numbers
@@ -56,7 +56,7 @@ func (o *ListPhoneNumbers200Response) GetNumbers() []ListPhoneNumbers200Response
 
 // GetNumbersOk returns a tuple with the Numbers field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListPhoneNumbers200Response) GetNumbersOk() ([]ListPhoneNumbers200ResponseNumbersInner, bool) {
+func (o *ListPhoneNumbers200Response) GetNumbersOk() ([]OwnedPhoneNumber, bool) {
 	if o == nil || IsNil(o.Numbers) {
 		return nil, false
 	}
@@ -72,8 +72,8 @@ func (o *ListPhoneNumbers200Response) HasNumbers() bool {
 	return false
 }
 
-// SetNumbers gets a reference to the given []ListPhoneNumbers200ResponseNumbersInner and assigns it to the Numbers field.
-func (o *ListPhoneNumbers200Response) SetNumbers(v []ListPhoneNumbers200ResponseNumbersInner) {
+// SetNumbers gets a reference to the given []OwnedPhoneNumber and assigns it to the Numbers field.
+func (o *ListPhoneNumbers200Response) SetNumbers(v []OwnedPhoneNumber) {
 	o.Numbers = v
 }
 
