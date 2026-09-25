@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.94.0
+API version: 1.95.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,7 @@ type ListPhoneNumberCountries200ResponseCountriesInner struct {
 	NeedsKyc     *bool  `json:"needsKyc,omitempty"`
 	// Regular phone (PSTN) calling on the number, inbound + outbound. Available on every offerable country.
 	CallsAvailable *bool `json:"callsAvailable,omitempty"`
-	// WhatsApp can be enabled on numbers from this country.
+	// WhatsApp can be enabled on at least one number type from this country; types[].whatsappAvailable says which.
 	WhatsappAvailable *bool `json:"whatsappAvailable,omitempty"`
 	// Whether this country's number type can do SMS. Use it to filter the picker when the buyer wants SMS (pair with `wantsSms` on purchase).
 	SmsAvailable *bool `json:"smsAvailable,omitempty"`
