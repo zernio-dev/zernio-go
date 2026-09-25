@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.74.0
+API version: 1.75.0
 Contact: support@zernio.com
 */
 
@@ -37,7 +37,7 @@ type PlatformTarget struct {
 	PlatformPostId *string `json:"platformPostId,omitempty"`
 	// Public URL of the published post. Included in the response for immediate posts; for scheduled posts, fetch via GET /v1/posts/{postId} after publish time. Empty when the platform confirmed the publish without returning an id a permalink can be built from (TikTok returns a publish id for some uploads); the TikTok reconcile cron backfills it later. If TikTok never returns one, /v1/analytics reports that entry as syncStatus unavailable.
 	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
-	// Timestamp when the post was published to this platform
+	// Timestamp when the post was published to this platform. YouTube uploads a scheduled public video up to 15 minutes early as private with YouTube's own release time, so its entry is published with this set to scheduledFor, the moment the video goes public.
 	PublishedAt *time.Time `json:"publishedAt,omitempty"`
 	// Set when a post that was successfully published later disappears from the platform (deleted on-platform or taken down by the platform). status stays \"published\" (it reflects the publish outcome); poll this field to detect post-publish removals. Absent while the post is live, and cleared if the post reappears. Detection runs with the analytics sync, so expect up to a few hours of lag.
 	RemovedFromPlatformAt NullableTime `json:"removedFromPlatformAt,omitempty"`
