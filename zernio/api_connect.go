@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.82.0
+API version: 1.83.0
 Contact: support@zernio.com
 */
 
@@ -810,10 +810,17 @@ Unified ads connection endpoint. Creates a dedicated ads SocialAccount for the s
 token. No posting account is created or required. This mode always returns an authUrl;
 it returns 503 when the server has no META_ADS_CONFIG_ID. Complete the dialog in a
 browser. The callback creates or reconnects only the metaads account, preserving its
-ID, history and scopedAdAccountIds. Non-empty successful subscription results replace
-subscribedAdAccountIds to remove stale grants; an empty result leaves routing unchanged. A reconnect must grant
-every previously scoped ad account (or every previous grant for an unscoped connection).
-Missing or unverifiable grants return 409 before changing the account.
+ID and history. Non-empty successful subscription results replace
+subscribedAdAccountIds to remove stale grants; an empty result leaves routing unchanged. A reconnect is
+accepted when the new grant shares at least one ad account with the existing connection (its
+scopedAdAccountIds plus the previous grant, or the ad accounts its old token can read when neither
+is stored), so re-running the dialog can add, drop or swap ad accounts. A grant with zero overlap
+is refused before changing the account and redirects with `error=invalid_field_value` and
+`error_reason=reconnect_mismatch` (disconnect and connect again to switch); when the previous ad
+accounts cannot be read at all, it redirects with `error=reconnect_required`. On an accepted
+reconnect the scope is rebuilt from the new grant: `adAccountIds` passed on the re-auth become the
+scope; otherwise a stored scope keeps its ad accounts that are still granted plus any granted for the
+first time, and an unscoped connection follows the new grant.
 
 Pass `pageId` to select a granted Page for creatives and lead forms. API integrations
 otherwise reuse the previous Page or sole granted Page. Multiple Pages without a selection
