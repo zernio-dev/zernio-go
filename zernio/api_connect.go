@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.83.1
+API version: 1.84.0
 Contact: support@zernio.com
 */
 
@@ -873,8 +873,18 @@ account already exists, returns alreadyConnected: true.
   - twitter (X Ads): accountId is REQUIRED. There's no ads-only mode, because tweets need to be authored by a real X user.
 
 **Standalone platforms (googleads).** Starts the Google Ads OAuth flow and creates a
-standalone ads SocialAccount (googleads) with no parent. If the account already exists,
-returns alreadyConnected: true.
+standalone ads SocialAccount (googleads) with no parent. If the account already exists and
+has at least one discovered Google Ads customer account, returns alreadyConnected: true.
+When the existing connection has zero customer accounts (metadata.googleAdsCustomerIds is
+empty) or is flagged needsReconnection, it returns an authUrl instead; completing it
+reconnects the same account (same accountId) and re-runs ad account discovery. Discovery
+includes the client accounts under every manager (MCC) the Google user can reach, and
+includes Google Ads test accounts, which Google always reports with status CLOSED. When
+discovery finds no usable customer account, the callback saves nothing and redirects with
+`error=google_ads_no_ad_accounts`, `platform=googleads` and an `error_message` naming each
+customer the Google user can reach and why it was left out (for example
+CUSTOMER_NOT_ENABLED). Sign in with a Google user that has access to the ad account or to
+its manager account.
 
 Ads accounts appear as regular SocialAccount documents with ads platform values (e.g., metaads, tiktokads) in GET /v1/accounts.
 
