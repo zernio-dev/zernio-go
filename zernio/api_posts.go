@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
 
-API version: 1.76.0
+API version: 1.76.1
 Contact: support@zernio.com
 */
 
@@ -474,7 +474,9 @@ func (r PostsAPIDeletePostRequest) Execute() (*PostDeleteResponse, *http.Respons
 /*
 DeletePost Delete post
 
-Delete a draft or scheduled post from Zernio. Published posts cannot be deleted; use the Unpublish endpoint instead. Upload quota is automatically refunded.
+Delete a post from Zernio. Any status except `published` can be deleted: `draft`, `scheduled`, `publishing`, `failed`, `partial` and `cancelled`. Published posts cannot be deleted; use the Unpublish endpoint instead. Upload quota is automatically refunded for draft and scheduled posts.
+
+Deleting a `publishing` or `partial` post is how you stop entries that are still pending, for example entries held on a disconnected account. It removes the whole post record from Zernio, including the entries that were already published, but it does not remove anything already live on a platform (use Unpublish for that first if needed). An entry that a worker has already started sending when you delete may still go out, or may fail because media uploaded to Zernio and not used by another post is deleted with the post. Analytics for entries already published are removed too. Deleting also frees the content for re-creation, so the same caption and media are no longer reported as a duplicate.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
