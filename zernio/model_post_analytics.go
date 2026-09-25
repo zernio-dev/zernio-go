@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.85.0
+API version: 1.86.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,8 @@ type PostAnalytics struct {
 	Comments    *int32 `json:"comments,omitempty"`
 	Shares      *int32 `json:"shares,omitempty"`
 	// Number of saves/bookmarks (Instagram, Pinterest, X)
-	Saves  *int32 `json:"saves,omitempty"`
+	Saves *int32 `json:"saves,omitempty"`
+	// Link clicks where the platform reports them. Always 0 on Facebook Page stories: Meta exposes no link-click metric for stories.
 	Clicks *int32 `json:"clicks,omitempty"`
 	Views  *int32 `json:"views,omitempty"`
 	// Instagram feed posts and stories only: organic accounts that started following from this post. Null on Instagram Reels and non-Reels video, where Meta does not expose this metric for the media. 0 for other platforms.
