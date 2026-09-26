@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.101.1
+API version: 1.102.0
 Contact: support@zernio.com
 */
 
@@ -3542,9 +3542,11 @@ func (r WebhookEventsAPIOnReactionReceivedRequest) Execute() (*http.Response, er
 OnReactionReceived Reaction received event
 
 Fired when a participant adds or removes an emoji reaction on a message.
-Supported on WhatsApp, Telegram, Slack, Instagram and Facebook Messenger.
-Distinct from message.received so a reaction (e.g. a thumbs-up) is not
-mistaken for an inbound message.
+Supported on WhatsApp, Telegram, Slack, Instagram, Facebook Messenger and
+TikTok. Distinct from message.received so a reaction (e.g. a thumbs-up) is
+not mistaken for an inbound message. On TikTok a like or emoji reaction on
+a DM arrives only as this event (never as an empty message.received), with
+`reaction.platformMessageId` set to the TikTok id of the liked message.
 The `reaction.action` field is `added` or `removed`. On WhatsApp and Meta
 removals the platform does not report which emoji was removed, so
 `reaction.emoji` may be an empty string.
