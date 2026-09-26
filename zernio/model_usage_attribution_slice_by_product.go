@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.99.0
+API version: 1.100.0
 Contact: support@zernio.com
 */
 
@@ -22,11 +22,14 @@ var _ MappedNullable = &UsageAttributionSliceByProduct{}
 type UsageAttributionSliceByProduct struct {
 	Accounts *float32 `json:"accounts,omitempty"`
 	Numbers  *float32 `json:"numbers,omitempty"`
+	Imessage *float32 `json:"imessage,omitempty"`
 	Calls    *float32 `json:"calls,omitempty"`
 	Sms      *float32 `json:"sms,omitempty"`
+	Messages *float32 `json:"messages,omitempty"`
 	Verify   *float32 `json:"verify,omitempty"`
 	Dlc      *float32 `json:"dlc,omitempty"`
 	XApi     *float32 `json:"xApi,omitempty"`
+	Ads      *float32 `json:"ads,omitempty"`
 	Credits  *float32 `json:"credits,omitempty"`
 	Other    *float32 `json:"other,omitempty"`
 }
@@ -112,6 +115,38 @@ func (o *UsageAttributionSliceByProduct) SetNumbers(v float32) {
 	o.Numbers = &v
 }
 
+// GetImessage returns the Imessage field value if set, zero value otherwise.
+func (o *UsageAttributionSliceByProduct) GetImessage() float32 {
+	if o == nil || IsNil(o.Imessage) {
+		var ret float32
+		return ret
+	}
+	return *o.Imessage
+}
+
+// GetImessageOk returns a tuple with the Imessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageAttributionSliceByProduct) GetImessageOk() (*float32, bool) {
+	if o == nil || IsNil(o.Imessage) {
+		return nil, false
+	}
+	return o.Imessage, true
+}
+
+// HasImessage returns a boolean if a field has been set.
+func (o *UsageAttributionSliceByProduct) HasImessage() bool {
+	if o != nil && !IsNil(o.Imessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetImessage gets a reference to the given float32 and assigns it to the Imessage field.
+func (o *UsageAttributionSliceByProduct) SetImessage(v float32) {
+	o.Imessage = &v
+}
+
 // GetCalls returns the Calls field value if set, zero value otherwise.
 func (o *UsageAttributionSliceByProduct) GetCalls() float32 {
 	if o == nil || IsNil(o.Calls) {
@@ -174,6 +209,38 @@ func (o *UsageAttributionSliceByProduct) HasSms() bool {
 // SetSms gets a reference to the given float32 and assigns it to the Sms field.
 func (o *UsageAttributionSliceByProduct) SetSms(v float32) {
 	o.Sms = &v
+}
+
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *UsageAttributionSliceByProduct) GetMessages() float32 {
+	if o == nil || IsNil(o.Messages) {
+		var ret float32
+		return ret
+	}
+	return *o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageAttributionSliceByProduct) GetMessagesOk() (*float32, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *UsageAttributionSliceByProduct) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given float32 and assigns it to the Messages field.
+func (o *UsageAttributionSliceByProduct) SetMessages(v float32) {
+	o.Messages = &v
 }
 
 // GetVerify returns the Verify field value if set, zero value otherwise.
@@ -272,6 +339,38 @@ func (o *UsageAttributionSliceByProduct) SetXApi(v float32) {
 	o.XApi = &v
 }
 
+// GetAds returns the Ads field value if set, zero value otherwise.
+func (o *UsageAttributionSliceByProduct) GetAds() float32 {
+	if o == nil || IsNil(o.Ads) {
+		var ret float32
+		return ret
+	}
+	return *o.Ads
+}
+
+// GetAdsOk returns a tuple with the Ads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageAttributionSliceByProduct) GetAdsOk() (*float32, bool) {
+	if o == nil || IsNil(o.Ads) {
+		return nil, false
+	}
+	return o.Ads, true
+}
+
+// HasAds returns a boolean if a field has been set.
+func (o *UsageAttributionSliceByProduct) HasAds() bool {
+	if o != nil && !IsNil(o.Ads) {
+		return true
+	}
+
+	return false
+}
+
+// SetAds gets a reference to the given float32 and assigns it to the Ads field.
+func (o *UsageAttributionSliceByProduct) SetAds(v float32) {
+	o.Ads = &v
+}
+
 // GetCredits returns the Credits field value if set, zero value otherwise.
 func (o *UsageAttributionSliceByProduct) GetCredits() float32 {
 	if o == nil || IsNil(o.Credits) {
@@ -352,11 +451,17 @@ func (o UsageAttributionSliceByProduct) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Numbers) {
 		toSerialize["numbers"] = o.Numbers
 	}
+	if !IsNil(o.Imessage) {
+		toSerialize["imessage"] = o.Imessage
+	}
 	if !IsNil(o.Calls) {
 		toSerialize["calls"] = o.Calls
 	}
 	if !IsNil(o.Sms) {
 		toSerialize["sms"] = o.Sms
+	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
 	}
 	if !IsNil(o.Verify) {
 		toSerialize["verify"] = o.Verify
@@ -366,6 +471,9 @@ func (o UsageAttributionSliceByProduct) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.XApi) {
 		toSerialize["xApi"] = o.XApi
+	}
+	if !IsNil(o.Ads) {
+		toSerialize["ads"] = o.Ads
 	}
 	if !IsNil(o.Credits) {
 		toSerialize["credits"] = o.Credits

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.99.0
+API version: 1.100.0
 Contact: support@zernio.com
 */
 
@@ -23,11 +23,19 @@ type UsageMeteringDaysInner struct {
 	Date     *string  `json:"date,omitempty"`
 	Accounts *float32 `json:"accounts,omitempty"`
 	Numbers  *float32 `json:"numbers,omitempty"`
+	// iMessage sender fees.
+	Imessage *float32 `json:"imessage,omitempty"`
 	Calls    *float32 `json:"calls,omitempty"`
 	Sms      *float32 `json:"sms,omitempty"`
+	// Managed outbound message fees.
+	Messages *float32 `json:"messages,omitempty"`
+	// Verify (per verification) fees.
+	Verify *float32 `json:"verify,omitempty"`
 	// 10DLC registration (brand + campaign) fees.
 	Dlc  *float32 `json:"dlc,omitempty"`
 	XApi *float32 `json:"xApi,omitempty"`
+	// Managed ads fees.
+	Ads *float32 `json:"ads,omitempty"`
 	// Applied credits/discounts (negative).
 	Credits *float32 `json:"credits,omitempty"`
 	Other   *float32 `json:"other,omitempty"`
@@ -146,6 +154,38 @@ func (o *UsageMeteringDaysInner) SetNumbers(v float32) {
 	o.Numbers = &v
 }
 
+// GetImessage returns the Imessage field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetImessage() float32 {
+	if o == nil || IsNil(o.Imessage) {
+		var ret float32
+		return ret
+	}
+	return *o.Imessage
+}
+
+// GetImessageOk returns a tuple with the Imessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetImessageOk() (*float32, bool) {
+	if o == nil || IsNil(o.Imessage) {
+		return nil, false
+	}
+	return o.Imessage, true
+}
+
+// HasImessage returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasImessage() bool {
+	if o != nil && !IsNil(o.Imessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetImessage gets a reference to the given float32 and assigns it to the Imessage field.
+func (o *UsageMeteringDaysInner) SetImessage(v float32) {
+	o.Imessage = &v
+}
+
 // GetCalls returns the Calls field value if set, zero value otherwise.
 func (o *UsageMeteringDaysInner) GetCalls() float32 {
 	if o == nil || IsNil(o.Calls) {
@@ -210,6 +250,70 @@ func (o *UsageMeteringDaysInner) SetSms(v float32) {
 	o.Sms = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetMessages() float32 {
+	if o == nil || IsNil(o.Messages) {
+		var ret float32
+		return ret
+	}
+	return *o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetMessagesOk() (*float32, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given float32 and assigns it to the Messages field.
+func (o *UsageMeteringDaysInner) SetMessages(v float32) {
+	o.Messages = &v
+}
+
+// GetVerify returns the Verify field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetVerify() float32 {
+	if o == nil || IsNil(o.Verify) {
+		var ret float32
+		return ret
+	}
+	return *o.Verify
+}
+
+// GetVerifyOk returns a tuple with the Verify field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetVerifyOk() (*float32, bool) {
+	if o == nil || IsNil(o.Verify) {
+		return nil, false
+	}
+	return o.Verify, true
+}
+
+// HasVerify returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasVerify() bool {
+	if o != nil && !IsNil(o.Verify) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerify gets a reference to the given float32 and assigns it to the Verify field.
+func (o *UsageMeteringDaysInner) SetVerify(v float32) {
+	o.Verify = &v
+}
+
 // GetDlc returns the Dlc field value if set, zero value otherwise.
 func (o *UsageMeteringDaysInner) GetDlc() float32 {
 	if o == nil || IsNil(o.Dlc) {
@@ -272,6 +376,38 @@ func (o *UsageMeteringDaysInner) HasXApi() bool {
 // SetXApi gets a reference to the given float32 and assigns it to the XApi field.
 func (o *UsageMeteringDaysInner) SetXApi(v float32) {
 	o.XApi = &v
+}
+
+// GetAds returns the Ads field value if set, zero value otherwise.
+func (o *UsageMeteringDaysInner) GetAds() float32 {
+	if o == nil || IsNil(o.Ads) {
+		var ret float32
+		return ret
+	}
+	return *o.Ads
+}
+
+// GetAdsOk returns a tuple with the Ads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageMeteringDaysInner) GetAdsOk() (*float32, bool) {
+	if o == nil || IsNil(o.Ads) {
+		return nil, false
+	}
+	return o.Ads, true
+}
+
+// HasAds returns a boolean if a field has been set.
+func (o *UsageMeteringDaysInner) HasAds() bool {
+	if o != nil && !IsNil(o.Ads) {
+		return true
+	}
+
+	return false
+}
+
+// SetAds gets a reference to the given float32 and assigns it to the Ads field.
+func (o *UsageMeteringDaysInner) SetAds(v float32) {
+	o.Ads = &v
 }
 
 // GetCredits returns the Credits field value if set, zero value otherwise.
@@ -357,17 +493,29 @@ func (o UsageMeteringDaysInner) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Numbers) {
 		toSerialize["numbers"] = o.Numbers
 	}
+	if !IsNil(o.Imessage) {
+		toSerialize["imessage"] = o.Imessage
+	}
 	if !IsNil(o.Calls) {
 		toSerialize["calls"] = o.Calls
 	}
 	if !IsNil(o.Sms) {
 		toSerialize["sms"] = o.Sms
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
+	if !IsNil(o.Verify) {
+		toSerialize["verify"] = o.Verify
+	}
 	if !IsNil(o.Dlc) {
 		toSerialize["dlc"] = o.Dlc
 	}
 	if !IsNil(o.XApi) {
 		toSerialize["xApi"] = o.XApi
+	}
+	if !IsNil(o.Ads) {
+		toSerialize["ads"] = o.Ads
 	}
 	if !IsNil(o.Credits) {
 		toSerialize["credits"] = o.Credits

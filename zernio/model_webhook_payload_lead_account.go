@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.99.0
+API version: 1.100.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type WebhookPayloadLeadAccount struct {
 	// Account ID (same as id); canonical field for account filtering.
 	AccountId *string `json:"accountId,omitempty"`
 	Platform  string  `json:"platform"`
+	// Profile ID of the account that received the lead. Null when the lead has no profile on record.
+	ProfileId NullableString `json:"profileId"`
 }
 
 type _WebhookPayloadLeadAccount WebhookPayloadLeadAccount
@@ -35,10 +37,11 @@ type _WebhookPayloadLeadAccount WebhookPayloadLeadAccount
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadLeadAccount(id string, platform string) *WebhookPayloadLeadAccount {
+func NewWebhookPayloadLeadAccount(id string, platform string, profileId NullableString) *WebhookPayloadLeadAccount {
 	this := WebhookPayloadLeadAccount{}
 	this.Id = id
 	this.Platform = platform
+	this.ProfileId = profileId
 	return &this
 }
 
@@ -130,6 +133,32 @@ func (o *WebhookPayloadLeadAccount) SetPlatform(v string) {
 	o.Platform = v
 }
 
+// GetProfileId returns the ProfileId field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *WebhookPayloadLeadAccount) GetProfileId() string {
+	if o == nil || o.ProfileId.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.ProfileId.Get()
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadLeadAccount) GetProfileIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ProfileId.Get(), o.ProfileId.IsSet()
+}
+
+// SetProfileId sets field value
+func (o *WebhookPayloadLeadAccount) SetProfileId(v string) {
+	o.ProfileId.Set(&v)
+}
+
 func (o WebhookPayloadLeadAccount) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -145,6 +174,7 @@ func (o WebhookPayloadLeadAccount) ToMap() (map[string]interface{}, error) {
 		toSerialize["accountId"] = o.AccountId
 	}
 	toSerialize["platform"] = o.Platform
+	toSerialize["profileId"] = o.ProfileId.Get()
 	return toSerialize, nil
 }
 
@@ -155,6 +185,7 @@ func (o *WebhookPayloadLeadAccount) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"id",
 		"platform",
+		"profileId",
 	}
 
 	allProperties := make(map[string]interface{})
