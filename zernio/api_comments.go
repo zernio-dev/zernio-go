@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.97.0
+API version: 1.98.0
 Contact: support@zernio.com
 */
 
@@ -1005,7 +1005,7 @@ func (r CommentsAPIListInboxCommentsRequest) Platform(platform string) CommentsA
 	return r
 }
 
-// Minimum comment count
+// Minimum comment count, applied to each page after pagination
 func (r CommentsAPIListInboxCommentsRequest) MinComments(minComments int32) CommentsAPIListInboxCommentsRequest {
 	r.minComments = &minComments
 	return r
@@ -1076,6 +1076,9 @@ the platforms that support a server-side date window; on the others the listing 
 at its first page. Cursor pagination is only coherent for the default sort
 (`sortBy=date`, `sortOrder=desc`): with `sortOrder=asc`, or with `sortBy=comments`,
 the cursor filter does not match the sort order and the second page is unreliable.
+
+`minComments` is applied to each page after pagination: a page can hold fewer than
+`limit` posts, even none, while `hasMore` is true; keep following `nextCursor`.
 
 `nextCursor` is opaque: pass it back verbatim, never construct or parse it, its
 composition may change without notice. Because each page re-queries a live window,
