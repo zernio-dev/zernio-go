@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.96.0
+API version: 1.96.1
 Contact: support@zernio.com
 */
 
@@ -34,11 +34,12 @@ type AnalyticsListResponsePostsInner struct {
 	PlatformPostUrl *string             `json:"platformPostUrl,omitempty"`
 	IsExternal      *bool               `json:"isExternal,omitempty"`
 	// True when this post's metrics include paid delivery, so organic reporting should exclude it. Set for LinkedIn dark posts and for TikTok posts that one of your TikTok ads promotes (Spark / boosted). TikTok exposes no ad flag of its own, so a video created by an uploaded-asset (non-Spark) TikTok ad is posted to the profile with a fresh organic id and cannot be detected: those still report as false.
-	IsAd         *bool          `json:"isAd,omitempty"`
-	ProfileId    NullableString `json:"profileId,omitempty"`
-	ThumbnailUrl *string        `json:"thumbnailUrl,omitempty"`
-	MediaType    *string        `json:"mediaType,omitempty"`
-	// All media items for this post. Carousel posts contain one entry per slide.
+	IsAd      *bool          `json:"isAd,omitempty"`
+	ProfileId NullableString `json:"profileId,omitempty"`
+	// Cover image URL. Facebook and Instagram covers whose Meta CDN link expired are re-read from Meta and served from Zernio storage, so that URL does not expire and can be cached.
+	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
+	MediaType    *string `json:"mediaType,omitempty"`
+	// All media items for this post. Carousel posts contain one entry per slide. Facebook and Instagram images and video covers whose Meta CDN links expired are re-read and served from Zernio storage (non-expiring). Facebook and Instagram video file URLs, and LinkedIn media URLs, stay the platform's signed links and are refreshed on read once they lapse.
 	MediaItems []AnalyticsListResponsePostsInnerMediaItemsInner `json:"mediaItems,omitempty"`
 	// Instagram only: the platform media product type (e.g. FEED, REELS, STORY, AD). Absent when the platform did not report it.
 	MediaProductType *string `json:"mediaProductType,omitempty"`
