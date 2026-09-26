@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.101.0
+API version: 1.101.1
 Contact: support@zernio.com
 */
 
@@ -387,6 +387,9 @@ TikTok is served for accounts connected through the TikTok for Business app: `po
 is the TikTok video id, each top-level comment carries up to three inline replies, and
 `commentId` pages the full reply list of one comment. Developer-app TikTok accounts
 return 400 with code `PLATFORM_LIMITATION`.
+
+On X (Twitter), when `postId` is itself a reply rather than the thread's root post,
+only replies to that specific post are returned, not the whole conversation thread.
 
 Hidden comments: Facebook Pages and Instagram accounts connected through Instagram Login
 return them with `isHidden: true`. Instagram accounts connected through Facebook Login do
