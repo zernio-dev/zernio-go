@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.102.2
+API version: 1.103.0
 Contact: support@zernio.com
 */
 
@@ -848,8 +848,9 @@ Platform notes: on Meta a budget here is campaign-level (CBO) by definition; omi
 for ABO (each ad set carries its own budget), and `specialAdCategories` is Meta-only
 (400 elsewhere); `bidStrategy` is Meta and Google (400 elsewhere), and Google also
 accepts `portfolioBidStrategyId` instead. Google, X and OpenAI require a budget
-(422 without one; OpenAI accepts only `budgetType: lifetime`, Google only
-`budgetType: daily`). LinkedIn creates the
+(422 without one; OpenAI accepts daily or lifetime, Google only
+`budgetType: daily`). On OpenAI `goal` sets the campaign objective, and
+`conversions` needs an active standard conversion event on the account. LinkedIn creates the
 campaign GROUP (our campaign level) and rejects a budget, which lives on the
 campaign (ad set) level there; it comes back `status: DRAFT`. TikTok campaigns are
 created without a status and report `ENABLE`. Created `PAUSED` unless
@@ -6902,7 +6903,8 @@ affects every campaign using that budget. Unknown sharing state also returns 409
 
 OpenAI Ads campaigns carry exactly one spend cap: `budget.type` daily or lifetime
 replaces whichever cap the campaign had, with a minimum of 1 in the ad account's
-currency (422 below it).
+currency (422 below it). Lifetime can switch to daily, but OpenAI never switches a
+daily cap back to lifetime (422).
 
 `accountId` forwards the update straight to Meta for a campaign with zero ads,
 which would otherwise 404; the response then carries `updated: 0`.

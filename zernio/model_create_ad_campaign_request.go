@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.102.2
+API version: 1.103.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type CreateAdCampaignRequest struct {
 	PromotedObject           *AdPromotedObject `json:"promotedObject,omitempty"`
 	// Every platform buys at auction by default, so this only needs sending on Meta, and only to choose RESERVED. `AUCTION` is accepted on every platform and changes nothing. `RESERVED` (Reach & Frequency) is Meta-only and is rejected with a 400 elsewhere. SKAdNetwork app promotion requires AUCTION.
 	BuyingType *string `json:"buyingType,omitempty"`
-	// Meta only. Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED. `true` on any other platform returns 501 `feature_not_available` (same as POST /v1/ads/create); `false` is ignored.
+	// Meta and ChatGPT (OpenAI). Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED. OpenAI has no dry-run, so there Zernio checks the budget, goal and conversion event itself. `true` on any other platform returns 501 `feature_not_available` (same as POST /v1/ads/create); `false` is ignored.
 	ValidateOnly        *bool    `json:"validateOnly,omitempty"`
 	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
 	// Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.

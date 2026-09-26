@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.102.2
+API version: 1.103.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type ListConversionDestinations200ResponseDestinationsInner struct {
 	Status *string `json:"status,omitempty"`
 	// Set by adapters whose destinations are scoped to a specific ad account (LinkedIn). Pass back on subsequent CRUD calls.
 	AdAccountId *string `json:"adAccountId,omitempty"`
+	// OpenAI Ads only: the conversion event settings wired to this pixel. A `goal: conversions` create on POST /v1/ads/create optimizes for the first `optimizable` one; when none is, it returns 400.
+	ConversionEvents []ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner `json:"conversionEvents,omitempty"`
 }
 
 // NewListConversionDestinations200ResponseDestinationsInner instantiates a new ListConversionDestinations200ResponseDestinationsInner object
@@ -207,6 +209,38 @@ func (o *ListConversionDestinations200ResponseDestinationsInner) SetAdAccountId(
 	o.AdAccountId = &v
 }
 
+// GetConversionEvents returns the ConversionEvents field value if set, zero value otherwise.
+func (o *ListConversionDestinations200ResponseDestinationsInner) GetConversionEvents() []ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner {
+	if o == nil || IsNil(o.ConversionEvents) {
+		var ret []ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner
+		return ret
+	}
+	return o.ConversionEvents
+}
+
+// GetConversionEventsOk returns a tuple with the ConversionEvents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListConversionDestinations200ResponseDestinationsInner) GetConversionEventsOk() ([]ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner, bool) {
+	if o == nil || IsNil(o.ConversionEvents) {
+		return nil, false
+	}
+	return o.ConversionEvents, true
+}
+
+// HasConversionEvents returns a boolean if a field has been set.
+func (o *ListConversionDestinations200ResponseDestinationsInner) HasConversionEvents() bool {
+	if o != nil && !IsNil(o.ConversionEvents) {
+		return true
+	}
+
+	return false
+}
+
+// SetConversionEvents gets a reference to the given []ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner and assigns it to the ConversionEvents field.
+func (o *ListConversionDestinations200ResponseDestinationsInner) SetConversionEvents(v []ListConversionDestinations200ResponseDestinationsInnerConversionEventsInner) {
+	o.ConversionEvents = v
+}
+
 func (o ListConversionDestinations200ResponseDestinationsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -231,6 +265,9 @@ func (o ListConversionDestinations200ResponseDestinationsInner) ToMap() (map[str
 	}
 	if !IsNil(o.AdAccountId) {
 		toSerialize["adAccountId"] = o.AdAccountId
+	}
+	if !IsNil(o.ConversionEvents) {
+		toSerialize["conversionEvents"] = o.ConversionEvents
 	}
 	return toSerialize, nil
 }
