@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.102.1
+API version: 1.102.2
 Contact: support@zernio.com
 */
 
@@ -2084,6 +2084,14 @@ at a fixed 10,000 rows; follow `paging.nextPageToken` with `pageToken`. `adAccou
 needed when the connection has several Google Ads accounts. Semantic validation is Google's:
 an invalid query returns a 400 carrying Google's message (note: selecting `segments.date`
 requires a finite date filter).
+
+Queries run against Google Ads API **v25**, so write GAQL against the v25 field reference.
+One exception is translated for backward compatibility: the legacy `campaign.start_date` /
+`campaign.end_date` (removed by Google in v23) are rewritten to `campaign.start_date_time` /
+`campaign.end_date_time`, and rows still carry `campaign.startDate` / `campaign.endDate` as
+`YYYY-MM-DD`. In WHERE, `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` and `IS [NOT] NULL` against a
+`'YYYY-MM-DD'` literal are translated; any other form returns Google's 400. New code should
+select the `_date_time` fields directly.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIQueryAdInsightsRequest
