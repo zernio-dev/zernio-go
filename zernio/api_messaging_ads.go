@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.98.2
+API version: 1.99.0
 Contact: support@zernio.com
 */
 
@@ -26,10 +26,17 @@ type MessagingAdsAPICreateCallAdRequest struct {
 	ctx                 context.Context
 	ApiService          *MessagingAdsAPIService
 	createCallAdRequest *CreateCallAdRequest
+	idempotencyKey      *string
 }
 
 func (r MessagingAdsAPICreateCallAdRequest) CreateCallAdRequest(createCallAdRequest CreateCallAdRequest) MessagingAdsAPICreateCallAdRequest {
 	r.createCallAdRequest = &createCallAdRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r MessagingAdsAPICreateCallAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateCallAdRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -44,6 +51,8 @@ Same shape and flow as POST /v1/ads/ctwa, but the CTA is CALL_NOW dialing `phone
 via a tel: link. The ad set is destination_type PHONE_CALL optimizing QUALITY_CALL
 and the campaign objective defaults to OUTCOME_LEADS.
 Supports the same single-creative and multi-creative shapes as CTWA.
+
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateCallAdRequest
@@ -96,6 +105,9 @@ func (a *MessagingAdsAPIService) CreateCallAdExecute(r MessagingAdsAPICreateCall
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createCallAdRequest
@@ -173,10 +185,17 @@ type MessagingAdsAPICreateCtwaAdRequest struct {
 	ctx               context.Context
 	ApiService        *MessagingAdsAPIService
 	ctwaAdRequestBody *CtwaAdRequestBody
+	idempotencyKey    *string
 }
 
 func (r MessagingAdsAPICreateCtwaAdRequest) CtwaAdRequestBody(ctwaAdRequestBody CtwaAdRequestBody) MessagingAdsAPICreateCtwaAdRequest {
 	r.ctwaAdRequestBody = &ctwaAdRequestBody
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r MessagingAdsAPICreateCtwaAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateCtwaAdRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -204,6 +223,8 @@ Existing posts and reels are supported through `platformPostId` (alias
 `existingPostId`) or `objectStoryId`, either per creative or at the top level. Omit fresh
 media and copy for that creative. Optional `whatsappPhoneNumber` selects
 a number already paired with the Page (WhatsApp destination only).
+
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateCtwaAdRequest
@@ -260,6 +281,9 @@ func (a *MessagingAdsAPIService) CreateCtwaAdExecute(r MessagingAdsAPICreateCtwa
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.ctwaAdRequestBody
@@ -337,10 +361,17 @@ type MessagingAdsAPICreateMessagingAdRequest struct {
 	ctx                      context.Context
 	ApiService               *MessagingAdsAPIService
 	createMessagingAdRequest *CreateMessagingAdRequest
+	idempotencyKey           *string
 }
 
 func (r MessagingAdsAPICreateMessagingAdRequest) CreateMessagingAdRequest(createMessagingAdRequest CreateMessagingAdRequest) MessagingAdsAPICreateMessagingAdRequest {
 	r.createMessagingAdRequest = &createMessagingAdRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r MessagingAdsAPICreateMessagingAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateMessagingAdRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -364,6 +395,8 @@ media and copy for that creative. Optional `whatsappPhoneNumber` selects
 a number already paired with the Page (WhatsApp destination only).
 `accountId` is a Facebook, Instagram or Meta ads (business login) connection;
 `pageId` picks the Page when that connection was granted several.
+
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateMessagingAdRequest
@@ -416,6 +449,9 @@ func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreat
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createMessagingAdRequest
