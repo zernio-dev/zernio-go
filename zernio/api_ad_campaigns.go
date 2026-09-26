@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.96.1
+API version: 1.97.0
 Contact: support@zernio.com
 */
 
@@ -6688,7 +6688,7 @@ Per-platform support:
     campaign, pauses the old one).
   - **Pinterest / X / OpenAI Ads**: status + budget only. Sending
     `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
-    OpenAI Ads budget is lifetime-only (see `budget.type` below).
+    OpenAI Ads budget is the campaign's spend cap, daily or lifetime (see `budget.type` below).
 
 **Google location and language replacement:** locations, languages and devices are
 campaign-level criteria on Google, so these edits apply to every ad group and ad in
@@ -6879,7 +6879,7 @@ field is always an error, never a silent drop.
 | `bidStrategy` | Yes | Yes | 501 |
 | `bidAmount`, `roasAverageFloor` | 400 (ad-set level) | Yes | 400 |
 | `portfolioBidStrategyId` | 400 | Yes | 400 |
-| `budget` (CBO; ABO returns 409) | Yes | Daily only | 501 |
+| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI: daily or lifetime; others 501 |
 | `name` | Yes | 501 | 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
@@ -6899,6 +6899,10 @@ first, since it is shared across campaigns.
 Google budget updates read the current budget before mutation. Shared budgets return
 409 unless allowSharedBudgetUpdate=true is explicitly supplied, because the change
 affects every campaign using that budget. Unknown sharing state also returns 409.
+
+OpenAI Ads campaigns carry exactly one spend cap: `budget.type` daily or lifetime
+replaces whichever cap the campaign had, with a minimum of 1 in the ad account's
+currency (422 below it).
 
 `accountId` forwards the update straight to Meta for a campaign with zero ads,
 which would otherwise 404; the response then carries `updated: 0`.
