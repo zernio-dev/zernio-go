@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.102.0
+API version: 1.102.1
 Contact: support@zernio.com
 */
 
@@ -21,8 +21,9 @@ var _ MappedNullable = &ListLocalServicesLeads200ResponseDataInnerContact{}
 // ListLocalServicesLeads200ResponseDataInnerContact Null for WIPED_OUT leads (contact erased by Google).
 type ListLocalServicesLeads200ResponseDataInnerContact struct {
 	ConsumerName NullableString `json:"consumerName,omitempty"`
-	Email        NullableString `json:"email,omitempty"`
-	PhoneNumber  NullableString `json:"phoneNumber,omitempty"`
+	// Always null: Google Ads API v25 stopped returning the consumer email on Local Services leads.
+	Email       NullableString `json:"email,omitempty"`
+	PhoneNumber NullableString `json:"phoneNumber,omitempty"`
 }
 
 // NewListLocalServicesLeads200ResponseDataInnerContact instantiates a new ListLocalServicesLeads200ResponseDataInnerContact object
