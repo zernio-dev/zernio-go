@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.114.0
+API version: 1.115.0
 Contact: support@zernio.com
 */
 
@@ -1508,6 +1508,10 @@ CPC. The created ad carries the native `platformCampaignId`, `platformAdSetId` (
 group) and `platformAdId`. Activate with PUT /v1/ads/campaigns/{campaignId}/status;
 budget, bidding and name are edited with the regular campaign endpoints; creative,
 channels, audience and ad group targeting with PUT /v1/ads/{adId} (`demandGen`, `targeting`).
+To grow an existing Demand Gen campaign, send `existingCampaignId` (adds a PAUSED ad group,
+with its own geo, languages, channels and audience, plus its ad) or `adSetId` (adds a
+PAUSED ad to that ad group); neither takes budget, bidding or schedule fields, and both
+support `validateOnly`.
 
 Other mutually-exclusive request shapes are selected by the body:
 
