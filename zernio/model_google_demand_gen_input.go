@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.111.1
+API version: 1.112.0
 Contact: support@zernio.com
 */
 
@@ -19,22 +19,25 @@ import (
 // checks if the GoogleDemandGenInput type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GoogleDemandGenInput{}
 
-// GoogleDemandGenInput Creative, channel and audience settings for a Google Demand Gen campaign (campaignType demand_gen). Creates one ad group with one ad: a multi-asset image ad, or a video responsive ad when youtubeVideoIds is sent.
+// GoogleDemandGenInput Creative, channel and audience settings for a Google Demand Gen campaign (campaignType demand_gen). Creates one ad group with one ad: a multi-asset image ad, a video responsive ad when youtubeVideoIds is sent, or a carousel ad when carouselCards is sent.
 type GoogleDemandGenInput struct {
 	// Defaults to the ad name.
 	AdGroupName  *string `json:"adGroupName,omitempty"`
 	FinalUrl     string  `json:"finalUrl"`
 	BusinessName string  `json:"businessName"`
-	// Distinct texts.
+	// Distinct texts. A carousel ad takes exactly one.
 	Headlines []string `json:"headlines"`
 	// Video ads only, and required there.
 	LongHeadlines []string `json:"longHeadlines,omitempty"`
-	Descriptions  []string `json:"descriptions"`
-	// Image ads only. Call to action text such as 'Learn more'; Google picks one when omitted.
+	// A carousel ad takes exactly one.
+	Descriptions []string `json:"descriptions"`
+	// Image and carousel ads only. Call to action text such as 'Learn more'; Google picks one when omitted.
 	CallToAction *string                    `json:"callToAction,omitempty"`
 	Images       GoogleDemandGenInputImages `json:"images"`
 	// Makes the ad a video responsive ad.
 	YoutubeVideoIds []string `json:"youtubeVideoIds,omitempty"`
+	// Makes the ad a carousel ad. Each card needs its own image (no two cards may share one); use the same image shape on every card. Card images are uploaded to the account's asset library before the campaign is created, validateOnly included (Google checks cards against existing images; identical images are reused, not duplicated).
+	CarouselCards []GoogleDemandGenInputCarouselCardsInner `json:"carouselCards,omitempty"`
 	// Channel controls on the ad group. Only the listed channels serve; omit to serve on all of them.
 	Channels []string                      `json:"channels,omitempty"`
 	Audience *GoogleDemandGenInputAudience `json:"audience,omitempty"`
@@ -315,6 +318,38 @@ func (o *GoogleDemandGenInput) SetYoutubeVideoIds(v []string) {
 	o.YoutubeVideoIds = v
 }
 
+// GetCarouselCards returns the CarouselCards field value if set, zero value otherwise.
+func (o *GoogleDemandGenInput) GetCarouselCards() []GoogleDemandGenInputCarouselCardsInner {
+	if o == nil || IsNil(o.CarouselCards) {
+		var ret []GoogleDemandGenInputCarouselCardsInner
+		return ret
+	}
+	return o.CarouselCards
+}
+
+// GetCarouselCardsOk returns a tuple with the CarouselCards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GoogleDemandGenInput) GetCarouselCardsOk() ([]GoogleDemandGenInputCarouselCardsInner, bool) {
+	if o == nil || IsNil(o.CarouselCards) {
+		return nil, false
+	}
+	return o.CarouselCards, true
+}
+
+// HasCarouselCards returns a boolean if a field has been set.
+func (o *GoogleDemandGenInput) HasCarouselCards() bool {
+	if o != nil && !IsNil(o.CarouselCards) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarouselCards gets a reference to the given []GoogleDemandGenInputCarouselCardsInner and assigns it to the CarouselCards field.
+func (o *GoogleDemandGenInput) SetCarouselCards(v []GoogleDemandGenInputCarouselCardsInner) {
+	o.CarouselCards = v
+}
+
 // GetChannels returns the Channels field value if set, zero value otherwise.
 func (o *GoogleDemandGenInput) GetChannels() []string {
 	if o == nil || IsNil(o.Channels) {
@@ -438,6 +473,9 @@ func (o GoogleDemandGenInput) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.YoutubeVideoIds) {
 		toSerialize["youtubeVideoIds"] = o.YoutubeVideoIds
 	}
+	if !IsNil(o.CarouselCards) {
+		toSerialize["carouselCards"] = o.CarouselCards
+	}
 	if !IsNil(o.Channels) {
 		toSerialize["channels"] = o.Channels
 	}
@@ -503,6 +541,7 @@ func (o *GoogleDemandGenInput) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "callToAction")
 		delete(additionalProperties, "images")
 		delete(additionalProperties, "youtubeVideoIds")
+		delete(additionalProperties, "carouselCards")
 		delete(additionalProperties, "channels")
 		delete(additionalProperties, "audience")
 		delete(additionalProperties, "audienceId")

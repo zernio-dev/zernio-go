@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.111.1
+API version: 1.112.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the GoogleDemandGenInputImages type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GoogleDemandGenInputImages{}
 
-// GoogleDemandGenInputImages Public image URLs. An image ad needs landscape or square; a video ad takes only one logo.
+// GoogleDemandGenInputImages Public image URLs. An image ad needs landscape or square; video and carousel ads take only one logo (carousel images go on each card).
 type GoogleDemandGenInputImages struct {
 	// 1.91:1, at least 600x314.
 	Landscape []string `json:"landscape,omitempty"`
