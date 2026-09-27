@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.104.0
+API version: 1.105.0
 Contact: support@zernio.com
 */
 
@@ -25,11 +25,15 @@ type WebhookPayloadPostPostPlatformsInner struct {
 	Platform string `json:"platform"`
 	Status   string `json:"status"`
 	// SocialAccount id this platform target published through. Use it to route events by connected account (e.g. separate staging vs production endpoints). A post can span multiple accounts.
-	AccountId      *string            `json:"accountId,omitempty"`
-	PlatformPostId *string            `json:"platformPostId,omitempty"`
-	PublishedUrl   *string            `json:"publishedUrl,omitempty"`
-	Error          *string            `json:"error,omitempty"`
-	PlatformError  *PostPlatformError `json:"platformError,omitempty"`
+	AccountId      *string `json:"accountId,omitempty"`
+	PlatformPostId *string `json:"platformPostId,omitempty"`
+	PublishedUrl   *string `json:"publishedUrl,omitempty"`
+	Error          *string `json:"error,omitempty"`
+	// Present when this target failed. Same taxonomy as `platforms[].errorCategory` on GET /v1/posts.
+	ErrorCategory *string `json:"errorCategory,omitempty"`
+	// Present when this target failed. Who must act: user, platform or system (Zernio).
+	ErrorSource   *string            `json:"errorSource,omitempty"`
+	PlatformError *PostPlatformError `json:"platformError,omitempty"`
 }
 
 type _WebhookPayloadPostPostPlatformsInner WebhookPayloadPostPostPlatformsInner
@@ -229,6 +233,70 @@ func (o *WebhookPayloadPostPostPlatformsInner) SetError(v string) {
 	o.Error = &v
 }
 
+// GetErrorCategory returns the ErrorCategory field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPostPlatformsInner) GetErrorCategory() string {
+	if o == nil || IsNil(o.ErrorCategory) {
+		var ret string
+		return ret
+	}
+	return *o.ErrorCategory
+}
+
+// GetErrorCategoryOk returns a tuple with the ErrorCategory field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) GetErrorCategoryOk() (*string, bool) {
+	if o == nil || IsNil(o.ErrorCategory) {
+		return nil, false
+	}
+	return o.ErrorCategory, true
+}
+
+// HasErrorCategory returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) HasErrorCategory() bool {
+	if o != nil && !IsNil(o.ErrorCategory) {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorCategory gets a reference to the given string and assigns it to the ErrorCategory field.
+func (o *WebhookPayloadPostPostPlatformsInner) SetErrorCategory(v string) {
+	o.ErrorCategory = &v
+}
+
+// GetErrorSource returns the ErrorSource field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPostPlatformsInner) GetErrorSource() string {
+	if o == nil || IsNil(o.ErrorSource) {
+		var ret string
+		return ret
+	}
+	return *o.ErrorSource
+}
+
+// GetErrorSourceOk returns a tuple with the ErrorSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) GetErrorSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.ErrorSource) {
+		return nil, false
+	}
+	return o.ErrorSource, true
+}
+
+// HasErrorSource returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPostPlatformsInner) HasErrorSource() bool {
+	if o != nil && !IsNil(o.ErrorSource) {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorSource gets a reference to the given string and assigns it to the ErrorSource field.
+func (o *WebhookPayloadPostPostPlatformsInner) SetErrorSource(v string) {
+	o.ErrorSource = &v
+}
+
 // GetPlatformError returns the PlatformError field value if set, zero value otherwise.
 func (o *WebhookPayloadPostPostPlatformsInner) GetPlatformError() PostPlatformError {
 	if o == nil || IsNil(o.PlatformError) {
@@ -284,6 +352,12 @@ func (o WebhookPayloadPostPostPlatformsInner) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.ErrorCategory) {
+		toSerialize["errorCategory"] = o.ErrorCategory
+	}
+	if !IsNil(o.ErrorSource) {
+		toSerialize["errorSource"] = o.ErrorSource
 	}
 	if !IsNil(o.PlatformError) {
 		toSerialize["platformError"] = o.PlatformError
