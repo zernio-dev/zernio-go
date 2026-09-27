@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.113.0
+API version: 1.114.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &UpdateCampaignTargeting200Response{}
 // UpdateCampaignTargeting200Response struct for UpdateCampaignTargeting200Response
 type UpdateCampaignTargeting200Response struct {
 	CampaignId *string `json:"campaignId,omitempty"`
+	// Demand Gen only: the ad group that received the locations and languages.
+	AdGroupId *string `json:"adGroupId,omitempty"`
 	// Which targeting fields were applied.
 	Updated []string `json:"updated,omitempty"`
 	// The value read back from Google after the edit.
@@ -77,6 +79,38 @@ func (o *UpdateCampaignTargeting200Response) HasCampaignId() bool {
 // SetCampaignId gets a reference to the given string and assigns it to the CampaignId field.
 func (o *UpdateCampaignTargeting200Response) SetCampaignId(v string) {
 	o.CampaignId = &v
+}
+
+// GetAdGroupId returns the AdGroupId field value if set, zero value otherwise.
+func (o *UpdateCampaignTargeting200Response) GetAdGroupId() string {
+	if o == nil || IsNil(o.AdGroupId) {
+		var ret string
+		return ret
+	}
+	return *o.AdGroupId
+}
+
+// GetAdGroupIdOk returns a tuple with the AdGroupId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargeting200Response) GetAdGroupIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdGroupId) {
+		return nil, false
+	}
+	return o.AdGroupId, true
+}
+
+// HasAdGroupId returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasAdGroupId() bool {
+	if o != nil && !IsNil(o.AdGroupId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdGroupId gets a reference to the given string and assigns it to the AdGroupId field.
+func (o *UpdateCampaignTargeting200Response) SetAdGroupId(v string) {
+	o.AdGroupId = &v
 }
 
 // GetUpdated returns the Updated field value if set, zero value otherwise.
@@ -262,6 +296,9 @@ func (o UpdateCampaignTargeting200Response) ToMap() (map[string]interface{}, err
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.CampaignId) {
 		toSerialize["campaignId"] = o.CampaignId
+	}
+	if !IsNil(o.AdGroupId) {
+		toSerialize["adGroupId"] = o.AdGroupId
 	}
 	if !IsNil(o.Updated) {
 		toSerialize["updated"] = o.Updated

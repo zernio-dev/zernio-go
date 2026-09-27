@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.113.0
+API version: 1.114.0
 Contact: support@zernio.com
 */
 
@@ -9507,6 +9507,14 @@ such as `zh_CN`); an unknown code returns 400.
 The response includes the refreshed `devices`/`locations`/`languages` state
 read back from Google after the edit, and invalidates the cached copy
 `GET` on this campaign would otherwise keep serving.
+
+**Demand Gen:** Google keeps a Demand Gen campaign's locations and languages on its
+ad groups and refuses them on the campaign. When the campaign has one ad group they are
+written there and the response carries its `adGroupId` (the campaign-level
+`locations`/`languages` read back then stay empty). With several ad groups the call
+returns 400 naming them: edit each one with PUT /v1/ads/{adId} `targeting` on an ad of
+that ad group. Campaigns migrated from Discovery that still target on the campaign keep
+being written there. `devices` and `locationTargetingType` stay campaign-level.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Google platform campaign ID
