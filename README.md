@@ -299,6 +299,7 @@ func main() {
 | `client.AdAccountsAPI.CreateHighDemandPeriod(ctx)` | Schedule a budget increase |
 | `client.AdAccountsAPI.CreateValueRuleSet(ctx)` | Create a value rule set |
 | `client.AdAccountsAPI.GetAdAccountFinance(ctx)` | Ad account finances |
+| `client.AdAccountsAPI.GetAdAccountHierarchy(ctx)` | Get manager account hierarchy |
 | `client.AdAccountsAPI.GetAdComments(ctx)` | List comments on an ad |
 | `client.AdAccountsAPI.GetAdNegativeKeywordList(ctx)` | Get a negative keyword list |
 | `client.AdAccountsAPI.GetAdsActivityLog(ctx)` | Ad account change / audit log |
@@ -310,6 +311,7 @@ func main() {
 | `client.AdAccountsAPI.UpdateAccountSitelinks(ctx)` | Update account sitelinks |
 | `client.AdAccountsAPI.UpdateAccountStructuredSnippets(ctx)` | Update account snippets |
 | `client.AdAccountsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
+| `client.AdAccountsAPI.UpdateAdAccountManagerLink(ctx)` | Accept, decline, cancel or end a manager link |
 | `client.AdAccountsAPI.UpdateAdLabel(ctx)` | Update a Google Ads label |
 | `client.AdAccountsAPI.UpdateAdNegativeKeywordList(ctx)` | Rename a negative keyword list |
 | `client.AdAccountsAPI.UpdateValueRuleSet(ctx)` | Replace a value rule set |
@@ -322,6 +324,7 @@ func main() {
 | `client.AdAccountsAPI.AttachAdLabel(ctx)` | Attach a Google Ads label |
 | `client.AdAccountsAPI.DetachAdLabel(ctx)` | Detach a Google Ads label |
 | `client.AdAccountsAPI.HideAdComment(ctx)` | Hide or unhide an ad comment |
+| `client.AdAccountsAPI.InviteAdAccountToManager(ctx)` | Invite a client account to a manager |
 | `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove account callout |
 | `client.AdAccountsAPI.RemoveAccountSitelink(ctx)` | Remove account sitelink |
 | `client.AdAccountsAPI.RemoveAccountStructuredSnippet(ctx)` | Remove account snippet |
