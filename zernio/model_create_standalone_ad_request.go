@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.110.0
+API version: 1.111.0
 Contact: support@zernio.com
 */
 
@@ -51,7 +51,7 @@ type CreateStandaloneAdRequest struct {
 	MultiAdvertiser *string `json:"multiAdvertiser,omitempty"`
 	// Meta only. Meta's \"Ad includes media created or edited with AI\" disclosure, the checkbox in Ads Manager, stored on the creative as `generative_asset_spec.transparency_metadata.self_disclosure`. OPT_IN checks it, OPT_OUT explicitly declares no AI media, omitted leaves Meta's default. Applied to each new creative, including standalone, creatives[] and attach shapes, and preserved when a creative is rebuilt. This sets the disclosure on the ad; whether and when the viewer-facing label renders is Meta's decision.
 	AiDisclosure *string `json:"aiDisclosure,omitempty"`
-	// Google Performance Max validates the complete atomic campaign and asset group with no resource creation or local persistence. Google validation still downloads image URLs and consumes quota. On Meta, validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, all-image placementAssets with per-rule copy, existing video.id or existingCreativeId; other media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Placement validation uses existing Instagram identities only. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error. ChatGPT (OpenAI) has no platform dry-run: Zernio runs every check it knows (creative lengths, budget, bid strategy, targeting) plus live lookups of the conversion event and target countries, and uploads or creates nothing. OpenAI's own write-time checks (image fetch, currency-specific minimums, ad review) still run only on a real create. Any other platform, or a Google campaignType other than pmax, returns 501 `feature_not_available`.
+	// Google Performance Max validates the complete atomic campaign and asset group with no resource creation or local persistence. Google validation still downloads image URLs and consumes quota. On Meta, validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, all-image placementAssets with per-rule copy, existing video.id or existingCreativeId; other media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Placement validation uses existing Instagram identities only. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error. ChatGPT (OpenAI) has no platform dry-run: Zernio runs every check it knows (creative lengths, budget, bid strategy, targeting) plus live lookups of the conversion event and target countries, and uploads or creates nothing. OpenAI's own write-time checks (image fetch, currency-specific minimums, ad review) still run only on a real create. Any other platform, or a Google campaignType other than pmax or demand_gen, returns 501 `feature_not_available`.
 	ValidateOnly *bool `json:"validateOnly,omitempty"`
 	// Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads: in the ad account currency, minimum 1; OpenAI can require a higher daily minimum for some currencies and names it in the error.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
@@ -166,11 +166,12 @@ type CreateStandaloneAdRequest struct {
 	PlacementAssets *CreateStandaloneAdRequestPlacementAssets    `json:"placementAssets,omitempty"`
 	// Custom audience ID for targeting
 	AudienceId *string `json:"audienceId,omitempty"`
-	// Google only. Performance Max requires assetGroup and is always created PAUSED.
+	// Google only. Performance Max requires assetGroup and Demand Gen requires demandGen; both are always created PAUSED.
 	CampaignType *string `json:"campaignType,omitempty"`
 	// Google only (400 elsewhere). Set on the new campaign; a request that joins an existing campaign (`existingCampaignId` or `adSetId`) returns 400, change that campaign with PUT /v1/ads/campaigns/{campaignId}/targeting instead. `presence` reaches only people in or regularly in the targeted locations.
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	AssetGroup            *GooglePmaxAssetGroupInput   `json:"assetGroup,omitempty"`
+	DemandGen             *GoogleDemandGenInput        `json:"demandGen,omitempty"`
 	// Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
 	Keywords []KeywordEntry `json:"keywords,omitempty"`
 	// Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
@@ -2806,6 +2807,38 @@ func (o *CreateStandaloneAdRequest) SetAssetGroup(v GooglePmaxAssetGroupInput) {
 	o.AssetGroup = &v
 }
 
+// GetDemandGen returns the DemandGen field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetDemandGen() GoogleDemandGenInput {
+	if o == nil || IsNil(o.DemandGen) {
+		var ret GoogleDemandGenInput
+		return ret
+	}
+	return *o.DemandGen
+}
+
+// GetDemandGenOk returns a tuple with the DemandGen field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetDemandGenOk() (*GoogleDemandGenInput, bool) {
+	if o == nil || IsNil(o.DemandGen) {
+		return nil, false
+	}
+	return o.DemandGen, true
+}
+
+// HasDemandGen returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasDemandGen() bool {
+	if o != nil && !IsNil(o.DemandGen) {
+		return true
+	}
+
+	return false
+}
+
+// SetDemandGen gets a reference to the given GoogleDemandGenInput and assigns it to the DemandGen field.
+func (o *CreateStandaloneAdRequest) SetDemandGen(v GoogleDemandGenInput) {
+	o.DemandGen = &v
+}
+
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetKeywords() []KeywordEntry {
 	if o == nil || IsNil(o.Keywords) {
@@ -3986,6 +4019,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AssetGroup) {
 		toSerialize["assetGroup"] = o.AssetGroup
+	}
+	if !IsNil(o.DemandGen) {
+		toSerialize["demandGen"] = o.DemandGen
 	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords
