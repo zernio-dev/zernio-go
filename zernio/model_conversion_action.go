@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.109.0
+API version: 1.110.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,10 @@ type ConversionAction struct {
 	Status string `json:"status"`
 	// Google's ConversionActionCategory, e.g. DEFAULT, PURCHASE, LEAD.
 	Category string `json:"category"`
+	// Google's ConversionOrigin, e.g. WEBSITE, APP. Together with category it names the goal the action belongs to (see GET /v1/ads/conversions/goals).
+	Origin *string `json:"origin,omitempty"`
+	// true = primary (counts toward bidding when its goal is biddable), false = secondary. Change it with PATCH /v1/ads/conversions/actions/{actionId}.
+	PrimaryForGoal *bool `json:"primaryForGoal,omitempty"`
 	// The code a customer pastes onto their site. Present for types Google generates a snippet for (e.g. WEBPAGE); empty otherwise.
 	TagSnippets []ConversionActionTagSnippetsInner `json:"tagSnippets"`
 }
@@ -180,6 +184,70 @@ func (o *ConversionAction) SetCategory(v string) {
 	o.Category = v
 }
 
+// GetOrigin returns the Origin field value if set, zero value otherwise.
+func (o *ConversionAction) GetOrigin() string {
+	if o == nil || IsNil(o.Origin) {
+		var ret string
+		return ret
+	}
+	return *o.Origin
+}
+
+// GetOriginOk returns a tuple with the Origin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAction) GetOriginOk() (*string, bool) {
+	if o == nil || IsNil(o.Origin) {
+		return nil, false
+	}
+	return o.Origin, true
+}
+
+// HasOrigin returns a boolean if a field has been set.
+func (o *ConversionAction) HasOrigin() bool {
+	if o != nil && !IsNil(o.Origin) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrigin gets a reference to the given string and assigns it to the Origin field.
+func (o *ConversionAction) SetOrigin(v string) {
+	o.Origin = &v
+}
+
+// GetPrimaryForGoal returns the PrimaryForGoal field value if set, zero value otherwise.
+func (o *ConversionAction) GetPrimaryForGoal() bool {
+	if o == nil || IsNil(o.PrimaryForGoal) {
+		var ret bool
+		return ret
+	}
+	return *o.PrimaryForGoal
+}
+
+// GetPrimaryForGoalOk returns a tuple with the PrimaryForGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionAction) GetPrimaryForGoalOk() (*bool, bool) {
+	if o == nil || IsNil(o.PrimaryForGoal) {
+		return nil, false
+	}
+	return o.PrimaryForGoal, true
+}
+
+// HasPrimaryForGoal returns a boolean if a field has been set.
+func (o *ConversionAction) HasPrimaryForGoal() bool {
+	if o != nil && !IsNil(o.PrimaryForGoal) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrimaryForGoal gets a reference to the given bool and assigns it to the PrimaryForGoal field.
+func (o *ConversionAction) SetPrimaryForGoal(v bool) {
+	o.PrimaryForGoal = &v
+}
+
 // GetTagSnippets returns the TagSnippets field value
 func (o *ConversionAction) GetTagSnippets() []ConversionActionTagSnippetsInner {
 	if o == nil {
@@ -219,6 +287,12 @@ func (o ConversionAction) ToMap() (map[string]interface{}, error) {
 	toSerialize["type"] = o.Type
 	toSerialize["status"] = o.Status
 	toSerialize["category"] = o.Category
+	if !IsNil(o.Origin) {
+		toSerialize["origin"] = o.Origin
+	}
+	if !IsNil(o.PrimaryForGoal) {
+		toSerialize["primaryForGoal"] = o.PrimaryForGoal
+	}
 	toSerialize["tagSnippets"] = o.TagSnippets
 	return toSerialize, nil
 }

@@ -356,7 +356,6 @@ func main() {
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.ListGoogleAssetGroups(ctx)` | List Performance Max asset groups |
-| `client.AdCampaignsAPI.ListGoogleRecommendations(ctx)` | List Google Ads recommendations |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
@@ -370,6 +369,7 @@ func main() {
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
 | `client.AdCampaignsAPI.GetCampaignAdSchedule(ctx)` | Read a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.GetCampaignBidding(ctx)` | Read a campaign's current bidding |
+| `client.AdCampaignsAPI.GetCampaignConversionGoals(ctx)` | Get campaign conversion goals |
 | `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, and language targeting |
 | `client.AdCampaignsAPI.GetGoogleAssetGroup(ctx)` | Get a Performance Max asset group |
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
@@ -383,17 +383,16 @@ func main() {
 | `client.AdCampaignsAPI.UpdateBidStrategy(ctx)` | Update portfolio bid strategy |
 | `client.AdCampaignsAPI.UpdateCampaignAdSchedule(ctx)` | Replace a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.UpdateCampaignAssets(ctx)` | Update campaign assets |
+| `client.AdCampaignsAPI.UpdateCampaignConversionGoals(ctx)` | Update campaign conversion goals |
 | `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
 | `client.AdCampaignsAPI.UpdateGoogleAssetGroup(ctx)` | Update a Performance Max asset group |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
 | `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search ad-group keywords |
-| `client.AdCampaignsAPI.ApplyGoogleRecommendations(ctx)` | Apply Google Ads recommendations |
 | `client.AdCampaignsAPI.AttachAdGroupAssets(ctx)` | Attach ad-group assets |
 | `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach campaign assets |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
-| `client.AdCampaignsAPI.DismissGoogleRecommendations(ctx)` | Dismiss Google Ads recommendations |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 | `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set |
@@ -599,19 +598,26 @@ func main() {
 ### Conversions
 | Method | Description |
 |--------|-------------|
+| `client.ConversionsAPI.ListAdConversionGoals(ctx)` | List account conversion goals |
 | `client.ConversionsAPI.ListConversionActions(ctx)` | List conversion actions |
 | `client.ConversionsAPI.ListConversionAssociations(ctx)` | List associated campaigns |
 | `client.ConversionsAPI.ListConversionDestinations(ctx)` | List conversion destinations |
+| `client.ConversionsAPI.ListCustomConversionGoals(ctx)` | List custom conversion goals |
 | `client.ConversionsAPI.CreateConversionAction(ctx)` | Create website conversion action |
 | `client.ConversionsAPI.CreateConversionDestination(ctx)` | Create a conversion destination |
+| `client.ConversionsAPI.CreateCustomConversionGoal(ctx)` | Create a custom conversion goal |
 | `client.ConversionsAPI.GetConversionDestination(ctx)` | Get a conversion destination |
 | `client.ConversionsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
 | `client.ConversionsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
+| `client.ConversionsAPI.UpdateAdConversionGoals(ctx)` | Update account conversion goals |
+| `client.ConversionsAPI.UpdateConversionAction(ctx)` | Set a conversion action primary or secondary |
 | `client.ConversionsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
+| `client.ConversionsAPI.UpdateCustomConversionGoal(ctx)` | Update a custom conversion goal |
 | `client.ConversionsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |
 | `client.ConversionsAPI.AddConversionAssociations(ctx)` | Associate campaigns |
 | `client.ConversionsAPI.AdjustConversions(ctx)` | Adjust uploaded conversions |
 | `client.ConversionsAPI.RemoveConversionAssociations(ctx)` | Remove associated campaigns |
+| `client.ConversionsAPI.RemoveCustomConversionGoal(ctx)` | Remove a custom conversion goal |
 | `client.ConversionsAPI.SendConversions(ctx)` | Send conversion events |
 
 ### Custom Fields
