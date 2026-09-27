@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.111.0
+API version: 1.111.1
 Contact: support@zernio.com
 */
 
@@ -21,10 +21,11 @@ var _ MappedNullable = &GetAdAccountHierarchy200Response{}
 
 // GetAdAccountHierarchy200Response struct for GetAdAccountHierarchy200Response
 type GetAdAccountHierarchy200Response struct {
-	AccountId   *string                                            `json:"accountId,omitempty"`
-	Roots       []GetAdAccountHierarchy200ResponseRootsInner       `json:"roots,omitempty"`
-	Unavailable []GetAdAccountHierarchy200ResponseUnavailableInner `json:"unavailable,omitempty"`
-	Truncated   *bool                                              `json:"truncated,omitempty"`
+	AccountId       *string                                                `json:"accountId,omitempty"`
+	Roots           []GetAdAccountHierarchy200ResponseRootsInner           `json:"roots,omitempty"`
+	DirectCustomers []GetAdAccountHierarchy200ResponseDirectCustomersInner `json:"directCustomers,omitempty"`
+	Unavailable     []GetAdAccountHierarchy200ResponseUnavailableInner     `json:"unavailable,omitempty"`
+	Truncated       *bool                                                  `json:"truncated,omitempty"`
 	// When this data was fetched from Google. Null on a live read.
 	CachedAt NullableTime `json:"cachedAt,omitempty"`
 	// True when Google's quota was exhausted and this is the last successful fetch.
@@ -110,6 +111,38 @@ func (o *GetAdAccountHierarchy200Response) HasRoots() bool {
 // SetRoots gets a reference to the given []GetAdAccountHierarchy200ResponseRootsInner and assigns it to the Roots field.
 func (o *GetAdAccountHierarchy200Response) SetRoots(v []GetAdAccountHierarchy200ResponseRootsInner) {
 	o.Roots = v
+}
+
+// GetDirectCustomers returns the DirectCustomers field value if set, zero value otherwise.
+func (o *GetAdAccountHierarchy200Response) GetDirectCustomers() []GetAdAccountHierarchy200ResponseDirectCustomersInner {
+	if o == nil || IsNil(o.DirectCustomers) {
+		var ret []GetAdAccountHierarchy200ResponseDirectCustomersInner
+		return ret
+	}
+	return o.DirectCustomers
+}
+
+// GetDirectCustomersOk returns a tuple with the DirectCustomers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdAccountHierarchy200Response) GetDirectCustomersOk() ([]GetAdAccountHierarchy200ResponseDirectCustomersInner, bool) {
+	if o == nil || IsNil(o.DirectCustomers) {
+		return nil, false
+	}
+	return o.DirectCustomers, true
+}
+
+// HasDirectCustomers returns a boolean if a field has been set.
+func (o *GetAdAccountHierarchy200Response) HasDirectCustomers() bool {
+	if o != nil && !IsNil(o.DirectCustomers) {
+		return true
+	}
+
+	return false
+}
+
+// SetDirectCustomers gets a reference to the given []GetAdAccountHierarchy200ResponseDirectCustomersInner and assigns it to the DirectCustomers field.
+func (o *GetAdAccountHierarchy200Response) SetDirectCustomers(v []GetAdAccountHierarchy200ResponseDirectCustomersInner) {
+	o.DirectCustomers = v
 }
 
 // GetUnavailable returns the Unavailable field value if set, zero value otherwise.
@@ -266,6 +299,9 @@ func (o GetAdAccountHierarchy200Response) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.Roots) {
 		toSerialize["roots"] = o.Roots
+	}
+	if !IsNil(o.DirectCustomers) {
+		toSerialize["directCustomers"] = o.DirectCustomers
 	}
 	if !IsNil(o.Unavailable) {
 		toSerialize["unavailable"] = o.Unavailable
