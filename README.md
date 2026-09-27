@@ -280,7 +280,7 @@ func main() {
 | `client.AdAccountsAPI.ListAccountSitelinks(ctx)` | List account sitelinks |
 | `client.AdAccountsAPI.ListAccountStructuredSnippets(ctx)` | List account snippets |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
-| `client.AdAccountsAPI.ListAdLabels(ctx)` | Ad labels |
+| `client.AdAccountsAPI.ListAdLabels(ctx)` | List ad labels |
 | `client.AdAccountsAPI.ListAdNegativeKeywordLists(ctx)` | List negative keyword lists |
 | `client.AdAccountsAPI.ListAdStudies(ctx)` | A/B tests and lift studies |
 | `client.AdAccountsAPI.ListAdsBusinessCenters(ctx)` | List TikTok Business Centers |
@@ -293,6 +293,7 @@ func main() {
 | `client.AdAccountsAPI.ListTikTokAdPixels(ctx)` | List TikTok ad pixels |
 | `client.AdAccountsAPI.ListValueRuleSets(ctx)` | List value rule sets |
 | `client.AdAccountsAPI.CreateAdAccount(ctx)` | Create Meta ad account |
+| `client.AdAccountsAPI.CreateAdLabel(ctx)` | Create a Google Ads label |
 | `client.AdAccountsAPI.CreateAdNegativeKeywordList(ctx)` | Create a negative keyword list |
 | `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create custom conversion |
 | `client.AdAccountsAPI.CreateHighDemandPeriod(ctx)` | Schedule a budget increase |
@@ -309,6 +310,7 @@ func main() {
 | `client.AdAccountsAPI.UpdateAccountSitelinks(ctx)` | Update account sitelinks |
 | `client.AdAccountsAPI.UpdateAccountStructuredSnippets(ctx)` | Update account snippets |
 | `client.AdAccountsAPI.UpdateAdAccount(ctx)` | Update ad account settings |
+| `client.AdAccountsAPI.UpdateAdLabel(ctx)` | Update a Google Ads label |
 | `client.AdAccountsAPI.UpdateAdNegativeKeywordList(ctx)` | Rename a negative keyword list |
 | `client.AdAccountsAPI.UpdateValueRuleSet(ctx)` | Replace a value rule set |
 | `client.AdAccountsAPI.DeleteAdComment(ctx)` | Delete an ad comment |
@@ -317,10 +319,13 @@ func main() {
 | `client.AdAccountsAPI.AddAccountCallouts(ctx)` | Add account callouts |
 | `client.AdAccountsAPI.AddAccountSitelinks(ctx)` | Add account sitelinks |
 | `client.AdAccountsAPI.AddAccountStructuredSnippets(ctx)` | Add account snippets |
+| `client.AdAccountsAPI.AttachAdLabel(ctx)` | Attach a Google Ads label |
+| `client.AdAccountsAPI.DetachAdLabel(ctx)` | Detach a Google Ads label |
 | `client.AdAccountsAPI.HideAdComment(ctx)` | Hide or unhide an ad comment |
 | `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove account callout |
 | `client.AdAccountsAPI.RemoveAccountSitelink(ctx)` | Remove account sitelink |
 | `client.AdAccountsAPI.RemoveAccountStructuredSnippet(ctx)` | Remove account snippet |
+| `client.AdAccountsAPI.RemoveAdLabel(ctx)` | Remove a Google Ads label |
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
 
