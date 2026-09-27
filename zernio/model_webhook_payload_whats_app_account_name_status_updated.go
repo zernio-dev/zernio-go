@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.105.0
+API version: 1.105.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &WebhookPayloadWhatsAppAccountNameStatusUpdated{}
 
 // WebhookPayloadWhatsAppAccountNameStatusUpdated Webhook payload for the `whatsapp.account.name_status_updated` event. Fired when Meta finishes reviewing a WhatsApp display-name change on a connected number. Maps Meta's `phone_number_name_update` WABA webhook field onto our event envelope. Fires only for a review outcome (APPROVED, DECLINED, PENDING_REVIEW); a name applied without review reports `name_status: AVAILABLE_WITHOUT_REVIEW` on the phone node instead, and Meta never sends this webhook field for that case.
 type WebhookPayloadWhatsAppAccountNameStatusUpdated struct {
-	// Stable webhook event ID
+	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id      string                                             `json:"id"`
 	Event   string                                             `json:"event"`
 	Account WebhookPayloadWhatsAppTemplateStatusUpdatedAccount `json:"account"`
