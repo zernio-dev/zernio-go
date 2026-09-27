@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.106.0
+API version: 1.107.0
 Contact: support@zernio.com
 */
 
@@ -22,13 +22,24 @@ var _ MappedNullable = &GooglePmaxAssetGroup{}
 
 // GooglePmaxAssetGroup struct for GooglePmaxAssetGroup
 type GooglePmaxAssetGroup struct {
-	Id           string `json:"id"`
+	// Stable Google asset group id. Use it in the asset-group endpoints below.
+	Id string `json:"id"`
+	// customers/{customerId}/assetGroups/{assetGroupId}
 	ResourceName string `json:"resourceName"`
+	CampaignId   string `json:"campaignId"`
 	Name         string `json:"name"`
 	// Asset-group status on Google. Campaign status independently controls delivery.
-	Status    string                            `json:"status"`
-	FinalUrls []string                          `json:"finalUrls"`
-	Assets    []GooglePmaxAssetGroupAssetsInner `json:"assets"`
+	Status          string         `json:"status"`
+	FinalUrls       []string       `json:"finalUrls"`
+	FinalMobileUrls []string       `json:"finalMobileUrls"`
+	Path1           NullableString `json:"path1"`
+	Path2           NullableString `json:"path2"`
+	// Google ad strength, such as POOR, AVERAGE, GOOD or EXCELLENT.
+	AdStrength NullableString `json:"adStrength"`
+	// Why the group is or is not serving, such as ELIGIBLE, PAUSED or NOT_ELIGIBLE.
+	PrimaryStatus        NullableString                    `json:"primaryStatus"`
+	PrimaryStatusReasons []string                          `json:"primaryStatusReasons"`
+	Assets               []GooglePmaxAssetGroupAssetsInner `json:"assets"`
 }
 
 type _GooglePmaxAssetGroup GooglePmaxAssetGroup
@@ -37,13 +48,20 @@ type _GooglePmaxAssetGroup GooglePmaxAssetGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGooglePmaxAssetGroup(id string, resourceName string, name string, status string, finalUrls []string, assets []GooglePmaxAssetGroupAssetsInner) *GooglePmaxAssetGroup {
+func NewGooglePmaxAssetGroup(id string, resourceName string, campaignId string, name string, status string, finalUrls []string, finalMobileUrls []string, path1 NullableString, path2 NullableString, adStrength NullableString, primaryStatus NullableString, primaryStatusReasons []string, assets []GooglePmaxAssetGroupAssetsInner) *GooglePmaxAssetGroup {
 	this := GooglePmaxAssetGroup{}
 	this.Id = id
 	this.ResourceName = resourceName
+	this.CampaignId = campaignId
 	this.Name = name
 	this.Status = status
 	this.FinalUrls = finalUrls
+	this.FinalMobileUrls = finalMobileUrls
+	this.Path1 = path1
+	this.Path2 = path2
+	this.AdStrength = adStrength
+	this.PrimaryStatus = primaryStatus
+	this.PrimaryStatusReasons = primaryStatusReasons
 	this.Assets = assets
 	return &this
 }
@@ -102,6 +120,30 @@ func (o *GooglePmaxAssetGroup) GetResourceNameOk() (*string, bool) {
 // SetResourceName sets field value
 func (o *GooglePmaxAssetGroup) SetResourceName(v string) {
 	o.ResourceName = v
+}
+
+// GetCampaignId returns the CampaignId field value
+func (o *GooglePmaxAssetGroup) GetCampaignId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.CampaignId
+}
+
+// GetCampaignIdOk returns a tuple with the CampaignId field value
+// and a boolean to check if the value has been set.
+func (o *GooglePmaxAssetGroup) GetCampaignIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CampaignId, true
+}
+
+// SetCampaignId sets field value
+func (o *GooglePmaxAssetGroup) SetCampaignId(v string) {
+	o.CampaignId = v
 }
 
 // GetName returns the Name field value
@@ -176,6 +218,158 @@ func (o *GooglePmaxAssetGroup) SetFinalUrls(v []string) {
 	o.FinalUrls = v
 }
 
+// GetFinalMobileUrls returns the FinalMobileUrls field value
+func (o *GooglePmaxAssetGroup) GetFinalMobileUrls() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.FinalMobileUrls
+}
+
+// GetFinalMobileUrlsOk returns a tuple with the FinalMobileUrls field value
+// and a boolean to check if the value has been set.
+func (o *GooglePmaxAssetGroup) GetFinalMobileUrlsOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FinalMobileUrls, true
+}
+
+// SetFinalMobileUrls sets field value
+func (o *GooglePmaxAssetGroup) SetFinalMobileUrls(v []string) {
+	o.FinalMobileUrls = v
+}
+
+// GetPath1 returns the Path1 field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GooglePmaxAssetGroup) GetPath1() string {
+	if o == nil || o.Path1.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Path1.Get()
+}
+
+// GetPath1Ok returns a tuple with the Path1 field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GooglePmaxAssetGroup) GetPath1Ok() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Path1.Get(), o.Path1.IsSet()
+}
+
+// SetPath1 sets field value
+func (o *GooglePmaxAssetGroup) SetPath1(v string) {
+	o.Path1.Set(&v)
+}
+
+// GetPath2 returns the Path2 field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GooglePmaxAssetGroup) GetPath2() string {
+	if o == nil || o.Path2.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Path2.Get()
+}
+
+// GetPath2Ok returns a tuple with the Path2 field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GooglePmaxAssetGroup) GetPath2Ok() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Path2.Get(), o.Path2.IsSet()
+}
+
+// SetPath2 sets field value
+func (o *GooglePmaxAssetGroup) SetPath2(v string) {
+	o.Path2.Set(&v)
+}
+
+// GetAdStrength returns the AdStrength field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GooglePmaxAssetGroup) GetAdStrength() string {
+	if o == nil || o.AdStrength.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.AdStrength.Get()
+}
+
+// GetAdStrengthOk returns a tuple with the AdStrength field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GooglePmaxAssetGroup) GetAdStrengthOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AdStrength.Get(), o.AdStrength.IsSet()
+}
+
+// SetAdStrength sets field value
+func (o *GooglePmaxAssetGroup) SetAdStrength(v string) {
+	o.AdStrength.Set(&v)
+}
+
+// GetPrimaryStatus returns the PrimaryStatus field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *GooglePmaxAssetGroup) GetPrimaryStatus() string {
+	if o == nil || o.PrimaryStatus.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.PrimaryStatus.Get()
+}
+
+// GetPrimaryStatusOk returns a tuple with the PrimaryStatus field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GooglePmaxAssetGroup) GetPrimaryStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PrimaryStatus.Get(), o.PrimaryStatus.IsSet()
+}
+
+// SetPrimaryStatus sets field value
+func (o *GooglePmaxAssetGroup) SetPrimaryStatus(v string) {
+	o.PrimaryStatus.Set(&v)
+}
+
+// GetPrimaryStatusReasons returns the PrimaryStatusReasons field value
+func (o *GooglePmaxAssetGroup) GetPrimaryStatusReasons() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.PrimaryStatusReasons
+}
+
+// GetPrimaryStatusReasonsOk returns a tuple with the PrimaryStatusReasons field value
+// and a boolean to check if the value has been set.
+func (o *GooglePmaxAssetGroup) GetPrimaryStatusReasonsOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PrimaryStatusReasons, true
+}
+
+// SetPrimaryStatusReasons sets field value
+func (o *GooglePmaxAssetGroup) SetPrimaryStatusReasons(v []string) {
+	o.PrimaryStatusReasons = v
+}
+
 // GetAssets returns the Assets field value
 func (o *GooglePmaxAssetGroup) GetAssets() []GooglePmaxAssetGroupAssetsInner {
 	if o == nil {
@@ -212,9 +406,16 @@ func (o GooglePmaxAssetGroup) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["resourceName"] = o.ResourceName
+	toSerialize["campaignId"] = o.CampaignId
 	toSerialize["name"] = o.Name
 	toSerialize["status"] = o.Status
 	toSerialize["finalUrls"] = o.FinalUrls
+	toSerialize["finalMobileUrls"] = o.FinalMobileUrls
+	toSerialize["path1"] = o.Path1.Get()
+	toSerialize["path2"] = o.Path2.Get()
+	toSerialize["adStrength"] = o.AdStrength.Get()
+	toSerialize["primaryStatus"] = o.PrimaryStatus.Get()
+	toSerialize["primaryStatusReasons"] = o.PrimaryStatusReasons
 	toSerialize["assets"] = o.Assets
 	return toSerialize, nil
 }
@@ -226,9 +427,16 @@ func (o *GooglePmaxAssetGroup) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"id",
 		"resourceName",
+		"campaignId",
 		"name",
 		"status",
 		"finalUrls",
+		"finalMobileUrls",
+		"path1",
+		"path2",
+		"adStrength",
+		"primaryStatus",
+		"primaryStatusReasons",
 		"assets",
 	}
 

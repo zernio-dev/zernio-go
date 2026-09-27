@@ -352,6 +352,7 @@ func main() {
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
 | `client.AdCampaignsAPI.CreateBidStrategy(ctx)` | Create portfolio bid strategy |
+| `client.AdCampaignsAPI.CreateGoogleAssetGroup(ctx)` | Create a Performance Max asset group |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdCampaignsAPI.GetAdCampaignDetails(ctx)` | Get live campaign details |
@@ -361,6 +362,7 @@ func main() {
 | `client.AdCampaignsAPI.GetCampaignAdSchedule(ctx)` | Read a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.GetCampaignBidding(ctx)` | Read a campaign's current bidding |
 | `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, and language targeting |
+| `client.AdCampaignsAPI.GetGoogleAssetGroup(ctx)` | Get a Performance Max asset group |
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
 | `client.AdCampaignsAPI.UpdateAdCampaignStatus(ctx)` | Pause or resume a campaign |
@@ -373,6 +375,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateCampaignAdSchedule(ctx)` | Replace a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.UpdateCampaignAssets(ctx)` | Update campaign assets |
 | `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
+| `client.AdCampaignsAPI.UpdateGoogleAssetGroup(ctx)` | Update a Performance Max asset group |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
@@ -383,11 +386,14 @@ func main() {
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 | `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set |
+| `client.AdCampaignsAPI.EditGoogleAssetGroupAssets(ctx)` | Link or unlink asset group assets |
 | `client.AdCampaignsAPI.RemoveAdGroupAssets(ctx)` | Remove ad-group assets |
 | `client.AdCampaignsAPI.RemoveAdKeyword(ctx)` | Remove a Search keyword |
 | `client.AdCampaignsAPI.RemoveCampaignAssets(ctx)` | Remove campaign assets |
+| `client.AdCampaignsAPI.RemoveGoogleAssetGroup(ctx)` | Remove a Performance Max asset group |
 | `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywordLists(ctx)` | Replace campaign negative lists |
 | `client.AdCampaignsAPI.ReplaceCampaignNegativeKeywords(ctx)` | Replace campaign-level negative keywords |
+| `client.AdCampaignsAPI.ReplaceGoogleListingGroupFilters(ctx)` | Replace an asset group's listing-group tree |
 
 ### Ad Creatives
 | Method | Description |
