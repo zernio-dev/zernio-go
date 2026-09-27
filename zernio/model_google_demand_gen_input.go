@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.112.0
+API version: 1.113.0
 Contact: support@zernio.com
 */
 
@@ -39,8 +39,8 @@ type GoogleDemandGenInput struct {
 	// Makes the ad a carousel ad. Each card needs its own image (no two cards may share one); use the same image shape on every card. Card images are uploaded to the account's asset library before the campaign is created, validateOnly included (Google checks cards against existing images; identical images are reused, not duplicated).
 	CarouselCards []GoogleDemandGenInputCarouselCardsInner `json:"carouselCards,omitempty"`
 	// Channel controls on the ad group. Only the listed channels serve; omit to serve on all of them.
-	Channels []string                      `json:"channels,omitempty"`
-	Audience *GoogleDemandGenInputAudience `json:"audience,omitempty"`
+	Channels []string                 `json:"channels,omitempty"`
+	Audience *GoogleDemandGenAudience `json:"audience,omitempty"`
 	// Attach an existing Google Audience by numeric id instead of audience.
 	AudienceId           *string `json:"audienceId,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -383,9 +383,9 @@ func (o *GoogleDemandGenInput) SetChannels(v []string) {
 }
 
 // GetAudience returns the Audience field value if set, zero value otherwise.
-func (o *GoogleDemandGenInput) GetAudience() GoogleDemandGenInputAudience {
+func (o *GoogleDemandGenInput) GetAudience() GoogleDemandGenAudience {
 	if o == nil || IsNil(o.Audience) {
-		var ret GoogleDemandGenInputAudience
+		var ret GoogleDemandGenAudience
 		return ret
 	}
 	return *o.Audience
@@ -393,7 +393,7 @@ func (o *GoogleDemandGenInput) GetAudience() GoogleDemandGenInputAudience {
 
 // GetAudienceOk returns a tuple with the Audience field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GoogleDemandGenInput) GetAudienceOk() (*GoogleDemandGenInputAudience, bool) {
+func (o *GoogleDemandGenInput) GetAudienceOk() (*GoogleDemandGenAudience, bool) {
 	if o == nil || IsNil(o.Audience) {
 		return nil, false
 	}
@@ -409,8 +409,8 @@ func (o *GoogleDemandGenInput) HasAudience() bool {
 	return false
 }
 
-// SetAudience gets a reference to the given GoogleDemandGenInputAudience and assigns it to the Audience field.
-func (o *GoogleDemandGenInput) SetAudience(v GoogleDemandGenInputAudience) {
+// SetAudience gets a reference to the given GoogleDemandGenAudience and assigns it to the Audience field.
+func (o *GoogleDemandGenInput) SetAudience(v GoogleDemandGenAudience) {
 	o.Audience = &v
 }
 

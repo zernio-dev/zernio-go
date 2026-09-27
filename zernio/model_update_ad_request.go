@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.112.0
+API version: 1.113.0
 Contact: support@zernio.com
 */
 
@@ -28,10 +28,12 @@ type UpdateAdRequest struct {
 	FinalUrls []string `json:"finalUrls,omitempty"`
 	// Google Performance Max only. Replaces whole asset roles on the ad's asset group. Returns 422 on any other platform or channel.
 	AssetGroup *GooglePmaxAssetGroupUpdate `json:"assetGroup,omitempty"`
-	Status     *string                     `json:"status,omitempty"`
-	Budget     *UpdateAdSetRequestBudget   `json:"budget,omitempty"`
-	Targeting  *UpdateAdRequestTargeting   `json:"targeting,omitempty"`
-	Creative   *UpdateAdRequestCreative    `json:"creative,omitempty"`
+	// Google Demand Gen only. Returns 422 on any other platform or channel.
+	DemandGen *GoogleDemandGenUpdate    `json:"demandGen,omitempty"`
+	Status    *string                   `json:"status,omitempty"`
+	Budget    *UpdateAdSetRequestBudget `json:"budget,omitempty"`
+	Targeting *UpdateAdRequestTargeting `json:"targeting,omitempty"`
+	Creative  *UpdateAdRequestCreative  `json:"creative,omitempty"`
 	// Rename the ad. Now propagated to Meta (POST /{ad-id}); non-Meta platforms return 501.
 	Name *string `json:"name,omitempty"`
 }
@@ -179,6 +181,38 @@ func (o *UpdateAdRequest) HasAssetGroup() bool {
 // SetAssetGroup gets a reference to the given GooglePmaxAssetGroupUpdate and assigns it to the AssetGroup field.
 func (o *UpdateAdRequest) SetAssetGroup(v GooglePmaxAssetGroupUpdate) {
 	o.AssetGroup = &v
+}
+
+// GetDemandGen returns the DemandGen field value if set, zero value otherwise.
+func (o *UpdateAdRequest) GetDemandGen() GoogleDemandGenUpdate {
+	if o == nil || IsNil(o.DemandGen) {
+		var ret GoogleDemandGenUpdate
+		return ret
+	}
+	return *o.DemandGen
+}
+
+// GetDemandGenOk returns a tuple with the DemandGen field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdRequest) GetDemandGenOk() (*GoogleDemandGenUpdate, bool) {
+	if o == nil || IsNil(o.DemandGen) {
+		return nil, false
+	}
+	return o.DemandGen, true
+}
+
+// HasDemandGen returns a boolean if a field has been set.
+func (o *UpdateAdRequest) HasDemandGen() bool {
+	if o != nil && !IsNil(o.DemandGen) {
+		return true
+	}
+
+	return false
+}
+
+// SetDemandGen gets a reference to the given GoogleDemandGenUpdate and assigns it to the DemandGen field.
+func (o *UpdateAdRequest) SetDemandGen(v GoogleDemandGenUpdate) {
+	o.DemandGen = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -362,6 +396,9 @@ func (o UpdateAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AssetGroup) {
 		toSerialize["assetGroup"] = o.AssetGroup
+	}
+	if !IsNil(o.DemandGen) {
+		toSerialize["demandGen"] = o.DemandGen
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

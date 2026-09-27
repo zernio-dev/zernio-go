@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.112.0
+API version: 1.113.0
 Contact: support@zernio.com
 */
 
@@ -1506,8 +1506,8 @@ Conversions, COST_CAP plus bidAmount for target CPA, LOWEST_COST_WITH_MIN_ROAS p
 roasAverageFloor for target ROAS, LOWEST_COST_WITH_BID_CAP plus bidAmount for target
 CPC. The created ad carries the native `platformCampaignId`, `platformAdSetId` (ad
 group) and `platformAdId`. Activate with PUT /v1/ads/campaigns/{campaignId}/status;
-budget, bidding and name are edited with the regular campaign endpoints. Creative and
-targeting edits on an existing Demand Gen ad return 501 for now.
+budget, bidding and name are edited with the regular campaign endpoints; creative,
+channels, audience and ad group targeting with PUT /v1/ads/{adId} (`demandGen`, `targeting`).
 
 Other mutually-exclusive request shapes are selected by the body:
 
@@ -7575,6 +7575,12 @@ Per-platform support:
   - **Performance Max**: top-level `assetGroup`, which swaps asset roles on the ad's asset
     group. The other creative fields return 422 for this channel, and `assetGroup` returns
     422 on any other channel.
+  - **Demand Gen**: top-level `demandGen` (see GoogleDemandGenUpdate): creative, channel
+    and audience changes in one atomic Google request. The other creative fields return
+    422 for this channel. `targeting` takes locations, languages, `locationTargetingType`
+    and `devices`; locations and languages are written to the ad's ad group, which
+    Demand Gen requires (campaigns migrated from Discovery that still target on the
+    campaign keep being written there), so they apply to every ad in that ad group.
   - **LinkedIn**: status, budget, targeting (countries or regions, excludedLocations (countries),
     the B2B facets, and audience segments; applied to the LinkedIn Campaign via
     PARTIAL_UPDATE, and REPLACES the campaign's entire targetingCriteria, not a merge),
