@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.105.1
+API version: 1.106.0
 Contact: support@zernio.com
 */
 
@@ -21,8 +21,17 @@ var _ MappedNullable = &RemoveAdKeyword200Response{}
 // RemoveAdKeyword200Response struct for RemoveAdKeyword200Response
 type RemoveAdKeyword200Response struct {
 	// Always true on success
-	Removed   *bool   `json:"removed,omitempty"`
+	Removed *bool `json:"removed,omitempty"`
+	// Zernio keyword ID
 	KeywordId *string `json:"keywordId,omitempty"`
+	// Google ad_group_criterion.criterion_id
+	PlatformCriterionId *string `json:"platformCriterionId,omitempty"`
+	// Google resource name of the removed criterion
+	ResourceName *string `json:"resourceName,omitempty"`
+	// Google campaign ID
+	CampaignId *string `json:"campaignId,omitempty"`
+	// Google ad group ID
+	AdSetId *string `json:"adSetId,omitempty"`
 }
 
 // NewRemoveAdKeyword200Response instantiates a new RemoveAdKeyword200Response object
@@ -106,6 +115,134 @@ func (o *RemoveAdKeyword200Response) SetKeywordId(v string) {
 	o.KeywordId = &v
 }
 
+// GetPlatformCriterionId returns the PlatformCriterionId field value if set, zero value otherwise.
+func (o *RemoveAdKeyword200Response) GetPlatformCriterionId() string {
+	if o == nil || IsNil(o.PlatformCriterionId) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCriterionId
+}
+
+// GetPlatformCriterionIdOk returns a tuple with the PlatformCriterionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveAdKeyword200Response) GetPlatformCriterionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformCriterionId) {
+		return nil, false
+	}
+	return o.PlatformCriterionId, true
+}
+
+// HasPlatformCriterionId returns a boolean if a field has been set.
+func (o *RemoveAdKeyword200Response) HasPlatformCriterionId() bool {
+	if o != nil && !IsNil(o.PlatformCriterionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCriterionId gets a reference to the given string and assigns it to the PlatformCriterionId field.
+func (o *RemoveAdKeyword200Response) SetPlatformCriterionId(v string) {
+	o.PlatformCriterionId = &v
+}
+
+// GetResourceName returns the ResourceName field value if set, zero value otherwise.
+func (o *RemoveAdKeyword200Response) GetResourceName() string {
+	if o == nil || IsNil(o.ResourceName) {
+		var ret string
+		return ret
+	}
+	return *o.ResourceName
+}
+
+// GetResourceNameOk returns a tuple with the ResourceName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveAdKeyword200Response) GetResourceNameOk() (*string, bool) {
+	if o == nil || IsNil(o.ResourceName) {
+		return nil, false
+	}
+	return o.ResourceName, true
+}
+
+// HasResourceName returns a boolean if a field has been set.
+func (o *RemoveAdKeyword200Response) HasResourceName() bool {
+	if o != nil && !IsNil(o.ResourceName) {
+		return true
+	}
+
+	return false
+}
+
+// SetResourceName gets a reference to the given string and assigns it to the ResourceName field.
+func (o *RemoveAdKeyword200Response) SetResourceName(v string) {
+	o.ResourceName = &v
+}
+
+// GetCampaignId returns the CampaignId field value if set, zero value otherwise.
+func (o *RemoveAdKeyword200Response) GetCampaignId() string {
+	if o == nil || IsNil(o.CampaignId) {
+		var ret string
+		return ret
+	}
+	return *o.CampaignId
+}
+
+// GetCampaignIdOk returns a tuple with the CampaignId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveAdKeyword200Response) GetCampaignIdOk() (*string, bool) {
+	if o == nil || IsNil(o.CampaignId) {
+		return nil, false
+	}
+	return o.CampaignId, true
+}
+
+// HasCampaignId returns a boolean if a field has been set.
+func (o *RemoveAdKeyword200Response) HasCampaignId() bool {
+	if o != nil && !IsNil(o.CampaignId) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignId gets a reference to the given string and assigns it to the CampaignId field.
+func (o *RemoveAdKeyword200Response) SetCampaignId(v string) {
+	o.CampaignId = &v
+}
+
+// GetAdSetId returns the AdSetId field value if set, zero value otherwise.
+func (o *RemoveAdKeyword200Response) GetAdSetId() string {
+	if o == nil || IsNil(o.AdSetId) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetId
+}
+
+// GetAdSetIdOk returns a tuple with the AdSetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveAdKeyword200Response) GetAdSetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetId) {
+		return nil, false
+	}
+	return o.AdSetId, true
+}
+
+// HasAdSetId returns a boolean if a field has been set.
+func (o *RemoveAdKeyword200Response) HasAdSetId() bool {
+	if o != nil && !IsNil(o.AdSetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetId gets a reference to the given string and assigns it to the AdSetId field.
+func (o *RemoveAdKeyword200Response) SetAdSetId(v string) {
+	o.AdSetId = &v
+}
+
 func (o RemoveAdKeyword200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -121,6 +258,18 @@ func (o RemoveAdKeyword200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.KeywordId) {
 		toSerialize["keywordId"] = o.KeywordId
+	}
+	if !IsNil(o.PlatformCriterionId) {
+		toSerialize["platformCriterionId"] = o.PlatformCriterionId
+	}
+	if !IsNil(o.ResourceName) {
+		toSerialize["resourceName"] = o.ResourceName
+	}
+	if !IsNil(o.CampaignId) {
+		toSerialize["campaignId"] = o.CampaignId
+	}
+	if !IsNil(o.AdSetId) {
+		toSerialize["adSetId"] = o.AdSetId
 	}
 	return toSerialize, nil
 }

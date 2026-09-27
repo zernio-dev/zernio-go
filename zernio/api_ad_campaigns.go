@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.105.1
+API version: 1.106.0
 Contact: support@zernio.com
 */
 
@@ -6050,7 +6050,7 @@ RemoveAdKeyword Remove a Search keyword
 Removes one keyword criterion (positive or negative) from its ad group (M.140).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param keywordId Zernio keyword ID (not the Google criterion ID)
+	@param keywordId Zernio keyword ID (`id`), or Google's native `{adSetId}~{platformCriterionId}` (the tail of `resourceName`, e.g. 1234567890~987654321). A bare criterion id is rejected because it is only unique within its ad group.
 	@return AdCampaignsAPIRemoveAdKeywordRequest
 */
 func (a *AdCampaignsAPIService) RemoveAdKeyword(ctx context.Context, keywordId string) AdCampaignsAPIRemoveAdKeywordRequest {
@@ -7352,7 +7352,7 @@ Changes `ad_group_criterion.status` for one keyword criterion (M.140).
 Negative keywords have no status on Google and cannot be paused or enabled.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param keywordId Zernio keyword ID (not the Google criterion ID)
+	@param keywordId Zernio keyword ID (`id`), or Google's native `{adSetId}~{platformCriterionId}` (the tail of `resourceName`, e.g. 1234567890~987654321). A bare criterion id is rejected because it is only unique within its ad group.
 	@return AdCampaignsAPIUpdateAdKeywordRequest
 */
 func (a *AdCampaignsAPIService) UpdateAdKeyword(ctx context.Context, keywordId string) AdCampaignsAPIUpdateAdKeywordRequest {

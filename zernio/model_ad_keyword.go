@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.105.1
+API version: 1.106.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,12 @@ var _ MappedNullable = &AdKeyword{}
 
 // AdKeyword struct for AdKeyword
 type AdKeyword struct {
+	// Zernio keyword ID. Accepted as `keywordId` by PATCH/DELETE /v1/ads/keywords/{keywordId}.
 	Id *string `json:"id,omitempty"`
+	// Google ad_group_criterion.criterion_id. Unique only within its ad group (`adSetId`), not across the account.
+	PlatformCriterionId *string `json:"platformCriterionId,omitempty"`
+	// Google resource name, customers/{adAccountId}/adGroupCriteria/{adSetId}~{platformCriterionId}.
+	ResourceName *string `json:"resourceName,omitempty"`
 	// Account ID owning the sync
 	AccountId *string `json:"accountId,omitempty"`
 	ProfileId *string `json:"profileId,omitempty"`
@@ -93,6 +98,70 @@ func (o *AdKeyword) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *AdKeyword) SetId(v string) {
 	o.Id = &v
+}
+
+// GetPlatformCriterionId returns the PlatformCriterionId field value if set, zero value otherwise.
+func (o *AdKeyword) GetPlatformCriterionId() string {
+	if o == nil || IsNil(o.PlatformCriterionId) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCriterionId
+}
+
+// GetPlatformCriterionIdOk returns a tuple with the PlatformCriterionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdKeyword) GetPlatformCriterionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformCriterionId) {
+		return nil, false
+	}
+	return o.PlatformCriterionId, true
+}
+
+// HasPlatformCriterionId returns a boolean if a field has been set.
+func (o *AdKeyword) HasPlatformCriterionId() bool {
+	if o != nil && !IsNil(o.PlatformCriterionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCriterionId gets a reference to the given string and assigns it to the PlatformCriterionId field.
+func (o *AdKeyword) SetPlatformCriterionId(v string) {
+	o.PlatformCriterionId = &v
+}
+
+// GetResourceName returns the ResourceName field value if set, zero value otherwise.
+func (o *AdKeyword) GetResourceName() string {
+	if o == nil || IsNil(o.ResourceName) {
+		var ret string
+		return ret
+	}
+	return *o.ResourceName
+}
+
+// GetResourceNameOk returns a tuple with the ResourceName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdKeyword) GetResourceNameOk() (*string, bool) {
+	if o == nil || IsNil(o.ResourceName) {
+		return nil, false
+	}
+	return o.ResourceName, true
+}
+
+// HasResourceName returns a boolean if a field has been set.
+func (o *AdKeyword) HasResourceName() bool {
+	if o != nil && !IsNil(o.ResourceName) {
+		return true
+	}
+
+	return false
+}
+
+// SetResourceName gets a reference to the given string and assigns it to the ResourceName field.
+func (o *AdKeyword) SetResourceName(v string) {
+	o.ResourceName = &v
 }
 
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
@@ -749,6 +818,12 @@ func (o AdKeyword) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.PlatformCriterionId) {
+		toSerialize["platformCriterionId"] = o.PlatformCriterionId
+	}
+	if !IsNil(o.ResourceName) {
+		toSerialize["resourceName"] = o.ResourceName
 	}
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
