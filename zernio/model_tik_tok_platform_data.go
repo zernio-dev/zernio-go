@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.123.0
+API version: 1.123.1
 Contact: support@zernio.com
 */
 
@@ -51,7 +51,7 @@ type TikTokPlatformData struct {
 	// When true, TikTok may add recommended music (photos only). With the brand-organic or branded-content toggle on, TikTok allows Commercial Music Library tracks only, so this attaches nothing there; use musicSoundInfo instead.
 	AutoAddMusic   *bool                             `json:"autoAddMusic,omitempty"`
 	MusicSoundInfo *TikTokPlatformDataMusicSoundInfo `json:"musicSoundInfo,omitempty"`
-	// Volume of the video's own sound when a commercial track is attached (0 to 100). Requires musicSoundInfo. Video posts only.
+	// Volume of the video's own sound when a commercial track is attached (0 to 100). Requires musicSoundInfo. Video posts only. Omitted, TikTok keeps its API default of 0 and the video's own audio is muted under the track (the TikTok app uses 50).
 	VideoOriginalSoundVolume *int32 `json:"videoOriginalSoundVolume,omitempty"`
 	// Set true to disclose AI-generated content. Accounts connected through the TikTok for Business app carry the disclosure on video posts only: the business photo endpoint has no AI disclosure field, so true on a direct photo post is rejected at creation rather than published undisclosed. Send draft true to publish such a photo post and set the disclosure in the TikTok app.
 	VideoMadeWithAi *bool `json:"videoMadeWithAi,omitempty"`
