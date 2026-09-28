@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.135.0
+API version: 1.136.0
 Contact: support@zernio.com
 */
 
@@ -380,6 +380,18 @@ Creates a conversion event tied to the tag. Pass the platform's own event type i
 optional fields; sending one it does not store answers 400 naming the supported fields.
 NOT idempotent unless noted per platform: do not retry blindly.
 
+OpenAI Ads: creates a conversion event setting on the pixel (`POST
+/conversions/event_settings`, source = the pixel). Accepts `name`, `type` and
+`siteEvent` only. `type` is a standard event (`order_created`, `lead_created`,
+`items_added`, `contents_viewed`, `checkout_started`, `registration_completed`,
+`subscription_created`, `trial_started`, `appointment_scheduled`, `page_viewed`,
+`app_installed`, `app_opened`) or, for anything else, the custom event name itself
+(1 to 64 letters, digits, underscores or dashes; stored lowercase). `siteEvent` maps
+`search` and `add_payment_info` to the custom events `search` and `addpaymentinfo`,
+the names Zernio's Shopify pixel sends. The click attribution window is 30 days, the
+only value OpenAI documents. Only standard events can be a conversions campaign's
+optimization goal.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Tag id (`TrackingTag.id`).
@@ -545,6 +557,10 @@ DeleteTrackingTagEvent Delete a conversion event
 
 Removes the conversion event. Platforms without a hard delete archive or disable it
 instead; `state` in the response says which (`deleted`, `archived`, `disabled`).
+
+OpenAI Ads answers 501: there is no delete or archive route for event settings
+(`DELETE /v1/conversions/event_settings/{id}` and `POST .../{id}/archive` answer 404
+"Invalid URL"). Archive the event in OpenAI Ads Manager.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1608,6 +1624,11 @@ The tag's conversion events, on platforms where each conversion is its own objec
 Google conversion actions, LinkedIn conversion rules, X web event tags, OpenAI event
 settings, TikTok pixel events, Meta custom conversions. Platforms where events are just
 names the site sends (Pinterest) answer 501.
+
+OpenAI Ads: the account's conversion event settings whose source is this pixel.
+`siteEventId` is the event name the site sends (a standard event such as
+`order_created`, or the lowercase custom event name); `clickWindowDays` is the
+attribution window.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2693,6 +2714,10 @@ func (r TrackingTagsAPIUpdateTrackingTagEventRequest) Execute() (*CreateTracking
 UpdateTrackingTagEvent Update a conversion event
 
 Partial update; at least one field. A field the platform does not store answers 400.
+
+OpenAI Ads answers 501: OpenAI documents only list and create for event settings, and
+`POST`/`PATCH`/`PUT /v1/conversions/event_settings/{id}` answer 404 "Invalid URL".
+Create a new event instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
