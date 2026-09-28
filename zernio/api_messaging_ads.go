@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.122.1
+API version: 1.123.0
 Contact: support@zernio.com
 */
 
@@ -375,7 +375,7 @@ func (r MessagingAdsAPICreateMessagingAdRequest) IdempotencyKey(idempotencyKey s
 	return r
 }
 
-func (r MessagingAdsAPICreateMessagingAdRequest) Execute() (*CreateMessagingAd201Response, *http.Response, error) {
+func (r MessagingAdsAPICreateMessagingAdRequest) Execute() (*CreateMessagingAd200Response, *http.Response, error) {
 	return r.ApiService.CreateMessagingAdExecute(r)
 }
 
@@ -410,13 +410,13 @@ func (a *MessagingAdsAPIService) CreateMessagingAd(ctx context.Context) Messagin
 
 // Execute executes the request
 //
-//	@return CreateMessagingAd201Response
-func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreateMessagingAdRequest) (*CreateMessagingAd201Response, *http.Response, error) {
+//	@return CreateMessagingAd200Response
+func (a *MessagingAdsAPIService) CreateMessagingAdExecute(r MessagingAdsAPICreateMessagingAdRequest) (*CreateMessagingAd200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *CreateMessagingAd201Response
+		localVarReturnValue *CreateMessagingAd200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagingAdsAPIService.CreateMessagingAd")

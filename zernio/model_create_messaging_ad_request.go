@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.122.1
+API version: 1.123.0
 Contact: support@zernio.com
 */
 
@@ -113,6 +113,10 @@ type CreateMessagingAdRequest struct {
 	Destination *string `json:"destination,omitempty"`
 	// Two or three messaging apps on ONE ad set, like Ads Manager's \"all messaging apps\": the ad set gets Meta's combined destination_type (e.g. MESSAGING_INSTAGRAM_DIRECT_MESSENGER_WHATSAPP) and the creative one CTA per app, so Meta opens the app each viewer is likeliest to answer from. WhatsApp in the list still needs the Page paired with a WhatsApp Business number. With `adSetId`, the existing ad set must already use that combined destination_type. Set this OR `destination`, not both.
 	Destinations []string `json:"destinations,omitempty"`
+	// A different image or video per placement on one messaging ad, e.g. a 4:5 image on Feed and a 9:16 image on Stories/Reels. Replaces top-level `imageUrl` / `video` (sending either alongside is a 400); `headline` and `body` stay required as the default copy. The CTA, `welcomeMessage` and `whatsappPhoneNumber` apply to every placement. Works on the single-creative shape and on attach (`adSetId`).  Single `destination` only: Meta cannot combine per-placement media with `destinations` (it drops the placement rules from a multi-destination creative, or refuses more than one call to action per placement rule with error 1885878), so that combination is a 400. Also a 400 with `creatives[]`, `platformPostId`, `existingPostId` or `objectStoryId`, and on POST /v1/ads/call.
+	PlacementAssets *MetaPlacementAssets `json:"placementAssets,omitempty"`
+	// Dry-runs the ad on Meta with execution_options validate_only as ONE inline campaign + ad set + creative + ad (or creative + ad on the existing ad set with `adSetId`). Nothing is uploaded or created and nothing is stored; media is checked by URL. Supports one creative with `imageUrl`, image `placementAssets`, an existing `video.id`, or an existing post. Several creatives, a new `video.url` and video `placementAssets` need uploads first and return 400. Success returns 200 with per-node results; a Meta rejection returns the Meta error.
+	ValidateOnly *bool `json:"validateOnly,omitempty"`
 }
 
 type _CreateMessagingAdRequest CreateMessagingAdRequest
@@ -1652,6 +1656,70 @@ func (o *CreateMessagingAdRequest) SetDestinations(v []string) {
 	o.Destinations = v
 }
 
+// GetPlacementAssets returns the PlacementAssets field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetPlacementAssets() MetaPlacementAssets {
+	if o == nil || IsNil(o.PlacementAssets) {
+		var ret MetaPlacementAssets
+		return ret
+	}
+	return *o.PlacementAssets
+}
+
+// GetPlacementAssetsOk returns a tuple with the PlacementAssets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetPlacementAssetsOk() (*MetaPlacementAssets, bool) {
+	if o == nil || IsNil(o.PlacementAssets) {
+		return nil, false
+	}
+	return o.PlacementAssets, true
+}
+
+// HasPlacementAssets returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasPlacementAssets() bool {
+	if o != nil && !IsNil(o.PlacementAssets) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlacementAssets gets a reference to the given MetaPlacementAssets and assigns it to the PlacementAssets field.
+func (o *CreateMessagingAdRequest) SetPlacementAssets(v MetaPlacementAssets) {
+	o.PlacementAssets = &v
+}
+
+// GetValidateOnly returns the ValidateOnly field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetValidateOnly() bool {
+	if o == nil || IsNil(o.ValidateOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ValidateOnly
+}
+
+// GetValidateOnlyOk returns a tuple with the ValidateOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetValidateOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ValidateOnly) {
+		return nil, false
+	}
+	return o.ValidateOnly, true
+}
+
+// HasValidateOnly returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasValidateOnly() bool {
+	if o != nil && !IsNil(o.ValidateOnly) {
+		return true
+	}
+
+	return false
+}
+
+// SetValidateOnly gets a reference to the given bool and assigns it to the ValidateOnly field.
+func (o *CreateMessagingAdRequest) SetValidateOnly(v bool) {
+	o.ValidateOnly = &v
+}
+
 func (o CreateMessagingAdRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1799,6 +1867,12 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Destinations) {
 		toSerialize["destinations"] = o.Destinations
+	}
+	if !IsNil(o.PlacementAssets) {
+		toSerialize["placementAssets"] = o.PlacementAssets
+	}
+	if !IsNil(o.ValidateOnly) {
+		toSerialize["validateOnly"] = o.ValidateOnly
 	}
 	return toSerialize, nil
 }
