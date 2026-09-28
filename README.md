@@ -472,6 +472,25 @@ func main() {
 | `client.BlogsAPI.DeleteBlog(ctx)` | Delete a blog |
 | `client.BlogsAPI.DeleteBlogArticle(ctx)` | Delete a blog article |
 
+### Branded Calling
+| Method | Description |
+|--------|-------------|
+| `client.BrandedCallingAPI.ListBrandedCallingCallReasons(ctx)` | List pre-approved call reasons |
+| `client.BrandedCallingAPI.ListBrandedCallingEnterprises(ctx)` | List registered businesses |
+| `client.BrandedCallingAPI.ListBrandedCallingIdentities(ctx)` | List caller identities |
+| `client.BrandedCallingAPI.ListBrandedCallingIdentityNumbers(ctx)` | List the numbers on a caller identity |
+| `client.BrandedCallingAPI.CreateBrandedCallingEnterprise(ctx)` | Register a business for Branded Calling |
+| `client.BrandedCallingAPI.CreateBrandedCallingIdentity(ctx)` | Create a caller identity |
+| `client.BrandedCallingAPI.GetBrandedCallingEnterprise(ctx)` | Get a registered business |
+| `client.BrandedCallingAPI.GetBrandedCallingIdentity(ctx)` | Get a caller identity |
+| `client.BrandedCallingAPI.UpdateBrandedCallingIdentity(ctx)` | Edit or resubmit a caller identity |
+| `client.BrandedCallingAPI.DeleteBrandedCallingEnterprise(ctx)` | Delete a registered business |
+| `client.BrandedCallingAPI.DeleteBrandedCallingIdentity(ctx)` | Delete a caller identity |
+| `client.BrandedCallingAPI.AttachBrandedCallingNumbers(ctx)` | Attach numbers to a verified identity |
+| `client.BrandedCallingAPI.ConfirmBrandedCallingAuthorizerEmail(ctx)` | Confirm the authorizer's code |
+| `client.BrandedCallingAPI.DetachBrandedCallingNumbers(ctx)` | Detach numbers from an identity |
+| `client.BrandedCallingAPI.ResendBrandedCallingAuthorizerCode(ctx)` | Resend the authorizer's code |
+
 ### Broadcasts
 | Method | Description |
 |--------|-------------|
