@@ -961,6 +961,7 @@ func main() {
 | `client.TrackingTagsAPI.CreateTrackingTagEvent(ctx)` | Create a conversion event |
 | `client.TrackingTagsAPI.GetAdTrackingTags(ctx)` | Get ad tracking tags |
 | `client.TrackingTagsAPI.GetTrackingTag(ctx)` | Get a tracking tag |
+| `client.TrackingTagsAPI.GetTrackingTagDiagnostics(ctx)` | Get tag diagnostics |
 | `client.TrackingTagsAPI.GetTrackingTagStats(ctx)` | Get aggregated event stats |
 | `client.TrackingTagsAPI.GetTrackingTagStoreInstall(ctx)` | Get store install status |
 | `client.TrackingTagsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |

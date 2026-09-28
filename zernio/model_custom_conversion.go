@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.137.0
+API version: 1.138.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type CustomConversion struct {
 	// Meta's event_source_id, the pixel the rule reads from.
 	PixelId    NullableString `json:"pixelId,omitempty"`
 	IsArchived *bool          `json:"isArchived,omitempty"`
+	// Value Meta assigns a conversion that carries none, in the ad account's currency.
+	DefaultConversionValue NullableFloat32 `json:"defaultConversionValue,omitempty"`
 }
 
 // NewCustomConversion instantiates a new CustomConversion object
@@ -273,6 +275,49 @@ func (o *CustomConversion) SetIsArchived(v bool) {
 	o.IsArchived = &v
 }
 
+// GetDefaultConversionValue returns the DefaultConversionValue field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CustomConversion) GetDefaultConversionValue() float32 {
+	if o == nil || IsNil(o.DefaultConversionValue.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.DefaultConversionValue.Get()
+}
+
+// GetDefaultConversionValueOk returns a tuple with the DefaultConversionValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CustomConversion) GetDefaultConversionValueOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DefaultConversionValue.Get(), o.DefaultConversionValue.IsSet()
+}
+
+// HasDefaultConversionValue returns a boolean if a field has been set.
+func (o *CustomConversion) HasDefaultConversionValue() bool {
+	if o != nil && o.DefaultConversionValue.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultConversionValue gets a reference to the given NullableFloat32 and assigns it to the DefaultConversionValue field.
+func (o *CustomConversion) SetDefaultConversionValue(v float32) {
+	o.DefaultConversionValue.Set(&v)
+}
+
+// SetDefaultConversionValueNil sets the value for DefaultConversionValue to be an explicit nil
+func (o *CustomConversion) SetDefaultConversionValueNil() {
+	o.DefaultConversionValue.Set(nil)
+}
+
+// UnsetDefaultConversionValue ensures that no value is present for DefaultConversionValue, not even an explicit nil
+func (o *CustomConversion) UnsetDefaultConversionValue() {
+	o.DefaultConversionValue.Unset()
+}
+
 func (o CustomConversion) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -300,6 +345,9 @@ func (o CustomConversion) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsArchived) {
 		toSerialize["isArchived"] = o.IsArchived
+	}
+	if o.DefaultConversionValue.IsSet() {
+		toSerialize["defaultConversionValue"] = o.DefaultConversionValue.Get()
 	}
 	return toSerialize, nil
 }

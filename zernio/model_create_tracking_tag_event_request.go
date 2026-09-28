@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.137.0
+API version: 1.138.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,8 @@ type CreateTrackingTagEventRequest struct {
 	Currency        *string `json:"currency,omitempty"`
 	ClickWindowDays *int32  `json:"clickWindowDays,omitempty"`
 	ViewWindowDays  *int32  `json:"viewWindowDays,omitempty"`
+	// Fire only on pages whose URL contains this text (case-insensitive).
+	UrlContains *string `json:"urlContains,omitempty"`
 }
 
 type _CreateTrackingTagEventRequest CreateTrackingTagEventRequest
@@ -337,6 +339,38 @@ func (o *CreateTrackingTagEventRequest) SetViewWindowDays(v int32) {
 	o.ViewWindowDays = &v
 }
 
+// GetUrlContains returns the UrlContains field value if set, zero value otherwise.
+func (o *CreateTrackingTagEventRequest) GetUrlContains() string {
+	if o == nil || IsNil(o.UrlContains) {
+		var ret string
+		return ret
+	}
+	return *o.UrlContains
+}
+
+// GetUrlContainsOk returns a tuple with the UrlContains field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateTrackingTagEventRequest) GetUrlContainsOk() (*string, bool) {
+	if o == nil || IsNil(o.UrlContains) {
+		return nil, false
+	}
+	return o.UrlContains, true
+}
+
+// HasUrlContains returns a boolean if a field has been set.
+func (o *CreateTrackingTagEventRequest) HasUrlContains() bool {
+	if o != nil && !IsNil(o.UrlContains) {
+		return true
+	}
+
+	return false
+}
+
+// SetUrlContains gets a reference to the given string and assigns it to the UrlContains field.
+func (o *CreateTrackingTagEventRequest) SetUrlContains(v string) {
+	o.UrlContains = &v
+}
+
 func (o CreateTrackingTagEventRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -371,6 +405,9 @@ func (o CreateTrackingTagEventRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ViewWindowDays) {
 		toSerialize["viewWindowDays"] = o.ViewWindowDays
+	}
+	if !IsNil(o.UrlContains) {
+		toSerialize["urlContains"] = o.UrlContains
 	}
 	return toSerialize, nil
 }

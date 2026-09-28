@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.137.0
+API version: 1.138.0
 Contact: support@zernio.com
 */
 
@@ -412,6 +412,15 @@ in days (LinkedIn validates them: the docs list 1, 7 and 30, and rules with 90 e
 Stores name, type, siteEvent, enabled, defaultValue, currency, clickWindowDays,
 viewWindowDays. Not idempotent.
 
+Meta: creates a custom conversion on `adAccountId` (default: the pixel's owner ad
+account). Accepts `name`, `type` (Meta `custom_event_type`: `PURCHASE`, `LEAD`,
+`ADD_TO_CART`, `COMPLETE_REGISTRATION`, `OTHER`...), `siteEvent`, `urlContains` and
+`defaultValue` (in the ad account currency). The rule matches the standard event of
+`siteEvent` (or of `type`), plus `urlContains` when given; `urlContains` alone matches
+page views on that URL. `type: OTHER` needs `siteEvent` or `urlContains`. Idempotent by
+name: an active conversion with the same name on this pixel is returned instead of a
+duplicate. Meta caps custom conversions per ad account; the cap answers 400.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Tag id (`TrackingTag.id`).
@@ -585,6 +594,9 @@ OpenAI Ads answers 501: there is no delete or archive route for event settings
 LinkedIn (`linkedinads`): LinkedIn has no delete for conversion rules (not in the
 conversion-tracking API, and `DELETE /rest/conversions/{id}` has no route), so the rule is
 disabled (`enabled: false`) and `state` is `disabled`. Re-enable it with `enabled: true`.
+
+Meta: `archived`. Meta's delete archives the custom conversion (it stays readable with
+`status: archived`) and there is no hard delete; deleting an archived one is a no-op.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -933,6 +945,161 @@ func (a *TrackingTagsAPIService) GetTrackingTagExecute(r TrackingTagsAPIGetTrack
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TrackingTagsAPIGetTrackingTagDiagnosticsRequest struct {
+	ctx        context.Context
+	ApiService *TrackingTagsAPIService
+	accountId  string
+	tagId      string
+}
+
+func (r TrackingTagsAPIGetTrackingTagDiagnosticsRequest) Execute() (*GetTrackingTagDiagnostics200Response, *http.Response, error) {
+	return r.ApiService.GetTrackingTagDiagnosticsExecute(r)
+}
+
+/*
+GetTrackingTagDiagnostics Get tag diagnostics
+
+The platform's health checks for the tag. Platforms without tag diagnostics answer 501.
+
+Meta: the pixel's checks from Events Manager (`da_checks`), e.g. whether events miss
+parameters or their content ids do not match the pixel's catalogs.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@param tagId Tag id (`TrackingTag.id`).
+	@return TrackingTagsAPIGetTrackingTagDiagnosticsRequest
+*/
+func (a *TrackingTagsAPIService) GetTrackingTagDiagnostics(ctx context.Context, accountId string, tagId string) TrackingTagsAPIGetTrackingTagDiagnosticsRequest {
+	return TrackingTagsAPIGetTrackingTagDiagnosticsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		tagId:      tagId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetTrackingTagDiagnostics200Response
+func (a *TrackingTagsAPIService) GetTrackingTagDiagnosticsExecute(r TrackingTagsAPIGetTrackingTagDiagnosticsRequest) (*GetTrackingTagDiagnostics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetTrackingTagDiagnostics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.GetTrackingTagDiagnostics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/tracking-tags/{tagId}/diagnostics"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", url.PathEscape(parameterValueToString(r.tagId, "tagId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1683,6 +1850,11 @@ the account that created the tag), including Conversions API and URL-match rules
 `siteEventId` (the rule id a page fires) is set only on event-specific Insight Tag rules;
 `defaultValue`/`currency` come from the rule value, `clickWindowDays`/`viewWindowDays`
 from its post-click and view-through windows.
+
+Meta: the pixel's custom conversions. Meta keeps them per AD ACCOUNT (a pixel has no
+custom conversions edge), so the list reads `adAccountId` (default: the pixel's owner ad
+account) and keeps the conversions whose pixel is this one. Archived conversions are
+included with `status: archived`. `urlContains` and `siteEvent` are parsed from Meta's rule.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2794,6 +2966,9 @@ Create a new event instead.
 LinkedIn (`linkedinads`): partial update of the conversion rule; same fields as create.
 Pass `adAccountId` when the rule lives in another ad account than the one that created the
 tag.
+
+Meta: only `name` and `defaultValue` can change (Meta's custom conversion update takes
+nothing else); `type`, `siteEvent` and `urlContains` answer 400, create a new event instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
