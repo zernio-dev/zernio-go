@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.127.0
+API version: 1.128.0
 Contact: support@zernio.com
 */
 
@@ -820,7 +820,7 @@ type TrackingTagsAPIGetTrackingTagStoreInstallRequest struct {
 	storeAccountId *string
 }
 
-// The connected Shopify account id.
+// The connected Shopify or WordPress account id.
 func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIGetTrackingTagStoreInstallRequest {
 	r.storeAccountId = &storeAccountId
 	return r
@@ -835,6 +835,12 @@ GetTrackingTagStoreInstall Get store install status
 
 Whether this pixel is the one the Shopify store fires. `installedTagId` names the pixel
 the store currently fires, which can be a different tag. Meta only (platform `metaads`).
+
+WordPress: whether the Zernio widget for this pixel is live (in an active widget area,
+script intact), plus a read-only `preflight` with the theme's widget areas and, when an
+install would be blocked, the `reason` POST would return. The preflight reads
+capabilities only, so `ready: true` is not a guarantee: `DISALLOW_UNFILTERED_HTML` or a
+multisite admin who is not a Super Admin still strips the script, which POST detects.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -993,7 +999,7 @@ func (r TrackingTagsAPIInstallTrackingTagOnStoreRequest) Execute() (*InstallTrac
 }
 
 /*
-InstallTrackingTagOnStore Install on a Shopify store
+InstallTrackingTagOnStore Install on a Shopify store or WordPress site
 
 Puts the Meta pixel on a connected Shopify store's storefront and checkout through
 Zernio's Shopify web pixel (a Shopify app pixel, no theme edits). The store then sends
@@ -1011,6 +1017,25 @@ Shopify account. Stores connected before pixel support must re-approve the Zerni
 the call then answers 409 `reconnect_required` with `details.authUrl` to send the
 merchant to (the Shopify account id stays the same). Meta only (platform `metaads`);
 other platforms return 405.
+
+**WordPress** (`storeAccountId` is a connected WordPress.com or self-hosted site): Zernio
+adds a Custom HTML widget with the Meta pixel base code (fbevents.js, `init`, `PageView`)
+to a widget area of the active theme (a footer area when there is one, else the first
+active area; pass `sidebarId` to choose), then reads the widget back to confirm WordPress
+kept the `<script>` tag. The widget carries a Zernio marker, so the call is idempotent
+per pixel: repeating it updates or moves the same widget, and pixel code the site owner
+pasted by hand is never touched. Several pixels can run side by side (one widget each).
+When the site cannot run the pixel, nothing is left behind and the call answers 422
+`tracking_tag_install_blocked` with `details.reason`:
+- `insufficient_permissions`: the connected user lacks `edit_theme_options` (needs Administrator).
+- `scripts_stripped`: WordPress removed the script (the user lacks `unfiltered_html`, e.g. a multisite admin who is not a Super Admin, or `DISALLOW_UNFILTERED_HTML` is set).
+- `wordpress_com_plan`: a WordPress.com plan that strips scripts (plans without plugins).
+- `no_widget_areas`: the theme has no widget areas (block themes such as Twenty Twenty-Five).
+- `widgets_api_unavailable`: no widgets REST API (WordPress older than 5.8, or disabled).
+The `error` message names the manual alternative (Meta's official WordPress plugin).
+With `verifyHomepage` (default true) the homepage is fetched afterwards and
+`homepageCheck` says whether the pixel is visible; `not_found` can be a stale page cache,
+the widget read-back is authoritative.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1129,6 +1154,17 @@ func (a *TrackingTagsAPIService) InstallTrackingTagOnStoreExecute(r TrackingTags
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v InstallTrackingTagOnStore422Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1473,22 +1509,25 @@ type TrackingTagsAPIRemoveTrackingTagFromStoreRequest struct {
 	storeAccountId *string
 }
 
-// The connected Shopify account id.
+// The connected Shopify or WordPress account id.
 func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIRemoveTrackingTagFromStoreRequest {
 	r.storeAccountId = &storeAccountId
 	return r
 }
 
-func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) Execute() (*GetTrackingTagStoreInstall200Response, *http.Response, error) {
+func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) Execute() (*RemoveTrackingTagFromStore200Response, *http.Response, error) {
 	return r.ApiService.RemoveTrackingTagFromStoreExecute(r)
 }
 
 /*
-RemoveTrackingTagFromStore Remove from a Shopify store
+RemoveTrackingTagFromStore Remove from a Shopify store or WordPress site
 
 Removes the pixel from the store. Idempotent: nothing installed returns 200 with
 `installed: false`. If the store fires a different pixel, nothing is removed and the
 call answers 409 `invalid_resource_state`. Meta only (platform `metaads`).
+
+WordPress: deletes every widget Zernio created for this pixel and reports how many in
+`removed` (0 when nothing was installed). Pixel code added by hand is left alone.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1506,13 +1545,13 @@ func (a *TrackingTagsAPIService) RemoveTrackingTagFromStore(ctx context.Context,
 
 // Execute executes the request
 //
-//	@return GetTrackingTagStoreInstall200Response
-func (a *TrackingTagsAPIService) RemoveTrackingTagFromStoreExecute(r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) (*GetTrackingTagStoreInstall200Response, *http.Response, error) {
+//	@return RemoveTrackingTagFromStore200Response
+func (a *TrackingTagsAPIService) RemoveTrackingTagFromStoreExecute(r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) (*RemoveTrackingTagFromStore200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodDelete
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetTrackingTagStoreInstall200Response
+		localVarReturnValue *RemoveTrackingTagFromStore200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.RemoveTrackingTagFromStore")

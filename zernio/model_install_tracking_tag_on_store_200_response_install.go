@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.127.0
+API version: 1.128.0
 Contact: support@zernio.com
 */
 
@@ -22,15 +22,30 @@ var _ MappedNullable = &InstallTrackingTagOnStore200ResponseInstall{}
 type InstallTrackingTagOnStore200ResponseInstall struct {
 	StoreAccountId *string `json:"storeAccountId,omitempty"`
 	Platform       *string `json:"platform,omitempty"`
-	ShopDomain     *string `json:"shopDomain,omitempty"`
-	// True when this tag is the pixel the store fires.
+	// Shopify: this tag is the pixel the store fires. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
 	Installed *bool `json:"installed,omitempty"`
-	// The Meta pixel the store fires now (may be a different tag), or null.
+	// Shopify only.
+	ShopDomain *string `json:"shopDomain,omitempty"`
+	// Shopify only: the Meta pixel the store fires now (may be a different tag), or null.
 	InstalledTagId *string `json:"installedTagId,omitempty"`
-	// Shopify web pixel id, or null when nothing is installed.
+	// Shopify only: web pixel id, or null when nothing is installed.
 	WebPixelId *string `json:"webPixelId,omitempty"`
-	// The pixel this install replaced on the store, if any.
+	// WordPress only.
+	SiteUrl *string `json:"siteUrl,omitempty"`
+	// WordPress only.
+	Method *string `json:"method,omitempty"`
+	// WordPress only: widget id, e.g. `custom_html-3`.
+	WidgetId *string `json:"widgetId,omitempty"`
+	// WordPress only: widget area holding the widget.
+	SidebarId *string `json:"sidebarId,omitempty"`
+	// Shopify only: the pixel this install replaced on the store, if any.
 	ReplacedTagId NullableString `json:"replacedTagId,omitempty"`
+	// WordPress only: name of the widget area used.
+	SidebarName *string `json:"sidebarName,omitempty"`
+	// WordPress only: false when an existing Zernio widget was updated.
+	Created *bool `json:"created,omitempty"`
+	// WordPress only: whether the pixel appeared in the homepage HTML. `not_found` can be a stale page cache.
+	HomepageCheck *string `json:"homepageCheck,omitempty"`
 }
 
 // NewInstallTrackingTagOnStore200ResponseInstall instantiates a new InstallTrackingTagOnStore200ResponseInstall object
@@ -114,38 +129,6 @@ func (o *InstallTrackingTagOnStore200ResponseInstall) SetPlatform(v string) {
 	o.Platform = &v
 }
 
-// GetShopDomain returns the ShopDomain field value if set, zero value otherwise.
-func (o *InstallTrackingTagOnStore200ResponseInstall) GetShopDomain() string {
-	if o == nil || IsNil(o.ShopDomain) {
-		var ret string
-		return ret
-	}
-	return *o.ShopDomain
-}
-
-// GetShopDomainOk returns a tuple with the ShopDomain field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *InstallTrackingTagOnStore200ResponseInstall) GetShopDomainOk() (*string, bool) {
-	if o == nil || IsNil(o.ShopDomain) {
-		return nil, false
-	}
-	return o.ShopDomain, true
-}
-
-// HasShopDomain returns a boolean if a field has been set.
-func (o *InstallTrackingTagOnStore200ResponseInstall) HasShopDomain() bool {
-	if o != nil && !IsNil(o.ShopDomain) {
-		return true
-	}
-
-	return false
-}
-
-// SetShopDomain gets a reference to the given string and assigns it to the ShopDomain field.
-func (o *InstallTrackingTagOnStore200ResponseInstall) SetShopDomain(v string) {
-	o.ShopDomain = &v
-}
-
 // GetInstalled returns the Installed field value if set, zero value otherwise.
 func (o *InstallTrackingTagOnStore200ResponseInstall) GetInstalled() bool {
 	if o == nil || IsNil(o.Installed) {
@@ -176,6 +159,38 @@ func (o *InstallTrackingTagOnStore200ResponseInstall) HasInstalled() bool {
 // SetInstalled gets a reference to the given bool and assigns it to the Installed field.
 func (o *InstallTrackingTagOnStore200ResponseInstall) SetInstalled(v bool) {
 	o.Installed = &v
+}
+
+// GetShopDomain returns the ShopDomain field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetShopDomain() string {
+	if o == nil || IsNil(o.ShopDomain) {
+		var ret string
+		return ret
+	}
+	return *o.ShopDomain
+}
+
+// GetShopDomainOk returns a tuple with the ShopDomain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetShopDomainOk() (*string, bool) {
+	if o == nil || IsNil(o.ShopDomain) {
+		return nil, false
+	}
+	return o.ShopDomain, true
+}
+
+// HasShopDomain returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasShopDomain() bool {
+	if o != nil && !IsNil(o.ShopDomain) {
+		return true
+	}
+
+	return false
+}
+
+// SetShopDomain gets a reference to the given string and assigns it to the ShopDomain field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetShopDomain(v string) {
+	o.ShopDomain = &v
 }
 
 // GetInstalledTagId returns the InstalledTagId field value if set, zero value otherwise.
@@ -242,6 +257,134 @@ func (o *InstallTrackingTagOnStore200ResponseInstall) SetWebPixelId(v string) {
 	o.WebPixelId = &v
 }
 
+// GetSiteUrl returns the SiteUrl field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSiteUrl() string {
+	if o == nil || IsNil(o.SiteUrl) {
+		var ret string
+		return ret
+	}
+	return *o.SiteUrl
+}
+
+// GetSiteUrlOk returns a tuple with the SiteUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSiteUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteUrl) {
+		return nil, false
+	}
+	return o.SiteUrl, true
+}
+
+// HasSiteUrl returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasSiteUrl() bool {
+	if o != nil && !IsNil(o.SiteUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteUrl gets a reference to the given string and assigns it to the SiteUrl field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetSiteUrl(v string) {
+	o.SiteUrl = &v
+}
+
+// GetMethod returns the Method field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetMethod() string {
+	if o == nil || IsNil(o.Method) {
+		var ret string
+		return ret
+	}
+	return *o.Method
+}
+
+// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.Method) {
+		return nil, false
+	}
+	return o.Method, true
+}
+
+// HasMethod returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasMethod() bool {
+	if o != nil && !IsNil(o.Method) {
+		return true
+	}
+
+	return false
+}
+
+// SetMethod gets a reference to the given string and assigns it to the Method field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetMethod(v string) {
+	o.Method = &v
+}
+
+// GetWidgetId returns the WidgetId field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetWidgetId() string {
+	if o == nil || IsNil(o.WidgetId) {
+		var ret string
+		return ret
+	}
+	return *o.WidgetId
+}
+
+// GetWidgetIdOk returns a tuple with the WidgetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetWidgetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.WidgetId) {
+		return nil, false
+	}
+	return o.WidgetId, true
+}
+
+// HasWidgetId returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasWidgetId() bool {
+	if o != nil && !IsNil(o.WidgetId) {
+		return true
+	}
+
+	return false
+}
+
+// SetWidgetId gets a reference to the given string and assigns it to the WidgetId field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetWidgetId(v string) {
+	o.WidgetId = &v
+}
+
+// GetSidebarId returns the SidebarId field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSidebarId() string {
+	if o == nil || IsNil(o.SidebarId) {
+		var ret string
+		return ret
+	}
+	return *o.SidebarId
+}
+
+// GetSidebarIdOk returns a tuple with the SidebarId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSidebarIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SidebarId) {
+		return nil, false
+	}
+	return o.SidebarId, true
+}
+
+// HasSidebarId returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasSidebarId() bool {
+	if o != nil && !IsNil(o.SidebarId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSidebarId gets a reference to the given string and assigns it to the SidebarId field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetSidebarId(v string) {
+	o.SidebarId = &v
+}
+
 // GetReplacedTagId returns the ReplacedTagId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *InstallTrackingTagOnStore200ResponseInstall) GetReplacedTagId() string {
 	if o == nil || IsNil(o.ReplacedTagId.Get()) {
@@ -285,6 +428,102 @@ func (o *InstallTrackingTagOnStore200ResponseInstall) UnsetReplacedTagId() {
 	o.ReplacedTagId.Unset()
 }
 
+// GetSidebarName returns the SidebarName field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSidebarName() string {
+	if o == nil || IsNil(o.SidebarName) {
+		var ret string
+		return ret
+	}
+	return *o.SidebarName
+}
+
+// GetSidebarNameOk returns a tuple with the SidebarName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetSidebarNameOk() (*string, bool) {
+	if o == nil || IsNil(o.SidebarName) {
+		return nil, false
+	}
+	return o.SidebarName, true
+}
+
+// HasSidebarName returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasSidebarName() bool {
+	if o != nil && !IsNil(o.SidebarName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSidebarName gets a reference to the given string and assigns it to the SidebarName field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetSidebarName(v string) {
+	o.SidebarName = &v
+}
+
+// GetCreated returns the Created field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetCreated() bool {
+	if o == nil || IsNil(o.Created) {
+		var ret bool
+		return ret
+	}
+	return *o.Created
+}
+
+// GetCreatedOk returns a tuple with the Created field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetCreatedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Created) {
+		return nil, false
+	}
+	return o.Created, true
+}
+
+// HasCreated returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasCreated() bool {
+	if o != nil && !IsNil(o.Created) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreated gets a reference to the given bool and assigns it to the Created field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetCreated(v bool) {
+	o.Created = &v
+}
+
+// GetHomepageCheck returns the HomepageCheck field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetHomepageCheck() string {
+	if o == nil || IsNil(o.HomepageCheck) {
+		var ret string
+		return ret
+	}
+	return *o.HomepageCheck
+}
+
+// GetHomepageCheckOk returns a tuple with the HomepageCheck field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) GetHomepageCheckOk() (*string, bool) {
+	if o == nil || IsNil(o.HomepageCheck) {
+		return nil, false
+	}
+	return o.HomepageCheck, true
+}
+
+// HasHomepageCheck returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStore200ResponseInstall) HasHomepageCheck() bool {
+	if o != nil && !IsNil(o.HomepageCheck) {
+		return true
+	}
+
+	return false
+}
+
+// SetHomepageCheck gets a reference to the given string and assigns it to the HomepageCheck field.
+func (o *InstallTrackingTagOnStore200ResponseInstall) SetHomepageCheck(v string) {
+	o.HomepageCheck = &v
+}
+
 func (o InstallTrackingTagOnStore200ResponseInstall) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -301,11 +540,11 @@ func (o InstallTrackingTagOnStore200ResponseInstall) ToMap() (map[string]interfa
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
-	if !IsNil(o.ShopDomain) {
-		toSerialize["shopDomain"] = o.ShopDomain
-	}
 	if !IsNil(o.Installed) {
 		toSerialize["installed"] = o.Installed
+	}
+	if !IsNil(o.ShopDomain) {
+		toSerialize["shopDomain"] = o.ShopDomain
 	}
 	if !IsNil(o.InstalledTagId) {
 		toSerialize["installedTagId"] = o.InstalledTagId
@@ -313,8 +552,29 @@ func (o InstallTrackingTagOnStore200ResponseInstall) ToMap() (map[string]interfa
 	if !IsNil(o.WebPixelId) {
 		toSerialize["webPixelId"] = o.WebPixelId
 	}
+	if !IsNil(o.SiteUrl) {
+		toSerialize["siteUrl"] = o.SiteUrl
+	}
+	if !IsNil(o.Method) {
+		toSerialize["method"] = o.Method
+	}
+	if !IsNil(o.WidgetId) {
+		toSerialize["widgetId"] = o.WidgetId
+	}
+	if !IsNil(o.SidebarId) {
+		toSerialize["sidebarId"] = o.SidebarId
+	}
 	if o.ReplacedTagId.IsSet() {
 		toSerialize["replacedTagId"] = o.ReplacedTagId.Get()
+	}
+	if !IsNil(o.SidebarName) {
+		toSerialize["sidebarName"] = o.SidebarName
+	}
+	if !IsNil(o.Created) {
+		toSerialize["created"] = o.Created
+	}
+	if !IsNil(o.HomepageCheck) {
+		toSerialize["homepageCheck"] = o.HomepageCheck
 	}
 	return toSerialize, nil
 }

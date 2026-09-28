@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.127.0
+API version: 1.128.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,12 @@ var _ MappedNullable = &InstallTrackingTagOnStoreRequest{}
 
 // InstallTrackingTagOnStoreRequest struct for InstallTrackingTagOnStoreRequest
 type InstallTrackingTagOnStoreRequest struct {
-	// The connected Shopify account id (platform `shopify`).
+	// The connected Shopify (`shopify`) or WordPress (`wordpress`) account id.
 	StoreAccountId string `json:"storeAccountId"`
+	// WordPress only: widget area to use (see `install.preflight.sidebars` from GET). Defaults to a footer area.
+	SidebarId *string `json:"sidebarId,omitempty"`
+	// WordPress only: fetch the homepage afterwards and report `homepageCheck`.
+	VerifyHomepage *bool `json:"verifyHomepage,omitempty"`
 }
 
 type _InstallTrackingTagOnStoreRequest InstallTrackingTagOnStoreRequest
@@ -35,6 +39,8 @@ type _InstallTrackingTagOnStoreRequest InstallTrackingTagOnStoreRequest
 func NewInstallTrackingTagOnStoreRequest(storeAccountId string) *InstallTrackingTagOnStoreRequest {
 	this := InstallTrackingTagOnStoreRequest{}
 	this.StoreAccountId = storeAccountId
+	var verifyHomepage bool = true
+	this.VerifyHomepage = &verifyHomepage
 	return &this
 }
 
@@ -43,6 +49,8 @@ func NewInstallTrackingTagOnStoreRequest(storeAccountId string) *InstallTracking
 // but it doesn't guarantee that properties required by API are set
 func NewInstallTrackingTagOnStoreRequestWithDefaults() *InstallTrackingTagOnStoreRequest {
 	this := InstallTrackingTagOnStoreRequest{}
+	var verifyHomepage bool = true
+	this.VerifyHomepage = &verifyHomepage
 	return &this
 }
 
@@ -70,6 +78,70 @@ func (o *InstallTrackingTagOnStoreRequest) SetStoreAccountId(v string) {
 	o.StoreAccountId = v
 }
 
+// GetSidebarId returns the SidebarId field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStoreRequest) GetSidebarId() string {
+	if o == nil || IsNil(o.SidebarId) {
+		var ret string
+		return ret
+	}
+	return *o.SidebarId
+}
+
+// GetSidebarIdOk returns a tuple with the SidebarId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStoreRequest) GetSidebarIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SidebarId) {
+		return nil, false
+	}
+	return o.SidebarId, true
+}
+
+// HasSidebarId returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStoreRequest) HasSidebarId() bool {
+	if o != nil && !IsNil(o.SidebarId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSidebarId gets a reference to the given string and assigns it to the SidebarId field.
+func (o *InstallTrackingTagOnStoreRequest) SetSidebarId(v string) {
+	o.SidebarId = &v
+}
+
+// GetVerifyHomepage returns the VerifyHomepage field value if set, zero value otherwise.
+func (o *InstallTrackingTagOnStoreRequest) GetVerifyHomepage() bool {
+	if o == nil || IsNil(o.VerifyHomepage) {
+		var ret bool
+		return ret
+	}
+	return *o.VerifyHomepage
+}
+
+// GetVerifyHomepageOk returns a tuple with the VerifyHomepage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InstallTrackingTagOnStoreRequest) GetVerifyHomepageOk() (*bool, bool) {
+	if o == nil || IsNil(o.VerifyHomepage) {
+		return nil, false
+	}
+	return o.VerifyHomepage, true
+}
+
+// HasVerifyHomepage returns a boolean if a field has been set.
+func (o *InstallTrackingTagOnStoreRequest) HasVerifyHomepage() bool {
+	if o != nil && !IsNil(o.VerifyHomepage) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerifyHomepage gets a reference to the given bool and assigns it to the VerifyHomepage field.
+func (o *InstallTrackingTagOnStoreRequest) SetVerifyHomepage(v bool) {
+	o.VerifyHomepage = &v
+}
+
 func (o InstallTrackingTagOnStoreRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +153,12 @@ func (o InstallTrackingTagOnStoreRequest) MarshalJSON() ([]byte, error) {
 func (o InstallTrackingTagOnStoreRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["storeAccountId"] = o.StoreAccountId
+	if !IsNil(o.SidebarId) {
+		toSerialize["sidebarId"] = o.SidebarId
+	}
+	if !IsNil(o.VerifyHomepage) {
+		toSerialize["verifyHomepage"] = o.VerifyHomepage
+	}
 	return toSerialize, nil
 }
 

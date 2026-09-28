@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.127.0
+API version: 1.128.0
 Contact: support@zernio.com
 */
 
@@ -18,17 +18,26 @@ import (
 // checks if the StorePixelInstall type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StorePixelInstall{}
 
-// StorePixelInstall A tracking tag's install on a connected store (Shopify web pixel).
+// StorePixelInstall A tracking tag's install on a connected store: a Shopify web pixel, or a Custom HTML widget on a WordPress site. Fields marked Shopify or WordPress are present only for that platform.
 type StorePixelInstall struct {
 	StoreAccountId *string `json:"storeAccountId,omitempty"`
 	Platform       *string `json:"platform,omitempty"`
-	ShopDomain     *string `json:"shopDomain,omitempty"`
-	// True when this tag is the pixel the store fires.
+	// Shopify: this tag is the pixel the store fires. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
 	Installed *bool `json:"installed,omitempty"`
-	// The Meta pixel the store fires now (may be a different tag), or null.
+	// Shopify only.
+	ShopDomain *string `json:"shopDomain,omitempty"`
+	// Shopify only: the Meta pixel the store fires now (may be a different tag), or null.
 	InstalledTagId NullableString `json:"installedTagId,omitempty"`
-	// Shopify web pixel id, or null when nothing is installed.
+	// Shopify only: web pixel id, or null when nothing is installed.
 	WebPixelId NullableString `json:"webPixelId,omitempty"`
+	// WordPress only.
+	SiteUrl *string `json:"siteUrl,omitempty"`
+	// WordPress only.
+	Method *string `json:"method,omitempty"`
+	// WordPress only: widget id, e.g. `custom_html-3`.
+	WidgetId NullableString `json:"widgetId,omitempty"`
+	// WordPress only: widget area holding the widget.
+	SidebarId NullableString `json:"sidebarId,omitempty"`
 }
 
 // NewStorePixelInstall instantiates a new StorePixelInstall object
@@ -112,38 +121,6 @@ func (o *StorePixelInstall) SetPlatform(v string) {
 	o.Platform = &v
 }
 
-// GetShopDomain returns the ShopDomain field value if set, zero value otherwise.
-func (o *StorePixelInstall) GetShopDomain() string {
-	if o == nil || IsNil(o.ShopDomain) {
-		var ret string
-		return ret
-	}
-	return *o.ShopDomain
-}
-
-// GetShopDomainOk returns a tuple with the ShopDomain field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StorePixelInstall) GetShopDomainOk() (*string, bool) {
-	if o == nil || IsNil(o.ShopDomain) {
-		return nil, false
-	}
-	return o.ShopDomain, true
-}
-
-// HasShopDomain returns a boolean if a field has been set.
-func (o *StorePixelInstall) HasShopDomain() bool {
-	if o != nil && !IsNil(o.ShopDomain) {
-		return true
-	}
-
-	return false
-}
-
-// SetShopDomain gets a reference to the given string and assigns it to the ShopDomain field.
-func (o *StorePixelInstall) SetShopDomain(v string) {
-	o.ShopDomain = &v
-}
-
 // GetInstalled returns the Installed field value if set, zero value otherwise.
 func (o *StorePixelInstall) GetInstalled() bool {
 	if o == nil || IsNil(o.Installed) {
@@ -174,6 +151,38 @@ func (o *StorePixelInstall) HasInstalled() bool {
 // SetInstalled gets a reference to the given bool and assigns it to the Installed field.
 func (o *StorePixelInstall) SetInstalled(v bool) {
 	o.Installed = &v
+}
+
+// GetShopDomain returns the ShopDomain field value if set, zero value otherwise.
+func (o *StorePixelInstall) GetShopDomain() string {
+	if o == nil || IsNil(o.ShopDomain) {
+		var ret string
+		return ret
+	}
+	return *o.ShopDomain
+}
+
+// GetShopDomainOk returns a tuple with the ShopDomain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorePixelInstall) GetShopDomainOk() (*string, bool) {
+	if o == nil || IsNil(o.ShopDomain) {
+		return nil, false
+	}
+	return o.ShopDomain, true
+}
+
+// HasShopDomain returns a boolean if a field has been set.
+func (o *StorePixelInstall) HasShopDomain() bool {
+	if o != nil && !IsNil(o.ShopDomain) {
+		return true
+	}
+
+	return false
+}
+
+// SetShopDomain gets a reference to the given string and assigns it to the ShopDomain field.
+func (o *StorePixelInstall) SetShopDomain(v string) {
+	o.ShopDomain = &v
 }
 
 // GetInstalledTagId returns the InstalledTagId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -262,6 +271,156 @@ func (o *StorePixelInstall) UnsetWebPixelId() {
 	o.WebPixelId.Unset()
 }
 
+// GetSiteUrl returns the SiteUrl field value if set, zero value otherwise.
+func (o *StorePixelInstall) GetSiteUrl() string {
+	if o == nil || IsNil(o.SiteUrl) {
+		var ret string
+		return ret
+	}
+	return *o.SiteUrl
+}
+
+// GetSiteUrlOk returns a tuple with the SiteUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorePixelInstall) GetSiteUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteUrl) {
+		return nil, false
+	}
+	return o.SiteUrl, true
+}
+
+// HasSiteUrl returns a boolean if a field has been set.
+func (o *StorePixelInstall) HasSiteUrl() bool {
+	if o != nil && !IsNil(o.SiteUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteUrl gets a reference to the given string and assigns it to the SiteUrl field.
+func (o *StorePixelInstall) SetSiteUrl(v string) {
+	o.SiteUrl = &v
+}
+
+// GetMethod returns the Method field value if set, zero value otherwise.
+func (o *StorePixelInstall) GetMethod() string {
+	if o == nil || IsNil(o.Method) {
+		var ret string
+		return ret
+	}
+	return *o.Method
+}
+
+// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorePixelInstall) GetMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.Method) {
+		return nil, false
+	}
+	return o.Method, true
+}
+
+// HasMethod returns a boolean if a field has been set.
+func (o *StorePixelInstall) HasMethod() bool {
+	if o != nil && !IsNil(o.Method) {
+		return true
+	}
+
+	return false
+}
+
+// SetMethod gets a reference to the given string and assigns it to the Method field.
+func (o *StorePixelInstall) SetMethod(v string) {
+	o.Method = &v
+}
+
+// GetWidgetId returns the WidgetId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StorePixelInstall) GetWidgetId() string {
+	if o == nil || IsNil(o.WidgetId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.WidgetId.Get()
+}
+
+// GetWidgetIdOk returns a tuple with the WidgetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StorePixelInstall) GetWidgetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.WidgetId.Get(), o.WidgetId.IsSet()
+}
+
+// HasWidgetId returns a boolean if a field has been set.
+func (o *StorePixelInstall) HasWidgetId() bool {
+	if o != nil && o.WidgetId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWidgetId gets a reference to the given NullableString and assigns it to the WidgetId field.
+func (o *StorePixelInstall) SetWidgetId(v string) {
+	o.WidgetId.Set(&v)
+}
+
+// SetWidgetIdNil sets the value for WidgetId to be an explicit nil
+func (o *StorePixelInstall) SetWidgetIdNil() {
+	o.WidgetId.Set(nil)
+}
+
+// UnsetWidgetId ensures that no value is present for WidgetId, not even an explicit nil
+func (o *StorePixelInstall) UnsetWidgetId() {
+	o.WidgetId.Unset()
+}
+
+// GetSidebarId returns the SidebarId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StorePixelInstall) GetSidebarId() string {
+	if o == nil || IsNil(o.SidebarId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SidebarId.Get()
+}
+
+// GetSidebarIdOk returns a tuple with the SidebarId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StorePixelInstall) GetSidebarIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SidebarId.Get(), o.SidebarId.IsSet()
+}
+
+// HasSidebarId returns a boolean if a field has been set.
+func (o *StorePixelInstall) HasSidebarId() bool {
+	if o != nil && o.SidebarId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSidebarId gets a reference to the given NullableString and assigns it to the SidebarId field.
+func (o *StorePixelInstall) SetSidebarId(v string) {
+	o.SidebarId.Set(&v)
+}
+
+// SetSidebarIdNil sets the value for SidebarId to be an explicit nil
+func (o *StorePixelInstall) SetSidebarIdNil() {
+	o.SidebarId.Set(nil)
+}
+
+// UnsetSidebarId ensures that no value is present for SidebarId, not even an explicit nil
+func (o *StorePixelInstall) UnsetSidebarId() {
+	o.SidebarId.Unset()
+}
+
 func (o StorePixelInstall) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -278,17 +437,29 @@ func (o StorePixelInstall) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
-	if !IsNil(o.ShopDomain) {
-		toSerialize["shopDomain"] = o.ShopDomain
-	}
 	if !IsNil(o.Installed) {
 		toSerialize["installed"] = o.Installed
+	}
+	if !IsNil(o.ShopDomain) {
+		toSerialize["shopDomain"] = o.ShopDomain
 	}
 	if o.InstalledTagId.IsSet() {
 		toSerialize["installedTagId"] = o.InstalledTagId.Get()
 	}
 	if o.WebPixelId.IsSet() {
 		toSerialize["webPixelId"] = o.WebPixelId.Get()
+	}
+	if !IsNil(o.SiteUrl) {
+		toSerialize["siteUrl"] = o.SiteUrl
+	}
+	if !IsNil(o.Method) {
+		toSerialize["method"] = o.Method
+	}
+	if o.WidgetId.IsSet() {
+		toSerialize["widgetId"] = o.WidgetId.Get()
+	}
+	if o.SidebarId.IsSet() {
+		toSerialize["sidebarId"] = o.SidebarId.Get()
 	}
 	return toSerialize, nil
 }

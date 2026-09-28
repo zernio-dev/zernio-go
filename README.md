@@ -937,8 +937,8 @@ func main() {
 | `client.TrackingTagsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |
 | `client.TrackingTagsAPI.UpdateTrackingTag(ctx)` | Update a tracking tag |
 | `client.TrackingTagsAPI.AddTrackingTagSharedAccount(ctx)` | Share with an ad account |
-| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store |
-| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store |
+| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store or WordPress site |
+| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store or WordPress site |
 | `client.TrackingTagsAPI.RemoveTrackingTagSharedAccount(ctx)` | Stop sharing with an account |
 
 ### Twitter Engagement

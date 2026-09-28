@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.127.0
+API version: 1.128.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &GetTrackingTagStoreInstall200Response{}
 
 // GetTrackingTagStoreInstall200Response struct for GetTrackingTagStoreInstall200Response
 type GetTrackingTagStoreInstall200Response struct {
-	Platform *string            `json:"platform,omitempty"`
-	Install  *StorePixelInstall `json:"install,omitempty"`
+	Platform *string                                       `json:"platform,omitempty"`
+	Install  *GetTrackingTagStoreInstall200ResponseInstall `json:"install,omitempty"`
 }
 
 // NewGetTrackingTagStoreInstall200Response instantiates a new GetTrackingTagStoreInstall200Response object
@@ -74,9 +74,9 @@ func (o *GetTrackingTagStoreInstall200Response) SetPlatform(v string) {
 }
 
 // GetInstall returns the Install field value if set, zero value otherwise.
-func (o *GetTrackingTagStoreInstall200Response) GetInstall() StorePixelInstall {
+func (o *GetTrackingTagStoreInstall200Response) GetInstall() GetTrackingTagStoreInstall200ResponseInstall {
 	if o == nil || IsNil(o.Install) {
-		var ret StorePixelInstall
+		var ret GetTrackingTagStoreInstall200ResponseInstall
 		return ret
 	}
 	return *o.Install
@@ -84,7 +84,7 @@ func (o *GetTrackingTagStoreInstall200Response) GetInstall() StorePixelInstall {
 
 // GetInstallOk returns a tuple with the Install field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetTrackingTagStoreInstall200Response) GetInstallOk() (*StorePixelInstall, bool) {
+func (o *GetTrackingTagStoreInstall200Response) GetInstallOk() (*GetTrackingTagStoreInstall200ResponseInstall, bool) {
 	if o == nil || IsNil(o.Install) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *GetTrackingTagStoreInstall200Response) HasInstall() bool {
 	return false
 }
 
-// SetInstall gets a reference to the given StorePixelInstall and assigns it to the Install field.
-func (o *GetTrackingTagStoreInstall200Response) SetInstall(v StorePixelInstall) {
+// SetInstall gets a reference to the given GetTrackingTagStoreInstall200ResponseInstall and assigns it to the Install field.
+func (o *GetTrackingTagStoreInstall200Response) SetInstall(v GetTrackingTagStoreInstall200ResponseInstall) {
 	o.Install = &v
 }
 
