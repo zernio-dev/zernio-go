@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.121.0
+API version: 1.122.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ type GetVoiceCallEstimate200ResponseBreakdown struct {
 	TelnyxCostUSD        *float32 `json:"telnyxCostUSD,omitempty"`
 	RecordingCostUSD     *float32 `json:"recordingCostUSD,omitempty"`
 	TranscriptionCostUSD *float32 `json:"transcriptionCostUSD,omitempty"`
+	// Branded Calling surcharge, 0 unless `from` is a verified branded number calling a US destination.
+	BrandedCallUSD *float32 `json:"brandedCallUSD,omitempty"`
 	// What Zernio bills for the call.
 	BillableCostUSD *float32 `json:"billableCostUSD,omitempty"`
 	// Equals billableCostUSD (no separate Meta bill on PSTN); kept for shape parity with the WhatsApp estimate.
@@ -142,6 +144,38 @@ func (o *GetVoiceCallEstimate200ResponseBreakdown) SetTranscriptionCostUSD(v flo
 	o.TranscriptionCostUSD = &v
 }
 
+// GetBrandedCallUSD returns the BrandedCallUSD field value if set, zero value otherwise.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetBrandedCallUSD() float32 {
+	if o == nil || IsNil(o.BrandedCallUSD) {
+		var ret float32
+		return ret
+	}
+	return *o.BrandedCallUSD
+}
+
+// GetBrandedCallUSDOk returns a tuple with the BrandedCallUSD field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) GetBrandedCallUSDOk() (*float32, bool) {
+	if o == nil || IsNil(o.BrandedCallUSD) {
+		return nil, false
+	}
+	return o.BrandedCallUSD, true
+}
+
+// HasBrandedCallUSD returns a boolean if a field has been set.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) HasBrandedCallUSD() bool {
+	if o != nil && !IsNil(o.BrandedCallUSD) {
+		return true
+	}
+
+	return false
+}
+
+// SetBrandedCallUSD gets a reference to the given float32 and assigns it to the BrandedCallUSD field.
+func (o *GetVoiceCallEstimate200ResponseBreakdown) SetBrandedCallUSD(v float32) {
+	o.BrandedCallUSD = &v
+}
+
 // GetBillableCostUSD returns the BillableCostUSD field value if set, zero value otherwise.
 func (o *GetVoiceCallEstimate200ResponseBreakdown) GetBillableCostUSD() float32 {
 	if o == nil || IsNil(o.BillableCostUSD) {
@@ -224,6 +258,9 @@ func (o GetVoiceCallEstimate200ResponseBreakdown) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.TranscriptionCostUSD) {
 		toSerialize["transcriptionCostUSD"] = o.TranscriptionCostUSD
+	}
+	if !IsNil(o.BrandedCallUSD) {
+		toSerialize["brandedCallUSD"] = o.BrandedCallUSD
 	}
 	if !IsNil(o.BillableCostUSD) {
 		toSerialize["billableCostUSD"] = o.BillableCostUSD
