@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.142.0
+API version: 1.143.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type Ad struct {
 	Platform *string `json:"platform,omitempty"`
 	// Delivery status. Derived from the platform `effective_status`, so it inherits ancestor pauses (an ACTIVE ad under a PAUSED campaign reads `paused`). For the ad's own on/off toggle use `configuredStatus`; for the review state use `reviewStatus`.
 	Status *AdStatus `json:"status,omitempty"`
-	// The ad's own on/off toggle as configured on the platform (Meta `configured_status`, ChatGPT (OpenAI) ad `status`: ACTIVE / PAUSED, plus ARCHIVED on OpenAI), unaffected by ancestor (ad set / campaign) pauses. Distinct from `status`, which is the ancestor-cascaded delivery status. Only present for Meta and OpenAI ads synced after this field was added.
+	// The ad's own on/off switch as configured on the platform, independent of its parents: an ACTIVE ad under a paused ad set or campaign still reads ACTIVE here while `status` reads `paused`. Sources: Meta `configured_status`, TikTok ad `operation_status` (ENABLE -> ACTIVE, DISABLE -> PAUSED), ChatGPT (OpenAI) ad `status` (ACTIVE / PAUSED, plus ARCHIVED on OpenAI). Distinct from `status`, which is the ancestor-cascaded delivery status. Only present for Meta, TikTok and OpenAI ads created or synced after the field was added for that platform; null otherwise.
 	ConfiguredStatus NullableString `json:"configuredStatus,omitempty"`
 	// Platform review state of this ad, independent of delivery `status` / `configuredStatus`. Absent when the platform reports no review signal.
 	ReviewStatus *AdReviewStatus `json:"reviewStatus,omitempty"`
