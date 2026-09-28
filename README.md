@@ -356,6 +356,7 @@ func main() {
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywordLists(ctx)` | List campaign negative lists |
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.ListGoogleAssetGroups(ctx)` | List Performance Max asset groups |
+| `client.AdCampaignsAPI.ListGoogleRecommendations(ctx)` | List Google Ads recommendations |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
@@ -390,9 +391,11 @@ func main() {
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |
 | `client.AdCampaignsAPI.DeleteAdSet(ctx)` | Delete an ad set |
 | `client.AdCampaignsAPI.AddAdKeywords(ctx)` | Add Search ad-group keywords |
+| `client.AdCampaignsAPI.ApplyGoogleRecommendations(ctx)` | Apply Google Ads recommendations |
 | `client.AdCampaignsAPI.AttachAdGroupAssets(ctx)` | Attach ad-group assets |
 | `client.AdCampaignsAPI.AttachCampaignAssets(ctx)` | Attach campaign assets |
 | `client.AdCampaignsAPI.BoostPost(ctx)` | Boost post as ad |
+| `client.AdCampaignsAPI.DismissGoogleRecommendations(ctx)` | Dismiss Google Ads recommendations |
 | `client.AdCampaignsAPI.DuplicateAd(ctx)` | Duplicate an ad |
 | `client.AdCampaignsAPI.DuplicateAdCampaign(ctx)` | Duplicate a campaign |
 | `client.AdCampaignsAPI.DuplicateAdSet(ctx)` | Duplicate an ad set |
