@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.115.2
+API version: 1.116.0
 Contact: support@zernio.com
 */
 
@@ -3199,6 +3199,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	accountId     *string
 	profileId     *string
 	campaignId    *string
+	search        *string
 	fromDate      *string
 	toDate        *string
 	hasDelivery   *bool
@@ -3264,6 +3265,12 @@ func (r AdCampaignsAPIGetAdTreeRequest) ProfileId(profileId string) AdCampaignsA
 // Restrict the tree to a single campaign by its platform campaign id (the id the platform assigns, e.g. Meta&#39;s numeric campaign id). Filters the campaign set itself, so it works regardless of account size and pagination. Pass this when you already hold a campaign id instead of paging the tree to find it. Mirrors the &#x60;campaignId&#x60; filter on GET /v1/ads.
 func (r AdCampaignsAPIGetAdTreeRequest) CampaignId(campaignId string) AdCampaignsAPIGetAdTreeRequest {
 	r.campaignId = &campaignId
+	return r
+}
+
+// Case-insensitive substring match on campaign, ad set and ad names (&#x60;_&#x60;, &#x60;%&#x60; and spaces match literally), or an exact platform campaign, ad set or ad id. A campaign whose name matches returns with all its ad sets and ads; a match on an ad set or ad name returns only the matching branch. Filters the campaign set itself, so &#x60;pagination.total&#x60; counts only matching campaigns.
+func (r AdCampaignsAPIGetAdTreeRequest) Search(search string) AdCampaignsAPIGetAdTreeRequest {
+	r.search = &search
 	return r
 }
 
@@ -3407,6 +3414,9 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.search != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
 	}
 	if r.fromDate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
