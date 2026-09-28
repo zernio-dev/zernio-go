@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.120.0
+API version: 1.121.0
 Contact: support@zernio.com
 */
 
@@ -733,6 +733,316 @@ func (a *WebhookEventsAPIService) OnAnalyticsSyncedExecute(r WebhookEventsAPIOnA
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAnalyticsSynced
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest struct {
+	ctx                                           context.Context
+	ApiService                                    *WebhookEventsAPIService
+	onBrandedCallingIdentityActionRequiredRequest *OnBrandedCallingIdentityActionRequiredRequest
+}
+
+func (r WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest) OnBrandedCallingIdentityActionRequiredRequest(onBrandedCallingIdentityActionRequiredRequest OnBrandedCallingIdentityActionRequiredRequest) WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest {
+	r.onBrandedCallingIdentityActionRequiredRequest = &onBrandedCallingIdentityActionRequiredRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBrandedCallingIdentityActionRequiredExecute(r)
+}
+
+/*
+OnBrandedCallingIdentityActionRequired Caller identity action required event
+
+Fired when a caller identity waits on you. `reason` says what: `changes_requested`
+(answer the review with PATCH), `email_code` (the authorizer got a 6-digit code
+from the carrier; confirm it with the verify-email endpoint), `rejected` (the
+carrier rejected it; fix and PATCH), `infringement_claim` (a third party disputes
+the name or logo; reply to our email with evidence) or `expired` (resubmit).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest
+*/
+func (a *WebhookEventsAPIService) OnBrandedCallingIdentityActionRequired(ctx context.Context) WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest {
+	return WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBrandedCallingIdentityActionRequiredExecute(r WebhookEventsAPIOnBrandedCallingIdentityActionRequiredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBrandedCallingIdentityActionRequired")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/branded_calling.identity.action_required"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onBrandedCallingIdentityActionRequiredRequest == nil {
+		return nil, reportError("onBrandedCallingIdentityActionRequiredRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onBrandedCallingIdentityActionRequiredRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest struct {
+	ctx                                          context.Context
+	ApiService                                   *WebhookEventsAPIService
+	onBrandedCallingIdentityStatusUpdatedRequest *OnBrandedCallingIdentityStatusUpdatedRequest
+}
+
+func (r WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest) OnBrandedCallingIdentityStatusUpdatedRequest(onBrandedCallingIdentityStatusUpdatedRequest OnBrandedCallingIdentityStatusUpdatedRequest) WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest {
+	r.onBrandedCallingIdentityStatusUpdatedRequest = &onBrandedCallingIdentityStatusUpdatedRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBrandedCallingIdentityStatusUpdatedExecute(r)
+}
+
+/*
+OnBrandedCallingIdentityStatusUpdated Caller identity status updated event
+
+Fired on every status change of a Branded Calling caller identity: `requested`
+(a new submission or resubmit, in our review), `changes_requested` (we need
+answers, see `branded_calling.identity.action_required`), `rejected` (by our
+review or by the carrier; `reason` says why), `pending_email_verification`
+(filed with the carrier; the authorizer enters the emailed code), `in_review`
+(carrier vetting), `verified` (live for a year: attach numbers), `suspended`
+(an infringement claim is open), `expired` and `permanently_rejected`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnBrandedCallingIdentityStatusUpdated(ctx context.Context) WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest {
+	return WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBrandedCallingIdentityStatusUpdatedExecute(r WebhookEventsAPIOnBrandedCallingIdentityStatusUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBrandedCallingIdentityStatusUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/branded_calling.identity.status_updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onBrandedCallingIdentityStatusUpdatedRequest == nil {
+		return nil, reportError("onBrandedCallingIdentityStatusUpdatedRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onBrandedCallingIdentityStatusUpdatedRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest struct {
+	ctx                                        context.Context
+	ApiService                                 *WebhookEventsAPIService
+	onBrandedCallingNumberStatusUpdatedRequest *OnBrandedCallingNumberStatusUpdatedRequest
+}
+
+func (r WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest) OnBrandedCallingNumberStatusUpdatedRequest(onBrandedCallingNumberStatusUpdatedRequest OnBrandedCallingNumberStatusUpdatedRequest) WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest {
+	r.onBrandedCallingNumberStatusUpdatedRequest = &onBrandedCallingNumberStatusUpdatedRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnBrandedCallingNumberStatusUpdatedExecute(r)
+}
+
+/*
+OnBrandedCallingNumberStatusUpdated Branded number status updated event
+
+Fired when a number attached to a caller identity changes vetting status:
+`in_review`, `verified` (calls from it now show the identity), `unsuccessful`
+(refused; detach and re-add to retry), `suspended`, `expired` or
+`permanently_rejected` (can never be branded again).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnBrandedCallingNumberStatusUpdated(ctx context.Context) WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest {
+	return WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnBrandedCallingNumberStatusUpdatedExecute(r WebhookEventsAPIOnBrandedCallingNumberStatusUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnBrandedCallingNumberStatusUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/branded_calling.number.status_updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onBrandedCallingNumberStatusUpdatedRequest == nil {
+		return nil, reportError("onBrandedCallingNumberStatusUpdatedRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onBrandedCallingNumberStatusUpdatedRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
