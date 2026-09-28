@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.132.0
+API version: 1.134.0
 Contact: support@zernio.com
 */
 
@@ -27,9 +27,9 @@ type TrackingTag struct {
 	// The id the on-site code carries. Equals `id` on Meta; differs on platforms with separate API and site ids (OpenAI `pixel_id`).
 	SiteTagId *string `json:"siteTagId,omitempty"`
 	// Platforms where each conversion is its own object: the tag's conversion events, with the id a site sends for each.
-	Events   []TrackingTagEventsInner `json:"events,omitempty"`
-	Name     string                   `json:"name"`
-	Platform string                   `json:"platform"`
+	Events   []TrackingTagEvent `json:"events,omitempty"`
+	Name     string             `json:"name"`
+	Platform string             `json:"platform"`
 	// Platform-native flavor of the tag (Meta: `pixel`).
 	Kind string `json:"kind"`
 	// `inactive` when the platform reports the tag as broken/unavailable.
@@ -131,9 +131,9 @@ func (o *TrackingTag) SetSiteTagId(v string) {
 }
 
 // GetEvents returns the Events field value if set, zero value otherwise.
-func (o *TrackingTag) GetEvents() []TrackingTagEventsInner {
+func (o *TrackingTag) GetEvents() []TrackingTagEvent {
 	if o == nil || IsNil(o.Events) {
-		var ret []TrackingTagEventsInner
+		var ret []TrackingTagEvent
 		return ret
 	}
 	return o.Events
@@ -141,7 +141,7 @@ func (o *TrackingTag) GetEvents() []TrackingTagEventsInner {
 
 // GetEventsOk returns a tuple with the Events field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TrackingTag) GetEventsOk() ([]TrackingTagEventsInner, bool) {
+func (o *TrackingTag) GetEventsOk() ([]TrackingTagEvent, bool) {
 	if o == nil || IsNil(o.Events) {
 		return nil, false
 	}
@@ -157,8 +157,8 @@ func (o *TrackingTag) HasEvents() bool {
 	return false
 }
 
-// SetEvents gets a reference to the given []TrackingTagEventsInner and assigns it to the Events field.
-func (o *TrackingTag) SetEvents(v []TrackingTagEventsInner) {
+// SetEvents gets a reference to the given []TrackingTagEvent and assigns it to the Events field.
+func (o *TrackingTag) SetEvents(v []TrackingTagEvent) {
 	o.Events = v
 }
 

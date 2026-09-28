@@ -874,6 +874,23 @@ func main() {
 | `client.ProductsAPI.GetProduct(ctx)` | Get a product |
 | `client.ProductsAPI.UpdateProduct(ctx)` | Update a product |
 
+### RCS
+| Method | Description |
+|--------|-------------|
+| `client.RCSAPI.ListRcsAgents(ctx)` | List RCS agents |
+| `client.RCSAPI.ListRcsBrands(ctx)` | List RCS brands |
+| `client.RCSAPI.ListRcsTestDevices(ctx)` | List RCS test phones |
+| `client.RCSAPI.CreateRcsAgent(ctx)` | Request an RCS agent |
+| `client.RCSAPI.GetRcsAgent(ctx)` | Get an RCS agent |
+| `client.RCSAPI.GetRcsCapabilities(ctx)` | Check RCS capability |
+| `client.RCSAPI.UpdateRcsAgent(ctx)` | Update an RCS agent |
+| `client.RCSAPI.AddRcsTestDevice(ctx)` | Invite an RCS test phone |
+| `client.RCSAPI.DeactivateRcsAgent(ctx)` | Deactivate an RCS agent |
+| `client.RCSAPI.RemoveRcsTestDevice(ctx)` | Remove an RCS test phone |
+| `client.RCSAPI.RequestRcsAgentLaunch(ctx)` | Send the launch filing |
+| `client.RCSAPI.SendRcsMessage(ctx)` | Send an RCS message |
+| `client.RCSAPI.UploadRcsAsset(ctx)` | Upload an RCS logo or banner |
+
 ### Reach and Frequency
 | Method | Description |
 |--------|-------------|
@@ -937,15 +954,19 @@ func main() {
 ### Tracking Tags
 | Method | Description |
 |--------|-------------|
+| `client.TrackingTagsAPI.ListTrackingTagEvents(ctx)` | List conversion events |
 | `client.TrackingTagsAPI.ListTrackingTagSharedAccounts(ctx)` | List accounts it is shared with |
 | `client.TrackingTagsAPI.ListTrackingTags(ctx)` | List tracking tags |
 | `client.TrackingTagsAPI.CreateTrackingTag(ctx)` | Create a tracking tag |
+| `client.TrackingTagsAPI.CreateTrackingTagEvent(ctx)` | Create a conversion event |
 | `client.TrackingTagsAPI.GetAdTrackingTags(ctx)` | Get ad tracking tags |
 | `client.TrackingTagsAPI.GetTrackingTag(ctx)` | Get a tracking tag |
 | `client.TrackingTagsAPI.GetTrackingTagStats(ctx)` | Get aggregated event stats |
 | `client.TrackingTagsAPI.GetTrackingTagStoreInstall(ctx)` | Get store install status |
 | `client.TrackingTagsAPI.UpdateAdTrackingTags(ctx)` | Set ad tracking tags |
 | `client.TrackingTagsAPI.UpdateTrackingTag(ctx)` | Update a tracking tag |
+| `client.TrackingTagsAPI.UpdateTrackingTagEvent(ctx)` | Update a conversion event |
+| `client.TrackingTagsAPI.DeleteTrackingTagEvent(ctx)` | Delete a conversion event |
 | `client.TrackingTagsAPI.AddTrackingTagSharedAccount(ctx)` | Share with an ad account |
 | `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store or WordPress site |
 | `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store or WordPress site |

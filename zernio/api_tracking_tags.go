@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.132.0
+API version: 1.134.0
 Contact: support@zernio.com
 */
 
@@ -305,6 +305,340 @@ func (a *TrackingTagsAPIService) CreateTrackingTagExecute(r TrackingTagsAPICreat
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TrackingTagsAPICreateTrackingTagEventRequest struct {
+	ctx                           context.Context
+	ApiService                    *TrackingTagsAPIService
+	accountId                     string
+	tagId                         string
+	createTrackingTagEventRequest *CreateTrackingTagEventRequest
+}
+
+func (r TrackingTagsAPICreateTrackingTagEventRequest) CreateTrackingTagEventRequest(createTrackingTagEventRequest CreateTrackingTagEventRequest) TrackingTagsAPICreateTrackingTagEventRequest {
+	r.createTrackingTagEventRequest = &createTrackingTagEventRequest
+	return r
+}
+
+func (r TrackingTagsAPICreateTrackingTagEventRequest) Execute() (*CreateTrackingTagEvent201Response, *http.Response, error) {
+	return r.ApiService.CreateTrackingTagEventExecute(r)
+}
+
+/*
+CreateTrackingTagEvent Create a conversion event
+
+Creates a conversion event tied to the tag. Pass the platform's own event type in `type`
+(e.g. Google `PURCHASE`, LinkedIn `ADD_TO_CART`, X `CHECKOUT_INITIATED`) or a neutral
+`siteEvent` the platform maps to its closest type. Each platform stores a subset of the
+optional fields; sending one it does not store answers 400 naming the supported fields.
+NOT idempotent unless noted per platform: do not retry blindly.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@param tagId Tag id (`TrackingTag.id`).
+	@return TrackingTagsAPICreateTrackingTagEventRequest
+*/
+func (a *TrackingTagsAPIService) CreateTrackingTagEvent(ctx context.Context, accountId string, tagId string) TrackingTagsAPICreateTrackingTagEventRequest {
+	return TrackingTagsAPICreateTrackingTagEventRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		tagId:      tagId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateTrackingTagEvent201Response
+func (a *TrackingTagsAPIService) CreateTrackingTagEventExecute(r TrackingTagsAPICreateTrackingTagEventRequest) (*CreateTrackingTagEvent201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateTrackingTagEvent201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.CreateTrackingTagEvent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/tracking-tags/{tagId}/events"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", url.PathEscape(parameterValueToString(r.tagId, "tagId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createTrackingTagEventRequest == nil {
+		return localVarReturnValue, nil, reportError("createTrackingTagEventRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createTrackingTagEventRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TrackingTagsAPIDeleteTrackingTagEventRequest struct {
+	ctx         context.Context
+	ApiService  *TrackingTagsAPIService
+	accountId   string
+	tagId       string
+	eventId     string
+	adAccountId *string
+}
+
+// Scopes the lookup on platforms whose tag ids live inside an ad account.
+func (r TrackingTagsAPIDeleteTrackingTagEventRequest) AdAccountId(adAccountId string) TrackingTagsAPIDeleteTrackingTagEventRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r TrackingTagsAPIDeleteTrackingTagEventRequest) Execute() (*DeleteTrackingTagEvent200Response, *http.Response, error) {
+	return r.ApiService.DeleteTrackingTagEventExecute(r)
+}
+
+/*
+DeleteTrackingTagEvent Delete a conversion event
+
+Removes the conversion event. Platforms without a hard delete archive or disable it
+instead; `state` in the response says which (`deleted`, `archived`, `disabled`).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@param tagId
+	@param eventId Event id (`TrackingTagEvent.id`).
+	@return TrackingTagsAPIDeleteTrackingTagEventRequest
+*/
+func (a *TrackingTagsAPIService) DeleteTrackingTagEvent(ctx context.Context, accountId string, tagId string, eventId string) TrackingTagsAPIDeleteTrackingTagEventRequest {
+	return TrackingTagsAPIDeleteTrackingTagEventRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		tagId:      tagId,
+		eventId:    eventId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteTrackingTagEvent200Response
+func (a *TrackingTagsAPIService) DeleteTrackingTagEventExecute(r TrackingTagsAPIDeleteTrackingTagEventRequest) (*DeleteTrackingTagEvent200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteTrackingTagEvent200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.DeleteTrackingTagEvent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/tracking-tags/{tagId}/events/{eventId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", url.PathEscape(parameterValueToString(r.tagId, "tagId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"eventId"+"}", url.PathEscape(parameterValueToString(r.eventId, "eventId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response
@@ -1223,6 +1557,171 @@ func (a *TrackingTagsAPIService) InstallTrackingTagOnStoreExecute(r TrackingTags
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type TrackingTagsAPIListTrackingTagEventsRequest struct {
+	ctx         context.Context
+	ApiService  *TrackingTagsAPIService
+	accountId   string
+	tagId       string
+	adAccountId *string
+}
+
+// Scopes the lookup on platforms whose tag ids live inside an ad account.
+func (r TrackingTagsAPIListTrackingTagEventsRequest) AdAccountId(adAccountId string) TrackingTagsAPIListTrackingTagEventsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r TrackingTagsAPIListTrackingTagEventsRequest) Execute() (*ListTrackingTagEvents200Response, *http.Response, error) {
+	return r.ApiService.ListTrackingTagEventsExecute(r)
+}
+
+/*
+ListTrackingTagEvents List conversion events
+
+The tag's conversion events, on platforms where each conversion is its own object:
+Google conversion actions, LinkedIn conversion rules, X web event tags, OpenAI event
+settings, TikTok pixel events, Meta custom conversions. Platforms where events are just
+names the site sends (Pinterest) answer 501.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@param tagId Tag id (`TrackingTag.id`).
+	@return TrackingTagsAPIListTrackingTagEventsRequest
+*/
+func (a *TrackingTagsAPIService) ListTrackingTagEvents(ctx context.Context, accountId string, tagId string) TrackingTagsAPIListTrackingTagEventsRequest {
+	return TrackingTagsAPIListTrackingTagEventsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		tagId:      tagId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListTrackingTagEvents200Response
+func (a *TrackingTagsAPIService) ListTrackingTagEventsExecute(r TrackingTagsAPIListTrackingTagEventsRequest) (*ListTrackingTagEvents200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListTrackingTagEvents200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.ListTrackingTagEvents")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/tracking-tags/{tagId}/events"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", url.PathEscape(parameterValueToString(r.tagId, "tagId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type TrackingTagsAPIListTrackingTagSharedAccountsRequest struct {
 	ctx        context.Context
 	ApiService *TrackingTagsAPIService
@@ -2094,6 +2593,173 @@ func (a *TrackingTagsAPIService) UpdateTrackingTagExecute(r TrackingTagsAPIUpdat
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type TrackingTagsAPIUpdateTrackingTagEventRequest struct {
+	ctx                   context.Context
+	ApiService            *TrackingTagsAPIService
+	accountId             string
+	tagId                 string
+	eventId               string
+	trackingTagEventInput *TrackingTagEventInput
+}
+
+func (r TrackingTagsAPIUpdateTrackingTagEventRequest) TrackingTagEventInput(trackingTagEventInput TrackingTagEventInput) TrackingTagsAPIUpdateTrackingTagEventRequest {
+	r.trackingTagEventInput = &trackingTagEventInput
+	return r
+}
+
+func (r TrackingTagsAPIUpdateTrackingTagEventRequest) Execute() (*CreateTrackingTagEvent201Response, *http.Response, error) {
+	return r.ApiService.UpdateTrackingTagEventExecute(r)
+}
+
+/*
+UpdateTrackingTagEvent Update a conversion event
+
+Partial update; at least one field. A field the platform does not store answers 400.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId
+	@param tagId
+	@param eventId Event id (`TrackingTagEvent.id`).
+	@return TrackingTagsAPIUpdateTrackingTagEventRequest
+*/
+func (a *TrackingTagsAPIService) UpdateTrackingTagEvent(ctx context.Context, accountId string, tagId string, eventId string) TrackingTagsAPIUpdateTrackingTagEventRequest {
+	return TrackingTagsAPIUpdateTrackingTagEventRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+		tagId:      tagId,
+		eventId:    eventId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return CreateTrackingTagEvent201Response
+func (a *TrackingTagsAPIService) UpdateTrackingTagEventExecute(r TrackingTagsAPIUpdateTrackingTagEventRequest) (*CreateTrackingTagEvent201Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CreateTrackingTagEvent201Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TrackingTagsAPIService.UpdateTrackingTagEvent")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/tracking-tags/{tagId}/events/{eventId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"tagId"+"}", url.PathEscape(parameterValueToString(r.tagId, "tagId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"eventId"+"}", url.PathEscape(parameterValueToString(r.eventId, "eventId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.trackingTagEventInput == nil {
+		return localVarReturnValue, nil, reportError("trackingTagEventInput is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.trackingTagEventInput
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v GetYouTubeDailyViews400Response

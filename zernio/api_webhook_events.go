@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.132.0
+API version: 1.134.0
 Contact: support@zernio.com
 */
 
@@ -2318,7 +2318,7 @@ func (r WebhookEventsAPIOnMessageReadRequest) Execute() (*http.Response, error) 
 OnMessageRead Message read event
 
 Fired when an outgoing message is read by the recipient. Supported on
-WhatsApp, Facebook Messenger, and Instagram.
+WhatsApp, Facebook Messenger, Instagram, and RCS.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnMessageReadRequest
@@ -4006,6 +4006,109 @@ func (a *WebhookEventsAPIService) OnPostTikTokUrlResolvedExecute(r WebhookEvents
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadPostPlatform
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnRcsAgentStatusUpdatedRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	onRcsAgentStatusUpdatedRequest *OnRcsAgentStatusUpdatedRequest
+}
+
+func (r WebhookEventsAPIOnRcsAgentStatusUpdatedRequest) OnRcsAgentStatusUpdatedRequest(onRcsAgentStatusUpdatedRequest OnRcsAgentStatusUpdatedRequest) WebhookEventsAPIOnRcsAgentStatusUpdatedRequest {
+	r.onRcsAgentStatusUpdatedRequest = &onRcsAgentStatusUpdatedRequest
+	return r
+}
+
+func (r WebhookEventsAPIOnRcsAgentStatusUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnRcsAgentStatusUpdatedExecute(r)
+}
+
+/*
+OnRcsAgentStatusUpdated RCS agent status updated event
+
+Fired on every customer-visible status change of an RCS agent: `changes_requested`
+(we need changes before filing, `reason` is our note), `brand_vetting`, `agent_review`,
+`testing` (add test phones, then send the launch filing; with a `reason` the launch
+filing bounced), `launch_review`, `launching`, `live` (the agent can message any
+RCS-capable phone), `rejected` (`reason` says why) and `deactivated`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnRcsAgentStatusUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnRcsAgentStatusUpdated(ctx context.Context) WebhookEventsAPIOnRcsAgentStatusUpdatedRequest {
+	return WebhookEventsAPIOnRcsAgentStatusUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnRcsAgentStatusUpdatedExecute(r WebhookEventsAPIOnRcsAgentStatusUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnRcsAgentStatusUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/rcs.agent.status_updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.onRcsAgentStatusUpdatedRequest == nil {
+		return nil, reportError("onRcsAgentStatusUpdatedRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.onRcsAgentStatusUpdatedRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
