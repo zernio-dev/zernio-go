@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.128.0
+API version: 1.129.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &UpdateAdAccount200Response{}
 type UpdateAdAccount200Response struct {
 	AdAccountId *string                                `json:"adAccountId,omitempty"`
 	DsaDefaults *UpdateAdAccount200ResponseDsaDefaults `json:"dsaDefaults,omitempty"`
+	Settings    *UpdateAdAccount200ResponseSettings    `json:"settings,omitempty"`
 }
 
 // NewUpdateAdAccount200Response instantiates a new UpdateAdAccount200Response object
@@ -105,6 +106,38 @@ func (o *UpdateAdAccount200Response) SetDsaDefaults(v UpdateAdAccount200Response
 	o.DsaDefaults = &v
 }
 
+// GetSettings returns the Settings field value if set, zero value otherwise.
+func (o *UpdateAdAccount200Response) GetSettings() UpdateAdAccount200ResponseSettings {
+	if o == nil || IsNil(o.Settings) {
+		var ret UpdateAdAccount200ResponseSettings
+		return ret
+	}
+	return *o.Settings
+}
+
+// GetSettingsOk returns a tuple with the Settings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdAccount200Response) GetSettingsOk() (*UpdateAdAccount200ResponseSettings, bool) {
+	if o == nil || IsNil(o.Settings) {
+		return nil, false
+	}
+	return o.Settings, true
+}
+
+// HasSettings returns a boolean if a field has been set.
+func (o *UpdateAdAccount200Response) HasSettings() bool {
+	if o != nil && !IsNil(o.Settings) {
+		return true
+	}
+
+	return false
+}
+
+// SetSettings gets a reference to the given UpdateAdAccount200ResponseSettings and assigns it to the Settings field.
+func (o *UpdateAdAccount200Response) SetSettings(v UpdateAdAccount200ResponseSettings) {
+	o.Settings = &v
+}
+
 func (o UpdateAdAccount200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +153,9 @@ func (o UpdateAdAccount200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DsaDefaults) {
 		toSerialize["dsaDefaults"] = o.DsaDefaults
+	}
+	if !IsNil(o.Settings) {
+		toSerialize["settings"] = o.Settings
 	}
 	return toSerialize, nil
 }

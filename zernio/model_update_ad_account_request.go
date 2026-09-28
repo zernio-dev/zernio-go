@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.128.0
+API version: 1.129.0
 Contact: support@zernio.com
 */
 
@@ -26,9 +26,15 @@ type UpdateAdAccountRequest struct {
 	AccountId string `json:"accountId"`
 	// Meta ad account ID (act_...)
 	AdAccountId string `json:"adAccountId"`
+	// New ad account name.
+	Name *string `json:"name,omitempty"`
+	// Account spend cap in whole currency units; null removes it.
+	SpendCap NullableFloat32 `json:"spendCap,omitempty"`
+	// Restart the amount counted against the cap from zero. Cannot be combined with spendCap null.
+	ResetAmountSpent *bool `json:"resetAmountSpent,omitempty"`
 	// Legal entity benefiting from ads on this ad account
-	DefaultDsaBeneficiary string `json:"defaultDsaBeneficiary"`
-	// Legal entity paying for ads on this ad account. Defaults to defaultDsaBeneficiary when omitted.
+	DefaultDsaBeneficiary *string `json:"defaultDsaBeneficiary,omitempty"`
+	// Legal entity paying for ads on this ad account. Defaults to defaultDsaBeneficiary when omitted. Requires defaultDsaBeneficiary.
 	DefaultDsaPayor *string `json:"defaultDsaPayor,omitempty"`
 }
 
@@ -38,11 +44,10 @@ type _UpdateAdAccountRequest UpdateAdAccountRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpdateAdAccountRequest(accountId string, adAccountId string, defaultDsaBeneficiary string) *UpdateAdAccountRequest {
+func NewUpdateAdAccountRequest(accountId string, adAccountId string) *UpdateAdAccountRequest {
 	this := UpdateAdAccountRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
-	this.DefaultDsaBeneficiary = defaultDsaBeneficiary
 	return &this
 }
 
@@ -102,28 +107,143 @@ func (o *UpdateAdAccountRequest) SetAdAccountId(v string) {
 	o.AdAccountId = v
 }
 
-// GetDefaultDsaBeneficiary returns the DefaultDsaBeneficiary field value
-func (o *UpdateAdAccountRequest) GetDefaultDsaBeneficiary() string {
-	if o == nil {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UpdateAdAccountRequest) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-
-	return o.DefaultDsaBeneficiary
+	return *o.Name
 }
 
-// GetDefaultDsaBeneficiaryOk returns a tuple with the DefaultDsaBeneficiary field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAdAccountRequest) GetDefaultDsaBeneficiaryOk() (*string, bool) {
+func (o *UpdateAdAccountRequest) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UpdateAdAccountRequest) SetName(v string) {
+	o.Name = &v
+}
+
+// GetSpendCap returns the SpendCap field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdAccountRequest) GetSpendCap() float32 {
+	if o == nil || IsNil(o.SpendCap.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.SpendCap.Get()
+}
+
+// GetSpendCapOk returns a tuple with the SpendCap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdAccountRequest) GetSpendCapOk() (*float32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.DefaultDsaBeneficiary, true
+	return o.SpendCap.Get(), o.SpendCap.IsSet()
 }
 
-// SetDefaultDsaBeneficiary sets field value
+// HasSpendCap returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasSpendCap() bool {
+	if o != nil && o.SpendCap.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpendCap gets a reference to the given NullableFloat32 and assigns it to the SpendCap field.
+func (o *UpdateAdAccountRequest) SetSpendCap(v float32) {
+	o.SpendCap.Set(&v)
+}
+
+// SetSpendCapNil sets the value for SpendCap to be an explicit nil
+func (o *UpdateAdAccountRequest) SetSpendCapNil() {
+	o.SpendCap.Set(nil)
+}
+
+// UnsetSpendCap ensures that no value is present for SpendCap, not even an explicit nil
+func (o *UpdateAdAccountRequest) UnsetSpendCap() {
+	o.SpendCap.Unset()
+}
+
+// GetResetAmountSpent returns the ResetAmountSpent field value if set, zero value otherwise.
+func (o *UpdateAdAccountRequest) GetResetAmountSpent() bool {
+	if o == nil || IsNil(o.ResetAmountSpent) {
+		var ret bool
+		return ret
+	}
+	return *o.ResetAmountSpent
+}
+
+// GetResetAmountSpentOk returns a tuple with the ResetAmountSpent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdAccountRequest) GetResetAmountSpentOk() (*bool, bool) {
+	if o == nil || IsNil(o.ResetAmountSpent) {
+		return nil, false
+	}
+	return o.ResetAmountSpent, true
+}
+
+// HasResetAmountSpent returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasResetAmountSpent() bool {
+	if o != nil && !IsNil(o.ResetAmountSpent) {
+		return true
+	}
+
+	return false
+}
+
+// SetResetAmountSpent gets a reference to the given bool and assigns it to the ResetAmountSpent field.
+func (o *UpdateAdAccountRequest) SetResetAmountSpent(v bool) {
+	o.ResetAmountSpent = &v
+}
+
+// GetDefaultDsaBeneficiary returns the DefaultDsaBeneficiary field value if set, zero value otherwise.
+func (o *UpdateAdAccountRequest) GetDefaultDsaBeneficiary() string {
+	if o == nil || IsNil(o.DefaultDsaBeneficiary) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultDsaBeneficiary
+}
+
+// GetDefaultDsaBeneficiaryOk returns a tuple with the DefaultDsaBeneficiary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdAccountRequest) GetDefaultDsaBeneficiaryOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultDsaBeneficiary) {
+		return nil, false
+	}
+	return o.DefaultDsaBeneficiary, true
+}
+
+// HasDefaultDsaBeneficiary returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasDefaultDsaBeneficiary() bool {
+	if o != nil && !IsNil(o.DefaultDsaBeneficiary) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultDsaBeneficiary gets a reference to the given string and assigns it to the DefaultDsaBeneficiary field.
 func (o *UpdateAdAccountRequest) SetDefaultDsaBeneficiary(v string) {
-	o.DefaultDsaBeneficiary = v
+	o.DefaultDsaBeneficiary = &v
 }
 
 // GetDefaultDsaPayor returns the DefaultDsaPayor field value if set, zero value otherwise.
@@ -170,7 +290,18 @@ func (o UpdateAdAccountRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["accountId"] = o.AccountId
 	toSerialize["adAccountId"] = o.AdAccountId
-	toSerialize["defaultDsaBeneficiary"] = o.DefaultDsaBeneficiary
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if o.SpendCap.IsSet() {
+		toSerialize["spendCap"] = o.SpendCap.Get()
+	}
+	if !IsNil(o.ResetAmountSpent) {
+		toSerialize["resetAmountSpent"] = o.ResetAmountSpent
+	}
+	if !IsNil(o.DefaultDsaBeneficiary) {
+		toSerialize["defaultDsaBeneficiary"] = o.DefaultDsaBeneficiary
+	}
 	if !IsNil(o.DefaultDsaPayor) {
 		toSerialize["defaultDsaPayor"] = o.DefaultDsaPayor
 	}
@@ -184,7 +315,6 @@ func (o *UpdateAdAccountRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"accountId",
 		"adAccountId",
-		"defaultDsaBeneficiary",
 	}
 
 	allProperties := make(map[string]interface{})

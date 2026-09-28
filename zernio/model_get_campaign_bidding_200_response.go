@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.128.0
+API version: 1.129.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,9 @@ type GetCampaignBidding200Response struct {
 	// campaign.advertising_channel_type. COST_CAP's underlying Google field differs by channel; see bidStrategy on PUT.
 	Channel *string `json:"channel,omitempty"`
 	// Google's raw enum: MAXIMIZE_CONVERSIONS, TARGET_CPA, MAXIMIZE_CONVERSION_VALUE, TARGET_ROAS, TARGET_SPEND, MANUAL_CPC, TARGET_IMPRESSION_SHARE, or another Google adds later.
-	BiddingStrategyType *string                   `json:"biddingStrategyType,omitempty"`
-	BidSpec             *CampaignBiddingBidSpec   `json:"bidSpec,omitempty"`
-	Portfolio           *CampaignBiddingPortfolio `json:"portfolio,omitempty"`
+	BiddingStrategyType *string                    `json:"biddingStrategyType,omitempty"`
+	BidSpec             *CampaignBiddingBidSpec    `json:"bidSpec,omitempty"`
+	Portfolio           *MetaPageOwnershipBusiness `json:"portfolio,omitempty"`
 	// When this data was fetched from Google. Null when it was never served from cache.
 	CachedAt *time.Time `json:"cachedAt,omitempty"`
 	// True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
@@ -148,9 +148,9 @@ func (o *GetCampaignBidding200Response) SetBidSpec(v CampaignBiddingBidSpec) {
 }
 
 // GetPortfolio returns the Portfolio field value if set, zero value otherwise.
-func (o *GetCampaignBidding200Response) GetPortfolio() CampaignBiddingPortfolio {
+func (o *GetCampaignBidding200Response) GetPortfolio() MetaPageOwnershipBusiness {
 	if o == nil || IsNil(o.Portfolio) {
-		var ret CampaignBiddingPortfolio
+		var ret MetaPageOwnershipBusiness
 		return ret
 	}
 	return *o.Portfolio
@@ -158,7 +158,7 @@ func (o *GetCampaignBidding200Response) GetPortfolio() CampaignBiddingPortfolio 
 
 // GetPortfolioOk returns a tuple with the Portfolio field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetCampaignBidding200Response) GetPortfolioOk() (*CampaignBiddingPortfolio, bool) {
+func (o *GetCampaignBidding200Response) GetPortfolioOk() (*MetaPageOwnershipBusiness, bool) {
 	if o == nil || IsNil(o.Portfolio) {
 		return nil, false
 	}
@@ -174,8 +174,8 @@ func (o *GetCampaignBidding200Response) HasPortfolio() bool {
 	return false
 }
 
-// SetPortfolio gets a reference to the given CampaignBiddingPortfolio and assigns it to the Portfolio field.
-func (o *GetCampaignBidding200Response) SetPortfolio(v CampaignBiddingPortfolio) {
+// SetPortfolio gets a reference to the given MetaPageOwnershipBusiness and assigns it to the Portfolio field.
+func (o *GetCampaignBidding200Response) SetPortfolio(v MetaPageOwnershipBusiness) {
 	o.Portfolio = &v
 }
 

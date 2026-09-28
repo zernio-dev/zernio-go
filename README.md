@@ -66,6 +66,7 @@ func main() {
 |--------|-------------|
 | `client.AccountsAPI.GetAllAccountsHealth(ctx)` | Check accounts health |
 | `client.AccountsAPI.ListAccounts(ctx)` | List accounts |
+| `client.AccountsAPI.ListBusinessPartners(ctx)` | List partner businesses of the Page |
 | `client.AccountsAPI.ListTikTokCommercialMusic(ctx)` | List trending commercial music |
 | `client.AccountsAPI.GetAccountHealth(ctx)` | Check account health |
 | `client.AccountsAPI.GetAccountPosts(ctx)` | List posts published on the platform |
@@ -83,8 +84,10 @@ func main() {
 | `client.AccountsAPI.DeleteAccount(ctx)` | Disconnect account |
 | `client.GMBReviewsAPI.DeleteGoogleBusinessReviewReply(ctx)` | Delete a review reply |
 | `client.GMBReviewsAPI.BatchGetGoogleBusinessReviews(ctx)` | Batch get reviews |
+| `client.AccountsAPI.GrantBusinessPartner(ctx)` | Share the Page with a partner business |
 | `client.AccountsAPI.MoveAccountToProfile(ctx)` | Move account to another profile |
 | `client.GMBReviewsAPI.ReplyToGoogleBusinessReview(ctx)` | Reply to a review |
+| `client.AccountsAPI.RevokeBusinessPartner(ctx)` | Revoke a partner business from the Page |
 | `client.AccountsAPI.SearchTikTokLocations(ctx)` | Search TikTok location tags |
 
 ### Profiles
@@ -279,6 +282,7 @@ func main() {
 | `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account callouts |
 | `client.AdAccountsAPI.ListAccountSitelinks(ctx)` | List account sitelinks |
 | `client.AdAccountsAPI.ListAccountStructuredSnippets(ctx)` | List account snippets |
+| `client.AdAccountsAPI.ListAdAccountUsers(ctx)` | Ad account users |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdAccountsAPI.ListAdLabels(ctx)` | List ad labels |
 | `client.AdAccountsAPI.ListAdNegativeKeywordLists(ctx)` | List negative keyword lists |
@@ -289,7 +293,9 @@ func main() {
 | `client.AdAccountsAPI.ListAdvertisableApplications(ctx)` | List advertisable apps |
 | `client.AdAccountsAPI.ListCustomConversions(ctx)` | List custom conversions |
 | `client.AdAccountsAPI.ListHighDemandPeriods(ctx)` | List high-demand periods |
+| `client.AdAccountsAPI.ListMetaBusinessUsers(ctx)` | Business users |
 | `client.AdAccountsAPI.ListMetaBusinesses(ctx)` | Businesses list |
+| `client.AdAccountsAPI.ListPageUsers(ctx)` | Page users of a business |
 | `client.AdAccountsAPI.ListTikTokAdPixels(ctx)` | List TikTok ad pixels |
 | `client.AdAccountsAPI.ListValueRuleSets(ctx)` | List value rule sets |
 | `client.AdAccountsAPI.CreateAdAccount(ctx)` | Create Meta ad account |
@@ -321,6 +327,8 @@ func main() {
 | `client.AdAccountsAPI.AddAccountCallouts(ctx)` | Add account callouts |
 | `client.AdAccountsAPI.AddAccountSitelinks(ctx)` | Add account sitelinks |
 | `client.AdAccountsAPI.AddAccountStructuredSnippets(ctx)` | Add account snippets |
+| `client.AdAccountsAPI.AssignAdAccountUser(ctx)` | Assign a user to an ad account |
+| `client.AdAccountsAPI.AssignPageUser(ctx)` | Assign a user to a Page |
 | `client.AdAccountsAPI.AttachAdLabel(ctx)` | Attach a Google Ads label |
 | `client.AdAccountsAPI.DetachAdLabel(ctx)` | Detach a Google Ads label |
 | `client.AdAccountsAPI.HideAdComment(ctx)` | Hide or unhide an ad comment |
@@ -328,7 +336,9 @@ func main() {
 | `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove account callout |
 | `client.AdAccountsAPI.RemoveAccountSitelink(ctx)` | Remove account sitelink |
 | `client.AdAccountsAPI.RemoveAccountStructuredSnippet(ctx)` | Remove account snippet |
+| `client.AdAccountsAPI.RemoveAdAccountUser(ctx)` | Remove a user from an ad account |
 | `client.AdAccountsAPI.RemoveAdLabel(ctx)` | Remove a Google Ads label |
+| `client.AdAccountsAPI.RemovePageUser(ctx)` | Remove a user from a Page |
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
 
