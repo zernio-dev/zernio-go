@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.138.0
+API version: 1.138.1
 Contact: support@zernio.com
 */
 
@@ -46,9 +46,9 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	FundingSourceDetails *ListAdAccounts200ResponseAccountsInnerFundingSourceDetails `json:"fundingSourceDetails,omitempty"`
 	// Meta only. Whether the ad account has a payment method, derived as follows: - `missing` when `accountStatus` is `3` (UNSETTLED) or `9` (IN_GRACE_PERIOD),   when `disableReason` is `3` (RISK_PAYMENT), or when the connected person   has the MANAGE task on the account (admin, who always sees billing) and   Meta returns no funding source. Ad creation on such an account fails at   the ad step with Meta code 100 / subcode 1359188: add a payment method in   Meta's Billing & payments center. - `ok` when Meta returns a funding source. This is presence, not validity:   Meta can still refuse the card or balance at ad creation. - `unknown` when the connected person is not an admin of the account, or   the token cannot read the billing fields.
 	BillingStatus *string `json:"billingStatus,omitempty"`
-	// Meta and X only. Whether the account can create/run ads now. Absent (treat as true) on other platforms.
+	// Meta and X only. Whether the account can create/run ads now. Always present on every Meta and X account. Absent (treat as true) on other platforms.
 	Selectable *bool `json:"selectable,omitempty"`
-	// Meta and X only. Human-readable reason when selectable is false; null when selectable.
+	// Meta and X only. Always present on every Meta and X account. Human-readable reason when selectable is false; null when selectable.
 	UnusableReason NullableString `json:"unusableReason,omitempty"`
 }
 
