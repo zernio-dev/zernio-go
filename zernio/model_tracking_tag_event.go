@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.138.1
+API version: 1.139.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,12 @@ type TrackingTagEvent struct {
 	ViewWindowDays  *int32   `json:"viewWindowDays,omitempty"`
 	// Fires only on pages whose URL contains this text (case-insensitive).
 	UrlContains *string `json:"urlContains,omitempty"`
+	// `defaultValue` is recorded even when the conversion sends its own value.
+	AlwaysUseDefaultValue *bool `json:"alwaysUseDefaultValue,omitempty"`
+	// Primary conversions count toward bidding and the Conversions column; secondary ones are observation only (Google `primary_for_goal`).
+	Primary *bool `json:"primary,omitempty"`
+	// `one` counts at most one conversion per ad interaction (leads), `every` counts each (purchases).
+	CountingType *string `json:"countingType,omitempty"`
 }
 
 type _TrackingTagEvent TrackingTagEvent
@@ -397,6 +403,102 @@ func (o *TrackingTagEvent) SetUrlContains(v string) {
 	o.UrlContains = &v
 }
 
+// GetAlwaysUseDefaultValue returns the AlwaysUseDefaultValue field value if set, zero value otherwise.
+func (o *TrackingTagEvent) GetAlwaysUseDefaultValue() bool {
+	if o == nil || IsNil(o.AlwaysUseDefaultValue) {
+		var ret bool
+		return ret
+	}
+	return *o.AlwaysUseDefaultValue
+}
+
+// GetAlwaysUseDefaultValueOk returns a tuple with the AlwaysUseDefaultValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTagEvent) GetAlwaysUseDefaultValueOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlwaysUseDefaultValue) {
+		return nil, false
+	}
+	return o.AlwaysUseDefaultValue, true
+}
+
+// HasAlwaysUseDefaultValue returns a boolean if a field has been set.
+func (o *TrackingTagEvent) HasAlwaysUseDefaultValue() bool {
+	if o != nil && !IsNil(o.AlwaysUseDefaultValue) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlwaysUseDefaultValue gets a reference to the given bool and assigns it to the AlwaysUseDefaultValue field.
+func (o *TrackingTagEvent) SetAlwaysUseDefaultValue(v bool) {
+	o.AlwaysUseDefaultValue = &v
+}
+
+// GetPrimary returns the Primary field value if set, zero value otherwise.
+func (o *TrackingTagEvent) GetPrimary() bool {
+	if o == nil || IsNil(o.Primary) {
+		var ret bool
+		return ret
+	}
+	return *o.Primary
+}
+
+// GetPrimaryOk returns a tuple with the Primary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTagEvent) GetPrimaryOk() (*bool, bool) {
+	if o == nil || IsNil(o.Primary) {
+		return nil, false
+	}
+	return o.Primary, true
+}
+
+// HasPrimary returns a boolean if a field has been set.
+func (o *TrackingTagEvent) HasPrimary() bool {
+	if o != nil && !IsNil(o.Primary) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrimary gets a reference to the given bool and assigns it to the Primary field.
+func (o *TrackingTagEvent) SetPrimary(v bool) {
+	o.Primary = &v
+}
+
+// GetCountingType returns the CountingType field value if set, zero value otherwise.
+func (o *TrackingTagEvent) GetCountingType() string {
+	if o == nil || IsNil(o.CountingType) {
+		var ret string
+		return ret
+	}
+	return *o.CountingType
+}
+
+// GetCountingTypeOk returns a tuple with the CountingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTagEvent) GetCountingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.CountingType) {
+		return nil, false
+	}
+	return o.CountingType, true
+}
+
+// HasCountingType returns a boolean if a field has been set.
+func (o *TrackingTagEvent) HasCountingType() bool {
+	if o != nil && !IsNil(o.CountingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountingType gets a reference to the given string and assigns it to the CountingType field.
+func (o *TrackingTagEvent) SetCountingType(v string) {
+	o.CountingType = &v
+}
+
 func (o TrackingTagEvent) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -435,6 +537,15 @@ func (o TrackingTagEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.UrlContains) {
 		toSerialize["urlContains"] = o.UrlContains
+	}
+	if !IsNil(o.AlwaysUseDefaultValue) {
+		toSerialize["alwaysUseDefaultValue"] = o.AlwaysUseDefaultValue
+	}
+	if !IsNil(o.Primary) {
+		toSerialize["primary"] = o.Primary
+	}
+	if !IsNil(o.CountingType) {
+		toSerialize["countingType"] = o.CountingType
 	}
 	return toSerialize, nil
 }
