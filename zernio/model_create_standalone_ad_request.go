@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.145.0
+API version: 1.146.0
 Contact: support@zernio.com
 */
 
@@ -148,9 +148,9 @@ type CreateStandaloneAdRequest struct {
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
 	// Meta only. Beneficiary/payer entity IDs for regionalRegulatedCategories. Values are numeric IDs from Meta verification. Keys vary by category (e.g. universal_beneficiary / universal_payer for BRAZIL_REGULATION and THAILAND_UNIVERSAL). If omitted, Meta uses Ads Manager defaults when configured.
 	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
-	// Required for lifetime budgets. On Meta and TikTok a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone, and a date-only end runs to 23:59:59 local.
+	// Required for lifetime budgets. Read like `startDate` (account timezone on Meta, TikTok, X, Pinterest and OpenAI; whole account-local days on Google; UTC on LinkedIn), and a date-only end runs to 23:59:59 local.
 	EndDate *time.Time `json:"endDate,omitempty"`
-	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's start (Meta `start_time`, TikTok ad group `schedule_start_time`, LinkedIn / Pinterest / X / Google campaign start). When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. On Meta and TikTok a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone (Meta itself would read it as UTC). The created ad's `schedule` echoes the start and end the platform stored, as UTC instants; when attaching to an existing ad set (`adSetId`) it is that ad set's start and end. Same field as on `POST /v1/ads/boost`.
+	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's start (Meta `start_time`, TikTok ad group `schedule_start_time`, LinkedIn / Pinterest / X / Google campaign start). When omitted the ad starts delivering immediately. For lifetime budgets Meta also requires `endDate`. On Meta, TikTok, X, Pinterest and OpenAI a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone (Meta itself would read it as UTC). Google runs whole days in the customer account timezone and takes the value's calendar date as written. LinkedIn ad accounts carry no timezone, so there a value without an offset is read as UTC. The created ad's `schedule` echoes the start and end the platform stored, as UTC instants; when attaching to an existing ad set (`adSetId`) it is that ad set's start and end. Same field as on `POST /v1/ads/boost`.
 	StartDate *time.Time `json:"startDate,omitempty"`
 	// Meta only. The Facebook Page the ad runs as (`object_story_spec.page_id`). Defaults to the Page bound to the connection. Pass another Page ID to run the ad as that Page: any Page granted to the connection is accepted (for a business-login connection, every Page granted in Meta's dialog; list them with GET /v1/ads/instagram-accounts). The Instagram identity is re-resolved for that Page unless `instagramAccountId` is set. A Page the connection cannot see is a 400 on `pageId` naming the granted Pages.
 	PageId *string `json:"pageId,omitempty"`

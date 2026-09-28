@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.145.0
+API version: 1.146.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,9 @@ type DuplicateAdCampaignRequest struct {
 	DeepCopy *bool `json:"deepCopy,omitempty"`
 	// ACTIVE = launch the clone immediately (spends the moment LinkedIn approves it). PAUSED = clone stays DRAFT, safe default. INHERITED_FROM_SOURCE = mirror each entity's source status per-entity. Duplicating an ACTIVE campaign this way starts a second front of spend.
 	StatusOption *string `json:"statusOption,omitempty"`
-	// Reschedule the copied hierarchy's start time
-	StartTime      *time.Time `json:"startTime,omitempty"`
+	// Reschedule the copied hierarchy's start (ISO 8601). On Meta and TikTok a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone; LinkedIn ad accounts carry no timezone, so there it is read as UTC. TikTok defaults to a start a few minutes after the copy.
+	StartTime *time.Time `json:"startTime,omitempty"`
+	// Reschedule the copied hierarchy's end, read like `startTime`; a date-only end runs to 23:59:59 local. Defaults to the source's end.
 	EndTime        *time.Time `json:"endTime,omitempty"`
 	RenameStrategy *string    `json:"renameStrategy,omitempty"`
 	RenamePrefix   *string    `json:"renamePrefix,omitempty"`
