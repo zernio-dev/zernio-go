@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.143.1
+API version: 1.144.0
 Contact: support@zernio.com
 */
 
@@ -22,16 +22,14 @@ var _ MappedNullable = &UpdateAdSet200Response{}
 type UpdateAdSet200Response struct {
 	Budget      *AdBudget `json:"budget,omitempty"`
 	BudgetLevel *string   `json:"budgetLevel,omitempty"`
-	// The status written to the ad set. Absent when nothing was written (see statusMessage).
+	// The status written to the ad set switch
 	Status *string `json:"status,omitempty"`
 	// Number of ads whose own stored status changed alongside the ad set switch
 	StatusUpdated *int32 `json:"statusUpdated,omitempty"`
 	// Number of ads whose own status was left as it was
 	StatusSkipped *int32 `json:"statusSkipped,omitempty"`
 	// Why each group of ads was skipped
-	StatusSkippedReasons []string `json:"statusSkippedReasons,omitempty"`
-	// Present only where the platform has no ad-set switch and no child ad was actionable; `status` is then absent because nothing was written
-	StatusMessage        *string                `json:"statusMessage,omitempty"`
+	StatusSkippedReasons []string               `json:"statusSkippedReasons,omitempty"`
 	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
 	BidAmount            NullableFloat32        `json:"bidAmount,omitempty"`
 	RoasAverageFloor     NullableFloat32        `json:"roasAverageFloor,omitempty"`
@@ -247,38 +245,6 @@ func (o *UpdateAdSet200Response) SetStatusSkippedReasons(v []string) {
 	o.StatusSkippedReasons = v
 }
 
-// GetStatusMessage returns the StatusMessage field value if set, zero value otherwise.
-func (o *UpdateAdSet200Response) GetStatusMessage() string {
-	if o == nil || IsNil(o.StatusMessage) {
-		var ret string
-		return ret
-	}
-	return *o.StatusMessage
-}
-
-// GetStatusMessageOk returns a tuple with the StatusMessage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAdSet200Response) GetStatusMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.StatusMessage) {
-		return nil, false
-	}
-	return o.StatusMessage, true
-}
-
-// HasStatusMessage returns a boolean if a field has been set.
-func (o *UpdateAdSet200Response) HasStatusMessage() bool {
-	if o != nil && !IsNil(o.StatusMessage) {
-		return true
-	}
-
-	return false
-}
-
-// SetStatusMessage gets a reference to the given string and assigns it to the StatusMessage field.
-func (o *UpdateAdSet200Response) SetStatusMessage(v string) {
-	o.StatusMessage = &v
-}
-
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
 func (o *UpdateAdSet200Response) GetBidStrategy() BidStrategy {
 	if o == nil || IsNil(o.BidStrategy) {
@@ -456,9 +422,6 @@ func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.StatusSkippedReasons) {
 		toSerialize["statusSkippedReasons"] = o.StatusSkippedReasons
-	}
-	if !IsNil(o.StatusMessage) {
-		toSerialize["statusMessage"] = o.StatusMessage
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy

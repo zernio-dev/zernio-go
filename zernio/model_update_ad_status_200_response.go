@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.143.1
+API version: 1.144.0
 Contact: support@zernio.com
 */
 
@@ -20,11 +20,15 @@ var _ MappedNullable = &UpdateAdStatus200Response{}
 
 // UpdateAdStatus200Response struct for UpdateAdStatus200Response
 type UpdateAdStatus200Response struct {
-	// 1 when the status changed, 0 when skipped
+	// 1 when the switch was written, 0 when skipped
 	Updated *int32 `json:"updated,omitempty"`
-	// 1 when skipped (terminal status or already in target state), else 0
+	// 1 when skipped (terminal status, or the ad's own switch already in the target state), else 0
 	Skipped *int32 `json:"skipped,omitempty"`
-	// Human-readable summary (present only when skipped)
+	// The ad's delivery status after the call, as the platform reports it when it can be read back (e.g. `paused` for an ad switched on under a paused campaign)
+	Status *string `json:"status,omitempty"`
+	// The ad's own on/off switch (`ACTIVE` / `PAUSED`), re-read from the platform after the write. Null where the platform exposes no per-ad switch (X) or the read-back failed and the platform does not store one.
+	ConfiguredStatus NullableString `json:"configuredStatus,omitempty"`
+	// Human-readable summary (present only when skipped), e.g. \"No change: the ad's own switch is already off\"
 	Message *string `json:"message,omitempty"`
 }
 
@@ -109,6 +113,81 @@ func (o *UpdateAdStatus200Response) SetSkipped(v int32) {
 	o.Skipped = &v
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *UpdateAdStatus200Response) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdStatus200Response) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *UpdateAdStatus200Response) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *UpdateAdStatus200Response) SetStatus(v string) {
+	o.Status = &v
+}
+
+// GetConfiguredStatus returns the ConfiguredStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdStatus200Response) GetConfiguredStatus() string {
+	if o == nil || IsNil(o.ConfiguredStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ConfiguredStatus.Get()
+}
+
+// GetConfiguredStatusOk returns a tuple with the ConfiguredStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdStatus200Response) GetConfiguredStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConfiguredStatus.Get(), o.ConfiguredStatus.IsSet()
+}
+
+// HasConfiguredStatus returns a boolean if a field has been set.
+func (o *UpdateAdStatus200Response) HasConfiguredStatus() bool {
+	if o != nil && o.ConfiguredStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConfiguredStatus gets a reference to the given NullableString and assigns it to the ConfiguredStatus field.
+func (o *UpdateAdStatus200Response) SetConfiguredStatus(v string) {
+	o.ConfiguredStatus.Set(&v)
+}
+
+// SetConfiguredStatusNil sets the value for ConfiguredStatus to be an explicit nil
+func (o *UpdateAdStatus200Response) SetConfiguredStatusNil() {
+	o.ConfiguredStatus.Set(nil)
+}
+
+// UnsetConfiguredStatus ensures that no value is present for ConfiguredStatus, not even an explicit nil
+func (o *UpdateAdStatus200Response) UnsetConfiguredStatus() {
+	o.ConfiguredStatus.Unset()
+}
+
 // GetMessage returns the Message field value if set, zero value otherwise.
 func (o *UpdateAdStatus200Response) GetMessage() string {
 	if o == nil || IsNil(o.Message) {
@@ -156,6 +235,12 @@ func (o UpdateAdStatus200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Skipped) {
 		toSerialize["skipped"] = o.Skipped
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if o.ConfiguredStatus.IsSet() {
+		toSerialize["configuredStatus"] = o.ConfiguredStatus.Get()
 	}
 	if !IsNil(o.Message) {
 		toSerialize["message"] = o.Message
