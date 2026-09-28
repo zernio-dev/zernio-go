@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.140.0
+API version: 1.141.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type UpdateTrackingTagRequest struct {
 	AutomaticMatchingFields []string `json:"automaticMatchingFields,omitempty"`
 	FirstPartyCookieStatus  *string  `json:"firstPartyCookieStatus,omitempty"`
 	DataUseSetting          *string  `json:"dataUseSetting,omitempty"`
+	// First-party cookie on or off (TikTok, LinkedIn). Platform-neutral alternative to `firstPartyCookieStatus`.
+	EnableFirstPartyCookies *bool `json:"enableFirstPartyCookies,omitempty"`
 	// Google Ads: turn gclid auto-tagging on or off for the ad account.
 	AutoTagging *bool `json:"autoTagging,omitempty"`
 }
@@ -242,6 +244,38 @@ func (o *UpdateTrackingTagRequest) SetDataUseSetting(v string) {
 	o.DataUseSetting = &v
 }
 
+// GetEnableFirstPartyCookies returns the EnableFirstPartyCookies field value if set, zero value otherwise.
+func (o *UpdateTrackingTagRequest) GetEnableFirstPartyCookies() bool {
+	if o == nil || IsNil(o.EnableFirstPartyCookies) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableFirstPartyCookies
+}
+
+// GetEnableFirstPartyCookiesOk returns a tuple with the EnableFirstPartyCookies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateTrackingTagRequest) GetEnableFirstPartyCookiesOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableFirstPartyCookies) {
+		return nil, false
+	}
+	return o.EnableFirstPartyCookies, true
+}
+
+// HasEnableFirstPartyCookies returns a boolean if a field has been set.
+func (o *UpdateTrackingTagRequest) HasEnableFirstPartyCookies() bool {
+	if o != nil && !IsNil(o.EnableFirstPartyCookies) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableFirstPartyCookies gets a reference to the given bool and assigns it to the EnableFirstPartyCookies field.
+func (o *UpdateTrackingTagRequest) SetEnableFirstPartyCookies(v bool) {
+	o.EnableFirstPartyCookies = &v
+}
+
 // GetAutoTagging returns the AutoTagging field value if set, zero value otherwise.
 func (o *UpdateTrackingTagRequest) GetAutoTagging() bool {
 	if o == nil || IsNil(o.AutoTagging) {
@@ -301,6 +335,9 @@ func (o UpdateTrackingTagRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DataUseSetting) {
 		toSerialize["dataUseSetting"] = o.DataUseSetting
+	}
+	if !IsNil(o.EnableFirstPartyCookies) {
+		toSerialize["enableFirstPartyCookies"] = o.EnableFirstPartyCookies
 	}
 	if !IsNil(o.AutoTagging) {
 		toSerialize["autoTagging"] = o.AutoTagging

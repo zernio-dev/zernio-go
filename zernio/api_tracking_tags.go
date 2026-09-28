@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.140.0
+API version: 1.141.0
 Contact: support@zernio.com
 */
 
@@ -53,6 +53,11 @@ LinkedIn (`linkedinads`): grants `USE_ONLY` access from the ad account that crea
 tag, so the target can use the tag and its conversions but cannot edit or reshare it.
 `adAccountId` is the numeric LinkedIn ad account id. An ad account uses one Insight Tag at
 a time, so a target that already has one answers 400.
+
+TikTok: links the pixel to an advertiser through Business Center
+(`/bc/pixel/link/update/`, `adAccountId` = numeric advertiser_id). Only a pixel that is an
+asset of a Business Center this connection manages can be shared; otherwise the answer is
+400 asking to transfer it to Business Center first.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -419,6 +424,10 @@ a first WEBPAGE conversion action named `name` (category DEFAULT) is
 created, which is what switches Google's conversion tracking on, and
 the tag is returned with it as its first event.
 
+TikTok: `POST /pixel/create/` on the advertiser in `adAccountId` (numeric). Names are at
+most 40 characters with no emoji and must be unique; TikTok refuses a duplicate name
+(400), which is its only retry guard. TikTok has no pixel delete API.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Ads SocialAccount id (platform `metaads` or `openaiads`).
 	@return TrackingTagsAPICreateTrackingTagRequest
@@ -621,6 +630,13 @@ CUSTOMIZE_PRODUCT, FIND_LOCATION, SCHEDULE, SUBMIT_APPLICATION, START_TRIAL, PAG
 VIEW_CATEGORY, VIEW_CONTENT, SEARCH, WATCH_VIDEO) or `siteEvent`. A duplicate name answers
 400.
 
+TikTok: `POST /pixel/event/create/`. `type` is a TikTok pixel event type (SHOPPING,
+ON_WEB_CART, ON_WEB_DETAIL, INITIATE_ORDER, ADD_BILLING, ON_WEB_SEARCH, PAGE_VIEW,
+ON_WEB_REGISTER, FORM, ...), or pass `siteEvent`. Stores `name` (at most 40 characters),
+`defaultValue` and `currency` (USD, JPY or INR only). TikTok returns no id: the new event
+is read back from the pixel, and while TikTok's listing has not refreshed the response
+carries an empty `id` and `status: pending`.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Tag id (`TrackingTag.id`).
@@ -804,6 +820,9 @@ an already archived action succeeds without a call to Google.
 
 Pinterest (platform `pinterestads`): stops Pinterest tracking the event name (`state:
 disabled`); Pinterest keeps the event's history.
+
+TikTok: hard delete (`/pixel/event/delete/`); TikTok refuses events bound to an ad group
+(400).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1114,6 +1133,10 @@ defaults to the account that created the tag.
 Pinterest (platform `pinterestads`): returns the tag with Pinterest's own `code` snippet
 and `lastFiredTime`. Without `adAccountId` Zernio finds the ad account that owns the tag
 (404 when no readable ad account holds it).
+
+TikTok: read from `/pixel/list/?pixel_id=`; `code` is TikTok's `pixel_script`, `events`
+the pixel events. `lastFiredTime` is not available on TikTok. Without `adAccountId` the
+connection's advertisers are searched.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1477,6 +1500,11 @@ can be optimized for, with the neutral `siteEvent` where one maps), and `event_q
 rows with the ad account's Event Quality Score for tag events over the last `1d` and `14d`
 (ad-account level, not per tag; an account Pinterest cannot score yet carries `error`
 instead). Pinterest has no time-bounded counts, so `startTime`/`endTime` answer 400.
+
+TikTok: per-event counts from `/pixel/event/stats/` (`total_count`,
+`browser_event_total_count`, `server_event_total_count`, `attributed_count`,
+`preview_count`), bucketed by UTC day. Defaults to the last 7 days; at most 30 days per
+request. `aggregation` is not accepted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2096,6 +2124,10 @@ name, which the site sends as `pintrk('track', '<name>')` or the Conversions API
 `event_name`. Standard events (`pagevisit`, `checkout`...) need no object and are not
 listed.
 
+TikTok: the pixel's events from `/pixel/list/`. TikTok refreshes this list every 2 to 4
+hours, so a just-created event can be missing. `siteEventId` is the `ttq.track()` name the
+site fires.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Tag id (`TrackingTag.id`).
@@ -2411,6 +2443,9 @@ Meta (`metaads`) and LinkedIn (`linkedinads`); other platforms return 501.
 LinkedIn (`linkedinads`): the ad accounts this connection can see that hold access to the
 Insight Tag; the role (`FULL` or `USE_ONLY`) is appended to `name`. LinkedIn exposes
 permissions per ad account only, so accounts the connection cannot see are not listed.
+
+TikTok (`tiktokads`): the advertisers linked to the pixel in its Business Center
+(`/bc/pixel/link/get/`); a pixel outside Business Center answers 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2751,6 +2786,11 @@ is the numeric Pinterest ad account id (no prefix); omit it to walk every ad acc
 connection can read (an ad account the user has no Business Access role on is skipped).
 `id` equals `siteTagId`, the id the site loads with `pintrk('load', id)`.
 
+TikTok (platform `tiktokads`): TikTok Pixels across the connection's advertisers, or one
+advertiser with `?adAccountId=<numeric advertiser_id>`. `id` is the numeric `pixel_id`,
+`siteTagId` the alphanumeric `pixel_code` from Events Manager. Connections authorized
+before the Pixel Management permission (about 2026-05-28) answer 403 until reconnected.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Ads SocialAccount id (platform `metaads` or `openaiads`).
 	@return TrackingTagsAPIListTrackingTagsRequest
@@ -3072,6 +3112,8 @@ LinkedIn; other platforms return 501.
 LinkedIn (`linkedinads`): revokes the ad account's access. Zernio answers 400 instead of
 revoking the last ad account that holds the tag: LinkedIn accepts that call and the tag
 is orphaned (verified live).
+
+TikTok: unlinks through Business Center (`/bc/pixel/link/update/` with `UNLINK`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -3538,6 +3580,12 @@ its spec lists only POST/GET on `conversion_tags` and GET on `conversion_tags/{i
 PATCH or PUT on `conversion_tags/{id}` answer 405 "Method not allowed". Set enhanced match
 at creation (`automaticMatchingFields`) or change it and the name in Pinterest Ads Manager.
 
+TikTok: `name`, `enableAutomaticMatching` + `automaticMatchingFields` (folded onto
+TikTok's five switches: em, ph, fn/ln, ct/st/zp/country, external_id; ge and db answer
+400), and first-party cookies via `enableFirstPartyCookies` or `firstPartyCookieStatus`
+(enabled or disabled). TikTok has no pixel delete: the endpoint is absent from its API and
+`POST /pixel/delete/` answers 404.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Pixel id.
@@ -3709,6 +3757,9 @@ restores an archived one.
 Pinterest (platform `pinterestads`): remaps the event to another `type` or `siteEvent`.
 Pinterest identifies the event by its name, so `name` cannot change (400): create the new
 name and delete the old one.
+
+TikTok: `name`, `defaultValue` and `currency` (USD, JPY or INR); the type cannot change
+(delete and recreate).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
