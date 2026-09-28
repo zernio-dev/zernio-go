@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.123.1
+API version: 1.124.0
 Contact: support@zernio.com
 */
 
@@ -21,12 +21,14 @@ var _ MappedNullable = &GetCallsUsage200ResponseGroupsInner{}
 // GetCallsUsage200ResponseGroupsInner struct for GetCallsUsage200ResponseGroupsInner
 type GetCallsUsage200ResponseGroupsInner struct {
 	// The group key: a `YYYY-MM-DD` UTC day, one of your numbers, or a channel.
-	Key         *string  `json:"key,omitempty"`
-	Calls       *int32   `json:"calls,omitempty"`
-	Answered    *int32   `json:"answered,omitempty"`
-	Minutes     *float32 `json:"minutes,omitempty"`
-	BillableUSD *float32 `json:"billableUSD,omitempty"`
-	MetaUSD     *float32 `json:"metaUSD,omitempty"`
+	Key            *string  `json:"key,omitempty"`
+	Calls          *int32   `json:"calls,omitempty"`
+	Answered       *int32   `json:"answered,omitempty"`
+	Minutes        *float32 `json:"minutes,omitempty"`
+	BillableUSD    *float32 `json:"billableUSD,omitempty"`
+	MetaUSD        *float32 `json:"metaUSD,omitempty"`
+	BrandedCalls   *int32   `json:"brandedCalls,omitempty"`
+	BrandedCallUSD *float32 `json:"brandedCallUSD,omitempty"`
 }
 
 // NewGetCallsUsage200ResponseGroupsInner instantiates a new GetCallsUsage200ResponseGroupsInner object
@@ -238,6 +240,70 @@ func (o *GetCallsUsage200ResponseGroupsInner) SetMetaUSD(v float32) {
 	o.MetaUSD = &v
 }
 
+// GetBrandedCalls returns the BrandedCalls field value if set, zero value otherwise.
+func (o *GetCallsUsage200ResponseGroupsInner) GetBrandedCalls() int32 {
+	if o == nil || IsNil(o.BrandedCalls) {
+		var ret int32
+		return ret
+	}
+	return *o.BrandedCalls
+}
+
+// GetBrandedCallsOk returns a tuple with the BrandedCalls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) GetBrandedCallsOk() (*int32, bool) {
+	if o == nil || IsNil(o.BrandedCalls) {
+		return nil, false
+	}
+	return o.BrandedCalls, true
+}
+
+// HasBrandedCalls returns a boolean if a field has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) HasBrandedCalls() bool {
+	if o != nil && !IsNil(o.BrandedCalls) {
+		return true
+	}
+
+	return false
+}
+
+// SetBrandedCalls gets a reference to the given int32 and assigns it to the BrandedCalls field.
+func (o *GetCallsUsage200ResponseGroupsInner) SetBrandedCalls(v int32) {
+	o.BrandedCalls = &v
+}
+
+// GetBrandedCallUSD returns the BrandedCallUSD field value if set, zero value otherwise.
+func (o *GetCallsUsage200ResponseGroupsInner) GetBrandedCallUSD() float32 {
+	if o == nil || IsNil(o.BrandedCallUSD) {
+		var ret float32
+		return ret
+	}
+	return *o.BrandedCallUSD
+}
+
+// GetBrandedCallUSDOk returns a tuple with the BrandedCallUSD field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) GetBrandedCallUSDOk() (*float32, bool) {
+	if o == nil || IsNil(o.BrandedCallUSD) {
+		return nil, false
+	}
+	return o.BrandedCallUSD, true
+}
+
+// HasBrandedCallUSD returns a boolean if a field has been set.
+func (o *GetCallsUsage200ResponseGroupsInner) HasBrandedCallUSD() bool {
+	if o != nil && !IsNil(o.BrandedCallUSD) {
+		return true
+	}
+
+	return false
+}
+
+// SetBrandedCallUSD gets a reference to the given float32 and assigns it to the BrandedCallUSD field.
+func (o *GetCallsUsage200ResponseGroupsInner) SetBrandedCallUSD(v float32) {
+	o.BrandedCallUSD = &v
+}
+
 func (o GetCallsUsage200ResponseGroupsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -265,6 +331,12 @@ func (o GetCallsUsage200ResponseGroupsInner) ToMap() (map[string]interface{}, er
 	}
 	if !IsNil(o.MetaUSD) {
 		toSerialize["metaUSD"] = o.MetaUSD
+	}
+	if !IsNil(o.BrandedCalls) {
+		toSerialize["brandedCalls"] = o.BrandedCalls
+	}
+	if !IsNil(o.BrandedCallUSD) {
+		toSerialize["brandedCallUSD"] = o.BrandedCallUSD
 	}
 	return toSerialize, nil
 }

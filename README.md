@@ -489,6 +489,7 @@ func main() {
 | `client.BrandedCallingAPI.AttachBrandedCallingNumbers(ctx)` | Attach numbers to a verified identity |
 | `client.BrandedCallingAPI.ConfirmBrandedCallingAuthorizerEmail(ctx)` | Confirm the authorizer's code |
 | `client.BrandedCallingAPI.DetachBrandedCallingNumbers(ctx)` | Detach numbers from an identity |
+| `client.BrandedCallingAPI.PreflightBrandedCallingIdentity(ctx)` | Dry-run a caller identity before creating it |
 | `client.BrandedCallingAPI.ResendBrandedCallingAuthorizerCode(ctx)` | Resend the authorizer's code |
 
 ### Broadcasts

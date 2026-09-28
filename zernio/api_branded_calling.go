@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.123.1
+API version: 1.124.0
 Contact: support@zernio.com
 */
 
@@ -297,10 +297,17 @@ type BrandedCallingAPICreateBrandedCallingEnterpriseRequest struct {
 	ctx                                   context.Context
 	ApiService                            *BrandedCallingAPIService
 	createBrandedCallingEnterpriseRequest *CreateBrandedCallingEnterpriseRequest
+	idempotencyKey                        *string
 }
 
 func (r BrandedCallingAPICreateBrandedCallingEnterpriseRequest) CreateBrandedCallingEnterpriseRequest(createBrandedCallingEnterpriseRequest CreateBrandedCallingEnterpriseRequest) BrandedCallingAPICreateBrandedCallingEnterpriseRequest {
 	r.createBrandedCallingEnterpriseRequest = &createBrandedCallingEnterpriseRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r BrandedCallingAPICreateBrandedCallingEnterpriseRequest) IdempotencyKey(idempotencyKey string) BrandedCallingAPICreateBrandedCallingEnterpriseRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -314,7 +321,8 @@ CreateBrandedCallingEnterprise Register a business for Branded Calling
 Stores the legal entity behind your caller identities. Nothing is filed with the
 carrier until the business's first identity passes review. Only businesses
 registered in the US or Canada qualify (a FEIN or Canadian equivalent is
-required); any other country returns `422`.
+required); any other country returns `422`. Send an `Idempotency-Key` so a
+retry replays the original response instead of registering the business twice.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return BrandedCallingAPICreateBrandedCallingEnterpriseRequest
@@ -367,6 +375,9 @@ func (a *BrandedCallingAPIService) CreateBrandedCallingEnterpriseExecute(r Brand
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createBrandedCallingEnterpriseRequest
@@ -433,10 +444,17 @@ type BrandedCallingAPICreateBrandedCallingIdentityRequest struct {
 	ctx                                 context.Context
 	ApiService                          *BrandedCallingAPIService
 	createBrandedCallingIdentityRequest *CreateBrandedCallingIdentityRequest
+	idempotencyKey                      *string
 }
 
 func (r BrandedCallingAPICreateBrandedCallingIdentityRequest) CreateBrandedCallingIdentityRequest(createBrandedCallingIdentityRequest CreateBrandedCallingIdentityRequest) BrandedCallingAPICreateBrandedCallingIdentityRequest {
 	r.createBrandedCallingIdentityRequest = &createBrandedCallingIdentityRequest
+	return r
+}
+
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+func (r BrandedCallingAPICreateBrandedCallingIdentityRequest) IdempotencyKey(idempotencyKey string) BrandedCallingAPICreateBrandedCallingIdentityRequest {
+	r.idempotencyKey = &idempotencyKey
 	return r
 }
 
@@ -461,6 +479,10 @@ on every outbound call from a verified branded number to a US destination
 (whether or not the callee's carrier displayed the branding); the surcharge
 shows as `brandedCallUSD` on the call's billing and in
 `GET /v1/voice/calls/estimate` when you pass `from`.
+
+Run `POST /v1/branded-calling/identities/preflight` with the same body first to
+catch what the review would bounce. Send an `Idempotency-Key` so a retry replays
+the original response instead of creating a second identity.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return BrandedCallingAPICreateBrandedCallingIdentityRequest
@@ -513,6 +535,9 @@ func (a *BrandedCallingAPIService) CreateBrandedCallingIdentityExecute(r Branded
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.idempotencyKey != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Idempotency-Key", r.idempotencyKey, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.createBrandedCallingIdentityRequest
@@ -1605,6 +1630,146 @@ func (a *BrandedCallingAPIService) ListBrandedCallingIdentityNumbersExecute(r Br
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type BrandedCallingAPIPreflightBrandedCallingIdentityRequest struct {
+	ctx                                 context.Context
+	ApiService                          *BrandedCallingAPIService
+	createBrandedCallingIdentityRequest *CreateBrandedCallingIdentityRequest
+}
+
+func (r BrandedCallingAPIPreflightBrandedCallingIdentityRequest) CreateBrandedCallingIdentityRequest(createBrandedCallingIdentityRequest CreateBrandedCallingIdentityRequest) BrandedCallingAPIPreflightBrandedCallingIdentityRequest {
+	r.createBrandedCallingIdentityRequest = &createBrandedCallingIdentityRequest
+	return r
+}
+
+func (r BrandedCallingAPIPreflightBrandedCallingIdentityRequest) Execute() (*PreflightBrandedCallingIdentity200Response, *http.Response, error) {
+	return r.ApiService.PreflightBrandedCallingIdentityExecute(r)
+}
+
+/*
+PreflightBrandedCallingIdentity Dry-run a caller identity before creating it
+
+Validates the exact body `POST /v1/branded-calling/identities` takes and runs
+the same deterministic lints the review runs on it without creating anything,
+with the same codes and fields the queued identity's findings carry. A `block`
+finding is what the review would bounce (two references sharing a phone, a
+reference inside the business, an invalid timezone); a `warn` finding slows
+vetting (a display name that does not read as the business, a call reason
+outside the carrier catalogue, a public-mailbox authorizer, a logo that does
+not answer). `ok` is true when there is no `block`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return BrandedCallingAPIPreflightBrandedCallingIdentityRequest
+*/
+func (a *BrandedCallingAPIService) PreflightBrandedCallingIdentity(ctx context.Context) BrandedCallingAPIPreflightBrandedCallingIdentityRequest {
+	return BrandedCallingAPIPreflightBrandedCallingIdentityRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return PreflightBrandedCallingIdentity200Response
+func (a *BrandedCallingAPIService) PreflightBrandedCallingIdentityExecute(r BrandedCallingAPIPreflightBrandedCallingIdentityRequest) (*PreflightBrandedCallingIdentity200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PreflightBrandedCallingIdentity200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BrandedCallingAPIService.PreflightBrandedCallingIdentity")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/branded-calling/identities/preflight"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.createBrandedCallingIdentityRequest == nil {
+		return localVarReturnValue, nil, reportError("createBrandedCallingIdentityRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.createBrandedCallingIdentityRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
