@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.144.0
+API version: 1.145.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,9 @@ type UpdateAdSetRequestPlatformSpecificData struct {
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta ad-set billing_event (e.g. IMPRESSIONS, LINK_CLICKS, THRUPLAY).
 	BillingEvent *string `json:"billingEvent,omitempty"`
-	// Ad set start_time (ISO 8601).
+	// Ad set start_time (ISO 8601). A value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone.
 	StartDate *string `json:"startDate,omitempty"`
-	// Ad set end_time (ISO 8601).
+	// Ad set end_time (ISO 8601). A value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone.
 	EndDate *string `json:"endDate,omitempty"`
 	// Meta `daily_min_spend_target`: the least this ad set should spend per day, in whole currency units of the ad account. It reserves a share of a CAMPAIGN budget for one ad set, so it requires a campaign using Advantage campaign budget (CBO). On an ad set that owns its budget (ABO) this returns 409. Move the budget to the campaign with `PUT /v1/ads/campaigns/{campaignId}` first. Meta treats it as a target, not a guarantee, and rejects the combined minimum of a campaign's ad sets going over the campaign budget. Mutually exclusive with `lifetimeMinSpendTarget` (400): the flavour must match the campaign budget type, a daily budget takes a daily target. Read it back with `GET /v1/ads/ad-sets/{adSetId}?fields=daily_min_spend_target`.
 	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
