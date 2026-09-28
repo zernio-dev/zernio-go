@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.125.0
+API version: 1.126.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,14 @@ type QueryAdInsights200ResponsePaging struct {
 	After NullableString `json:"after,omitempty"`
 	// Google cursor for the next page; null when exhausted.
 	NextPageToken NullableString `json:"nextPageToken,omitempty"`
+	// TikTok only: current page.
+	Page *int32 `json:"page,omitempty"`
+	// TikTok only.
+	PageSize *int32 `json:"pageSize,omitempty"`
+	// TikTok only.
+	TotalRows *int32 `json:"totalRows,omitempty"`
+	// TikTok only.
+	TotalPages *int32 `json:"totalPages,omitempty"`
 }
 
 // NewQueryAdInsights200ResponsePaging instantiates a new QueryAdInsights200ResponsePaging object
@@ -129,6 +137,134 @@ func (o *QueryAdInsights200ResponsePaging) UnsetNextPageToken() {
 	o.NextPageToken.Unset()
 }
 
+// GetPage returns the Page field value if set, zero value otherwise.
+func (o *QueryAdInsights200ResponsePaging) GetPage() int32 {
+	if o == nil || IsNil(o.Page) {
+		var ret int32
+		return ret
+	}
+	return *o.Page
+}
+
+// GetPageOk returns a tuple with the Page field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200ResponsePaging) GetPageOk() (*int32, bool) {
+	if o == nil || IsNil(o.Page) {
+		return nil, false
+	}
+	return o.Page, true
+}
+
+// HasPage returns a boolean if a field has been set.
+func (o *QueryAdInsights200ResponsePaging) HasPage() bool {
+	if o != nil && !IsNil(o.Page) {
+		return true
+	}
+
+	return false
+}
+
+// SetPage gets a reference to the given int32 and assigns it to the Page field.
+func (o *QueryAdInsights200ResponsePaging) SetPage(v int32) {
+	o.Page = &v
+}
+
+// GetPageSize returns the PageSize field value if set, zero value otherwise.
+func (o *QueryAdInsights200ResponsePaging) GetPageSize() int32 {
+	if o == nil || IsNil(o.PageSize) {
+		var ret int32
+		return ret
+	}
+	return *o.PageSize
+}
+
+// GetPageSizeOk returns a tuple with the PageSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200ResponsePaging) GetPageSizeOk() (*int32, bool) {
+	if o == nil || IsNil(o.PageSize) {
+		return nil, false
+	}
+	return o.PageSize, true
+}
+
+// HasPageSize returns a boolean if a field has been set.
+func (o *QueryAdInsights200ResponsePaging) HasPageSize() bool {
+	if o != nil && !IsNil(o.PageSize) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageSize gets a reference to the given int32 and assigns it to the PageSize field.
+func (o *QueryAdInsights200ResponsePaging) SetPageSize(v int32) {
+	o.PageSize = &v
+}
+
+// GetTotalRows returns the TotalRows field value if set, zero value otherwise.
+func (o *QueryAdInsights200ResponsePaging) GetTotalRows() int32 {
+	if o == nil || IsNil(o.TotalRows) {
+		var ret int32
+		return ret
+	}
+	return *o.TotalRows
+}
+
+// GetTotalRowsOk returns a tuple with the TotalRows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200ResponsePaging) GetTotalRowsOk() (*int32, bool) {
+	if o == nil || IsNil(o.TotalRows) {
+		return nil, false
+	}
+	return o.TotalRows, true
+}
+
+// HasTotalRows returns a boolean if a field has been set.
+func (o *QueryAdInsights200ResponsePaging) HasTotalRows() bool {
+	if o != nil && !IsNil(o.TotalRows) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotalRows gets a reference to the given int32 and assigns it to the TotalRows field.
+func (o *QueryAdInsights200ResponsePaging) SetTotalRows(v int32) {
+	o.TotalRows = &v
+}
+
+// GetTotalPages returns the TotalPages field value if set, zero value otherwise.
+func (o *QueryAdInsights200ResponsePaging) GetTotalPages() int32 {
+	if o == nil || IsNil(o.TotalPages) {
+		var ret int32
+		return ret
+	}
+	return *o.TotalPages
+}
+
+// GetTotalPagesOk returns a tuple with the TotalPages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200ResponsePaging) GetTotalPagesOk() (*int32, bool) {
+	if o == nil || IsNil(o.TotalPages) {
+		return nil, false
+	}
+	return o.TotalPages, true
+}
+
+// HasTotalPages returns a boolean if a field has been set.
+func (o *QueryAdInsights200ResponsePaging) HasTotalPages() bool {
+	if o != nil && !IsNil(o.TotalPages) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotalPages gets a reference to the given int32 and assigns it to the TotalPages field.
+func (o *QueryAdInsights200ResponsePaging) SetTotalPages(v int32) {
+	o.TotalPages = &v
+}
+
 func (o QueryAdInsights200ResponsePaging) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -144,6 +280,18 @@ func (o QueryAdInsights200ResponsePaging) ToMap() (map[string]interface{}, error
 	}
 	if o.NextPageToken.IsSet() {
 		toSerialize["nextPageToken"] = o.NextPageToken.Get()
+	}
+	if !IsNil(o.Page) {
+		toSerialize["page"] = o.Page
+	}
+	if !IsNil(o.PageSize) {
+		toSerialize["pageSize"] = o.PageSize
+	}
+	if !IsNil(o.TotalRows) {
+		toSerialize["totalRows"] = o.TotalRows
+	}
+	if !IsNil(o.TotalPages) {
+		toSerialize["totalPages"] = o.TotalPages
 	}
 	return toSerialize, nil
 }

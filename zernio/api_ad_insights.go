@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.125.0
+API version: 1.126.0
 Contact: support@zernio.com
 */
 
@@ -1923,6 +1923,12 @@ type AdInsightsAPIQueryAdInsightsRequest struct {
 	objectId                     *string
 	query                        *string
 	adAccountId                  *string
+	reportType                   *string
+	dataLevel                    *string
+	dimensions                   *string
+	metrics                      *string
+	page                         *int32
+	pageSize                     *int32
 	customerId                   *string
 	pageToken                    *string
 	level                        *string
@@ -1941,7 +1947,7 @@ type AdInsightsAPIQueryAdInsightsRequest struct {
 	after                        *string
 }
 
-// Zernio SocialAccount id (posting or ads variant); its platform selects the Meta or Google contract.
+// Zernio SocialAccount id (posting or ads variant); its platform selects the Meta, Google or TikTok contract.
 func (r AdInsightsAPIQueryAdInsightsRequest) AccountId(accountId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.accountId = &accountId
 	return r
@@ -1959,9 +1965,45 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Query(query string) AdInsightsAPIQu
 	return r
 }
 
-// Google only: platform ad account ID (Google customer ID, digits only) when the connection has several Google Ads accounts.
+// Google: platform ad account ID (Google customer ID, digits only) when the connection has several Google Ads accounts. TikTok (required there): the advertiser id.
 func (r AdInsightsAPIQueryAdInsightsRequest) AdAccountId(adAccountId string) AdInsightsAPIQueryAdInsightsRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// TikTok only: report_type.
+func (r AdInsightsAPIQueryAdInsightsRequest) ReportType(reportType string) AdInsightsAPIQueryAdInsightsRequest {
+	r.reportType = &reportType
+	return r
+}
+
+// TikTok only (required there): data_level.
+func (r AdInsightsAPIQueryAdInsightsRequest) DataLevel(dataLevel string) AdInsightsAPIQueryAdInsightsRequest {
+	r.dataLevel = &dataLevel
+	return r
+}
+
+// TikTok only (required there): 1-4 comma-separated TikTok dimensions (e.g. country_code, campaign_id, stat_time_day).
+func (r AdInsightsAPIQueryAdInsightsRequest) Dimensions(dimensions string) AdInsightsAPIQueryAdInsightsRequest {
+	r.dimensions = &dimensions
+	return r
+}
+
+// TikTok only (required there): comma-separated TikTok metrics (e.g. reach,impressions,frequency,spend).
+func (r AdInsightsAPIQueryAdInsightsRequest) Metrics(metrics string) AdInsightsAPIQueryAdInsightsRequest {
+	r.metrics = &metrics
+	return r
+}
+
+// TikTok only: page number.
+func (r AdInsightsAPIQueryAdInsightsRequest) Page(page int32) AdInsightsAPIQueryAdInsightsRequest {
+	r.page = &page
+	return r
+}
+
+// TikTok only: rows per page.
+func (r AdInsightsAPIQueryAdInsightsRequest) PageSize(pageSize int32) AdInsightsAPIQueryAdInsightsRequest {
+	r.pageSize = &pageSize
 	return r
 }
 
@@ -2020,7 +2062,7 @@ func (r AdInsightsAPIQueryAdInsightsRequest) UseUnifiedAttributionSetting(useUni
 	return r
 }
 
-// JSON array of Meta filter objects: [{\&quot;field\&quot;, \&quot;operator\&quot;, \&quot;value\&quot;}]. Applied server-side by Meta.
+// JSON array of filter objects: [{\&quot;field\&quot;, \&quot;operator\&quot;, \&quot;value\&quot;}]. Applied server-side by Meta or TikTok (TikTok fields e.g. campaign_ids, adgroup_ids, ad_ids).
 func (r AdInsightsAPIQueryAdInsightsRequest) Filtering(filtering string) AdInsightsAPIQueryAdInsightsRequest {
 	r.filtering = &filtering
 	return r
@@ -2032,7 +2074,7 @@ func (r AdInsightsAPIQueryAdInsightsRequest) DatePreset(datePreset string) AdIns
 	return r
 }
 
-// Start of range (YYYY-MM-DD); requires toDate.
+// Start of range (YYYY-MM-DD); requires toDate. Required on TikTok.
 func (r AdInsightsAPIQueryAdInsightsRequest) FromDate(fromDate string) AdInsightsAPIQueryAdInsightsRequest {
 	r.fromDate = &fromDate
 	return r
@@ -2093,6 +2135,23 @@ One exception is translated for backward compatibility: the legacy `campaign.sta
 `'YYYY-MM-DD'` literal are translated; any other form returns Google's 400. New code should
 select the `_date_time` fields directly.
 
+**TikTok (tiktok/tiktokads)**: passthrough of TikTok's synchronous report
+(`/report/integrated/get/`). Send `adAccountId`, `dataLevel`, `dimensions`, `metrics`,
+`fromDate`/`toDate` (TikTok caps the span at 365 days) and optionally `filtering` in the same
+`[{"field", "operator", "value"}]` shape as Meta (operator is TikTok's `filter_type`, e.g. `IN`;
+array values are JSON-encoded for TikTok). Rows come back verbatim as
+`{ dimensions, metrics }` with page-number paging.
+
+*De-duplicated reach across a set of campaigns, ad groups or ads*: filter the set and group by
+`country_code` instead of the entity id. TikTok then counts each person once across the whole
+set and range, per country. Example, two campaigns for a month:
+`dataLevel=AUCTION_CAMPAIGN&dimensions=country_code&metrics=reach,impressions,frequency&fromDate=2026-09-01&toDate=2026-09-30&filtering=[{"field":"campaign_ids","operator":"IN","value":["1876574798182050","1876575504573650"]}]`.
+For a set of ads use `dataLevel=AUCTION_AD` with `ad_ids`. A filter on a finer entity than
+`dataLevel` (e.g. `ad_ids` at `AUCTION_CAMPAIGN`) returns 400: TikTok would otherwise widen it to
+every parent entity containing those ids. When the set delivers in several countries, reach is
+per country; summing the rows counts a person reached in two countries twice.
+`AUCTION_ADVERTISER` rejects entity filters.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIQueryAdInsightsRequest
 */
@@ -2137,6 +2196,36 @@ func (a *AdInsightsAPIService) QueryAdInsightsExecute(r AdInsightsAPIQueryAdInsi
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.reportType != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reportType", r.reportType, "form", "")
+	} else {
+		var defaultValue string = "BASIC"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reportType", defaultValue, "form", "")
+		r.reportType = &defaultValue
+	}
+	if r.dataLevel != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "dataLevel", r.dataLevel, "form", "")
+	}
+	if r.dimensions != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "dimensions", r.dimensions, "form", "")
+	}
+	if r.metrics != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metrics", r.metrics, "form", "")
+	}
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	} else {
+		var defaultValue int32 = 1
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", defaultValue, "form", "")
+		r.page = &defaultValue
+	}
+	if r.pageSize != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", r.pageSize, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", defaultValue, "form", "")
+		r.pageSize = &defaultValue
 	}
 	if r.customerId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.125.0
+API version: 1.126.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &QueryAdInsights200Response{}
 type QueryAdInsights200Response struct {
 	// Meta responses only.
 	ObjectId *string `json:"objectId,omitempty"`
+	// TikTok responses only: the advertiser queried.
+	AdAccountId *string `json:"adAccountId,omitempty"`
 	// Google responses only: the customer the query ran against.
 	CustomerId *string `json:"customerId,omitempty"`
 	// Google responses only: the selected fields echoed by Google.
@@ -77,6 +79,38 @@ func (o *QueryAdInsights200Response) HasObjectId() bool {
 // SetObjectId gets a reference to the given string and assigns it to the ObjectId field.
 func (o *QueryAdInsights200Response) SetObjectId(v string) {
 	o.ObjectId = &v
+}
+
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *QueryAdInsights200Response) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryAdInsights200Response) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *QueryAdInsights200Response) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *QueryAdInsights200Response) SetAdAccountId(v string) {
+	o.AdAccountId = &v
 }
 
 // GetCustomerId returns the CustomerId field value if set, zero value otherwise.
@@ -230,6 +264,9 @@ func (o QueryAdInsights200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ObjectId) {
 		toSerialize["objectId"] = o.ObjectId
+	}
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
 	}
 	if !IsNil(o.CustomerId) {
 		toSerialize["customerId"] = o.CustomerId
