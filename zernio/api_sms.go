@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.126.0
+API version: 1.127.0
 Contact: support@zernio.com
 */
 
@@ -2271,7 +2271,7 @@ func (r SMSAPIShareSmsRegistrationRequest) ShareSmsRegistrationRequest(shareSmsR
 	return r
 }
 
-func (r SMSAPIShareSmsRegistrationRequest) Execute() (*ShareSmsRegistration200Response, *http.Response, error) {
+func (r SMSAPIShareSmsRegistrationRequest) Execute() (*ShareBrandedCallingIdentityForm200Response, *http.Response, error) {
 	return r.ApiService.ShareSmsRegistrationExecute(r)
 }
 
@@ -2295,13 +2295,13 @@ func (a *SMSAPIService) ShareSmsRegistration(ctx context.Context) SMSAPIShareSms
 
 // Execute executes the request
 //
-//	@return ShareSmsRegistration200Response
-func (a *SMSAPIService) ShareSmsRegistrationExecute(r SMSAPIShareSmsRegistrationRequest) (*ShareSmsRegistration200Response, *http.Response, error) {
+//	@return ShareBrandedCallingIdentityForm200Response
+func (a *SMSAPIService) ShareSmsRegistrationExecute(r SMSAPIShareSmsRegistrationRequest) (*ShareBrandedCallingIdentityForm200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ShareSmsRegistration200Response
+		localVarReturnValue *ShareBrandedCallingIdentityForm200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SMSAPIService.ShareSmsRegistration")
