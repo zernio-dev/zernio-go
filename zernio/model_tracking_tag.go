@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.139.0
+API version: 1.140.0
 Contact: support@zernio.com
 */
 
@@ -44,6 +44,8 @@ type TrackingTag struct {
 	Installed *bool `json:"installed,omitempty"`
 	// Unix seconds the tag was created.
 	CreationTime *int32 `json:"creationTime,omitempty"`
+	// Customer data the tag matches automatically, where the platform reports it (Pinterest automatic enhanced match).
+	AutomaticMatchingFields []string `json:"automaticMatchingFields,omitempty"`
 	// Business Manager id that owns the tag, or `null` when the tag lives on a personal (non-BM) ad account. Such tags can't be shared with other ad accounts.
 	OwnerBusinessId NullableString `json:"ownerBusinessId,omitempty"`
 	// Ad account id (`act_...`) that owns the tag, when reported.
@@ -431,6 +433,38 @@ func (o *TrackingTag) SetCreationTime(v int32) {
 	o.CreationTime = &v
 }
 
+// GetAutomaticMatchingFields returns the AutomaticMatchingFields field value if set, zero value otherwise.
+func (o *TrackingTag) GetAutomaticMatchingFields() []string {
+	if o == nil || IsNil(o.AutomaticMatchingFields) {
+		var ret []string
+		return ret
+	}
+	return o.AutomaticMatchingFields
+}
+
+// GetAutomaticMatchingFieldsOk returns a tuple with the AutomaticMatchingFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTag) GetAutomaticMatchingFieldsOk() ([]string, bool) {
+	if o == nil || IsNil(o.AutomaticMatchingFields) {
+		return nil, false
+	}
+	return o.AutomaticMatchingFields, true
+}
+
+// HasAutomaticMatchingFields returns a boolean if a field has been set.
+func (o *TrackingTag) HasAutomaticMatchingFields() bool {
+	if o != nil && !IsNil(o.AutomaticMatchingFields) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutomaticMatchingFields gets a reference to the given []string and assigns it to the AutomaticMatchingFields field.
+func (o *TrackingTag) SetAutomaticMatchingFields(v []string) {
+	o.AutomaticMatchingFields = v
+}
+
 // GetOwnerBusinessId returns the OwnerBusinessId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TrackingTag) GetOwnerBusinessId() string {
 	if o == nil || IsNil(o.OwnerBusinessId.Get()) {
@@ -573,6 +607,9 @@ func (o TrackingTag) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CreationTime) {
 		toSerialize["creationTime"] = o.CreationTime
+	}
+	if !IsNil(o.AutomaticMatchingFields) {
+		toSerialize["automaticMatchingFields"] = o.AutomaticMatchingFields
 	}
 	if o.OwnerBusinessId.IsSet() {
 		toSerialize["ownerBusinessId"] = o.OwnerBusinessId.Get()

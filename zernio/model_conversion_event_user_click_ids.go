@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.139.0
+API version: 1.140.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type ConversionEventUserClickIds struct {
 	Wbraid *string `json:"wbraid,omitempty"`
 	// LinkedIn first-party ad tracking click ID. Captured by parsing `li_fat_id` from landing-page URLs after the advertiser enables enhanced conversion tracking on the LinkedIn Insight Tag. Sent to LinkedIn as the LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID userId. Opaque token, not hashed.
 	LiFatId *string `json:"li_fat_id,omitempty"`
+	// Pinterest click ID (the `epik` URL param or `_epik` cookie). Sent to Pinterest as `click_id`, not hashed.
+	Epik *string `json:"epik,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -243,6 +245,38 @@ func (o *ConversionEventUserClickIds) SetLiFatId(v string) {
 	o.LiFatId = &v
 }
 
+// GetEpik returns the Epik field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetEpik() string {
+	if o == nil || IsNil(o.Epik) {
+		var ret string
+		return ret
+	}
+	return *o.Epik
+}
+
+// GetEpikOk returns a tuple with the Epik field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetEpikOk() (*string, bool) {
+	if o == nil || IsNil(o.Epik) {
+		return nil, false
+	}
+	return o.Epik, true
+}
+
+// HasEpik returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasEpik() bool {
+	if o != nil && !IsNil(o.Epik) {
+		return true
+	}
+
+	return false
+}
+
+// SetEpik gets a reference to the given string and assigns it to the Epik field.
+func (o *ConversionEventUserClickIds) SetEpik(v string) {
+	o.Epik = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -270,6 +304,9 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LiFatId) {
 		toSerialize["li_fat_id"] = o.LiFatId
+	}
+	if !IsNil(o.Epik) {
+		toSerialize["epik"] = o.Epik
 	}
 	return toSerialize, nil
 }

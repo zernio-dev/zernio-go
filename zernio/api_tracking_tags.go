@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.139.0
+API version: 1.140.0
 Contact: support@zernio.com
 */
 
@@ -407,8 +407,9 @@ there is no API to delete an Insight Tag.
 
 Pinterest (platform `pinterestads`): creates a Pinterest tag on the numeric ad account
 `adAccountId` (`POST /v5/ad_accounts/{id}/conversion_tags`). Returns the tag with
-Pinterest's `code` snippet. NOT idempotent and Pinterest has no dry-run and no delete for
-tags, so never retry blindly: list first.
+Pinterest's `code` snippet. `automaticMatchingFields` switches on automatic enhanced match
+for those fields. NOT idempotent and Pinterest has no dry-run and no delete for tags (DELETE
+on `conversion_tags/{id}` answers 405), so never retry blindly: list first.
 
 Google Ads (`googleads`): every Google Ads account has exactly one
 Google tag (`AW-...`), so this is idempotent. `adAccountId` is the
@@ -612,6 +613,14 @@ viewWindowDays (1 to 30), primary, countingType, enabled. Actions are created en
 are unique per account, so a replay answers 400 (DUPLICATE_NAME) instead of creating a
 second one.
 
+Pinterest (platform `pinterestads`): creates an advertiser defined event on the tag's ad
+account. Fields: `name` (1-100 letters, digits, `_` or `-`, case-insensitive, max 15 per
+ad account) and `type` (one of Pinterest's optimizable types: SIGNUP, ADD_TO_CART, LEAD,
+CHECKOUT, SUBSCRIBE, ADD_TO_WISHLIST, ADD_PAYMENT_INFO, INITIATE_CHECKOUT, CONTACT,
+CUSTOMIZE_PRODUCT, FIND_LOCATION, SCHEDULE, SUBMIT_APPLICATION, START_TRIAL, PAGE_VISIT,
+VIEW_CATEGORY, VIEW_CONTENT, SEARCH, WATCH_VIDEO) or `siteEvent`. A duplicate name answers
+400.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
 	@param tagId Tag id (`TrackingTag.id`).
@@ -792,6 +801,9 @@ Meta: `archived`. Meta's delete archives the custom conversion (it stays readabl
 Google Ads (`googleads`): removes the conversion action (state `archived`). Google keeps
 it with status REMOVED and its history; PATCH with `enabled: true` restores it. Deleting
 an already archived action succeeds without a call to Google.
+
+Pinterest (platform `pinterestads`): stops Pinterest tracking the event name (`state:
+disabled`); Pinterest keeps the event's history.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2052,8 +2064,8 @@ ListTrackingTagEvents List conversion events
 
 The tag's conversion events, on platforms where each conversion is its own object:
 Google conversion actions, LinkedIn conversion rules, X web event tags, OpenAI event
-settings, TikTok pixel events, Meta custom conversions. Platforms where events are just
-names the site sends (Pinterest) answer 501.
+settings, TikTok pixel events, Meta custom conversions, Pinterest advertiser defined
+events.
 
 OpenAI Ads: the account's conversion event settings whose source is this pixel.
 `siteEventId` is the event name the site sends (a standard event such as
@@ -2076,6 +2088,13 @@ Google Ads (`googleads`): the enabled WEBPAGE conversion actions of the account;
 value settings, lookback windows, `primary` and `countingType` are returned.
 Archived (removed) actions are listed with status `REMOVED`; imported (GA4, upload,
 app) actions are not events of the tag.
+
+Pinterest (platform `pinterestads`): the ad account's advertiser defined events, custom
+event names mapped to a standard type (`type`, e.g. `SIGNUP`). They belong to the ad
+account, so every tag on it shares them. `id`, `name` and `siteEventId` are all the event
+name, which the site sends as `pintrk('track', '<name>')` or the Conversions API sends as
+`event_name`. Standard events (`pagevisit`, `checkout`...) need no object and are not
+listed.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -3514,9 +3533,10 @@ LinkedIn (`linkedinads`): only `firstPartyCookieStatus` (`first_party_cookie_ena
 `first_party_cookie_disabled`), which sets the tag's first-party tracking. It applies to
 every ad account using the tag. `empty` answers 400: LinkedIn has no unset state.
 
-Pinterest (platform `pinterestads`): 501. Pinterest API v5 only creates, lists and reads
-tags (no update endpoint); rename a tag or change its enhanced match settings in Pinterest
-Ads Manager.
+Pinterest (platform `pinterestads`): 501. Pinterest API v5 has no endpoint to edit a tag:
+its spec lists only POST/GET on `conversion_tags` and GET on `conversion_tags/{id}`, and
+PATCH or PUT on `conversion_tags/{id}` answer 405 "Method not allowed". Set enhanced match
+at creation (`automaticMatchingFields`) or change it and the name in Pinterest Ads Manager.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -3685,6 +3705,10 @@ nothing else); `type`, `siteEvent` and `urlContains` answer 400, create a new ev
 Google Ads (`googleads`): same fields as create, on the account's WEBPAGE actions (others
 answer 404). `enabled: false` archives the action (same as DELETE) and `enabled: true`
 restores an archived one.
+
+Pinterest (platform `pinterestads`): remaps the event to another `type` or `siteEvent`.
+Pinterest identifies the event by its name, so `name` cannot change (400): create the new
+name and delete the old one.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.139.0
+API version: 1.140.0
 Contact: support@zernio.com
 */
 
@@ -1334,13 +1334,13 @@ type ConversionsAPIGetConversionsQualityRequest struct {
 	destinationId *string
 }
 
-// SocialAccount _id (must be a metaads account).
+// SocialAccount _id (a metaads or pinterestads account).
 func (r ConversionsAPIGetConversionsQualityRequest) AccountId(accountId string) ConversionsAPIGetConversionsQualityRequest {
 	r.accountId = &accountId
 	return r
 }
 
-// Meta pixel/dataset ID.
+// Meta pixel/dataset ID, or the numeric Pinterest ad account id.
 func (r ConversionsAPIGetConversionsQualityRequest) DestinationId(destinationId string) ConversionsAPIGetConversionsQualityRequest {
 	r.destinationId = &destinationId
 	return r
@@ -1355,7 +1355,12 @@ GetConversionsQuality Get Event Match Quality
 
 Reads Meta Event Match Quality (EMQ) and pixel↔CAPI event coverage for a
 pixel/dataset, live from Meta's Dataset Quality API. Web events only (a
-Meta limitation). Meta-only; other platforms return 405. Requires the Ads add-on.
+Meta limitation). Other platforms return 405, except Pinterest. Requires the Ads add-on.
+
+Pinterest (`pinterestads`): `destinationId` is the numeric ad account id. Rows come from
+Pinterest's Event Quality Score for Conversions API web events over the last 14 days,
+one per event name, with each identifier's coverage in `matchKeys` and
+`eventCoveragePercentage` set to the tag/API `event_id` overlap. No `compositeScore`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPIGetConversionsQualityRequest
@@ -2041,8 +2046,8 @@ func (r ConversionsAPIListConversionDestinationsRequest) Execute() (*ListConvers
 ListConversionDestinations List conversion destinations
 
 Returns the list of pixels (Meta), conversion actions (Google),
-conversion rules (LinkedIn), or pixels (OpenAI Ads) accessible to the
-connected ads account. Use the returned `id` as `destinationId` when
+conversion rules (LinkedIn), pixels (OpenAI Ads) or ad accounts
+(Pinterest) accessible to the connected ads account. Use the returned `id` as `destinationId` when
 posting to `POST /v1/ads/conversions`.
 
 For Google and LinkedIn, each destination's `type` reflects the
@@ -2056,7 +2061,7 @@ each destination identifies the parent ad account and is required for
 subsequent CRUD calls (update, delete, associations, metrics).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, or openaiads).
+	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, openaiads, or pinterestads).
 	@return ConversionsAPIListConversionDestinationsRequest
 */
 func (a *ConversionsAPIService) ListConversionDestinations(ctx context.Context, accountId string) ConversionsAPIListConversionDestinationsRequest {
@@ -2718,6 +2723,7 @@ Supported platforms:
 - LinkedIn (`linkedinads`) via `/rest/conversionEvents`
 - TikTok (`tiktokads`) via the Offline Events API `/offline/batch/` (OFFLINE conversions only)
 - OpenAI Ads (`openaiads`) via its Conversions API (a separate host, `bzr.openai.com`)
+- Pinterest (`pinterestads`) via `POST /v5/ad_accounts/{id}/events`
 
 `destinationId` semantics differ per platform:
 
@@ -2726,6 +2732,15 @@ Supported platforms:
 - LinkedIn: conversion rule ID or URN, e.g. `104012` or `urn:lla:llaPartnerConversion:104012`
 - TikTok: Offline Event Set ID, e.g. `7057103914977558530`
 - OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/accounts/{accountId}/conversion-destinations`
+- Pinterest: numeric ad account id, e.g. `549755885175` (Pinterest attributes to the ad account, not to a tag)
+
+Pinterest notes: each event needs an `email`, or `ipAddress` plus `userAgent`; others are
+listed in `failures` with code `INVALID_EVENT` and the rest are still sent. `clickIds.epik`
+(the `_epik` cookie) is sent as `click_id`. `actionSource` `web` stays `web`, offline
+sources become `offline`, and app events need `platformData.action_source` `app_android`
+or `app_ios`. Pinterest answers per event, so one bad event does not fail its chunk
+(failures carry code `PINTEREST_EVENT_FAILED`). `consent.adUserData: DENIED` sets `opt_out`.
+The connected user needs a Business Access role on the ad account (403 otherwise).
 
 TikTok notes: this path sends OFFLINE conversions (in-store / CRM / call-center), not web-pixel
 events. Each event must carry an email or phone (TikTok requires at least one). The connected
@@ -2760,6 +2775,7 @@ Per-platform `eventName` semantics:
 - Google: ignored. The conversion action's category determines the event type. Send the standard name closest to your action for documentation, but the platform will not branch on it.
 - LinkedIn: ignored. The conversion rule's `type` (LEAD, PURCHASE, etc.) is locked to the destination at rule-creation time. Send the standard name for documentation; LinkedIn does not branch on it.
 - OpenAI Ads: a fixed subset of standard names (Purchase, Lead, AddToCart, ViewContent, InitiateCheckout, CompleteRegistration, Subscribe, StartTrial, Schedule) maps 1:1 onto OpenAI's own event-type enum; any other standard name or custom string is sent as `type: custom` with the name preserved.
+- Pinterest: standard names map onto Pinterest's (Purchase = `checkout`, AddToCart = `add_to_cart`, InitiateCheckout = `initiate_checkout`, AddPaymentInfo = `add_payment_info`, Lead = `lead`, CompleteRegistration = `signup`, Subscribe = `subscribe`, ViewContent = `view_content`, Search = `search`, PageView = `page_visit`); any other string is sent as is, so it matches an advertiser defined event of that name.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConversionsAPISendConversionsRequest
