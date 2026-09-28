@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.129.2
+API version: 1.130.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,11 @@ import (
 // checks if the UpdateTrackingTagRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateTrackingTagRequest{}
 
-// UpdateTrackingTagRequest At least one field is required; the route returns 400 if the body is empty.
+// UpdateTrackingTagRequest At least one updatable field is required; the route returns 400 if the body is empty or names a field the tag's platform cannot update.
 type UpdateTrackingTagRequest struct {
-	Name *string `json:"name,omitempty"`
+	// Scopes the lookup on platforms whose tag ids live inside an ad account. Ignored elsewhere.
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	Name        *string `json:"name,omitempty"`
 	// Meta Advanced Matching toggle (`enable_automatic_matching`).
 	EnableAutomaticMatching *bool `json:"enableAutomaticMatching,omitempty"`
 	// Which user fields Advanced Matching may collect. Meta's terse codes: em=email, ph=phone, fn=first name, ln=last name, ge=gender, db=date of birth, ct=city, st=state, zp=zip.
@@ -44,6 +46,38 @@ func NewUpdateTrackingTagRequest() *UpdateTrackingTagRequest {
 func NewUpdateTrackingTagRequestWithDefaults() *UpdateTrackingTagRequest {
 	this := UpdateTrackingTagRequest{}
 	return &this
+}
+
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *UpdateTrackingTagRequest) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateTrackingTagRequest) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *UpdateTrackingTagRequest) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *UpdateTrackingTagRequest) SetAdAccountId(v string) {
+	o.AdAccountId = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -216,6 +250,9 @@ func (o UpdateTrackingTagRequest) MarshalJSON() ([]byte, error) {
 
 func (o UpdateTrackingTagRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}

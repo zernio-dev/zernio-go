@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.129.2
+API version: 1.130.0
 Contact: support@zernio.com
 */
 
@@ -22,15 +22,19 @@ var _ MappedNullable = &TrackingTag{}
 
 // TrackingTag A platform measurement tag: the thing you create, install on a website, send events to, and target ads against. On Meta this is a Pixel (`kind: pixel`). The shape is platform-neutral so other platforms (Pinterest Tag, LinkedIn Insight Tag, etc.) can be added without changing the contract; platform-specific fields are absent where a platform has no equivalent. Returned by `listTrackingTags`, `createTrackingTag`, `getTrackingTag`, and `updateTrackingTag`.
 type TrackingTag struct {
-	// Platform-native tag id. Meta: numeric pixel id, as a string.
-	Id       string `json:"id"`
-	Name     string `json:"name"`
-	Platform string `json:"platform"`
+	// Platform-native tag id, the `{tagId}` of the per-tag routes. Meta: numeric pixel id, as a string. OpenAI: the pixel resource id.
+	Id string `json:"id"`
+	// The id the on-site code carries. Equals `id` on Meta; differs on platforms with separate API and site ids (OpenAI `pixel_id`).
+	SiteTagId *string `json:"siteTagId,omitempty"`
+	// Platforms where each conversion is its own object: the tag's conversion events, with the id a site sends for each.
+	Events   []TrackingTagEventsInner `json:"events,omitempty"`
+	Name     string                   `json:"name"`
+	Platform string                   `json:"platform"`
 	// Platform-native flavor of the tag (Meta: `pixel`).
 	Kind string `json:"kind"`
 	// `inactive` when the platform reports the tag as broken/unavailable.
 	Status string `json:"status"`
-	// The base-code `<script>` snippet to install on the site. Meta only; populated by `getTrackingTag`, omitted from the list view.
+	// The base-code `<script>` snippet to install on the site, including the page-view call. Populated by `getTrackingTag`, omitted from the list view.
 	Code *string `json:"code,omitempty"`
 	// Unix seconds of the last event the tag received, or `null` if it never fired. The practical \"is it installed and working\" signal.
 	LastFiredTime NullableInt32 `json:"lastFiredTime,omitempty"`
@@ -92,6 +96,70 @@ func (o *TrackingTag) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *TrackingTag) SetId(v string) {
 	o.Id = v
+}
+
+// GetSiteTagId returns the SiteTagId field value if set, zero value otherwise.
+func (o *TrackingTag) GetSiteTagId() string {
+	if o == nil || IsNil(o.SiteTagId) {
+		var ret string
+		return ret
+	}
+	return *o.SiteTagId
+}
+
+// GetSiteTagIdOk returns a tuple with the SiteTagId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTag) GetSiteTagIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteTagId) {
+		return nil, false
+	}
+	return o.SiteTagId, true
+}
+
+// HasSiteTagId returns a boolean if a field has been set.
+func (o *TrackingTag) HasSiteTagId() bool {
+	if o != nil && !IsNil(o.SiteTagId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteTagId gets a reference to the given string and assigns it to the SiteTagId field.
+func (o *TrackingTag) SetSiteTagId(v string) {
+	o.SiteTagId = &v
+}
+
+// GetEvents returns the Events field value if set, zero value otherwise.
+func (o *TrackingTag) GetEvents() []TrackingTagEventsInner {
+	if o == nil || IsNil(o.Events) {
+		var ret []TrackingTagEventsInner
+		return ret
+	}
+	return o.Events
+}
+
+// GetEventsOk returns a tuple with the Events field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TrackingTag) GetEventsOk() ([]TrackingTagEventsInner, bool) {
+	if o == nil || IsNil(o.Events) {
+		return nil, false
+	}
+	return o.Events, true
+}
+
+// HasEvents returns a boolean if a field has been set.
+func (o *TrackingTag) HasEvents() bool {
+	if o != nil && !IsNil(o.Events) {
+		return true
+	}
+
+	return false
+}
+
+// SetEvents gets a reference to the given []TrackingTagEventsInner and assigns it to the Events field.
+func (o *TrackingTag) SetEvents(v []TrackingTagEventsInner) {
+	o.Events = v
 }
 
 // GetName returns the Name field value
@@ -447,6 +515,12 @@ func (o TrackingTag) MarshalJSON() ([]byte, error) {
 func (o TrackingTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.SiteTagId) {
+		toSerialize["siteTagId"] = o.SiteTagId
+	}
+	if !IsNil(o.Events) {
+		toSerialize["events"] = o.Events
+	}
 	toSerialize["name"] = o.Name
 	toSerialize["platform"] = o.Platform
 	toSerialize["kind"] = o.Kind

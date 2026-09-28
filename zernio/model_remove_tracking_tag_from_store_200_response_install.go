@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.129.2
+API version: 1.130.0
 Contact: support@zernio.com
 */
 
@@ -21,13 +21,20 @@ var _ MappedNullable = &RemoveTrackingTagFromStore200ResponseInstall{}
 // RemoveTrackingTagFromStore200ResponseInstall struct for RemoveTrackingTagFromStore200ResponseInstall
 type RemoveTrackingTagFromStore200ResponseInstall struct {
 	StoreAccountId *string `json:"storeAccountId,omitempty"`
-	Platform       *string `json:"platform,omitempty"`
-	// Shopify: this tag is the pixel the store fires. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
+	// The store platform.
+	Platform *string `json:"platform,omitempty"`
+	// Platform of the tag this install is about (e.g. `metaads`).
+	TagPlatform *string `json:"tagPlatform,omitempty"`
+	// The id the tag carries on the site (see `TrackingTag.siteTagId`).
+	SiteTagId *string `json:"siteTagId,omitempty"`
+	// Shopify: this tag is the one the store fires for its platform. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
 	Installed *bool `json:"installed,omitempty"`
 	// Shopify only.
 	ShopDomain *string `json:"shopDomain,omitempty"`
-	// Shopify only: the Meta pixel the store fires now (may be a different tag), or null.
+	// Shopify only: the tag of the same platform the store fires now (may be a different tag), or null.
 	InstalledTagId *string `json:"installedTagId,omitempty"`
+	// GET only on WordPress, always on Shopify: every Zernio tag on the store, all platforms.
+	Tags []StorePixelInstallTagsInner `json:"tags,omitempty"`
 	// Shopify only: web pixel id, or null when nothing is installed.
 	WebPixelId *string `json:"webPixelId,omitempty"`
 	// WordPress only.
@@ -121,6 +128,70 @@ func (o *RemoveTrackingTagFromStore200ResponseInstall) HasPlatform() bool {
 // SetPlatform gets a reference to the given string and assigns it to the Platform field.
 func (o *RemoveTrackingTagFromStore200ResponseInstall) SetPlatform(v string) {
 	o.Platform = &v
+}
+
+// GetTagPlatform returns the TagPlatform field value if set, zero value otherwise.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetTagPlatform() string {
+	if o == nil || IsNil(o.TagPlatform) {
+		var ret string
+		return ret
+	}
+	return *o.TagPlatform
+}
+
+// GetTagPlatformOk returns a tuple with the TagPlatform field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetTagPlatformOk() (*string, bool) {
+	if o == nil || IsNil(o.TagPlatform) {
+		return nil, false
+	}
+	return o.TagPlatform, true
+}
+
+// HasTagPlatform returns a boolean if a field has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) HasTagPlatform() bool {
+	if o != nil && !IsNil(o.TagPlatform) {
+		return true
+	}
+
+	return false
+}
+
+// SetTagPlatform gets a reference to the given string and assigns it to the TagPlatform field.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) SetTagPlatform(v string) {
+	o.TagPlatform = &v
+}
+
+// GetSiteTagId returns the SiteTagId field value if set, zero value otherwise.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetSiteTagId() string {
+	if o == nil || IsNil(o.SiteTagId) {
+		var ret string
+		return ret
+	}
+	return *o.SiteTagId
+}
+
+// GetSiteTagIdOk returns a tuple with the SiteTagId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetSiteTagIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SiteTagId) {
+		return nil, false
+	}
+	return o.SiteTagId, true
+}
+
+// HasSiteTagId returns a boolean if a field has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) HasSiteTagId() bool {
+	if o != nil && !IsNil(o.SiteTagId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSiteTagId gets a reference to the given string and assigns it to the SiteTagId field.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) SetSiteTagId(v string) {
+	o.SiteTagId = &v
 }
 
 // GetInstalled returns the Installed field value if set, zero value otherwise.
@@ -217,6 +288,38 @@ func (o *RemoveTrackingTagFromStore200ResponseInstall) HasInstalledTagId() bool 
 // SetInstalledTagId gets a reference to the given string and assigns it to the InstalledTagId field.
 func (o *RemoveTrackingTagFromStore200ResponseInstall) SetInstalledTagId(v string) {
 	o.InstalledTagId = &v
+}
+
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetTags() []StorePixelInstallTagsInner {
+	if o == nil || IsNil(o.Tags) {
+		var ret []StorePixelInstallTagsInner
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) GetTagsOk() ([]StorePixelInstallTagsInner, bool) {
+	if o == nil || IsNil(o.Tags) {
+		return nil, false
+	}
+	return o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) HasTags() bool {
+	if o != nil && !IsNil(o.Tags) {
+		return true
+	}
+
+	return false
+}
+
+// SetTags gets a reference to the given []StorePixelInstallTagsInner and assigns it to the Tags field.
+func (o *RemoveTrackingTagFromStore200ResponseInstall) SetTags(v []StorePixelInstallTagsInner) {
+	o.Tags = v
 }
 
 // GetWebPixelId returns the WebPixelId field value if set, zero value otherwise.
@@ -427,6 +530,12 @@ func (o RemoveTrackingTagFromStore200ResponseInstall) ToMap() (map[string]interf
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
+	if !IsNil(o.TagPlatform) {
+		toSerialize["tagPlatform"] = o.TagPlatform
+	}
+	if !IsNil(o.SiteTagId) {
+		toSerialize["siteTagId"] = o.SiteTagId
+	}
 	if !IsNil(o.Installed) {
 		toSerialize["installed"] = o.Installed
 	}
@@ -435,6 +544,9 @@ func (o RemoveTrackingTagFromStore200ResponseInstall) ToMap() (map[string]interf
 	}
 	if !IsNil(o.InstalledTagId) {
 		toSerialize["installedTagId"] = o.InstalledTagId
+	}
+	if !IsNil(o.Tags) {
+		toSerialize["tags"] = o.Tags
 	}
 	if !IsNil(o.WebPixelId) {
 		toSerialize["webPixelId"] = o.WebPixelId

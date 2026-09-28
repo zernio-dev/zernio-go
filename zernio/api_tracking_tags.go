@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.129.2
+API version: 1.130.0
 Contact: support@zernio.com
 */
 
@@ -47,7 +47,7 @@ Shares the pixel with another ad account so campaigns/audiences in that
 account can use it. Requires that you administer both the pixel's owning
 Business Manager and the target ad account; a pixel on a personal
 (non-BM) ad account can't be shared (Meta will reject the call). Meta
-only (platform `metaads`); other platforms return 405.
+only (platform `metaads`); other platforms return 501.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -225,7 +225,7 @@ NOT idempotent on either platform: each call creates a new pixel (and,
 for OpenAI, a new Conversions API key plus, with `defaultEventType`, a
 new conversion event setting). Do not retry blindly on
 timeout. Meta (platform `metaads`) and OpenAI Ads (platform
-`openaiads`); other platforms return 405.
+`openaiads`); other platforms return 501.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Ads SocialAccount id (platform `metaads` or `openaiads`).
@@ -479,10 +479,17 @@ func (a *TrackingTagsAPIService) GetAdTrackingTagsExecute(r TrackingTagsAPIGetAd
 }
 
 type TrackingTagsAPIGetTrackingTagRequest struct {
-	ctx        context.Context
-	ApiService *TrackingTagsAPIService
-	accountId  string
-	tagId      string
+	ctx         context.Context
+	ApiService  *TrackingTagsAPIService
+	accountId   string
+	tagId       string
+	adAccountId *string
+}
+
+// Scopes the lookup on platforms whose tag ids live inside an ad account. Ignored elsewhere.
+func (r TrackingTagsAPIGetTrackingTagRequest) AdAccountId(adAccountId string) TrackingTagsAPIGetTrackingTagRequest {
+	r.adAccountId = &adAccountId
+	return r
 }
 
 func (r TrackingTagsAPIGetTrackingTagRequest) Execute() (*GetTrackingTag200Response, *http.Response, error) {
@@ -494,13 +501,13 @@ GetTrackingTag Get a tracking tag
 
 Returns the full tag record including the base-code `code` snippet,
 `lastFiredTime`, `ownerBusinessId`, `isUnavailable`, etc. Meta only
-(platform `metaads`); other platforms return 405. OpenAI Ads has no
-get-by-id endpoint, so it 405s here too. Use
+(platform `metaads`); other platforms return 501. OpenAI Ads has no
+get-by-id endpoint, so it answers 501 here too. Use
 `GET /v1/accounts/{accountId}/tracking-tags` (list) instead.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
-	@param tagId Pixel id.
+	@param tagId Tag id (`TrackingTag.id`).
 	@return TrackingTagsAPIGetTrackingTagRequest
 */
 func (a *TrackingTagsAPIService) GetTrackingTag(ctx context.Context, accountId string, tagId string) TrackingTagsAPIGetTrackingTagRequest {
@@ -536,6 +543,9 @@ func (a *TrackingTagsAPIService) GetTrackingTagExecute(r TrackingTagsAPIGetTrack
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -639,12 +649,19 @@ type TrackingTagsAPIGetTrackingTagStatsRequest struct {
 	ApiService  *TrackingTagsAPIService
 	accountId   string
 	tagId       string
+	adAccountId *string
 	aggregation *string
 	startTime   *int32
 	endTime     *int32
 }
 
-// Aggregation dimension. Defaults to &#x60;event&#x60;.
+// Scopes the lookup on platforms whose tag ids live inside an ad account. Ignored elsewhere.
+func (r TrackingTagsAPIGetTrackingTagStatsRequest) AdAccountId(adAccountId string) TrackingTagsAPIGetTrackingTagStatsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta only (400 on other platforms): aggregation dimension. Defaults to &#x60;event&#x60;.
 func (r TrackingTagsAPIGetTrackingTagStatsRequest) Aggregation(aggregation string) TrackingTagsAPIGetTrackingTagStatsRequest {
 	r.aggregation = &aggregation
 	return r
@@ -669,14 +686,14 @@ func (r TrackingTagsAPIGetTrackingTagStatsRequest) Execute() (*GetTrackingTagSta
 /*
 GetTrackingTagStats Get aggregated event stats
 
-Returns aggregated event counts for the pixel (`GET /{pixel_id}/stats`).
-Rows are passed through from Meta as-is; their shape depends on the
-`aggregation` requested. Meta only (platform `metaads`); other platforms
-return 405.
+Returns event counts / health for the tag, where the platform exposes
+them. Meta: aggregated counts (`GET /{pixel_id}/stats`), rows passed
+through as-is; their shape depends on the `aggregation` requested.
+Platforms without a stats API answer 501.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
-	@param tagId Pixel id.
+	@param tagId Tag id (`TrackingTag.id`).
 	@return TrackingTagsAPIGetTrackingTagStatsRequest
 */
 func (a *TrackingTagsAPIService) GetTrackingTagStats(ctx context.Context, accountId string, tagId string) TrackingTagsAPIGetTrackingTagStatsRequest {
@@ -712,6 +729,9 @@ func (a *TrackingTagsAPIService) GetTrackingTagStatsExecute(r TrackingTagsAPIGet
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	if r.aggregation != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "aggregation", r.aggregation, "form", "")
 	} else {
@@ -818,11 +838,18 @@ type TrackingTagsAPIGetTrackingTagStoreInstallRequest struct {
 	accountId      string
 	tagId          string
 	storeAccountId *string
+	adAccountId    *string
 }
 
 // The connected Shopify or WordPress account id.
 func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIGetTrackingTagStoreInstallRequest {
 	r.storeAccountId = &storeAccountId
+	return r
+}
+
+// Scopes the tag lookup on platforms whose tag ids live inside an ad account.
+func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) AdAccountId(adAccountId string) TrackingTagsAPIGetTrackingTagStoreInstallRequest {
+	r.adAccountId = &adAccountId
 	return r
 }
 
@@ -833,18 +860,20 @@ func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) Execute() (*GetTrackin
 /*
 GetTrackingTagStoreInstall Get store install status
 
-Whether this pixel is the one the Shopify store fires. `installedTagId` names the pixel
-the store currently fires, which can be a different tag. Meta only (platform `metaads`).
+Whether this tag is the one the Shopify store fires for its platform. `installedTagId`
+names the tag of that platform the store currently fires, which can be a different tag,
+and `tags` lists every Zernio tag on the store (all platforms).
 
 WordPress: whether the Zernio widget for this pixel is live (in an active widget area,
 script intact), plus a read-only `preflight` with the theme's widget areas and, when an
 install would be blocked, the `reason` POST would return. The preflight reads
 capabilities only, so `ready: true` is not a guarantee: `DISALLOW_UNFILTERED_HTML` or a
 multisite admin who is not a Super Admin still strips the script, which POST detects.
+`tags` lists every Zernio widget on the site (all platforms, with `active`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
-	@param tagId Meta pixel id.
+	@param tagId Tag id (`TrackingTag.id`).
 	@return TrackingTagsAPIGetTrackingTagStoreInstallRequest
 */
 func (a *TrackingTagsAPIService) GetTrackingTagStoreInstall(ctx context.Context, accountId string, tagId string) TrackingTagsAPIGetTrackingTagStoreInstallRequest {
@@ -884,6 +913,9 @@ func (a *TrackingTagsAPIService) GetTrackingTagStoreInstallExecute(r TrackingTag
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "storeAccountId", r.storeAccountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -965,6 +997,7 @@ func (a *TrackingTagsAPIService) GetTrackingTagStoreInstallExecute(r TrackingTag
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1008,15 +1041,16 @@ PageView, ViewContent, AddToCart, Search, InitiateCheckout, AddPaymentInfo and P
 Purchase uses `shopify_order_{orderId}` as its event id, so a Conversions API Purchase
 you send for the same order with that `eventId` is deduplicated by Meta.
 
-Idempotent: a store runs one Zernio pixel, so calling it again updates the install and
-installing a different tag replaces the previous one (reported in `replacedTagId`).
+Idempotent: a store runs one Zernio web pixel holding one tag per platform, so calling
+it again updates the install, installing a different tag of the same platform replaces
+the previous one (reported in `replacedTagId`), and other platforms' tags are kept.
 Events respect the store's customer privacy settings (marketing consent).
 
 `accountId` is the Meta ads account that owns the pixel (`tagId`); `storeAccountId` is the
 Shopify account. Stores connected before pixel support must re-approve the Zernio app:
 the call then answers 409 `reconnect_required` with `details.authUrl` to send the
 merchant to (the Shopify account id stays the same). Meta only (platform `metaads`);
-other platforms return 405.
+other platforms return 501.
 
 **WordPress** (`storeAccountId` is a connected WordPress.com or self-hosted site): Zernio
 adds a Custom HTML widget with the Meta pixel base code (fbevents.js, `init`, `PageView`)
@@ -1039,7 +1073,7 @@ the widget read-back is authoritative.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
-	@param tagId Meta pixel id.
+	@param tagId Tag id (`TrackingTag.id`).
 	@return TrackingTagsAPIInstallTrackingTagOnStoreRequest
 */
 func (a *TrackingTagsAPIService) InstallTrackingTagOnStore(ctx context.Context, accountId string, tagId string) TrackingTagsAPIInstallTrackingTagOnStoreRequest {
@@ -1203,7 +1237,7 @@ func (r TrackingTagsAPIListTrackingTagSharedAccountsRequest) Execute() (*ListTra
 /*
 ListTrackingTagSharedAccounts List accounts it is shared with
 
-Meta only (platform `metaads`); other platforms return 405.
+Meta only (platform `metaads`); other platforms return 501.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1370,7 +1404,7 @@ Call `getTrackingTag` for the install snippet and full detail (Meta
 only; OpenAI Ads has no get-by-id endpoint).
 
 Meta (platform `metaads`) and OpenAI Ads (platform `openaiads`); other
-platforms return 405. The `accountId` must be the ads SocialAccount
+platforms return 501. The `accountId` must be the ads SocialAccount
 created by the Ads add-on connect flow (Meta) or the OpenAI Ads
 connect flow, not a Facebook/Instagram posting account. Get your Meta
 `act_...` ids from `GET /v1/ads/accounts`; `adAccountId` is ignored for
@@ -1507,11 +1541,18 @@ type TrackingTagsAPIRemoveTrackingTagFromStoreRequest struct {
 	accountId      string
 	tagId          string
 	storeAccountId *string
+	adAccountId    *string
 }
 
 // The connected Shopify or WordPress account id.
 func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIRemoveTrackingTagFromStoreRequest {
 	r.storeAccountId = &storeAccountId
+	return r
+}
+
+// Scopes the tag lookup on platforms whose tag ids live inside an ad account.
+func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) AdAccountId(adAccountId string) TrackingTagsAPIRemoveTrackingTagFromStoreRequest {
+	r.adAccountId = &adAccountId
 	return r
 }
 
@@ -1522,16 +1563,17 @@ func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) Execute() (*RemoveTrac
 /*
 RemoveTrackingTagFromStore Remove from a Shopify store or WordPress site
 
-Removes the pixel from the store. Idempotent: nothing installed returns 200 with
-`installed: false`. If the store fires a different pixel, nothing is removed and the
-call answers 409 `invalid_resource_state`. Meta only (platform `metaads`).
+Removes the tag from the store. Idempotent: nothing installed returns 200 with
+`installed: false`. If the store fires a different tag of the same platform, nothing is
+removed and the call answers 409 `invalid_resource_state`. Shopify: other platforms'
+tags stay; the web pixel itself is deleted once no tag remains.
 
 WordPress: deletes every widget Zernio created for this pixel and reports how many in
 `removed` (0 when nothing was installed). Pixel code added by hand is left alone.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
-	@param tagId Meta pixel id.
+	@param tagId Tag id (`TrackingTag.id`).
 	@return TrackingTagsAPIRemoveTrackingTagFromStoreRequest
 */
 func (a *TrackingTagsAPIService) RemoveTrackingTagFromStore(ctx context.Context, accountId string, tagId string) TrackingTagsAPIRemoveTrackingTagFromStoreRequest {
@@ -1571,6 +1613,9 @@ func (a *TrackingTagsAPIService) RemoveTrackingTagFromStoreExecute(r TrackingTag
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "storeAccountId", r.storeAccountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1681,7 +1726,7 @@ RemoveTrackingTagSharedAccount Stop sharing with an account
 
 `adAccountId` may be passed as a query parameter (recommended) or as a
 JSON body field for clients that can send DELETE bodies. Meta only
-(platform `metaads`); other platforms return 405.
+(platform `metaads`); other platforms return 501.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -1961,7 +2006,7 @@ Partial-update a pixel. Whitelisted fields: `name` (rename),
 `enableAutomaticMatching`, `automaticMatchingFields`,
 `firstPartyCookieStatus`, `dataUseSetting`. At least one is required.
 Returns the re-fetched canonical tag. Meta only (platform `metaads`);
-other platforms return 405.
+other platforms return 501.
 
 There is no DELETE: Meta has no API to delete a pixel. To stop using
 one, unshare it from your ad accounts (`DELETE
