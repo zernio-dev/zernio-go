@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.117.1
+API version: 1.118.0
 Contact: support@zernio.com
 */
 
@@ -95,6 +95,207 @@ func (a *WebhookEventsAPIService) OnAccountAdsInitialSyncCompletedExecute(r Webh
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAccountAdsInitialSyncCompleted
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAccountAdsSyncFailedRequest struct {
+	ctx                                context.Context
+	ApiService                         *WebhookEventsAPIService
+	webhookPayloadAccountAdsSyncFailed *WebhookPayloadAccountAdsSyncFailed
+}
+
+func (r WebhookEventsAPIOnAccountAdsSyncFailedRequest) WebhookPayloadAccountAdsSyncFailed(webhookPayloadAccountAdsSyncFailed WebhookPayloadAccountAdsSyncFailed) WebhookEventsAPIOnAccountAdsSyncFailedRequest {
+	r.webhookPayloadAccountAdsSyncFailed = &webhookPayloadAccountAdsSyncFailed
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountAdsSyncFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountAdsSyncFailedExecute(r)
+}
+
+/*
+OnAccountAdsSyncFailed Ads sync failed event
+
+Fired once per ad account when its ads stop syncing (no successful sync for 24 hours,
+or every live ad at the retry cap). Checked hourly. Metrics for the ad account are stale
+until `account.ads.sync_recovered` fires for it.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountAdsSyncFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountAdsSyncFailed(ctx context.Context) WebhookEventsAPIOnAccountAdsSyncFailedRequest {
+	return WebhookEventsAPIOnAccountAdsSyncFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountAdsSyncFailedExecute(r WebhookEventsAPIOnAccountAdsSyncFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountAdsSyncFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.ads.sync_failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountAdsSyncFailed == nil {
+		return nil, reportError("webhookPayloadAccountAdsSyncFailed is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountAdsSyncFailed
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAccountAdsSyncRecoveredRequest struct {
+	ctx                                   context.Context
+	ApiService                            *WebhookEventsAPIService
+	webhookPayloadAccountAdsSyncRecovered *WebhookPayloadAccountAdsSyncRecovered
+}
+
+func (r WebhookEventsAPIOnAccountAdsSyncRecoveredRequest) WebhookPayloadAccountAdsSyncRecovered(webhookPayloadAccountAdsSyncRecovered WebhookPayloadAccountAdsSyncRecovered) WebhookEventsAPIOnAccountAdsSyncRecoveredRequest {
+	r.webhookPayloadAccountAdsSyncRecovered = &webhookPayloadAccountAdsSyncRecovered
+	return r
+}
+
+func (r WebhookEventsAPIOnAccountAdsSyncRecoveredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAccountAdsSyncRecoveredExecute(r)
+}
+
+/*
+OnAccountAdsSyncRecovered Ads sync recovered event
+
+Fired once when an ad account previously reported by `account.ads.sync_failed` syncs
+successfully again. Checked hourly.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAccountAdsSyncRecoveredRequest
+*/
+func (a *WebhookEventsAPIService) OnAccountAdsSyncRecovered(ctx context.Context) WebhookEventsAPIOnAccountAdsSyncRecoveredRequest {
+	return WebhookEventsAPIOnAccountAdsSyncRecoveredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAccountAdsSyncRecoveredExecute(r WebhookEventsAPIOnAccountAdsSyncRecoveredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAccountAdsSyncRecovered")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/account.ads.sync_recovered"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAccountAdsSyncRecovered == nil {
+		return nil, reportError("webhookPayloadAccountAdsSyncRecovered is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAccountAdsSyncRecovered
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
