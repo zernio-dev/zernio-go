@@ -15,36 +15,35 @@ import (
 	"encoding/json"
 )
 
-// checks if the MetaPagePartner type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &MetaPagePartner{}
+// checks if the GrantBusinessPartner200ResponsePartner type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &GrantBusinessPartner200ResponsePartner{}
 
-// MetaPagePartner struct for MetaPagePartner
-type MetaPagePartner struct {
+// GrantBusinessPartner200ResponsePartner struct for GrantBusinessPartner200ResponsePartner
+type GrantBusinessPartner200ResponsePartner struct {
 	BusinessId *string `json:"businessId,omitempty"`
-	Name       *string `json:"name,omitempty"`
-	// Tasks the partner holds, in the bare spelling the grant takes (ADVERTISE, ANALYZE, MANAGE, ...). Meta reads them back with a PROFILE_PLUS_ prefix, which is stripped here; partners granted in Business Settings may hold tasks beyond the six the grant accepts, such as MANAGE_LEADS or REVENUE.
+	// Tasks the partner currently holds.
 	PermittedTasks []string `json:"permittedTasks,omitempty"`
 }
 
-// NewMetaPagePartner instantiates a new MetaPagePartner object
+// NewGrantBusinessPartner200ResponsePartner instantiates a new GrantBusinessPartner200ResponsePartner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMetaPagePartner() *MetaPagePartner {
-	this := MetaPagePartner{}
+func NewGrantBusinessPartner200ResponsePartner() *GrantBusinessPartner200ResponsePartner {
+	this := GrantBusinessPartner200ResponsePartner{}
 	return &this
 }
 
-// NewMetaPagePartnerWithDefaults instantiates a new MetaPagePartner object
+// NewGrantBusinessPartner200ResponsePartnerWithDefaults instantiates a new GrantBusinessPartner200ResponsePartner object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewMetaPagePartnerWithDefaults() *MetaPagePartner {
-	this := MetaPagePartner{}
+func NewGrantBusinessPartner200ResponsePartnerWithDefaults() *GrantBusinessPartner200ResponsePartner {
+	this := GrantBusinessPartner200ResponsePartner{}
 	return &this
 }
 
 // GetBusinessId returns the BusinessId field value if set, zero value otherwise.
-func (o *MetaPagePartner) GetBusinessId() string {
+func (o *GrantBusinessPartner200ResponsePartner) GetBusinessId() string {
 	if o == nil || IsNil(o.BusinessId) {
 		var ret string
 		return ret
@@ -54,7 +53,7 @@ func (o *MetaPagePartner) GetBusinessId() string {
 
 // GetBusinessIdOk returns a tuple with the BusinessId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *MetaPagePartner) GetBusinessIdOk() (*string, bool) {
+func (o *GrantBusinessPartner200ResponsePartner) GetBusinessIdOk() (*string, bool) {
 	if o == nil || IsNil(o.BusinessId) {
 		return nil, false
 	}
@@ -62,7 +61,7 @@ func (o *MetaPagePartner) GetBusinessIdOk() (*string, bool) {
 }
 
 // HasBusinessId returns a boolean if a field has been set.
-func (o *MetaPagePartner) HasBusinessId() bool {
+func (o *GrantBusinessPartner200ResponsePartner) HasBusinessId() bool {
 	if o != nil && !IsNil(o.BusinessId) {
 		return true
 	}
@@ -71,44 +70,12 @@ func (o *MetaPagePartner) HasBusinessId() bool {
 }
 
 // SetBusinessId gets a reference to the given string and assigns it to the BusinessId field.
-func (o *MetaPagePartner) SetBusinessId(v string) {
+func (o *GrantBusinessPartner200ResponsePartner) SetBusinessId(v string) {
 	o.BusinessId = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *MetaPagePartner) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MetaPagePartner) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *MetaPagePartner) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *MetaPagePartner) SetName(v string) {
-	o.Name = &v
-}
-
 // GetPermittedTasks returns the PermittedTasks field value if set, zero value otherwise.
-func (o *MetaPagePartner) GetPermittedTasks() []string {
+func (o *GrantBusinessPartner200ResponsePartner) GetPermittedTasks() []string {
 	if o == nil || IsNil(o.PermittedTasks) {
 		var ret []string
 		return ret
@@ -118,7 +85,7 @@ func (o *MetaPagePartner) GetPermittedTasks() []string {
 
 // GetPermittedTasksOk returns a tuple with the PermittedTasks field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *MetaPagePartner) GetPermittedTasksOk() ([]string, bool) {
+func (o *GrantBusinessPartner200ResponsePartner) GetPermittedTasksOk() ([]string, bool) {
 	if o == nil || IsNil(o.PermittedTasks) {
 		return nil, false
 	}
@@ -126,7 +93,7 @@ func (o *MetaPagePartner) GetPermittedTasksOk() ([]string, bool) {
 }
 
 // HasPermittedTasks returns a boolean if a field has been set.
-func (o *MetaPagePartner) HasPermittedTasks() bool {
+func (o *GrantBusinessPartner200ResponsePartner) HasPermittedTasks() bool {
 	if o != nil && !IsNil(o.PermittedTasks) {
 		return true
 	}
@@ -135,11 +102,11 @@ func (o *MetaPagePartner) HasPermittedTasks() bool {
 }
 
 // SetPermittedTasks gets a reference to the given []string and assigns it to the PermittedTasks field.
-func (o *MetaPagePartner) SetPermittedTasks(v []string) {
+func (o *GrantBusinessPartner200ResponsePartner) SetPermittedTasks(v []string) {
 	o.PermittedTasks = v
 }
 
-func (o MetaPagePartner) MarshalJSON() ([]byte, error) {
+func (o GrantBusinessPartner200ResponsePartner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -147,13 +114,10 @@ func (o MetaPagePartner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o MetaPagePartner) ToMap() (map[string]interface{}, error) {
+func (o GrantBusinessPartner200ResponsePartner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.BusinessId) {
 		toSerialize["businessId"] = o.BusinessId
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.PermittedTasks) {
 		toSerialize["permittedTasks"] = o.PermittedTasks
@@ -161,38 +125,38 @@ func (o MetaPagePartner) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableMetaPagePartner struct {
-	value *MetaPagePartner
+type NullableGrantBusinessPartner200ResponsePartner struct {
+	value *GrantBusinessPartner200ResponsePartner
 	isSet bool
 }
 
-func (v NullableMetaPagePartner) Get() *MetaPagePartner {
+func (v NullableGrantBusinessPartner200ResponsePartner) Get() *GrantBusinessPartner200ResponsePartner {
 	return v.value
 }
 
-func (v *NullableMetaPagePartner) Set(val *MetaPagePartner) {
+func (v *NullableGrantBusinessPartner200ResponsePartner) Set(val *GrantBusinessPartner200ResponsePartner) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableMetaPagePartner) IsSet() bool {
+func (v NullableGrantBusinessPartner200ResponsePartner) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableMetaPagePartner) Unset() {
+func (v *NullableGrantBusinessPartner200ResponsePartner) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableMetaPagePartner(val *MetaPagePartner) *NullableMetaPagePartner {
-	return &NullableMetaPagePartner{value: val, isSet: true}
+func NewNullableGrantBusinessPartner200ResponsePartner(val *GrantBusinessPartner200ResponsePartner) *NullableGrantBusinessPartner200ResponsePartner {
+	return &NullableGrantBusinessPartner200ResponsePartner{value: val, isSet: true}
 }
 
-func (v NullableMetaPagePartner) MarshalJSON() ([]byte, error) {
+func (v NullableGrantBusinessPartner200ResponsePartner) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableMetaPagePartner) UnmarshalJSON(src []byte) error {
+func (v *NullableGrantBusinessPartner200ResponsePartner) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

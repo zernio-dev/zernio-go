@@ -21,7 +21,7 @@ var _ MappedNullable = &GrantBusinessPartner201Response{}
 // GrantBusinessPartner201Response struct for GrantBusinessPartner201Response
 type GrantBusinessPartner201Response struct {
 	Page    *MetaPageOwnership                      `json:"page,omitempty"`
-	Partner *GrantBusinessPartner201ResponsePartner `json:"partner,omitempty"`
+	Partner *GrantBusinessPartner200ResponsePartner `json:"partner,omitempty"`
 }
 
 // NewGrantBusinessPartner201Response instantiates a new GrantBusinessPartner201Response object
@@ -74,9 +74,9 @@ func (o *GrantBusinessPartner201Response) SetPage(v MetaPageOwnership) {
 }
 
 // GetPartner returns the Partner field value if set, zero value otherwise.
-func (o *GrantBusinessPartner201Response) GetPartner() GrantBusinessPartner201ResponsePartner {
+func (o *GrantBusinessPartner201Response) GetPartner() GrantBusinessPartner200ResponsePartner {
 	if o == nil || IsNil(o.Partner) {
-		var ret GrantBusinessPartner201ResponsePartner
+		var ret GrantBusinessPartner200ResponsePartner
 		return ret
 	}
 	return *o.Partner
@@ -84,7 +84,7 @@ func (o *GrantBusinessPartner201Response) GetPartner() GrantBusinessPartner201Re
 
 // GetPartnerOk returns a tuple with the Partner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GrantBusinessPartner201Response) GetPartnerOk() (*GrantBusinessPartner201ResponsePartner, bool) {
+func (o *GrantBusinessPartner201Response) GetPartnerOk() (*GrantBusinessPartner200ResponsePartner, bool) {
 	if o == nil || IsNil(o.Partner) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *GrantBusinessPartner201Response) HasPartner() bool {
 	return false
 }
 
-// SetPartner gets a reference to the given GrantBusinessPartner201ResponsePartner and assigns it to the Partner field.
-func (o *GrantBusinessPartner201Response) SetPartner(v GrantBusinessPartner201ResponsePartner) {
+// SetPartner gets a reference to the given GrantBusinessPartner200ResponsePartner and assigns it to the Partner field.
+func (o *GrantBusinessPartner201Response) SetPartner(v GrantBusinessPartner200ResponsePartner) {
 	o.Partner = &v
 }
 

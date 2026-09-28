@@ -1379,7 +1379,7 @@ func (r AccountsAPIGrantBusinessPartnerRequest) GrantBusinessPartnerRequest(gran
 	return r
 }
 
-func (r AccountsAPIGrantBusinessPartnerRequest) Execute() (*GrantBusinessPartner201Response, *http.Response, error) {
+func (r AccountsAPIGrantBusinessPartnerRequest) Execute() (*GrantBusinessPartner200Response, *http.Response, error) {
 	return r.ApiService.GrantBusinessPartnerExecute(r)
 }
 
@@ -1393,8 +1393,10 @@ the end user's ad accounts.
 
 Meta only lets a user token share a Page that a business portfolio owns. A Page
 outside any portfolio must first be claimed into one at business.facebook.com; this
-endpoint answers `422` until that is done. Granting to a portfolio that already has
-access replaces its task set, so the call is safe to repeat.
+endpoint answers `422` until that is done. Meta refuses a second grant to a portfolio
+that already has access instead of replacing its tasks, so that case answers `200`
+with `alreadyShared: true` and the tasks the partner currently holds. To change a
+partner's tasks, revoke and grant again.
 
 After the grant, the partner assigns its own people to the Page with
 `POST /v1/ads/page-users`; Meta does not assign partner admins automatically.
@@ -1416,13 +1418,13 @@ func (a *AccountsAPIService) GrantBusinessPartner(ctx context.Context, accountId
 
 // Execute executes the request
 //
-//	@return GrantBusinessPartner201Response
-func (a *AccountsAPIService) GrantBusinessPartnerExecute(r AccountsAPIGrantBusinessPartnerRequest) (*GrantBusinessPartner201Response, *http.Response, error) {
+//	@return GrantBusinessPartner200Response
+func (a *AccountsAPIService) GrantBusinessPartnerExecute(r AccountsAPIGrantBusinessPartnerRequest) (*GrantBusinessPartner200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GrantBusinessPartner201Response
+		localVarReturnValue *GrantBusinessPartner200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AccountsAPIService.GrantBusinessPartner")
