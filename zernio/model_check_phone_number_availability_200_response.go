@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.157.1
+API version: 1.158.0
 Contact: support@zernio.com
 */
 
@@ -29,10 +29,11 @@ type CheckPhoneNumberAvailability200Response struct {
 	AddressConstraint *string `json:"addressConstraint,omitempty"`
 	// For `geo` only: the area(s) the registered address must be in.
 	Areas []string `json:"areas,omitempty"`
-	// Live inventory grouped by area code. For US and CA this is the full country inventory (every area code with stock, recognizable metros listed first, then alphabetical); other countries are ordered largest stock first; they list the areas in the latest inventory page (up to 500 numbers, which for most countries is the entire pool). Empty when out of stock (or the area lookup failed). Pass a chosen `ndc` as `areaCode` on POST /v1/phone-numbers/purchase (or on the KYC submit for regulated countries) to require that area.
+	// Live inventory grouped by area code. For US and CA this is the full country inventory (every area code with stock, recognizable metros listed first, then alphabetical); other countries are ordered largest stock first; they list the areas in the latest inventory page (up to 500 numbers, which for most countries is the entire pool). Empty when out of stock (or the area lookup failed). Pass a chosen `ndc` as `areaCode` on POST /v1/phone-numbers/purchase (or on the KYC submit for regulated countries) to require that area. Equal to `areaAvailability.inStock`.
 	AreaOptions []CheckPhoneNumberAvailability200ResponseAreaOptionsInner `json:"areaOptions,omitempty"`
-	// Areas that had stock in the last 90 days and have none now. Pass one as `areaCode` with `preOrder: true` on the KYC submit when `preOrderable` is true, or watch it with POST /v1/phone-numbers/stock-watches.
-	SoldOutAreas []CheckPhoneNumberAvailability200ResponseSoldOutAreasInner `json:"soldOutAreas,omitempty"`
+	// Every area of the country's numbering plan with nothing deliverable now: `areaAvailability.preOrder` plus `areaAvailability.outOfStock`, kept for older clients. Pass one as `areaCode` with `preOrder: true` on the KYC submit when `preOrderable` is true, or watch it with POST /v1/phone-numbers/stock-watches.
+	SoldOutAreas     []CheckPhoneNumberAvailability200ResponseSoldOutAreasInner `json:"soldOutAreas,omitempty"`
+	AreaAvailability *CheckPhoneNumberAvailability200ResponseAreaAvailability   `json:"areaAvailability,omitempty"`
 }
 
 // NewCheckPhoneNumberAvailability200Response instantiates a new CheckPhoneNumberAvailability200Response object
@@ -308,6 +309,38 @@ func (o *CheckPhoneNumberAvailability200Response) SetSoldOutAreas(v []CheckPhone
 	o.SoldOutAreas = v
 }
 
+// GetAreaAvailability returns the AreaAvailability field value if set, zero value otherwise.
+func (o *CheckPhoneNumberAvailability200Response) GetAreaAvailability() CheckPhoneNumberAvailability200ResponseAreaAvailability {
+	if o == nil || IsNil(o.AreaAvailability) {
+		var ret CheckPhoneNumberAvailability200ResponseAreaAvailability
+		return ret
+	}
+	return *o.AreaAvailability
+}
+
+// GetAreaAvailabilityOk returns a tuple with the AreaAvailability field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberAvailability200Response) GetAreaAvailabilityOk() (*CheckPhoneNumberAvailability200ResponseAreaAvailability, bool) {
+	if o == nil || IsNil(o.AreaAvailability) {
+		return nil, false
+	}
+	return o.AreaAvailability, true
+}
+
+// HasAreaAvailability returns a boolean if a field has been set.
+func (o *CheckPhoneNumberAvailability200Response) HasAreaAvailability() bool {
+	if o != nil && !IsNil(o.AreaAvailability) {
+		return true
+	}
+
+	return false
+}
+
+// SetAreaAvailability gets a reference to the given CheckPhoneNumberAvailability200ResponseAreaAvailability and assigns it to the AreaAvailability field.
+func (o *CheckPhoneNumberAvailability200Response) SetAreaAvailability(v CheckPhoneNumberAvailability200ResponseAreaAvailability) {
+	o.AreaAvailability = &v
+}
+
 func (o CheckPhoneNumberAvailability200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -341,6 +374,9 @@ func (o CheckPhoneNumberAvailability200Response) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.SoldOutAreas) {
 		toSerialize["soldOutAreas"] = o.SoldOutAreas
+	}
+	if !IsNil(o.AreaAvailability) {
+		toSerialize["areaAvailability"] = o.AreaAvailability
 	}
 	return toSerialize, nil
 }

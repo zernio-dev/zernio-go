@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.157.1
+API version: 1.158.0
 Contact: support@zernio.com
 */
 
@@ -748,7 +748,7 @@ func (r PhoneNumbersAPICreatePhoneNumberStockWatchRequest) CreatePhoneNumberStoc
 	return r
 }
 
-func (r PhoneNumbersAPICreatePhoneNumberStockWatchRequest) Execute() (*PhoneNumberStockWatch, *http.Response, error) {
+func (r PhoneNumbersAPICreatePhoneNumberStockWatchRequest) Execute() (*CreatePhoneNumberStockWatch200Response, *http.Response, error) {
 	return r.ApiService.CreatePhoneNumberStockWatchExecute(r)
 }
 
@@ -784,13 +784,13 @@ func (a *PhoneNumbersAPIService) CreatePhoneNumberStockWatch(ctx context.Context
 
 // Execute executes the request
 //
-//	@return PhoneNumberStockWatch
-func (a *PhoneNumbersAPIService) CreatePhoneNumberStockWatchExecute(r PhoneNumbersAPICreatePhoneNumberStockWatchRequest) (*PhoneNumberStockWatch, *http.Response, error) {
+//	@return CreatePhoneNumberStockWatch200Response
+func (a *PhoneNumbersAPIService) CreatePhoneNumberStockWatchExecute(r PhoneNumbersAPICreatePhoneNumberStockWatchRequest) (*CreatePhoneNumberStockWatch200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *PhoneNumberStockWatch
+		localVarReturnValue *CreatePhoneNumberStockWatch200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PhoneNumbersAPIService.CreatePhoneNumberStockWatch")
