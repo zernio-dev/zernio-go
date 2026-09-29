@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.148.2
+API version: 1.149.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the UpdateAdSet200Response type satisfies the MappedNullable interface at compile time
@@ -22,13 +23,16 @@ var _ MappedNullable = &UpdateAdSet200Response{}
 type UpdateAdSet200Response struct {
 	Budget      *AdBudget `json:"budget,omitempty"`
 	BudgetLevel *string   `json:"budgetLevel,omitempty"`
-	// The status written to the ad set switch
+	// As in PUT /v1/ads/ad-sets/{adSetId}/status: delivery derived from the switches read back.
 	Status *string `json:"status,omitempty"`
-	// Number of ads whose own stored status changed alongside the ad set switch
+	// The ad set's own switch read back from the platform; null when it could not be read.
+	PlatformAdSetStatus    NullableString `json:"platformAdSetStatus,omitempty"`
+	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
+	StatusReadAt           NullableTime   `json:"statusReadAt,omitempty"`
+	// 1 when the ad set's switch was written.
 	StatusUpdated *int32 `json:"statusUpdated,omitempty"`
-	// Number of ads whose own status was left as it was
-	StatusSkipped *int32 `json:"statusSkipped,omitempty"`
-	// Why each group of ads was skipped
+	// 1 when a live read showed it already in the requested state.
+	StatusSkipped        *int32                 `json:"statusSkipped,omitempty"`
 	StatusSkippedReasons []string               `json:"statusSkippedReasons,omitempty"`
 	BidStrategy          *BidStrategy           `json:"bidStrategy,omitempty"`
 	BidAmount            NullableFloat32        `json:"bidAmount,omitempty"`
@@ -147,6 +151,135 @@ func (o *UpdateAdSet200Response) HasStatus() bool {
 // SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *UpdateAdSet200Response) SetStatus(v string) {
 	o.Status = &v
+}
+
+// GetPlatformAdSetStatus returns the PlatformAdSetStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSet200Response) GetPlatformAdSetStatus() string {
+	if o == nil || IsNil(o.PlatformAdSetStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformAdSetStatus.Get()
+}
+
+// GetPlatformAdSetStatusOk returns a tuple with the PlatformAdSetStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSet200Response) GetPlatformAdSetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformAdSetStatus.Get(), o.PlatformAdSetStatus.IsSet()
+}
+
+// HasPlatformAdSetStatus returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasPlatformAdSetStatus() bool {
+	if o != nil && o.PlatformAdSetStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformAdSetStatus gets a reference to the given NullableString and assigns it to the PlatformAdSetStatus field.
+func (o *UpdateAdSet200Response) SetPlatformAdSetStatus(v string) {
+	o.PlatformAdSetStatus.Set(&v)
+}
+
+// SetPlatformAdSetStatusNil sets the value for PlatformAdSetStatus to be an explicit nil
+func (o *UpdateAdSet200Response) SetPlatformAdSetStatusNil() {
+	o.PlatformAdSetStatus.Set(nil)
+}
+
+// UnsetPlatformAdSetStatus ensures that no value is present for PlatformAdSetStatus, not even an explicit nil
+func (o *UpdateAdSet200Response) UnsetPlatformAdSetStatus() {
+	o.PlatformAdSetStatus.Unset()
+}
+
+// GetPlatformCampaignStatus returns the PlatformCampaignStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSet200Response) GetPlatformCampaignStatus() string {
+	if o == nil || IsNil(o.PlatformCampaignStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCampaignStatus.Get()
+}
+
+// GetPlatformCampaignStatusOk returns a tuple with the PlatformCampaignStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSet200Response) GetPlatformCampaignStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformCampaignStatus.Get(), o.PlatformCampaignStatus.IsSet()
+}
+
+// HasPlatformCampaignStatus returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasPlatformCampaignStatus() bool {
+	if o != nil && o.PlatformCampaignStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCampaignStatus gets a reference to the given NullableString and assigns it to the PlatformCampaignStatus field.
+func (o *UpdateAdSet200Response) SetPlatformCampaignStatus(v string) {
+	o.PlatformCampaignStatus.Set(&v)
+}
+
+// SetPlatformCampaignStatusNil sets the value for PlatformCampaignStatus to be an explicit nil
+func (o *UpdateAdSet200Response) SetPlatformCampaignStatusNil() {
+	o.PlatformCampaignStatus.Set(nil)
+}
+
+// UnsetPlatformCampaignStatus ensures that no value is present for PlatformCampaignStatus, not even an explicit nil
+func (o *UpdateAdSet200Response) UnsetPlatformCampaignStatus() {
+	o.PlatformCampaignStatus.Unset()
+}
+
+// GetStatusReadAt returns the StatusReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSet200Response) GetStatusReadAt() time.Time {
+	if o == nil || IsNil(o.StatusReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StatusReadAt.Get()
+}
+
+// GetStatusReadAtOk returns a tuple with the StatusReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSet200Response) GetStatusReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StatusReadAt.Get(), o.StatusReadAt.IsSet()
+}
+
+// HasStatusReadAt returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasStatusReadAt() bool {
+	if o != nil && o.StatusReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusReadAt gets a reference to the given NullableTime and assigns it to the StatusReadAt field.
+func (o *UpdateAdSet200Response) SetStatusReadAt(v time.Time) {
+	o.StatusReadAt.Set(&v)
+}
+
+// SetStatusReadAtNil sets the value for StatusReadAt to be an explicit nil
+func (o *UpdateAdSet200Response) SetStatusReadAtNil() {
+	o.StatusReadAt.Set(nil)
+}
+
+// UnsetStatusReadAt ensures that no value is present for StatusReadAt, not even an explicit nil
+func (o *UpdateAdSet200Response) UnsetStatusReadAt() {
+	o.StatusReadAt.Unset()
 }
 
 // GetStatusUpdated returns the StatusUpdated field value if set, zero value otherwise.
@@ -413,6 +546,15 @@ func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.PlatformAdSetStatus.IsSet() {
+		toSerialize["platformAdSetStatus"] = o.PlatformAdSetStatus.Get()
+	}
+	if o.PlatformCampaignStatus.IsSet() {
+		toSerialize["platformCampaignStatus"] = o.PlatformCampaignStatus.Get()
+	}
+	if o.StatusReadAt.IsSet() {
+		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
 	}
 	if !IsNil(o.StatusUpdated) {
 		toSerialize["statusUpdated"] = o.StatusUpdated

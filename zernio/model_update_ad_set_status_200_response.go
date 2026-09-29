@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.143.1
+API version: 1.149.0
 Contact: support@zernio.com
 */
 
@@ -13,6 +13,7 @@ package zernio
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the UpdateAdSetStatus200Response type satisfies the MappedNullable interface at compile time
@@ -20,16 +21,20 @@ var _ MappedNullable = &UpdateAdSetStatus200Response{}
 
 // UpdateAdSetStatus200Response struct for UpdateAdSetStatus200Response
 type UpdateAdSetStatus200Response struct {
-	// The status written to the ad set. Absent when nothing was written (see message).
+	// The ad set's delivery status derived from the switches read back: `paused` when its own switch or its campaign's switch is off. Echoes the request when the platform could not be read.
 	Status *string `json:"status,omitempty"`
-	// Number of ads whose own stored status changed too. 0 is normal on a resume whose ads are all awaiting the platform.
+	// The ad set's own switch as read back from the platform, in the raw platform vocabulary (Meta effective_status, TikTok ENABLE / DISABLE, Google ENABLED / PAUSED, LinkedIn and Pinterest ACTIVE / PAUSED, ChatGPT (OpenAI) status). Null when the platform could not be read, which is always the case on X.
+	PlatformAdSetStatus NullableString `json:"platformAdSetStatus,omitempty"`
+	// The parent campaign's switch, read in the same call where the platform returns it, otherwise the stored value.
+	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
+	// When the ad set switch was read back. Null when it could not be read.
+	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
+	// 1 when the ad set's switch was written.
 	Updated *int32 `json:"updated,omitempty"`
-	// Number of ads whose own status was left as it was
+	// 1 when a live read showed the ad set already in the requested state, so nothing was written.
 	Skipped *int32 `json:"skipped,omitempty"`
-	// Why each group of ads was skipped
+	// Why the write was skipped, for example \"Ad set already switched off\".
 	SkippedReasons []string `json:"skippedReasons,omitempty"`
-	// Present only where the platform has no ad-set switch and no child ad was actionable
-	Message *string `json:"message,omitempty"`
 }
 
 // NewUpdateAdSetStatus200Response instantiates a new UpdateAdSetStatus200Response object
@@ -79,6 +84,135 @@ func (o *UpdateAdSetStatus200Response) HasStatus() bool {
 // SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *UpdateAdSetStatus200Response) SetStatus(v string) {
 	o.Status = &v
+}
+
+// GetPlatformAdSetStatus returns the PlatformAdSetStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSetStatus200Response) GetPlatformAdSetStatus() string {
+	if o == nil || IsNil(o.PlatformAdSetStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformAdSetStatus.Get()
+}
+
+// GetPlatformAdSetStatusOk returns a tuple with the PlatformAdSetStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSetStatus200Response) GetPlatformAdSetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformAdSetStatus.Get(), o.PlatformAdSetStatus.IsSet()
+}
+
+// HasPlatformAdSetStatus returns a boolean if a field has been set.
+func (o *UpdateAdSetStatus200Response) HasPlatformAdSetStatus() bool {
+	if o != nil && o.PlatformAdSetStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformAdSetStatus gets a reference to the given NullableString and assigns it to the PlatformAdSetStatus field.
+func (o *UpdateAdSetStatus200Response) SetPlatformAdSetStatus(v string) {
+	o.PlatformAdSetStatus.Set(&v)
+}
+
+// SetPlatformAdSetStatusNil sets the value for PlatformAdSetStatus to be an explicit nil
+func (o *UpdateAdSetStatus200Response) SetPlatformAdSetStatusNil() {
+	o.PlatformAdSetStatus.Set(nil)
+}
+
+// UnsetPlatformAdSetStatus ensures that no value is present for PlatformAdSetStatus, not even an explicit nil
+func (o *UpdateAdSetStatus200Response) UnsetPlatformAdSetStatus() {
+	o.PlatformAdSetStatus.Unset()
+}
+
+// GetPlatformCampaignStatus returns the PlatformCampaignStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSetStatus200Response) GetPlatformCampaignStatus() string {
+	if o == nil || IsNil(o.PlatformCampaignStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCampaignStatus.Get()
+}
+
+// GetPlatformCampaignStatusOk returns a tuple with the PlatformCampaignStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSetStatus200Response) GetPlatformCampaignStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformCampaignStatus.Get(), o.PlatformCampaignStatus.IsSet()
+}
+
+// HasPlatformCampaignStatus returns a boolean if a field has been set.
+func (o *UpdateAdSetStatus200Response) HasPlatformCampaignStatus() bool {
+	if o != nil && o.PlatformCampaignStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCampaignStatus gets a reference to the given NullableString and assigns it to the PlatformCampaignStatus field.
+func (o *UpdateAdSetStatus200Response) SetPlatformCampaignStatus(v string) {
+	o.PlatformCampaignStatus.Set(&v)
+}
+
+// SetPlatformCampaignStatusNil sets the value for PlatformCampaignStatus to be an explicit nil
+func (o *UpdateAdSetStatus200Response) SetPlatformCampaignStatusNil() {
+	o.PlatformCampaignStatus.Set(nil)
+}
+
+// UnsetPlatformCampaignStatus ensures that no value is present for PlatformCampaignStatus, not even an explicit nil
+func (o *UpdateAdSetStatus200Response) UnsetPlatformCampaignStatus() {
+	o.PlatformCampaignStatus.Unset()
+}
+
+// GetStatusReadAt returns the StatusReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdSetStatus200Response) GetStatusReadAt() time.Time {
+	if o == nil || IsNil(o.StatusReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StatusReadAt.Get()
+}
+
+// GetStatusReadAtOk returns a tuple with the StatusReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdSetStatus200Response) GetStatusReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StatusReadAt.Get(), o.StatusReadAt.IsSet()
+}
+
+// HasStatusReadAt returns a boolean if a field has been set.
+func (o *UpdateAdSetStatus200Response) HasStatusReadAt() bool {
+	if o != nil && o.StatusReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusReadAt gets a reference to the given NullableTime and assigns it to the StatusReadAt field.
+func (o *UpdateAdSetStatus200Response) SetStatusReadAt(v time.Time) {
+	o.StatusReadAt.Set(&v)
+}
+
+// SetStatusReadAtNil sets the value for StatusReadAt to be an explicit nil
+func (o *UpdateAdSetStatus200Response) SetStatusReadAtNil() {
+	o.StatusReadAt.Set(nil)
+}
+
+// UnsetStatusReadAt ensures that no value is present for StatusReadAt, not even an explicit nil
+func (o *UpdateAdSetStatus200Response) UnsetStatusReadAt() {
+	o.StatusReadAt.Unset()
 }
 
 // GetUpdated returns the Updated field value if set, zero value otherwise.
@@ -177,38 +311,6 @@ func (o *UpdateAdSetStatus200Response) SetSkippedReasons(v []string) {
 	o.SkippedReasons = v
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
-func (o *UpdateAdSetStatus200Response) GetMessage() string {
-	if o == nil || IsNil(o.Message) {
-		var ret string
-		return ret
-	}
-	return *o.Message
-}
-
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAdSetStatus200Response) GetMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.Message) {
-		return nil, false
-	}
-	return o.Message, true
-}
-
-// HasMessage returns a boolean if a field has been set.
-func (o *UpdateAdSetStatus200Response) HasMessage() bool {
-	if o != nil && !IsNil(o.Message) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given string and assigns it to the Message field.
-func (o *UpdateAdSetStatus200Response) SetMessage(v string) {
-	o.Message = &v
-}
-
 func (o UpdateAdSetStatus200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -222,6 +324,15 @@ func (o UpdateAdSetStatus200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
 	}
+	if o.PlatformAdSetStatus.IsSet() {
+		toSerialize["platformAdSetStatus"] = o.PlatformAdSetStatus.Get()
+	}
+	if o.PlatformCampaignStatus.IsSet() {
+		toSerialize["platformCampaignStatus"] = o.PlatformCampaignStatus.Get()
+	}
+	if o.StatusReadAt.IsSet() {
+		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
+	}
 	if !IsNil(o.Updated) {
 		toSerialize["updated"] = o.Updated
 	}
@@ -230,9 +341,6 @@ func (o UpdateAdSetStatus200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SkippedReasons) {
 		toSerialize["skippedReasons"] = o.SkippedReasons
-	}
-	if !IsNil(o.Message) {
-		toSerialize["message"] = o.Message
 	}
 	return toSerialize, nil
 }

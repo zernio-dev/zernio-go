@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.148.2
+API version: 1.149.0
 Contact: support@zernio.com
 */
 
@@ -857,9 +857,10 @@ BulkUpdateAdCampaignStatus Pause or resume many campaigns
 
 Process up to 50 campaigns in one call. Each campaign is updated
 concurrently and the response contains a per-campaign result so a
-single bad row does not fail the whole batch. Each campaign is written,
-counted and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status
-describes, including which child ad sets and ads each platform writes.
+single bad row does not fail the whole batch. Each campaign is read,
+written and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status
+describes: only the campaign's own switch is written, never its ad sets'
+or ads'. `updated` / `skipped` count campaigns.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIBulkUpdateAdCampaignStatusRequest
@@ -8521,40 +8522,19 @@ func (r AdCampaignsAPIUpdateAdCampaignStatusRequest) Execute() (*UpdateAdCampaig
 /*
 UpdateAdCampaignStatus Pause or resume a campaign
 
-Writes the campaign's own on/off switch, then lets the platform cascade delivery to its ad sets and ads.
+Writes the campaign's own on/off switch and nothing else, on every platform (Meta, TikTok,
+Google, LinkedIn campaign group, Pinterest, X, ChatGPT (OpenAI)). Its ad sets and ads keep
+their own switches: pausing stops their delivery through the campaign, and resuming lets
+each of them deliver again only if its own switch is on. An ad set or ad you paused
+individually stays paused; resume it with PUT /v1/ads/ad-sets/{adSetId}/status or
+PUT /v1/ads/{adId}/status. See the Status model in the Ad Campaigns tag.
 
-**What the write touches (current semantics, per platform).** TikTok: the campaign, every
-ad group and every ad under it that is not in a terminal status (rejected, completed,
-cancelled), on pause and on resume alike, so a resume also switches those ad groups and ads
-on. LinkedIn: the campaign group plus the campaigns and creatives of its non-terminal ads.
-Google: `paused` writes the campaign alone; `active` also switches on the ad groups and ads
-Zernio tracks under it (see below). Pinterest: the campaign plus one tracked ad and its ad
-group. X: the campaign plus one tracked line item. Meta and ChatGPT (OpenAI): the campaign
-switch only.
-
-**Counts and readback.** Before the write, each ad's own switch is read live from the
-platform (up to 20 ads; beyond that the stored switch is used), and `updated` / `skipped`
-are computed against that live state. After the write each ad's own switch and delivery
-status are read again and stored, and the campaign switch is re-read and stored, so an
-immediate GET returns what the platform now reports.
-
-The switch is always written, whatever delivery status the ads underneath report: an ad still in review
-does not block resuming its campaign. The echoed `status` is the confirmation that it landed.
-
-`updated` / `skipped` describe only the ads whose own status changed alongside it, so
-`updated: 0` is a normal successful response, not a no-op. Ads are skipped when they are in a terminal
-status (rejected, completed, cancelled), already in the target state, or switched on but not yet
-delivering. The last group keeps its `pending_review` / `error` status until the platform reports what
-it became. `skippedReasons` names which case applies.
-
-On Meta this flips the campaign only. An ad set paused in its own right stays paused, so pair this with
-PUT /v1/ads/ad-sets/{adSetId}/status when you also need the ad set switched back on.
-
-Google keeps an independent on/off switch at campaign, ad group and ad level and the most restrictive
-one wins, so `active` switches the campaign on TOGETHER with the ad groups and ads Zernio tracks under
-it, in one mutate. Without that the campaign reads ENABLED while a paused ad group or ad keeps it from
-serving. `paused` writes the campaign alone, which already stops delivery and leaves each ad's own
-switch as you set it.
+**Live read, then write.** The campaign's switch is read from the platform first. When that
+live read shows it already in the requested state nothing is written (`updated: 0`,
+`skipped: 1`, with the reason). Otherwise the switch is written (`updated: 1`), read back and
+stored, and the delivery status of the ads under it (up to 20) is re-read and stored, so an
+immediate GET returns what the platform now reports. A stored switch never skips a write, and
+when the platform cannot be read the write always goes out.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -9038,9 +9018,9 @@ CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH. Route to
 PUT /v1/ads/campaigns/{campaignId} instead.
 
 `status` behaves exactly as PUT /v1/ads/ad-sets/{adSetId}/status
-describes, including which child ads each platform writes with the ad
-set and how `statusUpdated` / `statusSkipped` are counted against the
-ads' live switches.
+describes: only the ad set's own switch is written, its ads keep
+theirs, and `statusUpdated` / `statusSkipped` report whether that switch
+was written or a live read showed it already in place.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID
@@ -9159,7 +9139,7 @@ func (r AdCampaignsAPIUpdateAdSetStatusRequest) UpdateAdCampaignStatusRequest(up
 	return r
 }
 
-func (r AdCampaignsAPIUpdateAdSetStatusRequest) Execute() (*UpdateAdCampaignStatus200Response, *http.Response, error) {
+func (r AdCampaignsAPIUpdateAdSetStatusRequest) Execute() (*UpdateAdSetStatus200Response, *http.Response, error) {
 	return r.ApiService.UpdateAdSetStatusExecute(r)
 }
 
@@ -9171,35 +9151,23 @@ over PUT /v1/ads/ad-sets/{adSetId} for callers that only want the
 status toggle and prefer a symmetric URL to
 /v1/ads/campaigns/{campaignId}/status.
 
-Writes the ad set's own on/off switch on every platform (Meta
-`configured_status`, TikTok ad group `operation_status`, Google ad group
-status, LinkedIn campaign, Pinterest ad group, X line item, OpenAI ad
-group), whatever delivery status its ads report: an ad still in review
-or paused by its campaign does not block it. The echoed `status` is the
-confirmation that it landed.
+Writes the ad set's own on/off switch and nothing else, on every platform
+(Meta `configured_status`, TikTok ad group `operation_status`, Google ad
+group status, LinkedIn campaign, Pinterest ad group, X line item, ChatGPT
+(OpenAI) ad group). Its ads keep their own switches: an ad you paused
+individually stays paused when the ad set resumes. The campaign above is
+not touched either, so an ad set resumed under a paused campaign reads
+`status: paused` until the campaign is resumed too. See the Status model
+in the Ad Campaigns tag.
 
-**What the write touches (current semantics, per platform).** On TikTok the ad group AND
-every ad under it that is not in a terminal status (rejected, completed, cancelled) are
-written to the target state, on pause and on resume alike, so a resume also switches those
-ads on. Pinterest and ChatGPT (OpenAI) do the same with their ads. On Meta, Google, LinkedIn
-(campaign) and X (line item) only the ad set's own switch is written and each ad keeps its
-own switch.
-
-**Counts and readback.** Before the write, each ad's own switch is read live from the
-platform (up to 20 ads; beyond that the stored switch is used), and `updated` / `skipped`
-are computed against that live state, not against a stored switch a change in the
-platform's UI may have left stale. After the write each ad's own switch and delivery
-status are read again and stored, and the ad set switch is re-read and stored, so an
-immediate GET returns what the platform now reports.
-
-`updated` / `skipped` describe only the ads whose own status changed
-alongside the switch, so `updated: 0` is a normal successful response.
-See `skippedReasons` for which of the three cases applies (terminal,
-own switch already in the target state, or switched on but not yet
-delivering).
-
-A campaign created paused needs its campaign resumed as well: pair this
-with PUT /v1/ads/campaigns/{campaignId}/status.
+**Live read, then write.** The ad set's switch is read from the platform
+first. When that live read shows it already in the requested state
+nothing is written (`updated: 0`, `skipped: 1`, with the reason).
+Otherwise the switch is written (`updated: 1`), read back and stored, and
+the delivery status of its ads (up to 20) is re-read and stored, so an
+immediate GET returns what the platform now reports. A stored switch
+never skips a write, and when the platform cannot be read the write
+always goes out.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID
@@ -9215,13 +9183,13 @@ func (a *AdCampaignsAPIService) UpdateAdSetStatus(ctx context.Context, adSetId s
 
 // Execute executes the request
 //
-//	@return UpdateAdCampaignStatus200Response
-func (a *AdCampaignsAPIService) UpdateAdSetStatusExecute(r AdCampaignsAPIUpdateAdSetStatusRequest) (*UpdateAdCampaignStatus200Response, *http.Response, error) {
+//	@return UpdateAdSetStatus200Response
+func (a *AdCampaignsAPIService) UpdateAdSetStatusExecute(r AdCampaignsAPIUpdateAdSetStatusRequest) (*UpdateAdSetStatus200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *UpdateAdCampaignStatus200Response
+		localVarReturnValue *UpdateAdSetStatus200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.UpdateAdSetStatus")

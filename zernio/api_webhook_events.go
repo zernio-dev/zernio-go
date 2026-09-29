@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.148.2
+API version: 1.149.0
 Contact: support@zernio.com
 */
 
@@ -1554,6 +1554,309 @@ func (a *WebhookEventsAPIService) OnCommentReceivedExecute(r WebhookEventsAPIOnC
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadComment
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceProductCreatedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadCommerceProduct *WebhookPayloadCommerceProduct
+}
+
+func (r WebhookEventsAPIOnCommerceProductCreatedRequest) WebhookPayloadCommerceProduct(webhookPayloadCommerceProduct WebhookPayloadCommerceProduct) WebhookEventsAPIOnCommerceProductCreatedRequest {
+	r.webhookPayloadCommerceProduct = &webhookPayloadCommerceProduct
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceProductCreatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceProductCreatedExecute(r)
+}
+
+/*
+OnCommerceProductCreated Commerce product created event
+
+Fired when a product is created on a connected store. The payload carries identifiers only; read the product with
+`GET /v1/commerce/products/{productId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceProductCreatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceProductCreated(ctx context.Context) WebhookEventsAPIOnCommerceProductCreatedRequest {
+	return WebhookEventsAPIOnCommerceProductCreatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceProductCreatedExecute(r WebhookEventsAPIOnCommerceProductCreatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceProductCreated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.product.created"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceProduct == nil {
+		return nil, reportError("webhookPayloadCommerceProduct is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceProduct
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceProductDeletedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadCommerceProduct *WebhookPayloadCommerceProduct
+}
+
+func (r WebhookEventsAPIOnCommerceProductDeletedRequest) WebhookPayloadCommerceProduct(webhookPayloadCommerceProduct WebhookPayloadCommerceProduct) WebhookEventsAPIOnCommerceProductDeletedRequest {
+	r.webhookPayloadCommerceProduct = &webhookPayloadCommerceProduct
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceProductDeletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceProductDeletedExecute(r)
+}
+
+/*
+OnCommerceProductDeleted Commerce product deleted event
+
+Fired when a product is deleted from a connected store. `status` and `platformStatus` are null. The payload carries identifiers only; read the product with
+`GET /v1/commerce/products/{productId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceProductDeletedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceProductDeleted(ctx context.Context) WebhookEventsAPIOnCommerceProductDeletedRequest {
+	return WebhookEventsAPIOnCommerceProductDeletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceProductDeletedExecute(r WebhookEventsAPIOnCommerceProductDeletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceProductDeleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.product.deleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceProduct == nil {
+		return nil, reportError("webhookPayloadCommerceProduct is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceProduct
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceProductUpdatedRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadCommerceProduct *WebhookPayloadCommerceProduct
+}
+
+func (r WebhookEventsAPIOnCommerceProductUpdatedRequest) WebhookPayloadCommerceProduct(webhookPayloadCommerceProduct WebhookPayloadCommerceProduct) WebhookEventsAPIOnCommerceProductUpdatedRequest {
+	r.webhookPayloadCommerceProduct = &webhookPayloadCommerceProduct
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceProductUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceProductUpdatedExecute(r)
+}
+
+/*
+OnCommerceProductUpdated Commerce product updated event
+
+Fired when a product on a connected store changes: its fields, status, variants or prices. The payload carries identifiers only; read the product with
+`GET /v1/commerce/products/{productId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceProductUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceProductUpdated(ctx context.Context) WebhookEventsAPIOnCommerceProductUpdatedRequest {
+	return WebhookEventsAPIOnCommerceProductUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceProductUpdatedExecute(r WebhookEventsAPIOnCommerceProductUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceProductUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.product.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceProduct == nil {
+		return nil, reportError("webhookPayloadCommerceProduct is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceProduct
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.148.2
+API version: 1.149.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ type BulkUpdateAdCampaignStatus200ResponseResultsInner struct {
 	Platform           *string `json:"platform,omitempty"`
 	Updated            *int32  `json:"updated,omitempty"`
 	Skipped            *int32  `json:"skipped,omitempty"`
-	Error              *string `json:"error,omitempty"`
+	// The campaign's own switch read back from the platform; null when it could not be read.
+	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
+	Error                  *string        `json:"error,omitempty"`
 }
 
 // NewBulkUpdateAdCampaignStatus200ResponseResultsInner instantiates a new BulkUpdateAdCampaignStatus200ResponseResultsInner object
@@ -172,6 +174,49 @@ func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) SetSkipped(v int32) 
 	o.Skipped = &v
 }
 
+// GetPlatformCampaignStatus returns the PlatformCampaignStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) GetPlatformCampaignStatus() string {
+	if o == nil || IsNil(o.PlatformCampaignStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformCampaignStatus.Get()
+}
+
+// GetPlatformCampaignStatusOk returns a tuple with the PlatformCampaignStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) GetPlatformCampaignStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformCampaignStatus.Get(), o.PlatformCampaignStatus.IsSet()
+}
+
+// HasPlatformCampaignStatus returns a boolean if a field has been set.
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) HasPlatformCampaignStatus() bool {
+	if o != nil && o.PlatformCampaignStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformCampaignStatus gets a reference to the given NullableString and assigns it to the PlatformCampaignStatus field.
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) SetPlatformCampaignStatus(v string) {
+	o.PlatformCampaignStatus.Set(&v)
+}
+
+// SetPlatformCampaignStatusNil sets the value for PlatformCampaignStatus to be an explicit nil
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) SetPlatformCampaignStatusNil() {
+	o.PlatformCampaignStatus.Set(nil)
+}
+
+// UnsetPlatformCampaignStatus ensures that no value is present for PlatformCampaignStatus, not even an explicit nil
+func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) UnsetPlatformCampaignStatus() {
+	o.PlatformCampaignStatus.Unset()
+}
+
 // GetError returns the Error field value if set, zero value otherwise.
 func (o *BulkUpdateAdCampaignStatus200ResponseResultsInner) GetError() string {
 	if o == nil || IsNil(o.Error) {
@@ -225,6 +270,9 @@ func (o BulkUpdateAdCampaignStatus200ResponseResultsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.Skipped) {
 		toSerialize["skipped"] = o.Skipped
+	}
+	if o.PlatformCampaignStatus.IsSet() {
+		toSerialize["platformCampaignStatus"] = o.PlatformCampaignStatus.Get()
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
