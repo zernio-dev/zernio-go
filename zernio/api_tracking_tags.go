@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.147.0
+API version: 1.147.1
 Contact: support@zernio.com
 */
 
@@ -1505,9 +1505,11 @@ through as-is; their shape depends on the `aggregation` requested.
 Platforms without a stats API answer 501.
 
 OpenAI Ads: the recent-events stream (`GET /conversions/events`), the
-latest (at most 50) Pixel SDK events received in the last 15 minutes,
-one row per event (`event_type`, `api_channel`, `event_timestamp_ms`,
-`received_at_ms`, ...). Conversions API events are not included. It is
+latest (at most 50) events received in the last 15 minutes, one row per
+event (`event_type`, `api_channel`, `event_timestamp_ms`, `received_at_ms`,
+...). Both sources appear: `api_channel` is `pixel_sdk` for the on-site
+Pixel (including its `openai::sdk_init` load event) and `server_to_server`
+for Conversions API events. It is
 a fixed window: `startTime`/`endTime` answer 400. Use it to confirm an
 install fires; attributed totals come from ads analytics. Accounts not
 enabled for the stream answer 422 `feature_not_available`.
@@ -2128,7 +2130,7 @@ events.
 OpenAI Ads: the account's conversion event settings whose source is this pixel.
 `siteEventId` is the event name the site sends (a standard event such as
 `order_created`, or the lowercase custom event name); `clickWindowDays` is the
-attribution window.
+click attribution window and `viewWindowDays` the view-through window (0 = off).
 
 LinkedIn (`linkedinads`): the conversion rules of the ad account (`adAccountId`, default
 the account that created the tag), including Conversions API and URL-match rules.
