@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.150.0
+API version: 1.151.0
 Contact: support@zernio.com
 */
 
@@ -999,9 +999,8 @@ accepts `portfolioBidStrategyId` instead. Google, X and OpenAI require a budget
 `budgetType: daily`). On OpenAI `goal` sets the campaign objective, and
 `conversions` needs an active standard conversion event on the account. LinkedIn creates the
 campaign GROUP (our campaign level) and rejects a budget, which lives on the
-campaign (ad set) level there; it comes back `status: DRAFT`. TikTok campaigns are
-created without a status and report `ENABLE`. Created `PAUSED` unless
-`status: ACTIVE` where the platform supports it.
+campaign (ad set) level there; it comes back `status: DRAFT`. Created `PAUSED`
+(TikTok `DISABLE`) unless `status: ACTIVE` where the platform supports it.
 
 **Idempotency:** send an `Idempotency-Key` header to make retries safe.
 
