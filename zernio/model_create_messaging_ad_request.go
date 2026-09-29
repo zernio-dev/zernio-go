@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.156.1
+API version: 1.157.0
 Contact: support@zernio.com
 */
 
@@ -15,7 +15,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 // checks if the CreateMessagingAdRequest type satisfies the MappedNullable interface at compile time
@@ -51,22 +50,30 @@ type CreateMessagingAdRequest struct {
 	Headline *string `json:"headline,omitempty"`
 	// Primary text shown above the image / video. Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Body *string `json:"body,omitempty"`
+	// Link description, independent of `headline` and `body` (Meta's `link_data.description`, `video_data.link_description` on video, and the shared description of a `placementAssets` feed). Meta shows it mainly on Facebook Feed placements, under the headline, when there is room; Instagram, Stories, Reels and Messenger placements do not display it. Also accepted per entry in `creatives[]`. Not allowed with an existing post creative.
+	Description *string `json:"description,omitempty"`
 	// Image asset for single-creative shape. Mutually exclusive with `video` and with `creatives[]`. Required on the single-creative shape if neither `video` nor an existing post reference is supplied.
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or a platformPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
-	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `endDate`, `objective`, `countries`, `interests`, `audienceId` and `campaignStatus` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
+	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `budgetLevel`, `startDate`, `endDate`, `objective`, `campaignStatus`, `existingCampaignId`, the special ad category fields and every targeting field except `ageMin`, `ageMax`, `placements` and `advantageAudience` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
 	AdSetId *string `json:"adSetId,omitempty"`
-	// Budget amount in the ad account's currency major units (e.g. dollars for USD, not cents). Must be > 0. Required unless `adSetId` is set, where the ad set owns it.
+	// Create the new messaging ad set (and its ads) under this EXISTING Meta campaign instead of a new one, e.g. several audience ad sets under one campaign. The campaign's objective must be OUTCOME_ENGAGEMENT, OUTCOME_SALES or OUTCOME_LEADS (400 otherwise). If the campaign has a campaign budget, omit `budgetAmount` and `budgetType` (400 if sent); otherwise they are required and land on the new ad set. `objective`, `campaignName`, `campaignStatus`, `budgetLevel`, `specialAdCategories`, `specialAdCategoryCountry` and `adSetId` are rejected alongside it. To add ads to an existing ad set instead, use `adSetId`.
+	ExistingCampaignId *string `json:"existingCampaignId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Where the budget lives. `adset` (default) puts it on the new ad set. `campaign` creates an Advantage campaign budget (CBO): the budget and bid strategy sit on the campaign and the ad set inherits them, same as POST /v1/ads/create. Not allowed with `adSetId` or `existingCampaignId`.
+	BudgetLevel *string `json:"budgetLevel,omitempty"`
+	// Budget amount in the ad account's currency major units (e.g. dollars for USD, not cents). Must be > 0. Required unless `adSetId` is set (the ad set owns it) or `existingCampaignId` names a campaign with a campaign budget.
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
-	// Required unless `adSetId` is set.
+	// Required unless `adSetId` is set or `existingCampaignId` names a campaign with a campaign budget. `lifetime` requires `endDate`.
 	BudgetType *string `json:"budgetType,omitempty"`
 	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
 	Currency *string `json:"currency,omitempty"`
-	// ISO 8601 datetime. Required when `budgetType` is `lifetime`.
-	EndDate *time.Time `json:"endDate,omitempty"`
+	// When the ad set starts delivering. ISO 8601 date or date-time. A value with an offset (`2027-01-15T10:00:00+01:00`, `...Z`) is used as is; one without an offset (`2027-01-15T10:00:00`) is read in the ad account's timezone, and a date-only value starts at 00:00 local. Defaults to now.
+	StartDate *string `json:"startDate,omitempty"`
+	// ISO 8601 date or date-time, read like `startDate`; a date-only value ends at 23:59:59 local. Required when `budgetType` is `lifetime`.
+	EndDate *string `json:"endDate,omitempty"`
 	// ISO 3166-1 alpha-2 country codes. Defaults to `[\"US\"]` only when no other geo (`cities`, `regions`, `zips`, `metros`, `customLocations`) is supplied.
 	Countries []string `json:"countries,omitempty"`
 	// City-level geo targeting for local CTWA campaigns. Each entry maps to Meta's TargetingGeoLocationCity. `key` is Meta's city ID. `radius` and `distance_unit` are coupled: set both or neither. Meta enforces a minimum city radius (~17 km / 10 mi); smaller values resolve to a 0-size audience and the ad fails at launch. For a tighter catchment use customLocations (lat/lng).
@@ -87,6 +94,41 @@ type CreateMessagingAdRequest struct {
 	// Custom audience ID to target.
 	AudienceId *string                              `json:"audienceId,omitempty"`
 	Placements *CreateStandaloneAdRequestPlacements `json:"placements,omitempty"`
+	// Restrict the audience by gender (Meta `genders`). Stored on the ad and read back in `targeting.gender`.
+	Gender *string `json:"gender,omitempty"`
+	// Audience languages (Meta `locales`). A bare ISO 639-1 code targets all regional variants (\"en\" = all English), a region-qualified code a specific one (\"en_GB\", \"pt_BR\"); unknown codes are rejected.
+	Languages []string `json:"languages,omitempty"`
+	// Meta place keys (from GET /v1/ads/targeting/search).
+	Places []CreateStandaloneAdRequestRegionsInnerOneOf `json:"places,omitempty"`
+	// Meta neighborhood keys (from GET /v1/ads/targeting/search).
+	Neighborhoods []CreateStandaloneAdRequestRegionsInnerOneOf `json:"neighborhoods,omitempty"`
+	// Geo to exclude, same shape as POST /v1/ads/create (countries, countryGroups, regions, cities, zips, places, neighborhoods, customLocations).
+	ExcludedLocations map[string]interface{} `json:"excludedLocations,omitempty"`
+	// Meta behavior ids. Each dimension is its own flexible_spec entry: OR within, AND across.
+	Behaviors      []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
+	WorkPositions  []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
+	WorkEmployers  []CreateStandaloneAdRequestBehaviorsInner `json:"workEmployers,omitempty"`
+	WorkIndustries []CreateStandaloneAdRequestBehaviorsInner `json:"workIndustries,omitempty"`
+	// Normalized household-income tier, same as POST /v1/ads/create. Incompatible with housing, employment and credit specialAdCategories.
+	IncomeTier *string `json:"incomeTier,omitempty"`
+	// Meta `user_os`, e.g. [\"iOS_ver_14.0_and_above\"].
+	UserOs []string `json:"userOs,omitempty"`
+	// Meta `user_device`.
+	UserDevice []string `json:"userDevice,omitempty"`
+	// Custom or lookalike audience ids to include.
+	AudienceInclude []string `json:"audienceInclude,omitempty"`
+	// Custom or lookalike audience ids to exclude.
+	AudienceExclude []string `json:"audienceExclude,omitempty"`
+	// ID of a saved_targeting audience (POST /v1/ads/audiences), expanded as the base targeting. Precedence: savedTargetingId, then `targeting`, then the flat fields.
+	SavedTargetingId *string `json:"savedTargetingId,omitempty"`
+	// Nested targeting object, same contract as POST /v1/ads/create and boost. Flat fields win per key.
+	Targeting *TargetingSpec `json:"targeting,omitempty"`
+	// Meta targeting spec sent as the BASE layer of the ad set's `targeting`, exactly as POST /v1/ads/create does: use it for anything the flat fields cannot express, such as a layered `flexible_spec` (entries AND together, ids inside one entry OR). Flat fields you also send are layered on top and win per key. With rawTargeting present the US geo and `advantage_audience: 0` defaults are not injected, so include `targeting_automation` in it (or send `advantageAudience`), as Meta requires it on create.
+	RawTargeting map[string]interface{} `json:"rawTargeting,omitempty"`
+	// Meta special ad categories on the new campaign.
+	SpecialAdCategories []string `json:"specialAdCategories,omitempty"`
+	// Countries the special ad category applies to. Requires specialAdCategories.
+	SpecialAdCategoryCountry []string `json:"specialAdCategoryCountry,omitempty"`
 	// Meta's Advantage+ audience expansion. `0` (default) keeps targeting strict; `1` lets Meta expand beyond the supplied targeting when its delivery system finds better matches. Always sent on CREATE (Meta requires it).
 	AdvantageAudience *int32 `json:"advantageAudience,omitempty"`
 	// Defaults to `OUTCOME_ENGAGEMENT`. `OUTCOME_SALES` and `OUTCOME_LEADS` require additional account configuration (Dataset linked to the WABA for sales) and may be rejected by Meta if missing.
@@ -130,6 +172,8 @@ func NewCreateMessagingAdRequest(accountId string, adAccountId string, name stri
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
 	this.Name = name
+	var gender string = "all"
+	this.Gender = &gender
 	return &this
 }
 
@@ -138,6 +182,8 @@ func NewCreateMessagingAdRequest(accountId string, adAccountId string, name stri
 // but it doesn't guarantee that properties required by API are set
 func NewCreateMessagingAdRequestWithDefaults() *CreateMessagingAdRequest {
 	this := CreateMessagingAdRequest{}
+	var gender string = "all"
+	this.Gender = &gender
 	return &this
 }
 
@@ -568,6 +614,38 @@ func (o *CreateMessagingAdRequest) SetBody(v string) {
 	o.Body = &v
 }
 
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *CreateMessagingAdRequest) SetDescription(v string) {
+	o.Description = &v
+}
+
 // GetImageUrl returns the ImageUrl field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetImageUrl() string {
 	if o == nil || IsNil(o.ImageUrl) {
@@ -728,6 +806,70 @@ func (o *CreateMessagingAdRequest) SetAdSetId(v string) {
 	o.AdSetId = &v
 }
 
+// GetExistingCampaignId returns the ExistingCampaignId field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetExistingCampaignId() string {
+	if o == nil || IsNil(o.ExistingCampaignId) {
+		var ret string
+		return ret
+	}
+	return *o.ExistingCampaignId
+}
+
+// GetExistingCampaignIdOk returns a tuple with the ExistingCampaignId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetExistingCampaignIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExistingCampaignId) {
+		return nil, false
+	}
+	return o.ExistingCampaignId, true
+}
+
+// HasExistingCampaignId returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasExistingCampaignId() bool {
+	if o != nil && !IsNil(o.ExistingCampaignId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExistingCampaignId gets a reference to the given string and assigns it to the ExistingCampaignId field.
+func (o *CreateMessagingAdRequest) SetExistingCampaignId(v string) {
+	o.ExistingCampaignId = &v
+}
+
+// GetBudgetLevel returns the BudgetLevel field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetBudgetLevel() string {
+	if o == nil || IsNil(o.BudgetLevel) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetLevel
+}
+
+// GetBudgetLevelOk returns a tuple with the BudgetLevel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetBudgetLevelOk() (*string, bool) {
+	if o == nil || IsNil(o.BudgetLevel) {
+		return nil, false
+	}
+	return o.BudgetLevel, true
+}
+
+// HasBudgetLevel returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasBudgetLevel() bool {
+	if o != nil && !IsNil(o.BudgetLevel) {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetLevel gets a reference to the given string and assigns it to the BudgetLevel field.
+func (o *CreateMessagingAdRequest) SetBudgetLevel(v string) {
+	o.BudgetLevel = &v
+}
+
 // GetBudgetAmount returns the BudgetAmount field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetBudgetAmount() float32 {
 	if o == nil || IsNil(o.BudgetAmount) {
@@ -824,10 +966,42 @@ func (o *CreateMessagingAdRequest) SetCurrency(v string) {
 	o.Currency = &v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetStartDate() string {
+	if o == nil || IsNil(o.StartDate) {
+		var ret string
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetStartDateOk() (*string, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given string and assigns it to the StartDate field.
+func (o *CreateMessagingAdRequest) SetStartDate(v string) {
+	o.StartDate = &v
+}
+
 // GetEndDate returns the EndDate field value if set, zero value otherwise.
-func (o *CreateMessagingAdRequest) GetEndDate() time.Time {
+func (o *CreateMessagingAdRequest) GetEndDate() string {
 	if o == nil || IsNil(o.EndDate) {
-		var ret time.Time
+		var ret string
 		return ret
 	}
 	return *o.EndDate
@@ -835,7 +1009,7 @@ func (o *CreateMessagingAdRequest) GetEndDate() time.Time {
 
 // GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateMessagingAdRequest) GetEndDateOk() (*time.Time, bool) {
+func (o *CreateMessagingAdRequest) GetEndDateOk() (*string, bool) {
 	if o == nil || IsNil(o.EndDate) {
 		return nil, false
 	}
@@ -851,8 +1025,8 @@ func (o *CreateMessagingAdRequest) HasEndDate() bool {
 	return false
 }
 
-// SetEndDate gets a reference to the given time.Time and assigns it to the EndDate field.
-func (o *CreateMessagingAdRequest) SetEndDate(v time.Time) {
+// SetEndDate gets a reference to the given string and assigns it to the EndDate field.
+func (o *CreateMessagingAdRequest) SetEndDate(v string) {
 	o.EndDate = &v
 }
 
@@ -1238,6 +1412,614 @@ func (o *CreateMessagingAdRequest) HasPlacements() bool {
 // SetPlacements gets a reference to the given CreateStandaloneAdRequestPlacements and assigns it to the Placements field.
 func (o *CreateMessagingAdRequest) SetPlacements(v CreateStandaloneAdRequestPlacements) {
 	o.Placements = &v
+}
+
+// GetGender returns the Gender field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetGender() string {
+	if o == nil || IsNil(o.Gender) {
+		var ret string
+		return ret
+	}
+	return *o.Gender
+}
+
+// GetGenderOk returns a tuple with the Gender field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetGenderOk() (*string, bool) {
+	if o == nil || IsNil(o.Gender) {
+		return nil, false
+	}
+	return o.Gender, true
+}
+
+// HasGender returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasGender() bool {
+	if o != nil && !IsNil(o.Gender) {
+		return true
+	}
+
+	return false
+}
+
+// SetGender gets a reference to the given string and assigns it to the Gender field.
+func (o *CreateMessagingAdRequest) SetGender(v string) {
+	o.Gender = &v
+}
+
+// GetLanguages returns the Languages field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetLanguages() []string {
+	if o == nil || IsNil(o.Languages) {
+		var ret []string
+		return ret
+	}
+	return o.Languages
+}
+
+// GetLanguagesOk returns a tuple with the Languages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetLanguagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Languages) {
+		return nil, false
+	}
+	return o.Languages, true
+}
+
+// HasLanguages returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasLanguages() bool {
+	if o != nil && !IsNil(o.Languages) {
+		return true
+	}
+
+	return false
+}
+
+// SetLanguages gets a reference to the given []string and assigns it to the Languages field.
+func (o *CreateMessagingAdRequest) SetLanguages(v []string) {
+	o.Languages = v
+}
+
+// GetPlaces returns the Places field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetPlaces() []CreateStandaloneAdRequestRegionsInnerOneOf {
+	if o == nil || IsNil(o.Places) {
+		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		return ret
+	}
+	return o.Places
+}
+
+// GetPlacesOk returns a tuple with the Places field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetPlacesOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+	if o == nil || IsNil(o.Places) {
+		return nil, false
+	}
+	return o.Places, true
+}
+
+// HasPlaces returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasPlaces() bool {
+	if o != nil && !IsNil(o.Places) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlaces gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Places field.
+func (o *CreateMessagingAdRequest) SetPlaces(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+	o.Places = v
+}
+
+// GetNeighborhoods returns the Neighborhoods field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetNeighborhoods() []CreateStandaloneAdRequestRegionsInnerOneOf {
+	if o == nil || IsNil(o.Neighborhoods) {
+		var ret []CreateStandaloneAdRequestRegionsInnerOneOf
+		return ret
+	}
+	return o.Neighborhoods
+}
+
+// GetNeighborhoodsOk returns a tuple with the Neighborhoods field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetNeighborhoodsOk() ([]CreateStandaloneAdRequestRegionsInnerOneOf, bool) {
+	if o == nil || IsNil(o.Neighborhoods) {
+		return nil, false
+	}
+	return o.Neighborhoods, true
+}
+
+// HasNeighborhoods returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasNeighborhoods() bool {
+	if o != nil && !IsNil(o.Neighborhoods) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeighborhoods gets a reference to the given []CreateStandaloneAdRequestRegionsInnerOneOf and assigns it to the Neighborhoods field.
+func (o *CreateMessagingAdRequest) SetNeighborhoods(v []CreateStandaloneAdRequestRegionsInnerOneOf) {
+	o.Neighborhoods = v
+}
+
+// GetExcludedLocations returns the ExcludedLocations field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetExcludedLocations() map[string]interface{} {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.ExcludedLocations
+}
+
+// GetExcludedLocationsOk returns a tuple with the ExcludedLocations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetExcludedLocationsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		return map[string]interface{}{}, false
+	}
+	return o.ExcludedLocations, true
+}
+
+// HasExcludedLocations returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasExcludedLocations() bool {
+	if o != nil && !IsNil(o.ExcludedLocations) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludedLocations gets a reference to the given map[string]interface{} and assigns it to the ExcludedLocations field.
+func (o *CreateMessagingAdRequest) SetExcludedLocations(v map[string]interface{}) {
+	o.ExcludedLocations = v
+}
+
+// GetBehaviors returns the Behaviors field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetBehaviors() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.Behaviors) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.Behaviors
+}
+
+// GetBehaviorsOk returns a tuple with the Behaviors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetBehaviorsOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.Behaviors) {
+		return nil, false
+	}
+	return o.Behaviors, true
+}
+
+// HasBehaviors returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasBehaviors() bool {
+	if o != nil && !IsNil(o.Behaviors) {
+		return true
+	}
+
+	return false
+}
+
+// SetBehaviors gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the Behaviors field.
+func (o *CreateMessagingAdRequest) SetBehaviors(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.Behaviors = v
+}
+
+// GetWorkPositions returns the WorkPositions field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetWorkPositions() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkPositions) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkPositions
+}
+
+// GetWorkPositionsOk returns a tuple with the WorkPositions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetWorkPositionsOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkPositions) {
+		return nil, false
+	}
+	return o.WorkPositions, true
+}
+
+// HasWorkPositions returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasWorkPositions() bool {
+	if o != nil && !IsNil(o.WorkPositions) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkPositions gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkPositions field.
+func (o *CreateMessagingAdRequest) SetWorkPositions(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkPositions = v
+}
+
+// GetWorkEmployers returns the WorkEmployers field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetWorkEmployers() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkEmployers) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkEmployers
+}
+
+// GetWorkEmployersOk returns a tuple with the WorkEmployers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetWorkEmployersOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkEmployers) {
+		return nil, false
+	}
+	return o.WorkEmployers, true
+}
+
+// HasWorkEmployers returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasWorkEmployers() bool {
+	if o != nil && !IsNil(o.WorkEmployers) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkEmployers gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkEmployers field.
+func (o *CreateMessagingAdRequest) SetWorkEmployers(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkEmployers = v
+}
+
+// GetWorkIndustries returns the WorkIndustries field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetWorkIndustries() []CreateStandaloneAdRequestBehaviorsInner {
+	if o == nil || IsNil(o.WorkIndustries) {
+		var ret []CreateStandaloneAdRequestBehaviorsInner
+		return ret
+	}
+	return o.WorkIndustries
+}
+
+// GetWorkIndustriesOk returns a tuple with the WorkIndustries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetWorkIndustriesOk() ([]CreateStandaloneAdRequestBehaviorsInner, bool) {
+	if o == nil || IsNil(o.WorkIndustries) {
+		return nil, false
+	}
+	return o.WorkIndustries, true
+}
+
+// HasWorkIndustries returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasWorkIndustries() bool {
+	if o != nil && !IsNil(o.WorkIndustries) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkIndustries gets a reference to the given []CreateStandaloneAdRequestBehaviorsInner and assigns it to the WorkIndustries field.
+func (o *CreateMessagingAdRequest) SetWorkIndustries(v []CreateStandaloneAdRequestBehaviorsInner) {
+	o.WorkIndustries = v
+}
+
+// GetIncomeTier returns the IncomeTier field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetIncomeTier() string {
+	if o == nil || IsNil(o.IncomeTier) {
+		var ret string
+		return ret
+	}
+	return *o.IncomeTier
+}
+
+// GetIncomeTierOk returns a tuple with the IncomeTier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetIncomeTierOk() (*string, bool) {
+	if o == nil || IsNil(o.IncomeTier) {
+		return nil, false
+	}
+	return o.IncomeTier, true
+}
+
+// HasIncomeTier returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasIncomeTier() bool {
+	if o != nil && !IsNil(o.IncomeTier) {
+		return true
+	}
+
+	return false
+}
+
+// SetIncomeTier gets a reference to the given string and assigns it to the IncomeTier field.
+func (o *CreateMessagingAdRequest) SetIncomeTier(v string) {
+	o.IncomeTier = &v
+}
+
+// GetUserOs returns the UserOs field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetUserOs() []string {
+	if o == nil || IsNil(o.UserOs) {
+		var ret []string
+		return ret
+	}
+	return o.UserOs
+}
+
+// GetUserOsOk returns a tuple with the UserOs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetUserOsOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserOs) {
+		return nil, false
+	}
+	return o.UserOs, true
+}
+
+// HasUserOs returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasUserOs() bool {
+	if o != nil && !IsNil(o.UserOs) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserOs gets a reference to the given []string and assigns it to the UserOs field.
+func (o *CreateMessagingAdRequest) SetUserOs(v []string) {
+	o.UserOs = v
+}
+
+// GetUserDevice returns the UserDevice field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetUserDevice() []string {
+	if o == nil || IsNil(o.UserDevice) {
+		var ret []string
+		return ret
+	}
+	return o.UserDevice
+}
+
+// GetUserDeviceOk returns a tuple with the UserDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetUserDeviceOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserDevice) {
+		return nil, false
+	}
+	return o.UserDevice, true
+}
+
+// HasUserDevice returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasUserDevice() bool {
+	if o != nil && !IsNil(o.UserDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserDevice gets a reference to the given []string and assigns it to the UserDevice field.
+func (o *CreateMessagingAdRequest) SetUserDevice(v []string) {
+	o.UserDevice = v
+}
+
+// GetAudienceInclude returns the AudienceInclude field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetAudienceInclude() []string {
+	if o == nil || IsNil(o.AudienceInclude) {
+		var ret []string
+		return ret
+	}
+	return o.AudienceInclude
+}
+
+// GetAudienceIncludeOk returns a tuple with the AudienceInclude field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetAudienceIncludeOk() ([]string, bool) {
+	if o == nil || IsNil(o.AudienceInclude) {
+		return nil, false
+	}
+	return o.AudienceInclude, true
+}
+
+// HasAudienceInclude returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasAudienceInclude() bool {
+	if o != nil && !IsNil(o.AudienceInclude) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceInclude gets a reference to the given []string and assigns it to the AudienceInclude field.
+func (o *CreateMessagingAdRequest) SetAudienceInclude(v []string) {
+	o.AudienceInclude = v
+}
+
+// GetAudienceExclude returns the AudienceExclude field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetAudienceExclude() []string {
+	if o == nil || IsNil(o.AudienceExclude) {
+		var ret []string
+		return ret
+	}
+	return o.AudienceExclude
+}
+
+// GetAudienceExcludeOk returns a tuple with the AudienceExclude field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetAudienceExcludeOk() ([]string, bool) {
+	if o == nil || IsNil(o.AudienceExclude) {
+		return nil, false
+	}
+	return o.AudienceExclude, true
+}
+
+// HasAudienceExclude returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasAudienceExclude() bool {
+	if o != nil && !IsNil(o.AudienceExclude) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudienceExclude gets a reference to the given []string and assigns it to the AudienceExclude field.
+func (o *CreateMessagingAdRequest) SetAudienceExclude(v []string) {
+	o.AudienceExclude = v
+}
+
+// GetSavedTargetingId returns the SavedTargetingId field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetSavedTargetingId() string {
+	if o == nil || IsNil(o.SavedTargetingId) {
+		var ret string
+		return ret
+	}
+	return *o.SavedTargetingId
+}
+
+// GetSavedTargetingIdOk returns a tuple with the SavedTargetingId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetSavedTargetingIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SavedTargetingId) {
+		return nil, false
+	}
+	return o.SavedTargetingId, true
+}
+
+// HasSavedTargetingId returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasSavedTargetingId() bool {
+	if o != nil && !IsNil(o.SavedTargetingId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSavedTargetingId gets a reference to the given string and assigns it to the SavedTargetingId field.
+func (o *CreateMessagingAdRequest) SetSavedTargetingId(v string) {
+	o.SavedTargetingId = &v
+}
+
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetTargeting() TargetingSpec {
+	if o == nil || IsNil(o.Targeting) {
+		var ret TargetingSpec
+		return ret
+	}
+	return *o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetTargetingOk() (*TargetingSpec, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return nil, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given TargetingSpec and assigns it to the Targeting field.
+func (o *CreateMessagingAdRequest) SetTargeting(v TargetingSpec) {
+	o.Targeting = &v
+}
+
+// GetRawTargeting returns the RawTargeting field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetRawTargeting() map[string]interface{} {
+	if o == nil || IsNil(o.RawTargeting) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.RawTargeting
+}
+
+// GetRawTargetingOk returns a tuple with the RawTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetRawTargetingOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.RawTargeting) {
+		return map[string]interface{}{}, false
+	}
+	return o.RawTargeting, true
+}
+
+// HasRawTargeting returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasRawTargeting() bool {
+	if o != nil && !IsNil(o.RawTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetRawTargeting gets a reference to the given map[string]interface{} and assigns it to the RawTargeting field.
+func (o *CreateMessagingAdRequest) SetRawTargeting(v map[string]interface{}) {
+	o.RawTargeting = v
+}
+
+// GetSpecialAdCategories returns the SpecialAdCategories field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetSpecialAdCategories() []string {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategories
+}
+
+// GetSpecialAdCategoriesOk returns a tuple with the SpecialAdCategories field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetSpecialAdCategoriesOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategories) {
+		return nil, false
+	}
+	return o.SpecialAdCategories, true
+}
+
+// HasSpecialAdCategories returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasSpecialAdCategories() bool {
+	if o != nil && !IsNil(o.SpecialAdCategories) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategories gets a reference to the given []string and assigns it to the SpecialAdCategories field.
+func (o *CreateMessagingAdRequest) SetSpecialAdCategories(v []string) {
+	o.SpecialAdCategories = v
+}
+
+// GetSpecialAdCategoryCountry returns the SpecialAdCategoryCountry field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetSpecialAdCategoryCountry() []string {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		var ret []string
+		return ret
+	}
+	return o.SpecialAdCategoryCountry
+}
+
+// GetSpecialAdCategoryCountryOk returns a tuple with the SpecialAdCategoryCountry field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetSpecialAdCategoryCountryOk() ([]string, bool) {
+	if o == nil || IsNil(o.SpecialAdCategoryCountry) {
+		return nil, false
+	}
+	return o.SpecialAdCategoryCountry, true
+}
+
+// HasSpecialAdCategoryCountry returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasSpecialAdCategoryCountry() bool {
+	if o != nil && !IsNil(o.SpecialAdCategoryCountry) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpecialAdCategoryCountry gets a reference to the given []string and assigns it to the SpecialAdCategoryCountry field.
+func (o *CreateMessagingAdRequest) SetSpecialAdCategoryCountry(v []string) {
+	o.SpecialAdCategoryCountry = v
 }
 
 // GetAdvantageAudience returns the AdvantageAudience field value if set, zero value otherwise.
@@ -1766,6 +2548,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Body) {
 		toSerialize["body"] = o.Body
 	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
 	if !IsNil(o.ImageUrl) {
 		toSerialize["imageUrl"] = o.ImageUrl
 	}
@@ -1781,6 +2566,12 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AdSetId) {
 		toSerialize["adSetId"] = o.AdSetId
 	}
+	if !IsNil(o.ExistingCampaignId) {
+		toSerialize["existingCampaignId"] = o.ExistingCampaignId
+	}
+	if !IsNil(o.BudgetLevel) {
+		toSerialize["budgetLevel"] = o.BudgetLevel
+	}
 	if !IsNil(o.BudgetAmount) {
 		toSerialize["budgetAmount"] = o.BudgetAmount
 	}
@@ -1789,6 +2580,9 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
 	}
 	if !IsNil(o.EndDate) {
 		toSerialize["endDate"] = o.EndDate
@@ -1828,6 +2622,63 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Placements) {
 		toSerialize["placements"] = o.Placements
+	}
+	if !IsNil(o.Gender) {
+		toSerialize["gender"] = o.Gender
+	}
+	if !IsNil(o.Languages) {
+		toSerialize["languages"] = o.Languages
+	}
+	if !IsNil(o.Places) {
+		toSerialize["places"] = o.Places
+	}
+	if !IsNil(o.Neighborhoods) {
+		toSerialize["neighborhoods"] = o.Neighborhoods
+	}
+	if !IsNil(o.ExcludedLocations) {
+		toSerialize["excludedLocations"] = o.ExcludedLocations
+	}
+	if !IsNil(o.Behaviors) {
+		toSerialize["behaviors"] = o.Behaviors
+	}
+	if !IsNil(o.WorkPositions) {
+		toSerialize["workPositions"] = o.WorkPositions
+	}
+	if !IsNil(o.WorkEmployers) {
+		toSerialize["workEmployers"] = o.WorkEmployers
+	}
+	if !IsNil(o.WorkIndustries) {
+		toSerialize["workIndustries"] = o.WorkIndustries
+	}
+	if !IsNil(o.IncomeTier) {
+		toSerialize["incomeTier"] = o.IncomeTier
+	}
+	if !IsNil(o.UserOs) {
+		toSerialize["userOs"] = o.UserOs
+	}
+	if !IsNil(o.UserDevice) {
+		toSerialize["userDevice"] = o.UserDevice
+	}
+	if !IsNil(o.AudienceInclude) {
+		toSerialize["audienceInclude"] = o.AudienceInclude
+	}
+	if !IsNil(o.AudienceExclude) {
+		toSerialize["audienceExclude"] = o.AudienceExclude
+	}
+	if !IsNil(o.SavedTargetingId) {
+		toSerialize["savedTargetingId"] = o.SavedTargetingId
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
+	}
+	if !IsNil(o.RawTargeting) {
+		toSerialize["rawTargeting"] = o.RawTargeting
+	}
+	if !IsNil(o.SpecialAdCategories) {
+		toSerialize["specialAdCategories"] = o.SpecialAdCategories
+	}
+	if !IsNil(o.SpecialAdCategoryCountry) {
+		toSerialize["specialAdCategoryCountry"] = o.SpecialAdCategoryCountry
 	}
 	if !IsNil(o.AdvantageAudience) {
 		toSerialize["advantageAudience"] = o.AdvantageAudience
