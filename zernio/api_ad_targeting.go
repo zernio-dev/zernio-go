@@ -670,7 +670,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities, &#x60;income&#x60; resolves income-tier options, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; is Meta only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -710,15 +710,27 @@ The `dimension` param selects what is searched:
 
   - `geo`: locations, further scoped by `geoType`
   - `interest`
-  - `behavior`
-  - `income`
+  - `behavior`: Meta-only, matched by name against Meta's fixed behaviors catalog
+    (e.g. `Small business owners`, `Frequent Travelers`); ids feed `TargetingSpec.behaviors`
+  - `income`: the household-income tiers the platform can target (Meta, TikTok, Google).
+    The id is the normalized tier (`top_5`, `top_10`, `top_10_25`, `top_25_50`) to pass as
+    `TargetingSpec.incomeTier`, never a platform segment id. Meta's tiers are US-only
+    ZIP-code percentiles (label and `audienceSize` come live from Meta), TikTok expresses all
+    four and Google only `top_10`. `q` is matched against the label, so `top` or `income`
+    lists every tier
   - `language`: Google-only
   - `workPosition`, `workEmployer`, `workIndustry`: the Meta-only work demographics, whose
     ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`
   - `industry`, `jobFunction`, `seniority`, `companySize`: the LinkedIn-only B2B facets, whose
     URNs feed `TargetingSpec.industries`/`jobFunctions`/`seniorities`/`companySizes`
 
-Availability of each dimension varies by platform (e.g. behaviours are Meta/TikTok only).
+Availability of each dimension varies by platform. A dimension a platform cannot search
+returns a 400 naming `dimension`; it never falls back to another dimension, and every
+result's `type` is the requested dimension (or the geo level for `geo`).
+
+TikTok `interest` searches TikTok's interest category catalog (about 700 categories over
+four levels, `path` holds the parent categories), matched by name in Zernio. The ids are
+what `TargetingSpec.interests` sends to TikTok as `interest_category_ids`.
 Work industries are a fixed ~30-entry Meta catalog with no server-side query,
 so `workIndustry` matching, ranking and `limit` happen in Zernio. `language`
 is likewise a fixed, checked-in table of Google's targetable

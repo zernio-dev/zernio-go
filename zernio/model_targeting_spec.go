@@ -51,7 +51,7 @@ type TargetingSpec struct {
 	Languages []string `json:"languages,omitempty"`
 	// Interest entities from /v1/ads/targeting/search?dimension=interest. Each carries the platform's opaque id.
 	Interests []CreateStandaloneAdRequestBehaviorsInner `json:"interests,omitempty"`
-	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta and TikTok.
+	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior. Supported on Meta only (TikTok behaviours are rejected with a 400).
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
 	// Meta only. Job title entities from /v1/ads/targeting/search?dimension=workPosition. Not interchangeable with the LinkedIn `jobTitles` URN fragments.
 	WorkPositions []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
