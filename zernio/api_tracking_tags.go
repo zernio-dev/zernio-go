@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.148.1
+API version: 1.148.2
 Contact: support@zernio.com
 */
 
@@ -1516,7 +1516,9 @@ enabled for the stream answer 422 `feature_not_available`.
 
 LinkedIn (`linkedinads`): health rows rather than counts, since LinkedIn exposes no per-
 event fire counts: one row per site domain the tag has seen (`kind: domain`, `domainName`,
-`lastFiredTime`, `creationTime`, `blocked`) and one per conversion rule (`kind:
+`lastFiredTime`, `creationTime`, `blocked`), capped at the 100 domains that fired most
+recently (newest first; a tag seen on more domains drops the least recent), and one per
+conversion rule (`kind:
 conversion_rule`, `id`, `name`, `type`, `conversionMethod`, `status`, `lastFiredTime`).
 Times are unix seconds; `startTime`/`endTime` are ignored.
 
