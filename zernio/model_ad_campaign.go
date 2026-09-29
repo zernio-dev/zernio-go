@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.146.2
+API version: 1.147.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type AdCampaign struct {
 	ReviewStatus NullableAdReviewStatus `json:"reviewStatus,omitempty"`
 	// Raw platform-level campaign status (Meta `effective_status`; ChatGPT (OpenAI): the campaign's own switch, active / paused / archived; TikTok: the campaign's own switch `operation_status`, ENABLE / DISABLE).
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
+	// Only on GET /v1/ads/campaigns with `live=true`. When `platformCampaignStatus` was read from the platform; null when this campaign could not be read live.
+	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
 	// Platform-reported campaign issues (Meta `issues_info[]`).
 	CampaignIssuesInfo []map[string]interface{} `json:"campaignIssuesInfo,omitempty"`
 	AdCount            *int32                   `json:"adCount,omitempty"`
@@ -298,6 +300,49 @@ func (o *AdCampaign) SetPlatformCampaignStatusNil() {
 // UnsetPlatformCampaignStatus ensures that no value is present for PlatformCampaignStatus, not even an explicit nil
 func (o *AdCampaign) UnsetPlatformCampaignStatus() {
 	o.PlatformCampaignStatus.Unset()
+}
+
+// GetStatusReadAt returns the StatusReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdCampaign) GetStatusReadAt() time.Time {
+	if o == nil || IsNil(o.StatusReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StatusReadAt.Get()
+}
+
+// GetStatusReadAtOk returns a tuple with the StatusReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdCampaign) GetStatusReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StatusReadAt.Get(), o.StatusReadAt.IsSet()
+}
+
+// HasStatusReadAt returns a boolean if a field has been set.
+func (o *AdCampaign) HasStatusReadAt() bool {
+	if o != nil && o.StatusReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusReadAt gets a reference to the given NullableTime and assigns it to the StatusReadAt field.
+func (o *AdCampaign) SetStatusReadAt(v time.Time) {
+	o.StatusReadAt.Set(&v)
+}
+
+// SetStatusReadAtNil sets the value for StatusReadAt to be an explicit nil
+func (o *AdCampaign) SetStatusReadAtNil() {
+	o.StatusReadAt.Set(nil)
+}
+
+// UnsetStatusReadAt ensures that no value is present for StatusReadAt, not even an explicit nil
+func (o *AdCampaign) UnsetStatusReadAt() {
+	o.StatusReadAt.Unset()
 }
 
 // GetCampaignIssuesInfo returns the CampaignIssuesInfo field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1110,6 +1155,9 @@ func (o AdCampaign) ToMap() (map[string]interface{}, error) {
 	}
 	if o.PlatformCampaignStatus.IsSet() {
 		toSerialize["platformCampaignStatus"] = o.PlatformCampaignStatus.Get()
+	}
+	if o.StatusReadAt.IsSet() {
+		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
 	}
 	if o.CampaignIssuesInfo != nil {
 		toSerialize["campaignIssuesInfo"] = o.CampaignIssuesInfo

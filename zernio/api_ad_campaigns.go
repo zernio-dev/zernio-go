@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.146.2
+API version: 1.147.0
 Contact: support@zernio.com
 */
 
@@ -857,7 +857,9 @@ BulkUpdateAdCampaignStatus Pause or resume many campaigns
 
 Process up to 50 campaigns in one call. Each campaign is updated
 concurrently and the response contains a per-campaign result so a
-single bad row does not fail the whole batch.
+single bad row does not fail the whole batch. Each campaign is written,
+counted and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status
+describes, including which child ad sets and ads each platform writes.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIBulkUpdateAdCampaignStatusRequest
@@ -2991,6 +2993,13 @@ type AdCampaignsAPIGetAdRequest struct {
 	ctx        context.Context
 	ApiService *AdCampaignsAPIService
 	adId       string
+	live       *bool
+}
+
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+func (r AdCampaignsAPIGetAdRequest) Live(live bool) AdCampaignsAPIGetAdRequest {
+	r.live = &live
+	return r
 }
 
 func (r AdCampaignsAPIGetAdRequest) Execute() (*GetAd200Response, *http.Response, error) {
@@ -3016,6 +3025,18 @@ The `{adId}` path segment accepts any identifier dialect Zernio indexes for the 
 Any of the four resolve to the same ad. Caller doesn't need a translation step.
 `creative.creativeFeatures` holds the stored requested settings, which do not confirm
 platform application.
+
+**Status freshness.** `status`, `configuredStatus`, `platformStatus`, `platformAdSetStatus`
+and `platformCampaignStatus` are the values Zernio last stored. Background sync refreshes
+them, typically within 15 to 60 minutes (Google up to about 3 hours), and ended or
+long-paused objects may be refreshed less often. Zernio's own status writes re-read the
+switches they change. A change made in the platform's own ads manager therefore shows up
+here only after the next sync. Controllers that act on a switch should pass `live=true`,
+which reads the switches from the platform now, stores them, and returns `statusReadAt`
+(null when the read failed and the stored values were returned).
+With `live=true` the ad's own switch (`configuredStatus`), its delivery status (`status`,
+`platformStatus`) and its ad set and campaign switches (`platformAdSetStatus`,
+`platformCampaignStatus`) are read live.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs. See description for details.
@@ -3052,6 +3073,13 @@ func (a *AdCampaignsAPIService) GetAdExecute(r AdCampaignsAPIGetAdRequest) (*Get
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.live != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", r.live, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
+		r.live = &defaultValue
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4815,6 +4843,7 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	toDate       *string
 	hasDelivery  *bool
 	minSpend     *float32
+	live         *bool
 }
 
 // Meta only. Campaign reads aggregate over ad documents, so a campaign with ZERO ads is normally invisible here, the state the two-step create (campaign, then ads via &#x60;existingCampaignId&#x60;) leaves behind whenever Meta rejects the ad step. Set true to list those too, with &#x60;adCount: 0&#x60; and zeroed metrics. Requires &#x60;accountId&#x60; and &#x60;adAccountId&#x60;, since an empty campaign has no ad row to resolve a token or ad account from.
@@ -4899,6 +4928,12 @@ func (r AdCampaignsAPIListAdCampaignsRequest) MinSpend(minSpend float32) AdCampa
 	return r
 }
 
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+func (r AdCampaignsAPIListAdCampaignsRequest) Live(live bool) AdCampaignsAPIListAdCampaignsRequest {
+	r.live = &live
+	return r
+}
+
 func (r AdCampaignsAPIListAdCampaignsRequest) Execute() (*ListAdCampaigns200Response, *http.Response, error) {
 	return r.ApiService.ListAdCampaignsExecute(r)
 }
@@ -4911,6 +4946,18 @@ Metrics (spend, impressions, clicks, etc.) are summed across all ads in each cam
 Campaign status is derived from child ad statuses (active > pending_review > paused > error > completed > cancelled > rejected).
 Google campaign budgets include amountMicros, explicitlyShared, resourceName and
 deliveryMethod after the next successful sync. This endpoint does not fetch Google live.
+
+**Status freshness.** `status`, `configuredStatus`, `platformStatus`, `platformAdSetStatus`
+and `platformCampaignStatus` are the values Zernio last stored. Background sync refreshes
+them, typically within 15 to 60 minutes (Google up to about 3 hours), and ended or
+long-paused objects may be refreshed less often. Zernio's own status writes re-read the
+switches they change. A change made in the platform's own ads manager therefore shows up
+here only after the next sync. Controllers that act on a switch should pass `live=true`,
+which reads the switches from the platform now, stores them, and returns `statusReadAt`
+(null when the read failed and the stored values were returned).
+With `live=true` (which needs `limit` of 20 or less) each returned campaign's own switch
+(`platformCampaignStatus`) is read live. Live reads cover TikTok, Meta, Google and OpenAI.
+The rolled-up `status` is not re-derived by a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdCampaignsRequest
@@ -4997,6 +5044,13 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	}
 	if r.minSpend != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "minSpend", r.minSpend, "form", "")
+	}
+	if r.live != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", r.live, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
+		r.live = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5524,7 +5578,9 @@ type AdCampaignsAPIListAdSetsRequest struct {
 	ApiService *AdCampaignsAPIService
 	accountId  *string
 	campaignId *string
+	adSetId    *string
 	platform   *string
+	live       *bool
 }
 
 // Account ID
@@ -5539,8 +5595,20 @@ func (r AdCampaignsAPIListAdSetsRequest) CampaignId(campaignId string) AdCampaig
 	return r
 }
 
+// Platform ad set ID
+func (r AdCampaignsAPIListAdSetsRequest) AdSetId(adSetId string) AdCampaignsAPIListAdSetsRequest {
+	r.adSetId = &adSetId
+	return r
+}
+
 func (r AdCampaignsAPIListAdSetsRequest) Platform(platform string) AdCampaignsAPIListAdSetsRequest {
 	r.platform = &platform
+	return r
+}
+
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+func (r AdCampaignsAPIListAdSetsRequest) Live(live bool) AdCampaignsAPIListAdSetsRequest {
+	r.live = &live
 	return r
 }
 
@@ -5558,6 +5626,19 @@ newly created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
 Google only) is visible here even though it is invisible in the tree
 until an ad joins it via `adSetId` on POST /v1/ads/create. Returns at most 500
 rows, newest first.
+
+**Status freshness.** `status`, `configuredStatus`, `platformStatus`, `platformAdSetStatus`
+and `platformCampaignStatus` are the values Zernio last stored. Background sync refreshes
+them, typically within 15 to 60 minutes (Google up to about 3 hours), and ended or
+long-paused objects may be refreshed less often. Zernio's own status writes re-read the
+switches they change. A change made in the platform's own ads manager therefore shows up
+here only after the next sync. Controllers that act on a switch should pass `live=true`,
+which reads the switches from the platform now, stores them, and returns `statusReadAt`
+(null when the read failed and the stored values were returned).
+With `live=true` (which needs a `campaignId` or `adSetId` filter) each listed ad set's own
+switch (`platformAdSetStatus`) is read live, for the first 20 rows; later rows keep their
+synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google and OpenAI.
+The rolled-up `status` is not re-derived by a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdSetsRequest
@@ -5597,8 +5678,18 @@ func (a *AdCampaignsAPIService) ListAdSetsExecute(r AdCampaignsAPIListAdSetsRequ
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
 	}
+	if r.adSetId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adSetId", r.adSetId, "form", "")
+	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.live != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", r.live, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "live", defaultValue, "form", "")
+		r.live = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8431,12 +8522,26 @@ func (r AdCampaignsAPIUpdateAdCampaignStatusRequest) Execute() (*UpdateAdCampaig
 UpdateAdCampaignStatus Pause or resume a campaign
 
 Writes the campaign's own on/off switch, then lets the platform cascade delivery to its ad sets and ads.
-Makes one platform API call, not one per ad.
+
+**What the write touches (current semantics, per platform).** TikTok: the campaign, every
+ad group and every ad under it that is not in a terminal status (rejected, completed,
+cancelled), on pause and on resume alike, so a resume also switches those ad groups and ads
+on. LinkedIn: the campaign group plus the campaigns and creatives of its non-terminal ads.
+Google: `paused` writes the campaign alone; `active` also switches on the ad groups and ads
+Zernio tracks under it (see below). Pinterest: the campaign plus one tracked ad and its ad
+group. X: the campaign plus one tracked line item. Meta and ChatGPT (OpenAI): the campaign
+switch only.
+
+**Counts and readback.** Before the write, each ad's own switch is read live from the
+platform (up to 20 ads; beyond that the stored switch is used), and `updated` / `skipped`
+are computed against that live state. After the write each ad's own switch and delivery
+status are read again and stored, and the campaign switch is re-read and stored, so an
+immediate GET returns what the platform now reports.
 
 The switch is always written, whatever delivery status the ads underneath report: an ad still in review
 does not block resuming its campaign. The echoed `status` is the confirmation that it landed.
 
-`updated` / `skipped` describe only the ads whose own stored status CHANGED alongside it, so
+`updated` / `skipped` describe only the ads whose own status changed alongside it, so
 `updated: 0` is a normal successful response, not a no-op. Ads are skipped when they are in a terminal
 status (rejected, completed, cancelled), already in the target state, or switched on but not yet
 delivering. The last group keeps its `pending_review` / `error` status until the platform reports what
@@ -8932,6 +9037,11 @@ When updating `budget` on an ABO campaign: if the parent campaign is
 CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH. Route to
 PUT /v1/ads/campaigns/{campaignId} instead.
 
+`status` behaves exactly as PUT /v1/ads/ad-sets/{adSetId}/status
+describes, including which child ads each platform writes with the ad
+set and how `statusUpdated` / `statusSkipped` are counted against the
+ads' live switches.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID
 	@return AdCampaignsAPIUpdateAdSetRequest
@@ -9066,13 +9176,26 @@ Writes the ad set's own on/off switch on every platform (Meta
 status, LinkedIn campaign, Pinterest ad group, X line item, OpenAI ad
 group), whatever delivery status its ads report: an ad still in review
 or paused by its campaign does not block it. The echoed `status` is the
-confirmation that it landed. On TikTok, Pinterest and OpenAI the ads
-whose own switch is not yet in the target state are flipped with it.
+confirmation that it landed.
 
-`updated` / `skipped` describe only the ads whose own stored status
-CHANGED alongside the switch, so `updated: 0` is a normal successful
-response. See `skippedReasons` for which of the three cases applies
-(terminal, already in the target state, or switched on but not yet
+**What the write touches (current semantics, per platform).** On TikTok the ad group AND
+every ad under it that is not in a terminal status (rejected, completed, cancelled) are
+written to the target state, on pause and on resume alike, so a resume also switches those
+ads on. Pinterest and ChatGPT (OpenAI) do the same with their ads. On Meta, Google, LinkedIn
+(campaign) and X (line item) only the ad set's own switch is written and each ad keeps its
+own switch.
+
+**Counts and readback.** Before the write, each ad's own switch is read live from the
+platform (up to 20 ads; beyond that the stored switch is used), and `updated` / `skipped`
+are computed against that live state, not against a stored switch a change in the
+platform's UI may have left stale. After the write each ad's own switch and delivery
+status are read again and stored, and the ad set switch is re-read and stored, so an
+immediate GET returns what the platform now reports.
+
+`updated` / `skipped` describe only the ads whose own status changed
+alongside the switch, so `updated: 0` is a normal successful response.
+See `skippedReasons` for which of the three cases applies (terminal,
+own switch already in the target state, or switched on but not yet
 delivering).
 
 A campaign created paused needs its campaign resumed as well: pair this

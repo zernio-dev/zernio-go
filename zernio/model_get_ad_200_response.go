@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.146.2
+API version: 1.147.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type GetAd200Response struct {
 	CachedAt NullableTime `json:"cachedAt,omitempty"`
 	// Whether Google RSA details use the last successful cached response.
 	Stale *bool `json:"stale,omitempty"`
+	// Only with `live=true`. When the switches were read from the platform; null when the live read failed and the stored values were returned.
+	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
 }
 
 // NewGetAd200Response instantiates a new GetAd200Response object
@@ -152,6 +154,49 @@ func (o *GetAd200Response) SetStale(v bool) {
 	o.Stale = &v
 }
 
+// GetStatusReadAt returns the StatusReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAd200Response) GetStatusReadAt() time.Time {
+	if o == nil || IsNil(o.StatusReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StatusReadAt.Get()
+}
+
+// GetStatusReadAtOk returns a tuple with the StatusReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAd200Response) GetStatusReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StatusReadAt.Get(), o.StatusReadAt.IsSet()
+}
+
+// HasStatusReadAt returns a boolean if a field has been set.
+func (o *GetAd200Response) HasStatusReadAt() bool {
+	if o != nil && o.StatusReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusReadAt gets a reference to the given NullableTime and assigns it to the StatusReadAt field.
+func (o *GetAd200Response) SetStatusReadAt(v time.Time) {
+	o.StatusReadAt.Set(&v)
+}
+
+// SetStatusReadAtNil sets the value for StatusReadAt to be an explicit nil
+func (o *GetAd200Response) SetStatusReadAtNil() {
+	o.StatusReadAt.Set(nil)
+}
+
+// UnsetStatusReadAt ensures that no value is present for StatusReadAt, not even an explicit nil
+func (o *GetAd200Response) UnsetStatusReadAt() {
+	o.StatusReadAt.Unset()
+}
+
 func (o GetAd200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -170,6 +215,9 @@ func (o GetAd200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Stale) {
 		toSerialize["stale"] = o.Stale
+	}
+	if o.StatusReadAt.IsSet() {
+		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
 	}
 	return toSerialize, nil
 }
