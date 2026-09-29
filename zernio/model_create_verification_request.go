@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.154.0
+API version: 1.155.0
 Contact: support@zernio.com
 */
 
@@ -22,13 +22,12 @@ var _ MappedNullable = &CreateVerificationRequest{}
 
 // CreateVerificationRequest struct for CreateVerificationRequest
 type CreateVerificationRequest struct {
-	// SMS-only for now.
 	Channel string `json:"channel"`
-	// E.164 phone number.
+	// E.164 phone number. WhatsApp only delivers to a phone number, never to a username.
 	To string `json:"to"`
-	// The SMS-enabled number on your account to send from. Defaults to your only SMS number.
+	// The number on your account to send from: an SMS-enabled number for `sms`, a connected WhatsApp number for `whatsapp`. Defaults to your only number on that channel.
 	From *string `json:"from,omitempty"`
-	// Your app or business name, rendered in the message. Defaults to your account name. Letters, numbers, and basic punctuation only.
+	// Your app or business name, rendered in the SMS message. Defaults to your account name. Not shown on WhatsApp, where Meta fixes the message and shows your WhatsApp display name. Letters, numbers, and basic punctuation only.
 	BrandName  *string `json:"brandName,omitempty"`
 	CodeLength *int32  `json:"codeLength,omitempty"`
 	TtlMinutes *int32  `json:"ttlMinutes,omitempty"`

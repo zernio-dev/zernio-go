@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.154.0
+API version: 1.155.0
 Contact: support@zernio.com
 */
 
@@ -193,13 +193,26 @@ RESENDS a fresh code on the existing verification (200 with
 one per 60 seconds (429 with `retryAfterSeconds` inside the cooldown).
 The stored brandName/codeLength/ttlMinutes win on a resend.
 
-Codes deliver by SMS from a phone number on your account (`from`
-optional when you own exactly one SMS-enabled number) and the message
-uses a fixed template. Each accepted send bills one verification fee
-plus the standard message rate.
+Codes deliver from a number on your account (`from` optional when
+you own exactly one number on the channel), always with a fixed
+template:
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return VerifyAPICreateVerificationRequest
+  - `sms`: from an SMS-enabled number. Each accepted send bills one
+    verification fee plus the standard message rate.
+
+  - `whatsapp`: from a connected WhatsApp number, as a Meta
+    AUTHENTICATION template with a copy-code button. The first
+    WhatsApp verification on a WhatsApp Business Account creates the
+    `zernio_verify_code` template there and answers 422
+    `template_pending` until Meta approves it (usually minutes; retry
+    after `retryAfterSeconds`). Meta fixes the message text, so
+    `brandName` is not shown and the code's validity is not stated in
+    the message (`ttlMinutes` is still enforced). Each accepted send
+    bills one verification fee; Meta bills its authentication rate to
+    your WhatsApp Business Account.
+
+    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+    @return VerifyAPICreateVerificationRequest
 */
 func (a *VerifyAPIService) CreateVerification(ctx context.Context) VerifyAPICreateVerificationRequest {
 	return VerifyAPICreateVerificationRequest{
