@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.151.0
+API version: 1.152.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &SubmitPhoneNumberKyc200Response{}
 // SubmitPhoneNumberKyc200Response struct for SubmitPhoneNumberKyc200Response
 type SubmitPhoneNumberKyc200Response struct {
 	Status *string `json:"status,omitempty"`
-	// True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until we get it, from regular stock the moment it returns or sourced by the carrier (usually 2 to 4 weeks), and is not billed until active. Releasing it (DELETE /v1/phone-numbers/{id}) cancels the pre-order. A pre-order is one number: `quantity` above 1 is rejected with 400.
+	// True when this submission placed a pre-order instead of an order from stock: the country and type had nothing deliverable, the picked areaCode was sold out (preOrder: true sent), or the country requires the number's area to cover the registered address and that area has no stock (the carrier is then asked for a number in exactly that area). The number stays `pending_regulatory` until we get it, from regular stock the moment it returns or sourced by the carrier (usually 2 to 4 weeks, never guaranteed), and is not billed until active. Releasing it (DELETE /v1/phone-numbers/{id}) cancels the pre-order. A pre-order is one number: `quantity` above 1 is rejected with 400.
 	PreOrder    *bool                                       `json:"preOrder,omitempty"`
 	PhoneNumber *SubmitPhoneNumberKyc200ResponsePhoneNumber `json:"phoneNumber,omitempty"`
 	// Every number provisioned from this submission. Length equals the requested `quantity` on full success (fewer if some orders failed; best-effort). The first element mirrors `phoneNumber`.
