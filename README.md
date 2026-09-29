@@ -267,12 +267,15 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AccountSettingsAPI.GetInstagramIceBreakers(ctx)` | Get IG ice breakers |
+| `client.AccountSettingsAPI.GetMessengerGetStarted(ctx)` | Get FB Get Started button |
 | `client.AccountSettingsAPI.GetMessengerMenu(ctx)` | Get FB persistent menu |
 | `client.AccountSettingsAPI.GetTelegramCommands(ctx)` | Get TG bot commands |
 | `client.AccountSettingsAPI.DeleteInstagramIceBreakers(ctx)` | Delete IG ice breakers |
+| `client.AccountSettingsAPI.DeleteMessengerGetStarted(ctx)` | Delete FB Get Started button |
 | `client.AccountSettingsAPI.DeleteMessengerMenu(ctx)` | Delete FB persistent menu |
 | `client.AccountSettingsAPI.DeleteTelegramCommands(ctx)` | Delete TG bot commands |
 | `client.AccountSettingsAPI.SetInstagramIceBreakers(ctx)` | Set IG ice breakers |
+| `client.AccountSettingsAPI.SetMessengerGetStarted(ctx)` | Set FB Get Started button |
 | `client.AccountSettingsAPI.SetMessengerMenu(ctx)` | Set FB persistent menu |
 | `client.AccountSettingsAPI.SetTelegramCommands(ctx)` | Set TG bot commands |
 
