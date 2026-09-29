@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.158.0
+API version: 1.159.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &CheckPhoneNumberAvailability200ResponseAreaAvailability{
 // CheckPhoneNumberAvailability200ResponseAreaAvailability Every area of the country's numbering plan (Google libphonenumber geocoding, one row per city: Madrid covers 910 to 919), in one of three states, refreshed every 6 hours from the carrier's own inventory counts. The same answer the dashboard picker and the public country pages show. Empty lists mean the pair has no cached coverage yet, not that the country has no areas.
 type CheckPhoneNumberAvailability200ResponseAreaAvailability struct {
 	// Deliverable numbers now, deepest first. Pass `ndc` as `areaCode` to hold the order to it.
-	InStock []CheckPhoneNumberAvailability200ResponseAreaOptionsInner `json:"inStock,omitempty"`
+	InStock []CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner `json:"inStock,omitempty"`
 	// The carrier lists nothing there and the number type is a document tier: submit KYC with `areaCode` and `preOrder: true`, the carrier sources one (usually 2 to 4 weeks, never guaranteed), nothing is billed until it is active.
 	PreOrder []CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner `json:"preOrder,omitempty"`
 	// Nothing deliverable and no pre-order: `listed` > 0 is stock the carrier shows that WhatsApp refused recently (held back until it clears), 0 is a dry area of an instant tier. A stock watch (POST /v1/phone-numbers/stock-watches with `areaCode`) is the way to hear when it is back.
@@ -46,9 +46,9 @@ func NewCheckPhoneNumberAvailability200ResponseAreaAvailabilityWithDefaults() *C
 }
 
 // GetInStock returns the InStock field value if set, zero value otherwise.
-func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) GetInStock() []CheckPhoneNumberAvailability200ResponseAreaOptionsInner {
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) GetInStock() []CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner {
 	if o == nil || IsNil(o.InStock) {
-		var ret []CheckPhoneNumberAvailability200ResponseAreaOptionsInner
+		var ret []CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner
 		return ret
 	}
 	return o.InStock
@@ -56,7 +56,7 @@ func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) GetInStock() [
 
 // GetInStockOk returns a tuple with the InStock field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) GetInStockOk() ([]CheckPhoneNumberAvailability200ResponseAreaOptionsInner, bool) {
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) GetInStockOk() ([]CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner, bool) {
 	if o == nil || IsNil(o.InStock) {
 		return nil, false
 	}
@@ -72,8 +72,8 @@ func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) HasInStock() b
 	return false
 }
 
-// SetInStock gets a reference to the given []CheckPhoneNumberAvailability200ResponseAreaOptionsInner and assigns it to the InStock field.
-func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) SetInStock(v []CheckPhoneNumberAvailability200ResponseAreaOptionsInner) {
+// SetInStock gets a reference to the given []CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner and assigns it to the InStock field.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailability) SetInStock(v []CheckPhoneNumberAvailability200ResponseAreaAvailabilityInStockInner) {
 	o.InStock = v
 }
 

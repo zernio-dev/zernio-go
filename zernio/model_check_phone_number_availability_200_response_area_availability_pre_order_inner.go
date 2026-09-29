@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.158.0
+API version: 1.159.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,10 @@ var _ MappedNullable = &CheckPhoneNumberAvailability200ResponseAreaAvailabilityP
 type CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner struct {
 	Ndc  *string `json:"ndc,omitempty"`
 	Name *string `json:"name,omitempty"`
+	// Every area code of the city, deepest first (Madrid: 915, 911, 910, ...). `ndc` is the one an order is placed against.
+	Ndcs []string `json:"ndcs,omitempty"`
+	// Other names the area answers to, present only when it has some (Milano for Milan, Sevilla for Seville).
+	Aliases []string `json:"aliases,omitempty"`
 }
 
 // NewCheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner instantiates a new CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner object
@@ -105,6 +109,70 @@ func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) S
 	o.Name = &v
 }
 
+// GetNdcs returns the Ndcs field value if set, zero value otherwise.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) GetNdcs() []string {
+	if o == nil || IsNil(o.Ndcs) {
+		var ret []string
+		return ret
+	}
+	return o.Ndcs
+}
+
+// GetNdcsOk returns a tuple with the Ndcs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) GetNdcsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ndcs) {
+		return nil, false
+	}
+	return o.Ndcs, true
+}
+
+// HasNdcs returns a boolean if a field has been set.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) HasNdcs() bool {
+	if o != nil && !IsNil(o.Ndcs) {
+		return true
+	}
+
+	return false
+}
+
+// SetNdcs gets a reference to the given []string and assigns it to the Ndcs field.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) SetNdcs(v []string) {
+	o.Ndcs = v
+}
+
+// GetAliases returns the Aliases field value if set, zero value otherwise.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) GetAliases() []string {
+	if o == nil || IsNil(o.Aliases) {
+		var ret []string
+		return ret
+	}
+	return o.Aliases
+}
+
+// GetAliasesOk returns a tuple with the Aliases field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) GetAliasesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Aliases) {
+		return nil, false
+	}
+	return o.Aliases, true
+}
+
+// HasAliases returns a boolean if a field has been set.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) HasAliases() bool {
+	if o != nil && !IsNil(o.Aliases) {
+		return true
+	}
+
+	return false
+}
+
+// SetAliases gets a reference to the given []string and assigns it to the Aliases field.
+func (o *CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) SetAliases(v []string) {
+	o.Aliases = v
+}
+
 func (o CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +188,12 @@ func (o CheckPhoneNumberAvailability200ResponseAreaAvailabilityPreOrderInner) To
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Ndcs) {
+		toSerialize["ndcs"] = o.Ndcs
+	}
+	if !IsNil(o.Aliases) {
+		toSerialize["aliases"] = o.Aliases
 	}
 	return toSerialize, nil
 }
