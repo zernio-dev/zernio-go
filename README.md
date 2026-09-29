@@ -618,9 +618,9 @@ func main() {
 ### Commerce
 | Method | Description |
 |--------|-------------|
-| `client.CommerceAPI.ListCollectionMetafields(ctx)` | List collection metafields |
 | `client.CommerceAPI.ListCommerceCatalogSyncs(ctx)` | List catalog syncs |
 | `client.CommerceAPI.ListCommerceChannels(ctx)` | List sales channels |
+| `client.CommerceAPI.ListCommerceCollectionMetafields(ctx)` | List collection metafields |
 | `client.CommerceAPI.ListCommerceCollections(ctx)` | List collections |
 | `client.CommerceAPI.ListCommerceDiscounts(ctx)` | List discounts |
 | `client.CommerceAPI.ListCommerceInventory(ctx)` | Get a product's stock |
@@ -631,9 +631,9 @@ func main() {
 | `client.CommerceAPI.ListCommerceMetaobjects(ctx)` | List metaobjects of a type |
 | `client.CommerceAPI.ListCommercePages(ctx)` | List pages |
 | `client.CommerceAPI.ListCommercePriceLists(ctx)` | List price lists |
+| `client.CommerceAPI.ListCommerceProductMetafields(ctx)` | List product metafields |
 | `client.CommerceAPI.ListCommerceProducts(ctx)` | List products |
 | `client.CommerceAPI.ListCommerceRedirects(ctx)` | List URL redirects |
-| `client.CommerceAPI.ListProductMetafields(ctx)` | List product metafields |
 | `client.CommerceAPI.CreateCommerceCatalogSync(ctx)` | Sync a store into a Meta catalog |
 | `client.CommerceAPI.CreateCommerceCollection(ctx)` | Create a collection |
 | `client.CommerceAPI.CreateCommerceDiscount(ctx)` | Create a discount |
@@ -660,37 +660,37 @@ func main() {
 | `client.CommerceAPI.UpdateCommerceProduct(ctx)` | Update a product |
 | `client.CommerceAPI.UpdateCommerceProductPrices(ctx)` | Update variant prices |
 | `client.CommerceAPI.UpdateCommerceRedirect(ctx)` | Update a URL redirect |
-| `client.CommerceAPI.DeleteCollectionMetafields(ctx)` | Delete collection metafields |
 | `client.CommerceAPI.DeleteCommerceCatalogSync(ctx)` | Stop a catalog sync |
 | `client.CommerceAPI.DeleteCommerceCollection(ctx)` | Delete a collection |
+| `client.CommerceAPI.DeleteCommerceCollectionMetafields(ctx)` | Delete collection metafields |
 | `client.CommerceAPI.DeleteCommerceDiscount(ctx)` | Delete a discount |
 | `client.CommerceAPI.DeleteCommerceMarketingActivity(ctx)` | Delete a marketing activity |
 | `client.CommerceAPI.DeleteCommerceMenu(ctx)` | Delete a navigation menu |
 | `client.CommerceAPI.DeleteCommerceMetaobject(ctx)` | Delete a metaobject |
 | `client.CommerceAPI.DeleteCommercePage(ctx)` | Delete a page |
 | `client.CommerceAPI.DeleteCommercePriceListPrices(ctx)` | Remove fixed prices |
+| `client.CommerceAPI.DeleteCommerceProductMetafields(ctx)` | Delete product metafields |
 | `client.CommerceAPI.DeleteCommerceProductOptions(ctx)` | Delete options |
 | `client.CommerceAPI.DeleteCommerceProductVariants(ctx)` | Delete variants |
 | `client.CommerceAPI.DeleteCommerceRedirect(ctx)` | Delete a URL redirect |
-| `client.CommerceAPI.DeleteProductMetafields(ctx)` | Delete product metafields |
 | `client.CommerceAPI.AddCommerceDiscountCodes(ctx)` | Add codes to a discount |
 | `client.CommerceAPI.AddCommerceMarketingEngagement(ctx)` | Report daily engagement |
 | `client.CommerceAPI.AddCommerceProductImages(ctx)` | Add images |
-| `client.CommerceAPI.ChangeCollectionChannels(ctx)` | Publish or unpublish a collection |
+| `client.CommerceAPI.ChangeCommerceCollectionChannels(ctx)` | Publish or unpublish a collection |
 | `client.CommerceAPI.ChangeCommerceCollectionProducts(ctx)` | Add or remove products in a collection |
 | `client.CommerceAPI.ChangeCommerceInventory(ctx)` | Set or adjust stock |
+| `client.CommerceAPI.ChangeCommerceProductChannels(ctx)` | Publish or unpublish a product |
 | `client.CommerceAPI.ChangeCommerceProductState(ctx)` | Activate, deactivate, archive or delete products |
 | `client.CommerceAPI.ChangeCommerceProductTags(ctx)` | Add or remove tags in bulk |
-| `client.CommerceAPI.ChangeProductChannels(ctx)` | Publish or unpublish a product |
 | `client.CommerceAPI.DuplicateCommerceProduct(ctx)` | Duplicate a product |
 | `client.CommerceAPI.RemoveCommerceProductImages(ctx)` | Remove images |
 | `client.CommerceAPI.ReorderCommerceCollectionProducts(ctx)` | Reorder products in a collection |
 | `client.CommerceAPI.ReorderCommerceProductImages(ctx)` | Reorder images |
 | `client.CommerceAPI.RunCommerceCatalogSync(ctx)` | Run a catalog sync now |
-| `client.CommerceAPI.SetCollectionMetafields(ctx)` | Set collection metafields |
+| `client.CommerceAPI.SetCommerceCollectionMetafields(ctx)` | Set collection metafields |
 | `client.CommerceAPI.SetCommerceDiscountActive(ctx)` | Activate or deactivate a discount |
 | `client.CommerceAPI.SetCommercePriceListPrices(ctx)` | Set fixed prices |
-| `client.CommerceAPI.SetProductMetafields(ctx)` | Set product metafields |
+| `client.CommerceAPI.SetCommerceProductMetafields(ctx)` | Set product metafields |
 | `client.CommerceAPI.UpsertCommerceMarketingActivity(ctx)` | Record a marketing activity |
 
 ### Connected Apps

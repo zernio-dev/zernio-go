@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.152.0
+API version: 1.153.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,7 @@ const (
 	COMMERCECAPABILITY_PRODUCTS_IMAGES_REMOVE CommerceCapability = "products.images_remove"
 	COMMERCECAPABILITY_COLLECTIONS_READ       CommerceCapability = "collections.read"
 	COMMERCECAPABILITY_COLLECTIONS_WRITE      CommerceCapability = "collections.write"
+	COMMERCECAPABILITY_COLLECTIONS_METAFIELDS CommerceCapability = "collections.metafields"
 	COMMERCECAPABILITY_METAFIELDS_READ        CommerceCapability = "metafields.read"
 	COMMERCECAPABILITY_METAFIELDS_WRITE       CommerceCapability = "metafields.write"
 	COMMERCECAPABILITY_PAGES_READ             CommerceCapability = "pages.read"
@@ -41,6 +42,7 @@ const (
 	COMMERCECAPABILITY_CHANNELS_WRITE         CommerceCapability = "channels.write"
 	COMMERCECAPABILITY_DISCOUNTS_READ         CommerceCapability = "discounts.read"
 	COMMERCECAPABILITY_DISCOUNTS_WRITE        CommerceCapability = "discounts.write"
+	COMMERCECAPABILITY_DISCOUNTS_CODES        CommerceCapability = "discounts.codes"
 	COMMERCECAPABILITY_NAVIGATION_READ        CommerceCapability = "navigation.read"
 	COMMERCECAPABILITY_NAVIGATION_WRITE       CommerceCapability = "navigation.write"
 	COMMERCECAPABILITY_METAOBJECTS_READ       CommerceCapability = "metaobjects.read"
@@ -62,6 +64,7 @@ var AllowedCommerceCapabilityEnumValues = []CommerceCapability{
 	"products.images_remove",
 	"collections.read",
 	"collections.write",
+	"collections.metafields",
 	"metafields.read",
 	"metafields.write",
 	"pages.read",
@@ -72,6 +75,7 @@ var AllowedCommerceCapabilityEnumValues = []CommerceCapability{
 	"channels.write",
 	"discounts.read",
 	"discounts.write",
+	"discounts.codes",
 	"navigation.read",
 	"navigation.write",
 	"metaobjects.read",

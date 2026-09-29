@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.152.0
+API version: 1.153.0
 Contact: support@zernio.com
 */
 
@@ -42,7 +42,7 @@ func (r CommerceAPIAddCommerceDiscountCodesRequest) Execute() (*ReorderCommerceP
 /*
 AddCommerceDiscountCodes Add codes to a discount
 
-Adds up to 250 more codes to a code discount, for example one per influencer. The platform adds them in the background.
+Adds up to 250 more codes to a code discount, for example one per influencer. The platform adds them in the background. Needs discounts.codes, which WooCommerce stores do not have.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param discountId Platform-native id.
@@ -434,33 +434,33 @@ func (a *CommerceAPIService) AddCommerceProductImagesExecute(r CommerceAPIAddCom
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type CommerceAPIChangeCollectionChannelsRequest struct {
-	ctx                          context.Context
-	ApiService                   *CommerceAPIService
-	collectionId                 string
-	changeProductChannelsRequest *ChangeProductChannelsRequest
+type CommerceAPIChangeCommerceCollectionChannelsRequest struct {
+	ctx                                  context.Context
+	ApiService                           *CommerceAPIService
+	collectionId                         string
+	changeCommerceProductChannelsRequest *ChangeCommerceProductChannelsRequest
 }
 
-func (r CommerceAPIChangeCollectionChannelsRequest) ChangeProductChannelsRequest(changeProductChannelsRequest ChangeProductChannelsRequest) CommerceAPIChangeCollectionChannelsRequest {
-	r.changeProductChannelsRequest = &changeProductChannelsRequest
+func (r CommerceAPIChangeCommerceCollectionChannelsRequest) ChangeCommerceProductChannelsRequest(changeCommerceProductChannelsRequest ChangeCommerceProductChannelsRequest) CommerceAPIChangeCommerceCollectionChannelsRequest {
+	r.changeCommerceProductChannelsRequest = &changeCommerceProductChannelsRequest
 	return r
 }
 
-func (r CommerceAPIChangeCollectionChannelsRequest) Execute() (*ChangeCollectionChannels200Response, *http.Response, error) {
-	return r.ApiService.ChangeCollectionChannelsExecute(r)
+func (r CommerceAPIChangeCommerceCollectionChannelsRequest) Execute() (*ChangeCommerceCollectionChannels200Response, *http.Response, error) {
+	return r.ApiService.ChangeCommerceCollectionChannelsExecute(r)
 }
 
 /*
-ChangeCollectionChannels Publish or unpublish a collection
+ChangeCommerceCollectionChannels Publish or unpublish a collection
 
 Publishes to and/or unpublishes from sales channels (the online store, Shop, POS and others). List channels with GET /v1/commerce/channels.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param collectionId Platform-native id.
-	@return CommerceAPIChangeCollectionChannelsRequest
+	@return CommerceAPIChangeCommerceCollectionChannelsRequest
 */
-func (a *CommerceAPIService) ChangeCollectionChannels(ctx context.Context, collectionId string) CommerceAPIChangeCollectionChannelsRequest {
-	return CommerceAPIChangeCollectionChannelsRequest{
+func (a *CommerceAPIService) ChangeCommerceCollectionChannels(ctx context.Context, collectionId string) CommerceAPIChangeCommerceCollectionChannelsRequest {
+	return CommerceAPIChangeCommerceCollectionChannelsRequest{
 		ApiService:   a,
 		ctx:          ctx,
 		collectionId: collectionId,
@@ -469,16 +469,16 @@ func (a *CommerceAPIService) ChangeCollectionChannels(ctx context.Context, colle
 
 // Execute executes the request
 //
-//	@return ChangeCollectionChannels200Response
-func (a *CommerceAPIService) ChangeCollectionChannelsExecute(r CommerceAPIChangeCollectionChannelsRequest) (*ChangeCollectionChannels200Response, *http.Response, error) {
+//	@return ChangeCommerceCollectionChannels200Response
+func (a *CommerceAPIService) ChangeCommerceCollectionChannelsExecute(r CommerceAPIChangeCommerceCollectionChannelsRequest) (*ChangeCommerceCollectionChannels200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ChangeCollectionChannels200Response
+		localVarReturnValue *ChangeCommerceCollectionChannels200Response
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ChangeCollectionChannels")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ChangeCommerceCollectionChannels")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -489,8 +489,8 @@ func (a *CommerceAPIService) ChangeCollectionChannelsExecute(r CommerceAPIChange
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.changeProductChannelsRequest == nil {
-		return localVarReturnValue, nil, reportError("changeProductChannelsRequest is required and must be specified")
+	if r.changeCommerceProductChannelsRequest == nil {
+		return localVarReturnValue, nil, reportError("changeCommerceProductChannelsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -511,7 +511,7 @@ func (a *CommerceAPIService) ChangeCollectionChannelsExecute(r CommerceAPIChange
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.changeProductChannelsRequest
+	localVarPostBody = r.changeCommerceProductChannelsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -848,6 +848,143 @@ func (a *CommerceAPIService) ChangeCommerceInventoryExecute(r CommerceAPIChangeC
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommerceAPIChangeCommerceProductChannelsRequest struct {
+	ctx                                  context.Context
+	ApiService                           *CommerceAPIService
+	productId                            string
+	changeCommerceProductChannelsRequest *ChangeCommerceProductChannelsRequest
+}
+
+func (r CommerceAPIChangeCommerceProductChannelsRequest) ChangeCommerceProductChannelsRequest(changeCommerceProductChannelsRequest ChangeCommerceProductChannelsRequest) CommerceAPIChangeCommerceProductChannelsRequest {
+	r.changeCommerceProductChannelsRequest = &changeCommerceProductChannelsRequest
+	return r
+}
+
+func (r CommerceAPIChangeCommerceProductChannelsRequest) Execute() (*ChangeCommerceProductChannels200Response, *http.Response, error) {
+	return r.ApiService.ChangeCommerceProductChannelsExecute(r)
+}
+
+/*
+ChangeCommerceProductChannels Publish or unpublish a product
+
+Publishes to and/or unpublishes from sales channels (the online store, Shop, POS and others). List channels with GET /v1/commerce/channels.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param productId Platform-native id.
+	@return CommerceAPIChangeCommerceProductChannelsRequest
+*/
+func (a *CommerceAPIService) ChangeCommerceProductChannels(ctx context.Context, productId string) CommerceAPIChangeCommerceProductChannelsRequest {
+	return CommerceAPIChangeCommerceProductChannelsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		productId:  productId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ChangeCommerceProductChannels200Response
+func (a *CommerceAPIService) ChangeCommerceProductChannelsExecute(r CommerceAPIChangeCommerceProductChannelsRequest) (*ChangeCommerceProductChannels200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ChangeCommerceProductChannels200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ChangeCommerceProductChannels")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/products/{productId}/channels"
+	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.changeCommerceProductChannelsRequest == nil {
+		return localVarReturnValue, nil, reportError("changeCommerceProductChannelsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.changeCommerceProductChannelsRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommerceAPIChangeCommerceProductStateRequest struct {
 	ctx                               context.Context
 	ApiService                        *CommerceAPIService
@@ -1057,143 +1194,6 @@ func (a *CommerceAPIService) ChangeCommerceProductTagsExecute(r CommerceAPIChang
 	}
 	// body params
 	localVarPostBody = r.changeCommerceProductTagsRequest
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type CommerceAPIChangeProductChannelsRequest struct {
-	ctx                          context.Context
-	ApiService                   *CommerceAPIService
-	productId                    string
-	changeProductChannelsRequest *ChangeProductChannelsRequest
-}
-
-func (r CommerceAPIChangeProductChannelsRequest) ChangeProductChannelsRequest(changeProductChannelsRequest ChangeProductChannelsRequest) CommerceAPIChangeProductChannelsRequest {
-	r.changeProductChannelsRequest = &changeProductChannelsRequest
-	return r
-}
-
-func (r CommerceAPIChangeProductChannelsRequest) Execute() (*ChangeProductChannels200Response, *http.Response, error) {
-	return r.ApiService.ChangeProductChannelsExecute(r)
-}
-
-/*
-ChangeProductChannels Publish or unpublish a product
-
-Publishes to and/or unpublishes from sales channels (the online store, Shop, POS and others). List channels with GET /v1/commerce/channels.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param productId Platform-native id.
-	@return CommerceAPIChangeProductChannelsRequest
-*/
-func (a *CommerceAPIService) ChangeProductChannels(ctx context.Context, productId string) CommerceAPIChangeProductChannelsRequest {
-	return CommerceAPIChangeProductChannelsRequest{
-		ApiService: a,
-		ctx:        ctx,
-		productId:  productId,
-	}
-}
-
-// Execute executes the request
-//
-//	@return ChangeProductChannels200Response
-func (a *CommerceAPIService) ChangeProductChannelsExecute(r CommerceAPIChangeProductChannelsRequest) (*ChangeProductChannels200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodPost
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *ChangeProductChannels200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ChangeProductChannels")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/commerce/products/{productId}/channels"
-	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.changeProductChannelsRequest == nil {
-		return localVarReturnValue, nil, reportError("changeProductChannelsRequest is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.changeProductChannelsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1685,6 +1685,8 @@ func (r CommerceAPICreateCommerceMenuRequest) Execute() (*CreateCommerceMenu201R
 /*
 CreateCommerceMenu Create a navigation menu
 
+Creates a navigation menu from `title`, `handle` and up to 100 `items`, and returns it with status 201. Shopify only. Needs navigation.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommerceMenuRequest
 */
@@ -1816,6 +1818,8 @@ func (r CommerceAPICreateCommerceMetaobjectRequest) Execute() (*CreateCommerceMe
 /*
 CreateCommerceMetaobject Create a metaobject
 
+Creates a metaobject of `type` with its `fields` (key and string value, up to 100) and an optional `handle`, and returns it with status 201. Shopify only. Needs metaobjects.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommerceMetaobjectRequest
 */
@@ -1946,6 +1950,8 @@ func (r CommerceAPICreateCommercePageRequest) Execute() (*CreateCommercePage201R
 
 /*
 CreateCommercePage Create a page
+
+Creates a content page from `title`, optional `handle`, `bodyHtml` and `isPublished`, and returns it with status 201. Needs pages.write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommercePageRequest
@@ -2489,6 +2495,8 @@ func (r CommerceAPICreateCommerceRedirectRequest) Execute() (*CreateCommerceRedi
 /*
 CreateCommerceRedirect Create a URL redirect
 
+Creates a redirect from `path` (starting with `/`) to `target` (a path or a full URL) and returns it with status 201. Shopify only. Needs navigation.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPICreateCommerceRedirectRequest
 */
@@ -2543,152 +2551,6 @@ func (a *CommerceAPIService) CreateCommerceRedirectExecute(r CommerceAPICreateCo
 	}
 	// body params
 	localVarPostBody = r.createCommerceRedirectRequest
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type CommerceAPIDeleteCollectionMetafieldsRequest struct {
-	ctx          context.Context
-	ApiService   *CommerceAPIService
-	collectionId string
-	accountId    *string
-	keys         *string
-}
-
-// Connected store SocialAccount id.
-func (r CommerceAPIDeleteCollectionMetafieldsRequest) AccountId(accountId string) CommerceAPIDeleteCollectionMetafieldsRequest {
-	r.accountId = &accountId
-	return r
-}
-
-// Comma-separated namespace.key pairs.
-func (r CommerceAPIDeleteCollectionMetafieldsRequest) Keys(keys string) CommerceAPIDeleteCollectionMetafieldsRequest {
-	r.keys = &keys
-	return r
-}
-
-func (r CommerceAPIDeleteCollectionMetafieldsRequest) Execute() (*DeleteProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.DeleteCollectionMetafieldsExecute(r)
-}
-
-/*
-DeleteCollectionMetafields Delete collection metafields
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param collectionId Platform-native id.
-	@return CommerceAPIDeleteCollectionMetafieldsRequest
-*/
-func (a *CommerceAPIService) DeleteCollectionMetafields(ctx context.Context, collectionId string) CommerceAPIDeleteCollectionMetafieldsRequest {
-	return CommerceAPIDeleteCollectionMetafieldsRequest{
-		ApiService:   a,
-		ctx:          ctx,
-		collectionId: collectionId,
-	}
-}
-
-// Execute executes the request
-//
-//	@return DeleteProductMetafields200Response
-func (a *CommerceAPIService) DeleteCollectionMetafieldsExecute(r CommerceAPIDeleteCollectionMetafieldsRequest) (*DeleteProductMetafields200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodDelete
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *DeleteProductMetafields200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.DeleteCollectionMetafields")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/commerce/collections/{collectionId}/metafields"
-	localVarPath = strings.Replace(localVarPath, "{"+"collectionId"+"}", url.PathEscape(parameterValueToString(r.collectionId, "collectionId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
-	if r.keys == nil {
-		return localVarReturnValue, nil, reportError("keys is required and must be specified")
-	}
-
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "keys", r.keys, "form", "")
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -3011,6 +2873,154 @@ func (a *CommerceAPIService) DeleteCommerceCollectionExecute(r CommerceAPIDelete
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommerceAPIDeleteCommerceCollectionMetafieldsRequest struct {
+	ctx          context.Context
+	ApiService   *CommerceAPIService
+	collectionId string
+	accountId    *string
+	keys         *string
+}
+
+// Connected store SocialAccount id.
+func (r CommerceAPIDeleteCommerceCollectionMetafieldsRequest) AccountId(accountId string) CommerceAPIDeleteCommerceCollectionMetafieldsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated namespace.key pairs.
+func (r CommerceAPIDeleteCommerceCollectionMetafieldsRequest) Keys(keys string) CommerceAPIDeleteCommerceCollectionMetafieldsRequest {
+	r.keys = &keys
+	return r
+}
+
+func (r CommerceAPIDeleteCommerceCollectionMetafieldsRequest) Execute() (*DeleteCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.DeleteCommerceCollectionMetafieldsExecute(r)
+}
+
+/*
+DeleteCommerceCollectionMetafields Delete collection metafields
+
+Deletes the collection metafields named in `keys` (comma-separated `namespace.key`, up to 25). Needs collections.metafields: WooCommerce answers 400 platform_not_supported.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param collectionId Platform-native id.
+	@return CommerceAPIDeleteCommerceCollectionMetafieldsRequest
+*/
+func (a *CommerceAPIService) DeleteCommerceCollectionMetafields(ctx context.Context, collectionId string) CommerceAPIDeleteCommerceCollectionMetafieldsRequest {
+	return CommerceAPIDeleteCommerceCollectionMetafieldsRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		collectionId: collectionId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteCommerceProductMetafields200Response
+func (a *CommerceAPIService) DeleteCommerceCollectionMetafieldsExecute(r CommerceAPIDeleteCommerceCollectionMetafieldsRequest) (*DeleteCommerceProductMetafields200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteCommerceProductMetafields200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.DeleteCommerceCollectionMetafields")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/collections/{collectionId}/metafields"
+	localVarPath = strings.Replace(localVarPath, "{"+"collectionId"+"}", url.PathEscape(parameterValueToString(r.collectionId, "collectionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.keys == nil {
+		return localVarReturnValue, nil, reportError("keys is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "keys", r.keys, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommerceAPIDeleteCommerceDiscountRequest struct {
 	ctx        context.Context
 	ApiService *CommerceAPIService
@@ -3030,6 +3040,8 @@ func (r CommerceAPIDeleteCommerceDiscountRequest) Execute() (*DeleteCommerceDisc
 
 /*
 DeleteCommerceDiscount Delete a discount
+
+Deletes the discount; its codes stop working at checkout. This cannot be undone. Needs discounts.write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param discountId Platform-native id.
@@ -3166,6 +3178,8 @@ func (r CommerceAPIDeleteCommerceMarketingActivityRequest) Execute() (*DeleteCom
 /*
 DeleteCommerceMarketingActivity Delete a marketing activity
 
+Deletes the marketing activity you created with PUT /v1/commerce/marketing-activities, identified by the `remoteId` you gave it. Shopify only. Needs marketing.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param remoteId The remoteId given when recording it.
 	@return CommerceAPIDeleteCommerceMarketingActivityRequest
@@ -3300,6 +3314,8 @@ func (r CommerceAPIDeleteCommerceMenuRequest) Execute() (*DeleteCommerceMenu200R
 
 /*
 DeleteCommerceMenu Delete a navigation menu
+
+Deletes the navigation menu. Shopify only. Needs navigation.write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param menuId Platform-native id.
@@ -3436,6 +3452,8 @@ func (r CommerceAPIDeleteCommerceMetaobjectRequest) Execute() (*DeleteCommerceMe
 /*
 DeleteCommerceMetaobject Delete a metaobject
 
+Deletes the metaobject. References to it from metafields stop resolving. Shopify only. Needs metaobjects.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param metaobjectId Platform-native id.
 	@return CommerceAPIDeleteCommerceMetaobjectRequest
@@ -3570,6 +3588,8 @@ func (r CommerceAPIDeleteCommercePageRequest) Execute() (*DeleteCommercePage200R
 
 /*
 DeleteCommercePage Delete a page
+
+Deletes the page from the store. This cannot be undone. Needs pages.write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param pageId Platform-native id.
@@ -3834,6 +3854,154 @@ func (a *CommerceAPIService) DeleteCommercePriceListPricesExecute(r CommerceAPID
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommerceAPIDeleteCommerceProductMetafieldsRequest struct {
+	ctx        context.Context
+	ApiService *CommerceAPIService
+	productId  string
+	accountId  *string
+	keys       *string
+}
+
+// Connected store SocialAccount id.
+func (r CommerceAPIDeleteCommerceProductMetafieldsRequest) AccountId(accountId string) CommerceAPIDeleteCommerceProductMetafieldsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Comma-separated namespace.key pairs.
+func (r CommerceAPIDeleteCommerceProductMetafieldsRequest) Keys(keys string) CommerceAPIDeleteCommerceProductMetafieldsRequest {
+	r.keys = &keys
+	return r
+}
+
+func (r CommerceAPIDeleteCommerceProductMetafieldsRequest) Execute() (*DeleteCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.DeleteCommerceProductMetafieldsExecute(r)
+}
+
+/*
+DeleteCommerceProductMetafields Delete product metafields
+
+Deletes the product custom fields named in `keys` (comma-separated `namespace.key`, up to 25) and returns how many were deleted. Needs metafields.write.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param productId Platform-native id.
+	@return CommerceAPIDeleteCommerceProductMetafieldsRequest
+*/
+func (a *CommerceAPIService) DeleteCommerceProductMetafields(ctx context.Context, productId string) CommerceAPIDeleteCommerceProductMetafieldsRequest {
+	return CommerceAPIDeleteCommerceProductMetafieldsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		productId:  productId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return DeleteCommerceProductMetafields200Response
+func (a *CommerceAPIService) DeleteCommerceProductMetafieldsExecute(r CommerceAPIDeleteCommerceProductMetafieldsRequest) (*DeleteCommerceProductMetafields200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeleteCommerceProductMetafields200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.DeleteCommerceProductMetafields")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/products/{productId}/metafields"
+	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.keys == nil {
+		return localVarReturnValue, nil, reportError("keys is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "keys", r.keys, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommerceAPIDeleteCommerceProductOptionsRequest struct {
 	ctx        context.Context
 	ApiService *CommerceAPIService
@@ -4009,6 +4177,8 @@ func (r CommerceAPIDeleteCommerceProductVariantsRequest) Execute() (*CreateComme
 /*
 DeleteCommerceProductVariants Delete variants
 
+Deletes the variants in `variantIds` (comma-separated, up to 100) and returns the updated product. A product keeps at least one variant, so deleting every variant is refused by the platform. Needs products.variants.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param productId Platform-native id.
 	@return CommerceAPIDeleteCommerceProductVariantsRequest
@@ -4148,6 +4318,8 @@ func (r CommerceAPIDeleteCommerceRedirectRequest) Execute() (*DeleteCommerceRedi
 /*
 DeleteCommerceRedirect Delete a URL redirect
 
+Deletes the redirect; the old path answers 404 again. Shopify only. Needs navigation.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param redirectId Platform-native id.
 	@return CommerceAPIDeleteCommerceRedirectRequest
@@ -4187,152 +4359,6 @@ func (a *CommerceAPIService) DeleteCommerceRedirectExecute(r CommerceAPIDeleteCo
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type CommerceAPIDeleteProductMetafieldsRequest struct {
-	ctx        context.Context
-	ApiService *CommerceAPIService
-	productId  string
-	accountId  *string
-	keys       *string
-}
-
-// Connected store SocialAccount id.
-func (r CommerceAPIDeleteProductMetafieldsRequest) AccountId(accountId string) CommerceAPIDeleteProductMetafieldsRequest {
-	r.accountId = &accountId
-	return r
-}
-
-// Comma-separated namespace.key pairs.
-func (r CommerceAPIDeleteProductMetafieldsRequest) Keys(keys string) CommerceAPIDeleteProductMetafieldsRequest {
-	r.keys = &keys
-	return r
-}
-
-func (r CommerceAPIDeleteProductMetafieldsRequest) Execute() (*DeleteProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.DeleteProductMetafieldsExecute(r)
-}
-
-/*
-DeleteProductMetafields Delete product metafields
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param productId Platform-native id.
-	@return CommerceAPIDeleteProductMetafieldsRequest
-*/
-func (a *CommerceAPIService) DeleteProductMetafields(ctx context.Context, productId string) CommerceAPIDeleteProductMetafieldsRequest {
-	return CommerceAPIDeleteProductMetafieldsRequest{
-		ApiService: a,
-		ctx:        ctx,
-		productId:  productId,
-	}
-}
-
-// Execute executes the request
-//
-//	@return DeleteProductMetafields200Response
-func (a *CommerceAPIService) DeleteProductMetafieldsExecute(r CommerceAPIDeleteProductMetafieldsRequest) (*DeleteProductMetafields200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodDelete
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *DeleteProductMetafields200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.DeleteProductMetafields")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/commerce/products/{productId}/metafields"
-	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
-	if r.keys == nil {
-		return localVarReturnValue, nil, reportError("keys is required and must be specified")
-	}
-
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "keys", r.keys, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4559,6 +4585,8 @@ func (r CommerceAPIGetCommerceCatalogSyncRequest) Execute() (*CreateCommerceCata
 /*
 GetCommerceCatalogSync Get a catalog sync
 
+One catalog sync with the status and counts of its last run (`itemsSent`, `itemsSkipped`, `itemsDeleted`, `lastError`). Poll it after POST /v1/commerce/catalog-syncs/{syncId}/run to follow a run.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param syncId
 	@return CommerceAPIGetCommerceCatalogSyncRequest
@@ -4689,6 +4717,8 @@ func (r CommerceAPIGetCommerceCollectionRequest) Execute() (*CreateCommerceColle
 
 /*
 GetCommerceCollection Get a collection
+
+One collection (a category on WooCommerce) with its image, sort order and product count. List its products with GET /v1/commerce/products?collectionId=. Needs collections.read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param collectionId Platform-native collection id.
@@ -4825,6 +4855,8 @@ func (r CommerceAPIGetCommerceDiscountRequest) Execute() (*CreateCommerceDiscoun
 /*
 GetCommerceDiscount Get a discount
 
+One discount with its value, targets, minimum, usage and schedule. Needs discounts.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param discountId Platform-native id.
 	@return CommerceAPIGetCommerceDiscountRequest
@@ -4959,6 +4991,8 @@ func (r CommerceAPIGetCommerceMenuRequest) Execute() (*CreateCommerceMenu201Resp
 
 /*
 GetCommerceMenu Get a navigation menu
+
+One navigation menu with its nested items. Shopify only. Needs navigation.read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param menuId Platform-native id.
@@ -5095,6 +5129,8 @@ func (r CommerceAPIGetCommerceMetaobjectRequest) Execute() (*CreateCommerceMetao
 /*
 GetCommerceMetaobject Get a metaobject
 
+One metaobject with its fields. Shopify only. Needs metaobjects.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param metaobjectId Platform-native id.
 	@return CommerceAPIGetCommerceMetaobjectRequest
@@ -5230,6 +5266,8 @@ func (r CommerceAPIGetCommercePageRequest) Execute() (*CreateCommercePage201Resp
 /*
 GetCommercePage Get a page
 
+One content page with its body. Needs pages.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param pageId Platform-native id.
 	@return CommerceAPIGetCommercePageRequest
@@ -5364,6 +5402,8 @@ func (r CommerceAPIGetCommerceProductRequest) Execute() (*CreateCommerceProduct2
 
 /*
 GetCommerceProduct Get a product
+
+One product with all its variants, options and images. Needs products.read. 404 product_not_found when the id does not exist in the store.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param productId Platform-native product id.
@@ -5534,141 +5574,6 @@ func (a *CommerceAPIService) GetCommerceStoreExecute(r CommerceAPIGetCommerceSto
 	}
 
 	localVarPath := localBasePath + "/v1/commerce/store"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
-
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type CommerceAPIListCollectionMetafieldsRequest struct {
-	ctx          context.Context
-	ApiService   *CommerceAPIService
-	collectionId string
-	accountId    *string
-}
-
-// Connected store SocialAccount id.
-func (r CommerceAPIListCollectionMetafieldsRequest) AccountId(accountId string) CommerceAPIListCollectionMetafieldsRequest {
-	r.accountId = &accountId
-	return r
-}
-
-func (r CommerceAPIListCollectionMetafieldsRequest) Execute() (*ListProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.ListCollectionMetafieldsExecute(r)
-}
-
-/*
-ListCollectionMetafields List collection metafields
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param collectionId Platform-native id.
-	@return CommerceAPIListCollectionMetafieldsRequest
-*/
-func (a *CommerceAPIService) ListCollectionMetafields(ctx context.Context, collectionId string) CommerceAPIListCollectionMetafieldsRequest {
-	return CommerceAPIListCollectionMetafieldsRequest{
-		ApiService:   a,
-		ctx:          ctx,
-		collectionId: collectionId,
-	}
-}
-
-// Execute executes the request
-//
-//	@return ListProductMetafields200Response
-func (a *CommerceAPIService) ListCollectionMetafieldsExecute(r CommerceAPIListCollectionMetafieldsRequest) (*ListProductMetafields200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodGet
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *ListProductMetafields200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ListCollectionMetafields")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/commerce/collections/{collectionId}/metafields"
-	localVarPath = strings.Replace(localVarPath, "{"+"collectionId"+"}", url.PathEscape(parameterValueToString(r.collectionId, "collectionId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6020,6 +5925,143 @@ func (a *CommerceAPIService) ListCommerceChannelsExecute(r CommerceAPIListCommer
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type CommerceAPIListCommerceCollectionMetafieldsRequest struct {
+	ctx          context.Context
+	ApiService   *CommerceAPIService
+	collectionId string
+	accountId    *string
+}
+
+// Connected store SocialAccount id.
+func (r CommerceAPIListCommerceCollectionMetafieldsRequest) AccountId(accountId string) CommerceAPIListCommerceCollectionMetafieldsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r CommerceAPIListCommerceCollectionMetafieldsRequest) Execute() (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.ListCommerceCollectionMetafieldsExecute(r)
+}
+
+/*
+ListCommerceCollectionMetafields List collection metafields
+
+The collection's metafields as namespace, key, type and value. Needs collections.metafields: WooCommerce keeps custom fields on products only and answers 400 platform_not_supported.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param collectionId Platform-native id.
+	@return CommerceAPIListCommerceCollectionMetafieldsRequest
+*/
+func (a *CommerceAPIService) ListCommerceCollectionMetafields(ctx context.Context, collectionId string) CommerceAPIListCommerceCollectionMetafieldsRequest {
+	return CommerceAPIListCommerceCollectionMetafieldsRequest{
+		ApiService:   a,
+		ctx:          ctx,
+		collectionId: collectionId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCommerceProductMetafields200Response
+func (a *CommerceAPIService) ListCommerceCollectionMetafieldsExecute(r CommerceAPIListCommerceCollectionMetafieldsRequest) (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCommerceProductMetafields200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ListCommerceCollectionMetafields")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/collections/{collectionId}/metafields"
+	localVarPath = strings.Replace(localVarPath, "{"+"collectionId"+"}", url.PathEscape(parameterValueToString(r.collectionId, "collectionId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type CommerceAPIListCommerceCollectionsRequest struct {
 	ctx        context.Context
 	ApiService *CommerceAPIService
@@ -6223,6 +6265,8 @@ func (r CommerceAPIListCommerceDiscountsRequest) Execute() (*ListCommerceDiscoun
 
 /*
 ListCommerceDiscounts List discounts
+
+The store's discounts (Shopify code and automatic discounts, WooCommerce coupons), cursor-paginated with `limit`, `cursor` and an optional `query`. Each discount lists its first 10 codes; `codeCount` has the total. Needs discounts.read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceDiscountsRequest
@@ -6777,6 +6821,8 @@ func (r CommerceAPIListCommerceMenusRequest) Execute() (*ListCommerceMenus200Res
 /*
 ListCommerceMenus List navigation menus
 
+The store's navigation menus with their items. Shopify only. Needs navigation.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceMenusRequest
 */
@@ -7060,6 +7106,8 @@ func (r CommerceAPIListCommerceMetaobjectsRequest) Execute() (*ListCommerceMetao
 /*
 ListCommerceMetaobjects List metaobjects of a type
 
+The metaobjects of one `type` (a definition handle from GET /v1/commerce/metaobject-definitions), cursor-paginated with `limit` and `cursor`. Shopify only. Needs metaobjects.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceMetaobjectsRequest
 */
@@ -7223,6 +7271,8 @@ func (r CommerceAPIListCommercePagesRequest) Execute() (*ListCommercePages200Res
 
 /*
 ListCommercePages List pages
+
+The store's content pages (Shopify online store pages, WordPress pages), cursor-paginated with `limit`, `cursor` and an optional `query`. Needs pages.read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommercePagesRequest
@@ -7397,6 +7447,143 @@ func (a *CommerceAPIService) ListCommercePriceListsExecute(r CommerceAPIListComm
 	}
 
 	localVarPath := localBasePath + "/v1/commerce/price-lists"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type CommerceAPIListCommerceProductMetafieldsRequest struct {
+	ctx        context.Context
+	ApiService *CommerceAPIService
+	productId  string
+	accountId  *string
+}
+
+// Connected store SocialAccount id.
+func (r CommerceAPIListCommerceProductMetafieldsRequest) AccountId(accountId string) CommerceAPIListCommerceProductMetafieldsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r CommerceAPIListCommerceProductMetafieldsRequest) Execute() (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.ListCommerceProductMetafieldsExecute(r)
+}
+
+/*
+ListCommerceProductMetafields List product metafields
+
+The product's custom fields (metafields on Shopify, public meta on WooCommerce) as namespace, key, type and value. Needs metafields.read.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param productId Platform-native id.
+	@return CommerceAPIListCommerceProductMetafieldsRequest
+*/
+func (a *CommerceAPIService) ListCommerceProductMetafields(ctx context.Context, productId string) CommerceAPIListCommerceProductMetafieldsRequest {
+	return CommerceAPIListCommerceProductMetafieldsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		productId:  productId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListCommerceProductMetafields200Response
+func (a *CommerceAPIService) ListCommerceProductMetafieldsExecute(r CommerceAPIListCommerceProductMetafieldsRequest) (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListCommerceProductMetafields200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ListCommerceProductMetafields")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/commerce/products/{productId}/metafields"
+	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7710,6 +7897,8 @@ func (r CommerceAPIListCommerceRedirectsRequest) Execute() (*ListCommerceRedirec
 /*
 ListCommerceRedirects List URL redirects
 
+The store's URL redirects (old path to new target), cursor-paginated with `limit`, `cursor` and an optional `query` on the path. Shopify only. Needs navigation.read.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommerceAPIListCommerceRedirectsRequest
 */
@@ -7759,141 +7948,6 @@ func (a *CommerceAPIService) ListCommerceRedirectsExecute(r CommerceAPIListComme
 	if r.query != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
 	}
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v ErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v GetYouTubeDailyViews400Response
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type CommerceAPIListProductMetafieldsRequest struct {
-	ctx        context.Context
-	ApiService *CommerceAPIService
-	productId  string
-	accountId  *string
-}
-
-// Connected store SocialAccount id.
-func (r CommerceAPIListProductMetafieldsRequest) AccountId(accountId string) CommerceAPIListProductMetafieldsRequest {
-	r.accountId = &accountId
-	return r
-}
-
-func (r CommerceAPIListProductMetafieldsRequest) Execute() (*ListProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.ListProductMetafieldsExecute(r)
-}
-
-/*
-ListProductMetafields List product metafields
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param productId Platform-native id.
-	@return CommerceAPIListProductMetafieldsRequest
-*/
-func (a *CommerceAPIService) ListProductMetafields(ctx context.Context, productId string) CommerceAPIListProductMetafieldsRequest {
-	return CommerceAPIListProductMetafieldsRequest{
-		ApiService: a,
-		ctx:        ctx,
-		productId:  productId,
-	}
-}
-
-// Execute executes the request
-//
-//	@return ListProductMetafields200Response
-func (a *CommerceAPIService) ListProductMetafieldsExecute(r CommerceAPIListProductMetafieldsRequest) (*ListProductMetafields200Response, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodGet
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *ListProductMetafields200Response
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.ListProductMetafields")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/v1/commerce/products/{productId}/metafields"
-	localVarPath = strings.Replace(localVarPath, "{"+"productId"+"}", url.PathEscape(parameterValueToString(r.productId, "productId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.accountId == nil {
-		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
-	}
-
-	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -8518,33 +8572,33 @@ func (a *CommerceAPIService) RunCommerceCatalogSyncExecute(r CommerceAPIRunComme
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type CommerceAPISetCollectionMetafieldsRequest struct {
-	ctx                         context.Context
-	ApiService                  *CommerceAPIService
-	collectionId                string
-	setProductMetafieldsRequest *SetProductMetafieldsRequest
+type CommerceAPISetCommerceCollectionMetafieldsRequest struct {
+	ctx                                 context.Context
+	ApiService                          *CommerceAPIService
+	collectionId                        string
+	setCommerceProductMetafieldsRequest *SetCommerceProductMetafieldsRequest
 }
 
-func (r CommerceAPISetCollectionMetafieldsRequest) SetProductMetafieldsRequest(setProductMetafieldsRequest SetProductMetafieldsRequest) CommerceAPISetCollectionMetafieldsRequest {
-	r.setProductMetafieldsRequest = &setProductMetafieldsRequest
+func (r CommerceAPISetCommerceCollectionMetafieldsRequest) SetCommerceProductMetafieldsRequest(setCommerceProductMetafieldsRequest SetCommerceProductMetafieldsRequest) CommerceAPISetCommerceCollectionMetafieldsRequest {
+	r.setCommerceProductMetafieldsRequest = &setCommerceProductMetafieldsRequest
 	return r
 }
 
-func (r CommerceAPISetCollectionMetafieldsRequest) Execute() (*ListProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.SetCollectionMetafieldsExecute(r)
+func (r CommerceAPISetCommerceCollectionMetafieldsRequest) Execute() (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.SetCommerceCollectionMetafieldsExecute(r)
 }
 
 /*
-SetCollectionMetafields Set collection metafields
+SetCommerceCollectionMetafields Set collection metafields
 
-Creates or updates custom fields by namespace and key.
+Creates or updates custom fields by namespace and key. Needs collections.metafields: WooCommerce keeps custom fields on products only and answers 400 platform_not_supported.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param collectionId Platform-native id.
-	@return CommerceAPISetCollectionMetafieldsRequest
+	@return CommerceAPISetCommerceCollectionMetafieldsRequest
 */
-func (a *CommerceAPIService) SetCollectionMetafields(ctx context.Context, collectionId string) CommerceAPISetCollectionMetafieldsRequest {
-	return CommerceAPISetCollectionMetafieldsRequest{
+func (a *CommerceAPIService) SetCommerceCollectionMetafields(ctx context.Context, collectionId string) CommerceAPISetCommerceCollectionMetafieldsRequest {
+	return CommerceAPISetCommerceCollectionMetafieldsRequest{
 		ApiService:   a,
 		ctx:          ctx,
 		collectionId: collectionId,
@@ -8553,16 +8607,16 @@ func (a *CommerceAPIService) SetCollectionMetafields(ctx context.Context, collec
 
 // Execute executes the request
 //
-//	@return ListProductMetafields200Response
-func (a *CommerceAPIService) SetCollectionMetafieldsExecute(r CommerceAPISetCollectionMetafieldsRequest) (*ListProductMetafields200Response, *http.Response, error) {
+//	@return ListCommerceProductMetafields200Response
+func (a *CommerceAPIService) SetCommerceCollectionMetafieldsExecute(r CommerceAPISetCommerceCollectionMetafieldsRequest) (*ListCommerceProductMetafields200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListProductMetafields200Response
+		localVarReturnValue *ListCommerceProductMetafields200Response
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.SetCollectionMetafields")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.SetCommerceCollectionMetafields")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -8573,8 +8627,8 @@ func (a *CommerceAPIService) SetCollectionMetafieldsExecute(r CommerceAPISetColl
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.setProductMetafieldsRequest == nil {
-		return localVarReturnValue, nil, reportError("setProductMetafieldsRequest is required and must be specified")
+	if r.setCommerceProductMetafieldsRequest == nil {
+		return localVarReturnValue, nil, reportError("setCommerceProductMetafieldsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -8595,7 +8649,7 @@ func (a *CommerceAPIService) SetCollectionMetafieldsExecute(r CommerceAPISetColl
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.setProductMetafieldsRequest
+	localVarPostBody = r.setCommerceProductMetafieldsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -8929,33 +8983,33 @@ func (a *CommerceAPIService) SetCommercePriceListPricesExecute(r CommerceAPISetC
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type CommerceAPISetProductMetafieldsRequest struct {
-	ctx                         context.Context
-	ApiService                  *CommerceAPIService
-	productId                   string
-	setProductMetafieldsRequest *SetProductMetafieldsRequest
+type CommerceAPISetCommerceProductMetafieldsRequest struct {
+	ctx                                 context.Context
+	ApiService                          *CommerceAPIService
+	productId                           string
+	setCommerceProductMetafieldsRequest *SetCommerceProductMetafieldsRequest
 }
 
-func (r CommerceAPISetProductMetafieldsRequest) SetProductMetafieldsRequest(setProductMetafieldsRequest SetProductMetafieldsRequest) CommerceAPISetProductMetafieldsRequest {
-	r.setProductMetafieldsRequest = &setProductMetafieldsRequest
+func (r CommerceAPISetCommerceProductMetafieldsRequest) SetCommerceProductMetafieldsRequest(setCommerceProductMetafieldsRequest SetCommerceProductMetafieldsRequest) CommerceAPISetCommerceProductMetafieldsRequest {
+	r.setCommerceProductMetafieldsRequest = &setCommerceProductMetafieldsRequest
 	return r
 }
 
-func (r CommerceAPISetProductMetafieldsRequest) Execute() (*ListProductMetafields200Response, *http.Response, error) {
-	return r.ApiService.SetProductMetafieldsExecute(r)
+func (r CommerceAPISetCommerceProductMetafieldsRequest) Execute() (*ListCommerceProductMetafields200Response, *http.Response, error) {
+	return r.ApiService.SetCommerceProductMetafieldsExecute(r)
 }
 
 /*
-SetProductMetafields Set product metafields
+SetCommerceProductMetafields Set product metafields
 
 Creates or updates custom fields by namespace and key.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param productId Platform-native id.
-	@return CommerceAPISetProductMetafieldsRequest
+	@return CommerceAPISetCommerceProductMetafieldsRequest
 */
-func (a *CommerceAPIService) SetProductMetafields(ctx context.Context, productId string) CommerceAPISetProductMetafieldsRequest {
-	return CommerceAPISetProductMetafieldsRequest{
+func (a *CommerceAPIService) SetCommerceProductMetafields(ctx context.Context, productId string) CommerceAPISetCommerceProductMetafieldsRequest {
+	return CommerceAPISetCommerceProductMetafieldsRequest{
 		ApiService: a,
 		ctx:        ctx,
 		productId:  productId,
@@ -8964,16 +9018,16 @@ func (a *CommerceAPIService) SetProductMetafields(ctx context.Context, productId
 
 // Execute executes the request
 //
-//	@return ListProductMetafields200Response
-func (a *CommerceAPIService) SetProductMetafieldsExecute(r CommerceAPISetProductMetafieldsRequest) (*ListProductMetafields200Response, *http.Response, error) {
+//	@return ListCommerceProductMetafields200Response
+func (a *CommerceAPIService) SetCommerceProductMetafieldsExecute(r CommerceAPISetCommerceProductMetafieldsRequest) (*ListCommerceProductMetafields200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPut
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ListProductMetafields200Response
+		localVarReturnValue *ListCommerceProductMetafields200Response
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.SetProductMetafields")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommerceAPIService.SetCommerceProductMetafields")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -8984,8 +9038,8 @@ func (a *CommerceAPIService) SetProductMetafieldsExecute(r CommerceAPISetProduct
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.setProductMetafieldsRequest == nil {
-		return localVarReturnValue, nil, reportError("setProductMetafieldsRequest is required and must be specified")
+	if r.setCommerceProductMetafieldsRequest == nil {
+		return localVarReturnValue, nil, reportError("setCommerceProductMetafieldsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -9006,7 +9060,7 @@ func (a *CommerceAPIService) SetProductMetafieldsExecute(r CommerceAPISetProduct
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.setProductMetafieldsRequest
+	localVarPostBody = r.setCommerceProductMetafieldsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -9633,6 +9687,8 @@ func (r CommerceAPIUpdateCommercePageRequest) Execute() (*CreateCommercePage201R
 /*
 UpdateCommercePage Update a page
 
+Updates the fields you pass (`title`, `handle`, `bodyHtml`, `isPublished`) and returns the page. Needs pages.write.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param pageId Platform-native id.
 	@return CommerceAPIUpdateCommercePageRequest
@@ -10046,6 +10102,8 @@ func (r CommerceAPIUpdateCommerceRedirectRequest) Execute() (*CreateCommerceRedi
 
 /*
 UpdateCommerceRedirect Update a URL redirect
+
+Changes the redirect's `path` and/or `target`. Shopify only. Needs navigation.write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param redirectId Platform-native id.
