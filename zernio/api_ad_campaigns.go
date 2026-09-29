@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.146.0
+API version: 1.146.1
 Contact: support@zernio.com
 */
 
@@ -9223,7 +9223,10 @@ resulting delivery `status`.
 effective story/media IDs). `platform` is inferred from the ad, so it's
 not required in the body. Ads in terminal statuses (rejected, completed,
 cancelled) are skipped, and so is a request whose target already matches
-the ad's own switch. The rolled-up `status` never decides a skip.
+the ad's own switch as read LIVE from the platform (a stored value is
+never trusted alone, since the switch may have been changed in the
+platform's own UI). A skip also returns that live read. The rolled-up
+`status` never decides a skip.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio `_id` (hex), Meta `platformAdId` (numeric), or one of the creative's effective story/media IDs.
