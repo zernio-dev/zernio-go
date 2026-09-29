@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.160.0
+API version: 1.161.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ type UpdateProfileRequest struct {
 	// Set to null to clear the description.
 	Description NullableString `json:"description,omitempty"`
 	Color       *string        `json:"color,omitempty"`
-	IsDefault   *bool          `json:"isDefault,omitempty"`
+	// IANA timezone new posts on this profile use when they name no `timezone`. Set to null to go back to UTC. An unknown name returns 400.
+	Timezone  NullableString `json:"timezone,omitempty"`
+	IsDefault *bool          `json:"isDefault,omitempty"`
 }
 
 // NewUpdateProfileRequest instantiates a new UpdateProfileRequest object
@@ -151,6 +153,49 @@ func (o *UpdateProfileRequest) SetColor(v string) {
 	o.Color = &v
 }
 
+// GetTimezone returns the Timezone field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateProfileRequest) GetTimezone() string {
+	if o == nil || IsNil(o.Timezone.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Timezone.Get()
+}
+
+// GetTimezoneOk returns a tuple with the Timezone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateProfileRequest) GetTimezoneOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Timezone.Get(), o.Timezone.IsSet()
+}
+
+// HasTimezone returns a boolean if a field has been set.
+func (o *UpdateProfileRequest) HasTimezone() bool {
+	if o != nil && o.Timezone.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTimezone gets a reference to the given NullableString and assigns it to the Timezone field.
+func (o *UpdateProfileRequest) SetTimezone(v string) {
+	o.Timezone.Set(&v)
+}
+
+// SetTimezoneNil sets the value for Timezone to be an explicit nil
+func (o *UpdateProfileRequest) SetTimezoneNil() {
+	o.Timezone.Set(nil)
+}
+
+// UnsetTimezone ensures that no value is present for Timezone, not even an explicit nil
+func (o *UpdateProfileRequest) UnsetTimezone() {
+	o.Timezone.Unset()
+}
+
 // GetIsDefault returns the IsDefault field value if set, zero value otherwise.
 func (o *UpdateProfileRequest) GetIsDefault() bool {
 	if o == nil || IsNil(o.IsDefault) {
@@ -201,6 +246,9 @@ func (o UpdateProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Color) {
 		toSerialize["color"] = o.Color
+	}
+	if o.Timezone.IsSet() {
+		toSerialize["timezone"] = o.Timezone.Get()
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault

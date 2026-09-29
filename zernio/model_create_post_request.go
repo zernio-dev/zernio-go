@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.160.0
+API version: 1.161.0
 Contact: support@zernio.com
 */
 
@@ -37,7 +37,7 @@ type CreatePostRequest struct {
 	IsDraft *bool `json:"isDraft,omitempty"`
 	// TikTok only. Preview whether each `tiktok` entry in `platforms` could publish right now under the TikTok Direct Post daily limits, without creating, scheduling or publishing anything: no post is persisted and no upload slot is claimed, so it can be repeated freely. The request still goes through auth, the payment gate and body validation, then returns HTTP 200 with `{ dryRun: true, canPublish, tiktok: [...] }` instead of 201. Only `tiktok` entries are evaluated; other platforms in the body are ignored, and a body with no `tiktok` entry is rejected with 400 `invalid_field_value` on `platforms`. An entry with `platformSpecificData.tiktokSettings.draft: true` (Creator Inbox upload) is not subject to the limit and always reports `canPublish: true`. Accounts connected through the TikTok for Business app do not go through these limits at all and also always report `canPublish: true`, so on those accounts a dry run confirms the request is well-formed rather than gating it.
 	DryRun *bool `json:"dryRun,omitempty"`
-	// IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset. Has no effect on values that already carry one. An unknown name returns 400 when `scheduledFor` is set.
+	// IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset, and stored on the post. Has no effect on values that already carry one. When omitted, the post takes its profile's `timezone` (the queue's profile for a queued post, else the profile its accounts share), and UTC when there is none or the accounts sit on profiles with different timezones. An unknown name returns 400 when `scheduledFor` is set.
 	Timezone *string `json:"timezone,omitempty"`
 	// Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
 	Tags []string `json:"tags,omitempty"`
@@ -72,8 +72,6 @@ func NewCreatePostRequest() *CreatePostRequest {
 	this.IsDraft = &isDraft
 	var dryRun bool = false
 	this.DryRun = &dryRun
-	var timezone string = "UTC"
-	this.Timezone = &timezone
 	var crosspostingEnabled bool = true
 	this.CrosspostingEnabled = &crosspostingEnabled
 	return &this
@@ -90,8 +88,6 @@ func NewCreatePostRequestWithDefaults() *CreatePostRequest {
 	this.IsDraft = &isDraft
 	var dryRun bool = false
 	this.DryRun = &dryRun
-	var timezone string = "UTC"
-	this.Timezone = &timezone
 	var crosspostingEnabled bool = true
 	this.CrosspostingEnabled = &crosspostingEnabled
 	return &this
