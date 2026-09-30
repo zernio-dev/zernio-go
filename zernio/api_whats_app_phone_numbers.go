@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.170.0
+API version: 1.171.0
 Contact: support@zernio.com
 */
 
@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 // WhatsAppPhoneNumbersAPIService WhatsAppPhoneNumbersAPI service
@@ -978,6 +979,236 @@ func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPhoneNumbersExecute(r WhatsA
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest struct {
+	ctx               context.Context
+	ApiService        *WhatsAppPhoneNumbersAPIService
+	accountId         *string
+	start             *time.Time
+	end               *time.Time
+	granularity       *string
+	dimensions        *string
+	metricTypes       *string
+	pricingTypes      *string
+	pricingCategories *string
+	countryCodes      *string
+}
+
+// WhatsApp account ID
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) AccountId(accountId string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Range start, ISO 8601 date or date-time.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) Start(start time.Time) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.start = &start
+	return r
+}
+
+// Range end, ISO 8601 date or date-time. Must be after start.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) End(end time.Time) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.end = &end
+	return r
+}
+
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) Granularity(granularity string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.granularity = &granularity
+	return r
+}
+
+// Comma-separated breakdowns: COUNTRY, PHONE, PRICING_CATEGORY, PRICING_TYPE, TIER. Without it each data point is a total for the interval.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) Dimensions(dimensions string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.dimensions = &dimensions
+	return r
+}
+
+// Comma-separated: COST, VOLUME. Defaults to both.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) MetricTypes(metricTypes string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.metricTypes = &metricTypes
+	return r
+}
+
+// Comma-separated filter: REGULAR, FREE_CUSTOMER_SERVICE, FREE_ENTRY_POINT.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) PricingTypes(pricingTypes string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.pricingTypes = &pricingTypes
+	return r
+}
+
+// Comma-separated filter of Meta pricing categories, for example MARKETING, MARKETING_LITE, UTILITY, AUTHENTICATION, AUTHENTICATION_INTERNATIONAL, SERVICE, REFERRAL_CONVERSION.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) PricingCategories(pricingCategories string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.pricingCategories = &pricingCategories
+	return r
+}
+
+// Comma-separated ISO 3166-1 alpha-2 country codes to filter on.
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) CountryCodes(countryCodes string) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	r.countryCodes = &countryCodes
+	return r
+}
+
+func (r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) Execute() (*GetWhatsAppPricingAnalytics200Response, *http.Response, error) {
+	return r.ApiService.GetWhatsAppPricingAnalyticsExecute(r)
+}
+
+/*
+GetWhatsAppPricingAnalytics Get pricing analytics
+
+Message volume and approximate cost for one connected WhatsApp number, read live
+from Meta's `pricing_analytics` on the WhatsApp Business Account and scoped to
+that account's phone number. Meta's figures are approximate and can lag; Meta
+bills from its own invoice. Meta limits how far back and how fine the data goes
+(for example HALF_HOUR only over short ranges) and answers out-of-range requests
+with an error.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest
+*/
+func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPricingAnalytics(ctx context.Context) WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest {
+	return WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetWhatsAppPricingAnalytics200Response
+func (a *WhatsAppPhoneNumbersAPIService) GetWhatsAppPricingAnalyticsExecute(r WhatsAppPhoneNumbersAPIGetWhatsAppPricingAnalyticsRequest) (*GetWhatsAppPricingAnalytics200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetWhatsAppPricingAnalytics200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WhatsAppPhoneNumbersAPIService.GetWhatsAppPricingAnalytics")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/whatsapp/pricing-analytics"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.start == nil {
+		return localVarReturnValue, nil, reportError("start is required and must be specified")
+	}
+	if r.end == nil {
+		return localVarReturnValue, nil, reportError("end is required and must be specified")
+	}
+	if r.granularity == nil {
+		return localVarReturnValue, nil, reportError("granularity is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "start", r.start, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "end", r.end, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", r.granularity, "form", "")
+	if r.dimensions != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "dimensions", r.dimensions, "form", "")
+	}
+	if r.metricTypes != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "metricTypes", r.metricTypes, "form", "")
+	}
+	if r.pricingTypes != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pricingTypes", r.pricingTypes, "form", "")
+	}
+	if r.pricingCategories != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pricingCategories", r.pricingCategories, "form", "")
+	}
+	if r.countryCodes != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "countryCodes", r.countryCodes, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v GetYouTubeDailyViews400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
