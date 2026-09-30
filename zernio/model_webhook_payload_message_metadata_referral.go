@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.173.0
+API version: 1.174.0
 Contact: support@zernio.com
 */
 
@@ -21,16 +21,17 @@ var _ MappedNullable = &WebhookPayloadMessageMetadataReferral{}
 // WebhookPayloadMessageMetadataReferral Click attribution forwarded verbatim from Meta. Populated only on the FIRST inbound message after the click; absent on subsequent messages of the same conversation. On Instagram and Messenger a RETURNING click also attaches it to the first message that follows, so read it on every `message.received` for per-click attribution; a click that opens an existing thread WITHOUT a message arrives as the separate `referral.received` event.  The populated subset identifies the source:   - `ctwa_clid` and `source_*` fields: WhatsApp CTWA     (Click-to-WhatsApp). Attribution window is 7 days from click.     Forward to Meta Conversions API for Business Messaging replay.   - `ad_id` and `ads_context_data`: Facebook Messenger CTM     (Click-to-Message) or Instagram CTD (Click-to-Direct). Use     `ad_id` to attribute the conversation to a specific ad.   - `ref` without `ad_id`: an ig.me / m.me link carrying a     `?ref=` parameter (`source` is `SHORTLINK`, `SHORTLINKS` or     `IGME-SOURCE-LINK` depending on surface - treat it as     opaque). Instagram delivers ig.me refs on new threads only     when the account has at least one Ice Breaker configured     (`PUT /v1/accounts/{accountId}/instagram-ice-breakers`).
 type WebhookPayloadMessageMetadataReferral struct {
 	// Meta's GCLID-equivalent click identifier.
-	CtwaClid     *string `json:"ctwa_clid,omitempty"`
-	SourceId     *string `json:"source_id,omitempty"`
-	SourceType   *string `json:"source_type,omitempty"`
-	SourceUrl    *string `json:"source_url,omitempty"`
-	Headline     *string `json:"headline,omitempty"`
-	Body         *string `json:"body,omitempty"`
-	MediaType    *string `json:"media_type,omitempty"`
-	ImageUrl     *string `json:"image_url,omitempty"`
-	VideoUrl     *string `json:"video_url,omitempty"`
-	ThumbnailUrl *string `json:"thumbnail_url,omitempty"`
+	CtwaClid       *string                                   `json:"ctwa_clid,omitempty"`
+	SourceId       *string                                   `json:"source_id,omitempty"`
+	SourceType     *string                                   `json:"source_type,omitempty"`
+	SourceUrl      *string                                   `json:"source_url,omitempty"`
+	Headline       *string                                   `json:"headline,omitempty"`
+	Body           *string                                   `json:"body,omitempty"`
+	MediaType      *string                                   `json:"media_type,omitempty"`
+	ImageUrl       *string                                   `json:"image_url,omitempty"`
+	VideoUrl       *string                                   `json:"video_url,omitempty"`
+	ThumbnailUrl   *string                                   `json:"thumbnail_url,omitempty"`
+	WelcomeMessage *SendInboxMessageRequestInteractiveFooter `json:"welcome_message,omitempty"`
 	// Facebook Messenger CTM / Instagram CTD only. The Meta ad ID the user clicked to start the conversation.
 	AdId *string `json:"ad_id,omitempty"`
 	// The `ref` parameter passed through from the Meta ad creative or from an ig.me / m.me link. Instagram / Facebook Messenger only.
@@ -381,6 +382,38 @@ func (o *WebhookPayloadMessageMetadataReferral) SetThumbnailUrl(v string) {
 	o.ThumbnailUrl = &v
 }
 
+// GetWelcomeMessage returns the WelcomeMessage field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadataReferral) GetWelcomeMessage() SendInboxMessageRequestInteractiveFooter {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		var ret SendInboxMessageRequestInteractiveFooter
+		return ret
+	}
+	return *o.WelcomeMessage
+}
+
+// GetWelcomeMessageOk returns a tuple with the WelcomeMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadataReferral) GetWelcomeMessageOk() (*SendInboxMessageRequestInteractiveFooter, bool) {
+	if o == nil || IsNil(o.WelcomeMessage) {
+		return nil, false
+	}
+	return o.WelcomeMessage, true
+}
+
+// HasWelcomeMessage returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadataReferral) HasWelcomeMessage() bool {
+	if o != nil && !IsNil(o.WelcomeMessage) {
+		return true
+	}
+
+	return false
+}
+
+// SetWelcomeMessage gets a reference to the given SendInboxMessageRequestInteractiveFooter and assigns it to the WelcomeMessage field.
+func (o *WebhookPayloadMessageMetadataReferral) SetWelcomeMessage(v SendInboxMessageRequestInteractiveFooter) {
+	o.WelcomeMessage = &v
+}
+
 // GetAdId returns the AdId field value if set, zero value otherwise.
 func (o *WebhookPayloadMessageMetadataReferral) GetAdId() string {
 	if o == nil || IsNil(o.AdId) {
@@ -612,6 +645,9 @@ func (o WebhookPayloadMessageMetadataReferral) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.ThumbnailUrl) {
 		toSerialize["thumbnail_url"] = o.ThumbnailUrl
+	}
+	if !IsNil(o.WelcomeMessage) {
+		toSerialize["welcome_message"] = o.WelcomeMessage
 	}
 	if !IsNil(o.AdId) {
 		toSerialize["ad_id"] = o.AdId

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.173.0
+API version: 1.174.0
 Contact: support@zernio.com
 */
 
@@ -47,7 +47,11 @@ type WebhookPayloadMessageMetadata struct {
 	NfmReplyName    *string                                       `json:"nfmReplyName,omitempty"`
 	Order           *WebhookPayloadMessageMetadataOrder           `json:"order,omitempty"`
 	ReferredProduct *WebhookPayloadMessageMetadataReferredProduct `json:"referredProduct,omitempty"`
-	Location        *WebhookPayloadMessageMetadataLocation        `json:"location,omitempty"`
+	// WhatsApp only. True when the user forwarded this message (5 times or fewer). Absent when not forwarded.
+	Forwarded *bool `json:"forwarded,omitempty"`
+	// WhatsApp only. True when the message was forwarded more than 5 times; Meta then omits forwarded.
+	FrequentlyForwarded *bool                                  `json:"frequentlyForwarded,omitempty"`
+	Location            *WebhookPayloadMessageMetadataLocation `json:"location,omitempty"`
 	// WhatsApp only. Contact cards the user shared, forwarded verbatim from Meta. Read `contactsOrigin` before treating any number here as the sender's own.
 	Contacts []map[string]interface{} `json:"contacts,omitempty"`
 	// WhatsApp only. How the contact card was shared. `contact_request` means the user tapped a `request_contact_info` button, so the number is their own and consented. `other` means they picked a card from their address book: it may be anyone's, and must NOT be stored as the sender's identity. Omitted when Meta sends no origin.
@@ -560,6 +564,70 @@ func (o *WebhookPayloadMessageMetadata) SetReferredProduct(v WebhookPayloadMessa
 	o.ReferredProduct = &v
 }
 
+// GetForwarded returns the Forwarded field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetForwarded() bool {
+	if o == nil || IsNil(o.Forwarded) {
+		var ret bool
+		return ret
+	}
+	return *o.Forwarded
+}
+
+// GetForwardedOk returns a tuple with the Forwarded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetForwardedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Forwarded) {
+		return nil, false
+	}
+	return o.Forwarded, true
+}
+
+// HasForwarded returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasForwarded() bool {
+	if o != nil && !IsNil(o.Forwarded) {
+		return true
+	}
+
+	return false
+}
+
+// SetForwarded gets a reference to the given bool and assigns it to the Forwarded field.
+func (o *WebhookPayloadMessageMetadata) SetForwarded(v bool) {
+	o.Forwarded = &v
+}
+
+// GetFrequentlyForwarded returns the FrequentlyForwarded field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadata) GetFrequentlyForwarded() bool {
+	if o == nil || IsNil(o.FrequentlyForwarded) {
+		var ret bool
+		return ret
+	}
+	return *o.FrequentlyForwarded
+}
+
+// GetFrequentlyForwardedOk returns a tuple with the FrequentlyForwarded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadata) GetFrequentlyForwardedOk() (*bool, bool) {
+	if o == nil || IsNil(o.FrequentlyForwarded) {
+		return nil, false
+	}
+	return o.FrequentlyForwarded, true
+}
+
+// HasFrequentlyForwarded returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadata) HasFrequentlyForwarded() bool {
+	if o != nil && !IsNil(o.FrequentlyForwarded) {
+		return true
+	}
+
+	return false
+}
+
+// SetFrequentlyForwarded gets a reference to the given bool and assigns it to the FrequentlyForwarded field.
+func (o *WebhookPayloadMessageMetadata) SetFrequentlyForwarded(v bool) {
+	o.FrequentlyForwarded = &v
+}
+
 // GetLocation returns the Location field value if set, zero value otherwise.
 func (o *WebhookPayloadMessageMetadata) GetLocation() WebhookPayloadMessageMetadataLocation {
 	if o == nil || IsNil(o.Location) {
@@ -902,6 +970,12 @@ func (o WebhookPayloadMessageMetadata) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ReferredProduct) {
 		toSerialize["referredProduct"] = o.ReferredProduct
+	}
+	if !IsNil(o.Forwarded) {
+		toSerialize["forwarded"] = o.Forwarded
+	}
+	if !IsNil(o.FrequentlyForwarded) {
+		toSerialize["frequentlyForwarded"] = o.FrequentlyForwarded
 	}
 	if !IsNil(o.Location) {
 		toSerialize["location"] = o.Location

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.173.0
+API version: 1.174.0
 Contact: support@zernio.com
 */
 
@@ -25,9 +25,8 @@ type InboxWebhookMessageAttachmentsInner struct {
 	// Attachment type (image, video, file, sticker, audio, share)
 	Type string `json:"type"`
 	// Where to fetch the attachment. The contract depends on direction and platform: inbound WhatsApp media points at the authenticated `GET /v1/whatsapp/media/{mediaId}` and requires `Authorization: Bearer <your API key>`, while outgoing media carries the URL originally supplied and Instagram / Facebook / Telegram carry direct platform CDN links that need no authentication.
-	Url string `json:"url"`
-	// Additional attachment metadata
-	Payload map[string]interface{} `json:"payload,omitempty"`
+	Url     string                                      `json:"url"`
+	Payload *InboxWebhookMessageAttachmentsInnerPayload `json:"payload,omitempty"`
 }
 
 type _InboxWebhookMessageAttachmentsInner InboxWebhookMessageAttachmentsInner
@@ -100,19 +99,19 @@ func (o *InboxWebhookMessageAttachmentsInner) SetUrl(v string) {
 }
 
 // GetPayload returns the Payload field value if set, zero value otherwise.
-func (o *InboxWebhookMessageAttachmentsInner) GetPayload() map[string]interface{} {
+func (o *InboxWebhookMessageAttachmentsInner) GetPayload() InboxWebhookMessageAttachmentsInnerPayload {
 	if o == nil || IsNil(o.Payload) {
-		var ret map[string]interface{}
+		var ret InboxWebhookMessageAttachmentsInnerPayload
 		return ret
 	}
-	return o.Payload
+	return *o.Payload
 }
 
 // GetPayloadOk returns a tuple with the Payload field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InboxWebhookMessageAttachmentsInner) GetPayloadOk() (map[string]interface{}, bool) {
+func (o *InboxWebhookMessageAttachmentsInner) GetPayloadOk() (*InboxWebhookMessageAttachmentsInnerPayload, bool) {
 	if o == nil || IsNil(o.Payload) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Payload, true
 }
@@ -126,9 +125,9 @@ func (o *InboxWebhookMessageAttachmentsInner) HasPayload() bool {
 	return false
 }
 
-// SetPayload gets a reference to the given map[string]interface{} and assigns it to the Payload field.
-func (o *InboxWebhookMessageAttachmentsInner) SetPayload(v map[string]interface{}) {
-	o.Payload = v
+// SetPayload gets a reference to the given InboxWebhookMessageAttachmentsInnerPayload and assigns it to the Payload field.
+func (o *InboxWebhookMessageAttachmentsInner) SetPayload(v InboxWebhookMessageAttachmentsInnerPayload) {
+	o.Payload = &v
 }
 
 func (o InboxWebhookMessageAttachmentsInner) MarshalJSON() ([]byte, error) {

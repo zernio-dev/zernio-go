@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.173.0
+API version: 1.174.0
 Contact: support@zernio.com
 */
 
@@ -29,9 +29,8 @@ type WebhookPayloadMessageMessageAttachmentsInner struct {
 	// MIME type of the media when Zernio knows it. On Instagram and Facebook it is set for shares resolved by content type (`originalType: \"unsupported_type\"`).
 	MimeType *string `json:"mimeType,omitempty"`
 	// Where to fetch the attachment. **The contract differs by platform.**  - **WhatsApp**: points at `GET /v1/whatsapp/media/{mediaId}`, an   authenticated Zernio endpoint. You MUST send   `Authorization: Bearer <your API key>`; fetching it without that   header returns `401`. Download and store the bytes when this   webhook arrives: Meta drops inbound media after a limited   retention window, after which the endpoint answers `400`   permanently and the media is unrecoverable. - **Instagram / Facebook / Telegram**: a direct platform CDN link   that needs no authentication and expires on the platform's own   schedule.  **Webhook attachments carry no `refreshUrl`.** That field is stamped only when you read a message back over REST (`GET /v1/inbox/conversations/{conversationId}/messages`). On Instagram and Facebook the url above is a signed Meta CDN link that expires, so do not persist it: store the message id and resolve the media through `GET /v1/inbox/conversations/{conversationId}/messages/{messageId}/attachments/{index}?accountId={accountId}`, which re-mints it on demand. Every value that URL needs is already in this payload: `message.conversationId`, `message.platformMessageId`, `account.accountId`, and the attachment's zero-based position in this array.
-	Url string `json:"url"`
-	// Additional attachment metadata
-	Payload map[string]interface{} `json:"payload,omitempty"`
+	Url     string                                      `json:"url"`
+	Payload *InboxWebhookMessageAttachmentsInnerPayload `json:"payload,omitempty"`
 }
 
 type _WebhookPayloadMessageMessageAttachmentsInner WebhookPayloadMessageMessageAttachmentsInner
@@ -168,19 +167,19 @@ func (o *WebhookPayloadMessageMessageAttachmentsInner) SetUrl(v string) {
 }
 
 // GetPayload returns the Payload field value if set, zero value otherwise.
-func (o *WebhookPayloadMessageMessageAttachmentsInner) GetPayload() map[string]interface{} {
+func (o *WebhookPayloadMessageMessageAttachmentsInner) GetPayload() InboxWebhookMessageAttachmentsInnerPayload {
 	if o == nil || IsNil(o.Payload) {
-		var ret map[string]interface{}
+		var ret InboxWebhookMessageAttachmentsInnerPayload
 		return ret
 	}
-	return o.Payload
+	return *o.Payload
 }
 
 // GetPayloadOk returns a tuple with the Payload field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadMessageMessageAttachmentsInner) GetPayloadOk() (map[string]interface{}, bool) {
+func (o *WebhookPayloadMessageMessageAttachmentsInner) GetPayloadOk() (*InboxWebhookMessageAttachmentsInnerPayload, bool) {
 	if o == nil || IsNil(o.Payload) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Payload, true
 }
@@ -194,9 +193,9 @@ func (o *WebhookPayloadMessageMessageAttachmentsInner) HasPayload() bool {
 	return false
 }
 
-// SetPayload gets a reference to the given map[string]interface{} and assigns it to the Payload field.
-func (o *WebhookPayloadMessageMessageAttachmentsInner) SetPayload(v map[string]interface{}) {
-	o.Payload = v
+// SetPayload gets a reference to the given InboxWebhookMessageAttachmentsInnerPayload and assigns it to the Payload field.
+func (o *WebhookPayloadMessageMessageAttachmentsInner) SetPayload(v InboxWebhookMessageAttachmentsInnerPayload) {
+	o.Payload = &v
 }
 
 func (o WebhookPayloadMessageMessageAttachmentsInner) MarshalJSON() ([]byte, error) {
