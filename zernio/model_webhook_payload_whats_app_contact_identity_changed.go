@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.168.0
+API version: 1.169.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,9 @@ var _ MappedNullable = &WebhookPayloadWhatsAppContactIdentityChanged{}
 // WebhookPayloadWhatsAppContactIdentityChanged Webhook payload for the `whatsapp.contact.identity_changed` event. Fired when Meta reports that a WhatsApp user is now known by a different identifier: a `system` message of type `user_changed_number`, `user_changed_user_id` or `user_identity_changed`, or a `user_id_update` webhook (BSUID regenerated). Zernio re-keys the inbox conversation and contact channel before firing.
 type WebhookPayloadWhatsAppContactIdentityChanged struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
-	Id      string                                              `json:"id"`
-	Event   string                                              `json:"event"`
-	Account WebhookPayloadWhatsAppContactIdentityChangedAccount `json:"account"`
+	Id      string                                             `json:"id"`
+	Event   string                                             `json:"event"`
+	Account WebhookPayloadWhatsAppAccountQualityUpdatedAccount `json:"account"`
 	// Which Meta signal reported the change. `user_changed_number`: new phone number. `user_changed_user_id` and `user_id_update`: new BSUID.
 	Reason   string                  `json:"reason"`
 	Previous WhatsAppContactIdentity `json:"previous"`
@@ -47,7 +47,7 @@ type _WebhookPayloadWhatsAppContactIdentityChanged WebhookPayloadWhatsAppContact
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadWhatsAppContactIdentityChanged(id string, event string, account WebhookPayloadWhatsAppContactIdentityChangedAccount, reason string, previous WhatsAppContactIdentity, current WhatsAppContactIdentity, contactId NullableString, conversationId NullableString, changedAt time.Time, timestamp time.Time) *WebhookPayloadWhatsAppContactIdentityChanged {
+func NewWebhookPayloadWhatsAppContactIdentityChanged(id string, event string, account WebhookPayloadWhatsAppAccountQualityUpdatedAccount, reason string, previous WhatsAppContactIdentity, current WhatsAppContactIdentity, contactId NullableString, conversationId NullableString, changedAt time.Time, timestamp time.Time) *WebhookPayloadWhatsAppContactIdentityChanged {
 	this := WebhookPayloadWhatsAppContactIdentityChanged{}
 	this.Id = id
 	this.Event = event
@@ -119,9 +119,9 @@ func (o *WebhookPayloadWhatsAppContactIdentityChanged) SetEvent(v string) {
 }
 
 // GetAccount returns the Account field value
-func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccount() WebhookPayloadWhatsAppContactIdentityChangedAccount {
+func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccount() WebhookPayloadWhatsAppAccountQualityUpdatedAccount {
 	if o == nil {
-		var ret WebhookPayloadWhatsAppContactIdentityChangedAccount
+		var ret WebhookPayloadWhatsAppAccountQualityUpdatedAccount
 		return ret
 	}
 
@@ -130,7 +130,7 @@ func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccount() WebhookPaylo
 
 // GetAccountOk returns a tuple with the Account field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccountOk() (*WebhookPayloadWhatsAppContactIdentityChangedAccount, bool) {
+func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccountOk() (*WebhookPayloadWhatsAppAccountQualityUpdatedAccount, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -138,7 +138,7 @@ func (o *WebhookPayloadWhatsAppContactIdentityChanged) GetAccountOk() (*WebhookP
 }
 
 // SetAccount sets field value
-func (o *WebhookPayloadWhatsAppContactIdentityChanged) SetAccount(v WebhookPayloadWhatsAppContactIdentityChangedAccount) {
+func (o *WebhookPayloadWhatsAppContactIdentityChanged) SetAccount(v WebhookPayloadWhatsAppAccountQualityUpdatedAccount) {
 	o.Account = v
 }
 
