@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.165.0
+API version: 1.166.0
 Contact: support@zernio.com
 */
 
@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // AdCampaignsAPIService AdCampaignsAPI service
@@ -3515,6 +3516,7 @@ type AdCampaignsAPIGetAdTreeRequest struct {
 	accountId     *string
 	profileId     *string
 	campaignId    *string
+	updatedSince  *time.Time
 	search        *string
 	fromDate      *string
 	toDate        *string
@@ -3578,9 +3580,15 @@ func (r AdCampaignsAPIGetAdTreeRequest) ProfileId(profileId string) AdCampaignsA
 	return r
 }
 
-// Restrict the tree to a single campaign by its platform campaign id (the id the platform assigns, e.g. Meta&#39;s numeric campaign id). Filters the campaign set itself, so it works regardless of account size and pagination. Pass this when you already hold a campaign id instead of paging the tree to find it. Mirrors the &#x60;campaignId&#x60; filter on GET /v1/ads.
+// Restrict the tree to one or more campaigns by platform campaign id (the id the platform assigns, e.g. Meta&#39;s numeric campaign id). Comma-separate up to 100 ids (&#x60;?campaignId&#x3D;123,456&#x60;). Filters the campaign set itself, so it works regardless of account size and pagination. Pass this when you already hold campaign ids (for example from an &#x60;ad.status_changed&#x60; webhook) instead of paging the whole tree.
 func (r AdCampaignsAPIGetAdTreeRequest) CampaignId(campaignId string) AdCampaignsAPIGetAdTreeRequest {
 	r.campaignId = &campaignId
+	return r
+}
+
+// Return only campaigns with a change stored since this time (ISO 8601 with offset, e.g. &#x60;2026-09-30T10:00:00Z&#x60;): a new ad, or a change to any ad&#39;s status, review status, name, budget or creative. Each matching campaign comes back whole (every ad set and ad). Metrics are not a change: to refresh numbers, filter with &#x60;hasDelivery&#x3D;true&#x60; and a date range instead. Combines with every other filter (with &#x60;hasDelivery&#x60;/&#x60;minSpend&#x60; a campaign must match both).
+func (r AdCampaignsAPIGetAdTreeRequest) UpdatedSince(updatedSince time.Time) AdCampaignsAPIGetAdTreeRequest {
+	r.updatedSince = &updatedSince
 	return r
 }
 
@@ -3730,6 +3738,9 @@ func (a *AdCampaignsAPIService) GetAdTreeExecute(r AdCampaignsAPIGetAdTreeReques
 	}
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
+	}
+	if r.updatedSince != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "updatedSince", r.updatedSince, "form", "")
 	}
 	if r.search != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
