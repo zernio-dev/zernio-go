@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.172.0
+API version: 1.173.0
 Contact: support@zernio.com
 */
 
@@ -29,13 +29,17 @@ type GetInboxConversation200ResponseData struct {
 	ParticipantName *string `json:"participantName,omitempty"`
 	ParticipantId   *string `json:"participantId,omitempty"`
 	// X verified badge type. Only present for X conversations.
-	ParticipantVerifiedType NullableString                                              `json:"participantVerifiedType,omitempty"`
-	LastMessage             *string                                                     `json:"lastMessage,omitempty"`
-	LastMessageAt           *time.Time                                                  `json:"lastMessageAt,omitempty"`
-	UpdatedTime             *time.Time                                                  `json:"updatedTime,omitempty"`
-	Participants            []UpdateFacebookPage200ResponseSelectedPage                 `json:"participants,omitempty"`
-	InstagramProfile        *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
-	Metadata                *GetInboxConversation200ResponseDataMetadata                `json:"metadata,omitempty"`
+	ParticipantVerifiedType NullableString `json:"participantVerifiedType,omitempty"`
+	// WhatsApp only. Meta business-scoped user ID (BSUID), the stable identity anchor; present when Meta has sent it for this participant.
+	BusinessScopedUserId *string `json:"businessScopedUserId,omitempty"`
+	// WhatsApp only. The participant's WhatsApp username (e.g. `jane.shop`, no leading @). Not a stable identifier, because users can change it: useful for display, not recommended as an identity anchor. Captured from inbound messages, so older threads fill in on their next inbound.
+	WhatsappUsername *string                                                     `json:"whatsappUsername,omitempty"`
+	LastMessage      *string                                                     `json:"lastMessage,omitempty"`
+	LastMessageAt    *time.Time                                                  `json:"lastMessageAt,omitempty"`
+	UpdatedTime      *time.Time                                                  `json:"updatedTime,omitempty"`
+	Participants     []UpdateFacebookPage200ResponseSelectedPage                 `json:"participants,omitempty"`
+	InstagramProfile *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
+	Metadata         *GetInboxConversation200ResponseDataMetadata                `json:"metadata,omitempty"`
 }
 
 // NewGetInboxConversation200ResponseData instantiates a new GetInboxConversation200ResponseData object
@@ -322,6 +326,70 @@ func (o *GetInboxConversation200ResponseData) UnsetParticipantVerifiedType() {
 	o.ParticipantVerifiedType.Unset()
 }
 
+// GetBusinessScopedUserId returns the BusinessScopedUserId field value if set, zero value otherwise.
+func (o *GetInboxConversation200ResponseData) GetBusinessScopedUserId() string {
+	if o == nil || IsNil(o.BusinessScopedUserId) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessScopedUserId
+}
+
+// GetBusinessScopedUserIdOk returns a tuple with the BusinessScopedUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversation200ResponseData) GetBusinessScopedUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessScopedUserId) {
+		return nil, false
+	}
+	return o.BusinessScopedUserId, true
+}
+
+// HasBusinessScopedUserId returns a boolean if a field has been set.
+func (o *GetInboxConversation200ResponseData) HasBusinessScopedUserId() bool {
+	if o != nil && !IsNil(o.BusinessScopedUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessScopedUserId gets a reference to the given string and assigns it to the BusinessScopedUserId field.
+func (o *GetInboxConversation200ResponseData) SetBusinessScopedUserId(v string) {
+	o.BusinessScopedUserId = &v
+}
+
+// GetWhatsappUsername returns the WhatsappUsername field value if set, zero value otherwise.
+func (o *GetInboxConversation200ResponseData) GetWhatsappUsername() string {
+	if o == nil || IsNil(o.WhatsappUsername) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappUsername
+}
+
+// GetWhatsappUsernameOk returns a tuple with the WhatsappUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxConversation200ResponseData) GetWhatsappUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappUsername) {
+		return nil, false
+	}
+	return o.WhatsappUsername, true
+}
+
+// HasWhatsappUsername returns a boolean if a field has been set.
+func (o *GetInboxConversation200ResponseData) HasWhatsappUsername() bool {
+	if o != nil && !IsNil(o.WhatsappUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappUsername gets a reference to the given string and assigns it to the WhatsappUsername field.
+func (o *GetInboxConversation200ResponseData) SetWhatsappUsername(v string) {
+	o.WhatsappUsername = &v
+}
+
 // GetLastMessage returns the LastMessage field value if set, zero value otherwise.
 func (o *GetInboxConversation200ResponseData) GetLastMessage() string {
 	if o == nil || IsNil(o.LastMessage) {
@@ -547,6 +615,12 @@ func (o GetInboxConversation200ResponseData) ToMap() (map[string]interface{}, er
 	}
 	if o.ParticipantVerifiedType.IsSet() {
 		toSerialize["participantVerifiedType"] = o.ParticipantVerifiedType.Get()
+	}
+	if !IsNil(o.BusinessScopedUserId) {
+		toSerialize["businessScopedUserId"] = o.BusinessScopedUserId
+	}
+	if !IsNil(o.WhatsappUsername) {
+		toSerialize["whatsappUsername"] = o.WhatsappUsername
 	}
 	if !IsNil(o.LastMessage) {
 		toSerialize["lastMessage"] = o.LastMessage
