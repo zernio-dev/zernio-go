@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.164.0
+API version: 1.164.1
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type ErrorResponseDetails struct {
 	QuotaExhausted *bool `json:"quotaExhausted,omitempty"`
 	// Google Ads 429 only, when Google names the scope. DEVELOPER is the shared developer-token budget; ACCOUNT is your ad account.
 	QuotaScope *string `json:"quotaScope,omitempty"`
-	// Zernio Google Ads operations-budget 429 only (never set alongside `quotaExhausted`). `user` is your own burst/daily allowance; `platform` is the fleet-wide daily budget shared across customers.
+	// Zernio Google Ads burst-limit 429 only (never set alongside `quotaExhausted`). `user` is your own per-minute allowance on user-driven Google Ads calls; it clears within a minute.
 	BudgetScope          *string `json:"budgetScope,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
