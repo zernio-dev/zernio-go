@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.174.0
+API version: 1.175.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,11 @@ type SearchInboxConversations200ResponseDataInnerConversation struct {
 	ParticipantName     NullableString `json:"participantName,omitempty"`
 	ParticipantUsername NullableString `json:"participantUsername,omitempty"`
 	ParticipantPicture  NullableString `json:"participantPicture,omitempty"`
-	Status              *string        `json:"status,omitempty"`
+	// WhatsApp only. Meta business-scoped user ID (BSUID), the stable identity anchor; present when Meta has sent it for this participant.
+	BusinessScopedUserId *string `json:"businessScopedUserId,omitempty"`
+	// WhatsApp only. The participant's WhatsApp username (e.g. `jane.shop`, no leading @). Not a stable identifier, because users can change it: useful for display, not recommended as an identity anchor. Captured from inbound messages, so older threads fill in on their next inbound.
+	WhatsappUsername *string `json:"whatsappUsername,omitempty"`
+	Status           *string `json:"status,omitempty"`
 	// The conversation's most recent message preview
 	LastMessage   NullableString `json:"lastMessage,omitempty"`
 	LastMessageAt NullableTime   `json:"lastMessageAt,omitempty"`
@@ -276,6 +280,70 @@ func (o *SearchInboxConversations200ResponseDataInnerConversation) UnsetParticip
 	o.ParticipantPicture.Unset()
 }
 
+// GetBusinessScopedUserId returns the BusinessScopedUserId field value if set, zero value otherwise.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetBusinessScopedUserId() string {
+	if o == nil || IsNil(o.BusinessScopedUserId) {
+		var ret string
+		return ret
+	}
+	return *o.BusinessScopedUserId
+}
+
+// GetBusinessScopedUserIdOk returns a tuple with the BusinessScopedUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetBusinessScopedUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.BusinessScopedUserId) {
+		return nil, false
+	}
+	return o.BusinessScopedUserId, true
+}
+
+// HasBusinessScopedUserId returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) HasBusinessScopedUserId() bool {
+	if o != nil && !IsNil(o.BusinessScopedUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetBusinessScopedUserId gets a reference to the given string and assigns it to the BusinessScopedUserId field.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetBusinessScopedUserId(v string) {
+	o.BusinessScopedUserId = &v
+}
+
+// GetWhatsappUsername returns the WhatsappUsername field value if set, zero value otherwise.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetWhatsappUsername() string {
+	if o == nil || IsNil(o.WhatsappUsername) {
+		var ret string
+		return ret
+	}
+	return *o.WhatsappUsername
+}
+
+// GetWhatsappUsernameOk returns a tuple with the WhatsappUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) GetWhatsappUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.WhatsappUsername) {
+		return nil, false
+	}
+	return o.WhatsappUsername, true
+}
+
+// HasWhatsappUsername returns a boolean if a field has been set.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) HasWhatsappUsername() bool {
+	if o != nil && !IsNil(o.WhatsappUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetWhatsappUsername gets a reference to the given string and assigns it to the WhatsappUsername field.
+func (o *SearchInboxConversations200ResponseDataInnerConversation) SetWhatsappUsername(v string) {
+	o.WhatsappUsername = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *SearchInboxConversations200ResponseDataInnerConversation) GetStatus() string {
 	if o == nil || IsNil(o.Status) {
@@ -421,6 +489,12 @@ func (o SearchInboxConversations200ResponseDataInnerConversation) ToMap() (map[s
 	}
 	if o.ParticipantPicture.IsSet() {
 		toSerialize["participantPicture"] = o.ParticipantPicture.Get()
+	}
+	if !IsNil(o.BusinessScopedUserId) {
+		toSerialize["businessScopedUserId"] = o.BusinessScopedUserId
+	}
+	if !IsNil(o.WhatsappUsername) {
+		toSerialize["whatsappUsername"] = o.WhatsappUsername
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
