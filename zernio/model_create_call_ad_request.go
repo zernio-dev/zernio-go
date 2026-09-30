@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.177.0
+API version: 1.178.0
 Contact: support@zernio.com
 */
 
@@ -104,7 +104,7 @@ type CreateCallAdRequest struct {
 	Neighborhoods []CreateStandaloneAdRequestRegionsInnerOneOf `json:"neighborhoods,omitempty"`
 	// Geo to exclude, same shape as POST /v1/ads/create (countries, countryGroups, regions, cities, zips, places, neighborhoods, customLocations).
 	ExcludedLocations map[string]interface{} `json:"excludedLocations,omitempty"`
-	// Meta behavior ids. Each dimension is its own flexible_spec entry: OR within, AND across.
+	// Behavior ids from /v1/ads/targeting/search?dimension=behavior. Meta: each dimension is its own flexible_spec entry (OR within, AND across). TikTok: video/creator interaction categories, sent as the ad group's actions.
 	Behaviors      []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
 	WorkPositions  []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
 	WorkEmployers  []CreateStandaloneAdRequestBehaviorsInner `json:"workEmployers,omitempty"`
