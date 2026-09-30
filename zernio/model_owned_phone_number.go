@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.163.2
+API version: 1.164.0
 Contact: support@zernio.com
 */
 
@@ -54,6 +54,8 @@ type OwnedPhoneNumber struct {
 	MetaVerificationStatus    *string    `json:"metaVerificationStatus,omitempty"`
 	MetaVerifiedAt            *time.Time `json:"metaVerifiedAt,omitempty"`
 	MetaVerificationExpiresAt *time.Time `json:"metaVerificationExpiresAt,omitempty"`
+	// Set when WhatsApp reported the number as registered to another WhatsApp account while connecting it. The number keeps working for Calls and SMS; remove it from the other account and connect again, or replace it with POST /v1/whatsapp/phone-numbers/{id}/replace. Absent once WhatsApp accepts the number.
+	MetaPoolAddRejectedAt *time.Time `json:"metaPoolAddRejectedAt,omitempty"`
 	// The WhatsApp account the number is linked to; null when WhatsApp is not connected.
 	SocialAccountId NullableString `json:"socialAccountId,omitempty"`
 	// The telephony account that owns Calls and SMS on the number.
@@ -944,6 +946,38 @@ func (o *OwnedPhoneNumber) HasMetaVerificationExpiresAt() bool {
 // SetMetaVerificationExpiresAt gets a reference to the given time.Time and assigns it to the MetaVerificationExpiresAt field.
 func (o *OwnedPhoneNumber) SetMetaVerificationExpiresAt(v time.Time) {
 	o.MetaVerificationExpiresAt = &v
+}
+
+// GetMetaPoolAddRejectedAt returns the MetaPoolAddRejectedAt field value if set, zero value otherwise.
+func (o *OwnedPhoneNumber) GetMetaPoolAddRejectedAt() time.Time {
+	if o == nil || IsNil(o.MetaPoolAddRejectedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.MetaPoolAddRejectedAt
+}
+
+// GetMetaPoolAddRejectedAtOk returns a tuple with the MetaPoolAddRejectedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OwnedPhoneNumber) GetMetaPoolAddRejectedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.MetaPoolAddRejectedAt) {
+		return nil, false
+	}
+	return o.MetaPoolAddRejectedAt, true
+}
+
+// HasMetaPoolAddRejectedAt returns a boolean if a field has been set.
+func (o *OwnedPhoneNumber) HasMetaPoolAddRejectedAt() bool {
+	if o != nil && !IsNil(o.MetaPoolAddRejectedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetaPoolAddRejectedAt gets a reference to the given time.Time and assigns it to the MetaPoolAddRejectedAt field.
+func (o *OwnedPhoneNumber) SetMetaPoolAddRejectedAt(v time.Time) {
+	o.MetaPoolAddRejectedAt = &v
 }
 
 // GetSocialAccountId returns the SocialAccountId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -2444,6 +2478,9 @@ func (o OwnedPhoneNumber) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MetaVerificationExpiresAt) {
 		toSerialize["metaVerificationExpiresAt"] = o.MetaVerificationExpiresAt
+	}
+	if !IsNil(o.MetaPoolAddRejectedAt) {
+		toSerialize["metaPoolAddRejectedAt"] = o.MetaPoolAddRejectedAt
 	}
 	if o.SocialAccountId.IsSet() {
 		toSerialize["socialAccountId"] = o.SocialAccountId.Get()

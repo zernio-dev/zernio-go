@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.163.2
+API version: 1.164.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,11 @@ type CheckVerification200Response struct {
 	// Accepted deliveries (initial send + resends); each bills one verification fee.
 	SendCount  *int32     `json:"sendCount,omitempty"`
 	LastSentAt *time.Time `json:"lastSentAt,omitempty"`
-	CreatedAt  *time.Time `json:"createdAt,omitempty"`
+	// WhatsApp only, returned by GET /v1/verify/verifications/{verificationId} (null on create and check responses): what Meta reported for the latest send, null until it reports. A code that never reached the recipient (for example a number not on WhatsApp) reads failed, with the Meta error in deliveryErrorCode. failed does not settle the verification: Meta can report failed and later deliver the same message. Reported for at least an hour after the send, well past any code's expiry.
+	DeliveryStatus NullableString `json:"deliveryStatus,omitempty"`
+	// Meta error code when deliveryStatus is failed (e.g. 131026, message undeliverable).
+	DeliveryErrorCode *int32     `json:"deliveryErrorCode,omitempty"`
+	CreatedAt         *time.Time `json:"createdAt,omitempty"`
 	// Present on create responses: true when an active verification was resent instead of created.
 	Resend *bool `json:"resend,omitempty"`
 	Valid  *bool `json:"valid,omitempty"`
@@ -342,6 +346,81 @@ func (o *CheckVerification200Response) SetLastSentAt(v time.Time) {
 	o.LastSentAt = &v
 }
 
+// GetDeliveryStatus returns the DeliveryStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CheckVerification200Response) GetDeliveryStatus() string {
+	if o == nil || IsNil(o.DeliveryStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.DeliveryStatus.Get()
+}
+
+// GetDeliveryStatusOk returns a tuple with the DeliveryStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CheckVerification200Response) GetDeliveryStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeliveryStatus.Get(), o.DeliveryStatus.IsSet()
+}
+
+// HasDeliveryStatus returns a boolean if a field has been set.
+func (o *CheckVerification200Response) HasDeliveryStatus() bool {
+	if o != nil && o.DeliveryStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDeliveryStatus gets a reference to the given NullableString and assigns it to the DeliveryStatus field.
+func (o *CheckVerification200Response) SetDeliveryStatus(v string) {
+	o.DeliveryStatus.Set(&v)
+}
+
+// SetDeliveryStatusNil sets the value for DeliveryStatus to be an explicit nil
+func (o *CheckVerification200Response) SetDeliveryStatusNil() {
+	o.DeliveryStatus.Set(nil)
+}
+
+// UnsetDeliveryStatus ensures that no value is present for DeliveryStatus, not even an explicit nil
+func (o *CheckVerification200Response) UnsetDeliveryStatus() {
+	o.DeliveryStatus.Unset()
+}
+
+// GetDeliveryErrorCode returns the DeliveryErrorCode field value if set, zero value otherwise.
+func (o *CheckVerification200Response) GetDeliveryErrorCode() int32 {
+	if o == nil || IsNil(o.DeliveryErrorCode) {
+		var ret int32
+		return ret
+	}
+	return *o.DeliveryErrorCode
+}
+
+// GetDeliveryErrorCodeOk returns a tuple with the DeliveryErrorCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckVerification200Response) GetDeliveryErrorCodeOk() (*int32, bool) {
+	if o == nil || IsNil(o.DeliveryErrorCode) {
+		return nil, false
+	}
+	return o.DeliveryErrorCode, true
+}
+
+// HasDeliveryErrorCode returns a boolean if a field has been set.
+func (o *CheckVerification200Response) HasDeliveryErrorCode() bool {
+	if o != nil && !IsNil(o.DeliveryErrorCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetDeliveryErrorCode gets a reference to the given int32 and assigns it to the DeliveryErrorCode field.
+func (o *CheckVerification200Response) SetDeliveryErrorCode(v int32) {
+	o.DeliveryErrorCode = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *CheckVerification200Response) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -474,6 +553,12 @@ func (o CheckVerification200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.LastSentAt) {
 		toSerialize["lastSentAt"] = o.LastSentAt
+	}
+	if o.DeliveryStatus.IsSet() {
+		toSerialize["deliveryStatus"] = o.DeliveryStatus.Get()
+	}
+	if !IsNil(o.DeliveryErrorCode) {
+		toSerialize["deliveryErrorCode"] = o.DeliveryErrorCode
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt
