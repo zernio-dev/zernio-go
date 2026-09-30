@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.178.0
+API version: 1.179.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type CommentAutomationAudience struct {
 	MinFollowerCount *int32 `json:"minFollowerCount,omitempty"`
 	// What to do when Instagram will not reveal the follow relationship.   * `send` (default) - deliver the DM anyway (fails open).   * `skip` - stay silent.   * `verify` - send `followGate.message` with a confirm button. Tapping it is a     message, which grants consent, so the re-check on the tap resolves and the     real DM (or `followGate.notFollowingMessage`) follows automatically.
 	WhenUnknown *string `json:"whenUnknown,omitempty"`
+	// Send `followGate.message` with its button to EVERY commenter and deliver the real DM when they tap it, with no follow check at any point. Cannot be combined with a `followerStatus` other than `any` or with `minFollowerCount` (400); `whenUnknown` is ignored. Instagram only. A PATCH that sends `audience` without this field clears it.
+	TapToUnlock *bool `json:"tapToUnlock,omitempty"`
 }
 
 // NewCommentAutomationAudience instantiates a new CommentAutomationAudience object
@@ -37,6 +39,8 @@ func NewCommentAutomationAudience() *CommentAutomationAudience {
 	this.FollowerStatus = &followerStatus
 	var whenUnknown string = "send"
 	this.WhenUnknown = &whenUnknown
+	var tapToUnlock bool = false
+	this.TapToUnlock = &tapToUnlock
 	return &this
 }
 
@@ -49,6 +53,8 @@ func NewCommentAutomationAudienceWithDefaults() *CommentAutomationAudience {
 	this.FollowerStatus = &followerStatus
 	var whenUnknown string = "send"
 	this.WhenUnknown = &whenUnknown
+	var tapToUnlock bool = false
+	this.TapToUnlock = &tapToUnlock
 	return &this
 }
 
@@ -148,6 +154,38 @@ func (o *CommentAutomationAudience) SetWhenUnknown(v string) {
 	o.WhenUnknown = &v
 }
 
+// GetTapToUnlock returns the TapToUnlock field value if set, zero value otherwise.
+func (o *CommentAutomationAudience) GetTapToUnlock() bool {
+	if o == nil || IsNil(o.TapToUnlock) {
+		var ret bool
+		return ret
+	}
+	return *o.TapToUnlock
+}
+
+// GetTapToUnlockOk returns a tuple with the TapToUnlock field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommentAutomationAudience) GetTapToUnlockOk() (*bool, bool) {
+	if o == nil || IsNil(o.TapToUnlock) {
+		return nil, false
+	}
+	return o.TapToUnlock, true
+}
+
+// HasTapToUnlock returns a boolean if a field has been set.
+func (o *CommentAutomationAudience) HasTapToUnlock() bool {
+	if o != nil && !IsNil(o.TapToUnlock) {
+		return true
+	}
+
+	return false
+}
+
+// SetTapToUnlock gets a reference to the given bool and assigns it to the TapToUnlock field.
+func (o *CommentAutomationAudience) SetTapToUnlock(v bool) {
+	o.TapToUnlock = &v
+}
+
 func (o CommentAutomationAudience) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -166,6 +204,9 @@ func (o CommentAutomationAudience) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.WhenUnknown) {
 		toSerialize["whenUnknown"] = o.WhenUnknown
+	}
+	if !IsNil(o.TapToUnlock) {
+		toSerialize["tapToUnlock"] = o.TapToUnlock
 	}
 	return toSerialize, nil
 }
