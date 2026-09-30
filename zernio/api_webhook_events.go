@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.167.0
+API version: 1.168.0
 Contact: support@zernio.com
 */
 
@@ -5559,6 +5559,108 @@ func (a *WebhookEventsAPIService) OnWhatsAppAutomaticEventExecute(r WebhookEvent
 	}
 	// body params
 	localVarPostBody = r.onWhatsAppAutomaticEventRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest struct {
+	ctx                                          context.Context
+	ApiService                                   *WebhookEventsAPIService
+	webhookPayloadWhatsAppContactIdentityChanged *WebhookPayloadWhatsAppContactIdentityChanged
+}
+
+func (r WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest) WebhookPayloadWhatsAppContactIdentityChanged(webhookPayloadWhatsAppContactIdentityChanged WebhookPayloadWhatsAppContactIdentityChanged) WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest {
+	r.webhookPayloadWhatsAppContactIdentityChanged = &webhookPayloadWhatsAppContactIdentityChanged
+	return r
+}
+
+func (r WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnWhatsAppContactIdentityChangedExecute(r)
+}
+
+/*
+OnWhatsAppContactIdentityChanged WhatsApp contact identity changed event
+
+Fired when a WhatsApp user changes phone number or Meta regenerates their
+business-scoped user id (BSUID). Carries the previous and current identifiers
+so you can re-key records stored against the old phone number or BSUID.
+Delivery is at-least-once; dedupe on the event `id`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest
+*/
+func (a *WebhookEventsAPIService) OnWhatsAppContactIdentityChanged(ctx context.Context) WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest {
+	return WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnWhatsAppContactIdentityChangedExecute(r WebhookEventsAPIOnWhatsAppContactIdentityChangedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnWhatsAppContactIdentityChanged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/whatsapp.contact.identity_changed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadWhatsAppContactIdentityChanged == nil {
+		return nil, reportError("webhookPayloadWhatsAppContactIdentityChanged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadWhatsAppContactIdentityChanged
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
