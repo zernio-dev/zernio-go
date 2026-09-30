@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.166.1
+API version: 1.167.0
 Contact: support@zernio.com
 */
 
@@ -28,10 +28,12 @@ type WebhookPayloadMessageDeliveryStatus struct {
 	Event   string              `json:"event"`
 	Message InboxWebhookMessage `json:"message"`
 	// When the platform reported this status.
-	StatusAt     time.Time                                 `json:"statusAt"`
-	Error        *WebhookPayloadMessageDeliveryStatusError `json:"error,omitempty"`
-	Conversation InboxWebhookConversation                  `json:"conversation"`
-	Account      InboxWebhookAccount                       `json:"account"`
+	StatusAt            time.Time                                 `json:"statusAt"`
+	Error               *WebhookPayloadMessageDeliveryStatusError `json:"error,omitempty"`
+	Pricing             *WhatsAppMessagePricing                   `json:"pricing,omitempty"`
+	BillingConversation *WhatsAppBillingConversation              `json:"billingConversation,omitempty"`
+	Conversation        InboxWebhookConversation                  `json:"conversation"`
+	Account             InboxWebhookAccount                       `json:"account"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -190,6 +192,70 @@ func (o *WebhookPayloadMessageDeliveryStatus) SetError(v WebhookPayloadMessageDe
 	o.Error = &v
 }
 
+// GetPricing returns the Pricing field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageDeliveryStatus) GetPricing() WhatsAppMessagePricing {
+	if o == nil || IsNil(o.Pricing) {
+		var ret WhatsAppMessagePricing
+		return ret
+	}
+	return *o.Pricing
+}
+
+// GetPricingOk returns a tuple with the Pricing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageDeliveryStatus) GetPricingOk() (*WhatsAppMessagePricing, bool) {
+	if o == nil || IsNil(o.Pricing) {
+		return nil, false
+	}
+	return o.Pricing, true
+}
+
+// HasPricing returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageDeliveryStatus) HasPricing() bool {
+	if o != nil && !IsNil(o.Pricing) {
+		return true
+	}
+
+	return false
+}
+
+// SetPricing gets a reference to the given WhatsAppMessagePricing and assigns it to the Pricing field.
+func (o *WebhookPayloadMessageDeliveryStatus) SetPricing(v WhatsAppMessagePricing) {
+	o.Pricing = &v
+}
+
+// GetBillingConversation returns the BillingConversation field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageDeliveryStatus) GetBillingConversation() WhatsAppBillingConversation {
+	if o == nil || IsNil(o.BillingConversation) {
+		var ret WhatsAppBillingConversation
+		return ret
+	}
+	return *o.BillingConversation
+}
+
+// GetBillingConversationOk returns a tuple with the BillingConversation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageDeliveryStatus) GetBillingConversationOk() (*WhatsAppBillingConversation, bool) {
+	if o == nil || IsNil(o.BillingConversation) {
+		return nil, false
+	}
+	return o.BillingConversation, true
+}
+
+// HasBillingConversation returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageDeliveryStatus) HasBillingConversation() bool {
+	if o != nil && !IsNil(o.BillingConversation) {
+		return true
+	}
+
+	return false
+}
+
+// SetBillingConversation gets a reference to the given WhatsAppBillingConversation and assigns it to the BillingConversation field.
+func (o *WebhookPayloadMessageDeliveryStatus) SetBillingConversation(v WhatsAppBillingConversation) {
+	o.BillingConversation = &v
+}
+
 // GetConversation returns the Conversation field value
 func (o *WebhookPayloadMessageDeliveryStatus) GetConversation() InboxWebhookConversation {
 	if o == nil {
@@ -278,6 +344,12 @@ func (o WebhookPayloadMessageDeliveryStatus) ToMap() (map[string]interface{}, er
 	toSerialize["statusAt"] = o.StatusAt
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.Pricing) {
+		toSerialize["pricing"] = o.Pricing
+	}
+	if !IsNil(o.BillingConversation) {
+		toSerialize["billingConversation"] = o.BillingConversation
 	}
 	toSerialize["conversation"] = o.Conversation
 	toSerialize["account"] = o.Account
