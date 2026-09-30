@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.179.1
+API version: 1.180.0
 Contact: support@zernio.com
 */
 
@@ -19,7 +19,7 @@ import (
 // checks if the GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction{}
 
-// GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction Observed from Meta's own errors on our own sends, not a live probe. Facebook/Instagram: error subcodes 2534122, 1893063, 2534029, set on the first refused send and cleared when a later send succeeds. WhatsApp: Cloud API error codes 131042 (payment or eligibility issue), 131031 (Business Account locked) and 368 (policy block), set when a send or a delivery status fails with one and cleared when a later message is delivered. It lags reality by one message in each direction.
+// GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction Observed from Meta's own errors on our own sends, not a live probe. Facebook/Instagram: error subcodes 2534122, 1893063, 2534029, set on the first refused send and cleared when a later send succeeds. WhatsApp: Cloud API error codes 131042 (payment or eligibility issue), 131031 (Business Account locked) and 368 (policy block), set when a send or a delivery status fails with one and cleared when a later message is delivered. It lags reality by one message in each direction. After subcode 1893063 (Meta refusing the Page's messages), comment automation DMs are held and one is retried at `pausedUntil`: 30 minutes, doubling per refused retry up to 4 hours; held DMs stay pending and are sent once Meta accepts again, within the 7-day private-reply window.
 type GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction struct {
 	// WhatsApp Cloud API error code. Null on Facebook and Instagram.
 	Code NullableInt32 `json:"code,omitempty"`
@@ -28,6 +28,8 @@ type GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction struct {
 	Message     NullableString `json:"message,omitempty"`
 	FirstSeenAt *time.Time     `json:"firstSeenAt,omitempty"`
 	LastSeenAt  *time.Time     `json:"lastSeenAt,omitempty"`
+	// When held automation DMs are next retried. Null when nothing is held.
+	PausedUntil NullableTime `json:"pausedUntil,omitempty"`
 }
 
 // NewGetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction instantiates a new GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction object
@@ -240,6 +242,49 @@ func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetLa
 	o.LastSeenAt = &v
 }
 
+// GetPausedUntil returns the PausedUntil field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetPausedUntil() time.Time {
+	if o == nil || IsNil(o.PausedUntil.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.PausedUntil.Get()
+}
+
+// GetPausedUntilOk returns a tuple with the PausedUntil field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetPausedUntilOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PausedUntil.Get(), o.PausedUntil.IsSet()
+}
+
+// HasPausedUntil returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) HasPausedUntil() bool {
+	if o != nil && o.PausedUntil.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPausedUntil gets a reference to the given NullableTime and assigns it to the PausedUntil field.
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetPausedUntil(v time.Time) {
+	o.PausedUntil.Set(&v)
+}
+
+// SetPausedUntilNil sets the value for PausedUntil to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetPausedUntilNil() {
+	o.PausedUntil.Set(nil)
+}
+
+// UnsetPausedUntil ensures that no value is present for PausedUntil, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) UnsetPausedUntil() {
+	o.PausedUntil.Unset()
+}
+
 func (o GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -264,6 +309,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) ToMap(
 	}
 	if !IsNil(o.LastSeenAt) {
 		toSerialize["lastSeenAt"] = o.LastSeenAt
+	}
+	if o.PausedUntil.IsSet() {
+		toSerialize["pausedUntil"] = o.PausedUntil.Get()
 	}
 	return toSerialize, nil
 }
