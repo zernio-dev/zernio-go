@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.169.0
+API version: 1.170.0
 Contact: support@zernio.com
 */
 
@@ -19,12 +19,15 @@ import (
 // checks if the GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction{}
 
-// GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction Observed from Meta's own error subcodes on our own sends (2534122, 1893063, 2534029), not a live probe. Set on the first refused send and cleared when a later send succeeds, so it lags reality by one send in each direction.
+// GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction Observed from Meta's own errors on our own sends, not a live probe. Facebook/Instagram: error subcodes 2534122, 1893063, 2534029, set on the first refused send and cleared when a later send succeeds. WhatsApp: Cloud API error codes 131042 (payment or eligibility issue), 131031 (Business Account locked) and 368 (policy block), set when a send or a delivery status fails with one and cleared when a later message is delivered. It lags reality by one message in each direction.
 type GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction struct {
-	Subcode     *int32     `json:"subcode,omitempty"`
-	Message     *string    `json:"message,omitempty"`
-	FirstSeenAt *time.Time `json:"firstSeenAt,omitempty"`
-	LastSeenAt  *time.Time `json:"lastSeenAt,omitempty"`
+	// WhatsApp Cloud API error code. Null on Facebook and Instagram.
+	Code NullableInt32 `json:"code,omitempty"`
+	// Meta error subcode (Facebook and Instagram). Null on WhatsApp.
+	Subcode     NullableInt32  `json:"subcode,omitempty"`
+	Message     NullableString `json:"message,omitempty"`
+	FirstSeenAt *time.Time     `json:"firstSeenAt,omitempty"`
+	LastSeenAt  *time.Time     `json:"lastSeenAt,omitempty"`
 }
 
 // NewGetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction instantiates a new GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction object
@@ -44,68 +47,133 @@ func NewGetAllAccountsHealth200ResponseAccountsInnerMessagingRestrictionWithDefa
 	return &this
 }
 
-// GetSubcode returns the Subcode field value if set, zero value otherwise.
-func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetSubcode() int32 {
-	if o == nil || IsNil(o.Subcode) {
+// GetCode returns the Code field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetCode() int32 {
+	if o == nil || IsNil(o.Code.Get()) {
 		var ret int32
 		return ret
 	}
-	return *o.Subcode
+	return *o.Code.Get()
+}
+
+// GetCodeOk returns a tuple with the Code field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetCodeOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Code.Get(), o.Code.IsSet()
+}
+
+// HasCode returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) HasCode() bool {
+	if o != nil && o.Code.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCode gets a reference to the given NullableInt32 and assigns it to the Code field.
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetCode(v int32) {
+	o.Code.Set(&v)
+}
+
+// SetCodeNil sets the value for Code to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetCodeNil() {
+	o.Code.Set(nil)
+}
+
+// UnsetCode ensures that no value is present for Code, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) UnsetCode() {
+	o.Code.Unset()
+}
+
+// GetSubcode returns the Subcode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetSubcode() int32 {
+	if o == nil || IsNil(o.Subcode.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.Subcode.Get()
 }
 
 // GetSubcodeOk returns a tuple with the Subcode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetSubcodeOk() (*int32, bool) {
-	if o == nil || IsNil(o.Subcode) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Subcode, true
+	return o.Subcode.Get(), o.Subcode.IsSet()
 }
 
 // HasSubcode returns a boolean if a field has been set.
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) HasSubcode() bool {
-	if o != nil && !IsNil(o.Subcode) {
+	if o != nil && o.Subcode.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSubcode gets a reference to the given int32 and assigns it to the Subcode field.
+// SetSubcode gets a reference to the given NullableInt32 and assigns it to the Subcode field.
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetSubcode(v int32) {
-	o.Subcode = &v
+	o.Subcode.Set(&v)
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// SetSubcodeNil sets the value for Subcode to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetSubcodeNil() {
+	o.Subcode.Set(nil)
+}
+
+// UnsetSubcode ensures that no value is present for Subcode, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) UnsetSubcode() {
+	o.Subcode.Unset()
+}
+
+// GetMessage returns the Message field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetMessage() string {
-	if o == nil || IsNil(o.Message) {
+	if o == nil || IsNil(o.Message.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.Message
+	return *o.Message.Get()
 }
 
 // GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) GetMessageOk() (*string, bool) {
-	if o == nil || IsNil(o.Message) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Message, true
+	return o.Message.Get(), o.Message.IsSet()
 }
 
 // HasMessage returns a boolean if a field has been set.
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) HasMessage() bool {
-	if o != nil && !IsNil(o.Message) {
+	if o != nil && o.Message.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMessage gets a reference to the given string and assigns it to the Message field.
+// SetMessage gets a reference to the given NullableString and assigns it to the Message field.
 func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetMessage(v string) {
-	o.Message = &v
+	o.Message.Set(&v)
+}
+
+// SetMessageNil sets the value for Message to be an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) SetMessageNil() {
+	o.Message.Set(nil)
+}
+
+// UnsetMessage ensures that no value is present for Message, not even an explicit nil
+func (o *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) UnsetMessage() {
+	o.Message.Unset()
 }
 
 // GetFirstSeenAt returns the FirstSeenAt field value if set, zero value otherwise.
@@ -182,11 +250,14 @@ func (o GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) Marsha
 
 func (o GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Subcode) {
-		toSerialize["subcode"] = o.Subcode
+	if o.Code.IsSet() {
+		toSerialize["code"] = o.Code.Get()
 	}
-	if !IsNil(o.Message) {
-		toSerialize["message"] = o.Message
+	if o.Subcode.IsSet() {
+		toSerialize["subcode"] = o.Subcode.Get()
+	}
+	if o.Message.IsSet() {
+		toSerialize["message"] = o.Message.Get()
 	}
 	if !IsNil(o.FirstSeenAt) {
 		toSerialize["firstSeenAt"] = o.FirstSeenAt
