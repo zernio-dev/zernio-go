@@ -1592,6 +1592,7 @@ model_meta_assigned_user.go
 model_meta_business_user.go
 model_meta_catalog_product.go
 model_meta_catalog_product_input.go
+model_meta_customer_lifecycle.go
 model_meta_feed_upload.go
 model_meta_instagram_identity_ref.go
 model_meta_lead_form.go

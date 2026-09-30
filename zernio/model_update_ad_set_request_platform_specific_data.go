@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.162.2
+API version: 1.163.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,7 @@ type UpdateAdSetRequestPlatformSpecificData struct {
 	DailyMinSpendTarget *float32 `json:"dailyMinSpendTarget,omitempty"`
 	// Meta `lifetime_min_spend_target`: the lifetime-budget flavour of `dailyMinSpendTarget`, in whole currency units. Send this one when the campaign budget is a lifetime budget. Same rules and same rejections.
 	LifetimeMinSpendTarget *float32                                              `json:"lifetimeMinSpendTarget,omitempty"`
+	CustomerLifecycle      *MetaCustomerLifecycle                                `json:"customerLifecycle,omitempty"`
 	PromotedObject         *UpdateAdSetRequestPlatformSpecificDataPromotedObject `json:"promotedObject,omitempty"`
 }
 
@@ -244,6 +245,38 @@ func (o *UpdateAdSetRequestPlatformSpecificData) SetLifetimeMinSpendTarget(v flo
 	o.LifetimeMinSpendTarget = &v
 }
 
+// GetCustomerLifecycle returns the CustomerLifecycle field value if set, zero value otherwise.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetCustomerLifecycle() MetaCustomerLifecycle {
+	if o == nil || IsNil(o.CustomerLifecycle) {
+		var ret MetaCustomerLifecycle
+		return ret
+	}
+	return *o.CustomerLifecycle
+}
+
+// GetCustomerLifecycleOk returns a tuple with the CustomerLifecycle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) GetCustomerLifecycleOk() (*MetaCustomerLifecycle, bool) {
+	if o == nil || IsNil(o.CustomerLifecycle) {
+		return nil, false
+	}
+	return o.CustomerLifecycle, true
+}
+
+// HasCustomerLifecycle returns a boolean if a field has been set.
+func (o *UpdateAdSetRequestPlatformSpecificData) HasCustomerLifecycle() bool {
+	if o != nil && !IsNil(o.CustomerLifecycle) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomerLifecycle gets a reference to the given MetaCustomerLifecycle and assigns it to the CustomerLifecycle field.
+func (o *UpdateAdSetRequestPlatformSpecificData) SetCustomerLifecycle(v MetaCustomerLifecycle) {
+	o.CustomerLifecycle = &v
+}
+
 // GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
 func (o *UpdateAdSetRequestPlatformSpecificData) GetPromotedObject() UpdateAdSetRequestPlatformSpecificDataPromotedObject {
 	if o == nil || IsNil(o.PromotedObject) {
@@ -303,6 +336,9 @@ func (o UpdateAdSetRequestPlatformSpecificData) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.LifetimeMinSpendTarget) {
 		toSerialize["lifetimeMinSpendTarget"] = o.LifetimeMinSpendTarget
+	}
+	if !IsNil(o.CustomerLifecycle) {
+		toSerialize["customerLifecycle"] = o.CustomerLifecycle
 	}
 	if !IsNil(o.PromotedObject) {
 		toSerialize["promotedObject"] = o.PromotedObject
