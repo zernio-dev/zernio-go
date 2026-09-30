@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.163.0
+API version: 1.163.1
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,9 @@ var _ MappedNullable = &MetaCustomerLifecycle{}
 type MetaCustomerLifecycle struct {
 	// `all_customers` is \"Maximize conversions from all customers\". `new_customers` is \"Acquire new customers\" (excludes existing customers). `new_customers_excluding_engaged` also excludes people who engaged with you but have not bought yet.
 	Strategy string `json:"strategy"`
-	// Custom audience ids that define your existing customers. Omit to use the definition saved on the ad account. Only with a new_customers strategy.
+	// Custom audience ids that define your existing customers. Required with both new_customers strategies (Meta answers 400 subcode 1870251 without them); not allowed with all_customers.
 	ExistingCustomerAudienceIds []string `json:"existingCustomerAudienceIds,omitempty"`
-	// Custom audience ids that define engaged people. Only with new_customers_excluding_engaged.
+	// Custom audience ids of people who engaged but have not bought. Required with new_customers_excluding_engaged, not allowed with the other strategies.
 	EngagedAudienceIds []string `json:"engagedAudienceIds,omitempty"`
 }
 
