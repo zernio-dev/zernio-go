@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.164.1
+API version: 1.165.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &UnpublishPostRequest{}
 type UnpublishPostRequest struct {
 	// The platform to delete the post from
 	Platform string `json:"platform"`
+	// Which account's copy to delete when the post was published to several accounts on this platform. Required in that case.
+	AccountId *string `json:"accountId,omitempty"`
 }
 
 type _UnpublishPostRequest UnpublishPostRequest
@@ -70,6 +72,38 @@ func (o *UnpublishPostRequest) SetPlatform(v string) {
 	o.Platform = v
 }
 
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *UnpublishPostRequest) GetAccountId() string {
+	if o == nil || IsNil(o.AccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UnpublishPostRequest) GetAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountId) {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *UnpublishPostRequest) HasAccountId() bool {
+	if o != nil && !IsNil(o.AccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *UnpublishPostRequest) SetAccountId(v string) {
+	o.AccountId = &v
+}
+
 func (o UnpublishPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o UnpublishPostRequest) MarshalJSON() ([]byte, error) {
 func (o UnpublishPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["platform"] = o.Platform
+	if !IsNil(o.AccountId) {
+		toSerialize["accountId"] = o.AccountId
+	}
 	return toSerialize, nil
 }
 

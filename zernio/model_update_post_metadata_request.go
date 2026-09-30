@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.164.1
+API version: 1.165.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type UpdatePostMetadataRequest struct {
 	Platform string `json:"platform"`
 	// YouTube video ID (required for direct mode, ignored for post-based mode)
 	VideoId *string `json:"videoId,omitempty"`
-	// Zernio account ID (required for direct mode, ignored for post-based mode)
+	// Zernio account ID. Required for direct mode. In post-based mode, picks which account's copy to update when the post was published to several accounts on this platform (required in that case).
 	AccountId *string `json:"accountId,omitempty"`
 	// New video title (max 100 characters for YouTube)
 	Title *string `json:"title,omitempty"`
