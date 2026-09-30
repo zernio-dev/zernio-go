@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.175.0
+API version: 1.176.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type WebhookPayloadMessageMetadataUnsupported struct {
 	Title *string `json:"title,omitempty"`
 	// Meta's human-readable error detail string.
 	Details *string `json:"details,omitempty"`
+	// Meta's name for the content WhatsApp could not deliver, e.g. view_once, poll_creation, group_invite, edit. Absent when Meta sends none.
+	Type *string `json:"type,omitempty"`
 }
 
 // NewWebhookPayloadMessageMetadataUnsupported instantiates a new WebhookPayloadMessageMetadataUnsupported object
@@ -141,6 +143,38 @@ func (o *WebhookPayloadMessageMetadataUnsupported) SetDetails(v string) {
 	o.Details = &v
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageMetadataUnsupported) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageMetadataUnsupported) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageMetadataUnsupported) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *WebhookPayloadMessageMetadataUnsupported) SetType(v string) {
+	o.Type = &v
+}
+
 func (o WebhookPayloadMessageMetadataUnsupported) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -159,6 +193,9 @@ func (o WebhookPayloadMessageMetadataUnsupported) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Details) {
 		toSerialize["details"] = o.Details
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
