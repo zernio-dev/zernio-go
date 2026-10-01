@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.181.0
+API version: 1.182.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,12 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	ApprovalStatus *string `json:"approvalStatus,omitempty"`
 	// Meta only. Meta's `disable_reason` code, forwarded unchanged. Present when `accountStatus` is `2` (DISABLED) and Meta gives a reason, which is what separates a policy action from a payment problem. Meta does not publish a stable list of values for this field, so none are enumerated here: resolve the code against Meta's own ad account reference. Absent when Meta reports no reason, or when the connected token cannot read the field.
 	DisableReason *int32 `json:"disableReason,omitempty"`
+	// TikTok only. Total balance the advertiser can spend (cash plus grant), in whole units of `currency`. Read from the Business Center balance when the connection has a finance role there, which is the only TikTok source that counts cash held in a shared payment portfolio; otherwise TikTok's advertiser-level balance, which can read 0 for a cash-funded advertiser.
+	Balance *float32 `json:"balance,omitempty"`
+	// TikTok only. Cash part of `balance`, in whole units of `currency`. Absent when the connection has no finance role in the advertiser's Business Center.
+	CashBalance *float32 `json:"cashBalance,omitempty"`
+	// TikTok only. Grant (ad credit) part of `balance`, in whole units of `currency`. Absent when the connection has no finance role in the advertiser's Business Center.
+	GrantBalance *float32 `json:"grantBalance,omitempty"`
 	// IANA timezone of the ad account (Meta only). Drives daily-budget reset and Insights day boundaries.
 	TimezoneName *string `json:"timezoneName,omitempty"`
 	// Signed UTC offset in hours, reflecting current DST (Meta only).
@@ -358,6 +364,102 @@ func (o *ListAdAccounts200ResponseAccountsInner) SetDisableReason(v int32) {
 	o.DisableReason = &v
 }
 
+// GetBalance returns the Balance field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBalance() float32 {
+	if o == nil || IsNil(o.Balance) {
+		var ret float32
+		return ret
+	}
+	return *o.Balance
+}
+
+// GetBalanceOk returns a tuple with the Balance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetBalanceOk() (*float32, bool) {
+	if o == nil || IsNil(o.Balance) {
+		return nil, false
+	}
+	return o.Balance, true
+}
+
+// HasBalance returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasBalance() bool {
+	if o != nil && !IsNil(o.Balance) {
+		return true
+	}
+
+	return false
+}
+
+// SetBalance gets a reference to the given float32 and assigns it to the Balance field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetBalance(v float32) {
+	o.Balance = &v
+}
+
+// GetCashBalance returns the CashBalance field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetCashBalance() float32 {
+	if o == nil || IsNil(o.CashBalance) {
+		var ret float32
+		return ret
+	}
+	return *o.CashBalance
+}
+
+// GetCashBalanceOk returns a tuple with the CashBalance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetCashBalanceOk() (*float32, bool) {
+	if o == nil || IsNil(o.CashBalance) {
+		return nil, false
+	}
+	return o.CashBalance, true
+}
+
+// HasCashBalance returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasCashBalance() bool {
+	if o != nil && !IsNil(o.CashBalance) {
+		return true
+	}
+
+	return false
+}
+
+// SetCashBalance gets a reference to the given float32 and assigns it to the CashBalance field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetCashBalance(v float32) {
+	o.CashBalance = &v
+}
+
+// GetGrantBalance returns the GrantBalance field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetGrantBalance() float32 {
+	if o == nil || IsNil(o.GrantBalance) {
+		var ret float32
+		return ret
+	}
+	return *o.GrantBalance
+}
+
+// GetGrantBalanceOk returns a tuple with the GrantBalance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetGrantBalanceOk() (*float32, bool) {
+	if o == nil || IsNil(o.GrantBalance) {
+		return nil, false
+	}
+	return o.GrantBalance, true
+}
+
+// HasGrantBalance returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasGrantBalance() bool {
+	if o != nil && !IsNil(o.GrantBalance) {
+		return true
+	}
+
+	return false
+}
+
+// SetGrantBalance gets a reference to the given float32 and assigns it to the GrantBalance field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetGrantBalance(v float32) {
+	o.GrantBalance = &v
+}
+
 // GetTimezoneName returns the TimezoneName field value if set, zero value otherwise.
 func (o *ListAdAccounts200ResponseAccountsInner) GetTimezoneName() string {
 	if o == nil || IsNil(o.TimezoneName) {
@@ -661,6 +763,15 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.DisableReason) {
 		toSerialize["disableReason"] = o.DisableReason
+	}
+	if !IsNil(o.Balance) {
+		toSerialize["balance"] = o.Balance
+	}
+	if !IsNil(o.CashBalance) {
+		toSerialize["cashBalance"] = o.CashBalance
+	}
+	if !IsNil(o.GrantBalance) {
+		toSerialize["grantBalance"] = o.GrantBalance
 	}
 	if !IsNil(o.TimezoneName) {
 		toSerialize["timezoneName"] = o.TimezoneName
