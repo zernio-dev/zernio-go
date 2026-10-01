@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.194.1
+API version: 1.195.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type AccountsListResponse struct {
 	HasAnalyticsAccess bool `json:"hasAnalyticsAccess"`
 	// Only present when page/limit params are provided
 	Pagination *Pagination `json:"pagination,omitempty"`
+	// Only with profileIds and perProfile. Accounts matching the filters per profile ID; a profile with none is absent.
+	ProfileTotals map[string]int32 `json:"profileTotals,omitempty"`
 }
 
 type _AccountsListResponse AccountsListResponse
@@ -130,6 +132,38 @@ func (o *AccountsListResponse) SetPagination(v Pagination) {
 	o.Pagination = &v
 }
 
+// GetProfileTotals returns the ProfileTotals field value if set, zero value otherwise.
+func (o *AccountsListResponse) GetProfileTotals() map[string]int32 {
+	if o == nil || IsNil(o.ProfileTotals) {
+		var ret map[string]int32
+		return ret
+	}
+	return o.ProfileTotals
+}
+
+// GetProfileTotalsOk returns a tuple with the ProfileTotals field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountsListResponse) GetProfileTotalsOk() (map[string]int32, bool) {
+	if o == nil || IsNil(o.ProfileTotals) {
+		return map[string]int32{}, false
+	}
+	return o.ProfileTotals, true
+}
+
+// HasProfileTotals returns a boolean if a field has been set.
+func (o *AccountsListResponse) HasProfileTotals() bool {
+	if o != nil && !IsNil(o.ProfileTotals) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileTotals gets a reference to the given map[string]int32 and assigns it to the ProfileTotals field.
+func (o *AccountsListResponse) SetProfileTotals(v map[string]int32) {
+	o.ProfileTotals = v
+}
+
 func (o AccountsListResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -144,6 +178,9 @@ func (o AccountsListResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["hasAnalyticsAccess"] = o.HasAnalyticsAccess
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.ProfileTotals) {
+		toSerialize["profileTotals"] = o.ProfileTotals
 	}
 	return toSerialize, nil
 }

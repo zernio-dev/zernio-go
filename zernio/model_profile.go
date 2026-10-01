@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.194.1
+API version: 1.195.0
 Contact: support@zernio.com
 */
 
@@ -30,8 +30,10 @@ type Profile struct {
 	Timezone  NullableString `json:"timezone,omitempty"`
 	IsDefault *bool          `json:"isDefault,omitempty"`
 	// Only present when includeOverLimit=true. Indicates if this profile exceeds the plan limit.
-	IsOverLimit *bool      `json:"isOverLimit,omitempty"`
-	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	IsOverLimit *bool `json:"isOverLimit,omitempty"`
+	// In the profile list. Connected accounts on the profile, including ones that need reconnecting; phone and SMS number internals and posting accounts hidden by an ads connect are not counted.
+	AccountCount *int32     `json:"accountCount,omitempty"`
+	CreatedAt    *time.Time `json:"createdAt,omitempty"`
 }
 
 // NewProfile instantiates a new Profile object
@@ -318,6 +320,38 @@ func (o *Profile) SetIsOverLimit(v bool) {
 	o.IsOverLimit = &v
 }
 
+// GetAccountCount returns the AccountCount field value if set, zero value otherwise.
+func (o *Profile) GetAccountCount() int32 {
+	if o == nil || IsNil(o.AccountCount) {
+		var ret int32
+		return ret
+	}
+	return *o.AccountCount
+}
+
+// GetAccountCountOk returns a tuple with the AccountCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Profile) GetAccountCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.AccountCount) {
+		return nil, false
+	}
+	return o.AccountCount, true
+}
+
+// HasAccountCount returns a boolean if a field has been set.
+func (o *Profile) HasAccountCount() bool {
+	if o != nil && !IsNil(o.AccountCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountCount gets a reference to the given int32 and assigns it to the AccountCount field.
+func (o *Profile) SetAccountCount(v int32) {
+	o.AccountCount = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
 func (o *Profile) GetCreatedAt() time.Time {
 	if o == nil || IsNil(o.CreatedAt) {
@@ -383,6 +417,9 @@ func (o Profile) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsOverLimit) {
 		toSerialize["isOverLimit"] = o.IsOverLimit
+	}
+	if !IsNil(o.AccountCount) {
+		toSerialize["accountCount"] = o.AccountCount
 	}
 	if !IsNil(o.CreatedAt) {
 		toSerialize["createdAt"] = o.CreatedAt

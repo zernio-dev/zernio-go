@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.194.1
+API version: 1.195.0
 Contact: support@zernio.com
 */
 
@@ -1539,6 +1539,8 @@ type AccountsAPIListAccountsRequest struct {
 	includeOverLimit *bool
 	page             *int32
 	limit            *int32
+	profileIds       *string
+	perProfile       *int32
 }
 
 // Filter accounts by profile ID. Must be a valid ObjectId.
@@ -1574,6 +1576,18 @@ func (r AccountsAPIListAccountsRequest) Page(page int32) AccountsAPIListAccounts
 // Page size. Must be provided together with page; sending only one of the two returns 400.
 func (r AccountsAPIListAccountsRequest) Limit(limit int32) AccountsAPIListAccountsRequest {
 	r.limit = &limit
+	return r
+}
+
+// Comma-separated profile IDs (up to 50) to preview, together with perProfile. The response then also carries &#x60;profileTotals&#x60;.
+func (r AccountsAPIListAccountsRequest) ProfileIds(profileIds string) AccountsAPIListAccountsRequest {
+	r.profileIds = &profileIds
+	return r
+}
+
+// Return a preview of each profile in profileIds: the newest account of every platform it has, topped up to at least N. Requires profileIds; cannot be combined with page and limit.
+func (r AccountsAPIListAccountsRequest) PerProfile(perProfile int32) AccountsAPIListAccountsRequest {
+	r.perProfile = &perProfile
 	return r
 }
 
@@ -1641,6 +1655,12 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.profileIds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileIds", r.profileIds, "form", "")
+	}
+	if r.perProfile != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "perProfile", r.perProfile, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
