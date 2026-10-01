@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.192.0
+API version: 1.193.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the Zernio API API v1.192.0
+// APIClient manages communication with the Zernio API API v1.193.0
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -82,6 +82,8 @@ type APIClient struct {
 	BusinessAgentAPI *BusinessAgentAPIService
 
 	CallsAPI *CallsAPIService
+
+	ChangelogAPI *ChangelogAPIService
 
 	CommentAutomationsAPI *CommentAutomationsAPIService
 
@@ -233,6 +235,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.BroadcastsAPI = (*BroadcastsAPIService)(&c.common)
 	c.BusinessAgentAPI = (*BusinessAgentAPIService)(&c.common)
 	c.CallsAPI = (*CallsAPIService)(&c.common)
+	c.ChangelogAPI = (*ChangelogAPIService)(&c.common)
 	c.CommentAutomationsAPI = (*CommentAutomationsAPIService)(&c.common)
 	c.CommentsAPI = (*CommentsAPIService)(&c.common)
 	c.CommerceAPI = (*CommerceAPIService)(&c.common)
