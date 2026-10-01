@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.185.0
+API version: 1.186.0
 Contact: support@zernio.com
 */
 
@@ -39,15 +39,15 @@ type TargetingSpec struct {
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
-	// Minimum age. Applied on Meta, TikTok and Pinterest; rejected with 400 on Google, LinkedIn, X and OpenAI. Each platform clamps to its own range: Meta and Pinterest effectively cap at 65 (65 = 65+), TikTok maps up to 100. Pinterest has no under-18 bucket, so an ageMin below 18 starts at 18 there.
+	// Minimum age. Applied on Meta, TikTok, Pinterest, LinkedIn and X; rejected with 400 on Google and OpenAI. Each platform clamps to its own range: Meta and Pinterest effectively cap at 65 (65 = 65+), TikTok maps up to 100. LinkedIn rounds out to its buckets (18-24, 25-34, 35-54, 55+) and has no under-18 audience; X rounds out to the narrowest of its fixed ranges (e.g. 25-34 becomes 25-49, 18-65 becomes 18+). Pinterest has no under-18 bucket, so an ageMin below 18 starts at 18 there.
 	AgeMin *int32 `json:"ageMin,omitempty"`
 	// Maximum age. Same per-platform application and clamping as ageMin.
 	AgeMax *int32 `json:"ageMax,omitempty"`
-	// Restrict by gender. 'all' (default) targets everyone. Applied on Meta, TikTok and Pinterest; rejected with 400 on Google, LinkedIn, X and OpenAI.
+	// Restrict by gender. 'all' (default) targets everyone. Applied on Meta, TikTok, Pinterest, LinkedIn and X; rejected with 400 on Google and OpenAI.
 	Gender *string `json:"gender,omitempty"`
 	// Normalized household-income tier (ZIP/percentile based). Meta and TikTok express all four. Google maps only `top_10` (its INCOME_RANGE_90_UP); other tiers on Google, and any income tier on LinkedIn / X / Pinterest, are rejected. On Meta, income/zip targeting requires the relevant `specialAdCategories` to be unset (housing/employment/credit ads cannot use it).
 	IncomeTier *string `json:"incomeTier,omitempty"`
-	// Language codes restricting the audience by language. Applied on Meta and Google; rejected with 400 on TikTok, LinkedIn, Pinterest, X and OpenAI. On Meta, ISO 639-1 codes (e.g. ['en']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code (\"en_GB\", \"pt_BR\") for a specific one. Unknown codes are rejected.
+	// Language codes restricting the audience by language. Applied on Meta, Google, TikTok, LinkedIn and X; rejected with 400 on Pinterest and OpenAI. A code the platform cannot target returns 400 listing the ones it can. On Meta, ISO 639-1 codes (e.g. ['en']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code (\"en_GB\", \"pt_BR\") for a specific one. Unknown codes are rejected.
 	Languages []string `json:"languages,omitempty"`
 	// Interest entities from /v1/ads/targeting/search?dimension=interest. Each carries the platform's opaque id. Rejected with 400 on Google (use Demand Gen audience userInterests there) and OpenAI.
 	Interests []CreateStandaloneAdRequestBehaviorsInner `json:"interests,omitempty"`
