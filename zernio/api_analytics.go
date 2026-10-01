@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.188.0
+API version: 1.189.0
 Contact: support@zernio.com
 */
 
@@ -309,6 +309,219 @@ func (a *AnalyticsAPIService) GetAnalyticsExecute(r AnalyticsAPIGetAnalyticsRequ
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AnalyticsAPIGetAnalyticsDashboardRequest struct {
+	ctx         context.Context
+	ApiService  *AnalyticsAPIService
+	fromDate    *string
+	toDate      *string
+	profileId   *string
+	platform    *string
+	compare     *string
+	topPosts    *int32
+	recentPosts *int32
+}
+
+// First day of the window (YYYY-MM-DD, inclusive).
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) FromDate(fromDate string) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.fromDate = &fromDate
+	return r
+}
+
+// Last day of the window (YYYY-MM-DD, inclusive). May equal fromDate. The window covers at most 366 days.
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) ToDate(toDate string) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.toDate = &toDate
+	return r
+}
+
+// Profile ID, or \&quot;all\&quot; for every profile you can access.
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) ProfileId(profileId string) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Platform to cover (e.g. \&quot;instagram\&quot;), or \&quot;all\&quot;.
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) Platform(platform string) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.platform = &platform
+	return r
+}
+
+// Set to \&quot;previous_period\&quot; to also return previousTotals and previousFollowers for the window of the same length that ends the day before fromDate.
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) Compare(compare string) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.compare = &compare
+	return r
+}
+
+// How many top posts to return, ranked by engagement (likes, comments, shares and saves, the same sum as daily engagement).
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) TopPosts(topPosts int32) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.topPosts = &topPosts
+	return r
+}
+
+// How many of the most recently published posts to return.
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) RecentPosts(recentPosts int32) AnalyticsAPIGetAnalyticsDashboardRequest {
+	r.recentPosts = &recentPosts
+	return r
+}
+
+func (r AnalyticsAPIGetAnalyticsDashboardRequest) Execute() (*GetAnalyticsDashboard200Response, *http.Response, error) {
+	return r.ApiService.GetAnalyticsDashboardExecute(r)
+}
+
+/*
+GetAnalyticsDashboard Get an analytics dashboard
+
+Everything an analytics dashboard needs in one call: window totals, follower growth, a per-day series, top posts, recent posts and, optionally, the same figures for the previous period.
+Daily and total metrics use received attribution: each day holds the engagement that arrived that day, on any post, so `totals` is always the sum of `daily`.
+`topPosts` and `recentPosts` list posts published in the window with their lifetime metrics. A post cross-posted to several platforms appears once per platform.
+All dates are UTC days. Requires the Analytics add-on.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AnalyticsAPIGetAnalyticsDashboardRequest
+*/
+func (a *AnalyticsAPIService) GetAnalyticsDashboard(ctx context.Context) AnalyticsAPIGetAnalyticsDashboardRequest {
+	return AnalyticsAPIGetAnalyticsDashboardRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAnalyticsDashboard200Response
+func (a *AnalyticsAPIService) GetAnalyticsDashboardExecute(r AnalyticsAPIGetAnalyticsDashboardRequest) (*GetAnalyticsDashboard200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAnalyticsDashboard200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AnalyticsAPIService.GetAnalyticsDashboard")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/analytics/dashboard"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.fromDate == nil {
+		return localVarReturnValue, nil, reportError("fromDate is required and must be specified")
+	}
+	if r.toDate == nil {
+		return localVarReturnValue, nil, reportError("toDate is required and must be specified")
+	}
+
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	} else {
+		var defaultValue string = "all"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", defaultValue, "form", "")
+		r.profileId = &defaultValue
+	}
+	if r.platform != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	} else {
+		var defaultValue string = "all"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", defaultValue, "form", "")
+		r.platform = &defaultValue
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "fromDate", r.fromDate, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "toDate", r.toDate, "form", "")
+	if r.compare != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "compare", r.compare, "form", "")
+	}
+	if r.topPosts != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "topPosts", r.topPosts, "form", "")
+	} else {
+		var defaultValue int32 = 5
+		parameterAddToHeaderOrQuery(localVarQueryParams, "topPosts", defaultValue, "form", "")
+		r.topPosts = &defaultValue
+	}
+	if r.recentPosts != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "recentPosts", r.recentPosts, "form", "")
+	} else {
+		var defaultValue int32 = 10
+		parameterAddToHeaderOrQuery(localVarQueryParams, "recentPosts", defaultValue, "form", "")
+		r.recentPosts = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v GetYouTubeDailyViews400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

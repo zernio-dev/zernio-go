@@ -103,6 +103,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AnalyticsAPI.GetAnalytics(ctx)` | Get post analytics |
+| `client.AnalyticsAPI.GetAnalyticsDashboard(ctx)` | Get an analytics dashboard |
 | `client.AnalyticsAPI.GetAnalyticsDelta(ctx)` | Analytics changed since a cursor |
 | `client.AnalyticsAPI.GetBestTimeToPost(ctx)` | Get best times to post |
 | `client.AnalyticsAPI.GetContentDecay(ctx)` | Get content performance decay |
