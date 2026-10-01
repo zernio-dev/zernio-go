@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.191.0
+API version: 1.192.0
 Contact: support@zernio.com
 */
 
@@ -22,8 +22,12 @@ var _ MappedNullable = &SelectLinkedInOrganization200Response{}
 type SelectLinkedInOrganization200Response struct {
 	Message *string `json:"message,omitempty"`
 	// The redirect URL with connection params appended (only if redirect_url was provided in request)
-	RedirectUrl *string                                           `json:"redirect_url,omitempty"`
-	Account     *SelectLinkedInOrganization200ResponseAccount     `json:"account,omitempty"`
+	RedirectUrl *string                                       `json:"redirect_url,omitempty"`
+	Account     *SelectLinkedInOrganization200ResponseAccount `json:"account,omitempty"`
+	// selections only. The connected accounts, same shape as `account`. The redirect_url then carries `accountIds` (comma-separated) and `accountId` of the first.
+	Accounts []map[string]interface{} `json:"accounts,omitempty"`
+	// selections only. The accounts that could not be connected while the others were. `id` is the organization URN or the member id, or `selections[i]` for an entry naming neither.
+	Failed      []SelectFacebookPage200ResponseFailedInner        `json:"failed,omitempty"`
 	BulkRefresh *SelectLinkedInOrganization200ResponseBulkRefresh `json:"bulkRefresh,omitempty"`
 }
 
@@ -140,6 +144,70 @@ func (o *SelectLinkedInOrganization200Response) SetAccount(v SelectLinkedInOrgan
 	o.Account = &v
 }
 
+// GetAccounts returns the Accounts field value if set, zero value otherwise.
+func (o *SelectLinkedInOrganization200Response) GetAccounts() []map[string]interface{} {
+	if o == nil || IsNil(o.Accounts) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.Accounts
+}
+
+// GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectLinkedInOrganization200Response) GetAccountsOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Accounts) {
+		return nil, false
+	}
+	return o.Accounts, true
+}
+
+// HasAccounts returns a boolean if a field has been set.
+func (o *SelectLinkedInOrganization200Response) HasAccounts() bool {
+	if o != nil && !IsNil(o.Accounts) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccounts gets a reference to the given []map[string]interface{} and assigns it to the Accounts field.
+func (o *SelectLinkedInOrganization200Response) SetAccounts(v []map[string]interface{}) {
+	o.Accounts = v
+}
+
+// GetFailed returns the Failed field value if set, zero value otherwise.
+func (o *SelectLinkedInOrganization200Response) GetFailed() []SelectFacebookPage200ResponseFailedInner {
+	if o == nil || IsNil(o.Failed) {
+		var ret []SelectFacebookPage200ResponseFailedInner
+		return ret
+	}
+	return o.Failed
+}
+
+// GetFailedOk returns a tuple with the Failed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectLinkedInOrganization200Response) GetFailedOk() ([]SelectFacebookPage200ResponseFailedInner, bool) {
+	if o == nil || IsNil(o.Failed) {
+		return nil, false
+	}
+	return o.Failed, true
+}
+
+// HasFailed returns a boolean if a field has been set.
+func (o *SelectLinkedInOrganization200Response) HasFailed() bool {
+	if o != nil && !IsNil(o.Failed) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailed gets a reference to the given []SelectFacebookPage200ResponseFailedInner and assigns it to the Failed field.
+func (o *SelectLinkedInOrganization200Response) SetFailed(v []SelectFacebookPage200ResponseFailedInner) {
+	o.Failed = v
+}
+
 // GetBulkRefresh returns the BulkRefresh field value if set, zero value otherwise.
 func (o *SelectLinkedInOrganization200Response) GetBulkRefresh() SelectLinkedInOrganization200ResponseBulkRefresh {
 	if o == nil || IsNil(o.BulkRefresh) {
@@ -190,6 +258,12 @@ func (o SelectLinkedInOrganization200Response) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account
+	}
+	if !IsNil(o.Accounts) {
+		toSerialize["accounts"] = o.Accounts
+	}
+	if !IsNil(o.Failed) {
+		toSerialize["failed"] = o.Failed
 	}
 	if !IsNil(o.BulkRefresh) {
 		toSerialize["bulkRefresh"] = o.BulkRefresh

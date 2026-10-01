@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.191.0
+API version: 1.192.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,13 @@ var _ MappedNullable = &SelectLinkedInOrganizationRequest{}
 
 // SelectLinkedInOrganizationRequest struct for SelectLinkedInOrganizationRequest
 type SelectLinkedInOrganizationRequest struct {
-	ProfileId            string                                                 `json:"profileId"`
-	TempToken            string                                                 `json:"tempToken"`
-	UserProfile          map[string]interface{}                                 `json:"userProfile"`
-	AccountType          string                                                 `json:"accountType"`
+	ProfileId   string                 `json:"profileId"`
+	TempToken   string                 `json:"tempToken"`
+	UserProfile map[string]interface{} `json:"userProfile"`
+	// Send this (with selectedOrganization for an organization) or selections, not both.
+	AccountType *string `json:"accountType,omitempty"`
+	// Several accounts to connect from one sign-in (yourself and/or organizations), each as its own account. With two or more entries the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 while a profile holds one LinkedIn account and on a reconnect or an ads connect. A single entry behaves exactly like accountType.
+	Selections           []SelectLinkedInOrganizationRequestSelectionsInner     `json:"selections,omitempty"`
 	SelectedOrganization *SelectLinkedInOrganizationRequestSelectedOrganization `json:"selectedOrganization,omitempty"`
 	RedirectUrl          *string                                                `json:"redirect_url,omitempty"`
 }
@@ -36,12 +39,11 @@ type _SelectLinkedInOrganizationRequest SelectLinkedInOrganizationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSelectLinkedInOrganizationRequest(profileId string, tempToken string, userProfile map[string]interface{}, accountType string) *SelectLinkedInOrganizationRequest {
+func NewSelectLinkedInOrganizationRequest(profileId string, tempToken string, userProfile map[string]interface{}) *SelectLinkedInOrganizationRequest {
 	this := SelectLinkedInOrganizationRequest{}
 	this.ProfileId = profileId
 	this.TempToken = tempToken
 	this.UserProfile = userProfile
-	this.AccountType = accountType
 	return &this
 }
 
@@ -125,28 +127,68 @@ func (o *SelectLinkedInOrganizationRequest) SetUserProfile(v map[string]interfac
 	o.UserProfile = v
 }
 
-// GetAccountType returns the AccountType field value
+// GetAccountType returns the AccountType field value if set, zero value otherwise.
 func (o *SelectLinkedInOrganizationRequest) GetAccountType() string {
-	if o == nil {
+	if o == nil || IsNil(o.AccountType) {
 		var ret string
 		return ret
 	}
-
-	return o.AccountType
+	return *o.AccountType
 }
 
-// GetAccountTypeOk returns a tuple with the AccountType field value
+// GetAccountTypeOk returns a tuple with the AccountType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SelectLinkedInOrganizationRequest) GetAccountTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.AccountType) {
 		return nil, false
 	}
-	return &o.AccountType, true
+	return o.AccountType, true
 }
 
-// SetAccountType sets field value
+// HasAccountType returns a boolean if a field has been set.
+func (o *SelectLinkedInOrganizationRequest) HasAccountType() bool {
+	if o != nil && !IsNil(o.AccountType) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountType gets a reference to the given string and assigns it to the AccountType field.
 func (o *SelectLinkedInOrganizationRequest) SetAccountType(v string) {
-	o.AccountType = v
+	o.AccountType = &v
+}
+
+// GetSelections returns the Selections field value if set, zero value otherwise.
+func (o *SelectLinkedInOrganizationRequest) GetSelections() []SelectLinkedInOrganizationRequestSelectionsInner {
+	if o == nil || IsNil(o.Selections) {
+		var ret []SelectLinkedInOrganizationRequestSelectionsInner
+		return ret
+	}
+	return o.Selections
+}
+
+// GetSelectionsOk returns a tuple with the Selections field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectLinkedInOrganizationRequest) GetSelectionsOk() ([]SelectLinkedInOrganizationRequestSelectionsInner, bool) {
+	if o == nil || IsNil(o.Selections) {
+		return nil, false
+	}
+	return o.Selections, true
+}
+
+// HasSelections returns a boolean if a field has been set.
+func (o *SelectLinkedInOrganizationRequest) HasSelections() bool {
+	if o != nil && !IsNil(o.Selections) {
+		return true
+	}
+
+	return false
+}
+
+// SetSelections gets a reference to the given []SelectLinkedInOrganizationRequestSelectionsInner and assigns it to the Selections field.
+func (o *SelectLinkedInOrganizationRequest) SetSelections(v []SelectLinkedInOrganizationRequestSelectionsInner) {
+	o.Selections = v
 }
 
 // GetSelectedOrganization returns the SelectedOrganization field value if set, zero value otherwise.
@@ -226,7 +268,12 @@ func (o SelectLinkedInOrganizationRequest) ToMap() (map[string]interface{}, erro
 	toSerialize["profileId"] = o.ProfileId
 	toSerialize["tempToken"] = o.TempToken
 	toSerialize["userProfile"] = o.UserProfile
-	toSerialize["accountType"] = o.AccountType
+	if !IsNil(o.AccountType) {
+		toSerialize["accountType"] = o.AccountType
+	}
+	if !IsNil(o.Selections) {
+		toSerialize["selections"] = o.Selections
+	}
 	if !IsNil(o.SelectedOrganization) {
 		toSerialize["selectedOrganization"] = o.SelectedOrganization
 	}
@@ -244,7 +291,6 @@ func (o *SelectLinkedInOrganizationRequest) UnmarshalJSON(data []byte) (err erro
 		"profileId",
 		"tempToken",
 		"userProfile",
-		"accountType",
 	}
 
 	allProperties := make(map[string]interface{})
