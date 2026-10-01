@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.195.0
+API version: 1.196.0
 Contact: support@zernio.com
 */
 
@@ -43,7 +43,7 @@ func (r ConnectAPIAssignGoogleBusinessLocationRequest) Execute() (*AssignGoogleB
 /*
 AssignGoogleBusinessLocation Assign Google Business Profile location to another profile
 
-Connect a Google Business Profile location onto a DIFFERENT profile by reusing the OAuth grant from an already-connected Google Business Profile account, with no browser and no re-authorization. Built for agencies whose single Google account has manager access to many client locations and who run one profile per client: connect one location the normal way (browser OAuth), then bulk-assign the rest onto each client's profile via this endpoint. The path `accountId` is a SOURCE connected Google Business Profile account (the token holder); the body `profileId` is the TARGET profile. Returns 409 if the target profile already has a Google Business Profile connection (switch its location with PUT gmb-locations instead).
+Connect a Google Business Profile location onto a DIFFERENT profile by reusing the OAuth grant from an already-connected Google Business Profile account, with no browser and no re-authorization. Built for agencies whose single Google account has manager access to many client locations and who run one profile per client: connect one location the normal way (browser OAuth), then bulk-assign the rest onto each client's profile via this endpoint. The path `accountId` is a SOURCE connected Google Business Profile account (the token holder); the body `profileId` is the TARGET profile, which may already hold other locations; assigning a location it already holds refreshes that account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId A source connected Google Business Profile account whose OAuth grant is reused.
@@ -2430,7 +2430,7 @@ func (r ConnectAPIGetConnectUrlRequest) ProfileId(profileId string) ConnectAPIGe
 	return r
 }
 
-// Refresh this existing account (a Zernio account id of the same platform on this profile; otherwise 400). The OAuth callback and the selection endpoints (select-page, select-organization, select-board, select-location, Instagram and Snapchat selection) refuse, with &#x60;reconnect_account_mismatch&#x60;, a login that would write to a different account of the platform on this profile instead of this one. While a profile holds one account per platform the login still replaces this account as before. In headless mode the marker travels in the redirect_url we hand you, so pass that URL back unchanged to the selection endpoint. On X it counts toward the OAuth state limit described under redirect_url.
+// Refresh this existing account (a Zernio account id of the same platform on this profile; otherwise 400). The OAuth callback and the selection endpoints (select-page, select-organization, select-board, select-location, Instagram and Snapchat selection) refuse, with &#x60;reconnect_account_mismatch&#x60;, a login that would write to a different account of the platform on this profile instead of this one. In headless mode the marker travels in the redirect_url we hand you, so pass that URL back unchanged to the selection endpoint. On X it counts toward the OAuth state limit described under redirect_url.
 func (r ConnectAPIGetConnectUrlRequest) ReconnectAccountId(reconnectAccountId string) ConnectAPIGetConnectUrlRequest {
 	r.reconnectAccountId = &reconnectAccountId
 	return r
@@ -2500,12 +2500,12 @@ GetConnectUrl Get OAuth connect URL
 Initiate an OAuth connection flow. Returns an authUrl to redirect the user to.
 Standard flow: Zernio hosts the selection UI, then redirects to your redirect_url. Headless mode (headless=true): user is redirected to your redirect_url with OAuth data for custom UI. Use the platform-specific selection endpoints to complete.
 
-TikTok: every connection now goes through the TikTok for Business app. One TikTok account per
-profile, so connecting on a profile that already holds one replaces it. Reconnecting the SAME
-account keeps it and all of its history; authorizing a DIFFERENT TikTok account takes the slot
-over and permanently deletes the previous account's analytics, inbox and DM history. The two
-are told apart by the `@handle` stored at the last connect, so an account whose handle has
-been renamed on TikTok since then reads as a different account. An authorization that leaves
+A profile can hold several accounts of the same platform: connecting a different account adds
+it as a new account, and reconnecting the SAME account keeps it and all of its history. Ads
+connections stay one per profile. On a legacy plan limited to N profiles, a new account is
+refused with 403 `platform_account_limit` once N accounts of its platform are connected.
+
+TikTok: every connection now goes through the TikTok for Business app. An authorization that leaves
 out a permission the connected account needs changes nothing at all and comes back as
 `missing_tiktok_permissions`; connect again and accept every permission on TikTok's screen.
 
@@ -6645,7 +6645,7 @@ SelectInstagramAccount Select the Page whose Instagram account to connect
 
 Saves the selected Page as an Instagram account connected via Facebook Login. The Page access token becomes the account's access token, so every Instagram call for it runs against the Facebook Graph host.
 
-One Instagram account per profile: if the profile already has an Instagram account, this replaces it, and picking a different Instagram identity purges the previous account's conversations, external posts and stats.
+A different Instagram account is added next to any already connected on the profile; picking one already connected refreshes it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPISelectInstagramAccountRequest

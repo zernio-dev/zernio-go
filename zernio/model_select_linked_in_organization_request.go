@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.195.0
+API version: 1.196.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,7 @@ type SelectLinkedInOrganizationRequest struct {
 	UserProfile map[string]interface{} `json:"userProfile"`
 	// Send this (with selectedOrganization for an organization) or selections, not both.
 	AccountType *string `json:"accountType,omitempty"`
-	// Several accounts to connect from one sign-in (yourself and/or organizations), each as its own account. With two or more entries the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 while a profile holds one LinkedIn account and on a reconnect or an ads connect. A single entry behaves exactly like accountType.
+	// Several accounts to connect from one sign-in (yourself and/or organizations), each as its own account. With two or more entries the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 on a reconnect or an ads connect. A single entry behaves exactly like accountType.
 	Selections           []SelectLinkedInOrganizationRequestSelectionsInner     `json:"selections,omitempty"`
 	SelectedOrganization *SelectLinkedInOrganizationRequestSelectedOrganization `json:"selectedOrganization,omitempty"`
 	RedirectUrl          *string                                                `json:"redirect_url,omitempty"`
