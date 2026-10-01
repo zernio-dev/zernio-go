@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.190.0
+API version: 1.191.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ var _ MappedNullable = &SelectFacebookPageRequestOneOf{}
 type SelectFacebookPageRequestOneOf struct {
 	// Profile ID from your classic connection flow.
 	ProfileId string `json:"profileId"`
-	// The Facebook Page ID selected by the user.
-	PageId string `json:"pageId"`
+	// The Facebook Page ID selected by the user. Send this or pageIds, not both.
+	PageId *string `json:"pageId,omitempty"`
+	// Several Page IDs to connect from one sign-in, each as its own account. With two or more distinct IDs the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 while a profile holds one Facebook account and on a reconnect or an ads connect, which pick exactly one Page. A single distinct ID behaves exactly like pageId.
+	PageIds []string `json:"pageIds,omitempty"`
 	// Temporary Facebook access token from OAuth.
 	TempToken   string                                    `json:"tempToken"`
 	UserProfile SelectFacebookPageRequestOneOfUserProfile `json:"userProfile"`
@@ -39,10 +41,9 @@ type _SelectFacebookPageRequestOneOf SelectFacebookPageRequestOneOf
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSelectFacebookPageRequestOneOf(profileId string, pageId string, tempToken string, userProfile SelectFacebookPageRequestOneOfUserProfile) *SelectFacebookPageRequestOneOf {
+func NewSelectFacebookPageRequestOneOf(profileId string, tempToken string, userProfile SelectFacebookPageRequestOneOfUserProfile) *SelectFacebookPageRequestOneOf {
 	this := SelectFacebookPageRequestOneOf{}
 	this.ProfileId = profileId
-	this.PageId = pageId
 	this.TempToken = tempToken
 	this.UserProfile = userProfile
 	return &this
@@ -80,28 +81,68 @@ func (o *SelectFacebookPageRequestOneOf) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
-// GetPageId returns the PageId field value
+// GetPageId returns the PageId field value if set, zero value otherwise.
 func (o *SelectFacebookPageRequestOneOf) GetPageId() string {
-	if o == nil {
+	if o == nil || IsNil(o.PageId) {
 		var ret string
 		return ret
 	}
-
-	return o.PageId
+	return *o.PageId
 }
 
-// GetPageIdOk returns a tuple with the PageId field value
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SelectFacebookPageRequestOneOf) GetPageIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PageId) {
 		return nil, false
 	}
-	return &o.PageId, true
+	return o.PageId, true
 }
 
-// SetPageId sets field value
+// HasPageId returns a boolean if a field has been set.
+func (o *SelectFacebookPageRequestOneOf) HasPageId() bool {
+	if o != nil && !IsNil(o.PageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given string and assigns it to the PageId field.
 func (o *SelectFacebookPageRequestOneOf) SetPageId(v string) {
-	o.PageId = v
+	o.PageId = &v
+}
+
+// GetPageIds returns the PageIds field value if set, zero value otherwise.
+func (o *SelectFacebookPageRequestOneOf) GetPageIds() []string {
+	if o == nil || IsNil(o.PageIds) {
+		var ret []string
+		return ret
+	}
+	return o.PageIds
+}
+
+// GetPageIdsOk returns a tuple with the PageIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectFacebookPageRequestOneOf) GetPageIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.PageIds) {
+		return nil, false
+	}
+	return o.PageIds, true
+}
+
+// HasPageIds returns a boolean if a field has been set.
+func (o *SelectFacebookPageRequestOneOf) HasPageIds() bool {
+	if o != nil && !IsNil(o.PageIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageIds gets a reference to the given []string and assigns it to the PageIds field.
+func (o *SelectFacebookPageRequestOneOf) SetPageIds(v []string) {
+	o.PageIds = v
 }
 
 // GetTempToken returns the TempToken field value
@@ -195,7 +236,12 @@ func (o SelectFacebookPageRequestOneOf) MarshalJSON() ([]byte, error) {
 func (o SelectFacebookPageRequestOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
-	toSerialize["pageId"] = o.PageId
+	if !IsNil(o.PageId) {
+		toSerialize["pageId"] = o.PageId
+	}
+	if !IsNil(o.PageIds) {
+		toSerialize["pageIds"] = o.PageIds
+	}
 	toSerialize["tempToken"] = o.TempToken
 	toSerialize["userProfile"] = o.UserProfile
 	if !IsNil(o.RedirectUrl) {
@@ -210,7 +256,6 @@ func (o *SelectFacebookPageRequestOneOf) UnmarshalJSON(data []byte) (err error) 
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"profileId",
-		"pageId",
 		"tempToken",
 		"userProfile",
 	}

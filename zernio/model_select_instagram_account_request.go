@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.190.0
+API version: 1.191.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ var _ MappedNullable = &SelectInstagramAccountRequest{}
 type SelectInstagramAccountRequest struct {
 	// Profile ID from your connection flow
 	ProfileId string `json:"profileId"`
-	// The Facebook Page ID selected by the user, from GET /v1/connect/instagram/select-account
-	PageId string `json:"pageId"`
+	// The Facebook Page ID selected by the user, from GET /v1/connect/instagram/select-account. Send this or pageIds, not both.
+	PageId *string `json:"pageId,omitempty"`
+	// Several Page IDs whose linked Instagram accounts to connect from one sign-in, each as its own account. With two or more distinct IDs the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 while a profile holds one Instagram account and on a reconnect or an ads connect. A single distinct ID behaves exactly like pageId.
+	PageIds []string `json:"pageIds,omitempty"`
 	// Long-lived Facebook user access token from the OAuth callback redirect
 	TempToken string `json:"tempToken"`
 	// Optional custom redirect URL to return to after selection
@@ -38,10 +40,9 @@ type _SelectInstagramAccountRequest SelectInstagramAccountRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSelectInstagramAccountRequest(profileId string, pageId string, tempToken string) *SelectInstagramAccountRequest {
+func NewSelectInstagramAccountRequest(profileId string, tempToken string) *SelectInstagramAccountRequest {
 	this := SelectInstagramAccountRequest{}
 	this.ProfileId = profileId
-	this.PageId = pageId
 	this.TempToken = tempToken
 	return &this
 }
@@ -78,28 +79,68 @@ func (o *SelectInstagramAccountRequest) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
-// GetPageId returns the PageId field value
+// GetPageId returns the PageId field value if set, zero value otherwise.
 func (o *SelectInstagramAccountRequest) GetPageId() string {
-	if o == nil {
+	if o == nil || IsNil(o.PageId) {
 		var ret string
 		return ret
 	}
-
-	return o.PageId
+	return *o.PageId
 }
 
-// GetPageIdOk returns a tuple with the PageId field value
+// GetPageIdOk returns a tuple with the PageId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SelectInstagramAccountRequest) GetPageIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.PageId) {
 		return nil, false
 	}
-	return &o.PageId, true
+	return o.PageId, true
 }
 
-// SetPageId sets field value
+// HasPageId returns a boolean if a field has been set.
+func (o *SelectInstagramAccountRequest) HasPageId() bool {
+	if o != nil && !IsNil(o.PageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageId gets a reference to the given string and assigns it to the PageId field.
 func (o *SelectInstagramAccountRequest) SetPageId(v string) {
-	o.PageId = v
+	o.PageId = &v
+}
+
+// GetPageIds returns the PageIds field value if set, zero value otherwise.
+func (o *SelectInstagramAccountRequest) GetPageIds() []string {
+	if o == nil || IsNil(o.PageIds) {
+		var ret []string
+		return ret
+	}
+	return o.PageIds
+}
+
+// GetPageIdsOk returns a tuple with the PageIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectInstagramAccountRequest) GetPageIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.PageIds) {
+		return nil, false
+	}
+	return o.PageIds, true
+}
+
+// HasPageIds returns a boolean if a field has been set.
+func (o *SelectInstagramAccountRequest) HasPageIds() bool {
+	if o != nil && !IsNil(o.PageIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetPageIds gets a reference to the given []string and assigns it to the PageIds field.
+func (o *SelectInstagramAccountRequest) SetPageIds(v []string) {
+	o.PageIds = v
 }
 
 // GetTempToken returns the TempToken field value
@@ -169,7 +210,12 @@ func (o SelectInstagramAccountRequest) MarshalJSON() ([]byte, error) {
 func (o SelectInstagramAccountRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
-	toSerialize["pageId"] = o.PageId
+	if !IsNil(o.PageId) {
+		toSerialize["pageId"] = o.PageId
+	}
+	if !IsNil(o.PageIds) {
+		toSerialize["pageIds"] = o.PageIds
+	}
 	toSerialize["tempToken"] = o.TempToken
 	if !IsNil(o.RedirectUrl) {
 		toSerialize["redirect_url"] = o.RedirectUrl
@@ -183,7 +229,6 @@ func (o *SelectInstagramAccountRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"profileId",
-		"pageId",
 		"tempToken",
 	}
 
