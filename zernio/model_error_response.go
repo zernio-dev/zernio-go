@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.198.0
+API version: 1.199.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type ErrorResponse struct {
 	Code *string `json:"code,omitempty"`
 	// The request field that caused the error, when applicable.
 	Param *string `json:"param,omitempty"`
+	// Documentation page for resolving the error, when one applies.
+	DocUrl *string `json:"docUrl,omitempty"`
 	// Upstream platform (e.g. meta, google, tiktok), present when type is platform_error.
 	Platform *string `json:"platform,omitempty"`
 	// Raw error payload from the upstream platform, passed through verbatim so integrators can read provider-specific codes. For Meta this includes error_subcode, error_user_title, and error_user_msg.
@@ -180,6 +182,38 @@ func (o *ErrorResponse) SetParam(v string) {
 	o.Param = &v
 }
 
+// GetDocUrl returns the DocUrl field value if set, zero value otherwise.
+func (o *ErrorResponse) GetDocUrl() string {
+	if o == nil || IsNil(o.DocUrl) {
+		var ret string
+		return ret
+	}
+	return *o.DocUrl
+}
+
+// GetDocUrlOk returns a tuple with the DocUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorResponse) GetDocUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.DocUrl) {
+		return nil, false
+	}
+	return o.DocUrl, true
+}
+
+// HasDocUrl returns a boolean if a field has been set.
+func (o *ErrorResponse) HasDocUrl() bool {
+	if o != nil && !IsNil(o.DocUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetDocUrl gets a reference to the given string and assigns it to the DocUrl field.
+func (o *ErrorResponse) SetDocUrl(v string) {
+	o.DocUrl = &v
+}
+
 // GetPlatform returns the Platform field value if set, zero value otherwise.
 func (o *ErrorResponse) GetPlatform() string {
 	if o == nil || IsNil(o.Platform) {
@@ -297,6 +331,9 @@ func (o ErrorResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Param) {
 		toSerialize["param"] = o.Param
+	}
+	if !IsNil(o.DocUrl) {
+		toSerialize["docUrl"] = o.DocUrl
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
