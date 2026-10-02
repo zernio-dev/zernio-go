@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.196.1
+API version: 1.196.2
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type CampaignAnalyticsResponseCampaign struct {
 	Id       *string        `json:"id,omitempty"`
 	Name     NullableString `json:"name,omitempty"`
 	Platform *string        `json:"platform,omitempty"`
-	// Effective campaign status (ACTIVE when any child ad is active).
+	// The platform's own campaign status in its vocabulary (Google ENABLED / PAUSED / REMOVED, Meta ACTIVE / PAUSED, ...), the same value as platformCampaignStatus on /v1/ads/campaigns and /v1/ads/tree. For a campaign synced before that value was stored it falls back to an active child ad's status, else the newest ad's.
 	Status NullableString `json:"status,omitempty"`
 	// Google only. Latest synced campaign budget, or null before sync.
 	Budget NullableAdCampaignBudget `json:"budget,omitempty"`
