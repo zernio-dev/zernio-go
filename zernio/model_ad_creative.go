@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.196.2
+API version: 1.197.0
 Contact: support@zernio.com
 */
 
@@ -68,6 +68,8 @@ type AdCreative struct {
 	GoogleHeadline *string `json:"googleHeadline,omitempty"`
 	// Google Ads description
 	GoogleDescription *string `json:"googleDescription,omitempty"`
+	// Google only. YouTube video ids behind a Video campaign ad (video and responsive video ads) or a Demand Gen video ad, same id as `youtubeVideoId` on Performance Max asset groups. When the ad has no image, `thumbnailUrl` is the first video's YouTube thumbnail. Absent on ads without a video.
+	YoutubeVideoIds []string `json:"youtubeVideoIds,omitempty"`
 	// Destination URL
 	LinkUrl *string `json:"linkUrl,omitempty"`
 	// Explicit E.164 WhatsApp number supplied when creating a Meta boost or messaging ad. Absent when omitted by the caller or on older records.
@@ -994,6 +996,38 @@ func (o *AdCreative) SetGoogleDescription(v string) {
 	o.GoogleDescription = &v
 }
 
+// GetYoutubeVideoIds returns the YoutubeVideoIds field value if set, zero value otherwise.
+func (o *AdCreative) GetYoutubeVideoIds() []string {
+	if o == nil || IsNil(o.YoutubeVideoIds) {
+		var ret []string
+		return ret
+	}
+	return o.YoutubeVideoIds
+}
+
+// GetYoutubeVideoIdsOk returns a tuple with the YoutubeVideoIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetYoutubeVideoIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.YoutubeVideoIds) {
+		return nil, false
+	}
+	return o.YoutubeVideoIds, true
+}
+
+// HasYoutubeVideoIds returns a boolean if a field has been set.
+func (o *AdCreative) HasYoutubeVideoIds() bool {
+	if o != nil && !IsNil(o.YoutubeVideoIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetYoutubeVideoIds gets a reference to the given []string and assigns it to the YoutubeVideoIds field.
+func (o *AdCreative) SetYoutubeVideoIds(v []string) {
+	o.YoutubeVideoIds = v
+}
+
 // GetLinkUrl returns the LinkUrl field value if set, zero value otherwise.
 func (o *AdCreative) GetLinkUrl() string {
 	if o == nil || IsNil(o.LinkUrl) {
@@ -1235,6 +1269,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.GoogleDescription) {
 		toSerialize["googleDescription"] = o.GoogleDescription
+	}
+	if !IsNil(o.YoutubeVideoIds) {
+		toSerialize["youtubeVideoIds"] = o.YoutubeVideoIds
 	}
 	if !IsNil(o.LinkUrl) {
 		toSerialize["linkUrl"] = o.LinkUrl
