@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.201.0
+API version: 1.201.1
 Contact: support@zernio.com
 */
 
@@ -1645,7 +1645,8 @@ already own). Activation is asynchronous (minutes to a few hours):
 the response is 202 with the lifecycle object; poll
 GET /v1/imessage/senders/{senderId} or subscribe to the
 account.connected webhook. Billing starts at activation (monthly per
-sender, no proration). Requires usage-based billing and a valid
+sender, no proration); when the account spend threshold is below the
+sender price, the first month is charged before the number is bought. Requires usage-based billing and a valid
 payment method. Pass purchaseIntentId to make retries idempotent —
 the provider-side order is never retried automatically. Ordered phone
 senders include SMS/RCS fallback with call forwarding and the ability
