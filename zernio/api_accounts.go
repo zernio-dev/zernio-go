@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.200.0
+API version: 1.201.0
 Contact: support@zernio.com
 */
 
@@ -1536,6 +1536,10 @@ type AccountsAPIListAccountsRequest struct {
 	profileId        *string
 	platform         *string
 	status           *string
+	search           *string
+	category         *string
+	sort             *string
+	order            *string
 	includeOverLimit *bool
 	page             *int32
 	limit            *int32
@@ -1558,6 +1562,30 @@ func (r AccountsAPIListAccountsRequest) Platform(platform string) AccountsAPILis
 // Filter accounts by connection status. &#x60;connected&#x60; returns healthy accounts; &#x60;disconnected&#x60; returns accounts that need reconnection (per the same reconnection check surfaced in the dashboard). Omit to return accounts in any status. When combined with page/limit, pagination totals reflect the filtered result set.
 func (r AccountsAPIListAccountsRequest) Status(status string) AccountsAPIListAccountsRequest {
 	r.status = &status
+	return r
+}
+
+// Case-insensitive match on the account username, display name or platform user id, or an exact account id. Combine with page/limit to paginate the matches.
+func (r AccountsAPIListAccountsRequest) Search(search string) AccountsAPIListAccountsRequest {
+	r.search = &search
+	return r
+}
+
+// Only accounts of this kind. ads &#x3D; ad accounts (Meta, Google, LinkedIn, Pinterest, TikTok, X, OpenAI), communication &#x3D; WhatsApp, Telegram, Discord, Slack and iMessage, blogs &#x3D; Shopify and WordPress, social &#x3D; every other platform.
+func (r AccountsAPIListAccountsRequest) Category(category string) AccountsAPIListAccountsRequest {
+	r.category = &category
+	return r
+}
+
+// Sort a paginated listing (page/limit) by account name, platform, profile name, status (accounts needing a reconnect first when ascending) or connection date. Ties keep the default order: platform, then newest first.
+func (r AccountsAPIListAccountsRequest) Sort(sort string) AccountsAPIListAccountsRequest {
+	r.sort = &sort
+	return r
+}
+
+// Direction for &#x60;sort&#x60;.
+func (r AccountsAPIListAccountsRequest) Order(order string) AccountsAPIListAccountsRequest {
+	r.order = &order
 	return r
 }
 
@@ -1642,6 +1670,22 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 	}
 	if r.status != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	if r.search != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
+	}
+	if r.category != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "category", r.category, "form", "")
+	}
+	if r.sort != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sort", r.sort, "form", "")
+	}
+	if r.order != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "order", r.order, "form", "")
+	} else {
+		var defaultValue string = "asc"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "order", defaultValue, "form", "")
+		r.order = &defaultValue
 	}
 	if r.includeOverLimit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeOverLimit", r.includeOverLimit, "form", "")
