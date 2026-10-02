@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.201.1
+API version: 1.202.0
 Contact: support@zernio.com
 */
 
@@ -23,8 +23,12 @@ var _ MappedNullable = &ConnectSlackChannelRequest{}
 // ConnectSlackChannelRequest struct for ConnectSlackChannelRequest
 type ConnectSlackChannelRequest struct {
 	ProfileId string `json:"profileId"`
-	// Slack channel id, C... or G...
-	ChannelId string `json:"channelId"`
+	// Slack channel id, C... or G.... Send this or channelIds, not both.
+	ChannelId *string `json:"channelId,omitempty"`
+	// Several channels of the workspace to connect, each as its own account. With two or more distinct ids the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 on a reconnect. A single id behaves exactly like channelId.
+	ChannelIds []string `json:"channelIds,omitempty"`
+	// channelIds only: a URL to return in `redirect_url`, with `connected`, `profileId`, `accountId` and `accountIds` appended.
+	RedirectUrl *string `json:"redirect_url,omitempty"`
 	// Nonce from the OAuth redirect. Required unless accountId is sent.
 	PendingDataToken *string `json:"pendingDataToken,omitempty"`
 	// Existing Slack account whose workspace token is reused. Required unless pendingDataToken is sent.
@@ -37,10 +41,9 @@ type _ConnectSlackChannelRequest ConnectSlackChannelRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConnectSlackChannelRequest(profileId string, channelId string) *ConnectSlackChannelRequest {
+func NewConnectSlackChannelRequest(profileId string) *ConnectSlackChannelRequest {
 	this := ConnectSlackChannelRequest{}
 	this.ProfileId = profileId
-	this.ChannelId = channelId
 	return &this
 }
 
@@ -76,28 +79,100 @@ func (o *ConnectSlackChannelRequest) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
-// GetChannelId returns the ChannelId field value
+// GetChannelId returns the ChannelId field value if set, zero value otherwise.
 func (o *ConnectSlackChannelRequest) GetChannelId() string {
-	if o == nil {
+	if o == nil || IsNil(o.ChannelId) {
 		var ret string
 		return ret
 	}
-
-	return o.ChannelId
+	return *o.ChannelId
 }
 
-// GetChannelIdOk returns a tuple with the ChannelId field value
+// GetChannelIdOk returns a tuple with the ChannelId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectSlackChannelRequest) GetChannelIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ChannelId) {
 		return nil, false
 	}
-	return &o.ChannelId, true
+	return o.ChannelId, true
 }
 
-// SetChannelId sets field value
+// HasChannelId returns a boolean if a field has been set.
+func (o *ConnectSlackChannelRequest) HasChannelId() bool {
+	if o != nil && !IsNil(o.ChannelId) {
+		return true
+	}
+
+	return false
+}
+
+// SetChannelId gets a reference to the given string and assigns it to the ChannelId field.
 func (o *ConnectSlackChannelRequest) SetChannelId(v string) {
-	o.ChannelId = v
+	o.ChannelId = &v
+}
+
+// GetChannelIds returns the ChannelIds field value if set, zero value otherwise.
+func (o *ConnectSlackChannelRequest) GetChannelIds() []string {
+	if o == nil || IsNil(o.ChannelIds) {
+		var ret []string
+		return ret
+	}
+	return o.ChannelIds
+}
+
+// GetChannelIdsOk returns a tuple with the ChannelIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectSlackChannelRequest) GetChannelIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ChannelIds) {
+		return nil, false
+	}
+	return o.ChannelIds, true
+}
+
+// HasChannelIds returns a boolean if a field has been set.
+func (o *ConnectSlackChannelRequest) HasChannelIds() bool {
+	if o != nil && !IsNil(o.ChannelIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetChannelIds gets a reference to the given []string and assigns it to the ChannelIds field.
+func (o *ConnectSlackChannelRequest) SetChannelIds(v []string) {
+	o.ChannelIds = v
+}
+
+// GetRedirectUrl returns the RedirectUrl field value if set, zero value otherwise.
+func (o *ConnectSlackChannelRequest) GetRedirectUrl() string {
+	if o == nil || IsNil(o.RedirectUrl) {
+		var ret string
+		return ret
+	}
+	return *o.RedirectUrl
+}
+
+// GetRedirectUrlOk returns a tuple with the RedirectUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConnectSlackChannelRequest) GetRedirectUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.RedirectUrl) {
+		return nil, false
+	}
+	return o.RedirectUrl, true
+}
+
+// HasRedirectUrl returns a boolean if a field has been set.
+func (o *ConnectSlackChannelRequest) HasRedirectUrl() bool {
+	if o != nil && !IsNil(o.RedirectUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetRedirectUrl gets a reference to the given string and assigns it to the RedirectUrl field.
+func (o *ConnectSlackChannelRequest) SetRedirectUrl(v string) {
+	o.RedirectUrl = &v
 }
 
 // GetPendingDataToken returns the PendingDataToken field value if set, zero value otherwise.
@@ -175,7 +250,15 @@ func (o ConnectSlackChannelRequest) MarshalJSON() ([]byte, error) {
 func (o ConnectSlackChannelRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
-	toSerialize["channelId"] = o.ChannelId
+	if !IsNil(o.ChannelId) {
+		toSerialize["channelId"] = o.ChannelId
+	}
+	if !IsNil(o.ChannelIds) {
+		toSerialize["channelIds"] = o.ChannelIds
+	}
+	if !IsNil(o.RedirectUrl) {
+		toSerialize["redirect_url"] = o.RedirectUrl
+	}
 	if !IsNil(o.PendingDataToken) {
 		toSerialize["pendingDataToken"] = o.PendingDataToken
 	}
@@ -191,7 +274,6 @@ func (o *ConnectSlackChannelRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"profileId",
-		"channelId",
 	}
 
 	allProperties := make(map[string]interface{})

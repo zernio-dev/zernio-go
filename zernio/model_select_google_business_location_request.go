@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.201.1
+API version: 1.202.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,10 @@ var _ MappedNullable = &SelectGoogleBusinessLocationRequest{}
 type SelectGoogleBusinessLocationRequest struct {
 	// Profile ID from your connection flow
 	ProfileId string `json:"profileId"`
-	// The Google Business Profile location ID selected by the user
-	LocationId string `json:"locationId"`
+	// The Google Business Profile location ID selected by the user. Send this or locations, not both.
+	LocationId *string `json:"locationId,omitempty"`
+	// Several locations to connect from one sign-in, each as its own account. The sign-in is used once for the whole batch and handed back only if none connected. With two or more distinct locations the response lists `accounts` and `failed` instead of `account`, and the request is refused with 400 on a reconnect. A single location behaves exactly like locationId.
+	Locations []SelectGoogleBusinessLocationRequestLocationsInner `json:"locations,omitempty"`
 	// Optional but recommended. The Google Business Profile Account resource name (\"accounts/123\") that owns the selected location (returned per-location by GET /v1/connect/googlebusiness/locations). When provided, the location is resolved directly instead of by enumerating the account, which is required for accounts that own many locations. Omit only for small accounts.
 	AccountId *string `json:"accountId,omitempty"`
 	// Token from the OAuth callback redirect (pendingDataToken query param). Tokens and profile data are retrieved server-side from this token.
@@ -40,10 +42,9 @@ type _SelectGoogleBusinessLocationRequest SelectGoogleBusinessLocationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSelectGoogleBusinessLocationRequest(profileId string, locationId string, pendingDataToken string) *SelectGoogleBusinessLocationRequest {
+func NewSelectGoogleBusinessLocationRequest(profileId string, pendingDataToken string) *SelectGoogleBusinessLocationRequest {
 	this := SelectGoogleBusinessLocationRequest{}
 	this.ProfileId = profileId
-	this.LocationId = locationId
 	this.PendingDataToken = pendingDataToken
 	return &this
 }
@@ -80,28 +81,68 @@ func (o *SelectGoogleBusinessLocationRequest) SetProfileId(v string) {
 	o.ProfileId = v
 }
 
-// GetLocationId returns the LocationId field value
+// GetLocationId returns the LocationId field value if set, zero value otherwise.
 func (o *SelectGoogleBusinessLocationRequest) GetLocationId() string {
-	if o == nil {
+	if o == nil || IsNil(o.LocationId) {
 		var ret string
 		return ret
 	}
-
-	return o.LocationId
+	return *o.LocationId
 }
 
-// GetLocationIdOk returns a tuple with the LocationId field value
+// GetLocationIdOk returns a tuple with the LocationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SelectGoogleBusinessLocationRequest) GetLocationIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.LocationId) {
 		return nil, false
 	}
-	return &o.LocationId, true
+	return o.LocationId, true
 }
 
-// SetLocationId sets field value
+// HasLocationId returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocationRequest) HasLocationId() bool {
+	if o != nil && !IsNil(o.LocationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocationId gets a reference to the given string and assigns it to the LocationId field.
 func (o *SelectGoogleBusinessLocationRequest) SetLocationId(v string) {
-	o.LocationId = v
+	o.LocationId = &v
+}
+
+// GetLocations returns the Locations field value if set, zero value otherwise.
+func (o *SelectGoogleBusinessLocationRequest) GetLocations() []SelectGoogleBusinessLocationRequestLocationsInner {
+	if o == nil || IsNil(o.Locations) {
+		var ret []SelectGoogleBusinessLocationRequestLocationsInner
+		return ret
+	}
+	return o.Locations
+}
+
+// GetLocationsOk returns a tuple with the Locations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectGoogleBusinessLocationRequest) GetLocationsOk() ([]SelectGoogleBusinessLocationRequestLocationsInner, bool) {
+	if o == nil || IsNil(o.Locations) {
+		return nil, false
+	}
+	return o.Locations, true
+}
+
+// HasLocations returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocationRequest) HasLocations() bool {
+	if o != nil && !IsNil(o.Locations) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocations gets a reference to the given []SelectGoogleBusinessLocationRequestLocationsInner and assigns it to the Locations field.
+func (o *SelectGoogleBusinessLocationRequest) SetLocations(v []SelectGoogleBusinessLocationRequestLocationsInner) {
+	o.Locations = v
 }
 
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
@@ -203,7 +244,12 @@ func (o SelectGoogleBusinessLocationRequest) MarshalJSON() ([]byte, error) {
 func (o SelectGoogleBusinessLocationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["profileId"] = o.ProfileId
-	toSerialize["locationId"] = o.LocationId
+	if !IsNil(o.LocationId) {
+		toSerialize["locationId"] = o.LocationId
+	}
+	if !IsNil(o.Locations) {
+		toSerialize["locations"] = o.Locations
+	}
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
 	}
@@ -220,7 +266,6 @@ func (o *SelectGoogleBusinessLocationRequest) UnmarshalJSON(data []byte) (err er
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"profileId",
-		"locationId",
 		"pendingDataToken",
 	}
 

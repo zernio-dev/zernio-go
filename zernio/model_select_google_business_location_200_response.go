@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.201.1
+API version: 1.202.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,10 @@ type SelectGoogleBusinessLocation200Response struct {
 	// Redirect URL if custom redirect_url was provided
 	RedirectUrl *string                                         `json:"redirect_url,omitempty"`
 	Account     *SelectGoogleBusinessLocation200ResponseAccount `json:"account,omitempty"`
+	// locations with two or more distinct entries only. The connected accounts, same shape as `account`. The redirect_url then carries `accountIds` (comma-separated) and `accountId` of the first.
+	Accounts []map[string]interface{} `json:"accounts,omitempty"`
+	// locations only. The locations that could not be connected while the others were.
+	Failed []SelectFacebookPage200ResponseFailedInner `json:"failed,omitempty"`
 }
 
 // NewSelectGoogleBusinessLocation200Response instantiates a new SelectGoogleBusinessLocation200Response object
@@ -139,6 +143,70 @@ func (o *SelectGoogleBusinessLocation200Response) SetAccount(v SelectGoogleBusin
 	o.Account = &v
 }
 
+// GetAccounts returns the Accounts field value if set, zero value otherwise.
+func (o *SelectGoogleBusinessLocation200Response) GetAccounts() []map[string]interface{} {
+	if o == nil || IsNil(o.Accounts) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.Accounts
+}
+
+// GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectGoogleBusinessLocation200Response) GetAccountsOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Accounts) {
+		return nil, false
+	}
+	return o.Accounts, true
+}
+
+// HasAccounts returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocation200Response) HasAccounts() bool {
+	if o != nil && !IsNil(o.Accounts) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccounts gets a reference to the given []map[string]interface{} and assigns it to the Accounts field.
+func (o *SelectGoogleBusinessLocation200Response) SetAccounts(v []map[string]interface{}) {
+	o.Accounts = v
+}
+
+// GetFailed returns the Failed field value if set, zero value otherwise.
+func (o *SelectGoogleBusinessLocation200Response) GetFailed() []SelectFacebookPage200ResponseFailedInner {
+	if o == nil || IsNil(o.Failed) {
+		var ret []SelectFacebookPage200ResponseFailedInner
+		return ret
+	}
+	return o.Failed
+}
+
+// GetFailedOk returns a tuple with the Failed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SelectGoogleBusinessLocation200Response) GetFailedOk() ([]SelectFacebookPage200ResponseFailedInner, bool) {
+	if o == nil || IsNil(o.Failed) {
+		return nil, false
+	}
+	return o.Failed, true
+}
+
+// HasFailed returns a boolean if a field has been set.
+func (o *SelectGoogleBusinessLocation200Response) HasFailed() bool {
+	if o != nil && !IsNil(o.Failed) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailed gets a reference to the given []SelectFacebookPage200ResponseFailedInner and assigns it to the Failed field.
+func (o *SelectGoogleBusinessLocation200Response) SetFailed(v []SelectFacebookPage200ResponseFailedInner) {
+	o.Failed = v
+}
+
 func (o SelectGoogleBusinessLocation200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -157,6 +225,12 @@ func (o SelectGoogleBusinessLocation200Response) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Account) {
 		toSerialize["account"] = o.Account
+	}
+	if !IsNil(o.Accounts) {
+		toSerialize["accounts"] = o.Accounts
+	}
+	if !IsNil(o.Failed) {
+		toSerialize["failed"] = o.Failed
 	}
 	return toSerialize, nil
 }
