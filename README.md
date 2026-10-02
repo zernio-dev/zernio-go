@@ -379,6 +379,7 @@ func main() {
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdCampaignsAPI.GetAdCampaignDetails(ctx)` | Get live campaign details |
+| `client.AdCampaignsAPI.GetAdReview(ctx)` | Read the platform's review verdict for an ad |
 | `client.AdCampaignsAPI.GetAdSetDetails(ctx)` | Get live ad-set details |
 | `client.AdCampaignsAPI.GetAdTree(ctx)` | Get campaign tree |
 | `client.AdCampaignsAPI.GetAdsTimeline(ctx)` | Get daily account metrics |
