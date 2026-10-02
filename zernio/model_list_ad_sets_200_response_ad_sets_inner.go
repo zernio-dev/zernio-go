@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.203.0
+API version: 1.204.0
 Contact: support@zernio.com
 */
 
@@ -39,6 +39,10 @@ type ListAdSets200ResponseAdSetsInner struct {
 	PlatformCreatedAt   NullableTime                               `json:"platformCreatedAt,omitempty"`
 	// Only with `live=true`. When `platformAdSetStatus` was read from the platform; null when this row was not read live.
 	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
+	// TikTok only, only with `live=true` and only on rows read live. The ad group's `optimization_goal` exactly as TikTok's adgroup/get returns it now (for example ENGAGED_VIEW, ENGAGED_VIEW_FIFTEEN, CLICK, CONVERT). Absent on rows not read live and on other platforms.
+	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
+	// TikTok only, only with `live=true` and only on rows read live. The ad group's `billing_event` exactly as TikTok's adgroup/get returns it now (for example CPV, CPC, OCPM).
+	BillingEvent NullableString `json:"billingEvent,omitempty"`
 }
 
 // NewListAdSets200ResponseAdSetsInner instantiates a new ListAdSets200ResponseAdSetsInner object
@@ -669,6 +673,92 @@ func (o *ListAdSets200ResponseAdSetsInner) UnsetStatusReadAt() {
 	o.StatusReadAt.Unset()
 }
 
+// GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdSets200ResponseAdSetsInner) GetOptimizationGoal() string {
+	if o == nil || IsNil(o.OptimizationGoal.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizationGoal.Get()
+}
+
+// GetOptimizationGoalOk returns a tuple with the OptimizationGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdSets200ResponseAdSetsInner) GetOptimizationGoalOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OptimizationGoal.Get(), o.OptimizationGoal.IsSet()
+}
+
+// HasOptimizationGoal returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasOptimizationGoal() bool {
+	if o != nil && o.OptimizationGoal.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizationGoal gets a reference to the given NullableString and assigns it to the OptimizationGoal field.
+func (o *ListAdSets200ResponseAdSetsInner) SetOptimizationGoal(v string) {
+	o.OptimizationGoal.Set(&v)
+}
+
+// SetOptimizationGoalNil sets the value for OptimizationGoal to be an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) SetOptimizationGoalNil() {
+	o.OptimizationGoal.Set(nil)
+}
+
+// UnsetOptimizationGoal ensures that no value is present for OptimizationGoal, not even an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) UnsetOptimizationGoal() {
+	o.OptimizationGoal.Unset()
+}
+
+// GetBillingEvent returns the BillingEvent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdSets200ResponseAdSetsInner) GetBillingEvent() string {
+	if o == nil || IsNil(o.BillingEvent.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.BillingEvent.Get()
+}
+
+// GetBillingEventOk returns a tuple with the BillingEvent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdSets200ResponseAdSetsInner) GetBillingEventOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BillingEvent.Get(), o.BillingEvent.IsSet()
+}
+
+// HasBillingEvent returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasBillingEvent() bool {
+	if o != nil && o.BillingEvent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBillingEvent gets a reference to the given NullableString and assigns it to the BillingEvent field.
+func (o *ListAdSets200ResponseAdSetsInner) SetBillingEvent(v string) {
+	o.BillingEvent.Set(&v)
+}
+
+// SetBillingEventNil sets the value for BillingEvent to be an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) SetBillingEventNil() {
+	o.BillingEvent.Set(nil)
+}
+
+// UnsetBillingEvent ensures that no value is present for BillingEvent, not even an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) UnsetBillingEvent() {
+	o.BillingEvent.Unset()
+}
+
 func (o ListAdSets200ResponseAdSetsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -726,6 +816,12 @@ func (o ListAdSets200ResponseAdSetsInner) ToMap() (map[string]interface{}, error
 	}
 	if o.StatusReadAt.IsSet() {
 		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
+	}
+	if o.OptimizationGoal.IsSet() {
+		toSerialize["optimizationGoal"] = o.OptimizationGoal.Get()
+	}
+	if o.BillingEvent.IsSet() {
+		toSerialize["billingEvent"] = o.BillingEvent.Get()
 	}
 	return toSerialize, nil
 }

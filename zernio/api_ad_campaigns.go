@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.203.0
+API version: 1.204.0
 Contact: support@zernio.com
 */
 
@@ -5648,7 +5648,9 @@ which reads the switches from the platform now, stores them, and returns `status
 With `live=true` (which needs a `campaignId` or `adSetId` filter) each listed ad set's own
 switch (`platformAdSetStatus`) is read live, for the first 20 rows; later rows keep their
 synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google and OpenAI.
-The rolled-up `status` is not re-derived by a live read.
+The rolled-up `status` is not re-derived by a live read. On TikTok the same live read also
+returns the ad group's applied `optimizationGoal` and `billingEvent`, as TikTok's adgroup/get
+reports them, so you can verify the goal TikTok applied rather than the one you requested.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdSetsRequest
