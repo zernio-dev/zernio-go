@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.2
+API version: 1.207.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,8 @@ type CreateStandaloneAdRequest struct {
 	AdName   *string     `json:"adName,omitempty"`
 	Tracking *AdTracking `json:"tracking,omitempty"`
 	// Required on legacy and multi-creative shapes; the attach shape inherits it from the ad set. Available goals vary by platform.  **Meta** - `conversions`: OUTCOME_SALES. Requires `promotedObject.pixelId` and `promotedObject.customEventType` with a commerce event such as PURCHASE or START_TRIAL, or `promotedObject.customConversionId` to optimise against a Custom Conversion, or `customEventType: OTHER` + `customEventStr` to optimise against a pixel custom event. - `lead_conversion`: OUTCOME_LEADS optimizing website pixel leads. Same pixel and event fields, but with a leads-class event such as LEAD, SUBMIT_APPLICATION, SCHEDULE or CONTACT (or `promotedObject.customConversionId` to optimise against a Custom Conversion instead). Meta gates conversion events by objective, so leads-class events are rejected under `conversions`. - `lead_generation`: OUTCOME_LEADS with instant forms. Requires `leadGenFormId`. `promotedObject.pageId` is optional and auto-filled from the connected Page. - `app_promotion`: requires `promotedObject.applicationId` and `promotedObject.objectStoreUrl`. - `catalog_sales`: Advantage+ catalog ads, for example vehicle inventory. Requires `promotedObject.productSetId`, `promotedObject.pixelId` and `promotedObject.customEventType`. Builds a catalog TEMPLATE creative from the copy fields, which may carry template tags like {{product.name}} or {{vehicle.make}}. No imageUrl or video is sent; Meta renders the visuals per catalog item. Discover catalogs via GET /v1/ads/catalogs and product sets via GET /v1/ads/catalogs/{catalogId}/product-sets. Single shape only, no creatives[], adSetId, dynamicCreative or placementAssets. - `page_likes`: Page Likes conversion location under OUTCOME_ENGAGEMENT (destination_type ON_PAGE, optimization PAGE_LIKES). `promotedObject.pageId` is optional and auto-filled from the connected Page. The creative CTA is fixed to LIKE_PAGE targeting that Page; headline / body / linkUrl / callToAction / imageUrl / video are all optional (Meta derives the link and the Like button from the Page). - `page_visits`: Meta's \"Page visits and followers\" under OUTCOME_TRAFFIC (destination_type FACEBOOK_PAGE, optimization PROFILE_VISIT). `promotedObject.pageId` is optional and auto-filled from the connected Page, and `linkUrl` defaults to the Page. Meta enables Profile Visit ads per ad account: one it has not enabled is refused with Meta's \"This account isn't eligible to use Profile Visit ads yet\".  **TikTok** - `conversions`: website-conversion ad group. Requires `promotedObject.pixelId`, your TikTok Pixel ID. Accepts an optional `promotedObject.customEventType` with a TikTok optimization_event code your pixel tracks (newer pixels use e.g. SHOPPING for purchase events; legacy pixels use ON_WEB_ORDER, INITIATE_ORDER, ON_WEB_REGISTER or FORM). To inherit pixel and event from an existing ad group, pass `adSetId` instead.  **LinkedIn** - `engagement`, `traffic`, `awareness` and `video_views` create standalone Direct Sponsored Content ads. `traffic` requires `linkUrl`; `video_views` requires `video`. - `lead_generation`: requires `leadGenFormId` (an adForm ID from POST /v1/ads/lead-forms). The campaign objective is set to MAX_LEAD and the creative's `leadgenCallToAction` destination is set to `urn:li:adForm:{id}`. - `job_applicants` requires a `platformSpecificData.jobs` creative. - For `conversions` on LinkedIn, or to promote an existing post, use POST /v1/ads/boost.  **OpenAI Ads** - Only `traffic`, `awareness`, and `conversions` are supported (other goals return 400). Maps to OpenAI's `bidding_type` (clicks, impressions, conversions respectively). `conversions` requires an active conversion event setting on the account; create a tracking tag with `defaultEventType` via the tracking-tags API (`POST /v1/accounts/{accountId}/tracking-tags`), or configure a conversion event in OpenAI Ads Manager, or the request returns 400. Pick the event with `promotedObject.customEventType` (see AdPromotedObject); without it the most recently created optimizable event is used.
-	Goal *string `json:"goal,omitempty"`
+	Goal           *string                           `json:"goal,omitempty"`
+	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Meta, or TikTok with goal video_views (ENGAGED_VIEW, the 6-second default, or ENGAGED_VIEW_FIFTEEN; both bill per view). Meta: Explicit ad-set `optimization_goal` (e.g. `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `REACH`, `IMPRESSIONS`, `OFFSITE_CONVERSIONS`, `THRUPLAY`, `LEAD_GENERATION`). Overrides the default derived from `goal` (e.g. `traffic` defaults to `LINK_CLICKS`). Forwarded verbatim to Meta, which validates compatibility with the campaign objective and rejects incompatible combinations.
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 	// Meta only. Explicit ad-set `billing_event`. Defaults to `IMPRESSIONS`. Forwarded verbatim to Meta, which validates compatibility with the optimization goal.
@@ -501,6 +502,38 @@ func (o *CreateStandaloneAdRequest) HasGoal() bool {
 // SetGoal gets a reference to the given string and assigns it to the Goal field.
 func (o *CreateStandaloneAdRequest) SetGoal(v string) {
 	o.Goal = &v
+}
+
+// GetSmartTargeting returns the SmartTargeting field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetSmartTargeting() UpdateAdSetRequestSmartTargeting {
+	if o == nil || IsNil(o.SmartTargeting) {
+		var ret UpdateAdSetRequestSmartTargeting
+		return ret
+	}
+	return *o.SmartTargeting
+}
+
+// GetSmartTargetingOk returns a tuple with the SmartTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetSmartTargetingOk() (*UpdateAdSetRequestSmartTargeting, bool) {
+	if o == nil || IsNil(o.SmartTargeting) {
+		return nil, false
+	}
+	return o.SmartTargeting, true
+}
+
+// HasSmartTargeting returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasSmartTargeting() bool {
+	if o != nil && !IsNil(o.SmartTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetSmartTargeting gets a reference to the given UpdateAdSetRequestSmartTargeting and assigns it to the SmartTargeting field.
+func (o *CreateStandaloneAdRequest) SetSmartTargeting(v UpdateAdSetRequestSmartTargeting) {
+	o.SmartTargeting = &v
 }
 
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
@@ -3804,6 +3837,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Goal) {
 		toSerialize["goal"] = o.Goal
+	}
+	if !IsNil(o.SmartTargeting) {
+		toSerialize["smartTargeting"] = o.SmartTargeting
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.2
+API version: 1.207.0
 Contact: support@zernio.com
 */
 
@@ -29,7 +29,8 @@ type UpdateAdSetRequest struct {
 	// Rename the ad set (Meta only; other platforms return 501). At least one of budget/status/bidStrategy/name is required.
 	Name *string `json:"name,omitempty"`
 	// Ad-set-level bid strategy. Overrides the campaign-level default. Supported on Meta (facebook, instagram), TikTok, and OpenAI. On TikTok the Meta-style enum is mapped to bid_type / bid_price / deep_bid_type automatically. On OpenAI, LOWEST_COST_WITH_BID_CAP and COST_CAP both map to the ad group's `bidding_config.max_bid_micros` (one knob covers both); LOWEST_COST_WITH_MIN_ROAS is rejected with 422 (OpenAI has no ROAS-based bidding). Other platforms (linkedin, pinterest, google, twitter) return 501 Not Implemented when bidStrategy is set.
-	BidStrategy *BidStrategy `json:"bidStrategy,omitempty"`
+	BidStrategy    *BidStrategy                      `json:"bidStrategy,omitempty"`
+	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI) to micros (× 1,000,000). Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP (the strategy is inherited from the campaign and is left untouched).
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Not supported on OpenAI (422).
@@ -211,6 +212,38 @@ func (o *UpdateAdSetRequest) HasBidStrategy() bool {
 // SetBidStrategy gets a reference to the given BidStrategy and assigns it to the BidStrategy field.
 func (o *UpdateAdSetRequest) SetBidStrategy(v BidStrategy) {
 	o.BidStrategy = &v
+}
+
+// GetSmartTargeting returns the SmartTargeting field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetSmartTargeting() UpdateAdSetRequestSmartTargeting {
+	if o == nil || IsNil(o.SmartTargeting) {
+		var ret UpdateAdSetRequestSmartTargeting
+		return ret
+	}
+	return *o.SmartTargeting
+}
+
+// GetSmartTargetingOk returns a tuple with the SmartTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetSmartTargetingOk() (*UpdateAdSetRequestSmartTargeting, bool) {
+	if o == nil || IsNil(o.SmartTargeting) {
+		return nil, false
+	}
+	return o.SmartTargeting, true
+}
+
+// HasSmartTargeting returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasSmartTargeting() bool {
+	if o != nil && !IsNil(o.SmartTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetSmartTargeting gets a reference to the given UpdateAdSetRequestSmartTargeting and assigns it to the SmartTargeting field.
+func (o *UpdateAdSetRequest) SetSmartTargeting(v UpdateAdSetRequestSmartTargeting) {
+	o.SmartTargeting = &v
 }
 
 // GetBidAmount returns the BidAmount field value if set, zero value otherwise.
@@ -395,6 +428,9 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
+	}
+	if !IsNil(o.SmartTargeting) {
+		toSerialize["smartTargeting"] = o.SmartTargeting
 	}
 	if !IsNil(o.BidAmount) {
 		toSerialize["bidAmount"] = o.BidAmount

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.2
+API version: 1.207.0
 Contact: support@zernio.com
 */
 
@@ -118,7 +118,8 @@ type BoostPostRequest struct {
 	// Meta only. Ad-set attribution windows, same shape as POST /v1/ads/create. Applied on OUTCOME_SALES, OUTCOME_LEADS and OUTCOME_APP_PROMOTION campaigns (conversions, lead_conversion, lead_generation, app_promotion); other objectives keep Meta's default. Not allowed with adSetId.
 	AttributionSpec []BoostPostRequestAttributionSpecInner `json:"attributionSpec,omitempty"`
 	// Meta only. Extra primary-text options Meta rotates on the boosted post (asset_feed_spec.bodies with DEGREES_OF_FREEDOM); the post keeps its own text as one of the options. Works for Facebook posts and Instagram media. Under a conversions or traffic goal Meta also wants a website URL on the options, taken from `linkUrl` (send it with a `callToAction`); engagement boosts need none.
-	Bodies []string `json:"bodies,omitempty"`
+	Bodies         []string                          `json:"bodies,omitempty"`
+	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Meta, or TikTok with `goal: video_views`. TikTok: ENGAGED_VIEW (6-second Focused View, the default) or ENGAGED_VIEW_FIFTEEN (15-second views), both billed per view (CPV); any other value is a 400. Meta: explicit ad-set `optimization_goal` override. When omitted, defaults to the value derived from `goal`. Messaging boosts always use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible with the objective Meta derives from `goal`, not with the objective used by `POST /v1/ads/create` for the same `goal` name: boost maps `goal: \"engagement\"` to objective `OUTCOME_AWARENESS`, which accepts `REACH`, `IMPRESSIONS`, `AD_RECALL_LIFT`, or THRUPLAY-class values, and rejects `POST_ENGAGEMENT` (that value is only valid under `OUTCOME_ENGAGEMENT`, which create uses for the same goal name).
 	OptimizationGoal *string `json:"optimizationGoal,omitempty"`
 }
@@ -1697,6 +1698,38 @@ func (o *BoostPostRequest) SetBodies(v []string) {
 	o.Bodies = v
 }
 
+// GetSmartTargeting returns the SmartTargeting field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetSmartTargeting() UpdateAdSetRequestSmartTargeting {
+	if o == nil || IsNil(o.SmartTargeting) {
+		var ret UpdateAdSetRequestSmartTargeting
+		return ret
+	}
+	return *o.SmartTargeting
+}
+
+// GetSmartTargetingOk returns a tuple with the SmartTargeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetSmartTargetingOk() (*UpdateAdSetRequestSmartTargeting, bool) {
+	if o == nil || IsNil(o.SmartTargeting) {
+		return nil, false
+	}
+	return o.SmartTargeting, true
+}
+
+// HasSmartTargeting returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasSmartTargeting() bool {
+	if o != nil && !IsNil(o.SmartTargeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetSmartTargeting gets a reference to the given UpdateAdSetRequestSmartTargeting and assigns it to the SmartTargeting field.
+func (o *BoostPostRequest) SetSmartTargeting(v UpdateAdSetRequestSmartTargeting) {
+	o.SmartTargeting = &v
+}
+
 // GetOptimizationGoal returns the OptimizationGoal field value if set, zero value otherwise.
 func (o *BoostPostRequest) GetOptimizationGoal() string {
 	if o == nil || IsNil(o.OptimizationGoal) {
@@ -1877,6 +1910,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Bodies) {
 		toSerialize["bodies"] = o.Bodies
+	}
+	if !IsNil(o.SmartTargeting) {
+		toSerialize["smartTargeting"] = o.SmartTargeting
 	}
 	if !IsNil(o.OptimizationGoal) {
 		toSerialize["optimizationGoal"] = o.OptimizationGoal
