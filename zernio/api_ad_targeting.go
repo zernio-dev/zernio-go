@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.1
+API version: 1.206.2
 Contact: support@zernio.com
 */
 
@@ -655,6 +655,7 @@ type AdTargetingAPISearchAdTargetingRequest struct {
 	dimension   *string
 	geoType     *string
 	countryCode *string
+	adAccountId *string
 	limit       *int32
 }
 
@@ -685,6 +686,12 @@ func (r AdTargetingAPISearchAdTargetingRequest) GeoType(geoType string) AdTarget
 // ISO 3166-1 alpha-2 country code (e.g. NL) to scope a geo search.
 func (r AdTargetingAPISearchAdTargetingRequest) CountryCode(countryCode string) AdTargetingAPISearchAdTargetingRequest {
 	r.countryCode = &countryCode
+	return r
+}
+
+// TikTok only: the advertiser to search as, when the connection holds several. Each TikTok advertiser has its own targetable regions and catalogs. Defaults to the connection&#39;s first advertiser; an advertiser the connection does not hold returns 400.
+func (r AdTargetingAPISearchAdTargetingRequest) AdAccountId(adAccountId string) AdTargetingAPISearchAdTargetingRequest {
+	r.adAccountId = &adAccountId
 	return r
 }
 
@@ -749,7 +756,8 @@ consumes Meta, TikTok, LinkedIn, X, Pinterest, and Google results.
 TikTok geo searches return every matching level in one list (`type` is
 `country`, `region`, `city`, `district`, or `metro` for DMA areas), and
 `geoType` is not applied. Results are scoped to the advertiser's targetable
-markets. A `country` result's id is its ISO 3166-1 alpha-2 code, for
+markets (pass `adAccountId` when the connection holds several advertisers). A
+two-letter `q` also matches a country by ISO code (`q=GB` returns the United Kingdom first). A `country` result's id is its ISO 3166-1 alpha-2 code, for
 `targeting.countries`; every other id is TikTok's numeric location id,
 usable in `regions`/`cities`/`metros` keys on `POST /v1/ads/create`.
 
@@ -864,6 +872,9 @@ func (a *AdTargetingAPIService) SearchAdTargetingExecute(r AdTargetingAPISearchA
 	}
 	if r.countryCode != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "countryCode", r.countryCode, "form", "")
+	}
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
