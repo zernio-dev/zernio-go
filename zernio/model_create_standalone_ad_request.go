@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.209.0
+API version: 1.210.0
 Contact: support@zernio.com
 */
 
@@ -96,6 +96,8 @@ type CreateStandaloneAdRequest struct {
 	AdSetId *string `json:"adSetId,omitempty"`
 	// Meta, Google Ads, LinkedIn and TikTok. On TikTok: creates the ad group and the ad under this existing campaign; the campaign is neither created nor activated and its objective must fit `goal`; not with `smartPlus`. On Meta: add the new ad set under this EXISTING campaign instead of creating a new one (multi-ad-set audience testing). The new ad set's budget is matched to the campaign's mode automatically: for a CBO campaign (campaign-level budget) omit `budgetAmount`/`budgetType`, since the campaign owns the budget; for an ABO campaign pass them (they go on the new ad set). On LinkedIn: create a new Campaign (and its Creative) under this EXISTING CampaignGroup. On Google Ads: create a new ad group under this EXISTING campaign; the new ad group inherits the campaign's budget, so omit `budgetAmount`/`budgetType` (and any bidding field), or the request returns 400. With `campaignType: \"demand_gen\"` the campaign must be a Demand Gen campaign (otherwise 400): the new ad group (with its geo, languages, channels and audience from the request) and its ad are created in one atomic request, the ad group PAUSED; schedule and `locationTargetingType` belong to the campaign and return 400. A campaign migrated from Discovery that still targets locations and languages on the campaign refuses them on a new ad group, so geo and language fields return 400 there; the new ad group follows the campaign's targeting. On failure only the entities we authored are cleaned up; the pre-existing parent is left untouched and is never (re)activated. Mutually exclusive with `adSetId` and `creatives[]`.
 	ExistingCampaignId *string `json:"existingCampaignId,omitempty"`
+	// Meta attach shape only (`adSetId`). The phone number (E.164, e.g. `+4712345678`) for an ad added to a \"website and phone call\" ad set (destination_type `WEBSITE_AND_PHONE_CALL`), sent as the creative's call configuration. Optional: when omitted, the number on the ad set's existing ads is reused, and if none of them carries one the request is a 400. Rejected with 400 on any other ad set, with `existingCreativeId`, without `adSetId`, or on other platforms (a new call campaign is `POST /v1/ads/call`).
+	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// Meta only. Reuse an EXISTING ad creative by id instead of building a new one from the copy/media fields (which are then ignored). Combine with `existingCampaignId` to build a multi-ad-set campaign that shares one creative. Mutually exclusive with `creatives[]`, `dynamicCreative`, and `placementAssets`. The creative id used is returned as `creativeId` on the create response.
 	ExistingCreativeId *string `json:"existingCreativeId,omitempty"`
 	// Google Display only
@@ -1527,6 +1529,38 @@ func (o *CreateStandaloneAdRequest) HasExistingCampaignId() bool {
 // SetExistingCampaignId gets a reference to the given string and assigns it to the ExistingCampaignId field.
 func (o *CreateStandaloneAdRequest) SetExistingCampaignId(v string) {
 	o.ExistingCampaignId = &v
+}
+
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetPhoneNumber() string {
+	if o == nil || IsNil(o.PhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.PhoneNumber
+}
+
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
+		return nil, false
+	}
+	return o.PhoneNumber, true
+}
+
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
+func (o *CreateStandaloneAdRequest) SetPhoneNumber(v string) {
+	o.PhoneNumber = &v
 }
 
 // GetExistingCreativeId returns the ExistingCreativeId field value if set, zero value otherwise.
@@ -3933,6 +3967,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ExistingCampaignId) {
 		toSerialize["existingCampaignId"] = o.ExistingCampaignId
+	}
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
 	}
 	if !IsNil(o.ExistingCreativeId) {
 		toSerialize["existingCreativeId"] = o.ExistingCreativeId
