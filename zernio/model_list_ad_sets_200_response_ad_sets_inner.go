@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.0
+API version: 1.206.1
 Contact: support@zernio.com
 */
 
@@ -43,7 +43,7 @@ type ListAdSets200ResponseAdSetsInner struct {
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
 	// TikTok only, only with `live=true` and only on rows read live. The ad group's `billing_event` exactly as TikTok's adgroup/get returns it now (for example CPV, CPC, OCPM).
 	BillingEvent NullableString `json:"billingEvent,omitempty"`
-	// TikTok only, only with `live=true` and only on rows read live. TikTok's adgroup/get record verbatim (snake_case, TikTok's own names and enums): operation_status, optimization_goal, optimization_event, billing_event, bid_type, bid_price, budget, budget_mode, pacing, schedule_type, schedule_start_time, schedule_end_time, dayparting, placement_type, placements, location_ids, age_groups, gender, languages, interest_category_ids, interest_keyword_ids, actions, audience_ids, excluded_audience_ids, operating_systems, frequency, frequency_schedule, smart_audience_enabled, smart_interest_behavior_enabled. Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. A field TikTok does not return is absent.
+	// TikTok only, only with `live=true` and only on rows read live. TikTok's adgroup/get record verbatim (snake_case, TikTok's own names and enums): operation_status, optimization_goal, optimization_event, billing_event, bid_type, bid_price, budget, budget_mode, pacing, schedule_type, schedule_start_time, schedule_end_time, dayparting, placement_type, placements, location_ids, age_groups, gender, languages, interest_category_ids, interest_keyword_ids, actions, audience_ids, excluded_audience_ids, operating_systems, frequency, frequency_schedule, smart_audience_enabled, smart_interest_behavior_enabled. schedule_start_time and schedule_end_time are UTC wall clocks (YYYY-MM-DD HH:MM:SS). location_ids holds TikTok's native location ids (GeoNames ids for countries); GET /v1/ads/targeting/search?dimension=geo returns them as `platformId` on country results. Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. A field TikTok does not return is absent.
 	NativeSettings map[string]interface{} `json:"nativeSettings,omitempty"`
 	// Only with `live=true`. When `nativeSettings` was read from the platform. Null on every row whose native settings were not read now (row past the cap, failed read, or a platform without a native read).
 	ConfigReadAt NullableTime `json:"configReadAt,omitempty"`

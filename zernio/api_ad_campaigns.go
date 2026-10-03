@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.0
+API version: 1.206.1
 Contact: support@zernio.com
 */
 
@@ -5787,7 +5787,8 @@ reports them, so you can verify the goal TikTok applied rather than the one you 
 It also returns `nativeSettings`: TikTok's own adgroup/get record for the ad group, verbatim and
 read in that same call (budget, budget_mode, schedule, placements, locations, ages, gender,
 languages, interests, actions, audiences and exclusions), plus the advertiser's currency and
-timezone (TikTok's schedule times are in that timezone). `configReadAt` says when it was read; it
+timezone. TikTok's `schedule_start_time` / `schedule_end_time` are UTC wall clocks
+("YYYY-MM-DD HH:MM:SS", no offset); Ads Manager displays them in `advertiser_timezone`. `configReadAt` says when it was read; it
 is null on every row whose native settings were not read now, so never treat a null as a match.
 These are read, not retained create payloads, and are not stored.
 

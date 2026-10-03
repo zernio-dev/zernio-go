@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.206.0
+API version: 1.206.1
 Contact: support@zernio.com
 */
 
@@ -34,6 +34,8 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	AudienceSize NullableInt32 `json:"audienceSize,omitempty"`
 	// ISO-3166 alpha-2 of the country a sub-country geo result (city, region, zip, metro) belongs to, when the platform reports it (Meta does). Useful to know whether a location falls under the EU DSA disclosure rules before creating the ad.
 	CountryCode *string `json:"countryCode,omitempty"`
+	// Only on `country` results: the platform's own id for the country, which `id` replaced with the ISO code (TikTok's native location_id, a GeoNames id such as 2635167 for GB; Meta's country key; Google's geo target constant id; X's targeting value; LinkedIn's geo URN). Use it to match a country against what the platform reports back, e.g. `location_ids` in a TikTok `nativeSettings` read.
+	PlatformId *string `json:"platformId,omitempty"`
 }
 
 type _SearchAdTargeting200ResponseResultsInner SearchAdTargeting200ResponseResultsInner
@@ -237,6 +239,38 @@ func (o *SearchAdTargeting200ResponseResultsInner) SetCountryCode(v string) {
 	o.CountryCode = &v
 }
 
+// GetPlatformId returns the PlatformId field value if set, zero value otherwise.
+func (o *SearchAdTargeting200ResponseResultsInner) GetPlatformId() string {
+	if o == nil || IsNil(o.PlatformId) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformId
+}
+
+// GetPlatformIdOk returns a tuple with the PlatformId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) GetPlatformIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformId) {
+		return nil, false
+	}
+	return o.PlatformId, true
+}
+
+// HasPlatformId returns a boolean if a field has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) HasPlatformId() bool {
+	if o != nil && !IsNil(o.PlatformId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformId gets a reference to the given string and assigns it to the PlatformId field.
+func (o *SearchAdTargeting200ResponseResultsInner) SetPlatformId(v string) {
+	o.PlatformId = &v
+}
+
 func (o SearchAdTargeting200ResponseResultsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -258,6 +292,9 @@ func (o SearchAdTargeting200ResponseResultsInner) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.CountryCode) {
 		toSerialize["countryCode"] = o.CountryCode
+	}
+	if !IsNil(o.PlatformId) {
+		toSerialize["platformId"] = o.PlatformId
 	}
 	return toSerialize, nil
 }
