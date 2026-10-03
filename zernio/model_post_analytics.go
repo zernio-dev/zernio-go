@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.210.1
+API version: 1.211.0
 Contact: support@zernio.com
 */
 
@@ -33,9 +33,9 @@ type PostAnalytics struct {
 	Views  *int32 `json:"views,omitempty"`
 	// Instagram feed posts and stories only: organic accounts that started following from this post. Null on Instagram Reels and non-Reels video, where Meta does not expose this metric for the media. 0 for other platforms.
 	Follows NullableInt32 `json:"follows,omitempty"`
-	// Instagram Reels only: average watch time per play, in milliseconds. 0 for non-Reels media and other platforms.
+	// Average watch time per play, in milliseconds, for Instagram Reels, Facebook Reels and TikTok videos (business accounts). On Facebook it includes replays within a play, so it can exceed the Reel length. 0 for other media and platforms, including regular Facebook videos.
 	IgReelsAvgWatchTime *int32 `json:"igReelsAvgWatchTime,omitempty"`
-	// Instagram Reels only: total watch time including replays, in milliseconds. 0 for non-Reels media and other platforms.
+	// Total watch time including replays, in milliseconds, for Instagram Reels, Facebook Reels and TikTok videos (business accounts). 0 for other media and platforms, including regular Facebook videos.
 	IgReelsVideoViewTotalTime *int32 `json:"igReelsVideoViewTotalTime,omitempty"`
 	// Instagram Reels only: percentage (0-100) of initial views that skipped the reel within its first 3 seconds, as reported by Meta. Meta labels the metric estimated and in development, so it can move between syncs. 0 for non-Reels media and other platforms. When a post is published to several accounts, the aggregate is weighted by views.
 	ReelsSkipRate *float32 `json:"reelsSkipRate,omitempty"`
