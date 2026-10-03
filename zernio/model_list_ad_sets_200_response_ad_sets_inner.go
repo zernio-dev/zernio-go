@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.205.0
+API version: 1.206.0
 Contact: support@zernio.com
 */
 
@@ -43,6 +43,10 @@ type ListAdSets200ResponseAdSetsInner struct {
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
 	// TikTok only, only with `live=true` and only on rows read live. The ad group's `billing_event` exactly as TikTok's adgroup/get returns it now (for example CPV, CPC, OCPM).
 	BillingEvent NullableString `json:"billingEvent,omitempty"`
+	// TikTok only, only with `live=true` and only on rows read live. TikTok's adgroup/get record verbatim (snake_case, TikTok's own names and enums): operation_status, optimization_goal, optimization_event, billing_event, bid_type, bid_price, budget, budget_mode, pacing, schedule_type, schedule_start_time, schedule_end_time, dayparting, placement_type, placements, location_ids, age_groups, gender, languages, interest_category_ids, interest_keyword_ids, actions, audience_ids, excluded_audience_ids, operating_systems, frequency, frequency_schedule, smart_audience_enabled, smart_interest_behavior_enabled. Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. A field TikTok does not return is absent.
+	NativeSettings map[string]interface{} `json:"nativeSettings,omitempty"`
+	// Only with `live=true`. When `nativeSettings` was read from the platform. Null on every row whose native settings were not read now (row past the cap, failed read, or a platform without a native read).
+	ConfigReadAt NullableTime `json:"configReadAt,omitempty"`
 }
 
 // NewListAdSets200ResponseAdSetsInner instantiates a new ListAdSets200ResponseAdSetsInner object
@@ -759,6 +763,81 @@ func (o *ListAdSets200ResponseAdSetsInner) UnsetBillingEvent() {
 	o.BillingEvent.Unset()
 }
 
+// GetNativeSettings returns the NativeSettings field value if set, zero value otherwise.
+func (o *ListAdSets200ResponseAdSetsInner) GetNativeSettings() map[string]interface{} {
+	if o == nil || IsNil(o.NativeSettings) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.NativeSettings
+}
+
+// GetNativeSettingsOk returns a tuple with the NativeSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdSets200ResponseAdSetsInner) GetNativeSettingsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.NativeSettings) {
+		return map[string]interface{}{}, false
+	}
+	return o.NativeSettings, true
+}
+
+// HasNativeSettings returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasNativeSettings() bool {
+	if o != nil && !IsNil(o.NativeSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetNativeSettings gets a reference to the given map[string]interface{} and assigns it to the NativeSettings field.
+func (o *ListAdSets200ResponseAdSetsInner) SetNativeSettings(v map[string]interface{}) {
+	o.NativeSettings = v
+}
+
+// GetConfigReadAt returns the ConfigReadAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdSets200ResponseAdSetsInner) GetConfigReadAt() time.Time {
+	if o == nil || IsNil(o.ConfigReadAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.ConfigReadAt.Get()
+}
+
+// GetConfigReadAtOk returns a tuple with the ConfigReadAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdSets200ResponseAdSetsInner) GetConfigReadAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConfigReadAt.Get(), o.ConfigReadAt.IsSet()
+}
+
+// HasConfigReadAt returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasConfigReadAt() bool {
+	if o != nil && o.ConfigReadAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConfigReadAt gets a reference to the given NullableTime and assigns it to the ConfigReadAt field.
+func (o *ListAdSets200ResponseAdSetsInner) SetConfigReadAt(v time.Time) {
+	o.ConfigReadAt.Set(&v)
+}
+
+// SetConfigReadAtNil sets the value for ConfigReadAt to be an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) SetConfigReadAtNil() {
+	o.ConfigReadAt.Set(nil)
+}
+
+// UnsetConfigReadAt ensures that no value is present for ConfigReadAt, not even an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) UnsetConfigReadAt() {
+	o.ConfigReadAt.Unset()
+}
+
 func (o ListAdSets200ResponseAdSetsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -822,6 +901,12 @@ func (o ListAdSets200ResponseAdSetsInner) ToMap() (map[string]interface{}, error
 	}
 	if o.BillingEvent.IsSet() {
 		toSerialize["billingEvent"] = o.BillingEvent.Get()
+	}
+	if !IsNil(o.NativeSettings) {
+		toSerialize["nativeSettings"] = o.NativeSettings
+	}
+	if o.ConfigReadAt.IsSet() {
+		toSerialize["configReadAt"] = o.ConfigReadAt.Get()
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.205.0
+API version: 1.206.0
 Contact: support@zernio.com
 */
 
@@ -5784,6 +5784,12 @@ synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google an
 The rolled-up `status` is not re-derived by a live read. On TikTok the same live read also
 returns the ad group's applied `optimizationGoal` and `billingEvent`, as TikTok's adgroup/get
 reports them, so you can verify the goal TikTok applied rather than the one you requested.
+It also returns `nativeSettings`: TikTok's own adgroup/get record for the ad group, verbatim and
+read in that same call (budget, budget_mode, schedule, placements, locations, ages, gender,
+languages, interests, actions, audiences and exclusions), plus the advertiser's currency and
+timezone (TikTok's schedule times are in that timezone). `configReadAt` says when it was read; it
+is null on every row whose native settings were not read now, so never treat a null as a match.
+These are read, not retained create payloads, and are not stored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdSetsRequest
