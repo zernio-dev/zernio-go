@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.211.1
+API version: 1.212.0
 Contact: support@zernio.com
 */
 
@@ -51,6 +51,10 @@ type PostAnalytics struct {
 	AudienceTypes map[string]float32 `json:"audienceTypes,omitempty"`
 	// TikTok accounts connected through the TikTok for Business app only: share of views by viewer country as fractions 0 to 1, keyed by upper-case ISO-3166 alpha-2 code (T+24-48h, only for posts active in the last 7 days). At most 20 country keys plus `other`: the catch-all bucket TikTok sends, any country below 0.001 and anything past the twentieth all sum into `other`, so the values still add up to 1. Empty object when TikTok reports nothing, and for other platforms. Views-weighted across accounts like impressionSources.
 	AudienceCountries map[string]float32 `json:"audienceCountries,omitempty"`
+	// Facebook Reels only: plays that were replays (Meta fb_reels_replay_count). Summed across accounts. 0 for other media and platforms.
+	Replays *int32 `json:"replays,omitempty"`
+	// Facebook Reels only: share of plays still watching at each second of the Reel, keyed by the second from \"0\", fractions 0 to 1 (Meta post_video_retention_graph). Empty object for other media and platforms. Views-weighted across accounts like impressionSources.
+	RetentionCurve map[string]float32 `json:"retentionCurve,omitempty"`
 	// Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
 	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
@@ -664,6 +668,70 @@ func (o *PostAnalytics) SetAudienceCountries(v map[string]float32) {
 	o.AudienceCountries = v
 }
 
+// GetReplays returns the Replays field value if set, zero value otherwise.
+func (o *PostAnalytics) GetReplays() int32 {
+	if o == nil || IsNil(o.Replays) {
+		var ret int32
+		return ret
+	}
+	return *o.Replays
+}
+
+// GetReplaysOk returns a tuple with the Replays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetReplaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.Replays) {
+		return nil, false
+	}
+	return o.Replays, true
+}
+
+// HasReplays returns a boolean if a field has been set.
+func (o *PostAnalytics) HasReplays() bool {
+	if o != nil && !IsNil(o.Replays) {
+		return true
+	}
+
+	return false
+}
+
+// SetReplays gets a reference to the given int32 and assigns it to the Replays field.
+func (o *PostAnalytics) SetReplays(v int32) {
+	o.Replays = &v
+}
+
+// GetRetentionCurve returns the RetentionCurve field value if set, zero value otherwise.
+func (o *PostAnalytics) GetRetentionCurve() map[string]float32 {
+	if o == nil || IsNil(o.RetentionCurve) {
+		var ret map[string]float32
+		return ret
+	}
+	return o.RetentionCurve
+}
+
+// GetRetentionCurveOk returns a tuple with the RetentionCurve field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PostAnalytics) GetRetentionCurveOk() (map[string]float32, bool) {
+	if o == nil || IsNil(o.RetentionCurve) {
+		return map[string]float32{}, false
+	}
+	return o.RetentionCurve, true
+}
+
+// HasRetentionCurve returns a boolean if a field has been set.
+func (o *PostAnalytics) HasRetentionCurve() bool {
+	if o != nil && !IsNil(o.RetentionCurve) {
+		return true
+	}
+
+	return false
+}
+
+// SetRetentionCurve gets a reference to the given map[string]float32 and assigns it to the RetentionCurve field.
+func (o *PostAnalytics) SetRetentionCurve(v map[string]float32) {
+	o.RetentionCurve = v
+}
+
 // GetReposts returns the Reposts field value if set, zero value otherwise.
 func (o *PostAnalytics) GetReposts() int32 {
 	if o == nil || IsNil(o.Reposts) {
@@ -866,6 +934,12 @@ func (o PostAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudienceCountries) {
 		toSerialize["audienceCountries"] = o.AudienceCountries
+	}
+	if !IsNil(o.Replays) {
+		toSerialize["replays"] = o.Replays
+	}
+	if !IsNil(o.RetentionCurve) {
+		toSerialize["retentionCurve"] = o.RetentionCurve
 	}
 	if !IsNil(o.Reposts) {
 		toSerialize["reposts"] = o.Reposts
