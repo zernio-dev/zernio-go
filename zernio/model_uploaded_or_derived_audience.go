@@ -20,7 +20,7 @@ import (
 // checks if the UploadedOrDerivedAudience type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UploadedOrDerivedAudience{}
 
-// UploadedOrDerivedAudience customer_list, website, or lookalike audience (uploaded or derived from a source).
+// UploadedOrDerivedAudience customer_list, website, lookalike or engagement audience (uploaded or derived from a source).
 type UploadedOrDerivedAudience struct {
 	AccountId string `json:"accountId"`
 	// Platform ad account ID. Must start with act_ for Meta; bare platform id for others (Google customer id, X/TikTok/LinkedIn/Pinterest account id).
@@ -40,25 +40,49 @@ type UploadedOrDerivedAudience struct {
 	EngagementSources []string `json:"engagementSources,omitempty"`
 	// Required for company_list audiences (LinkedIn only): plain-text company rows for account targeting. Each row needs at least one identifier. Not hashed, LinkedIn matches these against its own company graph. LinkedIn recommends 1,000+ companies for a usable match rate and takes up to 48h to process the list. Replace the list later with POST /v1/ads/audiences/{audienceId}/companies.
 	Companies []UploadedOrDerivedAudienceCompaniesInner `json:"companies,omitempty"`
-	// Required for website audiences
+	// website: the Meta pixel, TikTok pixel or Pinterest tag id. Required on those three, rejected on Google.
 	PixelId *string `json:"pixelId,omitempty"`
-	// Required for website (max 180) and meta_engagement (max 365) audiences.
+	// Required for website (Meta max 180, TikTok 7/14/30/60/90/180, Pinterest and Google max 540), meta_engagement (max 365) and tiktok_engagement (7/14/30/60/90/180; organic and live video and most business-account events only 7/14/30).
 	RetentionDays *int32 `json:"retentionDays,omitempty"`
 	// Required for meta_engagement audiences (Meta only): what people engaged with. `page` = a Facebook Page, `instagram` = an IG professional account, `video` = a video.
 	EngagementSource *string `json:"engagementSource,omitempty"`
 	// Required for meta_engagement: the Page / IG account / video id.
 	SourceId *string `json:"sourceId,omitempty"`
-	// meta_engagement only. The engagement event; defaults per source (page → page_engaged, instagram → ig_business_profile_all, video → video_watched). Ignored when `rule` is provided.
+	// meta_engagement: the engagement event; defaults per source (page → page_engaged, instagram → ig_business_profile_all, video → video_watched). Ignored when `rule` is provided.  website on TikTok: the pixel event (default `PAGE BROWSE`). website on Pinterest: the tag event (`pagevisit`, `signup`, `checkout`, `viewcategory`, `search`, `addtocart`, `watchvideo`, `lead`, `custom` or a partner-defined event).  tiktok_engagement (required): the TikTok engagement event, validated per `source` (TikTok's filter values, spaces included): - ads: `CLICK`, `IMPRESSION`, `PLAY 2S`, `PLAY 6S`, `PLAY 25`, `PLAY 50`, `PLAY 75`,   `PLAY OVER`, and the `ENGAGEMENT APP PROFILE` / `ENGAGEMENT TIKTOK INSTANT` /   `ENGAGEMENT COLLECTION ADS` `CLICK` and `IMPRESSION` events. - organic_video: `ORGANIC VIDEO PLAY 2S`, `ORGANIC VIDEO PLAY 6S`,   `ORGANIC VIDEO PLAY OVER`, `ORGANIC VIDEO ENGAGEMENT`. - live_video: `LIVE VIDEO VIEW`, `LIVE VIDEO ENGAGEMENT`. - business_account: `BUSINESS ACCOUNT PROFILE FOLLOW`, `BUSINESS ACCOUNT PROFILE VISIT`,   `BUSINESS ACCOUNT ENGAGEMENT`, `BUSINESS ACCOUNT PLAY 2S`, `BUSINESS ACCOUNT PLAY 6S`,   `BUSINESS ACCOUNT PLAY OVER` and the rest of TikTok's business-account events. An unknown value is a 400 that lists the valid ones.
 	Event *string `json:"event,omitempty"`
 	// Required for lookalike audiences
 	SourceAudienceId *string `json:"sourceAudienceId,omitempty"`
 	// 2-letter code, required for lookalike audiences
 	Country *string `json:"country,omitempty"`
-	// Required for lookalike audiences
+	// lookalike on Meta (0.01-0.20) and Pinterest (0.01-0.10, whole percents). Rejected on TikTok and Google.
 	Ratio *float32 `json:"ratio,omitempty"`
-	// website only. Narrows the audience from all visitors to visitors of URLs containing this substring. Ignored when `rule` is supplied.
+	// lookalike on TikTok and Google: audience breadth. Rejected on Meta and Pinterest.
+	Size *string `json:"size,omitempty"`
+	// Required for tiktok_engagement: what people engaged with.
+	Source *string `json:"source,omitempty"`
+	// tiktok_engagement: ad group / campaign ids for `ads`, video ids for `organic_video` and `live_video` (max 10). Required except for `business_account`.
+	SourceIds []string `json:"sourceIds,omitempty"`
+	// tiktok_engagement: the TikTok identity that owns the videos or business account. Required for organic_video, live_video and business_account.
+	IdentityId *string `json:"identityId,omitempty"`
+	// tiktok_engagement: type of `identityId`.
+	IdentityType *string `json:"identityType,omitempty"`
+	// tiktok_engagement: required when identityType is BC_AUTH_TT.
+	IdentityAuthorizedBcId *string `json:"identityAuthorizedBcId,omitempty"`
+	// pinterest_engagement: Pinterest's `engager_type`, passed through when set.
+	EngagerType *int32 `json:"engagerType,omitempty"`
+	// pinterest_engagement: limit to one engagement action.
+	EngagementType *string `json:"engagementType,omitempty"`
+	// pinterest_engagement: people who engaged with Pins from these domains. The domain must be claimed on the Pinterest account or Pinterest rejects it.
+	EngagementDomains []string `json:"engagementDomains,omitempty"`
+	// pinterest_engagement: people who engaged with these campaigns' ads.
+	CampaignIds []string `json:"campaignIds,omitempty"`
+	// pinterest_engagement: people who engaged with these ads.
+	AdIds []string `json:"adIds,omitempty"`
+	// pinterest_engagement: people who engaged with these Pins. At least one of engagementDomains, campaignIds, adIds or pinIds is required.
+	PinIds []string `json:"pinIds,omitempty"`
+	// website on Meta, TikTok and Google. Narrows the audience from all visitors to visitors of URLs containing this substring. Ignored when `rule` is supplied. A 400 on Pinterest, which only matches exact URLs.
 	UrlContains *string `json:"urlContains,omitempty"`
-	// Optional raw Meta rule, replacing the one we build. Omit it for all visitors of `pixelId`, or use `urlContains` for the common page-match case.  For `website` this is Meta's Flexible Audience Rule and is VALIDATED before we call Meta: every entry in `inclusions.rules` (and `exclusions.rules`) must carry `event_sources`, `retention_seconds` AND `filter`. Meta rejects a rule missing any of the three with code 100 / subcode 1713098 (\"Invalid rule JSON format\"), so a bad shape is a 400 here instead. The pre-2018 flat shapes (`{url: ...}`, `{event: ...}`) are not accepted by Meta at all (subcode 1870029).  Example, visitors of /checkout in the last 30 days: `{\"inclusions\":{\"operator\":\"or\",\"rules\":[{\"event_sources\":[{\"id\":\"<pixelId>\",\"type\":\"pixel\"}],\"retention_seconds\":2592000,\"filter\":{\"operator\":\"and\",\"filters\":[{\"field\":\"url\",\"operator\":\"i_contains\",\"value\":\"/checkout\"}]}}]}}`  Note Meta DERIVES `retention_days` from `retention_seconds` and stores `event_sources[].id` as a number, so a rule read back will not be byte-identical to the one you sent.  For `meta_engagement` the rule is forwarded verbatim and NOT validated: that type has two dialects (the `video` source uses a legacy flat array), so no single schema covers both.
+	// Meta only (a 400 elsewhere). Optional raw Meta rule, replacing the one we build. Omit it for all visitors of `pixelId`, or use `urlContains` for the common page-match case.  For `website` this is Meta's Flexible Audience Rule and is VALIDATED before we call Meta: every entry in `inclusions.rules` (and `exclusions.rules`) must carry `event_sources`, `retention_seconds` AND `filter`. Meta rejects a rule missing any of the three with code 100 / subcode 1713098 (\"Invalid rule JSON format\"), so a bad shape is a 400 here instead. The pre-2018 flat shapes (`{url: ...}`, `{event: ...}`) are not accepted by Meta at all (subcode 1870029).  Example, visitors of /checkout in the last 30 days: `{\"inclusions\":{\"operator\":\"or\",\"rules\":[{\"event_sources\":[{\"id\":\"<pixelId>\",\"type\":\"pixel\"}],\"retention_seconds\":2592000,\"filter\":{\"operator\":\"and\",\"filters\":[{\"field\":\"url\",\"operator\":\"i_contains\",\"value\":\"/checkout\"}]}}]}}`  Note Meta DERIVES `retention_days` from `retention_seconds` and stores `event_sources[].id` as a number, so a rule read back will not be byte-identical to the one you sent.  For `meta_engagement` the rule is forwarded verbatim and NOT validated: that type has two dialects (the `video` source uses a legacy flat array), so no single schema covers both.
 	Rule map[string]interface{} `json:"rule,omitempty"`
 	// Data source declaration for GDPR compliance (customer_list only)
 	CustomerFileSource *string `json:"customerFileSource,omitempty"`
@@ -663,6 +687,390 @@ func (o *UploadedOrDerivedAudience) SetRatio(v float32) {
 	o.Ratio = &v
 }
 
+// GetSize returns the Size field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetSize() string {
+	if o == nil || IsNil(o.Size) {
+		var ret string
+		return ret
+	}
+	return *o.Size
+}
+
+// GetSizeOk returns a tuple with the Size field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetSizeOk() (*string, bool) {
+	if o == nil || IsNil(o.Size) {
+		return nil, false
+	}
+	return o.Size, true
+}
+
+// HasSize returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasSize() bool {
+	if o != nil && !IsNil(o.Size) {
+		return true
+	}
+
+	return false
+}
+
+// SetSize gets a reference to the given string and assigns it to the Size field.
+func (o *UploadedOrDerivedAudience) SetSize(v string) {
+	o.Size = &v
+}
+
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasSource() bool {
+	if o != nil && !IsNil(o.Source) {
+		return true
+	}
+
+	return false
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *UploadedOrDerivedAudience) SetSource(v string) {
+	o.Source = &v
+}
+
+// GetSourceIds returns the SourceIds field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetSourceIds() []string {
+	if o == nil || IsNil(o.SourceIds) {
+		var ret []string
+		return ret
+	}
+	return o.SourceIds
+}
+
+// GetSourceIdsOk returns a tuple with the SourceIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetSourceIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.SourceIds) {
+		return nil, false
+	}
+	return o.SourceIds, true
+}
+
+// HasSourceIds returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasSourceIds() bool {
+	if o != nil && !IsNil(o.SourceIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceIds gets a reference to the given []string and assigns it to the SourceIds field.
+func (o *UploadedOrDerivedAudience) SetSourceIds(v []string) {
+	o.SourceIds = v
+}
+
+// GetIdentityId returns the IdentityId field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetIdentityId() string {
+	if o == nil || IsNil(o.IdentityId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityId
+}
+
+// GetIdentityIdOk returns a tuple with the IdentityId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetIdentityIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityId) {
+		return nil, false
+	}
+	return o.IdentityId, true
+}
+
+// HasIdentityId returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasIdentityId() bool {
+	if o != nil && !IsNil(o.IdentityId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityId gets a reference to the given string and assigns it to the IdentityId field.
+func (o *UploadedOrDerivedAudience) SetIdentityId(v string) {
+	o.IdentityId = &v
+}
+
+// GetIdentityType returns the IdentityType field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetIdentityType() string {
+	if o == nil || IsNil(o.IdentityType) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityType
+}
+
+// GetIdentityTypeOk returns a tuple with the IdentityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetIdentityTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityType) {
+		return nil, false
+	}
+	return o.IdentityType, true
+}
+
+// HasIdentityType returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasIdentityType() bool {
+	if o != nil && !IsNil(o.IdentityType) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityType gets a reference to the given string and assigns it to the IdentityType field.
+func (o *UploadedOrDerivedAudience) SetIdentityType(v string) {
+	o.IdentityType = &v
+}
+
+// GetIdentityAuthorizedBcId returns the IdentityAuthorizedBcId field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetIdentityAuthorizedBcId() string {
+	if o == nil || IsNil(o.IdentityAuthorizedBcId) {
+		var ret string
+		return ret
+	}
+	return *o.IdentityAuthorizedBcId
+}
+
+// GetIdentityAuthorizedBcIdOk returns a tuple with the IdentityAuthorizedBcId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetIdentityAuthorizedBcIdOk() (*string, bool) {
+	if o == nil || IsNil(o.IdentityAuthorizedBcId) {
+		return nil, false
+	}
+	return o.IdentityAuthorizedBcId, true
+}
+
+// HasIdentityAuthorizedBcId returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasIdentityAuthorizedBcId() bool {
+	if o != nil && !IsNil(o.IdentityAuthorizedBcId) {
+		return true
+	}
+
+	return false
+}
+
+// SetIdentityAuthorizedBcId gets a reference to the given string and assigns it to the IdentityAuthorizedBcId field.
+func (o *UploadedOrDerivedAudience) SetIdentityAuthorizedBcId(v string) {
+	o.IdentityAuthorizedBcId = &v
+}
+
+// GetEngagerType returns the EngagerType field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEngagerType() int32 {
+	if o == nil || IsNil(o.EngagerType) {
+		var ret int32
+		return ret
+	}
+	return *o.EngagerType
+}
+
+// GetEngagerTypeOk returns a tuple with the EngagerType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEngagerTypeOk() (*int32, bool) {
+	if o == nil || IsNil(o.EngagerType) {
+		return nil, false
+	}
+	return o.EngagerType, true
+}
+
+// HasEngagerType returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEngagerType() bool {
+	if o != nil && !IsNil(o.EngagerType) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagerType gets a reference to the given int32 and assigns it to the EngagerType field.
+func (o *UploadedOrDerivedAudience) SetEngagerType(v int32) {
+	o.EngagerType = &v
+}
+
+// GetEngagementType returns the EngagementType field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEngagementType() string {
+	if o == nil || IsNil(o.EngagementType) {
+		var ret string
+		return ret
+	}
+	return *o.EngagementType
+}
+
+// GetEngagementTypeOk returns a tuple with the EngagementType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEngagementTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EngagementType) {
+		return nil, false
+	}
+	return o.EngagementType, true
+}
+
+// HasEngagementType returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEngagementType() bool {
+	if o != nil && !IsNil(o.EngagementType) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementType gets a reference to the given string and assigns it to the EngagementType field.
+func (o *UploadedOrDerivedAudience) SetEngagementType(v string) {
+	o.EngagementType = &v
+}
+
+// GetEngagementDomains returns the EngagementDomains field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetEngagementDomains() []string {
+	if o == nil || IsNil(o.EngagementDomains) {
+		var ret []string
+		return ret
+	}
+	return o.EngagementDomains
+}
+
+// GetEngagementDomainsOk returns a tuple with the EngagementDomains field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetEngagementDomainsOk() ([]string, bool) {
+	if o == nil || IsNil(o.EngagementDomains) {
+		return nil, false
+	}
+	return o.EngagementDomains, true
+}
+
+// HasEngagementDomains returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasEngagementDomains() bool {
+	if o != nil && !IsNil(o.EngagementDomains) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngagementDomains gets a reference to the given []string and assigns it to the EngagementDomains field.
+func (o *UploadedOrDerivedAudience) SetEngagementDomains(v []string) {
+	o.EngagementDomains = v
+}
+
+// GetCampaignIds returns the CampaignIds field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetCampaignIds() []string {
+	if o == nil || IsNil(o.CampaignIds) {
+		var ret []string
+		return ret
+	}
+	return o.CampaignIds
+}
+
+// GetCampaignIdsOk returns a tuple with the CampaignIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetCampaignIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.CampaignIds) {
+		return nil, false
+	}
+	return o.CampaignIds, true
+}
+
+// HasCampaignIds returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasCampaignIds() bool {
+	if o != nil && !IsNil(o.CampaignIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetCampaignIds gets a reference to the given []string and assigns it to the CampaignIds field.
+func (o *UploadedOrDerivedAudience) SetCampaignIds(v []string) {
+	o.CampaignIds = v
+}
+
+// GetAdIds returns the AdIds field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetAdIds() []string {
+	if o == nil || IsNil(o.AdIds) {
+		var ret []string
+		return ret
+	}
+	return o.AdIds
+}
+
+// GetAdIdsOk returns a tuple with the AdIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetAdIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.AdIds) {
+		return nil, false
+	}
+	return o.AdIds, true
+}
+
+// HasAdIds returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasAdIds() bool {
+	if o != nil && !IsNil(o.AdIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdIds gets a reference to the given []string and assigns it to the AdIds field.
+func (o *UploadedOrDerivedAudience) SetAdIds(v []string) {
+	o.AdIds = v
+}
+
+// GetPinIds returns the PinIds field value if set, zero value otherwise.
+func (o *UploadedOrDerivedAudience) GetPinIds() []string {
+	if o == nil || IsNil(o.PinIds) {
+		var ret []string
+		return ret
+	}
+	return o.PinIds
+}
+
+// GetPinIdsOk returns a tuple with the PinIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadedOrDerivedAudience) GetPinIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.PinIds) {
+		return nil, false
+	}
+	return o.PinIds, true
+}
+
+// HasPinIds returns a boolean if a field has been set.
+func (o *UploadedOrDerivedAudience) HasPinIds() bool {
+	if o != nil && !IsNil(o.PinIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetPinIds gets a reference to the given []string and assigns it to the PinIds field.
+func (o *UploadedOrDerivedAudience) SetPinIds(v []string) {
+	o.PinIds = v
+}
+
 // GetUrlContains returns the UrlContains field value if set, zero value otherwise.
 func (o *UploadedOrDerivedAudience) GetUrlContains() string {
 	if o == nil || IsNil(o.UrlContains) {
@@ -817,6 +1225,42 @@ func (o UploadedOrDerivedAudience) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ratio) {
 		toSerialize["ratio"] = o.Ratio
+	}
+	if !IsNil(o.Size) {
+		toSerialize["size"] = o.Size
+	}
+	if !IsNil(o.Source) {
+		toSerialize["source"] = o.Source
+	}
+	if !IsNil(o.SourceIds) {
+		toSerialize["sourceIds"] = o.SourceIds
+	}
+	if !IsNil(o.IdentityId) {
+		toSerialize["identityId"] = o.IdentityId
+	}
+	if !IsNil(o.IdentityType) {
+		toSerialize["identityType"] = o.IdentityType
+	}
+	if !IsNil(o.IdentityAuthorizedBcId) {
+		toSerialize["identityAuthorizedBcId"] = o.IdentityAuthorizedBcId
+	}
+	if !IsNil(o.EngagerType) {
+		toSerialize["engagerType"] = o.EngagerType
+	}
+	if !IsNil(o.EngagementType) {
+		toSerialize["engagementType"] = o.EngagementType
+	}
+	if !IsNil(o.EngagementDomains) {
+		toSerialize["engagementDomains"] = o.EngagementDomains
+	}
+	if !IsNil(o.CampaignIds) {
+		toSerialize["campaignIds"] = o.CampaignIds
+	}
+	if !IsNil(o.AdIds) {
+		toSerialize["adIds"] = o.AdIds
+	}
+	if !IsNil(o.PinIds) {
+		toSerialize["pinIds"] = o.PinIds
 	}
 	if !IsNil(o.UrlContains) {
 		toSerialize["urlContains"] = o.UrlContains
