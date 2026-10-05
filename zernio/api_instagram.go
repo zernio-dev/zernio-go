@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.213.1
+API version: 1.214.0
 Contact: support@zernio.com
 */
 
@@ -164,6 +164,193 @@ func (a *InstagramAPIService) GetInstagramAudioExecute(r InstagramAPIGetInstagra
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type InstagramAPIGetInstagramBusinessDiscoveryRequest struct {
+	ctx        context.Context
+	ApiService *InstagramAPIService
+	accountId  string
+	username   *string
+	limit      *int32
+}
+
+// Instagram handle to look up, with or without the leading @. Case-insensitive.
+func (r InstagramAPIGetInstagramBusinessDiscoveryRequest) Username(username string) InstagramAPIGetInstagramBusinessDiscoveryRequest {
+	r.username = &username
+	return r
+}
+
+// How many of the most recent media to return.
+func (r InstagramAPIGetInstagramBusinessDiscoveryRequest) Limit(limit int32) InstagramAPIGetInstagramBusinessDiscoveryRequest {
+	r.limit = &limit
+	return r
+}
+
+func (r InstagramAPIGetInstagramBusinessDiscoveryRequest) Execute() (*InstagramBusinessDiscovery, *http.Response, error) {
+	return r.ApiService.GetInstagramBusinessDiscoveryExecute(r)
+}
+
+/*
+GetInstagramBusinessDiscovery Look up a public Instagram Business account
+
+Returns the public profile and most recent media of any Instagram
+Business or Creator account, looked up by username through one of your
+connected Instagram accounts. Useful for competitor and market research.
+Personal accounts and private accounts cannot be looked up.
+
+Requires an Instagram account connected via **Facebook Login**. Meta
+serves business discovery on graph.facebook.com only, so accounts
+connected with classic Instagram Login receive a 400
+(`instagram_business_discovery_requires_facebook_login`) and must be
+reconnected choosing the Facebook option. Any one such account can look
+up any public Business or Creator handle.
+
+`likeCount` is null when the owner hides like counts.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param accountId The ID of a connected Instagram account (Facebook Login).
+	@return InstagramAPIGetInstagramBusinessDiscoveryRequest
+*/
+func (a *InstagramAPIService) GetInstagramBusinessDiscovery(ctx context.Context, accountId string) InstagramAPIGetInstagramBusinessDiscoveryRequest {
+	return InstagramAPIGetInstagramBusinessDiscoveryRequest{
+		ApiService: a,
+		ctx:        ctx,
+		accountId:  accountId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return InstagramBusinessDiscovery
+func (a *InstagramAPIService) GetInstagramBusinessDiscoveryExecute(r InstagramAPIGetInstagramBusinessDiscoveryRequest) (*InstagramBusinessDiscovery, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InstagramBusinessDiscovery
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "InstagramAPIService.GetInstagramBusinessDiscovery")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/accounts/{accountId}/instagram/business-discovery"
+	localVarPath = strings.Replace(localVarPath, "{"+"accountId"+"}", url.PathEscape(parameterValueToString(r.accountId, "accountId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.username == nil {
+		return localVarReturnValue, nil, reportError("username is required and must be specified")
+	}
+	if strlen(*r.username) > 31 {
+		return localVarReturnValue, nil, reportError("username must have less than 31 elements")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "username", r.username, "form", "")
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 12
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
