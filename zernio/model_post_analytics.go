@@ -31,7 +31,7 @@ type PostAnalytics struct {
 	// Link clicks where the platform reports them. Always 0 on Facebook Page stories: Meta exposes no link-click metric for stories.
 	Clicks *int32 `json:"clicks,omitempty"`
 	Views  *int32 `json:"views,omitempty"`
-	// Instagram feed posts and stories only: organic accounts that started following from this post. Null on Instagram Reels and non-Reels video, where Meta does not expose this metric for the media. 0 for other platforms.
+	// Accounts that started following from this post. Instagram feed posts and stories (organic follows), Facebook Reels (Meta post_video_followers) and the TikTok business lane. Null on Instagram Reels and non-Reels video and on Facebook posts that are not Reels, where Meta does not expose this metric for the media. 0 for other platforms.
 	Follows NullableInt32 `json:"follows,omitempty"`
 	// Average watch time per play, in milliseconds, for Instagram Reels, Facebook Reels and TikTok videos (business accounts). On Facebook it includes replays within a play, so it can exceed the Reel length. 0 for other media and platforms, including regular Facebook videos.
 	IgReelsAvgWatchTime *int32 `json:"igReelsAvgWatchTime,omitempty"`

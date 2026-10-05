@@ -31,7 +31,7 @@ type AnalyticsDeltaEntryMetrics struct {
 	Sends       int32 `json:"sends"`
 	Clicks      int32 `json:"clicks"`
 	Views       int32 `json:"views"`
-	// Follows attributed to this post (Instagram)
+	// Follows attributed to this post (Instagram feed and stories, Facebook Reels, TikTok business lane)
 	Follows int32 `json:"follows"`
 	// Average watch time per play, in milliseconds (Instagram Reels, Facebook Reels, TikTok business videos)
 	IgReelsAvgWatchTime int32 `json:"igReelsAvgWatchTime"`
