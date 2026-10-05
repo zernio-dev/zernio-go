@@ -18,12 +18,14 @@ import (
 // checks if the WebhookPayloadCommentCommentAd type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadCommentCommentAd{}
 
-// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id and value.media.ad_title. Facebook: populated via a Graph API lookup of the parent post's promotion_status. Absent for comments on organic posts that are not currently promoted.
+// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id, value.media.ad_title and value.media.original_media_id, each only when Meta includes it. Facebook: populated via a Graph API lookup of the parent post's promotion_status. Absent for comments on organic posts that are not currently promoted.
 type WebhookPayloadCommentCommentAd struct {
 	// Meta ad ID (Instagram only).
 	Id *string `json:"id,omitempty"`
 	// Ad creative title (Instagram only).
 	Title *string `json:"title,omitempty"`
+	// Original media ID that Meta reports for the ad (Instagram only).
+	OriginalMediaId *string `json:"originalMediaId,omitempty"`
 	// Facebook promotion status returned by Graph API. Common values: \"active\" (organic post currently boosted), \"ineligible\" (dark post or ad creative, not promotable because it already is an ad).
 	PromotionStatus *string `json:"promotionStatus,omitempty"`
 }
@@ -109,6 +111,38 @@ func (o *WebhookPayloadCommentCommentAd) SetTitle(v string) {
 	o.Title = &v
 }
 
+// GetOriginalMediaId returns the OriginalMediaId field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentCommentAd) GetOriginalMediaId() string {
+	if o == nil || IsNil(o.OriginalMediaId) {
+		var ret string
+		return ret
+	}
+	return *o.OriginalMediaId
+}
+
+// GetOriginalMediaIdOk returns a tuple with the OriginalMediaId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentCommentAd) GetOriginalMediaIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OriginalMediaId) {
+		return nil, false
+	}
+	return o.OriginalMediaId, true
+}
+
+// HasOriginalMediaId returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentCommentAd) HasOriginalMediaId() bool {
+	if o != nil && !IsNil(o.OriginalMediaId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOriginalMediaId gets a reference to the given string and assigns it to the OriginalMediaId field.
+func (o *WebhookPayloadCommentCommentAd) SetOriginalMediaId(v string) {
+	o.OriginalMediaId = &v
+}
+
 // GetPromotionStatus returns the PromotionStatus field value if set, zero value otherwise.
 func (o *WebhookPayloadCommentCommentAd) GetPromotionStatus() string {
 	if o == nil || IsNil(o.PromotionStatus) {
@@ -156,6 +190,9 @@ func (o WebhookPayloadCommentCommentAd) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Title) {
 		toSerialize["title"] = o.Title
+	}
+	if !IsNil(o.OriginalMediaId) {
+		toSerialize["originalMediaId"] = o.OriginalMediaId
 	}
 	if !IsNil(o.PromotionStatus) {
 		toSerialize["promotionStatus"] = o.PromotionStatus
