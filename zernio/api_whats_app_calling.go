@@ -417,7 +417,7 @@ stores the Meta-issued SIP password (encrypted), and snapshots the
 customer's forward-to destination.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param id WhatsAppPhoneNumber Mongo ID
+	@param id WhatsApp phone number id
 	@return WhatsAppCallingAPIEnableWhatsAppCallingLegacyRequest
 
 Deprecated

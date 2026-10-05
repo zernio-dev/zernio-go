@@ -52,16 +52,16 @@ Per-conversation inbox analytics. The inbox analog of
 /v1/analytics/post-timeline: one conversation, daily totals,
 source mix.
 
-The {conversationId} path param accepts EITHER the Mongo `_id` of
-the Conversation document OR its `platformConversationId` (the
-same identity used by metadata.conversationId at ingest time).
-Ownership is verified in MongoDB against the caller's team
-before the Tinybird query fires.
+The {conversationId} path param accepts EITHER the Zernio
+conversation id OR its `platformConversationId` (the same
+identity used by metadata.conversationId at ingest time).
+Ownership is verified against the caller's team before the
+Tinybird query fires.
 
 Max date range is 365 days.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param conversationId Mongo _id or platformConversationId.
+	@param conversationId Zernio conversation id or platformConversationId.
 	@return InboxAnalyticsAPIGetInboxConversationAnalyticsRequest
 */
 func (a *InboxAnalyticsAPIService) GetInboxConversationAnalytics(ctx context.Context, conversationId string) InboxAnalyticsAPIGetInboxConversationAnalyticsRequest {
@@ -806,7 +806,7 @@ func (r InboxAnalyticsAPIGetInboxTopAccountsRequest) Source(source string) Inbox
 	return r
 }
 
-// Cap on returned rows. Lower than the posting listing&#39;s 100 because each row triggers a SocialAccount Mongo lookup.
+// Cap on returned rows. Lower than the posting listing&#39;s 100 because each row triggers a social account lookup.
 func (r InboxAnalyticsAPIGetInboxTopAccountsRequest) Limit(limit int32) InboxAnalyticsAPIGetInboxTopAccountsRequest {
 	r.limit = &limit
 	return r

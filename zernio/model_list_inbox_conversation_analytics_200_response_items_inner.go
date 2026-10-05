@@ -23,7 +23,7 @@ var _ MappedNullable = &ListInboxConversationAnalytics200ResponseItemsInner{}
 type ListInboxConversationAnalytics200ResponseItemsInner struct {
 	// The platformConversationId (the same identity used by metadata.conversationId)
 	ConversationId *string `json:"conversationId,omitempty"`
-	// The Conversation document _id, when a matching doc exists
+	// The Zernio conversation id, when a matching conversation exists
 	MongoId             NullableString `json:"mongoId,omitempty"`
 	AccountId           *string        `json:"accountId,omitempty"`
 	Platform            *string        `json:"platform,omitempty"`
