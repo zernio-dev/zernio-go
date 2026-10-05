@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.4
+API version: 1.216.0
 Contact: support@zernio.com
 */
 
@@ -618,6 +618,112 @@ func (a *WebhookEventsAPIService) OnAdStatusChangedExecute(r WebhookEventsAPIOnA
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAdStatusChanged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdVideoProcessedRequest struct {
+	ctx                            context.Context
+	ApiService                     *WebhookEventsAPIService
+	webhookPayloadAdVideoProcessed *WebhookPayloadAdVideoProcessed
+}
+
+func (r WebhookEventsAPIOnAdVideoProcessedRequest) WebhookPayloadAdVideoProcessed(webhookPayloadAdVideoProcessed WebhookPayloadAdVideoProcessed) WebhookEventsAPIOnAdVideoProcessedRequest {
+	r.webhookPayloadAdVideoProcessed = &webhookPayloadAdVideoProcessed
+	return r
+}
+
+func (r WebhookEventsAPIOnAdVideoProcessedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdVideoProcessedExecute(r)
+}
+
+/*
+OnAdVideoProcessed Ad video processed event
+
+Fired once per `POST /v1/ads/videos` call made with `async: true`, when Meta finishes
+processing the uploaded video. `video.status` is `ready` (reference it as `video.id`
+on the create endpoints) or `error` (Meta could not process it; `video.error` carries
+the reason).
+
+Zernio watches the video for up to about 13 minutes after the upload request. A video
+still processing after that sends no event, so keep `GET /v1/ads/videos/{videoId}`
+as the source of truth for long videos.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdVideoProcessedRequest
+*/
+func (a *WebhookEventsAPIService) OnAdVideoProcessed(ctx context.Context) WebhookEventsAPIOnAdVideoProcessedRequest {
+	return WebhookEventsAPIOnAdVideoProcessedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdVideoProcessedExecute(r WebhookEventsAPIOnAdVideoProcessedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdVideoProcessed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad.video.processed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdVideoProcessed == nil {
+		return nil, reportError("webhookPayloadAdVideoProcessed is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdVideoProcessed
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

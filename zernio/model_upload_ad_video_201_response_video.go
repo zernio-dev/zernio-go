@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.4
+API version: 1.216.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,8 @@ var _ MappedNullable = &UploadAdVideo201ResponseVideo{}
 // UploadAdVideo201ResponseVideo struct for UploadAdVideo201ResponseVideo
 type UploadAdVideo201ResponseVideo struct {
 	// Meta video id, reusable as video.id on POST /v1/ads/create and inside POST /v1/ads/preview creativeSpec.
-	Id *string `json:"id,omitempty"`
+	Id     *string `json:"id,omitempty"`
+	Status *string `json:"status,omitempty"`
 	// Meta-hosted poster URL if available; null when Meta has not produced a poster yet.
 	ThumbnailUrl NullableString `json:"thumbnailUrl,omitempty"`
 }
@@ -73,6 +74,38 @@ func (o *UploadAdVideo201ResponseVideo) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *UploadAdVideo201ResponseVideo) SetId(v string) {
 	o.Id = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *UploadAdVideo201ResponseVideo) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadAdVideo201ResponseVideo) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *UploadAdVideo201ResponseVideo) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *UploadAdVideo201ResponseVideo) SetStatus(v string) {
+	o.Status = &v
 }
 
 // GetThumbnailUrl returns the ThumbnailUrl field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -130,6 +163,9 @@ func (o UploadAdVideo201ResponseVideo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
 	}
 	if o.ThumbnailUrl.IsSet() {
 		toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()

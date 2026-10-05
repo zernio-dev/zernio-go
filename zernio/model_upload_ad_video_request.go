@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.4
+API version: 1.216.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type UploadAdVideoRequest struct {
 	VideoBase64 *string `json:"videoBase64,omitempty"`
 	// Optional filename shown alongside the upload session. Applied only when uploading via videoBase64.
 	Filename *string `json:"filename,omitempty"`
+	// true: answer 202 once Meta accepts the upload instead of waiting for processing. Poll GET /v1/ads/videos/{videoId} or subscribe to ad.video.processed.
+	Async *bool `json:"async,omitempty"`
 }
 
 type _UploadAdVideoRequest UploadAdVideoRequest
@@ -44,6 +46,8 @@ func NewUploadAdVideoRequest(accountId string, adAccountId string) *UploadAdVide
 	this := UploadAdVideoRequest{}
 	this.AccountId = accountId
 	this.AdAccountId = adAccountId
+	var async bool = false
+	this.Async = &async
 	return &this
 }
 
@@ -52,6 +56,8 @@ func NewUploadAdVideoRequest(accountId string, adAccountId string) *UploadAdVide
 // but it doesn't guarantee that properties required by API are set
 func NewUploadAdVideoRequestWithDefaults() *UploadAdVideoRequest {
 	this := UploadAdVideoRequest{}
+	var async bool = false
+	this.Async = &async
 	return &this
 }
 
@@ -199,6 +205,38 @@ func (o *UploadAdVideoRequest) SetFilename(v string) {
 	o.Filename = &v
 }
 
+// GetAsync returns the Async field value if set, zero value otherwise.
+func (o *UploadAdVideoRequest) GetAsync() bool {
+	if o == nil || IsNil(o.Async) {
+		var ret bool
+		return ret
+	}
+	return *o.Async
+}
+
+// GetAsyncOk returns a tuple with the Async field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadAdVideoRequest) GetAsyncOk() (*bool, bool) {
+	if o == nil || IsNil(o.Async) {
+		return nil, false
+	}
+	return o.Async, true
+}
+
+// HasAsync returns a boolean if a field has been set.
+func (o *UploadAdVideoRequest) HasAsync() bool {
+	if o != nil && !IsNil(o.Async) {
+		return true
+	}
+
+	return false
+}
+
+// SetAsync gets a reference to the given bool and assigns it to the Async field.
+func (o *UploadAdVideoRequest) SetAsync(v bool) {
+	o.Async = &v
+}
+
 func (o UploadAdVideoRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -219,6 +257,9 @@ func (o UploadAdVideoRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Filename) {
 		toSerialize["filename"] = o.Filename
+	}
+	if !IsNil(o.Async) {
+		toSerialize["async"] = o.Async
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.4
+API version: 1.216.0
 Contact: support@zernio.com
 */
 
@@ -1049,6 +1049,183 @@ func (a *AdCreativesAPIService) GetAdPreviewsExecute(r AdCreativesAPIGetAdPrevie
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCreativesAPIGetAdVideoStatusRequest struct {
+	ctx         context.Context
+	ApiService  *AdCreativesAPIService
+	videoId     string
+	accountId   *string
+	adAccountId *string
+}
+
+// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+func (r AdCreativesAPIGetAdVideoStatusRequest) AccountId(accountId string) AdCreativesAPIGetAdVideoStatusRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Meta ad account id (act_&lt;n&gt;) the video was uploaded to.
+func (r AdCreativesAPIGetAdVideoStatusRequest) AdAccountId(adAccountId string) AdCreativesAPIGetAdVideoStatusRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdCreativesAPIGetAdVideoStatusRequest) Execute() (*GetAdVideoStatus200Response, *http.Response, error) {
+	return r.ApiService.GetAdVideoStatusExecute(r)
+}
+
+/*
+GetAdVideoStatus Get ad video processing status
+
+Reads a video's processing state live from Meta (`GET /{video-id}?fields=status`).
+Poll this after `POST /v1/ads/videos` with `async: true` until `status` is `ready`;
+the video is only usable as `video.id` on the create endpoints from then on.
+
+`status` is normalised: `ready`, `error` (Meta's `error` or `expired`), and
+`processing` for every other Meta state. `platformStatus` carries Meta's raw
+`video_status` and `processingProgress` Meta's 0-100 percentage when it reports one.
+Polling every 5 to 10 seconds is plenty.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param videoId Meta ad video id (numeric).
+	@return AdCreativesAPIGetAdVideoStatusRequest
+*/
+func (a *AdCreativesAPIService) GetAdVideoStatus(ctx context.Context, videoId string) AdCreativesAPIGetAdVideoStatusRequest {
+	return AdCreativesAPIGetAdVideoStatusRequest{
+		ApiService: a,
+		ctx:        ctx,
+		videoId:    videoId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdVideoStatus200Response
+func (a *AdCreativesAPIService) GetAdVideoStatusExecute(r AdCreativesAPIGetAdVideoStatusRequest) (*GetAdVideoStatus200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdVideoStatus200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCreativesAPIService.GetAdVideoStatus")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/videos/{videoId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"videoId"+"}", url.PathEscape(parameterValueToString(r.videoId, "videoId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2667,9 +2844,16 @@ Accepts either an https `videoUrl` we download server-side (SSRF-guarded) or raw
 limit, around 4.5 MB payload in practice, so larger videos must come via `videoUrl`.
 
 Returns the Meta `video.id` (reusable wherever `video.id` is accepted) plus Meta's
-auto-generated poster URL when available. The endpoint waits until Meta reports the
-video ready (chunked upload + transcode can take minutes; the handler runs up to
-800 s).
+auto-generated poster URL when available. By default the endpoint waits until Meta
+reports the video ready (chunked upload + transcode can take minutes; the handler runs
+up to 800 s) and answers 201.
+
+**Async mode.** Send `async: true` to get a 202 as soon as Meta has accepted the bytes,
+with `video.status: processing`. Then either poll `GET /v1/ads/videos/{videoId}` until
+`status` is `ready`, or subscribe to the `ad.video.processed` webhook. A create call
+that references the video while it is still processing waits up to 30 s, then answers
+409 `invalid_resource_state` naming the status endpoint. With `videoUrl` the download
+and byte transfer still happen inside the request; only Meta's transcode is skipped.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPIUploadAdVideoRequest

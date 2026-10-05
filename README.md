@@ -437,6 +437,7 @@ func main() {
 | `client.AdCreativesAPI.GetAdCreative(ctx)` | Creative details |
 | `client.AdCreativesAPI.GetAdMedia(ctx)` | Direct video and image URLs for an ad |
 | `client.AdCreativesAPI.GetAdPreviews(ctx)` | Render previews of an existing ad |
+| `client.AdCreativesAPI.GetAdVideoStatus(ctx)` | Get ad video processing status |
 | `client.AdCreativesAPI.UpdateAdCreative(ctx)` | Rename a creative |
 | `client.AdCreativesAPI.DeleteAdCreative(ctx)` | Delete a creative |
 | `client.AdCreativesAPI.DeleteAdVideo(ctx)` | Delete an ad video |
