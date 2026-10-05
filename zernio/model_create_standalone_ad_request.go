@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.0
+API version: 1.215.1
 Contact: support@zernio.com
 */
 
@@ -58,10 +58,14 @@ type CreateStandaloneAdRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads accepts both as the campaign's single spend cap. A lifetime cap can later switch to daily with PUT /v1/ads/campaigns/{campaignId}, but OpenAI never switches a daily cap back to lifetime (422). Automatic bidding (Maximize Results) needs a daily budget.
 	BudgetType *string `json:"budgetType,omitempty"`
-	// Publish state of the created entities, on every platform. Omitted or ACTIVE publishes live (default, back-compat); PAUSED pauses only the TOP-MOST object this call creates and switches everything below it on, so one resume of that object brings the new tree live and nothing that already existed is touched: a new campaign is held paused with its ad set and ad on; with `existingCampaignId` the new ad set is held paused with its ad on; with `adSetId` the new ad itself is paused. `campaignStatus: ACTIVE` with `status: PAUSED` moves the pause down to the new ad set. LinkedIn: a held campaign group is PAUSED with its campaign and creative ACTIVE; a new campaign in an existing group stays DRAFT. X has no per-ad switch, so its lowest level is the line item. Google Performance Max and Demand Gen accept PAUSED only (the campaign is created paused).
+	// Publish state of the created entities, on every platform. Omitted or ACTIVE publishes live (default, back-compat); PAUSED pauses only the TOP-MOST object this call creates and switches everything below it on, so one resume of that object brings the new tree live and nothing that already existed is touched: a new campaign is held paused with its ad set and ad on; with `existingCampaignId` the new ad set is held paused with its ad on; with `adSetId` the new ad itself is paused. `campaignStatus: ACTIVE` with `status: PAUSED` moves the pause down to the new ad set. `campaignStatus`, `adSetStatus` and `adStatus` set one level each and always win for that level; `status: PAUSED` adds a hold of its own only when none of them is PAUSED. To create every object paused, send all three as PAUSED. LinkedIn: a held campaign group is PAUSED with its campaign and creative ACTIVE; a new campaign in an existing group stays DRAFT. X has no per-ad switch, so its lowest level is the line item. Google Performance Max and Demand Gen accept PAUSED only (the campaign is created paused).
 	Status *string `json:"status,omitempty"`
-	// Meta, Google, and ChatGPT (OpenAI). Overrides `status` for the new campaign alone. `PAUSED` holds the campaign off with its ad set and ad on; `ACTIVE` with `status: PAUSED` switches the campaign on and holds the new ad set paused (its ad on). Omitted, it follows `status`.
+	// Every platform. Sets the switch of the new campaign alone (LinkedIn: the campaign group) and overrides `status` for it. `PAUSED` holds the campaign off with its ad set and ad on unless `adSetStatus` or `adStatus` say otherwise; `ACTIVE` with `status: PAUSED` switches the campaign on and holds the new ad set paused (its ad on). Omitted, it follows `status`. Ignored when the request creates no campaign (`existingCampaignId` or `adSetId`).
 	CampaignStatus *string `json:"campaignStatus,omitempty"`
+	// Every platform. Sets the switch of the new ad set alone (Google, TikTok, Pinterest and ChatGPT: the ad group; LinkedIn: the campaign, which stays DRAFT when held; X: the line item) and overrides `status` for it. Omitted, it follows `status`.  Precedence: a level status (`campaignStatus`, `adSetStatus`, `adStatus`) always wins for its level. `status: PAUSED` then holds the top-most new object that has no level status, and only when no level status is PAUSED; every other new object is switched on. So `campaignStatus: ACTIVE` + `adSetStatus: PAUSED` + `adStatus: PAUSED` keeps the campaign on with the new ad set and ad off, and all three PAUSED creates the whole tree paused.  Rejected with a 400 alongside `adSetId` (that ad set already exists; change it with PUT /v1/ads/ad-sets/{adSetId}/status). Performance Max and Demand Gen accept PAUSED only.
+	AdSetStatus *string `json:"adSetStatus,omitempty"`
+	// Sets the switch of the new ad alone, also when attaching to an existing ad set with `adSetId`, and overrides `status` for it. Same precedence as `adSetStatus`. Omitted, it follows `status`.  X returns a 400: a promoted post has no switch of its own, so hold the line item with `adSetStatus`. `PAUSED` with `buyingType: RESERVED` returns a 400 (Meta creates the first Reach and Frequency ad ACTIVE). Performance Max and Demand Gen accept PAUSED only.
+	AdStatus *string `json:"adStatus,omitempty"`
 	// Meta only. Where the budget lives, which selects the Meta budget model:   - `adset` (default): ABO (Ad-set Budget Optimization). The budget is set on the     ad set. This is the back-compatible behaviour; omit this field to keep it.   - `campaign`: CBO (Campaign Budget Optimization / Advantage Campaign Budget). The     budget AND `bidStrategy` are set on the CAMPAIGN, and Meta distributes spend     across ad sets automatically. The returned ad stores the applied `budgetLevel` and budget in `campaignBudget` for CBO or `adSetBudget` for ABO. Edit CBO budgets with `PUT /v1/ads/campaigns/{campaignId}` and ABO budgets with `PUT /v1/ads/ad-sets/{adSetId}`. Meta requires the budget at exactly one level, never both. Non-Meta platforms ignore this field. Ignored on the attach shape (`adSetId`), which inherits the existing budget.
 	BudgetLevel *string `json:"budgetLevel,omitempty"`
 	// ISO 4217 currency code matching the ad account's currency (e.g. `USD`). Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
@@ -953,6 +957,70 @@ func (o *CreateStandaloneAdRequest) HasCampaignStatus() bool {
 // SetCampaignStatus gets a reference to the given string and assigns it to the CampaignStatus field.
 func (o *CreateStandaloneAdRequest) SetCampaignStatus(v string) {
 	o.CampaignStatus = &v
+}
+
+// GetAdSetStatus returns the AdSetStatus field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetAdSetStatus() string {
+	if o == nil || IsNil(o.AdSetStatus) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetStatus
+}
+
+// GetAdSetStatusOk returns a tuple with the AdSetStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetAdSetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetStatus) {
+		return nil, false
+	}
+	return o.AdSetStatus, true
+}
+
+// HasAdSetStatus returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasAdSetStatus() bool {
+	if o != nil && !IsNil(o.AdSetStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetStatus gets a reference to the given string and assigns it to the AdSetStatus field.
+func (o *CreateStandaloneAdRequest) SetAdSetStatus(v string) {
+	o.AdSetStatus = &v
+}
+
+// GetAdStatus returns the AdStatus field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetAdStatus() string {
+	if o == nil || IsNil(o.AdStatus) {
+		var ret string
+		return ret
+	}
+	return *o.AdStatus
+}
+
+// GetAdStatusOk returns a tuple with the AdStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetAdStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.AdStatus) {
+		return nil, false
+	}
+	return o.AdStatus, true
+}
+
+// HasAdStatus returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasAdStatus() bool {
+	if o != nil && !IsNil(o.AdStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdStatus gets a reference to the given string and assigns it to the AdStatus field.
+func (o *CreateStandaloneAdRequest) SetAdStatus(v string) {
+	o.AdStatus = &v
 }
 
 // GetBudgetLevel returns the BudgetLevel field value if set, zero value otherwise.
@@ -3913,6 +3981,12 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CampaignStatus) {
 		toSerialize["campaignStatus"] = o.CampaignStatus
+	}
+	if !IsNil(o.AdSetStatus) {
+		toSerialize["adSetStatus"] = o.AdSetStatus
+	}
+	if !IsNil(o.AdStatus) {
+		toSerialize["adStatus"] = o.AdStatus
 	}
 	if !IsNil(o.BudgetLevel) {
 		toSerialize["budgetLevel"] = o.BudgetLevel

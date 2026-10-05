@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.0
+API version: 1.215.1
 Contact: support@zernio.com
 */
 
@@ -58,7 +58,7 @@ type CreateMessagingAdRequest struct {
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or a platformPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
-	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `budgetLevel`, `startDate`, `endDate`, `objective`, `campaignStatus`, `existingCampaignId`, the special ad category fields and every targeting field except `ageMin`, `ageMax`, `placements` and `advantageAudience` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
+	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `budgetLevel`, `startDate`, `endDate`, `objective`, `campaignStatus`, `adSetStatus`, `existingCampaignId`, the special ad category fields and every targeting field except `ageMin`, `ageMax`, `placements` and `advantageAudience` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
 	AdSetId *string `json:"adSetId,omitempty"`
 	// Create the new messaging ad set (and its ads) under this EXISTING Meta campaign instead of a new one, e.g. several audience ad sets under one campaign. The campaign's objective must be OUTCOME_ENGAGEMENT, OUTCOME_SALES or OUTCOME_LEADS (400 otherwise). If the campaign has a campaign budget, omit `budgetAmount` and `budgetType` (400 if sent); otherwise they are required and land on the new ad set. `objective`, `campaignName`, `campaignStatus`, `budgetLevel`, `specialAdCategories`, `specialAdCategoryCountry` and `adSetId` are rejected alongside it. To add ads to an existing ad set instead, use `adSetId`.
 	ExistingCampaignId *string `json:"existingCampaignId,omitempty" validate:"regexp=^\\\\d+$"`
@@ -137,6 +137,10 @@ type CreateMessagingAdRequest struct {
 	Status *string `json:"status,omitempty"`
 	// Campaign-level status, same semantics as `POST /v1/ads/create`. Defaults to `status`. `PAUSED` holds the new campaign off while the ad set and ads switch on (one resume call brings the whole hierarchy live); `ACTIVE` with `status: PAUSED` switches the campaign on and pauses the new ad set instead. Only meaningful when a new campaign is being created; rejected with a 400 alongside `adSetId` (the attach shape reuses an existing campaign).
 	CampaignStatus *string `json:"campaignStatus,omitempty"`
+	// Ad-set-level status, same semantics as `POST /v1/ads/create`. Sets the new ad set's switch alone and overrides `status` for it. A level status (`campaignStatus`, `adSetStatus`, `adStatus`) always wins for its level, and `status: PAUSED` adds a hold of its own only when none of them is PAUSED. Rejected with a 400 alongside `adSetId` (that ad set already exists).
+	AdSetStatus *string `json:"adSetStatus,omitempty"`
+	// Ad-level status, same semantics as `POST /v1/ads/create`. Sets the new ads' switch and overrides `status` for them, also with `adSetId`. Send `campaignStatus`, `adSetStatus` and `adStatus` all PAUSED to create every object paused.
+	AdStatus *string `json:"adStatus,omitempty"`
 	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. CTWA's `optimization_goal` is fixed to `CONVERSATIONS`, but the bid strategy is independent.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (e.g. `5` = $5.00 on a USD account). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; rejected otherwise.
@@ -2146,6 +2150,70 @@ func (o *CreateMessagingAdRequest) SetCampaignStatus(v string) {
 	o.CampaignStatus = &v
 }
 
+// GetAdSetStatus returns the AdSetStatus field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetAdSetStatus() string {
+	if o == nil || IsNil(o.AdSetStatus) {
+		var ret string
+		return ret
+	}
+	return *o.AdSetStatus
+}
+
+// GetAdSetStatusOk returns a tuple with the AdSetStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetAdSetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.AdSetStatus) {
+		return nil, false
+	}
+	return o.AdSetStatus, true
+}
+
+// HasAdSetStatus returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasAdSetStatus() bool {
+	if o != nil && !IsNil(o.AdSetStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdSetStatus gets a reference to the given string and assigns it to the AdSetStatus field.
+func (o *CreateMessagingAdRequest) SetAdSetStatus(v string) {
+	o.AdSetStatus = &v
+}
+
+// GetAdStatus returns the AdStatus field value if set, zero value otherwise.
+func (o *CreateMessagingAdRequest) GetAdStatus() string {
+	if o == nil || IsNil(o.AdStatus) {
+		var ret string
+		return ret
+	}
+	return *o.AdStatus
+}
+
+// GetAdStatusOk returns a tuple with the AdStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateMessagingAdRequest) GetAdStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.AdStatus) {
+		return nil, false
+	}
+	return o.AdStatus, true
+}
+
+// HasAdStatus returns a boolean if a field has been set.
+func (o *CreateMessagingAdRequest) HasAdStatus() bool {
+	if o != nil && !IsNil(o.AdStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdStatus gets a reference to the given string and assigns it to the AdStatus field.
+func (o *CreateMessagingAdRequest) SetAdStatus(v string) {
+	o.AdStatus = &v
+}
+
 // GetBidStrategy returns the BidStrategy field value if set, zero value otherwise.
 func (o *CreateMessagingAdRequest) GetBidStrategy() string {
 	if o == nil || IsNil(o.BidStrategy) {
@@ -2687,6 +2755,12 @@ func (o CreateMessagingAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CampaignStatus) {
 		toSerialize["campaignStatus"] = o.CampaignStatus
+	}
+	if !IsNil(o.AdSetStatus) {
+		toSerialize["adSetStatus"] = o.AdSetStatus
+	}
+	if !IsNil(o.AdStatus) {
+		toSerialize["adStatus"] = o.AdStatus
 	}
 	if !IsNil(o.BidStrategy) {
 		toSerialize["bidStrategy"] = o.BidStrategy
