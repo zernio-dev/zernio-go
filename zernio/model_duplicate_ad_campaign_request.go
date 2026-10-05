@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.3
+API version: 1.215.4
 Contact: support@zernio.com
 */
 
@@ -31,10 +31,13 @@ type DuplicateAdCampaignRequest struct {
 	// Reschedule the copied hierarchy's start (ISO 8601). On Meta and TikTok a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone; LinkedIn ad accounts carry no timezone, so there it is read as UTC. TikTok defaults to a start a few minutes after the copy.
 	StartTime *time.Time `json:"startTime,omitempty"`
 	// Reschedule the copied hierarchy's end, read like `startTime`; a date-only end runs to 23:59:59 local. Defaults to the source's end.
-	EndTime        *time.Time `json:"endTime,omitempty"`
-	RenameStrategy *string    `json:"renameStrategy,omitempty"`
-	RenamePrefix   *string    `json:"renamePrefix,omitempty"`
-	RenameSuffix   *string    `json:"renameSuffix,omitempty"`
+	EndTime *time.Time `json:"endTime,omitempty"`
+	// Meta's native `rename_strategy` values. `DEEP_RENAME` renames the copied campaign and every copied child (ad sets, ads) with `renamePrefix` / `renameSuffix`. `ONLY_TOP_LEVEL_RENAME` renames only the copied campaign; children keep their source names. `NO_RENAME` keeps every source name. With no rename option at all, Meta appends its own ` - Copy` suffix; LinkedIn defaults to `DEEP_RENAME` (its campaign group and campaigns are renamed). Ignored on TikTok, where `renamePrefix` / `renameSuffix` apply to every copied object.
+	RenameStrategy *string `json:"renameStrategy,omitempty"`
+	// Text prepended to each renamed object's name.
+	RenamePrefix *string `json:"renamePrefix,omitempty"`
+	// Text appended to each renamed object's name. On LinkedIn an omitted suffix defaults to ` (Copy)`.
+	RenameSuffix *string `json:"renameSuffix,omitempty"`
 	// Trigger ads discovery on the owning account after the copy succeeds
 	SyncAfter *bool `json:"syncAfter,omitempty"`
 }

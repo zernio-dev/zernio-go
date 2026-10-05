@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.3
+API version: 1.215.4
 Contact: support@zernio.com
 */
 
@@ -4980,6 +4980,7 @@ type AdCampaignsAPIListAdCampaignsRequest struct {
 	platform     *string
 	status       *AdStatus
 	adAccountId  *string
+	campaignId   *string
 	pageId       *string
 	accountId    *string
 	profileId    *string
@@ -5027,6 +5028,12 @@ func (r AdCampaignsAPIListAdCampaignsRequest) Status(status AdStatus) AdCampaign
 // Platform ad account ID (e.g. act_123 for Meta)
 func (r AdCampaignsAPIListAdCampaignsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdCampaignsRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Platform campaign ID (the &#x60;platformCampaignId&#x60; on each returned campaign). Returns only that campaign, or an empty list when it is not visible to the caller. Mirrors the same filter on /v1/ads and /v1/ads/tree.
+func (r AdCampaignsAPIListAdCampaignsRequest) CampaignId(campaignId string) AdCampaignsAPIListAdCampaignsRequest {
+	r.campaignId = &campaignId
 	return r
 }
 
@@ -5167,6 +5174,9 @@ func (a *AdCampaignsAPIService) ListAdCampaignsExecute(r AdCampaignsAPIListAdCam
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.campaignId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")
 	}
 	if r.pageId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "pageId", r.pageId, "form", "")
@@ -8685,7 +8695,9 @@ live read shows it already in the requested state nothing is written (`updated: 
 `skipped: 1`, with the reason). Otherwise the switch is written (`updated: 1`), read back and
 stored, and the delivery status of the ads under it (up to 20) is re-read and stored, so an
 immediate GET returns what the platform now reports. A stored switch never skips a write, and
-when the platform cannot be read the write always goes out.
+when the platform cannot be read the write always goes out. On Meta the check reads the
+campaign's own `status`, so a delivery status such as `IN_PROCESS` or `WITH_ISSUES` does not
+force a write.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -9318,7 +9330,9 @@ Otherwise the switch is written (`updated: 1`), read back and stored, and
 the delivery status of its ads (up to 20) is re-read and stored, so an
 immediate GET returns what the platform now reports. A stored switch
 never skips a write, and when the platform cannot be read the write
-always goes out.
+always goes out. On Meta the check reads the ad set's own `status`, so
+a repeated request skips even while `platformAdSetStatus` reads
+`CAMPAIGN_PAUSED`, `WITH_ISSUES` or `IN_PROCESS`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.3
+API version: 1.215.4
 Contact: support@zernio.com
 */
 
@@ -21,12 +21,15 @@ var _ MappedNullable = &DuplicateAdRequest{}
 // DuplicateAdRequest struct for DuplicateAdRequest
 type DuplicateAdRequest struct {
 	// Destination platform ad set id (defaults to the source's ad set)
-	AdSetId        *string `json:"adSetId,omitempty"`
-	StatusOption   *string `json:"statusOption,omitempty"`
+	AdSetId      *string `json:"adSetId,omitempty"`
+	StatusOption *string `json:"statusOption,omitempty"`
+	// Meta's native `rename_strategy` values. An ad has no copied children, so `DEEP_RENAME` and `ONLY_TOP_LEVEL_RENAME` both rename the copy with `renamePrefix` / `renameSuffix`, and `NO_RENAME` keeps the source name. With no rename option at all, Meta appends its own ` - Copy` suffix.
 	RenameStrategy *string `json:"renameStrategy,omitempty"`
-	RenamePrefix   *string `json:"renamePrefix,omitempty"`
-	RenameSuffix   *string `json:"renameSuffix,omitempty"`
-	SyncAfter      *bool   `json:"syncAfter,omitempty"`
+	// Text prepended to the copy's name.
+	RenamePrefix *string `json:"renamePrefix,omitempty"`
+	// Text appended to the copy's name.
+	RenameSuffix *string `json:"renameSuffix,omitempty"`
+	SyncAfter    *bool   `json:"syncAfter,omitempty"`
 	// Point the copy at the source ad's creative object instead of copying it, so the copy keeps the same Facebook post, the same Instagram media, their existing likes, comments and shares, and the full creative setup (text variations included). This is what Ads Manager's \"show existing reactions, comments and shares\" does. Meta's native copy always publishes new posts. A creative belongs to one ad account, so `adSetId` must be in the source ad's account. 400 when the source ad has no creative yet.
 	ReuseSourceCreative *bool `json:"reuseSourceCreative,omitempty"`
 }

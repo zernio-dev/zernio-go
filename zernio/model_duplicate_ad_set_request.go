@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.3
+API version: 1.215.4
 Contact: support@zernio.com
 */
 
@@ -32,11 +32,14 @@ type DuplicateAdSetRequest struct {
 	// Reschedule the copy's start (ISO 8601). A value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone.
 	StartTime *time.Time `json:"startTime,omitempty"`
 	// Reschedule the copy's end, read like `startTime`; a date-only end runs to 23:59:59 local.
-	EndTime        *time.Time `json:"endTime,omitempty"`
-	RenameStrategy *string    `json:"renameStrategy,omitempty"`
-	RenamePrefix   *string    `json:"renamePrefix,omitempty"`
-	RenameSuffix   *string    `json:"renameSuffix,omitempty"`
-	SyncAfter      *bool      `json:"syncAfter,omitempty"`
+	EndTime *time.Time `json:"endTime,omitempty"`
+	// Meta's native `rename_strategy` values. `DEEP_RENAME` renames the copied ad set and its copied ads with `renamePrefix` / `renameSuffix`. `ONLY_TOP_LEVEL_RENAME` renames only the copied ad set; its ads keep their source names. `NO_RENAME` keeps every source name. With no rename option at all, Meta appends its own ` - Copy` suffix. Ignored on TikTok, where `renamePrefix` / `renameSuffix` still apply.
+	RenameStrategy *string `json:"renameStrategy,omitempty"`
+	// Text prepended to each renamed object's name.
+	RenamePrefix *string `json:"renamePrefix,omitempty"`
+	// Text appended to each renamed object's name.
+	RenameSuffix *string `json:"renameSuffix,omitempty"`
+	SyncAfter    *bool   `json:"syncAfter,omitempty"`
 }
 
 type _DuplicateAdSetRequest DuplicateAdSetRequest
