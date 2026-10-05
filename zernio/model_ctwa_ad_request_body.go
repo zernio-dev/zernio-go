@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.215.2
+API version: 1.215.3
 Contact: support@zernio.com
 */
 
@@ -140,7 +140,7 @@ type CtwaAdRequestBody struct {
 	// Ad-set-level status, same semantics as `POST /v1/ads/create`. Sets the new ad set's switch alone and overrides `status` for it. A level status (`campaignStatus`, `adSetStatus`, `adStatus`) always wins for its level, and `status: PAUSED` adds a hold of its own only when none of them is PAUSED. Rejected with a 400 alongside `adSetId` (that ad set already exists).
 	AdSetStatus *string `json:"adSetStatus,omitempty"`
 	// Ad-level status, same semantics as `POST /v1/ads/create`. Sets the new ads' switch and overrides `status` for them, also with `adSetId`. Send `campaignStatus`, `adSetStatus` and `adStatus` all PAUSED to create every object paused.
-	AdStatus *string `json:"adStatus,omitempty"`
+	AdStatus *AdActivationStatus `json:"adStatus,omitempty"`
 	// Meta bid strategy applied to the shared ad set. Defaults to `LOWEST_COST_WITHOUT_CAP` (auto-bid) when omitted. `LOWEST_COST_WITH_BID_CAP` and `COST_CAP` require `bidAmount`. `LOWEST_COST_WITH_MIN_ROAS` requires `roasAverageFloor`. CTWA's `optimization_goal` is fixed to `CONVERSATIONS`, but the bid strategy is independent.
 	BidStrategy *string `json:"bidStrategy,omitempty"`
 	// Whole currency units (e.g. `5` = $5.00 on a USD account). Required when `bidStrategy` is `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`; rejected otherwise.
@@ -2175,9 +2175,9 @@ func (o *CtwaAdRequestBody) SetAdSetStatus(v string) {
 }
 
 // GetAdStatus returns the AdStatus field value if set, zero value otherwise.
-func (o *CtwaAdRequestBody) GetAdStatus() string {
+func (o *CtwaAdRequestBody) GetAdStatus() AdActivationStatus {
 	if o == nil || IsNil(o.AdStatus) {
-		var ret string
+		var ret AdActivationStatus
 		return ret
 	}
 	return *o.AdStatus
@@ -2185,7 +2185,7 @@ func (o *CtwaAdRequestBody) GetAdStatus() string {
 
 // GetAdStatusOk returns a tuple with the AdStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CtwaAdRequestBody) GetAdStatusOk() (*string, bool) {
+func (o *CtwaAdRequestBody) GetAdStatusOk() (*AdActivationStatus, bool) {
 	if o == nil || IsNil(o.AdStatus) {
 		return nil, false
 	}
@@ -2201,8 +2201,8 @@ func (o *CtwaAdRequestBody) HasAdStatus() bool {
 	return false
 }
 
-// SetAdStatus gets a reference to the given string and assigns it to the AdStatus field.
-func (o *CtwaAdRequestBody) SetAdStatus(v string) {
+// SetAdStatus gets a reference to the given AdActivationStatus and assigns it to the AdStatus field.
+func (o *CtwaAdRequestBody) SetAdStatus(v AdActivationStatus) {
 	o.AdStatus = &v
 }
 

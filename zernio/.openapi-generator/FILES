@@ -86,6 +86,7 @@ model_activate_sequence_200_response.go
 model_activate_workflow_200_response.go
 model_activate_workflow_200_response_workflow.go
 model_ad.go
+model_ad_activation_status.go
 model_ad_analytics_response.go
 model_ad_analytics_response_ad.go
 model_ad_analytics_response_analytics.go
