@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.216.0
+API version: 1.217.0
 Contact: support@zernio.com
 */
 
@@ -5110,6 +5110,10 @@ With `live=true` (which needs `limit` of 20 or less) each returned campaign's ow
 (`platformCampaignStatus`) is read live. Live reads cover TikTok, Meta, Google and OpenAI.
 The rolled-up `status` is not re-derived by a live read.
 
+**Budgets here are SYNCED**, never read live, including with `live=true`. To read the
+current budgets (and status) of every campaign and ad set of a Meta ad account live in
+one call, for example as a pre-write spend gate, use GET /v1/ads/accounts/live.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPIListAdCampaignsRequest
 */
@@ -5727,18 +5731,25 @@ func (a *AdCampaignsAPIService) ListAdKeywordsExecute(r AdCampaignsAPIListAdKeyw
 }
 
 type AdCampaignsAPIListAdSetsRequest struct {
-	ctx        context.Context
-	ApiService *AdCampaignsAPIService
-	accountId  *string
-	campaignId *string
-	adSetId    *string
-	platform   *string
-	live       *bool
+	ctx         context.Context
+	ApiService  *AdCampaignsAPIService
+	accountId   *string
+	adAccountId *string
+	campaignId  *string
+	adSetId     *string
+	platform    *string
+	live        *bool
 }
 
 // Account ID
 func (r AdCampaignsAPIListAdSetsRequest) AccountId(accountId string) AdCampaignsAPIListAdSetsRequest {
 	r.accountId = &accountId
+	return r
+}
+
+// Platform ad account id (Meta act_&lt;n&gt;). Lists every synced ad set of that ad account; no campaignId needed.
+func (r AdCampaignsAPIListAdSetsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListAdSetsRequest {
+	r.adAccountId = &adAccountId
 	return r
 }
 
@@ -5779,6 +5790,14 @@ newly created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
 Google only) is visible here even though it is invisible in the tree
 until an ad joins it via `adSetId` on POST /v1/ads/create. Returns at most 500
 rows, newest first.
+
+**This list is SYNCED, not live** (refreshed by background sync, see below). Each row also
+carries the ad set's config (`targeting`, `bidStrategy`, `bidAmount`, `optimizationGoal`,
+`billingEvent`, `promotedObject`), so `?accountId=...&adAccountId=act_...` returns the config of
+every ad set of an ad account in one call, without a `campaignId`. To read
+budgets, status, targeting, promoted object and bid strategy of every campaign and ad set of a
+Meta ad account LIVE in one call (for example as a pre-write spend gate), use
+GET /v1/ads/accounts/live instead.
 
 **Status freshness.** `status`, `configuredStatus`, `platformStatus`, `platformAdSetStatus`
 and `platformCampaignStatus` are the values Zernio last stored. Background sync refreshes
@@ -5836,6 +5855,9 @@ func (a *AdCampaignsAPIService) ListAdSetsExecute(r AdCampaignsAPIListAdSetsRequ
 
 	if r.accountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	}
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
 	}
 	if r.campaignId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "campaignId", r.campaignId, "form", "")

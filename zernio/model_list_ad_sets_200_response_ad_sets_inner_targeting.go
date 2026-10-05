@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.216.0
+API version: 1.217.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the ListAdSets200ResponseAdSetsInnerTargeting type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListAdSets200ResponseAdSetsInnerTargeting{}
 
-// ListAdSets200ResponseAdSetsInnerTargeting The audience this ad set delivers to, as the platform reports it. LinkedIn only today; null for every other platform and for LinkedIn ad sets not yet re-synced.  `include` and `exclude` are the campaign's `targetingCriteria` verbatim, so they can be read, edited and sent back without reconstructing them from our normalized targeting spec. Exclusions were previously not readable at all.
+// ListAdSets200ResponseAdSetsInnerTargeting The audience this ad set delivers to, as the platform reports it at the last sync. LinkedIn and Meta; null for every other platform and for ad sets not yet re-synced.  On Meta it is the ad set's `targeting` verbatim (snake_case: geo_locations, age_min, custom_audiences, flexible_spec, ...), so it can be read, edited and sent back as is. On LinkedIn `include` and `exclude` (below) are the campaign's `targetingCriteria` verbatim, without reconstructing them from our normalized targeting spec.
 type ListAdSets200ResponseAdSetsInnerTargeting struct {
 	// LinkedIn `targetingCriteria.include`, verbatim (an `and` of `or` facet clauses).
 	Include map[string]interface{} `json:"include,omitempty"`
@@ -28,7 +28,10 @@ type ListAdSets200ResponseAdSetsInnerTargeting struct {
 	AudienceExpansionEnabled *bool `json:"audienceExpansionEnabled,omitempty"`
 	// Whether the campaign may deliver on the LinkedIn Audience Network, off LinkedIn itself.
 	OffsiteDeliveryEnabled *bool `json:"offsiteDeliveryEnabled,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
+
+type _ListAdSets200ResponseAdSetsInnerTargeting ListAdSets200ResponseAdSetsInnerTargeting
 
 // NewListAdSets200ResponseAdSetsInnerTargeting instantiates a new ListAdSets200ResponseAdSetsInnerTargeting object
 // This constructor will assign default values to properties that have it defined,
@@ -197,7 +200,36 @@ func (o ListAdSets200ResponseAdSetsInnerTargeting) ToMap() (map[string]interface
 	if !IsNil(o.OffsiteDeliveryEnabled) {
 		toSerialize["offsiteDeliveryEnabled"] = o.OffsiteDeliveryEnabled
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *ListAdSets200ResponseAdSetsInnerTargeting) UnmarshalJSON(data []byte) (err error) {
+	varListAdSets200ResponseAdSetsInnerTargeting := _ListAdSets200ResponseAdSetsInnerTargeting{}
+
+	err = json.Unmarshal(data, &varListAdSets200ResponseAdSetsInnerTargeting)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ListAdSets200ResponseAdSetsInnerTargeting(varListAdSets200ResponseAdSetsInnerTargeting)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "include")
+		delete(additionalProperties, "exclude")
+		delete(additionalProperties, "audienceExpansionEnabled")
+		delete(additionalProperties, "offsiteDeliveryEnabled")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableListAdSets200ResponseAdSetsInnerTargeting struct {

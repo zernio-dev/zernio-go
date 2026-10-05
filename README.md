@@ -311,6 +311,7 @@ func main() {
 | `client.AdAccountsAPI.CreateValueRuleSet(ctx)` | Create a value rule set |
 | `client.AdAccountsAPI.GetAdAccountFinance(ctx)` | Ad account finances |
 | `client.AdAccountsAPI.GetAdAccountHierarchy(ctx)` | Get manager account hierarchy |
+| `client.AdAccountsAPI.GetAdAccountLiveEntities(ctx)` | Read an ad account's campaigns and ad sets live |
 | `client.AdAccountsAPI.GetAdComments(ctx)` | List comments on an ad |
 | `client.AdAccountsAPI.GetAdNegativeKeywordList(ctx)` | Get a negative keyword list |
 | `client.AdAccountsAPI.GetAdsActivityLog(ctx)` | Ad account change / audit log |

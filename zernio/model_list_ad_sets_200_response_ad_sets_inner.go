@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.216.0
+API version: 1.217.0
 Contact: support@zernio.com
 */
 
@@ -39,10 +39,16 @@ type ListAdSets200ResponseAdSetsInner struct {
 	PlatformCreatedAt   NullableTime                               `json:"platformCreatedAt,omitempty"`
 	// Only with `live=true`. When `platformAdSetStatus` was read from the platform; null when this row was not read live.
 	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
-	// TikTok only, only with `live=true` and only on rows read live. The ad group's `optimization_goal` exactly as TikTok's adgroup/get returns it now (for example ENGAGED_VIEW, ENGAGED_VIEW_FIFTEEN, CLICK, CONVERT). Absent on rows not read live and on other platforms.
+	// The ad set's optimization goal as last synced, in the platform's own enum (Meta `optimization_goal`, for example OFFSITE_CONVERSIONS or LINK_CLICKS). On TikTok with `live=true`, rows read live carry the ad group's `optimization_goal` exactly as TikTok's adgroup/get returns it now (for example ENGAGED_VIEW, ENGAGED_VIEW_FIFTEEN, CLICK, CONVERT).
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
-	// TikTok only, only with `live=true` and only on rows read live. The ad group's `billing_event` exactly as TikTok's adgroup/get returns it now (for example CPV, CPC, OCPM).
+	// The ad set's billing event as last synced, where the platform reports one. On TikTok with `live=true`, rows read live carry the ad group's `billing_event` exactly as TikTok's adgroup/get returns it now (for example CPV, CPC, OCPM).
 	BillingEvent NullableString `json:"billingEvent,omitempty"`
+	// The bid strategy as last synced, in the platform's own enum (Meta `bid_strategy`, for example LOWEST_COST_WITHOUT_CAP, COST_CAP). On Meta under a campaign budget this is the campaign's strategy.
+	BidStrategy NullableString `json:"bidStrategy,omitempty"`
+	// Bid cap or cost target in whole units of `currency`, as last synced. Null when the strategy has none.
+	BidAmount NullableFloat32 `json:"bidAmount,omitempty"`
+	// Meta only. The ad set's `promoted_object` verbatim (snake_case, for example pixel_id + custom_event_type, page_id, application_id), as last synced from its most recent ad. Null on other platforms and on an ad set with no ad yet; GET /v1/ads/accounts/live reads it live for every ad set.
+	PromotedObject *map[string]interface{} `json:"promotedObject,omitempty"`
 	// TikTok only, only with `live=true` and only on rows read live. TikTok's adgroup/get record verbatim (snake_case, TikTok's own names and enums): operation_status, optimization_goal, optimization_event, billing_event, bid_type, bid_price, budget, budget_mode, pacing, schedule_type, schedule_start_time, schedule_end_time, dayparting, placement_type, placements, location_ids, age_groups, gender, languages, interest_category_ids, interest_keyword_ids, actions, audience_ids, excluded_audience_ids, operating_systems, frequency, frequency_schedule, smart_audience_enabled, smart_interest_behavior_enabled. schedule_start_time and schedule_end_time are UTC wall clocks (YYYY-MM-DD HH:MM:SS). location_ids holds TikTok's native location ids (GeoNames ids for countries); GET /v1/ads/targeting/search?dimension=geo returns them as `platformId` on country results. Plus advertiser_currency and advertiser_timezone from TikTok's advertiser/info. A field TikTok does not return is absent.
 	NativeSettings map[string]interface{} `json:"nativeSettings,omitempty"`
 	// Only with `live=true`. When `nativeSettings` was read from the platform. Null on every row whose native settings were not read now (row past the cap, failed read, or a platform without a native read).
@@ -763,6 +769,124 @@ func (o *ListAdSets200ResponseAdSetsInner) UnsetBillingEvent() {
 	o.BillingEvent.Unset()
 }
 
+// GetBidStrategy returns the BidStrategy field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdSets200ResponseAdSetsInner) GetBidStrategy() string {
+	if o == nil || IsNil(o.BidStrategy.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.BidStrategy.Get()
+}
+
+// GetBidStrategyOk returns a tuple with the BidStrategy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdSets200ResponseAdSetsInner) GetBidStrategyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BidStrategy.Get(), o.BidStrategy.IsSet()
+}
+
+// HasBidStrategy returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasBidStrategy() bool {
+	if o != nil && o.BidStrategy.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBidStrategy gets a reference to the given NullableString and assigns it to the BidStrategy field.
+func (o *ListAdSets200ResponseAdSetsInner) SetBidStrategy(v string) {
+	o.BidStrategy.Set(&v)
+}
+
+// SetBidStrategyNil sets the value for BidStrategy to be an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) SetBidStrategyNil() {
+	o.BidStrategy.Set(nil)
+}
+
+// UnsetBidStrategy ensures that no value is present for BidStrategy, not even an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) UnsetBidStrategy() {
+	o.BidStrategy.Unset()
+}
+
+// GetBidAmount returns the BidAmount field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListAdSets200ResponseAdSetsInner) GetBidAmount() float32 {
+	if o == nil || IsNil(o.BidAmount.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.BidAmount.Get()
+}
+
+// GetBidAmountOk returns a tuple with the BidAmount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListAdSets200ResponseAdSetsInner) GetBidAmountOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BidAmount.Get(), o.BidAmount.IsSet()
+}
+
+// HasBidAmount returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasBidAmount() bool {
+	if o != nil && o.BidAmount.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBidAmount gets a reference to the given NullableFloat32 and assigns it to the BidAmount field.
+func (o *ListAdSets200ResponseAdSetsInner) SetBidAmount(v float32) {
+	o.BidAmount.Set(&v)
+}
+
+// SetBidAmountNil sets the value for BidAmount to be an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) SetBidAmountNil() {
+	o.BidAmount.Set(nil)
+}
+
+// UnsetBidAmount ensures that no value is present for BidAmount, not even an explicit nil
+func (o *ListAdSets200ResponseAdSetsInner) UnsetBidAmount() {
+	o.BidAmount.Unset()
+}
+
+// GetPromotedObject returns the PromotedObject field value if set, zero value otherwise.
+func (o *ListAdSets200ResponseAdSetsInner) GetPromotedObject() map[string]interface{} {
+	if o == nil || IsNil(o.PromotedObject) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return *o.PromotedObject
+}
+
+// GetPromotedObjectOk returns a tuple with the PromotedObject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdSets200ResponseAdSetsInner) GetPromotedObjectOk() (*map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PromotedObject) {
+		return nil, false
+	}
+	return o.PromotedObject, true
+}
+
+// HasPromotedObject returns a boolean if a field has been set.
+func (o *ListAdSets200ResponseAdSetsInner) HasPromotedObject() bool {
+	if o != nil && !IsNil(o.PromotedObject) {
+		return true
+	}
+
+	return false
+}
+
+// SetPromotedObject gets a reference to the given map[string]interface{} and assigns it to the PromotedObject field.
+func (o *ListAdSets200ResponseAdSetsInner) SetPromotedObject(v map[string]interface{}) {
+	o.PromotedObject = &v
+}
+
 // GetNativeSettings returns the NativeSettings field value if set, zero value otherwise.
 func (o *ListAdSets200ResponseAdSetsInner) GetNativeSettings() map[string]interface{} {
 	if o == nil || IsNil(o.NativeSettings) {
@@ -901,6 +1025,15 @@ func (o ListAdSets200ResponseAdSetsInner) ToMap() (map[string]interface{}, error
 	}
 	if o.BillingEvent.IsSet() {
 		toSerialize["billingEvent"] = o.BillingEvent.Get()
+	}
+	if o.BidStrategy.IsSet() {
+		toSerialize["bidStrategy"] = o.BidStrategy.Get()
+	}
+	if o.BidAmount.IsSet() {
+		toSerialize["bidAmount"] = o.BidAmount.Get()
+	}
+	if !IsNil(o.PromotedObject) {
+		toSerialize["promotedObject"] = o.PromotedObject
 	}
 	if !IsNil(o.NativeSettings) {
 		toSerialize["nativeSettings"] = o.NativeSettings
