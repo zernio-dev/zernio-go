@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.214.1
+API version: 1.215.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &GetFacebookPages200Response{}
 // GetFacebookPages200Response struct for GetFacebookPages200Response
 type GetFacebookPages200Response struct {
 	Pages          []GetFacebookPages200ResponsePagesInner `json:"pages,omitempty"`
-	SelectedPageId *string                                 `json:"selectedPageId,omitempty"`
+	SelectedPageId NullableString                          `json:"selectedPageId,omitempty"`
 	// false when this response was just read from Meta (cold cache or a refresh that ran), true when served from the stored list (including a debounced refresh or an empty Meta answer)
 	Cached *bool `json:"cached,omitempty"`
 }
@@ -75,36 +75,47 @@ func (o *GetFacebookPages200Response) SetPages(v []GetFacebookPages200ResponsePa
 	o.Pages = v
 }
 
-// GetSelectedPageId returns the SelectedPageId field value if set, zero value otherwise.
+// GetSelectedPageId returns the SelectedPageId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetFacebookPages200Response) GetSelectedPageId() string {
-	if o == nil || IsNil(o.SelectedPageId) {
+	if o == nil || IsNil(o.SelectedPageId.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.SelectedPageId
+	return *o.SelectedPageId.Get()
 }
 
 // GetSelectedPageIdOk returns a tuple with the SelectedPageId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *GetFacebookPages200Response) GetSelectedPageIdOk() (*string, bool) {
-	if o == nil || IsNil(o.SelectedPageId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SelectedPageId, true
+	return o.SelectedPageId.Get(), o.SelectedPageId.IsSet()
 }
 
 // HasSelectedPageId returns a boolean if a field has been set.
 func (o *GetFacebookPages200Response) HasSelectedPageId() bool {
-	if o != nil && !IsNil(o.SelectedPageId) {
+	if o != nil && o.SelectedPageId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSelectedPageId gets a reference to the given string and assigns it to the SelectedPageId field.
+// SetSelectedPageId gets a reference to the given NullableString and assigns it to the SelectedPageId field.
 func (o *GetFacebookPages200Response) SetSelectedPageId(v string) {
-	o.SelectedPageId = &v
+	o.SelectedPageId.Set(&v)
+}
+
+// SetSelectedPageIdNil sets the value for SelectedPageId to be an explicit nil
+func (o *GetFacebookPages200Response) SetSelectedPageIdNil() {
+	o.SelectedPageId.Set(nil)
+}
+
+// UnsetSelectedPageId ensures that no value is present for SelectedPageId, not even an explicit nil
+func (o *GetFacebookPages200Response) UnsetSelectedPageId() {
+	o.SelectedPageId.Unset()
 }
 
 // GetCached returns the Cached field value if set, zero value otherwise.
@@ -152,8 +163,8 @@ func (o GetFacebookPages200Response) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Pages) {
 		toSerialize["pages"] = o.Pages
 	}
-	if !IsNil(o.SelectedPageId) {
-		toSerialize["selectedPageId"] = o.SelectedPageId
+	if o.SelectedPageId.IsSet() {
+		toSerialize["selectedPageId"] = o.SelectedPageId.Get()
 	}
 	if !IsNil(o.Cached) {
 		toSerialize["cached"] = o.Cached

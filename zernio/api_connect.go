@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.214.1
+API version: 1.215.0
 Contact: support@zernio.com
 */
 
@@ -2702,7 +2702,7 @@ func (r ConnectAPIGetFacebookPagesRequest) Execute() (*GetFacebookPages200Respon
 /*
 GetFacebookPages List Facebook pages
 
-Returns all Facebook pages the connected account has access to, including the currently selected page.
+Returns all Facebook Pages the connected account has access to, including the currently selected Page and the Instagram professional account linked to each Page. Works on `facebook` accounts and on `metaads` accounts (classic and Facebook Login for Business connections). On a business-login `metaads` connection `selectedPageId` is the default Page ads run as, and every listed Page can be passed as `pageId` on POST /v1/ads/create. A classic `metaads` connection has no default Page, so `selectedPageId` is null there.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -2780,6 +2780,17 @@ func (a *ConnectAPIService) GetFacebookPagesExecute(r ConnectAPIGetFacebookPages
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
@@ -7365,7 +7376,7 @@ func (r ConnectAPIUpdateFacebookPageRequest) Execute() (*UpdateFacebookPage200Re
 /*
 UpdateFacebookPage Update Facebook page
 
-Switch which Facebook Page is active for a connected account.
+Switch which Facebook Page is active for a connected account. On a `facebook` account this changes the Page posts publish to. On a Facebook Login for Business `metaads` connection it changes the default Page ads run as (and the Page whose leads are ingested). A classic `metaads` connection has no default Page and answers 400; pass `pageId` per ad on POST /v1/ads/create instead. The Page must be in the list returned by GET (use refresh=true to pick up newly granted Pages).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId

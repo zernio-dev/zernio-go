@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.214.1
+API version: 1.215.0
 Contact: support@zernio.com
 */
 
@@ -20,11 +20,12 @@ var _ MappedNullable = &GetFacebookPages200ResponsePagesInner{}
 
 // GetFacebookPages200ResponsePagesInner struct for GetFacebookPages200ResponsePagesInner
 type GetFacebookPages200ResponsePagesInner struct {
-	Id       *string `json:"id,omitempty"`
-	Name     *string `json:"name,omitempty"`
-	Username *string `json:"username,omitempty"`
-	Category *string `json:"category,omitempty"`
-	FanCount *int32  `json:"fan_count,omitempty"`
+	Id               *string                                                `json:"id,omitempty"`
+	Name             *string                                                `json:"name,omitempty"`
+	Username         *string                                                `json:"username,omitempty"`
+	Category         *string                                                `json:"category,omitempty"`
+	FanCount         *int32                                                 `json:"fan_count,omitempty"`
+	InstagramAccount *GetFacebookPages200ResponsePagesInnerInstagramAccount `json:"instagramAccount,omitempty"`
 }
 
 // NewGetFacebookPages200ResponsePagesInner instantiates a new GetFacebookPages200ResponsePagesInner object
@@ -204,6 +205,38 @@ func (o *GetFacebookPages200ResponsePagesInner) SetFanCount(v int32) {
 	o.FanCount = &v
 }
 
+// GetInstagramAccount returns the InstagramAccount field value if set, zero value otherwise.
+func (o *GetFacebookPages200ResponsePagesInner) GetInstagramAccount() GetFacebookPages200ResponsePagesInnerInstagramAccount {
+	if o == nil || IsNil(o.InstagramAccount) {
+		var ret GetFacebookPages200ResponsePagesInnerInstagramAccount
+		return ret
+	}
+	return *o.InstagramAccount
+}
+
+// GetInstagramAccountOk returns a tuple with the InstagramAccount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetFacebookPages200ResponsePagesInner) GetInstagramAccountOk() (*GetFacebookPages200ResponsePagesInnerInstagramAccount, bool) {
+	if o == nil || IsNil(o.InstagramAccount) {
+		return nil, false
+	}
+	return o.InstagramAccount, true
+}
+
+// HasInstagramAccount returns a boolean if a field has been set.
+func (o *GetFacebookPages200ResponsePagesInner) HasInstagramAccount() bool {
+	if o != nil && !IsNil(o.InstagramAccount) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramAccount gets a reference to the given GetFacebookPages200ResponsePagesInnerInstagramAccount and assigns it to the InstagramAccount field.
+func (o *GetFacebookPages200ResponsePagesInner) SetInstagramAccount(v GetFacebookPages200ResponsePagesInnerInstagramAccount) {
+	o.InstagramAccount = &v
+}
+
 func (o GetFacebookPages200ResponsePagesInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -228,6 +261,9 @@ func (o GetFacebookPages200ResponsePagesInner) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.FanCount) {
 		toSerialize["fan_count"] = o.FanCount
+	}
+	if !IsNil(o.InstagramAccount) {
+		toSerialize["instagramAccount"] = o.InstagramAccount
 	}
 	return toSerialize, nil
 }
