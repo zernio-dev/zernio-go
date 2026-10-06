@@ -28,6 +28,10 @@ type SocialAccount struct {
 	ProfileId   SocialAccountProfileId `json:"profileId"`
 	Username    *string                `json:"username,omitempty"`
 	DisplayName *string                `json:"displayName,omitempty"`
+	// The account's id on its platform as the platform reports it to Zernio; stable across reconnects, so it is the key to match an account against your own records. Instagram: the app-scoped user id on Instagram Login accounts (the professional account id is in `metadata.instagramScopedId`), the professional account id (`17841...`) on Facebook Login accounts. TikTok: the open_id of Zernio's TikTok app, which differs from the open_id any other app sees for the same user. Either value can be passed back as `expectedPlatformUserId` on GET /v1/connect/{platform}.
+	PlatformUserId *string `json:"platformUserId,omitempty"`
+	// TikTok accounts only. The account type TikTok reported when the account was connected. `personal` accounts cannot use TikTok direct messages through the API (TikTok limits Business Messaging to Business Accounts): skip the inbox for them and tell the user to switch to a Business Account in the TikTok app, then reconnect. `business` is the prerequisite, not a guarantee; messaging also needs the messaging scopes granted and TikTok's regional availability. `unknown` on accounts connected before this was captured or whose grant left out the account-type scope.
+	TiktokAccountType *string `json:"tiktokAccountType,omitempty"`
 	// URL to the account's profile picture on the platform. May be null if the platform does not provide one.
 	ProfilePicture NullableString `json:"profilePicture,omitempty"`
 	// Full profile URL for the connected account on its platform.
@@ -43,7 +47,7 @@ type SocialAccount struct {
 	ParentAccountId NullableString `json:"parentAccountId,omitempty"`
 	// Whether the user explicitly activated this account. false means the account was created as a side effect (e.g., posting account auto-created when user connected ads first). Such accounts are hidden from this list, cannot be posted to (`ACCOUNT_NOT_ENABLED_FOR_POSTING`), and are not billed as connected accounts.
 	Enabled *bool `json:"enabled,omitempty"`
-	// Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes: - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN) - nameStatus: Display name review status (APPROVED, PENDING_REVIEW, DECLINED, or NONE). A declined or pending display name does not by itself block sending; sendability is reported separately via health_status (can_send_message). - messagingLimitTier: Maximum unique business-initiated conversations per 24h rolling window (TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED). Scales automatically as quality rating improves. - verifiedName: Meta-verified business display name - displayPhoneNumber: Formatted phone number (e.g., \"+1 555-123-4567\") - wabaId: WhatsApp Business Account ID - phoneNumberId: Meta phone number ID  For Meta ads business-login accounts: - tokenType: system-user - businessId: The owning Business Manager ID when there is one owner; null for multiple owners. - businessIds: Owning Business Manager IDs discovered from granted ad accounts. - grantedAdAccountIds: Ad-account IDs granted to the token. - adAccountBusinesses: Map from ad-account ID to its owning business ID or null. - availablePages: Granted Page IDs and names. No Page tokens are exposed. - selectedPageId: The Page selected for creatives and lead forms, or null. - scopedAdAccountIds: Existing sync scope preserved on reconnect. Non-expiring tokens have no tokenExpiresAt field. Parent posting reconnects do not replace this token.  For LinkedIn accounts, profileData carries the profile details refreshed on each daily snapshot: - profileData.bio: The member's headline for personal accounts, or the organization description for organization accounts. null when the member has not set one. - profileData.extraData.vanityName: The member's profile slug, i.e. the /in/{vanityName} segment of profileUrl. Personal accounts only; an organization's own slug is in metadata.organizationInfo.vanityName.  For Instagram accounts: - loginMethod: \"facebook_login\" when the account was connected through Facebook Login. Absent on accounts connected with Instagram Login. On facebook_login accounts, comment reads leave hidden comments out entirely instead of returning them with isHidden true.  For X (Twitter) accounts: - profileData.extraData.isPremium: Whether X reports a paid subscription (Basic, Premium, Premium+, or a blue verified badge), which raises the post length limit from 280 to 25,000 characters. Read live at connect and reconnect and refreshed by the daily follower snapshot; because X intermittently reports no subscription for subscribed accounts, a cancellation is stored on the fourth consecutive daily snapshot that reports it (about four days). Accounts connected before the extraData layout carry the same flag at profileData.isPremium.
+	// Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes: - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN) - nameStatus: Display name review status (APPROVED, PENDING_REVIEW, DECLINED, or NONE). A declined or pending display name does not by itself block sending; sendability is reported separately via health_status (can_send_message). - messagingLimitTier: Maximum unique business-initiated conversations per 24h rolling window (TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED). Scales automatically as quality rating improves. - verifiedName: Meta-verified business display name - displayPhoneNumber: Formatted phone number (e.g., \"+1 555-123-4567\") - wabaId: WhatsApp Business Account ID - phoneNumberId: Meta phone number ID  For Meta ads business-login accounts: - tokenType: system-user - businessId: The owning Business Manager ID when there is one owner; null for multiple owners. - businessIds: Owning Business Manager IDs discovered from granted ad accounts. - grantedAdAccountIds: Ad-account IDs granted to the token. - adAccountBusinesses: Map from ad-account ID to its owning business ID or null. - availablePages: Granted Page IDs and names. No Page tokens are exposed. - selectedPageId: The Page selected for creatives and lead forms, or null. - scopedAdAccountIds: Existing sync scope preserved on reconnect. Non-expiring tokens have no tokenExpiresAt field. Parent posting reconnects do not replace this token.  For LinkedIn accounts, profileData carries the profile details refreshed on each daily snapshot: - profileData.bio: The member's headline for personal accounts, or the organization description for organization accounts. null when the member has not set one. - profileData.extraData.vanityName: The member's profile slug, i.e. the /in/{vanityName} segment of profileUrl. Personal accounts only; an organization's own slug is in metadata.organizationInfo.vanityName.  For Instagram accounts: - loginMethod: \"facebook_login\" when the account was connected through Facebook Login. Absent on accounts connected with Instagram Login. On facebook_login accounts, comment reads leave hidden comments out entirely instead of returning them with isHidden true. - instagramScopedId: the Instagram professional account id (`17841...`). On Instagram Login accounts this is the id that is the same whichever app connected the account, while platformUserId is app-scoped; Facebook Login accounts hold this id as platformUserId.  For X (Twitter) accounts: - profileData.extraData.isPremium: Whether X reports a paid subscription (Basic, Premium, Premium+, or a blue verified badge), which raises the post length limit from 280 to 25,000 characters. Read live at connect and reconnect and refreshed by the daily follower snapshot; because X intermittently reports no subscription for subscribed accounts, a cancellation is stored on the fourth consecutive daily snapshot that reports it (about four days). Accounts connected before the extraData layout carry the same flag at profileData.isPremium.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }
 
@@ -204,6 +208,70 @@ func (o *SocialAccount) HasDisplayName() bool {
 // SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
 func (o *SocialAccount) SetDisplayName(v string) {
 	o.DisplayName = &v
+}
+
+// GetPlatformUserId returns the PlatformUserId field value if set, zero value otherwise.
+func (o *SocialAccount) GetPlatformUserId() string {
+	if o == nil || IsNil(o.PlatformUserId) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformUserId
+}
+
+// GetPlatformUserIdOk returns a tuple with the PlatformUserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SocialAccount) GetPlatformUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PlatformUserId) {
+		return nil, false
+	}
+	return o.PlatformUserId, true
+}
+
+// HasPlatformUserId returns a boolean if a field has been set.
+func (o *SocialAccount) HasPlatformUserId() bool {
+	if o != nil && !IsNil(o.PlatformUserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformUserId gets a reference to the given string and assigns it to the PlatformUserId field.
+func (o *SocialAccount) SetPlatformUserId(v string) {
+	o.PlatformUserId = &v
+}
+
+// GetTiktokAccountType returns the TiktokAccountType field value if set, zero value otherwise.
+func (o *SocialAccount) GetTiktokAccountType() string {
+	if o == nil || IsNil(o.TiktokAccountType) {
+		var ret string
+		return ret
+	}
+	return *o.TiktokAccountType
+}
+
+// GetTiktokAccountTypeOk returns a tuple with the TiktokAccountType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SocialAccount) GetTiktokAccountTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TiktokAccountType) {
+		return nil, false
+	}
+	return o.TiktokAccountType, true
+}
+
+// HasTiktokAccountType returns a boolean if a field has been set.
+func (o *SocialAccount) HasTiktokAccountType() bool {
+	if o != nil && !IsNil(o.TiktokAccountType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTiktokAccountType gets a reference to the given string and assigns it to the TiktokAccountType field.
+func (o *SocialAccount) SetTiktokAccountType(v string) {
+	o.TiktokAccountType = &v
 }
 
 // GetProfilePicture returns the ProfilePicture field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -526,6 +594,12 @@ func (o SocialAccount) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DisplayName) {
 		toSerialize["displayName"] = o.DisplayName
+	}
+	if !IsNil(o.PlatformUserId) {
+		toSerialize["platformUserId"] = o.PlatformUserId
+	}
+	if !IsNil(o.TiktokAccountType) {
+		toSerialize["tiktokAccountType"] = o.TiktokAccountType
 	}
 	if o.ProfilePicture.IsSet() {
 		toSerialize["profilePicture"] = o.ProfilePicture.Get()
