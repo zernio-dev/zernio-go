@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.220.1
+API version: 1.220.2
 Contact: support@zernio.com
 */
 
@@ -117,7 +117,7 @@ type BoostPostRequest struct {
 	CampaignStatus *string `json:"campaignStatus,omitempty"`
 	// Every platform, same semantics as POST /v1/ads/create. Sets the switch of the new ad set alone (Google, TikTok and Pinterest: the ad group; LinkedIn: the campaign, which stays DRAFT when held; X: the line item) and overrides `status` for it. Omitted, it follows `status`.  Precedence: a level status (`campaignStatus`, `adSetStatus`, `adStatus`) always wins for its level. `status: PAUSED` then holds the top-most new object that has no level status, and only when no level status is PAUSED; every other new object is switched on. So `campaignStatus: ACTIVE` + `adSetStatus: PAUSED` + `adStatus: PAUSED` keeps the campaign on with the new ad set and ad off, and all three PAUSED create the whole tree paused.  Rejected with a 400 alongside `adSetId` (that ad set already exists; change it with PUT /v1/ads/ad-sets/{adSetId}/status).
 	AdSetStatus *string `json:"adSetStatus,omitempty"`
-	// Sets the switch of the new ad alone, also when attaching to an existing ad set with `adSetId` (Meta, TikTok Smart+), and overrides `status` for it. Same precedence as `adSetStatus`. Omitted, it follows `status`.  X returns a 400: a promoted post has no switch of its own, so hold the line item with `adSetStatus`.
+	// Sets the switch of the new ad alone, also when attaching to an existing ad set with `adSetId` (Meta, TikTok Smart+), and overrides `status` for it. Same precedence as `adSetStatus`. Omitted, it follows `status`. LinkedIn: a creative held off is created DRAFT, because LinkedIn refuses PAUSED on a creative until its review is APPROVED. A DRAFT creative is not submitted for review and cannot serve; it reads `paused`, and resuming the ad (PUT /v1/ads/{adId}/status `active`) switches it ACTIVE, which starts the review.  X returns a 400: a promoted post has no switch of its own, so hold the line item with `adSetStatus`.
 	AdStatus *AdActivationStatus `json:"adStatus,omitempty"`
 	// Meta only, same semantics as POST /v1/ads/create: campaign = Advantage campaign budget (CBO), the budget and bid strategy sit on the campaign and the ad set inherits them. Default adset. Not allowed with adSetId.
 	BudgetLevel *string `json:"budgetLevel,omitempty"`
