@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.225.0
+API version: 1.226.0
 Contact: support@zernio.com
 */
 
@@ -32,6 +32,8 @@ type PlatformAnalytics struct {
 	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
 	// Failure detail. On failed entries, why the post failed to publish. On unavailable entries, why analytics cannot be synced (e.g. Google Business Profile, a TikTok upload that never received a video id). On pending entries, the most recent analytics sync error for the account (null while no sync has failed), cleared after the next successful sync.
 	ErrorMessage NullableString `json:"errorMessage,omitempty"`
+	// Stable machine-readable reason for errorMessage. post_not_found: the post was deleted or is no longer visible to the account. permission_missing: the last analytics sync of the Facebook account failed because the Page no longer grants pages_read_engagement (pending entries only). null: no stable code, read errorMessage. New values may be added.
+	ErrorCode NullableString `json:"errorCode,omitempty"`
 }
 
 // NewPlatformAnalytics instantiates a new PlatformAnalytics object
@@ -394,6 +396,49 @@ func (o *PlatformAnalytics) UnsetErrorMessage() {
 	o.ErrorMessage.Unset()
 }
 
+// GetErrorCode returns the ErrorCode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PlatformAnalytics) GetErrorCode() string {
+	if o == nil || IsNil(o.ErrorCode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ErrorCode.Get()
+}
+
+// GetErrorCodeOk returns a tuple with the ErrorCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PlatformAnalytics) GetErrorCodeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErrorCode.Get(), o.ErrorCode.IsSet()
+}
+
+// HasErrorCode returns a boolean if a field has been set.
+func (o *PlatformAnalytics) HasErrorCode() bool {
+	if o != nil && o.ErrorCode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorCode gets a reference to the given NullableString and assigns it to the ErrorCode field.
+func (o *PlatformAnalytics) SetErrorCode(v string) {
+	o.ErrorCode.Set(&v)
+}
+
+// SetErrorCodeNil sets the value for ErrorCode to be an explicit nil
+func (o *PlatformAnalytics) SetErrorCodeNil() {
+	o.ErrorCode.Set(nil)
+}
+
+// UnsetErrorCode ensures that no value is present for ErrorCode, not even an explicit nil
+func (o *PlatformAnalytics) UnsetErrorCode() {
+	o.ErrorCode.Unset()
+}
+
 func (o PlatformAnalytics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -430,6 +475,9 @@ func (o PlatformAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ErrorMessage.IsSet() {
 		toSerialize["errorMessage"] = o.ErrorMessage.Get()
+	}
+	if o.ErrorCode.IsSet() {
+		toSerialize["errorCode"] = o.ErrorCode.Get()
 	}
 	return toSerialize, nil
 }
