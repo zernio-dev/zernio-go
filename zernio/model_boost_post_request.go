@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -60,6 +60,8 @@ type BoostPostRequest struct {
 	DestinationType *string `json:"destinationType,omitempty"`
 	// Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP_MESSAGE callToAction. Stored as creative.whatsappPhoneNumber on the ad.
 	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
+	// Meta messaging boosts only (callToAction MESSAGE_PAGE, WHATSAPP_MESSAGE or INSTAGRAM_MESSAGE). A workflow in the account's profile, started in the conversation a click on the ad opens. Stored on the ad. 400 without a messaging callToAction or on another platform, 404 when no such workflow exists in the profile.
+	WorkflowId *string `json:"workflowId,omitempty" validate:"regexp=^[a-fA-F0-9]{24}$"`
 	// ISO 4217 currency code matching the ad account's currency. Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
 	Currency *string `json:"currency,omitempty"`
 	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. On Meta, TikTok, X and Pinterest a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone. Same field as on POST /v1/ads/create.
@@ -730,6 +732,38 @@ func (o *BoostPostRequest) HasWhatsappPhoneNumber() bool {
 // SetWhatsappPhoneNumber gets a reference to the given string and assigns it to the WhatsappPhoneNumber field.
 func (o *BoostPostRequest) SetWhatsappPhoneNumber(v string) {
 	o.WhatsappPhoneNumber = &v
+}
+
+// GetWorkflowId returns the WorkflowId field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetWorkflowId() string {
+	if o == nil || IsNil(o.WorkflowId) {
+		var ret string
+		return ret
+	}
+	return *o.WorkflowId
+}
+
+// GetWorkflowIdOk returns a tuple with the WorkflowId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetWorkflowIdOk() (*string, bool) {
+	if o == nil || IsNil(o.WorkflowId) {
+		return nil, false
+	}
+	return o.WorkflowId, true
+}
+
+// HasWorkflowId returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasWorkflowId() bool {
+	if o != nil && !IsNil(o.WorkflowId) {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkflowId gets a reference to the given string and assigns it to the WorkflowId field.
+func (o *BoostPostRequest) SetWorkflowId(v string) {
+	o.WorkflowId = &v
 }
 
 // GetCurrency returns the Currency field value if set, zero value otherwise.
@@ -1922,6 +1956,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.WhatsappPhoneNumber) {
 		toSerialize["whatsappPhoneNumber"] = o.WhatsappPhoneNumber
+	}
+	if !IsNil(o.WorkflowId) {
+		toSerialize["workflowId"] = o.WorkflowId
 	}
 	if !IsNil(o.Currency) {
 		toSerialize["currency"] = o.Currency

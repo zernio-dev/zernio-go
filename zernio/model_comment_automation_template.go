@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the CommentAutomationTemplate type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CommentAutomationTemplate{}
 
-// CommentAutomationTemplate A Meta generic template (product card) sent as the automation's first DM. It REPLACES the plain `dmMessage` bubble: a Meta message carries one body shape, and a comment gets exactly one private reply, so the card and the text cannot both be delivered. Put your selling copy in `subtitle`. Mutually exclusive with `buttons` (sending both is a 400). Works on both the `comment` and `story_reply` triggers. Up to 10 elements, rendered as a horizontally swipeable carousel. Rendering confirmed on the Instagram and Messenger mobile apps.
+// CommentAutomationTemplate A Meta generic template (product card) sent as the automation's first DM. It REPLACES the plain `dmMessage` bubble: a Meta message carries one body shape, and a comment gets exactly one private reply, so the card and the text cannot both be delivered. Put your selling copy in `subtitle`. Mutually exclusive with `buttons` (sending both is a 400). Works on every Instagram and Facebook trigger. Up to 10 elements, rendered as a horizontally swipeable carousel. Rendering confirmed on the Instagram and Messenger mobile apps.
 type CommentAutomationTemplate struct {
 	Type string `json:"type"`
 	// Facebook only. How Messenger renders each element imageUrl: horizontal (1.91:1, the default) or square (1:1). Instagram has no such setting, so an Instagram automation carrying it is a 400.

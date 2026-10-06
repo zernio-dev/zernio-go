@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &CreateBroadcastRequestSegmentFilters{}
 type CreateBroadcastRequestSegmentFilters struct {
 	Tags         []string `json:"tags,omitempty"`
 	IsSubscribed *bool    `json:"isSubscribed,omitempty"`
+	// Custom field values a contact must hold, keyed by field slug. Exact match per key (type included: 5 does not match \"5\"); every key must match.
+	CustomFields map[string]interface{} `json:"customFields,omitempty"`
 }
 
 // NewCreateBroadcastRequestSegmentFilters instantiates a new CreateBroadcastRequestSegmentFilters object
@@ -105,6 +107,38 @@ func (o *CreateBroadcastRequestSegmentFilters) SetIsSubscribed(v bool) {
 	o.IsSubscribed = &v
 }
 
+// GetCustomFields returns the CustomFields field value if set, zero value otherwise.
+func (o *CreateBroadcastRequestSegmentFilters) GetCustomFields() map[string]interface{} {
+	if o == nil || IsNil(o.CustomFields) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.CustomFields
+}
+
+// GetCustomFieldsOk returns a tuple with the CustomFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateBroadcastRequestSegmentFilters) GetCustomFieldsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.CustomFields) {
+		return map[string]interface{}{}, false
+	}
+	return o.CustomFields, true
+}
+
+// HasCustomFields returns a boolean if a field has been set.
+func (o *CreateBroadcastRequestSegmentFilters) HasCustomFields() bool {
+	if o != nil && !IsNil(o.CustomFields) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomFields gets a reference to the given map[string]interface{} and assigns it to the CustomFields field.
+func (o *CreateBroadcastRequestSegmentFilters) SetCustomFields(v map[string]interface{}) {
+	o.CustomFields = v
+}
+
 func (o CreateBroadcastRequestSegmentFilters) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +154,9 @@ func (o CreateBroadcastRequestSegmentFilters) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.IsSubscribed) {
 		toSerialize["isSubscribed"] = o.IsSubscribed
+	}
+	if !IsNil(o.CustomFields) {
+		toSerialize["customFields"] = o.CustomFields
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -27,13 +27,14 @@ type ListWorkflowExecutions200ResponseExecutionsInner struct {
 	WaitingFor         *ListWorkflowExecutions200ResponseExecutionsInnerWaitingFor `json:"waitingFor,omitempty"`
 	Variables          map[string]interface{}                                      `json:"variables,omitempty"`
 	PlatformIdentifier *string                                                     `json:"platformIdentifier,omitempty"`
-	ConversationId     *string                                                     `json:"conversationId,omitempty"`
-	StepCount          *int32                                                      `json:"stepCount,omitempty"`
-	LastError          NullableString                                              `json:"lastError,omitempty"`
-	ResumeAt           NullableTime                                                `json:"resumeAt,omitempty"`
-	CreatedAt          *time.Time                                                  `json:"createdAt,omitempty"`
-	UpdatedAt          *time.Time                                                  `json:"updatedAt,omitempty"`
-	CompletedAt        NullableTime                                                `json:"completedAt,omitempty"`
+	// Null only while a comment-triggered run has not sent its private reply yet.
+	ConversationId NullableString `json:"conversationId,omitempty"`
+	StepCount      *int32         `json:"stepCount,omitempty"`
+	LastError      NullableString `json:"lastError,omitempty"`
+	ResumeAt       NullableTime   `json:"resumeAt,omitempty"`
+	CreatedAt      *time.Time     `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time     `json:"updatedAt,omitempty"`
+	CompletedAt    NullableTime   `json:"completedAt,omitempty"`
 }
 
 // NewListWorkflowExecutions200ResponseExecutionsInner instantiates a new ListWorkflowExecutions200ResponseExecutionsInner object
@@ -245,36 +246,47 @@ func (o *ListWorkflowExecutions200ResponseExecutionsInner) SetPlatformIdentifier
 	o.PlatformIdentifier = &v
 }
 
-// GetConversationId returns the ConversationId field value if set, zero value otherwise.
+// GetConversationId returns the ConversationId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListWorkflowExecutions200ResponseExecutionsInner) GetConversationId() string {
-	if o == nil || IsNil(o.ConversationId) {
+	if o == nil || IsNil(o.ConversationId.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.ConversationId
+	return *o.ConversationId.Get()
 }
 
 // GetConversationIdOk returns a tuple with the ConversationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListWorkflowExecutions200ResponseExecutionsInner) GetConversationIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ConversationId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ConversationId, true
+	return o.ConversationId.Get(), o.ConversationId.IsSet()
 }
 
 // HasConversationId returns a boolean if a field has been set.
 func (o *ListWorkflowExecutions200ResponseExecutionsInner) HasConversationId() bool {
-	if o != nil && !IsNil(o.ConversationId) {
+	if o != nil && o.ConversationId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetConversationId gets a reference to the given string and assigns it to the ConversationId field.
+// SetConversationId gets a reference to the given NullableString and assigns it to the ConversationId field.
 func (o *ListWorkflowExecutions200ResponseExecutionsInner) SetConversationId(v string) {
-	o.ConversationId = &v
+	o.ConversationId.Set(&v)
+}
+
+// SetConversationIdNil sets the value for ConversationId to be an explicit nil
+func (o *ListWorkflowExecutions200ResponseExecutionsInner) SetConversationIdNil() {
+	o.ConversationId.Set(nil)
+}
+
+// UnsetConversationId ensures that no value is present for ConversationId, not even an explicit nil
+func (o *ListWorkflowExecutions200ResponseExecutionsInner) UnsetConversationId() {
+	o.ConversationId.Unset()
 }
 
 // GetStepCount returns the StepCount field value if set, zero value otherwise.
@@ -530,8 +542,8 @@ func (o ListWorkflowExecutions200ResponseExecutionsInner) ToMap() (map[string]in
 	if !IsNil(o.PlatformIdentifier) {
 		toSerialize["platformIdentifier"] = o.PlatformIdentifier
 	}
-	if !IsNil(o.ConversationId) {
-		toSerialize["conversationId"] = o.ConversationId
+	if o.ConversationId.IsSet() {
+		toSerialize["conversationId"] = o.ConversationId.Get()
 	}
 	if !IsNil(o.StepCount) {
 		toSerialize["stepCount"] = o.StepCount

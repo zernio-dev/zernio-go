@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -20,10 +20,10 @@ var _ MappedNullable = &UpdateBroadcastRequest{}
 
 // UpdateBroadcastRequest struct for UpdateBroadcastRequest
 type UpdateBroadcastRequest struct {
-	Name        *string                                   `json:"name,omitempty"`
-	Description *string                                   `json:"description,omitempty"`
-	Message     *SendInboxMessageRequestInteractiveFooter `json:"message,omitempty"`
-	Template    *UpdateBroadcastRequestTemplate           `json:"template,omitempty"`
+	Name        *string                         `json:"name,omitempty"`
+	Description *string                         `json:"description,omitempty"`
+	Message     *CreateBroadcastRequestMessage  `json:"message,omitempty"`
+	Template    *UpdateBroadcastRequestTemplate `json:"template,omitempty"`
 	// Recipient segment filters (tags, channels, subscription state).
 	SegmentFilters map[string]interface{} `json:"segmentFilters,omitempty"`
 }
@@ -110,9 +110,9 @@ func (o *UpdateBroadcastRequest) SetDescription(v string) {
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
-func (o *UpdateBroadcastRequest) GetMessage() SendInboxMessageRequestInteractiveFooter {
+func (o *UpdateBroadcastRequest) GetMessage() CreateBroadcastRequestMessage {
 	if o == nil || IsNil(o.Message) {
-		var ret SendInboxMessageRequestInteractiveFooter
+		var ret CreateBroadcastRequestMessage
 		return ret
 	}
 	return *o.Message
@@ -120,7 +120,7 @@ func (o *UpdateBroadcastRequest) GetMessage() SendInboxMessageRequestInteractive
 
 // GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateBroadcastRequest) GetMessageOk() (*SendInboxMessageRequestInteractiveFooter, bool) {
+func (o *UpdateBroadcastRequest) GetMessageOk() (*CreateBroadcastRequestMessage, bool) {
 	if o == nil || IsNil(o.Message) {
 		return nil, false
 	}
@@ -136,8 +136,8 @@ func (o *UpdateBroadcastRequest) HasMessage() bool {
 	return false
 }
 
-// SetMessage gets a reference to the given SendInboxMessageRequestInteractiveFooter and assigns it to the Message field.
-func (o *UpdateBroadcastRequest) SetMessage(v SendInboxMessageRequestInteractiveFooter) {
+// SetMessage gets a reference to the given CreateBroadcastRequestMessage and assigns it to the Message field.
+func (o *UpdateBroadcastRequest) SetMessage(v CreateBroadcastRequestMessage) {
 	o.Message = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &SetConversationThreadControl200ResponseControl{}
 // SetConversationThreadControl200ResponseControl struct for SetConversationThreadControl200ResponseControl
 type SetConversationThreadControl200ResponseControl struct {
 	Owner *string `json:"owner,omitempty"`
+	// The app that received the thread, on a Facebook or Instagram pass.
+	OwnerAppId *string `json:"ownerAppId,omitempty"`
 }
 
 // NewSetConversationThreadControl200ResponseControl instantiates a new SetConversationThreadControl200ResponseControl object
@@ -72,6 +74,38 @@ func (o *SetConversationThreadControl200ResponseControl) SetOwner(v string) {
 	o.Owner = &v
 }
 
+// GetOwnerAppId returns the OwnerAppId field value if set, zero value otherwise.
+func (o *SetConversationThreadControl200ResponseControl) GetOwnerAppId() string {
+	if o == nil || IsNil(o.OwnerAppId) {
+		var ret string
+		return ret
+	}
+	return *o.OwnerAppId
+}
+
+// GetOwnerAppIdOk returns a tuple with the OwnerAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SetConversationThreadControl200ResponseControl) GetOwnerAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OwnerAppId) {
+		return nil, false
+	}
+	return o.OwnerAppId, true
+}
+
+// HasOwnerAppId returns a boolean if a field has been set.
+func (o *SetConversationThreadControl200ResponseControl) HasOwnerAppId() bool {
+	if o != nil && !IsNil(o.OwnerAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOwnerAppId gets a reference to the given string and assigns it to the OwnerAppId field.
+func (o *SetConversationThreadControl200ResponseControl) SetOwnerAppId(v string) {
+	o.OwnerAppId = &v
+}
+
 func (o SetConversationThreadControl200ResponseControl) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +118,9 @@ func (o SetConversationThreadControl200ResponseControl) ToMap() (map[string]inte
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Owner) {
 		toSerialize["owner"] = o.Owner
+	}
+	if !IsNil(o.OwnerAppId) {
+		toSerialize["ownerAppId"] = o.OwnerAppId
 	}
 	return toSerialize, nil
 }

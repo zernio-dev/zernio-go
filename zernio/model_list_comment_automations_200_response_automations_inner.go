@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,7 @@ type ListCommentAutomations200ResponseAutomationsInner struct {
 	AccountId      *string  `json:"accountId,omitempty"`
 	PlatformPostId *string  `json:"platformPostId,omitempty"`
 	PostTitle      *string  `json:"postTitle,omitempty"`
+	PostId         *string  `json:"postId,omitempty"`
 	Keywords       []string `json:"keywords,omitempty"`
 	// How a keyword is compared with the comment. 'contains' (default) matches anywhere, even inside another word (keyword 'app' fires on 'happy'). 'word' matches the keyword only as a standalone word. 'exact' requires the whole comment to be exactly the keyword.
 	MatchMode *string `json:"matchMode,omitempty"`
@@ -53,10 +54,19 @@ type ListCommentAutomations200ResponseAutomationsInner struct {
 	// Seconds waited before the public reply is posted. Absent when it follows the DM immediately.
 	CommentReplyDelaySeconds *int32 `json:"commentReplyDelaySeconds,omitempty"`
 	// Whether these keywords also fire on a plain inbound DM.
-	AlsoMatchInDms *bool                                                   `json:"alsoMatchInDms,omitempty"`
-	IsActive       *bool                                                   `json:"isActive,omitempty"`
-	Stats          *ListCommentAutomations200ResponseAutomationsInnerStats `json:"stats,omitempty"`
-	CreatedAt      *time.Time                                              `json:"createdAt,omitempty"`
+	AlsoMatchInDms *bool                          `json:"alsoMatchInDms,omitempty"`
+	RepeatPolicy   *CommentAutomationRepeatPolicy `json:"repeatPolicy,omitempty"`
+	// Same-text dedupe window in hours. Omitted when off.
+	DedupeSameTextHours *int32                        `json:"dedupeSameTextHours,omitempty"`
+	PublicReplyPolicy   *string                       `json:"publicReplyPolicy,omitempty"`
+	Actions             *CommentAutomationActions     `json:"actions,omitempty"`
+	QuickReplies        []CommentAutomationQuickReply `json:"quickReplies,omitempty"`
+	DmMedia             *CommentAutomationDmMedia     `json:"dmMedia,omitempty"`
+	Audience            *CommentAutomationAudience    `json:"audience,omitempty"`
+	FollowGate          *CommentAutomationFollowGate  `json:"followGate,omitempty"`
+	IsActive            *bool                         `json:"isActive,omitempty"`
+	Stats               *CommentAutomationStats       `json:"stats,omitempty"`
+	CreatedAt           *time.Time                    `json:"createdAt,omitempty"`
 }
 
 // NewListCommentAutomations200ResponseAutomationsInner instantiates a new ListCommentAutomations200ResponseAutomationsInner object
@@ -298,6 +308,38 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) HasPostTitle() bool 
 // SetPostTitle gets a reference to the given string and assigns it to the PostTitle field.
 func (o *ListCommentAutomations200ResponseAutomationsInner) SetPostTitle(v string) {
 	o.PostTitle = &v
+}
+
+// GetPostId returns the PostId field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetPostId() string {
+	if o == nil || IsNil(o.PostId) {
+		var ret string
+		return ret
+	}
+	return *o.PostId
+}
+
+// GetPostIdOk returns a tuple with the PostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetPostIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PostId) {
+		return nil, false
+	}
+	return o.PostId, true
+}
+
+// HasPostId returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasPostId() bool {
+	if o != nil && !IsNil(o.PostId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPostId gets a reference to the given string and assigns it to the PostId field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetPostId(v string) {
+	o.PostId = &v
 }
 
 // GetKeywords returns the Keywords field value if set, zero value otherwise.
@@ -780,6 +822,262 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) SetAlsoMatchInDms(v 
 	o.AlsoMatchInDms = &v
 }
 
+// GetRepeatPolicy returns the RepeatPolicy field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetRepeatPolicy() CommentAutomationRepeatPolicy {
+	if o == nil || IsNil(o.RepeatPolicy) {
+		var ret CommentAutomationRepeatPolicy
+		return ret
+	}
+	return *o.RepeatPolicy
+}
+
+// GetRepeatPolicyOk returns a tuple with the RepeatPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetRepeatPolicyOk() (*CommentAutomationRepeatPolicy, bool) {
+	if o == nil || IsNil(o.RepeatPolicy) {
+		return nil, false
+	}
+	return o.RepeatPolicy, true
+}
+
+// HasRepeatPolicy returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasRepeatPolicy() bool {
+	if o != nil && !IsNil(o.RepeatPolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetRepeatPolicy gets a reference to the given CommentAutomationRepeatPolicy and assigns it to the RepeatPolicy field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetRepeatPolicy(v CommentAutomationRepeatPolicy) {
+	o.RepeatPolicy = &v
+}
+
+// GetDedupeSameTextHours returns the DedupeSameTextHours field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDedupeSameTextHours() int32 {
+	if o == nil || IsNil(o.DedupeSameTextHours) {
+		var ret int32
+		return ret
+	}
+	return *o.DedupeSameTextHours
+}
+
+// GetDedupeSameTextHoursOk returns a tuple with the DedupeSameTextHours field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDedupeSameTextHoursOk() (*int32, bool) {
+	if o == nil || IsNil(o.DedupeSameTextHours) {
+		return nil, false
+	}
+	return o.DedupeSameTextHours, true
+}
+
+// HasDedupeSameTextHours returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasDedupeSameTextHours() bool {
+	if o != nil && !IsNil(o.DedupeSameTextHours) {
+		return true
+	}
+
+	return false
+}
+
+// SetDedupeSameTextHours gets a reference to the given int32 and assigns it to the DedupeSameTextHours field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetDedupeSameTextHours(v int32) {
+	o.DedupeSameTextHours = &v
+}
+
+// GetPublicReplyPolicy returns the PublicReplyPolicy field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetPublicReplyPolicy() string {
+	if o == nil || IsNil(o.PublicReplyPolicy) {
+		var ret string
+		return ret
+	}
+	return *o.PublicReplyPolicy
+}
+
+// GetPublicReplyPolicyOk returns a tuple with the PublicReplyPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetPublicReplyPolicyOk() (*string, bool) {
+	if o == nil || IsNil(o.PublicReplyPolicy) {
+		return nil, false
+	}
+	return o.PublicReplyPolicy, true
+}
+
+// HasPublicReplyPolicy returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasPublicReplyPolicy() bool {
+	if o != nil && !IsNil(o.PublicReplyPolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublicReplyPolicy gets a reference to the given string and assigns it to the PublicReplyPolicy field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetPublicReplyPolicy(v string) {
+	o.PublicReplyPolicy = &v
+}
+
+// GetActions returns the Actions field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetActions() CommentAutomationActions {
+	if o == nil || IsNil(o.Actions) {
+		var ret CommentAutomationActions
+		return ret
+	}
+	return *o.Actions
+}
+
+// GetActionsOk returns a tuple with the Actions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetActionsOk() (*CommentAutomationActions, bool) {
+	if o == nil || IsNil(o.Actions) {
+		return nil, false
+	}
+	return o.Actions, true
+}
+
+// HasActions returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasActions() bool {
+	if o != nil && !IsNil(o.Actions) {
+		return true
+	}
+
+	return false
+}
+
+// SetActions gets a reference to the given CommentAutomationActions and assigns it to the Actions field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetActions(v CommentAutomationActions) {
+	o.Actions = &v
+}
+
+// GetQuickReplies returns the QuickReplies field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetQuickReplies() []CommentAutomationQuickReply {
+	if o == nil || IsNil(o.QuickReplies) {
+		var ret []CommentAutomationQuickReply
+		return ret
+	}
+	return o.QuickReplies
+}
+
+// GetQuickRepliesOk returns a tuple with the QuickReplies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetQuickRepliesOk() ([]CommentAutomationQuickReply, bool) {
+	if o == nil || IsNil(o.QuickReplies) {
+		return nil, false
+	}
+	return o.QuickReplies, true
+}
+
+// HasQuickReplies returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasQuickReplies() bool {
+	if o != nil && !IsNil(o.QuickReplies) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuickReplies gets a reference to the given []CommentAutomationQuickReply and assigns it to the QuickReplies field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetQuickReplies(v []CommentAutomationQuickReply) {
+	o.QuickReplies = v
+}
+
+// GetDmMedia returns the DmMedia field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDmMedia() CommentAutomationDmMedia {
+	if o == nil || IsNil(o.DmMedia) {
+		var ret CommentAutomationDmMedia
+		return ret
+	}
+	return *o.DmMedia
+}
+
+// GetDmMediaOk returns a tuple with the DmMedia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetDmMediaOk() (*CommentAutomationDmMedia, bool) {
+	if o == nil || IsNil(o.DmMedia) {
+		return nil, false
+	}
+	return o.DmMedia, true
+}
+
+// HasDmMedia returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasDmMedia() bool {
+	if o != nil && !IsNil(o.DmMedia) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmMedia gets a reference to the given CommentAutomationDmMedia and assigns it to the DmMedia field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetDmMedia(v CommentAutomationDmMedia) {
+	o.DmMedia = &v
+}
+
+// GetAudience returns the Audience field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetAudience() CommentAutomationAudience {
+	if o == nil || IsNil(o.Audience) {
+		var ret CommentAutomationAudience
+		return ret
+	}
+	return *o.Audience
+}
+
+// GetAudienceOk returns a tuple with the Audience field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetAudienceOk() (*CommentAutomationAudience, bool) {
+	if o == nil || IsNil(o.Audience) {
+		return nil, false
+	}
+	return o.Audience, true
+}
+
+// HasAudience returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasAudience() bool {
+	if o != nil && !IsNil(o.Audience) {
+		return true
+	}
+
+	return false
+}
+
+// SetAudience gets a reference to the given CommentAutomationAudience and assigns it to the Audience field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetAudience(v CommentAutomationAudience) {
+	o.Audience = &v
+}
+
+// GetFollowGate returns the FollowGate field value if set, zero value otherwise.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetFollowGate() CommentAutomationFollowGate {
+	if o == nil || IsNil(o.FollowGate) {
+		var ret CommentAutomationFollowGate
+		return ret
+	}
+	return *o.FollowGate
+}
+
+// GetFollowGateOk returns a tuple with the FollowGate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetFollowGateOk() (*CommentAutomationFollowGate, bool) {
+	if o == nil || IsNil(o.FollowGate) {
+		return nil, false
+	}
+	return o.FollowGate, true
+}
+
+// HasFollowGate returns a boolean if a field has been set.
+func (o *ListCommentAutomations200ResponseAutomationsInner) HasFollowGate() bool {
+	if o != nil && !IsNil(o.FollowGate) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollowGate gets a reference to the given CommentAutomationFollowGate and assigns it to the FollowGate field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetFollowGate(v CommentAutomationFollowGate) {
+	o.FollowGate = &v
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *ListCommentAutomations200ResponseAutomationsInner) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -813,9 +1111,9 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) SetIsActive(v bool) 
 }
 
 // GetStats returns the Stats field value if set, zero value otherwise.
-func (o *ListCommentAutomations200ResponseAutomationsInner) GetStats() ListCommentAutomations200ResponseAutomationsInnerStats {
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetStats() CommentAutomationStats {
 	if o == nil || IsNil(o.Stats) {
-		var ret ListCommentAutomations200ResponseAutomationsInnerStats
+		var ret CommentAutomationStats
 		return ret
 	}
 	return *o.Stats
@@ -823,7 +1121,7 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) GetStats() ListComme
 
 // GetStatsOk returns a tuple with the Stats field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListCommentAutomations200ResponseAutomationsInner) GetStatsOk() (*ListCommentAutomations200ResponseAutomationsInnerStats, bool) {
+func (o *ListCommentAutomations200ResponseAutomationsInner) GetStatsOk() (*CommentAutomationStats, bool) {
 	if o == nil || IsNil(o.Stats) {
 		return nil, false
 	}
@@ -839,8 +1137,8 @@ func (o *ListCommentAutomations200ResponseAutomationsInner) HasStats() bool {
 	return false
 }
 
-// SetStats gets a reference to the given ListCommentAutomations200ResponseAutomationsInnerStats and assigns it to the Stats field.
-func (o *ListCommentAutomations200ResponseAutomationsInner) SetStats(v ListCommentAutomations200ResponseAutomationsInnerStats) {
+// SetStats gets a reference to the given CommentAutomationStats and assigns it to the Stats field.
+func (o *ListCommentAutomations200ResponseAutomationsInner) SetStats(v CommentAutomationStats) {
 	o.Stats = &v
 }
 
@@ -907,6 +1205,9 @@ func (o ListCommentAutomations200ResponseAutomationsInner) ToMap() (map[string]i
 	if !IsNil(o.PostTitle) {
 		toSerialize["postTitle"] = o.PostTitle
 	}
+	if !IsNil(o.PostId) {
+		toSerialize["postId"] = o.PostId
+	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords
 	}
@@ -951,6 +1252,30 @@ func (o ListCommentAutomations200ResponseAutomationsInner) ToMap() (map[string]i
 	}
 	if !IsNil(o.AlsoMatchInDms) {
 		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
+	}
+	if !IsNil(o.RepeatPolicy) {
+		toSerialize["repeatPolicy"] = o.RepeatPolicy
+	}
+	if !IsNil(o.DedupeSameTextHours) {
+		toSerialize["dedupeSameTextHours"] = o.DedupeSameTextHours
+	}
+	if !IsNil(o.PublicReplyPolicy) {
+		toSerialize["publicReplyPolicy"] = o.PublicReplyPolicy
+	}
+	if !IsNil(o.Actions) {
+		toSerialize["actions"] = o.Actions
+	}
+	if !IsNil(o.QuickReplies) {
+		toSerialize["quickReplies"] = o.QuickReplies
+	}
+	if !IsNil(o.DmMedia) {
+		toSerialize["dmMedia"] = o.DmMedia
+	}
+	if !IsNil(o.Audience) {
+		toSerialize["audience"] = o.Audience
+	}
+	if !IsNil(o.FollowGate) {
+		toSerialize["followGate"] = o.FollowGate
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive

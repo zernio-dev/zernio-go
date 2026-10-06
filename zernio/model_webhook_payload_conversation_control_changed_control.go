@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -22,10 +22,12 @@ var _ MappedNullable = &WebhookPayloadConversationControlChangedControl{}
 
 // WebhookPayloadConversationControlChangedControl struct for WebhookPayloadConversationControlChangedControl
 type WebhookPayloadConversationControlChangedControl struct {
-	// Who answers now. ai_agent: Meta Business Agent; app: you; other: another partner app on the number.
+	// Who answers now. ai_agent: Meta Business Agent (WhatsApp); app: you; other: another app (a WhatsApp partner, or a Messenger / Instagram receiver such as Page Inbox).
 	Owner string `json:"owner"`
-	// Owner before this change, null when the thread had never been agent-handled.
+	// Owner before this change, null when no handover had touched the thread.
 	PreviousOwner NullableString `json:"previousOwner"`
+	// Meta app id of the new owner, when Meta names it (Facebook and Instagram handovers, WhatsApp partner apps). Page Inbox is 263902037430900.
+	OwnerAppId *string `json:"ownerAppId,omitempty"`
 	// Free-form string the transferring app attached to the handover, forwarded verbatim.
 	Metadata *string `json:"metadata,omitempty"`
 }
@@ -101,6 +103,38 @@ func (o *WebhookPayloadConversationControlChangedControl) SetPreviousOwner(v str
 	o.PreviousOwner.Set(&v)
 }
 
+// GetOwnerAppId returns the OwnerAppId field value if set, zero value otherwise.
+func (o *WebhookPayloadConversationControlChangedControl) GetOwnerAppId() string {
+	if o == nil || IsNil(o.OwnerAppId) {
+		var ret string
+		return ret
+	}
+	return *o.OwnerAppId
+}
+
+// GetOwnerAppIdOk returns a tuple with the OwnerAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadConversationControlChangedControl) GetOwnerAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OwnerAppId) {
+		return nil, false
+	}
+	return o.OwnerAppId, true
+}
+
+// HasOwnerAppId returns a boolean if a field has been set.
+func (o *WebhookPayloadConversationControlChangedControl) HasOwnerAppId() bool {
+	if o != nil && !IsNil(o.OwnerAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOwnerAppId gets a reference to the given string and assigns it to the OwnerAppId field.
+func (o *WebhookPayloadConversationControlChangedControl) SetOwnerAppId(v string) {
+	o.OwnerAppId = &v
+}
+
 // GetMetadata returns the Metadata field value if set, zero value otherwise.
 func (o *WebhookPayloadConversationControlChangedControl) GetMetadata() string {
 	if o == nil || IsNil(o.Metadata) {
@@ -145,6 +179,9 @@ func (o WebhookPayloadConversationControlChangedControl) ToMap() (map[string]int
 	toSerialize := map[string]interface{}{}
 	toSerialize["owner"] = o.Owner
 	toSerialize["previousOwner"] = o.PreviousOwner.Get()
+	if !IsNil(o.OwnerAppId) {
+		toSerialize["ownerAppId"] = o.OwnerAppId
+	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
 	}

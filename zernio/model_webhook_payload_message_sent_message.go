@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -43,6 +43,16 @@ type WebhookPayloadMessageSentMessage struct {
 	Source *string `json:"source,omitempty"`
 	// Which Zernio surface produced this message: `human` (an operator in the Zernio inbox), `api` (a call to this API), `broadcast`, `sequence`, `workflow`, `comment_automation`, or `bulk-api` (POST /v1/whatsapp/bulk). Same vocabulary as the `source` filter on the inbox analytics endpoints, and the same value a later GET on this message returns.  Always present, and `null` whenever the lineage is unknown: a message sent from the platform's own app, and every message stored before this field shipped (2026-08). Existing messages are NOT backfilled, so treat `null` as \"unknown\", never as \"sent by a human\".
 	SentVia NullableString `json:"sentVia,omitempty"`
+	// The comment automation that sent this DM (sentVia comment_automation). Null otherwise.
+	AutomationId NullableString `json:"automationId,omitempty"`
+	// The workflow whose run sent this message (sentVia workflow). Null otherwise.
+	WorkflowId NullableString `json:"workflowId,omitempty"`
+	// The workflow run (execution) that sent this message, as returned by the workflow executions endpoints. Null when workflowId is null.
+	ExecutionId NullableString `json:"executionId,omitempty"`
+	// The broadcast that sent this message (sentVia broadcast). Null otherwise.
+	BroadcastId NullableString `json:"broadcastId,omitempty"`
+	// The sequence whose step sent this message (sentVia sequence). Null otherwise.
+	SequenceId NullableString `json:"sequenceId,omitempty"`
 }
 
 type _WebhookPayloadMessageSentMessage WebhookPayloadMessageSentMessage
@@ -391,6 +401,221 @@ func (o *WebhookPayloadMessageSentMessage) UnsetSentVia() {
 	o.SentVia.Unset()
 }
 
+// GetAutomationId returns the AutomationId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetAutomationId() string {
+	if o == nil || IsNil(o.AutomationId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AutomationId.Get()
+}
+
+// GetAutomationIdOk returns a tuple with the AutomationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetAutomationIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AutomationId.Get(), o.AutomationId.IsSet()
+}
+
+// HasAutomationId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasAutomationId() bool {
+	if o != nil && o.AutomationId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAutomationId gets a reference to the given NullableString and assigns it to the AutomationId field.
+func (o *WebhookPayloadMessageSentMessage) SetAutomationId(v string) {
+	o.AutomationId.Set(&v)
+}
+
+// SetAutomationIdNil sets the value for AutomationId to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetAutomationIdNil() {
+	o.AutomationId.Set(nil)
+}
+
+// UnsetAutomationId ensures that no value is present for AutomationId, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetAutomationId() {
+	o.AutomationId.Unset()
+}
+
+// GetWorkflowId returns the WorkflowId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetWorkflowId() string {
+	if o == nil || IsNil(o.WorkflowId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.WorkflowId.Get()
+}
+
+// GetWorkflowIdOk returns a tuple with the WorkflowId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetWorkflowIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.WorkflowId.Get(), o.WorkflowId.IsSet()
+}
+
+// HasWorkflowId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasWorkflowId() bool {
+	if o != nil && o.WorkflowId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkflowId gets a reference to the given NullableString and assigns it to the WorkflowId field.
+func (o *WebhookPayloadMessageSentMessage) SetWorkflowId(v string) {
+	o.WorkflowId.Set(&v)
+}
+
+// SetWorkflowIdNil sets the value for WorkflowId to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetWorkflowIdNil() {
+	o.WorkflowId.Set(nil)
+}
+
+// UnsetWorkflowId ensures that no value is present for WorkflowId, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetWorkflowId() {
+	o.WorkflowId.Unset()
+}
+
+// GetExecutionId returns the ExecutionId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetExecutionId() string {
+	if o == nil || IsNil(o.ExecutionId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ExecutionId.Get()
+}
+
+// GetExecutionIdOk returns a tuple with the ExecutionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetExecutionIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExecutionId.Get(), o.ExecutionId.IsSet()
+}
+
+// HasExecutionId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasExecutionId() bool {
+	if o != nil && o.ExecutionId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExecutionId gets a reference to the given NullableString and assigns it to the ExecutionId field.
+func (o *WebhookPayloadMessageSentMessage) SetExecutionId(v string) {
+	o.ExecutionId.Set(&v)
+}
+
+// SetExecutionIdNil sets the value for ExecutionId to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetExecutionIdNil() {
+	o.ExecutionId.Set(nil)
+}
+
+// UnsetExecutionId ensures that no value is present for ExecutionId, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetExecutionId() {
+	o.ExecutionId.Unset()
+}
+
+// GetBroadcastId returns the BroadcastId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetBroadcastId() string {
+	if o == nil || IsNil(o.BroadcastId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.BroadcastId.Get()
+}
+
+// GetBroadcastIdOk returns a tuple with the BroadcastId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetBroadcastIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BroadcastId.Get(), o.BroadcastId.IsSet()
+}
+
+// HasBroadcastId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasBroadcastId() bool {
+	if o != nil && o.BroadcastId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBroadcastId gets a reference to the given NullableString and assigns it to the BroadcastId field.
+func (o *WebhookPayloadMessageSentMessage) SetBroadcastId(v string) {
+	o.BroadcastId.Set(&v)
+}
+
+// SetBroadcastIdNil sets the value for BroadcastId to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetBroadcastIdNil() {
+	o.BroadcastId.Set(nil)
+}
+
+// UnsetBroadcastId ensures that no value is present for BroadcastId, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetBroadcastId() {
+	o.BroadcastId.Unset()
+}
+
+// GetSequenceId returns the SequenceId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WebhookPayloadMessageSentMessage) GetSequenceId() string {
+	if o == nil || IsNil(o.SequenceId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SequenceId.Get()
+}
+
+// GetSequenceIdOk returns a tuple with the SequenceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WebhookPayloadMessageSentMessage) GetSequenceIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SequenceId.Get(), o.SequenceId.IsSet()
+}
+
+// HasSequenceId returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSentMessage) HasSequenceId() bool {
+	if o != nil && o.SequenceId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSequenceId gets a reference to the given NullableString and assigns it to the SequenceId field.
+func (o *WebhookPayloadMessageSentMessage) SetSequenceId(v string) {
+	o.SequenceId.Set(&v)
+}
+
+// SetSequenceIdNil sets the value for SequenceId to be an explicit nil
+func (o *WebhookPayloadMessageSentMessage) SetSequenceIdNil() {
+	o.SequenceId.Set(nil)
+}
+
+// UnsetSequenceId ensures that no value is present for SequenceId, not even an explicit nil
+func (o *WebhookPayloadMessageSentMessage) UnsetSequenceId() {
+	o.SequenceId.Unset()
+}
+
 func (o WebhookPayloadMessageSentMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -416,6 +641,21 @@ func (o WebhookPayloadMessageSentMessage) ToMap() (map[string]interface{}, error
 	}
 	if o.SentVia.IsSet() {
 		toSerialize["sentVia"] = o.SentVia.Get()
+	}
+	if o.AutomationId.IsSet() {
+		toSerialize["automationId"] = o.AutomationId.Get()
+	}
+	if o.WorkflowId.IsSet() {
+		toSerialize["workflowId"] = o.WorkflowId.Get()
+	}
+	if o.ExecutionId.IsSet() {
+		toSerialize["executionId"] = o.ExecutionId.Get()
+	}
+	if o.BroadcastId.IsSet() {
+		toSerialize["broadcastId"] = o.BroadcastId.Get()
+	}
+	if o.SequenceId.IsSet() {
+		toSerialize["sequenceId"] = o.SequenceId.Get()
 	}
 	return toSerialize, nil
 }

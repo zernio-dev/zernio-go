@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -22,7 +22,8 @@ var _ MappedNullable = &GetCommentAutomation200Response{}
 type GetCommentAutomation200Response struct {
 	Success    *bool                                      `json:"success,omitempty"`
 	Automation *GetCommentAutomation200ResponseAutomation `json:"automation,omitempty"`
-	Logs       []GetCommentAutomation200ResponseLogsInner `json:"logs,omitempty"`
+	// The 20 most recent trigger logs.
+	Logs []CommentAutomationLog `json:"logs,omitempty"`
 }
 
 // NewGetCommentAutomation200Response instantiates a new GetCommentAutomation200Response object
@@ -107,9 +108,9 @@ func (o *GetCommentAutomation200Response) SetAutomation(v GetCommentAutomation20
 }
 
 // GetLogs returns the Logs field value if set, zero value otherwise.
-func (o *GetCommentAutomation200Response) GetLogs() []GetCommentAutomation200ResponseLogsInner {
+func (o *GetCommentAutomation200Response) GetLogs() []CommentAutomationLog {
 	if o == nil || IsNil(o.Logs) {
-		var ret []GetCommentAutomation200ResponseLogsInner
+		var ret []CommentAutomationLog
 		return ret
 	}
 	return o.Logs
@@ -117,7 +118,7 @@ func (o *GetCommentAutomation200Response) GetLogs() []GetCommentAutomation200Res
 
 // GetLogsOk returns a tuple with the Logs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetCommentAutomation200Response) GetLogsOk() ([]GetCommentAutomation200ResponseLogsInner, bool) {
+func (o *GetCommentAutomation200Response) GetLogsOk() ([]CommentAutomationLog, bool) {
 	if o == nil || IsNil(o.Logs) {
 		return nil, false
 	}
@@ -133,8 +134,8 @@ func (o *GetCommentAutomation200Response) HasLogs() bool {
 	return false
 }
 
-// SetLogs gets a reference to the given []GetCommentAutomation200ResponseLogsInner and assigns it to the Logs field.
-func (o *GetCommentAutomation200Response) SetLogs(v []GetCommentAutomation200ResponseLogsInner) {
+// SetLogs gets a reference to the given []CommentAutomationLog and assigns it to the Logs field.
+func (o *GetCommentAutomation200Response) SetLogs(v []CommentAutomationLog) {
 	o.Logs = v
 }
 

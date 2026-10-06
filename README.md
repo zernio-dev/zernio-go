@@ -271,15 +271,21 @@ func main() {
 |--------|-------------|
 | `client.AccountSettingsAPI.GetInstagramIceBreakers(ctx)` | Get IG ice breakers |
 | `client.AccountSettingsAPI.GetMessengerGetStarted(ctx)` | Get FB Get Started button |
-| `client.AccountSettingsAPI.GetMessengerMenu(ctx)` | Get FB persistent menu |
+| `client.AccountSettingsAPI.GetMessengerGreeting(ctx)` | Get FB greeting text |
+| `client.AccountSettingsAPI.GetMessengerIceBreakers(ctx)` | Get FB ice breakers |
+| `client.AccountSettingsAPI.GetMessengerMenu(ctx)` | Get persistent menu |
 | `client.AccountSettingsAPI.GetTelegramCommands(ctx)` | Get TG bot commands |
 | `client.AccountSettingsAPI.DeleteInstagramIceBreakers(ctx)` | Delete IG ice breakers |
 | `client.AccountSettingsAPI.DeleteMessengerGetStarted(ctx)` | Delete FB Get Started button |
-| `client.AccountSettingsAPI.DeleteMessengerMenu(ctx)` | Delete FB persistent menu |
+| `client.AccountSettingsAPI.DeleteMessengerGreeting(ctx)` | Delete FB greeting text |
+| `client.AccountSettingsAPI.DeleteMessengerIceBreakers(ctx)` | Delete FB ice breakers |
+| `client.AccountSettingsAPI.DeleteMessengerMenu(ctx)` | Delete persistent menu |
 | `client.AccountSettingsAPI.DeleteTelegramCommands(ctx)` | Delete TG bot commands |
 | `client.AccountSettingsAPI.SetInstagramIceBreakers(ctx)` | Set IG ice breakers |
 | `client.AccountSettingsAPI.SetMessengerGetStarted(ctx)` | Set FB Get Started button |
-| `client.AccountSettingsAPI.SetMessengerMenu(ctx)` | Set FB persistent menu |
+| `client.AccountSettingsAPI.SetMessengerGreeting(ctx)` | Set FB greeting text |
+| `client.AccountSettingsAPI.SetMessengerIceBreakers(ctx)` | Set FB ice breakers |
+| `client.AccountSettingsAPI.SetMessengerMenu(ctx)` | Set persistent menu |
 | `client.AccountSettingsAPI.SetTelegramCommands(ctx)` | Set TG bot commands |
 
 ### Ad Accounts
@@ -886,6 +892,7 @@ func main() {
 | `client.MessagesAPI.GetMessageAttachment(ctx)` | Resolve message attachment |
 | `client.MessagesAPI.UpdateInboxConversation(ctx)` | Update conversation status |
 | `client.MessagesAPI.DeleteInboxMessage(ctx)` | Delete message |
+| `client.MessagesAPI.AcceptConversationRequest(ctx)` | Accept a message request |
 | `client.MessagesAPI.AddMessageReaction(ctx)` | Add reaction |
 | `client.MessagesAPI.EditInboxMessage(ctx)` | Edit message |
 | `client.MessagesAPI.MarkConversationRead(ctx)` | Mark a conversation as read |
@@ -893,7 +900,7 @@ func main() {
 | `client.MessagesAPI.SearchInboxConversations(ctx)` | Search conversations |
 | `client.MessagesAPI.SendInboxMessage(ctx)` | Send message |
 | `client.MessagesAPI.SendTypingIndicator(ctx)` | Send typing indicator |
-| `client.MessagesAPI.SetConversationThreadControl(ctx)` | Hand a conversation to or from Meta Business Agent |
+| `client.MessagesAPI.SetConversationThreadControl(ctx)` | Change who answers a conversation (handover) |
 | `client.MessagesAPI.UploadMediaDirect(ctx)` | Upload media file |
 
 ### Messaging Ads
@@ -1136,6 +1143,7 @@ func main() {
 | `client.WhatsAppAPI.GetWhatsAppBlockedUsers(ctx)` | List blocked users |
 | `client.WhatsAppAPI.GetWhatsAppBusinessProfile(ctx)` | Get business profile |
 | `client.WhatsAppAPI.GetWhatsAppCommerceSettings(ctx)` | Get a number's commerce settings |
+| `client.WhatsAppAPI.GetWhatsAppConversationalAutomation(ctx)` | Get ice breakers and commands |
 | `client.WhatsAppAPI.GetWhatsAppDataset(ctx)` | Get CTWA conversions dataset |
 | `client.WhatsAppAPI.GetWhatsAppDisplayName(ctx)` | Get display name status |
 | `client.WhatsAppAPI.GetWhatsAppGroupChat(ctx)` | Get group info |
@@ -1151,6 +1159,7 @@ func main() {
 | `client.WhatsAppAPI.UpdateWhatsAppGroupChat(ctx)` | Update group settings |
 | `client.WhatsAppAPI.UpdateWhatsAppTemplate(ctx)` | Update template |
 | `client.WhatsAppAPI.UpdateWhatsAppTemplateById(ctx)` | Update template by id |
+| `client.WhatsAppAPI.DeleteWhatsAppConversationalAutomation(ctx)` | Clear ice breakers and commands |
 | `client.WhatsAppAPI.DeleteWhatsAppGroupChat(ctx)` | Delete group |
 | `client.WhatsAppAPI.DeleteWhatsAppTemplate(ctx)` | Delete template |
 | `client.WhatsAppAPI.DeleteWhatsAppTemplateById(ctx)` | Delete template by id |
@@ -1164,6 +1173,7 @@ func main() {
 | `client.WhatsAppAPI.RemoveWhatsAppGroupParticipants(ctx)` | Remove participants |
 | `client.WhatsAppAPI.RequestWhatsAppVerificationCode(ctx)` | Request a Meta re-verification code for a BYO WhatsApp number |
 | `client.WhatsAppAPI.SendWhatsAppConversion(ctx)` | Send WhatsApp conversion event |
+| `client.WhatsAppAPI.SetWhatsAppConversationalAutomation(ctx)` | Set ice breakers and commands |
 | `client.WhatsAppAPI.SetWhatsappBusinessUsername(ctx)` | Set business username |
 | `client.WhatsAppAPI.UnblockWhatsAppUsers(ctx)` | Unblock users |
 | `client.WhatsAppAPI.UnlinkWhatsAppCatalog(ctx)` | Unlink a catalog from a WhatsApp number |
@@ -1258,6 +1268,7 @@ func main() {
 | `client.WorkflowsAPI.DuplicateWorkflow(ctx)` | Duplicate a workflow |
 | `client.WorkflowsAPI.PauseWorkflow(ctx)` | Pause workflow |
 | `client.WorkflowsAPI.RestoreWorkflowVersion(ctx)` | Restore a workflow version |
+| `client.WorkflowsAPI.TriggerApiCallWorkflow(ctx)` | Start an API-triggered workflow |
 | `client.WorkflowsAPI.TriggerWorkflow(ctx)` | Manually start a workflow run |
 
 ### iMessage

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,156 @@ import (
 
 // MessagesAPIService MessagesAPI service
 type MessagesAPIService service
+
+type MessagesAPIAcceptConversationRequestRequest struct {
+	ctx                              context.Context
+	ApiService                       *MessagesAPIService
+	conversationId                   string
+	acceptConversationRequestRequest *AcceptConversationRequestRequest
+}
+
+func (r MessagesAPIAcceptConversationRequestRequest) AcceptConversationRequestRequest(acceptConversationRequestRequest AcceptConversationRequestRequest) MessagesAPIAcceptConversationRequestRequest {
+	r.acceptConversationRequestRequest = &acceptConversationRequestRequest
+	return r
+}
+
+func (r MessagesAPIAcceptConversationRequestRequest) Execute() (*AcceptConversationRequest200Response, *http.Response, error) {
+	return r.ApiService.AcceptConversationRequestExecute(r)
+}
+
+/*
+AcceptConversationRequest Accept a message request
+
+Accept a Facebook or Instagram Message Request (listed with `GET /v1/inbox/conversations?folder=requests`) by replying to it.
+Meta has no separate accept call: the first reply is what moves the thread into the inbox, so this sends `message`
+through the same path, checks and webhooks as `POST /v1/inbox/conversations/{conversationId}/messages`, and answers the same way.
+Supports the `Idempotency-Key` header.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param conversationId The `id` of the request item from the requests folder.
+	@return MessagesAPIAcceptConversationRequestRequest
+*/
+func (a *MessagesAPIService) AcceptConversationRequest(ctx context.Context, conversationId string) MessagesAPIAcceptConversationRequestRequest {
+	return MessagesAPIAcceptConversationRequestRequest{
+		ApiService:     a,
+		ctx:            ctx,
+		conversationId: conversationId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return AcceptConversationRequest200Response
+func (a *MessagesAPIService) AcceptConversationRequestExecute(r MessagesAPIAcceptConversationRequestRequest) (*AcceptConversationRequest200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AcceptConversationRequest200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MessagesAPIService.AcceptConversationRequest")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/inbox/conversations/{conversationId}/accept"
+	localVarPath = strings.Replace(localVarPath, "{"+"conversationId"+"}", url.PathEscape(parameterValueToString(r.conversationId, "conversationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.acceptConversationRequestRequest == nil {
+		return localVarReturnValue, nil, reportError("acceptConversationRequestRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.acceptConversationRequestRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type MessagesAPIAddMessageReactionRequest struct {
 	ctx                       context.Context
@@ -1198,6 +1348,7 @@ type MessagesAPIListInboxConversationsRequest struct {
 	profileId  *string
 	platform   *string
 	status     *string
+	folder     *string
 	sortOrder  *string
 	limit      *int32
 	cursor     *string
@@ -1219,6 +1370,12 @@ func (r MessagesAPIListInboxConversationsRequest) Platform(platform string) Mess
 // Filter by conversation status
 func (r MessagesAPIListInboxConversationsRequest) Status(status string) MessagesAPIListInboxConversationsRequest {
 	r.status = &status
+	return r
+}
+
+// requests lists Facebook and Instagram Message Requests (threads from people the account has not accepted) live from Meta, first page only, each item with &#x60;folder: requests&#x60;. Meta has no accept call: replying moves a thread to the inbox, which is what POST /v1/inbox/conversations/{conversationId}/accept does. When Meta will not list the folder for the one account asked (&#x60;accountId&#x60;), the call answers 400 PLATFORM_LIMITATION; across several accounts the refusal is reported per account in meta.failedAccounts.
+func (r MessagesAPIListInboxConversationsRequest) Folder(folder string) MessagesAPIListInboxConversationsRequest {
+	r.folder = &folder
 	return r
 }
 
@@ -1306,6 +1463,13 @@ func (a *MessagesAPIService) ListInboxConversationsExecute(r MessagesAPIListInbo
 	if r.status != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
 	}
+	if r.folder != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "folder", r.folder, "form", "")
+	} else {
+		var defaultValue string = "inbox"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "folder", defaultValue, "form", "")
+		r.folder = &defaultValue
+	}
 	if r.sortOrder != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "sortOrder", r.sortOrder, "form", "")
 	} else {
@@ -1364,6 +1528,17 @@ func (a *MessagesAPIService) ListInboxConversationsExecute(r MessagesAPIListInbo
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
@@ -2068,6 +2243,17 @@ func (a *MessagesAPIService) SendInboxMessageExecute(r MessagesAPISendInboxMessa
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 429 {
 			var v SendInboxMessage429Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -2286,14 +2472,22 @@ func (r MessagesAPISetConversationThreadControlRequest) Execute() (*SetConversat
 }
 
 /*
-SetConversationThreadControl Hand a conversation to or from Meta Business Agent
+SetConversationThreadControl Change who answers a conversation (handover)
 
-WhatsApp only, on numbers with Meta Business Agent enabled. Wraps Meta's thread control:
+Meta's handover protocol on WhatsApp, Facebook and Instagram.
+
+**WhatsApp**, on numbers with Meta Business Agent enabled:
 - `release`: hand the conversation back to the agent so it resumes answering. You must currently hold control (sending any message takes it implicitly).
 - `take`: take control before sending anything, so the agent stops replying while an operator reads the thread. Meta accepts this only from the business configured as the number's escalation partner; other apps take control by sending a message.
 - `pass`: transfer control to the number's configured escalation partner, or to the agent with `target: ai_agent`. Meta's Cloud API currently rejects it ("Pass action is not supported", verified 2026-09-08); use `release` to hand a thread back to the agent.
 
-The conversation's `threadControl` follows the result; a `conversation.control_changed` webhook fires when Meta later reports the change.
+**Facebook and Instagram** (Messenger Platform handover between the apps on the Page, such as Page Inbox):
+- `pass` with `targetAppId`: give the thread to another app (`pass_thread_control`). Page Inbox is 263902037430900.
+- `take`: take the thread back (`take_thread_control`); Meta allows it only to the Page's primary receiver.
+- `request`: ask the current owner to pass the thread (`request_thread_control`); nothing changes until it does.
+- `release`: give the thread back to the primary receiver (`release_thread_control`).
+
+While another app owns a Facebook or Instagram thread, inbound arrive with `metadata.standby: true` and a send answers 409 `not_thread_owner`. The conversation's `threadControl` follows the result; a `conversation.control_changed` webhook fires when Meta later reports the change.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param conversationId The conversation ID

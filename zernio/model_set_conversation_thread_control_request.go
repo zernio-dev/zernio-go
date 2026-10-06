@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,12 @@ var _ MappedNullable = &SetConversationThreadControlRequest{}
 type SetConversationThreadControlRequest struct {
 	// Social account ID
 	AccountId string `json:"accountId"`
-	Action    string `json:"action"`
-	// With action pass: send control to Meta Business Agent instead of the escalation partner.
+	// `request` is Facebook and Instagram only.
+	Action string `json:"action"`
+	// WhatsApp only. With action pass: send control to Meta Business Agent instead of the escalation partner.
 	Target *string `json:"target,omitempty"`
+	// Facebook and Instagram only, required with action pass: the Meta app id receiving the thread.
+	TargetAppId *string `json:"targetAppId,omitempty" validate:"regexp=^[0-9]+$"`
 	// Free-form note forwarded verbatim to the app receiving control (its messaging_handovers webhook).
 	Metadata *string `json:"metadata,omitempty"`
 }
@@ -132,6 +135,38 @@ func (o *SetConversationThreadControlRequest) SetTarget(v string) {
 	o.Target = &v
 }
 
+// GetTargetAppId returns the TargetAppId field value if set, zero value otherwise.
+func (o *SetConversationThreadControlRequest) GetTargetAppId() string {
+	if o == nil || IsNil(o.TargetAppId) {
+		var ret string
+		return ret
+	}
+	return *o.TargetAppId
+}
+
+// GetTargetAppIdOk returns a tuple with the TargetAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SetConversationThreadControlRequest) GetTargetAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TargetAppId) {
+		return nil, false
+	}
+	return o.TargetAppId, true
+}
+
+// HasTargetAppId returns a boolean if a field has been set.
+func (o *SetConversationThreadControlRequest) HasTargetAppId() bool {
+	if o != nil && !IsNil(o.TargetAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetAppId gets a reference to the given string and assigns it to the TargetAppId field.
+func (o *SetConversationThreadControlRequest) SetTargetAppId(v string) {
+	o.TargetAppId = &v
+}
+
 // GetMetadata returns the Metadata field value if set, zero value otherwise.
 func (o *SetConversationThreadControlRequest) GetMetadata() string {
 	if o == nil || IsNil(o.Metadata) {
@@ -178,6 +213,9 @@ func (o SetConversationThreadControlRequest) ToMap() (map[string]interface{}, er
 	toSerialize["action"] = o.Action
 	if !IsNil(o.Target) {
 		toSerialize["target"] = o.Target
+	}
+	if !IsNil(o.TargetAppId) {
+		toSerialize["targetAppId"] = o.TargetAppId
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -40,8 +40,10 @@ type ListInboxConversations200ResponseDataInner struct {
 	Status           *string    `json:"status,omitempty"`
 	// Number of unread messages
 	UnreadCount NullableInt32 `json:"unreadCount,omitempty"`
-	// WhatsApp only, present once Meta Business Agent has touched the thread. ai_agent: the agent answers and new inbound arrive flagged metadata.standby; app: you hold control; other: another partner app does. Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
+	// Present once a handover has touched the thread (WhatsApp, Facebook, Instagram). ai_agent: Meta Business Agent answers (WhatsApp) and new inbound arrive flagged metadata.standby; app: you hold control; other: another app does (a WhatsApp partner, or a Messenger / Instagram receiver such as Page Inbox). Change it with POST /v1/inbox/conversations/{conversationId}/thread-control.
 	ThreadControl *string `json:"threadControl,omitempty"`
+	// Present only on items listed with folder=requests: a Message Request the account has not accepted yet.
+	Folder *string `json:"folder,omitempty"`
 	// iMessage only, true for a group thread. Manage it through the /v1/imessage/groups/{conversationId} endpoints.
 	IsGroup *bool `json:"isGroup,omitempty"`
 	// Direct link to open the conversation on the platform (if available)
@@ -580,6 +582,38 @@ func (o *ListInboxConversations200ResponseDataInner) SetThreadControl(v string) 
 	o.ThreadControl = &v
 }
 
+// GetFolder returns the Folder field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetFolder() string {
+	if o == nil || IsNil(o.Folder) {
+		var ret string
+		return ret
+	}
+	return *o.Folder
+}
+
+// GetFolderOk returns a tuple with the Folder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetFolderOk() (*string, bool) {
+	if o == nil || IsNil(o.Folder) {
+		return nil, false
+	}
+	return o.Folder, true
+}
+
+// HasFolder returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasFolder() bool {
+	if o != nil && !IsNil(o.Folder) {
+		return true
+	}
+
+	return false
+}
+
+// SetFolder gets a reference to the given string and assigns it to the Folder field.
+func (o *ListInboxConversations200ResponseDataInner) SetFolder(v string) {
+	o.Folder = &v
+}
+
 // GetIsGroup returns the IsGroup field value if set, zero value otherwise.
 func (o *ListInboxConversations200ResponseDataInner) GetIsGroup() bool {
 	if o == nil || IsNil(o.IsGroup) {
@@ -773,6 +807,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.ThreadControl) {
 		toSerialize["threadControl"] = o.ThreadControl
+	}
+	if !IsNil(o.Folder) {
+		toSerialize["folder"] = o.Folder
 	}
 	if !IsNil(o.IsGroup) {
 		toSerialize["isGroup"] = o.IsGroup

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -52,10 +52,17 @@ type CreateCommentAutomation200ResponseAutomation struct {
 	Audience                 *CommentAutomationAudience   `json:"audience,omitempty"`
 	FollowGate               *CommentAutomationFollowGate `json:"followGate,omitempty"`
 	// Whether these keywords also fire on a plain inbound DM.
-	AlsoMatchInDms *bool                                              `json:"alsoMatchInDms,omitempty"`
-	IsActive       *bool                                              `json:"isActive,omitempty"`
-	Stats          *CreateCommentAutomation200ResponseAutomationStats `json:"stats,omitempty"`
-	CreatedAt      *time.Time                                         `json:"createdAt,omitempty"`
+	AlsoMatchInDms *bool                          `json:"alsoMatchInDms,omitempty"`
+	RepeatPolicy   *CommentAutomationRepeatPolicy `json:"repeatPolicy,omitempty"`
+	// Same-text dedupe window in hours. Omitted when off.
+	DedupeSameTextHours *int32                           `json:"dedupeSameTextHours,omitempty"`
+	PublicReplyPolicy   *string                          `json:"publicReplyPolicy,omitempty"`
+	Actions             *CommentAutomationActions        `json:"actions,omitempty"`
+	QuickReplies        []CommentAutomationQuickReply    `json:"quickReplies,omitempty"`
+	DmMedia             NullableCommentAutomationDmMedia `json:"dmMedia,omitempty"`
+	IsActive            *bool                            `json:"isActive,omitempty"`
+	Stats               *CommentAutomationStats          `json:"stats,omitempty"`
+	CreatedAt           *time.Time                       `json:"createdAt,omitempty"`
 }
 
 // NewCreateCommentAutomation200ResponseAutomation instantiates a new CreateCommentAutomation200ResponseAutomation object
@@ -790,6 +797,209 @@ func (o *CreateCommentAutomation200ResponseAutomation) SetAlsoMatchInDms(v bool)
 	o.AlsoMatchInDms = &v
 }
 
+// GetRepeatPolicy returns the RepeatPolicy field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetRepeatPolicy() CommentAutomationRepeatPolicy {
+	if o == nil || IsNil(o.RepeatPolicy) {
+		var ret CommentAutomationRepeatPolicy
+		return ret
+	}
+	return *o.RepeatPolicy
+}
+
+// GetRepeatPolicyOk returns a tuple with the RepeatPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetRepeatPolicyOk() (*CommentAutomationRepeatPolicy, bool) {
+	if o == nil || IsNil(o.RepeatPolicy) {
+		return nil, false
+	}
+	return o.RepeatPolicy, true
+}
+
+// HasRepeatPolicy returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasRepeatPolicy() bool {
+	if o != nil && !IsNil(o.RepeatPolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetRepeatPolicy gets a reference to the given CommentAutomationRepeatPolicy and assigns it to the RepeatPolicy field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetRepeatPolicy(v CommentAutomationRepeatPolicy) {
+	o.RepeatPolicy = &v
+}
+
+// GetDedupeSameTextHours returns the DedupeSameTextHours field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetDedupeSameTextHours() int32 {
+	if o == nil || IsNil(o.DedupeSameTextHours) {
+		var ret int32
+		return ret
+	}
+	return *o.DedupeSameTextHours
+}
+
+// GetDedupeSameTextHoursOk returns a tuple with the DedupeSameTextHours field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetDedupeSameTextHoursOk() (*int32, bool) {
+	if o == nil || IsNil(o.DedupeSameTextHours) {
+		return nil, false
+	}
+	return o.DedupeSameTextHours, true
+}
+
+// HasDedupeSameTextHours returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasDedupeSameTextHours() bool {
+	if o != nil && !IsNil(o.DedupeSameTextHours) {
+		return true
+	}
+
+	return false
+}
+
+// SetDedupeSameTextHours gets a reference to the given int32 and assigns it to the DedupeSameTextHours field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetDedupeSameTextHours(v int32) {
+	o.DedupeSameTextHours = &v
+}
+
+// GetPublicReplyPolicy returns the PublicReplyPolicy field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetPublicReplyPolicy() string {
+	if o == nil || IsNil(o.PublicReplyPolicy) {
+		var ret string
+		return ret
+	}
+	return *o.PublicReplyPolicy
+}
+
+// GetPublicReplyPolicyOk returns a tuple with the PublicReplyPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetPublicReplyPolicyOk() (*string, bool) {
+	if o == nil || IsNil(o.PublicReplyPolicy) {
+		return nil, false
+	}
+	return o.PublicReplyPolicy, true
+}
+
+// HasPublicReplyPolicy returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasPublicReplyPolicy() bool {
+	if o != nil && !IsNil(o.PublicReplyPolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublicReplyPolicy gets a reference to the given string and assigns it to the PublicReplyPolicy field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetPublicReplyPolicy(v string) {
+	o.PublicReplyPolicy = &v
+}
+
+// GetActions returns the Actions field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetActions() CommentAutomationActions {
+	if o == nil || IsNil(o.Actions) {
+		var ret CommentAutomationActions
+		return ret
+	}
+	return *o.Actions
+}
+
+// GetActionsOk returns a tuple with the Actions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetActionsOk() (*CommentAutomationActions, bool) {
+	if o == nil || IsNil(o.Actions) {
+		return nil, false
+	}
+	return o.Actions, true
+}
+
+// HasActions returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasActions() bool {
+	if o != nil && !IsNil(o.Actions) {
+		return true
+	}
+
+	return false
+}
+
+// SetActions gets a reference to the given CommentAutomationActions and assigns it to the Actions field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetActions(v CommentAutomationActions) {
+	o.Actions = &v
+}
+
+// GetQuickReplies returns the QuickReplies field value if set, zero value otherwise.
+func (o *CreateCommentAutomation200ResponseAutomation) GetQuickReplies() []CommentAutomationQuickReply {
+	if o == nil || IsNil(o.QuickReplies) {
+		var ret []CommentAutomationQuickReply
+		return ret
+	}
+	return o.QuickReplies
+}
+
+// GetQuickRepliesOk returns a tuple with the QuickReplies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) GetQuickRepliesOk() ([]CommentAutomationQuickReply, bool) {
+	if o == nil || IsNil(o.QuickReplies) {
+		return nil, false
+	}
+	return o.QuickReplies, true
+}
+
+// HasQuickReplies returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasQuickReplies() bool {
+	if o != nil && !IsNil(o.QuickReplies) {
+		return true
+	}
+
+	return false
+}
+
+// SetQuickReplies gets a reference to the given []CommentAutomationQuickReply and assigns it to the QuickReplies field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetQuickReplies(v []CommentAutomationQuickReply) {
+	o.QuickReplies = v
+}
+
+// GetDmMedia returns the DmMedia field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateCommentAutomation200ResponseAutomation) GetDmMedia() CommentAutomationDmMedia {
+	if o == nil || IsNil(o.DmMedia.Get()) {
+		var ret CommentAutomationDmMedia
+		return ret
+	}
+	return *o.DmMedia.Get()
+}
+
+// GetDmMediaOk returns a tuple with the DmMedia field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateCommentAutomation200ResponseAutomation) GetDmMediaOk() (*CommentAutomationDmMedia, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DmMedia.Get(), o.DmMedia.IsSet()
+}
+
+// HasDmMedia returns a boolean if a field has been set.
+func (o *CreateCommentAutomation200ResponseAutomation) HasDmMedia() bool {
+	if o != nil && o.DmMedia.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDmMedia gets a reference to the given NullableCommentAutomationDmMedia and assigns it to the DmMedia field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetDmMedia(v CommentAutomationDmMedia) {
+	o.DmMedia.Set(&v)
+}
+
+// SetDmMediaNil sets the value for DmMedia to be an explicit nil
+func (o *CreateCommentAutomation200ResponseAutomation) SetDmMediaNil() {
+	o.DmMedia.Set(nil)
+}
+
+// UnsetDmMedia ensures that no value is present for DmMedia, not even an explicit nil
+func (o *CreateCommentAutomation200ResponseAutomation) UnsetDmMedia() {
+	o.DmMedia.Unset()
+}
+
 // GetIsActive returns the IsActive field value if set, zero value otherwise.
 func (o *CreateCommentAutomation200ResponseAutomation) GetIsActive() bool {
 	if o == nil || IsNil(o.IsActive) {
@@ -823,9 +1033,9 @@ func (o *CreateCommentAutomation200ResponseAutomation) SetIsActive(v bool) {
 }
 
 // GetStats returns the Stats field value if set, zero value otherwise.
-func (o *CreateCommentAutomation200ResponseAutomation) GetStats() CreateCommentAutomation200ResponseAutomationStats {
+func (o *CreateCommentAutomation200ResponseAutomation) GetStats() CommentAutomationStats {
 	if o == nil || IsNil(o.Stats) {
-		var ret CreateCommentAutomation200ResponseAutomationStats
+		var ret CommentAutomationStats
 		return ret
 	}
 	return *o.Stats
@@ -833,7 +1043,7 @@ func (o *CreateCommentAutomation200ResponseAutomation) GetStats() CreateCommentA
 
 // GetStatsOk returns a tuple with the Stats field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateCommentAutomation200ResponseAutomation) GetStatsOk() (*CreateCommentAutomation200ResponseAutomationStats, bool) {
+func (o *CreateCommentAutomation200ResponseAutomation) GetStatsOk() (*CommentAutomationStats, bool) {
 	if o == nil || IsNil(o.Stats) {
 		return nil, false
 	}
@@ -849,8 +1059,8 @@ func (o *CreateCommentAutomation200ResponseAutomation) HasStats() bool {
 	return false
 }
 
-// SetStats gets a reference to the given CreateCommentAutomation200ResponseAutomationStats and assigns it to the Stats field.
-func (o *CreateCommentAutomation200ResponseAutomation) SetStats(v CreateCommentAutomation200ResponseAutomationStats) {
+// SetStats gets a reference to the given CommentAutomationStats and assigns it to the Stats field.
+func (o *CreateCommentAutomation200ResponseAutomation) SetStats(v CommentAutomationStats) {
 	o.Stats = &v
 }
 
@@ -961,6 +1171,24 @@ func (o CreateCommentAutomation200ResponseAutomation) ToMap() (map[string]interf
 	}
 	if !IsNil(o.AlsoMatchInDms) {
 		toSerialize["alsoMatchInDms"] = o.AlsoMatchInDms
+	}
+	if !IsNil(o.RepeatPolicy) {
+		toSerialize["repeatPolicy"] = o.RepeatPolicy
+	}
+	if !IsNil(o.DedupeSameTextHours) {
+		toSerialize["dedupeSameTextHours"] = o.DedupeSameTextHours
+	}
+	if !IsNil(o.PublicReplyPolicy) {
+		toSerialize["publicReplyPolicy"] = o.PublicReplyPolicy
+	}
+	if !IsNil(o.Actions) {
+		toSerialize["actions"] = o.Actions
+	}
+	if !IsNil(o.QuickReplies) {
+		toSerialize["quickReplies"] = o.QuickReplies
+	}
+	if o.DmMedia.IsSet() {
+		toSerialize["dmMedia"] = o.DmMedia.Get()
 	}
 	if !IsNil(o.IsActive) {
 		toSerialize["isActive"] = o.IsActive

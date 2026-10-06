@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -21,25 +21,25 @@ var _ MappedNullable = &GetBroadcast200ResponseBroadcast{}
 
 // GetBroadcast200ResponseBroadcast struct for GetBroadcast200ResponseBroadcast
 type GetBroadcast200ResponseBroadcast struct {
-	Id             *string                                     `json:"id,omitempty"`
-	Name           *string                                     `json:"name,omitempty"`
-	Description    *string                                     `json:"description,omitempty"`
-	Platform       *string                                     `json:"platform,omitempty"`
-	AccountId      *string                                     `json:"accountId,omitempty"`
-	Message        *SendInboxMessageRequestInteractiveFooter   `json:"message,omitempty"`
-	Template       *ListPhoneNumbers200ResponseSandboxTemplate `json:"template,omitempty"`
-	SegmentFilters *ListContacts200ResponseFilters             `json:"segmentFilters,omitempty"`
-	Status         *string                                     `json:"status,omitempty"`
-	ScheduledAt    *time.Time                                  `json:"scheduledAt,omitempty"`
-	StartedAt      *time.Time                                  `json:"startedAt,omitempty"`
-	CompletedAt    *time.Time                                  `json:"completedAt,omitempty"`
-	RecipientCount *int32                                      `json:"recipientCount,omitempty"`
-	SentCount      *int32                                      `json:"sentCount,omitempty"`
-	DeliveredCount *int32                                      `json:"deliveredCount,omitempty"`
-	ReadCount      *int32                                      `json:"readCount,omitempty"`
-	FailedCount    *int32                                      `json:"failedCount,omitempty"`
-	CreatedAt      *time.Time                                  `json:"createdAt,omitempty"`
-	UpdatedAt      *time.Time                                  `json:"updatedAt,omitempty"`
+	Id             *string                                         `json:"id,omitempty"`
+	Name           *string                                         `json:"name,omitempty"`
+	Description    *string                                         `json:"description,omitempty"`
+	Platform       *string                                         `json:"platform,omitempty"`
+	AccountId      *string                                         `json:"accountId,omitempty"`
+	Message        *SendInboxMessageRequestInteractiveFooter       `json:"message,omitempty"`
+	Template       *ListPhoneNumbers200ResponseSandboxTemplate     `json:"template,omitempty"`
+	SegmentFilters *GetBroadcast200ResponseBroadcastSegmentFilters `json:"segmentFilters,omitempty"`
+	Status         *string                                         `json:"status,omitempty"`
+	ScheduledAt    *time.Time                                      `json:"scheduledAt,omitempty"`
+	StartedAt      *time.Time                                      `json:"startedAt,omitempty"`
+	CompletedAt    *time.Time                                      `json:"completedAt,omitempty"`
+	RecipientCount *int32                                          `json:"recipientCount,omitempty"`
+	SentCount      *int32                                          `json:"sentCount,omitempty"`
+	DeliveredCount *int32                                          `json:"deliveredCount,omitempty"`
+	ReadCount      *int32                                          `json:"readCount,omitempty"`
+	FailedCount    *int32                                          `json:"failedCount,omitempty"`
+	CreatedAt      *time.Time                                      `json:"createdAt,omitempty"`
+	UpdatedAt      *time.Time                                      `json:"updatedAt,omitempty"`
 }
 
 // NewGetBroadcast200ResponseBroadcast instantiates a new GetBroadcast200ResponseBroadcast object
@@ -284,9 +284,9 @@ func (o *GetBroadcast200ResponseBroadcast) SetTemplate(v ListPhoneNumbers200Resp
 }
 
 // GetSegmentFilters returns the SegmentFilters field value if set, zero value otherwise.
-func (o *GetBroadcast200ResponseBroadcast) GetSegmentFilters() ListContacts200ResponseFilters {
+func (o *GetBroadcast200ResponseBroadcast) GetSegmentFilters() GetBroadcast200ResponseBroadcastSegmentFilters {
 	if o == nil || IsNil(o.SegmentFilters) {
-		var ret ListContacts200ResponseFilters
+		var ret GetBroadcast200ResponseBroadcastSegmentFilters
 		return ret
 	}
 	return *o.SegmentFilters
@@ -294,7 +294,7 @@ func (o *GetBroadcast200ResponseBroadcast) GetSegmentFilters() ListContacts200Re
 
 // GetSegmentFiltersOk returns a tuple with the SegmentFilters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetBroadcast200ResponseBroadcast) GetSegmentFiltersOk() (*ListContacts200ResponseFilters, bool) {
+func (o *GetBroadcast200ResponseBroadcast) GetSegmentFiltersOk() (*GetBroadcast200ResponseBroadcastSegmentFilters, bool) {
 	if o == nil || IsNil(o.SegmentFilters) {
 		return nil, false
 	}
@@ -310,8 +310,8 @@ func (o *GetBroadcast200ResponseBroadcast) HasSegmentFilters() bool {
 	return false
 }
 
-// SetSegmentFilters gets a reference to the given ListContacts200ResponseFilters and assigns it to the SegmentFilters field.
-func (o *GetBroadcast200ResponseBroadcast) SetSegmentFilters(v ListContacts200ResponseFilters) {
+// SetSegmentFilters gets a reference to the given GetBroadcast200ResponseBroadcastSegmentFilters and assigns it to the SegmentFilters field.
+func (o *GetBroadcast200ResponseBroadcast) SetSegmentFilters(v GetBroadcast200ResponseBroadcastSegmentFilters) {
 	o.SegmentFilters = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -41,17 +41,35 @@ func (r CommentAutomationsAPICreateCommentAutomationRequest) Execute() (*CreateC
 /*
 CreateCommentAutomation Create comment-to-DM automation
 
-Create a keyword-triggered DM automation on an Instagram or Facebook account.
-When someone comments a matching keyword (or, with `trigger: story_reply`, replies
-to your Instagram story with one), they automatically receive a DM.
+Create a keyword-triggered automation. On Instagram and Facebook, when someone
+comments a matching keyword (or, with `trigger: story_reply`, replies to your
+Instagram story with one), they automatically receive a DM.
+
+Platforms:
+  - `instagram`, `facebook`: the full DM automation (private reply, buttons,
+    product card, audience rules, follow gate) plus the optional public reply.
+  - `tiktok`, `threads`, `linkedin`, `youtube`: public reply only. These
+    platforms have no private reply to a comment, so the automation answers a
+    matching comment with `commentReply` and nothing else. `commentReply` is
+    required and the DM fields (`dmMessage`, `dmMessageVariations`, `buttons`,
+    `template`, `quickReplies`, `alsoMatchInDms`, `audience`, `followGate`,
+    `dmDelaySeconds`, `commentReplyDelaySeconds`) are rejected with a 400 naming the
+    field. TikTok comments arrive by webhook (TikTok business accounts only); the
+    others are read by the comment poll, so a reply follows the comment by up to the
+    poll interval (10 minutes on posts from the last 24 hours, longer on older posts).
+    `repeatPolicy` applies there too: with the default `once`, a person gets one public
+    reply per automation, and their later comments get none.
+  - X accounts are refused with a 400 (`platform_not_supported`): X comment polling is
+    off, so an X automation could never fire.
 
 To continue into a specific workflow after the recipient taps a button, use
 `{"type":"postback","title":"Send it","payload":"zernio:workflow:<workflowId>"}`.
 The target must be active and belong to the same account and profile. This also
 works for product-card buttons. The tap starts that workflow directly, without
-matching its keyword or first-message condition. A different live workflow in
-the conversation is exited; tapping the same live workflow does not restart it
-or consume a pending reply. Stale or invalid targets do nothing. The initial
+matching its keyword or first-message condition. A tap on a workflow that is
+waiting on `wait_for_reply` in that conversation answers that wait and resumes
+the run. A tap on a different active workflow starts it and exits the other
+live runs. Stale or invalid targets still do nothing. The initial
 comment DM alone does not start the workflow: the recipient must tap.
 
 Triggers (`trigger`):
@@ -59,6 +77,20 @@ Triggers (`trigger`):
   - `story_reply`: fires when someone replies to your Instagram story with a keyword,
     and answers them with a DM. Set `platformPostId` to a story media id to scope to
     one story, or omit it to match replies to any story.
+  - `live_comment` (Instagram only): fires on keyword comments made during one of
+    your Instagram live broadcasts and answers them with a private reply. `comment`
+    automations never fire on live comments, and `live_comment` ones never fire on
+    post comments. Meta only accepts the private reply while the broadcast is live.
+  - `story_mention` (Instagram only): fires when someone mentions your account in
+    their story, and answers them with a DM. A mention carries no text and Meta does
+    not identify the story, so `keywords` must be empty and `platformPostId` omitted.
+
+Comments on Instagram and Facebook arrive by webhook. Every 10 minutes Zernio also
+reads the latest comments and replies back (the bound post, or the 5 newest posts
+for an account-wide automation, up to 20 Graph reads per account per run; a post not
+fully read is picked up again on the next run) and runs any comment the webhook
+did not deliver, so a dropped webhook still fires. A comment is answered at most
+once whichever path sees it first.
 
 Targeting (comment trigger):
   - Per-post: set `platformPostId` to scope to one specific post (only one active
@@ -86,6 +118,16 @@ keyword.
 Links in the DM's buttons can be click-tracked (`linkTracking`, on by default) and
 clickers optionally tagged (`clickTag`) for segmentation. Stats returned include
 delivered, read, and link clicks.
+
+Personalisation: `{{first_name}}`, `{{name}}` and `{{username}}` in `dmMessage`,
+`commentReply`, their variations and button titles resolve from the commenter (first
+word of the display name, the display name, the platform username). A value the
+platform does not give us resolves to an empty string.
+
+Behaviour: `repeatPolicy` decides whether a person can get the DM again,
+`dedupeSameTextHours` stops two automations sending the same text to one person,
+`publicReplyPolicy` decides whether the public reply waits for the DM, and `actions`
+likes or hides the matched comment.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return CommentAutomationsAPICreateCommentAutomationRequest
@@ -162,6 +204,17 @@ func (a *CommentAutomationsAPIService) CreateCommentAutomationExecute(r CommentA
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
@@ -762,6 +815,9 @@ UpdateCommentAutomation Update automation settings
 Update an automation's keywords, DM message, inline buttons, comment reply, or active status.
 Pass `buttons: []` to clear all buttons. When `buttons` is non-empty, `dmMessage` (the new
 one if you're changing it, otherwise the stored one) must be 640 characters or less.
+On a TikTok, Threads, LinkedIn or YouTube automation (public reply only) the DM fields
+are rejected with a 400 naming the field (`code` invalid_field_value, `param` the field),
+and `commentReply` cannot be cleared.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param automationId
@@ -838,6 +894,17 @@ func (a *CommentAutomationsAPIService) UpdateCommentAutomationExecute(r CommentA
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse

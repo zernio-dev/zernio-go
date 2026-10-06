@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.222.0
+API version: 1.223.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,12 @@ var _ MappedNullable = &CreateBroadcastRequestMessage{}
 
 // CreateBroadcastRequestMessage struct for CreateBroadcastRequestMessage
 type CreateBroadcastRequestMessage struct {
-	Text        *string                                         `json:"text,omitempty"`
+	// Required on every platform except WhatsApp (which sends `template`) and an SMS broadcast that carries attachments.
+	Text *string `json:"text,omitempty"`
+	// SMS only: sent as MMS media, one media_url per attachment. Each url must be public http(s); JPEG, PNG, GIF, WEBP, MP4 or 3GPP under 1 MB (checked at create when the host answers a HEAD request; Telnyx enforces the 1 MB total per message at send).
 	Attachments []CreateBroadcastRequestMessageAttachmentsInner `json:"attachments,omitempty"`
+	// Instagram and Facebook only. Meta message tag sent with every recipient message (messaging_type MESSAGE_TAG) so the broadcast can reach people outside the 24h window. Instagram accepts HUMAN_AGENT only. Rejected with a 400 on any other platform.
+	MessageTag *string `json:"messageTag,omitempty"`
 }
 
 // NewCreateBroadcastRequestMessage instantiates a new CreateBroadcastRequestMessage object
@@ -105,6 +109,38 @@ func (o *CreateBroadcastRequestMessage) SetAttachments(v []CreateBroadcastReques
 	o.Attachments = v
 }
 
+// GetMessageTag returns the MessageTag field value if set, zero value otherwise.
+func (o *CreateBroadcastRequestMessage) GetMessageTag() string {
+	if o == nil || IsNil(o.MessageTag) {
+		var ret string
+		return ret
+	}
+	return *o.MessageTag
+}
+
+// GetMessageTagOk returns a tuple with the MessageTag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateBroadcastRequestMessage) GetMessageTagOk() (*string, bool) {
+	if o == nil || IsNil(o.MessageTag) {
+		return nil, false
+	}
+	return o.MessageTag, true
+}
+
+// HasMessageTag returns a boolean if a field has been set.
+func (o *CreateBroadcastRequestMessage) HasMessageTag() bool {
+	if o != nil && !IsNil(o.MessageTag) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageTag gets a reference to the given string and assigns it to the MessageTag field.
+func (o *CreateBroadcastRequestMessage) SetMessageTag(v string) {
+	o.MessageTag = &v
+}
+
 func (o CreateBroadcastRequestMessage) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +156,9 @@ func (o CreateBroadcastRequestMessage) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Attachments) {
 		toSerialize["attachments"] = o.Attachments
+	}
+	if !IsNil(o.MessageTag) {
+		toSerialize["messageTag"] = o.MessageTag
 	}
 	return toSerialize, nil
 }
