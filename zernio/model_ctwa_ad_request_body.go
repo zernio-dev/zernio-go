@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.218.1
+API version: 1.219.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the CtwaAdRequestBody type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CtwaAdRequestBody{}
 
-// CtwaAdRequestBody In addition to the `required` list, the request must use EXACTLY ONE of the two shapes:  - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`,   OR `platformPostId` / `objectStoryId` to reuse an organic post.   On POST /v1/ads/messaging, `placementAssets` can replace `imageUrl` / `video`. - Multi-creative: a non-empty `creatives[]` array. Top-level   creative fields must NOT be set on this shape.  Existing post references work on messaging and CTWA only (not call ads). They cannot be combined with each other or with headline, body, imageUrl or video. `welcomeMessage` works on them (it lives on the ad, not the post). No media is uploaded and the organic post is retained. Fresh creatives still require headline, body, and image or video.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.  Campaign, ad set and targeting fields match POST /v1/ads/create on Meta and run through the same builders: the full targeting set (including `rawTargeting`, `languages`, `gender`, exclusions and `savedTargetingId`), `budgetLevel` (campaign budget), `startDate` / `endDate` in the ad account timezone, and `existingCampaignId` to add a new ad set to a campaign you already have.
+// CtwaAdRequestBody In addition to the `required` list, the request must use EXACTLY ONE of the two shapes:  - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`,   OR `platformPostId` / `objectStoryId` to reuse an organic post.   On POST /v1/ads/messaging, `placementAssets` can replace `imageUrl` / `video`. - Carousel (messaging and CTWA): `body` and `carouselCards` (2-10 image   cards) instead of `imageUrl` / `video`, top level or per `creatives[]` entry. - Multi-creative: a non-empty `creatives[]` array. Top-level   creative fields must NOT be set on this shape.  Existing post references work on messaging and CTWA only (not call ads). They cannot be combined with each other or with headline, body, imageUrl or video. `welcomeMessage` works on them (it lives on the ad, not the post). No media is uploaded and the organic post is retained. Fresh creatives still require headline, body, and image or video.  The route enforces this at the Zod boundary; OpenAPI's `required` cannot express the OR cleanly.  Campaign, ad set and targeting fields match POST /v1/ads/create on Meta and run through the same builders: the full targeting set (including `rawTargeting`, `languages`, `gender`, exclusions and `savedTargetingId`), `budgetLevel` (campaign budget), `startDate` / `endDate` in the ad account timezone, and `existingCampaignId` to add a new ad set to a campaign you already have.
 type CtwaAdRequestBody struct {
 	// Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
 	CreativeFeatures map[string]string `json:"creativeFeatures,omitempty"`
@@ -56,6 +56,8 @@ type CtwaAdRequestBody struct {
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
+	// Messaging and CTWA only (a 400 on POST /v1/ads/call). A hand-built carousel of 2-10 image cards, sent to Meta as `link_data.child_attachments`; every card (and the carousel itself) carries the destination's messaging call to action (WHATSAPP_MESSAGE, MESSAGE_PAGE or INSTAGRAM_MESSAGE), so a tap on any card opens the conversation. Replaces `imageUrl` / `video` (sending either is a 400). `body` is required as the primary text; `headline` is optional and only names the creative (each card has its own `headline`); a top-level `description` is a 400 (set it per card). `welcomeMessage`, `whatsappPhoneNumber` and `destinations` apply as on a single-image ad. Also a 400 with `placementAssets`, `platformPostId`, `existingPostId` or `objectStoryId`. Single-creative shape; for `creatives[]` set it per entry.
+	CarouselCards []MessagingCarouselCard `json:"carouselCards,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or a platformPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
 	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `budgetLevel`, `startDate`, `endDate`, `objective`, `campaignStatus`, `adSetStatus`, `existingCampaignId`, the special ad category fields and every targeting field except `ageMin`, `ageMax`, `placements` and `advantageAudience` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
@@ -732,6 +734,38 @@ func (o *CtwaAdRequestBody) HasWelcomeMessage() bool {
 // SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyWelcomeMessage and assigns it to the WelcomeMessage field.
 func (o *CtwaAdRequestBody) SetWelcomeMessage(v CtwaAdRequestBodyWelcomeMessage) {
 	o.WelcomeMessage = &v
+}
+
+// GetCarouselCards returns the CarouselCards field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetCarouselCards() []MessagingCarouselCard {
+	if o == nil || IsNil(o.CarouselCards) {
+		var ret []MessagingCarouselCard
+		return ret
+	}
+	return o.CarouselCards
+}
+
+// GetCarouselCardsOk returns a tuple with the CarouselCards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetCarouselCardsOk() ([]MessagingCarouselCard, bool) {
+	if o == nil || IsNil(o.CarouselCards) {
+		return nil, false
+	}
+	return o.CarouselCards, true
+}
+
+// HasCarouselCards returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasCarouselCards() bool {
+	if o != nil && !IsNil(o.CarouselCards) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarouselCards gets a reference to the given []MessagingCarouselCard and assigns it to the CarouselCards field.
+func (o *CtwaAdRequestBody) SetCarouselCards(v []MessagingCarouselCard) {
+	o.CarouselCards = v
 }
 
 // GetCreatives returns the Creatives field value if set, zero value otherwise.
@@ -2487,6 +2521,9 @@ func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.WelcomeMessage) {
 		toSerialize["welcomeMessage"] = o.WelcomeMessage
+	}
+	if !IsNil(o.CarouselCards) {
+		toSerialize["carouselCards"] = o.CarouselCards
 	}
 	if !IsNil(o.Creatives) {
 		toSerialize["creatives"] = o.Creatives
