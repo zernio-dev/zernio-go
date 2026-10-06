@@ -247,6 +247,7 @@ func main() {
 | `client.ConnectAPI.ConnectSlackChannel(ctx)` | Connect a Slack channel |
 | `client.ConnectAPI.ConnectWhatsAppCredentials(ctx)` | Connect WhatsApp via credentials |
 | `client.ConnectAPI.ConnectWhatsAppEmbeddedSignup(ctx)` | Connect WhatsApp from Embedded Signup |
+| `client.ConnectAPI.ConnectWhopAdsCredentials(ctx)` | Connect a Whop account |
 | `client.ConnectAPI.ConnectWordPressWithApplicationPassword(ctx)` | Connect self-hosted WordPress with an application password |
 | `client.ConnectAPI.HandleOAuthCallback(ctx)` | Complete OAuth callback |
 | `client.ConnectAPI.InitiateTelegramConnect(ctx)` | Connect Telegram directly |

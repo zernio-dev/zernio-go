@@ -1908,6 +1908,16 @@ every event. The image tag cannot carry the `__obref` browser id (OpenAI rejects
 parameter), and the search text is never sent. On WordPress the widget holds the
 official `oaiq` base code and a `page_viewed` call.
 
+Whop (`whopads`, `tagId` = the Whop account id `biz_...`) on Shopify: events are posted
+to Whop's conversions endpoint (`https://t.whop.tw/conversions`) the way Whop's own
+Shopify pixel does: `page`, `view_content`, `add_to_cart`, `purchase` (with value and
+currency) and the custom `shopify_search_submitted`, `shopify_checkout_started` and
+`shopify_payment_info_submitted`, each with Whop's `shopify:<event>:<id>` event id so a
+store that also runs Whop's own pixel reports each event once. The visitor id is kept
+in Whop's `_wuid` cookie for two years. Whop records purchases itself only for checkouts
+on Whop, so Shopify orders are reported here. On WordPress the widget holds the official
+snippet with `whop.setScope` and `whop.track("page")`.
+
 Stores connected before pixel support must re-approve the Zernio app:
 the call then answers 409 `reconnect_required` with `details.authUrl` to send the
 merchant to (the Shopify account id stays the same). Platforms without an install path
