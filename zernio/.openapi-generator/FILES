@@ -97,6 +97,7 @@ model_ad_budget.go
 model_ad_campaign.go
 model_ad_campaign_budget.go
 model_ad_creative.go
+model_ad_creative_carousel_cards_inner.go
 model_ad_daily_metrics.go
 model_ad_engagement_counts.go
 model_ad_funnel_counts.go

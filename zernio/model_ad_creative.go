@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.223.0
+API version: 1.224.0
 Contact: support@zernio.com
 */
 
@@ -56,6 +56,8 @@ type AdCreative struct {
 	InstagramPermalinkUrl NullableString `json:"instagramPermalinkUrl,omitempty"`
 	// All media URLs for this ad (carousel images, multiple assets). Populated for Meta (carousel child_attachments), Google Ads (responsive display marketing_images), and LinkedIn (multi-image posts).
 	MediaUrls []string `json:"mediaUrls,omitempty"`
+	// Meta only today. The carousel's cards in the order the ad shows them, one per Meta `link_data.child_attachments` entry, using the same field names as the `carouselCards` create input. On a carousel synced from Meta, `imageUrl` is resolved exactly like `mediaUrls` (the stable `/adimages` permalink first), so the cards that carry an image line up with `mediaUrls` in order; a card whose image Meta does not resolve keeps its place without `imageUrl`. On a carousel created through Zernio it starts as the cards you sent. Absent on non-carousel ads and on other platforms. Synced carousels stored before this field existed fill it in on their next sync.
+	CarouselCards []AdCreativeCarouselCardsInner `json:"carouselCards,omitempty"`
 	// LinkedIn only. Whether LinkedIn is currently serving this specific creative. Complements the ad-level `servingStatuses`, which describes the parent campaign.
 	IsServing NullableBool `json:"isServing,omitempty"`
 	// LinkedIn only. The LinkedIn ad format, in LinkedIn's own vocabulary: STANDARD_UPDATE, SINGLE_VIDEO, CAROUSEL, NATIVE_DOCUMENT, EVENT, TEXT_AD, SPOTLIGHT, FOLLOW_COMPANY, JOBS, SPONSORED_INMAILS and others. On an ad Zernio created this is the format it was created as; on an ad synced from Campaign Manager it is the parent campaign's raw `format`, which is what LinkedIn actually enforces on its creatives. The list is open, so treat an unrecognized value as valid. Absent on LinkedIn ads not yet re-synced, and on every other platform.
@@ -782,6 +784,38 @@ func (o *AdCreative) SetMediaUrls(v []string) {
 	o.MediaUrls = v
 }
 
+// GetCarouselCards returns the CarouselCards field value if set, zero value otherwise.
+func (o *AdCreative) GetCarouselCards() []AdCreativeCarouselCardsInner {
+	if o == nil || IsNil(o.CarouselCards) {
+		var ret []AdCreativeCarouselCardsInner
+		return ret
+	}
+	return o.CarouselCards
+}
+
+// GetCarouselCardsOk returns a tuple with the CarouselCards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetCarouselCardsOk() ([]AdCreativeCarouselCardsInner, bool) {
+	if o == nil || IsNil(o.CarouselCards) {
+		return nil, false
+	}
+	return o.CarouselCards, true
+}
+
+// HasCarouselCards returns a boolean if a field has been set.
+func (o *AdCreative) HasCarouselCards() bool {
+	if o != nil && !IsNil(o.CarouselCards) {
+		return true
+	}
+
+	return false
+}
+
+// SetCarouselCards gets a reference to the given []AdCreativeCarouselCardsInner and assigns it to the CarouselCards field.
+func (o *AdCreative) SetCarouselCards(v []AdCreativeCarouselCardsInner) {
+	o.CarouselCards = v
+}
+
 // GetIsServing returns the IsServing field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdCreative) GetIsServing() bool {
 	if o == nil || IsNil(o.IsServing.Get()) {
@@ -1251,6 +1285,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MediaUrls) {
 		toSerialize["mediaUrls"] = o.MediaUrls
+	}
+	if !IsNil(o.CarouselCards) {
+		toSerialize["carouselCards"] = o.CarouselCards
 	}
 	if o.IsServing.IsSet() {
 		toSerialize["isServing"] = o.IsServing.Get()
