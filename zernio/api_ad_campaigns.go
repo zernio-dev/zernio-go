@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.224.1
+API version: 1.225.0
 Contact: support@zernio.com
 */
 
@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -5549,6 +5550,7 @@ func (r AdCampaignsAPIListAdKeywordsRequest) Status(status string) AdCampaignsAP
 	return r
 }
 
+// Accepted in any case.
 func (r AdCampaignsAPIListAdKeywordsRequest) MatchType(matchType string) AdCampaignsAPIListAdKeywordsRequest {
 	r.matchType = &matchType
 	return r
@@ -7227,14 +7229,44 @@ func (a *AdCampaignsAPIService) ListGoogleRecommendationsExecute(r AdCampaignsAP
 }
 
 type AdCampaignsAPIRemoveAdGroupAssetsRequest struct {
-	ctx                        context.Context
-	ApiService                 *AdCampaignsAPIService
-	adSetId                    string
-	removeAdGroupAssetsRequest *RemoveAdGroupAssetsRequest
+	ctx                       context.Context
+	ApiService                *AdCampaignsAPIService
+	adSetId                   string
+	accountId                 *string
+	assetResourceNames        *[]string
+	adGroupAssetResourceNames *[]string
+	adAccountId               *string
+	customerId                *string
 }
 
-func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) RemoveAdGroupAssetsRequest(removeAdGroupAssetsRequest RemoveAdGroupAssetsRequest) AdCampaignsAPIRemoveAdGroupAssetsRequest {
-	r.removeAdGroupAssetsRequest = &removeAdGroupAssetsRequest
+// Zernio Google Ads connection id.
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AccountId(accountId string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Asset resource names, retained for compatibility. Repeat the parameter or pass a comma-separated list.
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AssetResourceNames(assetResourceNames []string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.assetResourceNames = &assetResourceNames
+	return r
+}
+
+// ad_group_asset resource names to remove, e.g. customers/1234567890/adGroupAssets/456~123~CALLOUT. Repeat the parameter or pass a comma-separated list.
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AdGroupAssetResourceNames(adGroupAssetResourceNames []string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.adGroupAssetResourceNames = &adGroupAssetResourceNames
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) AdAccountId(adAccountId string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) CustomerId(customerId string) AdCampaignsAPIRemoveAdGroupAssetsRequest {
+	r.customerId = &customerId
 	return r
 }
 
@@ -7245,7 +7277,7 @@ func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) Execute() (*RemoveCampaignAsse
 /*
 RemoveAdGroupAssets Remove ad-group assets
 
-Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility.
+Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Numeric Google platform id.
@@ -7281,12 +7313,53 @@ func (a *AdCampaignsAPIService) RemoveAdGroupAssetsExecute(r AdCampaignsAPIRemov
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.removeAdGroupAssetsRequest == nil {
-		return localVarReturnValue, nil, reportError("removeAdGroupAssetsRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.assetResourceNames == nil {
+		return localVarReturnValue, nil, reportError("assetResourceNames is required and must be specified")
+	}
+	if len(*r.assetResourceNames) < 1 {
+		return localVarReturnValue, nil, reportError("assetResourceNames must have at least 1 elements")
+	}
+	if r.adGroupAssetResourceNames == nil {
+		return localVarReturnValue, nil, reportError("adGroupAssetResourceNames is required and must be specified")
+	}
+	if len(*r.adGroupAssetResourceNames) < 1 {
+		return localVarReturnValue, nil, reportError("adGroupAssetResourceNames must have at least 1 elements")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	{
+		t := *r.assetResourceNames
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "assetResourceNames", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "assetResourceNames", t, "form", "multi")
+		}
+	}
+	{
+		t := *r.adGroupAssetResourceNames
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "adGroupAssetResourceNames", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "adGroupAssetResourceNames", t, "form", "multi")
+		}
+	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -7302,8 +7375,6 @@ func (a *AdCampaignsAPIService) RemoveAdGroupAssetsExecute(r AdCampaignsAPIRemov
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.removeAdGroupAssetsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -7533,14 +7604,44 @@ func (a *AdCampaignsAPIService) RemoveAdKeywordExecute(r AdCampaignsAPIRemoveAdK
 }
 
 type AdCampaignsAPIRemoveCampaignAssetsRequest struct {
-	ctx                         context.Context
-	ApiService                  *AdCampaignsAPIService
-	campaignId                  string
-	removeCampaignAssetsRequest *RemoveCampaignAssetsRequest
+	ctx                        context.Context
+	ApiService                 *AdCampaignsAPIService
+	campaignId                 string
+	accountId                  *string
+	assetResourceNames         *[]string
+	campaignAssetResourceNames *[]string
+	adAccountId                *string
+	customerId                 *string
 }
 
-func (r AdCampaignsAPIRemoveCampaignAssetsRequest) RemoveCampaignAssetsRequest(removeCampaignAssetsRequest RemoveCampaignAssetsRequest) AdCampaignsAPIRemoveCampaignAssetsRequest {
-	r.removeCampaignAssetsRequest = &removeCampaignAssetsRequest
+// Zernio Google Ads connection id.
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) AccountId(accountId string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Asset resource names, retained for compatibility. Repeat the parameter or pass a comma-separated list.
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) AssetResourceNames(assetResourceNames []string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.assetResourceNames = &assetResourceNames
+	return r
+}
+
+// campaign_asset resource names to remove, e.g. customers/1234567890/campaignAssets/456~123~CALLOUT. Repeat the parameter or pass a comma-separated list.
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) CampaignAssetResourceNames(campaignAssetResourceNames []string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.campaignAssetResourceNames = &campaignAssetResourceNames
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) AdAccountId(adAccountId string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdCampaignsAPIRemoveCampaignAssetsRequest) CustomerId(customerId string) AdCampaignsAPIRemoveCampaignAssetsRequest {
+	r.customerId = &customerId
 	return r
 }
 
@@ -7551,7 +7652,7 @@ func (r AdCampaignsAPIRemoveCampaignAssetsRequest) Execute() (*RemoveCampaignAss
 /*
 RemoveCampaignAssets Remove campaign assets
 
-Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility.
+Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Numeric Google platform id.
@@ -7587,12 +7688,53 @@ func (a *AdCampaignsAPIService) RemoveCampaignAssetsExecute(r AdCampaignsAPIRemo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.removeCampaignAssetsRequest == nil {
-		return localVarReturnValue, nil, reportError("removeCampaignAssetsRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.assetResourceNames == nil {
+		return localVarReturnValue, nil, reportError("assetResourceNames is required and must be specified")
+	}
+	if len(*r.assetResourceNames) < 1 {
+		return localVarReturnValue, nil, reportError("assetResourceNames must have at least 1 elements")
+	}
+	if r.campaignAssetResourceNames == nil {
+		return localVarReturnValue, nil, reportError("campaignAssetResourceNames is required and must be specified")
+	}
+	if len(*r.campaignAssetResourceNames) < 1 {
+		return localVarReturnValue, nil, reportError("campaignAssetResourceNames must have at least 1 elements")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	{
+		t := *r.assetResourceNames
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "assetResourceNames", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "assetResourceNames", t, "form", "multi")
+		}
+	}
+	{
+		t := *r.campaignAssetResourceNames
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "campaignAssetResourceNames", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "campaignAssetResourceNames", t, "form", "multi")
+		}
+	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -7608,8 +7750,6 @@ func (a *AdCampaignsAPIService) RemoveCampaignAssetsExecute(r AdCampaignsAPIRemo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.removeCampaignAssetsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

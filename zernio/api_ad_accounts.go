@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.224.1
+API version: 1.225.0
 Contact: support@zernio.com
 */
 
@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 )
 
@@ -2415,14 +2416,58 @@ func (a *AdAccountsAPIService) DeleteValueRuleSetExecute(r AdAccountsAPIDeleteVa
 }
 
 type AdAccountsAPIDetachAdLabelRequest struct {
-	ctx                      context.Context
-	ApiService               *AdAccountsAPIService
-	labelId                  string
-	googleAdLabelAssignments *GoogleAdLabelAssignments
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	labelId     string
+	accountId   *string
+	adAccountId *string
+	customerId  *string
+	campaignIds *[]string
+	adSetIds    *[]string
+	adIds       *[]string
+	keywordIds  *[]string
 }
 
-func (r AdAccountsAPIDetachAdLabelRequest) GoogleAdLabelAssignments(googleAdLabelAssignments GoogleAdLabelAssignments) AdAccountsAPIDetachAdLabelRequest {
-	r.googleAdLabelAssignments = &googleAdLabelAssignments
+// Zernio Google Ads connection id.
+func (r AdAccountsAPIDetachAdLabelRequest) AccountId(accountId string) AdAccountsAPIDetachAdLabelRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdAccountsAPIDetachAdLabelRequest) AdAccountId(adAccountId string) AdAccountsAPIDetachAdLabelRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdAccountsAPIDetachAdLabelRequest) CustomerId(customerId string) AdAccountsAPIDetachAdLabelRequest {
+	r.customerId = &customerId
+	return r
+}
+
+// Google campaign ids. Repeat the parameter or pass a comma-separated list.
+func (r AdAccountsAPIDetachAdLabelRequest) CampaignIds(campaignIds []string) AdAccountsAPIDetachAdLabelRequest {
+	r.campaignIds = &campaignIds
+	return r
+}
+
+// Google ad group ids. Repeat the parameter or pass a comma-separated list.
+func (r AdAccountsAPIDetachAdLabelRequest) AdSetIds(adSetIds []string) AdAccountsAPIDetachAdLabelRequest {
+	r.adSetIds = &adSetIds
+	return r
+}
+
+// Google ad group ad ids, {adGroupId}~{adId}. Repeat the parameter or pass a comma-separated list.
+func (r AdAccountsAPIDetachAdLabelRequest) AdIds(adIds []string) AdAccountsAPIDetachAdLabelRequest {
+	r.adIds = &adIds
+	return r
+}
+
+// Google keyword criterion ids, {adGroupId}~{criterionId}. Repeat the parameter or pass a comma-separated list.
+func (r AdAccountsAPIDetachAdLabelRequest) KeywordIds(keywordIds []string) AdAccountsAPIDetachAdLabelRequest {
+	r.keywordIds = &keywordIds
 	return r
 }
 
@@ -2433,7 +2478,7 @@ func (r AdAccountsAPIDetachAdLabelRequest) Execute() (*DetachAdLabel200Response,
 /*
 DetachAdLabel Detach a Google Ads label
 
-Removes the label from the given targets. Idempotent; a target without the label is counted in `unchanged`.
+Removes the label from the given targets. Idempotent; a target without the label is counted in `unchanged`. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param labelId Google label id
@@ -2469,12 +2514,63 @@ func (a *AdAccountsAPIService) DetachAdLabelExecute(r AdAccountsAPIDetachAdLabel
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.googleAdLabelAssignments == nil {
-		return localVarReturnValue, nil, reportError("googleAdLabelAssignments is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	if r.campaignIds != nil {
+		t := *r.campaignIds
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "campaignIds", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "campaignIds", t, "form", "multi")
+		}
+	}
+	if r.adSetIds != nil {
+		t := *r.adSetIds
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "adSetIds", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "adSetIds", t, "form", "multi")
+		}
+	}
+	if r.adIds != nil {
+		t := *r.adIds
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "adIds", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "adIds", t, "form", "multi")
+		}
+	}
+	if r.keywordIds != nil {
+		t := *r.keywordIds
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "keywordIds", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "keywordIds", t, "form", "multi")
+		}
+	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -2490,8 +2586,6 @@ func (a *AdAccountsAPIService) DetachAdLabelExecute(r AdAccountsAPIDetachAdLabel
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.googleAdLabelAssignments
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -8101,13 +8195,36 @@ func (a *AdAccountsAPIService) ListValueRuleSetsExecute(r AdAccountsAPIListValue
 }
 
 type AdAccountsAPIRemoveAccountCalloutRequest struct {
-	ctx                         context.Context
-	ApiService                  *AdAccountsAPIService
-	removeAccountCalloutRequest *RemoveAccountCalloutRequest
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	assetId     *string
+	adAccountId *string
+	customerId  *string
 }
 
-func (r AdAccountsAPIRemoveAccountCalloutRequest) RemoveAccountCalloutRequest(removeAccountCalloutRequest RemoveAccountCalloutRequest) AdAccountsAPIRemoveAccountCalloutRequest {
-	r.removeAccountCalloutRequest = &removeAccountCalloutRequest
+// Zernio Google Ads connection id.
+func (r AdAccountsAPIRemoveAccountCalloutRequest) AccountId(accountId string) AdAccountsAPIRemoveAccountCalloutRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads asset id.
+func (r AdAccountsAPIRemoveAccountCalloutRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountCalloutRequest {
+	r.assetId = &assetId
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdAccountsAPIRemoveAccountCalloutRequest) AdAccountId(adAccountId string) AdAccountsAPIRemoveAccountCalloutRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdAccountsAPIRemoveAccountCalloutRequest) CustomerId(customerId string) AdAccountsAPIRemoveAccountCalloutRequest {
+	r.customerId = &customerId
 	return r
 }
 
@@ -8118,7 +8235,7 @@ func (r AdAccountsAPIRemoveAccountCalloutRequest) Execute() (*RemoveAccountCallo
 /*
 RemoveAccountCallout Remove account callout
 
-Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain.
+Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIRemoveAccountCalloutRequest
@@ -8151,12 +8268,23 @@ func (a *AdAccountsAPIService) RemoveAccountCalloutExecute(r AdAccountsAPIRemove
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.removeAccountCalloutRequest == nil {
-		return localVarReturnValue, nil, reportError("removeAccountCalloutRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.assetId == nil {
+		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "assetId", r.assetId, "form", "")
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -8172,8 +8300,6 @@ func (a *AdAccountsAPIService) RemoveAccountCalloutExecute(r AdAccountsAPIRemove
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.removeAccountCalloutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -8256,13 +8382,36 @@ func (a *AdAccountsAPIService) RemoveAccountCalloutExecute(r AdAccountsAPIRemove
 }
 
 type AdAccountsAPIRemoveAccountSitelinkRequest struct {
-	ctx                         context.Context
-	ApiService                  *AdAccountsAPIService
-	removeAccountCalloutRequest *RemoveAccountCalloutRequest
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	assetId     *string
+	adAccountId *string
+	customerId  *string
 }
 
-func (r AdAccountsAPIRemoveAccountSitelinkRequest) RemoveAccountCalloutRequest(removeAccountCalloutRequest RemoveAccountCalloutRequest) AdAccountsAPIRemoveAccountSitelinkRequest {
-	r.removeAccountCalloutRequest = &removeAccountCalloutRequest
+// Zernio Google Ads connection id.
+func (r AdAccountsAPIRemoveAccountSitelinkRequest) AccountId(accountId string) AdAccountsAPIRemoveAccountSitelinkRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads asset id.
+func (r AdAccountsAPIRemoveAccountSitelinkRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountSitelinkRequest {
+	r.assetId = &assetId
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdAccountsAPIRemoveAccountSitelinkRequest) AdAccountId(adAccountId string) AdAccountsAPIRemoveAccountSitelinkRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdAccountsAPIRemoveAccountSitelinkRequest) CustomerId(customerId string) AdAccountsAPIRemoveAccountSitelinkRequest {
+	r.customerId = &customerId
 	return r
 }
 
@@ -8273,7 +8422,7 @@ func (r AdAccountsAPIRemoveAccountSitelinkRequest) Execute() (*RemoveAccountCall
 /*
 RemoveAccountSitelink Remove account sitelink
 
-Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain.
+Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIRemoveAccountSitelinkRequest
@@ -8306,12 +8455,23 @@ func (a *AdAccountsAPIService) RemoveAccountSitelinkExecute(r AdAccountsAPIRemov
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.removeAccountCalloutRequest == nil {
-		return localVarReturnValue, nil, reportError("removeAccountCalloutRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.assetId == nil {
+		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "assetId", r.assetId, "form", "")
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -8327,8 +8487,6 @@ func (a *AdAccountsAPIService) RemoveAccountSitelinkExecute(r AdAccountsAPIRemov
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.removeAccountCalloutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -8411,13 +8569,36 @@ func (a *AdAccountsAPIService) RemoveAccountSitelinkExecute(r AdAccountsAPIRemov
 }
 
 type AdAccountsAPIRemoveAccountStructuredSnippetRequest struct {
-	ctx                         context.Context
-	ApiService                  *AdAccountsAPIService
-	removeAccountCalloutRequest *RemoveAccountCalloutRequest
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	assetId     *string
+	adAccountId *string
+	customerId  *string
 }
 
-func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) RemoveAccountCalloutRequest(removeAccountCalloutRequest RemoveAccountCalloutRequest) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
-	r.removeAccountCalloutRequest = &removeAccountCalloutRequest
+// Zernio Google Ads connection id.
+func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) AccountId(accountId string) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Numeric Google Ads asset id.
+func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) AssetId(assetId string) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
+	r.assetId = &assetId
+	return r
+}
+
+// Platform ad account ID (Google customer ID, digits only). Required when the connection has multiple customers.
+func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) AdAccountId(adAccountId string) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Alias of adAccountId, kept for existing callers
+// Deprecated
+func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) CustomerId(customerId string) AdAccountsAPIRemoveAccountStructuredSnippetRequest {
+	r.customerId = &customerId
 	return r
 }
 
@@ -8428,7 +8609,7 @@ func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) Execute() (*RemoveAc
 /*
 RemoveAccountStructuredSnippet Remove account snippet
 
-Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain.
+Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIRemoveAccountStructuredSnippetRequest
@@ -8461,12 +8642,23 @@ func (a *AdAccountsAPIService) RemoveAccountStructuredSnippetExecute(r AdAccount
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.removeAccountCalloutRequest == nil {
-		return localVarReturnValue, nil, reportError("removeAccountCalloutRequest is required and must be specified")
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.assetId == nil {
+		return localVarReturnValue, nil, reportError("assetId is required and must be specified")
 	}
 
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.customerId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "customerId", r.customerId, "form", "")
+	}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "assetId", r.assetId, "form", "")
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -8482,8 +8674,6 @@ func (a *AdAccountsAPIService) RemoveAccountStructuredSnippetExecute(r AdAccount
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.removeAccountCalloutRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
