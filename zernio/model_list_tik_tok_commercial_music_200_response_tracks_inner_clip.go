@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.220.3
+API version: 1.220.4
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the ListTikTokCommercialMusic200ResponseTracksInnerClip type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ListTikTokCommercialMusic200ResponseTracksInnerClip{}
 
-// ListTikTokCommercialMusic200ResponseTracksInnerClip The trending excerpt of the track, when TikTok provides one. Its id is also accepted as musicSoundId.
+// ListTikTokCommercialMusic200ResponseTracksInnerClip The trending excerpt of the track, when TikTok provides one. Send clip.id as musicSoundId: it publishes and its sound page opens for viewers, unlike the full-track id (observed from Germany, 2026-10-06).
 type ListTikTokCommercialMusic200ResponseTracksInnerClip struct {
 	Id          *string `json:"id,omitempty"`
 	DurationSec *int32  `json:"durationSec,omitempty"`
