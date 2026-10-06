@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.224.0
+API version: 1.224.1
 Contact: support@zernio.com
 */
 
@@ -29,8 +29,9 @@ type UpdateCommentAutomation200ResponseAutomation struct {
 	// Comments containing one of these never trigger the automation, even when a trigger keyword also matches. Compared using the same matchMode.
 	ExcludeKeywords []string `json:"excludeKeywords,omitempty"`
 	// Only with matchMode=word: also fire on close misspellings of a keyword (one edit for 4-7 character keywords, two from 8 up). Keywords shorter than 4 characters are never fuzzy-matched.
-	TypoTolerance *bool   `json:"typoTolerance,omitempty"`
-	DmMessage     *string `json:"dmMessage,omitempty"`
+	TypoTolerance *bool `json:"typoTolerance,omitempty"`
+	// Omitted on reply-only platforms (tiktok, threads, linkedin, youtube), together with every other DM-leg field.
+	DmMessage *string `json:"dmMessage,omitempty"`
 	// Inline DM buttons (up to 3). Omitted when none are set.
 	Buttons []DmButton `json:"buttons,omitempty"`
 	// Product card sent instead of the plain dmMessage bubble. Pass null to clear it and fall back to dmMessage. Mutually exclusive with buttons, including with the buttons already stored on the automation.

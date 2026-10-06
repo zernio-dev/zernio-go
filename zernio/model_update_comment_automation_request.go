@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.224.0
+API version: 1.224.1
 Contact: support@zernio.com
 */
 
@@ -29,8 +29,14 @@ type UpdateCommentAutomationRequest struct {
 	// Comments containing one of these never trigger the automation, even when a trigger keyword also matches. Compared using the same matchMode.
 	ExcludeKeywords []string `json:"excludeKeywords,omitempty"`
 	// Only with matchMode=word: also fire on close misspellings of a keyword (one edit for 4-7 character keywords, two from 8 up). Keywords shorter than 4 characters are never fuzzy-matched.
-	TypoTolerance *bool   `json:"typoTolerance,omitempty"`
-	DmMessage     *string `json:"dmMessage,omitempty"`
+	TypoTolerance *bool `json:"typoTolerance,omitempty"`
+	// Re-binds the automation to another post: the platform media/post ID (or story media id when trigger=story_reply). postId, platformPostId and postTitle move as a unit: sending any of them replaces all three, and an omitted one is cleared. Send all three as null (or empty) to make it account-wide (any post / any story). Omit all three to keep the current binding. 409 when another active automation already owns the new post.
+	PlatformPostId NullableString `json:"platformPostId,omitempty"`
+	// Zernio post ID (24 hexadecimal characters); platform IDs return 400. Use it INSTEAD of platformPostId to bind to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. Moves as a unit with platformPostId and postTitle (see platformPostId).
+	PostId NullableString `json:"postId,omitempty" validate:"regexp=^[a-fA-F0-9]{24}$"`
+	// Post content snippet for display. Moves as a unit with platformPostId and postId (see platformPostId).
+	PostTitle NullableString `json:"postTitle,omitempty"`
+	DmMessage *string        `json:"dmMessage,omitempty"`
 	// Inline DM buttons (1-3). Pass [] to clear all buttons.
 	Buttons []DmButton `json:"buttons,omitempty"`
 	// Product card sent instead of the plain dmMessage bubble. Pass null to clear it and fall back to dmMessage. Mutually exclusive with buttons, including with the buttons already stored on the automation.
@@ -271,6 +277,135 @@ func (o *UpdateCommentAutomationRequest) HasTypoTolerance() bool {
 // SetTypoTolerance gets a reference to the given bool and assigns it to the TypoTolerance field.
 func (o *UpdateCommentAutomationRequest) SetTypoTolerance(v bool) {
 	o.TypoTolerance = &v
+}
+
+// GetPlatformPostId returns the PlatformPostId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCommentAutomationRequest) GetPlatformPostId() string {
+	if o == nil || IsNil(o.PlatformPostId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PlatformPostId.Get()
+}
+
+// GetPlatformPostIdOk returns a tuple with the PlatformPostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCommentAutomationRequest) GetPlatformPostIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PlatformPostId.Get(), o.PlatformPostId.IsSet()
+}
+
+// HasPlatformPostId returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasPlatformPostId() bool {
+	if o != nil && o.PlatformPostId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformPostId gets a reference to the given NullableString and assigns it to the PlatformPostId field.
+func (o *UpdateCommentAutomationRequest) SetPlatformPostId(v string) {
+	o.PlatformPostId.Set(&v)
+}
+
+// SetPlatformPostIdNil sets the value for PlatformPostId to be an explicit nil
+func (o *UpdateCommentAutomationRequest) SetPlatformPostIdNil() {
+	o.PlatformPostId.Set(nil)
+}
+
+// UnsetPlatformPostId ensures that no value is present for PlatformPostId, not even an explicit nil
+func (o *UpdateCommentAutomationRequest) UnsetPlatformPostId() {
+	o.PlatformPostId.Unset()
+}
+
+// GetPostId returns the PostId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCommentAutomationRequest) GetPostId() string {
+	if o == nil || IsNil(o.PostId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PostId.Get()
+}
+
+// GetPostIdOk returns a tuple with the PostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCommentAutomationRequest) GetPostIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PostId.Get(), o.PostId.IsSet()
+}
+
+// HasPostId returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasPostId() bool {
+	if o != nil && o.PostId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPostId gets a reference to the given NullableString and assigns it to the PostId field.
+func (o *UpdateCommentAutomationRequest) SetPostId(v string) {
+	o.PostId.Set(&v)
+}
+
+// SetPostIdNil sets the value for PostId to be an explicit nil
+func (o *UpdateCommentAutomationRequest) SetPostIdNil() {
+	o.PostId.Set(nil)
+}
+
+// UnsetPostId ensures that no value is present for PostId, not even an explicit nil
+func (o *UpdateCommentAutomationRequest) UnsetPostId() {
+	o.PostId.Unset()
+}
+
+// GetPostTitle returns the PostTitle field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateCommentAutomationRequest) GetPostTitle() string {
+	if o == nil || IsNil(o.PostTitle.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PostTitle.Get()
+}
+
+// GetPostTitleOk returns a tuple with the PostTitle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateCommentAutomationRequest) GetPostTitleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PostTitle.Get(), o.PostTitle.IsSet()
+}
+
+// HasPostTitle returns a boolean if a field has been set.
+func (o *UpdateCommentAutomationRequest) HasPostTitle() bool {
+	if o != nil && o.PostTitle.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPostTitle gets a reference to the given NullableString and assigns it to the PostTitle field.
+func (o *UpdateCommentAutomationRequest) SetPostTitle(v string) {
+	o.PostTitle.Set(&v)
+}
+
+// SetPostTitleNil sets the value for PostTitle to be an explicit nil
+func (o *UpdateCommentAutomationRequest) SetPostTitleNil() {
+	o.PostTitle.Set(nil)
+}
+
+// UnsetPostTitle ensures that no value is present for PostTitle, not even an explicit nil
+func (o *UpdateCommentAutomationRequest) UnsetPostTitle() {
+	o.PostTitle.Unset()
 }
 
 // GetDmMessage returns the DmMessage field value if set, zero value otherwise.
@@ -974,6 +1109,15 @@ func (o UpdateCommentAutomationRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.TypoTolerance) {
 		toSerialize["typoTolerance"] = o.TypoTolerance
+	}
+	if o.PlatformPostId.IsSet() {
+		toSerialize["platformPostId"] = o.PlatformPostId.Get()
+	}
+	if o.PostId.IsSet() {
+		toSerialize["postId"] = o.PostId.Get()
+	}
+	if o.PostTitle.IsSet() {
+		toSerialize["postTitle"] = o.PostTitle.Get()
 	}
 	if !IsNil(o.DmMessage) {
 		toSerialize["dmMessage"] = o.DmMessage
