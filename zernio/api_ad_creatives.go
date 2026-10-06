@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.226.0
+API version: 1.226.1
 Contact: support@zernio.com
 */
 
@@ -831,6 +831,11 @@ creative, normalised across shapes: single image/video, carousel,
 Reels/Story (`object_story_spec.video_data`) and dynamic
 creative (`asset_feed_spec`). Video items include Meta's poster thumbnail and the
 video's Meta id when available.
+
+Boosted Instagram posts (creatives with no image of their own) return the original
+post's media: the image, the video with its cover as `thumbnailUrl`, or every child of a
+carousel post with `index`. When the connection cannot read the Instagram post, the item
+is a 1080px rendering of the creative instead.
 
 Reads Meta live rather than the stored creative blob because Meta's signed fbcdn
 URLs carry an `oe=<hex>` expiration (image_url ~24 h, video source ~12 d). Treat
