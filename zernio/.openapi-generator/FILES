@@ -1622,6 +1622,7 @@ model_lookup_sms_number_200_response.go
 model_mark_conversation_read_200_response.go
 model_media_content_type.go
 model_media_item.go
+model_media_subtitle.go
 model_media_upload_response.go
 model_messaging_carousel_card.go
 model_meta_ads_platform_data.go

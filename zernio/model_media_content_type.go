@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.220.4
+API version: 1.221.0
 Contact: support@zernio.com
 */
 
@@ -21,26 +21,28 @@ type MediaContentType string
 
 // List of MediaContentType
 const (
-	MEDIACONTENTTYPE_IMAGE_JPEG      MediaContentType = "image/jpeg"
-	MEDIACONTENTTYPE_IMAGE_JPG       MediaContentType = "image/jpg"
-	MEDIACONTENTTYPE_IMAGE_PNG       MediaContentType = "image/png"
-	MEDIACONTENTTYPE_IMAGE_WEBP      MediaContentType = "image/webp"
-	MEDIACONTENTTYPE_IMAGE_GIF       MediaContentType = "image/gif"
-	MEDIACONTENTTYPE_VIDEO_MP4       MediaContentType = "video/mp4"
-	MEDIACONTENTTYPE_VIDEO_MPEG      MediaContentType = "video/mpeg"
-	MEDIACONTENTTYPE_VIDEO_QUICKTIME MediaContentType = "video/quicktime"
-	MEDIACONTENTTYPE_VIDEO_AVI       MediaContentType = "video/avi"
-	MEDIACONTENTTYPE_VIDEO_X_MSVIDEO MediaContentType = "video/x-msvideo"
-	MEDIACONTENTTYPE_VIDEO_WEBM      MediaContentType = "video/webm"
-	MEDIACONTENTTYPE_VIDEO_X_M4V     MediaContentType = "video/x-m4v"
-	MEDIACONTENTTYPE_APPLICATION_PDF MediaContentType = "application/pdf"
-	MEDIACONTENTTYPE_AUDIO_MPEG      MediaContentType = "audio/mpeg"
-	MEDIACONTENTTYPE_AUDIO_MP4       MediaContentType = "audio/mp4"
-	MEDIACONTENTTYPE_AUDIO_AAC       MediaContentType = "audio/aac"
-	MEDIACONTENTTYPE_AUDIO_OGG       MediaContentType = "audio/ogg"
-	MEDIACONTENTTYPE_AUDIO_WAV       MediaContentType = "audio/wav"
-	MEDIACONTENTTYPE_AUDIO_WEBM      MediaContentType = "audio/webm"
-	MEDIACONTENTTYPE_AUDIO_X_M4A     MediaContentType = "audio/x-m4a"
+	MEDIACONTENTTYPE_IMAGE_JPEG           MediaContentType = "image/jpeg"
+	MEDIACONTENTTYPE_IMAGE_JPG            MediaContentType = "image/jpg"
+	MEDIACONTENTTYPE_IMAGE_PNG            MediaContentType = "image/png"
+	MEDIACONTENTTYPE_IMAGE_WEBP           MediaContentType = "image/webp"
+	MEDIACONTENTTYPE_IMAGE_GIF            MediaContentType = "image/gif"
+	MEDIACONTENTTYPE_VIDEO_MP4            MediaContentType = "video/mp4"
+	MEDIACONTENTTYPE_VIDEO_MPEG           MediaContentType = "video/mpeg"
+	MEDIACONTENTTYPE_VIDEO_QUICKTIME      MediaContentType = "video/quicktime"
+	MEDIACONTENTTYPE_VIDEO_AVI            MediaContentType = "video/avi"
+	MEDIACONTENTTYPE_VIDEO_X_MSVIDEO      MediaContentType = "video/x-msvideo"
+	MEDIACONTENTTYPE_VIDEO_WEBM           MediaContentType = "video/webm"
+	MEDIACONTENTTYPE_VIDEO_X_M4V          MediaContentType = "video/x-m4v"
+	MEDIACONTENTTYPE_APPLICATION_PDF      MediaContentType = "application/pdf"
+	MEDIACONTENTTYPE_AUDIO_MPEG           MediaContentType = "audio/mpeg"
+	MEDIACONTENTTYPE_AUDIO_MP4            MediaContentType = "audio/mp4"
+	MEDIACONTENTTYPE_AUDIO_AAC            MediaContentType = "audio/aac"
+	MEDIACONTENTTYPE_AUDIO_OGG            MediaContentType = "audio/ogg"
+	MEDIACONTENTTYPE_AUDIO_WAV            MediaContentType = "audio/wav"
+	MEDIACONTENTTYPE_AUDIO_WEBM           MediaContentType = "audio/webm"
+	MEDIACONTENTTYPE_AUDIO_X_M4A          MediaContentType = "audio/x-m4a"
+	MEDIACONTENTTYPE_APPLICATION_X_SUBRIP MediaContentType = "application/x-subrip"
+	MEDIACONTENTTYPE_TEXT_VTT             MediaContentType = "text/vtt"
 )
 
 // All allowed values of MediaContentType enum
@@ -65,6 +67,8 @@ var AllowedMediaContentTypeEnumValues = []MediaContentType{
 	"audio/wav",
 	"audio/webm",
 	"audio/x-m4a",
+	"application/x-subrip",
+	"text/vtt",
 }
 
 func (v *MediaContentType) UnmarshalJSON(src []byte) error {

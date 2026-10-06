@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.220.4
+API version: 1.221.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,8 @@ type MediaItem struct {
 	Thumbnail *string `json:"thumbnail,omitempty"`
 	// Custom cover image URL for Instagram Reels. Can also be set via platformSpecificData.instagramThumbnail or platformSpecificData.reelCover. Resolution order: this field > platformSpecificData.instagramThumbnail > platformSpecificData.reelCover > platformSpecificData.thumbnailUrl (legacy).
 	InstagramThumbnail *string `json:"instagramThumbnail,omitempty"`
+	// Subtitle (closed caption) files for a video item, in SRT or WebVTT. Each language may appear once per video. Sent to YouTube, Facebook videos, LinkedIn, X and Bluesky; ignored with a warning on every other platform. Zernio downloads each file when the post is created or updated and converts it to the format each platform requires. Per-platform rules: YouTube takes every track; Facebook takes every track, up to 200 KB each; Bluesky takes every track, up to 20 KB each after conversion to WebVTT; X takes the first track only (one subtitle per video); LinkedIn takes the first English track only. Tracks a platform cannot take are skipped and reported in the response warnings. A file that is unreachable, redirects, exceeds 1 MB, is not valid SRT or WebVTT, or is over a platform limit is rejected with a 400 (code INVALID_SUBTITLES). If a platform rejects a file at publish time, the post is still published, without subtitles.
+	Subtitles []MediaSubtitle `json:"subtitles,omitempty"`
 	// Internal flag indicating the image was resized for TikTok
 	TiktokProcessed *bool `json:"tiktokProcessed,omitempty"`
 }
@@ -345,6 +347,38 @@ func (o *MediaItem) SetInstagramThumbnail(v string) {
 	o.InstagramThumbnail = &v
 }
 
+// GetSubtitles returns the Subtitles field value if set, zero value otherwise.
+func (o *MediaItem) GetSubtitles() []MediaSubtitle {
+	if o == nil || IsNil(o.Subtitles) {
+		var ret []MediaSubtitle
+		return ret
+	}
+	return o.Subtitles
+}
+
+// GetSubtitlesOk returns a tuple with the Subtitles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MediaItem) GetSubtitlesOk() ([]MediaSubtitle, bool) {
+	if o == nil || IsNil(o.Subtitles) {
+		return nil, false
+	}
+	return o.Subtitles, true
+}
+
+// HasSubtitles returns a boolean if a field has been set.
+func (o *MediaItem) HasSubtitles() bool {
+	if o != nil && !IsNil(o.Subtitles) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubtitles gets a reference to the given []MediaSubtitle and assigns it to the Subtitles field.
+func (o *MediaItem) SetSubtitles(v []MediaSubtitle) {
+	o.Subtitles = v
+}
+
 // GetTiktokProcessed returns the TiktokProcessed field value if set, zero value otherwise.
 func (o *MediaItem) GetTiktokProcessed() bool {
 	if o == nil || IsNil(o.TiktokProcessed) {
@@ -413,6 +447,9 @@ func (o MediaItem) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.InstagramThumbnail) {
 		toSerialize["instagramThumbnail"] = o.InstagramThumbnail
+	}
+	if !IsNil(o.Subtitles) {
+		toSerialize["subtitles"] = o.Subtitles
 	}
 	if !IsNil(o.TiktokProcessed) {
 		toSerialize["tiktokProcessed"] = o.TiktokProcessed
