@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.238.0
+API version: 1.239.0
 Contact: support@zernio.com
 */
 
@@ -17,6 +17,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // RedditSearchAPIService RedditSearchAPI service
@@ -182,6 +183,220 @@ func (a *RedditSearchAPIService) GetRedditFeedExecute(r RedditSearchAPIGetReddit
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type RedditSearchAPIGetRedditPostCommentsRequest struct {
+	ctx        context.Context
+	ApiService *RedditSearchAPIService
+	postId     string
+	accountId  *string
+	sort       *string
+	limit      *int32
+	commentId  *string
+}
+
+// An active Reddit account the request is made as.
+func (r RedditSearchAPIGetRedditPostCommentsRequest) AccountId(accountId string) RedditSearchAPIGetRedditPostCommentsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+func (r RedditSearchAPIGetRedditPostCommentsRequest) Sort(sort string) RedditSearchAPIGetRedditPostCommentsRequest {
+	r.sort = &sort
+	return r
+}
+
+// Maximum number of top-level comments.
+func (r RedditSearchAPIGetRedditPostCommentsRequest) Limit(limit int32) RedditSearchAPIGetRedditPostCommentsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Return only this comment and its replies, with or without the &#x60;t1_&#x60; prefix; pass an id from &#x60;more&#x60; to expand it.
+func (r RedditSearchAPIGetRedditPostCommentsRequest) CommentId(commentId string) RedditSearchAPIGetRedditPostCommentsRequest {
+	r.commentId = &commentId
+	return r
+}
+
+func (r RedditSearchAPIGetRedditPostCommentsRequest) Execute() (*GetRedditPostComments200Response, *http.Response, error) {
+	return r.ApiService.GetRedditPostCommentsExecute(r)
+}
+
+/*
+GetRedditPostComments Get the comments of a Reddit post
+
+Reads the comments of any Reddit post the connected account can see, for example one found
+through `/v1/reddit/feed` or `/v1/reddit/search`, straight from Reddit on every call. The tree
+comes flattened in thread order (a reply follows its parent); rebuild it from `parentId`, which
+is `t3_…` for a reply to the post and `t1_…` for a reply to a comment. Deleted and removed
+comments are passed through as Reddit sends them (`[deleted]` / `[removed]`). Where Reddit
+truncates a thread, the ids it left out are listed in `more`; `commentId` fetches one such
+comment with its replies. A post Reddit no longer serves answers 404 and a private subreddit
+403, both with `platform_api_error`. For comments on posts published through Zernio,
+`/v1/inbox/comments/{postId}` adds caching, moderation and replies.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param postId Reddit post id, with or without the `t3_` prefix (as `id` or `fullname` on RedditPost).
+	@return RedditSearchAPIGetRedditPostCommentsRequest
+*/
+func (a *RedditSearchAPIService) GetRedditPostComments(ctx context.Context, postId string) RedditSearchAPIGetRedditPostCommentsRequest {
+	return RedditSearchAPIGetRedditPostCommentsRequest{
+		ApiService: a,
+		ctx:        ctx,
+		postId:     postId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetRedditPostComments200Response
+func (a *RedditSearchAPIService) GetRedditPostCommentsExecute(r RedditSearchAPIGetRedditPostCommentsRequest) (*GetRedditPostComments200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetRedditPostComments200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RedditSearchAPIService.GetRedditPostComments")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/reddit/comments/{postId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"postId"+"}", url.PathEscape(parameterValueToString(r.postId, "postId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.sort != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sort", r.sort, "form", "")
+	} else {
+		var defaultValue string = "new"
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sort", defaultValue, "form", "")
+		r.sort = &defaultValue
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 25
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
+	}
+	if r.commentId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "commentId", r.commentId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

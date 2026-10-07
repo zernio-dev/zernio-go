@@ -1099,6 +1099,7 @@ model_get_product_200_response.go
 model_get_rcs_capabilities_200_response.go
 model_get_reddit_flairs_200_response.go
 model_get_reddit_flairs_200_response_flairs_inner.go
+model_get_reddit_post_comments_200_response.go
 model_get_reddit_subreddits_200_response.go
 model_get_reddit_subreddits_200_response_subreddits_inner.go
 model_get_sequence_200_response.go
@@ -1816,6 +1817,7 @@ model_rcs_suggestion_one_of_5.go
 model_rcs_test_device.go
 model_recycling_config.go
 model_recycling_state.go
+model_reddit_comment.go
 model_reddit_platform_data.go
 model_reddit_post.go
 model_redeliver_webhook_event_request.go
