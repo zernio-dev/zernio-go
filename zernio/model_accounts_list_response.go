@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.234.1
+API version: 1.235.0
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,8 @@ type AccountsListResponse struct {
 	// Only present when page/limit params are provided
 	Pagination *Pagination `json:"pagination,omitempty"`
 	// Only with profileIds and perProfile. Accounts matching the filters per profile ID; a profile with none is absent.
-	ProfileTotals map[string]int32 `json:"profileTotals,omitempty"`
+	ProfileTotals map[string]int32                  `json:"profileTotals,omitempty"`
+	StatusCounts  *AccountsListResponseStatusCounts `json:"statusCounts,omitempty"`
 }
 
 type _AccountsListResponse AccountsListResponse
@@ -164,6 +165,38 @@ func (o *AccountsListResponse) SetProfileTotals(v map[string]int32) {
 	o.ProfileTotals = v
 }
 
+// GetStatusCounts returns the StatusCounts field value if set, zero value otherwise.
+func (o *AccountsListResponse) GetStatusCounts() AccountsListResponseStatusCounts {
+	if o == nil || IsNil(o.StatusCounts) {
+		var ret AccountsListResponseStatusCounts
+		return ret
+	}
+	return *o.StatusCounts
+}
+
+// GetStatusCountsOk returns a tuple with the StatusCounts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AccountsListResponse) GetStatusCountsOk() (*AccountsListResponseStatusCounts, bool) {
+	if o == nil || IsNil(o.StatusCounts) {
+		return nil, false
+	}
+	return o.StatusCounts, true
+}
+
+// HasStatusCounts returns a boolean if a field has been set.
+func (o *AccountsListResponse) HasStatusCounts() bool {
+	if o != nil && !IsNil(o.StatusCounts) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusCounts gets a reference to the given AccountsListResponseStatusCounts and assigns it to the StatusCounts field.
+func (o *AccountsListResponse) SetStatusCounts(v AccountsListResponseStatusCounts) {
+	o.StatusCounts = &v
+}
+
 func (o AccountsListResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -181,6 +214,9 @@ func (o AccountsListResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ProfileTotals) {
 		toSerialize["profileTotals"] = o.ProfileTotals
+	}
+	if !IsNil(o.StatusCounts) {
+		toSerialize["statusCounts"] = o.StatusCounts
 	}
 	return toSerialize, nil
 }
