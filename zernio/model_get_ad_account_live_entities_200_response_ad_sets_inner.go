@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.229.0
+API version: 1.230.0
 Contact: support@zernio.com
 */
 
@@ -23,30 +23,32 @@ type GetAdAccountLiveEntities200ResponseAdSetsInner struct {
 	PlatformAdSetId    *string        `json:"platformAdSetId,omitempty"`
 	AdSetName          NullableString `json:"adSetName,omitempty"`
 	PlatformCampaignId NullableString `json:"platformCampaignId,omitempty"`
-	// Meta `effective_status`, for example ACTIVE, PAUSED, CAMPAIGN_PAUSED.
+	// Meta `effective_status` (ACTIVE, PAUSED, CAMPAIGN_PAUSED...) or TikTok `secondary_status` (ADGROUP_STATUS_DELIVERY_OK, ADGROUP_STATUS_AUDIT...).
 	PlatformAdSetStatus NullableString `json:"platformAdSetStatus,omitempty"`
-	// Meta `status`: the ad set's own switch.
+	// The ad set's own switch: Meta `status`, or TikTok `operation_status` as ACTIVE / PAUSED.
 	ConfiguredStatus NullableString `json:"configuredStatus,omitempty"`
 	// Zernio's normalized status, derived from `platformAdSetStatus`.
 	Status *string                                                  `json:"status,omitempty"`
 	Budget *GetAdAccountLiveEntities200ResponseCampaignsInnerBudget `json:"budget,omitempty"`
-	// Meta `daily_budget` in whole units of `currency`.
+	// Daily budget in whole units of `currency`.
 	DailyBudget NullableFloat32 `json:"dailyBudget,omitempty"`
-	// Meta `lifetime_budget` in whole units of `currency`.
+	// Lifetime budget in whole units of `currency`.
 	LifetimeBudget NullableFloat32 `json:"lifetimeBudget,omitempty"`
-	// Meta `budget_remaining` in whole units of `currency`. Null when the ad set has no budget of its own.
+	// TikTok only: `budget_mode` as TikTok reports it.
+	BudgetMode NullableString `json:"budgetMode,omitempty"`
+	// Meta `budget_remaining` in whole units of `currency`. Null when the ad set has no budget of its own, and always on TikTok.
 	BudgetRemaining NullableFloat32 `json:"budgetRemaining,omitempty"`
-	// Meta `bid_strategy`.
+	// Meta `bid_strategy`. On TikTok the ad group's `bid_type` normalized to the same vocabulary (LOWEST_COST_WITHOUT_CAP, LOWEST_COST_WITH_BID_CAP, LOWEST_COST_WITH_MIN_ROAS).
 	BidStrategy NullableString `json:"bidStrategy,omitempty"`
-	// Meta `bid_amount` (bid cap or cost target) in whole units of `currency`. Null when the strategy has none.
+	// Bid cap or cost target in whole units of `currency` (Meta `bid_amount`; TikTok `bid_price`, else `conversion_bid_price`, else `deep_cpa_bid`). Null when the strategy has none.
 	BidAmount NullableFloat32 `json:"bidAmount,omitempty"`
-	// Meta `optimization_goal`.
+	// Meta or TikTok `optimization_goal`.
 	OptimizationGoal NullableString `json:"optimizationGoal,omitempty"`
-	// Meta `billing_event`.
+	// Meta or TikTok `billing_event`.
 	BillingEvent NullableString `json:"billingEvent,omitempty"`
-	// Meta `promoted_object` verbatim (snake_case).
+	// Meta `promoted_object` verbatim (snake_case). On TikTok `{ pixelId, customEventType, applicationId, customConversionId }` from `pixel_id`, `optimization_event`, `app_id` and `custom_conversion_id`, only the keys TikTok has set; null when none is.
 	PromotedObject *map[string]interface{} `json:"promotedObject,omitempty"`
-	// Meta `targeting` verbatim (snake_case), as Meta returns it now.
+	// The platform's targeting verbatim (snake_case), as it reports it now: Meta `targeting`, or TikTok's ad group targeting fields (location_ids, age_groups, gender, languages, interest_category_ids, audience_ids, placements...).
 	Targeting *map[string]interface{}                   `json:"targeting,omitempty"`
 	Schedule  *ListAdSets200ResponseAdSetsInnerSchedule `json:"schedule,omitempty"`
 }
@@ -422,6 +424,49 @@ func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) UnsetLifetimeBudget() {
 	o.LifetimeBudget.Unset()
 }
 
+// GetBudgetMode returns the BudgetMode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) GetBudgetMode() string {
+	if o == nil || IsNil(o.BudgetMode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetMode.Get()
+}
+
+// GetBudgetModeOk returns a tuple with the BudgetMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) GetBudgetModeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BudgetMode.Get(), o.BudgetMode.IsSet()
+}
+
+// HasBudgetMode returns a boolean if a field has been set.
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) HasBudgetMode() bool {
+	if o != nil && o.BudgetMode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetMode gets a reference to the given NullableString and assigns it to the BudgetMode field.
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) SetBudgetMode(v string) {
+	o.BudgetMode.Set(&v)
+}
+
+// SetBudgetModeNil sets the value for BudgetMode to be an explicit nil
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) SetBudgetModeNil() {
+	o.BudgetMode.Set(nil)
+}
+
+// UnsetBudgetMode ensures that no value is present for BudgetMode, not even an explicit nil
+func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) UnsetBudgetMode() {
+	o.BudgetMode.Unset()
+}
+
 // GetBudgetRemaining returns the BudgetRemaining field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetAdAccountLiveEntities200ResponseAdSetsInner) GetBudgetRemaining() float32 {
 	if o == nil || IsNil(o.BudgetRemaining.Get()) {
@@ -769,6 +814,9 @@ func (o GetAdAccountLiveEntities200ResponseAdSetsInner) ToMap() (map[string]inte
 	}
 	if o.LifetimeBudget.IsSet() {
 		toSerialize["lifetimeBudget"] = o.LifetimeBudget.Get()
+	}
+	if o.BudgetMode.IsSet() {
+		toSerialize["budgetMode"] = o.BudgetMode.Get()
 	}
 	if o.BudgetRemaining.IsSet() {
 		toSerialize["budgetRemaining"] = o.BudgetRemaining.Get()

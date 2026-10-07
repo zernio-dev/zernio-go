@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.229.0
+API version: 1.230.0
 Contact: support@zernio.com
 */
 
@@ -3000,19 +3000,19 @@ type AdAccountsAPIGetAdAccountLiveEntitiesRequest struct {
 	after       *string
 }
 
-// Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
+// Zernio SocialAccount id (posting or ads variant) used to resolve the platform token.
 func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) AccountId(accountId string) AdAccountsAPIGetAdAccountLiveEntitiesRequest {
 	r.accountId = &accountId
 	return r
 }
 
-// Meta ad account id (act_&lt;n&gt;).
+// Meta ad account id (act_&lt;n&gt;) or TikTok advertiser id (digits).
 func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) AdAccountId(adAccountId string) AdAccountsAPIGetAdAccountLiveEntitiesRequest {
 	r.adAccountId = &adAccountId
 	return r
 }
 
-// Comma-separated Meta &#x60;effective_status&#x60; values to keep: ACTIVE, PAUSED, IN_PROCESS, WITH_ISSUES, DELETED, ARCHIVED, and CAMPAIGN_PAUSED (ad sets only; the campaigns level ignores it). Defaults to every status except DELETED and ARCHIVED. An unknown value is a 400.
+// Comma-separated Meta &#x60;effective_status&#x60; values to keep: ACTIVE, PAUSED, IN_PROCESS, WITH_ISSUES, DELETED, ARCHIVED, and CAMPAIGN_PAUSED (ad sets only; the campaigns level ignores it). Defaults to every status except DELETED and ARCHIVED. An unknown value is a 400. TikTok takes a single value: ACTIVE, PAUSED or DELETED (see the description).
 func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) Status(status string) AdAccountsAPIGetAdAccountLiveEntitiesRequest {
 	r.status = &status
 	return r
@@ -3030,7 +3030,7 @@ func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) Limit(limit int32) AdAccou
 	return r
 }
 
-// Cursor from &#x60;paging.campaigns.after&#x60; or &#x60;paging.adSets.after&#x60; of a previous response. Requires &#x60;level&#x60;.
+// Cursor from &#x60;paging.campaigns.after&#x60; or &#x60;paging.adSets.after&#x60; of a previous response. Requires &#x60;level&#x60; (and on TikTok the same &#x60;limit&#x60;).
 func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) After(after string) AdAccountsAPIGetAdAccountLiveEntitiesRequest {
 	r.after = &after
 	return r
@@ -3043,25 +3043,40 @@ func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) Execute() (*GetAdAccountLi
 /*
 GetAdAccountLiveEntities Read an ad account's campaigns and ad sets live
 
-Reads the campaigns and ad sets of one Meta ad account **live from Meta**, in a single
-Graph call per request (the account's `/campaigns` and `/adsets` edges, filtered by
-`effective_status`), so it is cheap enough to run before every write: for example a
-per-ad-account spend ceiling that must see the current `daily_budget` / `lifetime_budget`
-rather than the synced copy.
+Reads the campaigns and ad sets of one Meta ad account or TikTok advertiser **live from
+the platform**, so it is cheap enough to run before every write: for example a
+per-ad-account spend ceiling that must see the current daily / lifetime budget rather
+than the synced copy. On Meta it is a single Graph call per request (the account's
+`/campaigns` and `/adsets` edges, filtered by `effective_status`); on TikTok one
+`campaign/get` and one `adgroup/get` page (TikTok ad groups are returned as `adSets`).
 
 **Live vs synced.** GET /v1/ads/campaigns and GET /v1/ads/ad-sets serve Zernio's synced
 store, refreshed by background sync (typically 15 to 60 minutes behind Meta), and their
 `live=true` re-reads only the on/off switches of at most 20 objects. This endpoint returns
 what Meta reports at `readAt`, for every matching campaign and ad set, and stores nothing.
 
-Budgets and bid amounts are converted from Meta's minor units to whole units of
-`currency`, the same units as the synced rows. A campaign with a campaign budget
-(Advantage+ campaign budget) carries `budget` and its ad sets have `budget: null`;
-otherwise each ad set carries its own.
+Budgets and bid amounts are in whole units of `currency`, the same units as the synced
+rows (Meta's minor units are converted; TikTok already reports whole units). A campaign
+with a campaign budget (Meta Advantage+ campaign budget, TikTok campaign budget
+optimization) carries `budget`; otherwise each ad set carries its own.
 
 Each level returns at most `limit` rows. When more match, `paging.<level>.after` is a
 cursor: pass it back as `after` together with `level` to read the next page of that
-level only. Other platforms answer 501 rather than serving synced data.
+level only. TikTok pages by number, so a TikTok cursor must be sent with the same
+`limit` that produced it (another `limit` is a 400). Other platforms answer 501 rather
+than serving synced data.
+
+**TikTok specifics.** `status` maps to TikTok's `primary_status` filter, which takes one
+value: ACTIVE = delivering (`STATUS_DELIVERY_OK`), PAUSED = switched off
+(`STATUS_DISABLE`), DELETED = `STATUS_DELETE`; omitted = every status except deleted
+(`STATUS_NOT_DELETE`, which includes enabled entities that are not delivering, such as
+an ad group in review). Several values, or IN_PROCESS, WITH_ISSUES, CAMPAIGN_PAUSED and
+ARCHIVED, are a 400. `budgetRemaining` and `spendCap` are always null (TikTok reports
+neither), campaign `bidStrategy` is null (TikTok bids per ad group), ad set `bidStrategy`
+is normalized to the Meta vocabulary like GET /v1/ads, `promotedObject` is
+`{ pixelId, customEventType, applicationId, customConversionId }` (the keys TikTok has
+set, as POST /v1/ads/create takes them), and `targeting` holds TikTok's targeting
+fields verbatim.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIGetAdAccountLiveEntitiesRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.229.0
+API version: 1.230.0
 Contact: support@zernio.com
 */
 
@@ -22,22 +22,24 @@ var _ MappedNullable = &GetAdAccountLiveEntities200ResponseCampaignsInner{}
 type GetAdAccountLiveEntities200ResponseCampaignsInner struct {
 	PlatformCampaignId *string        `json:"platformCampaignId,omitempty"`
 	CampaignName       NullableString `json:"campaignName,omitempty"`
-	// Meta `effective_status`, for example ACTIVE, PAUSED, WITH_ISSUES.
+	// Meta `effective_status` (ACTIVE, PAUSED, WITH_ISSUES...) or TikTok `secondary_status` (CAMPAIGN_STATUS_ENABLE...).
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
-	// Meta `status`: the campaign's own switch (ACTIVE, PAUSED, DELETED, ARCHIVED).
+	// The campaign's own switch: Meta `status` (ACTIVE, PAUSED, DELETED, ARCHIVED), or TikTok `operation_status` as ACTIVE (ENABLE) / PAUSED (DISABLE).
 	ConfiguredStatus NullableString `json:"configuredStatus,omitempty"`
 	// Zernio's normalized status (active, paused, ...), derived from `platformCampaignStatus`.
 	Status *string                                                  `json:"status,omitempty"`
 	Budget *GetAdAccountLiveEntities200ResponseCampaignsInnerBudget `json:"budget,omitempty"`
-	// Meta `daily_budget` in whole units of `currency`.
+	// Daily budget in whole units of `currency` (Meta `daily_budget`; TikTok `budget` under a daily budget mode).
 	DailyBudget NullableFloat32 `json:"dailyBudget,omitempty"`
-	// Meta `lifetime_budget` in whole units of `currency`.
+	// Lifetime budget in whole units of `currency` (Meta `lifetime_budget`; TikTok `budget` under BUDGET_MODE_TOTAL).
 	LifetimeBudget NullableFloat32 `json:"lifetimeBudget,omitempty"`
-	// Meta `budget_remaining` in whole units of `currency`. Null when the campaign has no budget of its own.
+	// TikTok only: `budget_mode` as TikTok reports it (BUDGET_MODE_DAY, BUDGET_MODE_DYNAMIC_DAILY_BUDGET, BUDGET_MODE_TOTAL, BUDGET_MODE_INFINITE).
+	BudgetMode NullableString `json:"budgetMode,omitempty"`
+	// Meta `budget_remaining` in whole units of `currency`. Null when the campaign has no budget of its own, and always on TikTok.
 	BudgetRemaining NullableFloat32 `json:"budgetRemaining,omitempty"`
-	// Campaign spending limit (Meta `spend_cap`) in whole units of `currency`. Null when none is set.
+	// Campaign spending limit (Meta `spend_cap`) in whole units of `currency`. Null when none is set, and always on TikTok.
 	SpendCap NullableFloat32 `json:"spendCap,omitempty"`
-	// Meta `bid_strategy`, set on campaigns with a campaign budget.
+	// Meta `bid_strategy`, set on campaigns with a campaign budget. Null on TikTok.
 	BidStrategy NullableString `json:"bidStrategy,omitempty"`
 }
 
@@ -369,6 +371,49 @@ func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) UnsetLifetimeBudget(
 	o.LifetimeBudget.Unset()
 }
 
+// GetBudgetMode returns the BudgetMode field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) GetBudgetMode() string {
+	if o == nil || IsNil(o.BudgetMode.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.BudgetMode.Get()
+}
+
+// GetBudgetModeOk returns a tuple with the BudgetMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) GetBudgetModeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BudgetMode.Get(), o.BudgetMode.IsSet()
+}
+
+// HasBudgetMode returns a boolean if a field has been set.
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) HasBudgetMode() bool {
+	if o != nil && o.BudgetMode.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBudgetMode gets a reference to the given NullableString and assigns it to the BudgetMode field.
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) SetBudgetMode(v string) {
+	o.BudgetMode.Set(&v)
+}
+
+// SetBudgetModeNil sets the value for BudgetMode to be an explicit nil
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) SetBudgetModeNil() {
+	o.BudgetMode.Set(nil)
+}
+
+// UnsetBudgetMode ensures that no value is present for BudgetMode, not even an explicit nil
+func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) UnsetBudgetMode() {
+	o.BudgetMode.Unset()
+}
+
 // GetBudgetRemaining returns the BudgetRemaining field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *GetAdAccountLiveEntities200ResponseCampaignsInner) GetBudgetRemaining() float32 {
 	if o == nil || IsNil(o.BudgetRemaining.Get()) {
@@ -531,6 +576,9 @@ func (o GetAdAccountLiveEntities200ResponseCampaignsInner) ToMap() (map[string]i
 	}
 	if o.LifetimeBudget.IsSet() {
 		toSerialize["lifetimeBudget"] = o.LifetimeBudget.Get()
+	}
+	if o.BudgetMode.IsSet() {
+		toSerialize["budgetMode"] = o.BudgetMode.Get()
 	}
 	if o.BudgetRemaining.IsSet() {
 		toSerialize["budgetRemaining"] = o.BudgetRemaining.Get()

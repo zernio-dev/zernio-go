@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.229.0
+API version: 1.230.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type GetAdAccountLiveEntities200Response struct {
 	Platform    *string `json:"platform,omitempty"`
 	// ISO 4217 code every budget and bid amount is expressed in.
 	Currency *string `json:"currency,omitempty"`
-	// When Meta was read.
+	// When the platform was read.
 	ReadAt *time.Time `json:"readAt,omitempty"`
 	// Absent when `level=adSet`.
 	Campaigns []GetAdAccountLiveEntities200ResponseCampaignsInner `json:"campaigns,omitempty"`
