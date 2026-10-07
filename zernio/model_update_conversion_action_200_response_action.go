@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.232.0
+API version: 1.233.0
 Contact: support@zernio.com
 */
 
@@ -18,10 +18,19 @@ import (
 // checks if the UpdateConversionAction200ResponseAction type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UpdateConversionAction200ResponseAction{}
 
-// UpdateConversionAction200ResponseAction struct for UpdateConversionAction200ResponseAction
+// UpdateConversionAction200ResponseAction The action id with the fields written, echoed back.
 type UpdateConversionAction200ResponseAction struct {
-	Id             *string `json:"id,omitempty"`
-	PrimaryForGoal *bool   `json:"primaryForGoal,omitempty"`
+	Id                             *string  `json:"id,omitempty"`
+	Name                           *string  `json:"name,omitempty"`
+	Status                         *string  `json:"status,omitempty"`
+	PrimaryForGoal                 *bool    `json:"primaryForGoal,omitempty"`
+	Category                       *string  `json:"category,omitempty"`
+	CountingType                   *string  `json:"countingType,omitempty"`
+	DefaultValue                   *float32 `json:"defaultValue,omitempty"`
+	DefaultCurrency                *string  `json:"defaultCurrency,omitempty"`
+	AlwaysUseDefaultValue          *bool    `json:"alwaysUseDefaultValue,omitempty"`
+	ClickThroughLookbackWindowDays *int32   `json:"clickThroughLookbackWindowDays,omitempty"`
+	ViewThroughLookbackWindowDays  *int32   `json:"viewThroughLookbackWindowDays,omitempty"`
 }
 
 // NewUpdateConversionAction200ResponseAction instantiates a new UpdateConversionAction200ResponseAction object
@@ -73,6 +82,70 @@ func (o *UpdateConversionAction200ResponseAction) SetId(v string) {
 	o.Id = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UpdateConversionAction200ResponseAction) SetName(v string) {
+	o.Name = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *UpdateConversionAction200ResponseAction) SetStatus(v string) {
+	o.Status = &v
+}
+
 // GetPrimaryForGoal returns the PrimaryForGoal field value if set, zero value otherwise.
 func (o *UpdateConversionAction200ResponseAction) GetPrimaryForGoal() bool {
 	if o == nil || IsNil(o.PrimaryForGoal) {
@@ -105,6 +178,230 @@ func (o *UpdateConversionAction200ResponseAction) SetPrimaryForGoal(v bool) {
 	o.PrimaryForGoal = &v
 }
 
+// GetCategory returns the Category field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetCategory() string {
+	if o == nil || IsNil(o.Category) {
+		var ret string
+		return ret
+	}
+	return *o.Category
+}
+
+// GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetCategoryOk() (*string, bool) {
+	if o == nil || IsNil(o.Category) {
+		return nil, false
+	}
+	return o.Category, true
+}
+
+// HasCategory returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasCategory() bool {
+	if o != nil && !IsNil(o.Category) {
+		return true
+	}
+
+	return false
+}
+
+// SetCategory gets a reference to the given string and assigns it to the Category field.
+func (o *UpdateConversionAction200ResponseAction) SetCategory(v string) {
+	o.Category = &v
+}
+
+// GetCountingType returns the CountingType field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetCountingType() string {
+	if o == nil || IsNil(o.CountingType) {
+		var ret string
+		return ret
+	}
+	return *o.CountingType
+}
+
+// GetCountingTypeOk returns a tuple with the CountingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetCountingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.CountingType) {
+		return nil, false
+	}
+	return o.CountingType, true
+}
+
+// HasCountingType returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasCountingType() bool {
+	if o != nil && !IsNil(o.CountingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountingType gets a reference to the given string and assigns it to the CountingType field.
+func (o *UpdateConversionAction200ResponseAction) SetCountingType(v string) {
+	o.CountingType = &v
+}
+
+// GetDefaultValue returns the DefaultValue field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetDefaultValue() float32 {
+	if o == nil || IsNil(o.DefaultValue) {
+		var ret float32
+		return ret
+	}
+	return *o.DefaultValue
+}
+
+// GetDefaultValueOk returns a tuple with the DefaultValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetDefaultValueOk() (*float32, bool) {
+	if o == nil || IsNil(o.DefaultValue) {
+		return nil, false
+	}
+	return o.DefaultValue, true
+}
+
+// HasDefaultValue returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasDefaultValue() bool {
+	if o != nil && !IsNil(o.DefaultValue) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultValue gets a reference to the given float32 and assigns it to the DefaultValue field.
+func (o *UpdateConversionAction200ResponseAction) SetDefaultValue(v float32) {
+	o.DefaultValue = &v
+}
+
+// GetDefaultCurrency returns the DefaultCurrency field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetDefaultCurrency() string {
+	if o == nil || IsNil(o.DefaultCurrency) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultCurrency
+}
+
+// GetDefaultCurrencyOk returns a tuple with the DefaultCurrency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetDefaultCurrencyOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultCurrency) {
+		return nil, false
+	}
+	return o.DefaultCurrency, true
+}
+
+// HasDefaultCurrency returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasDefaultCurrency() bool {
+	if o != nil && !IsNil(o.DefaultCurrency) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultCurrency gets a reference to the given string and assigns it to the DefaultCurrency field.
+func (o *UpdateConversionAction200ResponseAction) SetDefaultCurrency(v string) {
+	o.DefaultCurrency = &v
+}
+
+// GetAlwaysUseDefaultValue returns the AlwaysUseDefaultValue field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetAlwaysUseDefaultValue() bool {
+	if o == nil || IsNil(o.AlwaysUseDefaultValue) {
+		var ret bool
+		return ret
+	}
+	return *o.AlwaysUseDefaultValue
+}
+
+// GetAlwaysUseDefaultValueOk returns a tuple with the AlwaysUseDefaultValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetAlwaysUseDefaultValueOk() (*bool, bool) {
+	if o == nil || IsNil(o.AlwaysUseDefaultValue) {
+		return nil, false
+	}
+	return o.AlwaysUseDefaultValue, true
+}
+
+// HasAlwaysUseDefaultValue returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasAlwaysUseDefaultValue() bool {
+	if o != nil && !IsNil(o.AlwaysUseDefaultValue) {
+		return true
+	}
+
+	return false
+}
+
+// SetAlwaysUseDefaultValue gets a reference to the given bool and assigns it to the AlwaysUseDefaultValue field.
+func (o *UpdateConversionAction200ResponseAction) SetAlwaysUseDefaultValue(v bool) {
+	o.AlwaysUseDefaultValue = &v
+}
+
+// GetClickThroughLookbackWindowDays returns the ClickThroughLookbackWindowDays field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetClickThroughLookbackWindowDays() int32 {
+	if o == nil || IsNil(o.ClickThroughLookbackWindowDays) {
+		var ret int32
+		return ret
+	}
+	return *o.ClickThroughLookbackWindowDays
+}
+
+// GetClickThroughLookbackWindowDaysOk returns a tuple with the ClickThroughLookbackWindowDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetClickThroughLookbackWindowDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.ClickThroughLookbackWindowDays) {
+		return nil, false
+	}
+	return o.ClickThroughLookbackWindowDays, true
+}
+
+// HasClickThroughLookbackWindowDays returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasClickThroughLookbackWindowDays() bool {
+	if o != nil && !IsNil(o.ClickThroughLookbackWindowDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetClickThroughLookbackWindowDays gets a reference to the given int32 and assigns it to the ClickThroughLookbackWindowDays field.
+func (o *UpdateConversionAction200ResponseAction) SetClickThroughLookbackWindowDays(v int32) {
+	o.ClickThroughLookbackWindowDays = &v
+}
+
+// GetViewThroughLookbackWindowDays returns the ViewThroughLookbackWindowDays field value if set, zero value otherwise.
+func (o *UpdateConversionAction200ResponseAction) GetViewThroughLookbackWindowDays() int32 {
+	if o == nil || IsNil(o.ViewThroughLookbackWindowDays) {
+		var ret int32
+		return ret
+	}
+	return *o.ViewThroughLookbackWindowDays
+}
+
+// GetViewThroughLookbackWindowDaysOk returns a tuple with the ViewThroughLookbackWindowDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateConversionAction200ResponseAction) GetViewThroughLookbackWindowDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.ViewThroughLookbackWindowDays) {
+		return nil, false
+	}
+	return o.ViewThroughLookbackWindowDays, true
+}
+
+// HasViewThroughLookbackWindowDays returns a boolean if a field has been set.
+func (o *UpdateConversionAction200ResponseAction) HasViewThroughLookbackWindowDays() bool {
+	if o != nil && !IsNil(o.ViewThroughLookbackWindowDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetViewThroughLookbackWindowDays gets a reference to the given int32 and assigns it to the ViewThroughLookbackWindowDays field.
+func (o *UpdateConversionAction200ResponseAction) SetViewThroughLookbackWindowDays(v int32) {
+	o.ViewThroughLookbackWindowDays = &v
+}
+
 func (o UpdateConversionAction200ResponseAction) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -118,8 +415,35 @@ func (o UpdateConversionAction200ResponseAction) ToMap() (map[string]interface{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
 	if !IsNil(o.PrimaryForGoal) {
 		toSerialize["primaryForGoal"] = o.PrimaryForGoal
+	}
+	if !IsNil(o.Category) {
+		toSerialize["category"] = o.Category
+	}
+	if !IsNil(o.CountingType) {
+		toSerialize["countingType"] = o.CountingType
+	}
+	if !IsNil(o.DefaultValue) {
+		toSerialize["defaultValue"] = o.DefaultValue
+	}
+	if !IsNil(o.DefaultCurrency) {
+		toSerialize["defaultCurrency"] = o.DefaultCurrency
+	}
+	if !IsNil(o.AlwaysUseDefaultValue) {
+		toSerialize["alwaysUseDefaultValue"] = o.AlwaysUseDefaultValue
+	}
+	if !IsNil(o.ClickThroughLookbackWindowDays) {
+		toSerialize["clickThroughLookbackWindowDays"] = o.ClickThroughLookbackWindowDays
+	}
+	if !IsNil(o.ViewThroughLookbackWindowDays) {
+		toSerialize["viewThroughLookbackWindowDays"] = o.ViewThroughLookbackWindowDays
 	}
 	return toSerialize, nil
 }

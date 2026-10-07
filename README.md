@@ -745,7 +745,7 @@ func main() {
 | `client.ConversionsAPI.GetConversionMetrics(ctx)` | Get attribution metrics |
 | `client.ConversionsAPI.GetConversionsQuality(ctx)` | Get Event Match Quality |
 | `client.ConversionsAPI.UpdateAdConversionGoals(ctx)` | Update account conversion goals |
-| `client.ConversionsAPI.UpdateConversionAction(ctx)` | Set a conversion action primary or secondary |
+| `client.ConversionsAPI.UpdateConversionAction(ctx)` | Update a conversion action's settings |
 | `client.ConversionsAPI.UpdateConversionDestination(ctx)` | Update a conversion destination |
 | `client.ConversionsAPI.UpdateCustomConversionGoal(ctx)` | Update a custom conversion goal |
 | `client.ConversionsAPI.DeleteConversionDestination(ctx)` | Delete a conversion destination |

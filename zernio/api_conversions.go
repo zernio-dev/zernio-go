@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.232.0
+API version: 1.233.0
 Contact: support@zernio.com
 */
 
@@ -3075,11 +3075,20 @@ func (r ConversionsAPIUpdateConversionActionRequest) Execute() (*UpdateConversio
 }
 
 /*
-UpdateConversionAction Set a conversion action primary or secondary
+UpdateConversionAction Update a conversion action's settings
 
-Sets `primary_for_goal` on a Google Ads conversion action. A primary action counts
-toward its goal's bidding and the Conversions column; a secondary one is
-observation-only (All conversions).
+Updates a Google Ads conversion action in one mutate, each field sent written on its own
+update mask leaf so omitted fields keep their value. Send at least one field.
+
+`primaryForGoal` sets `primary_for_goal`: a primary action counts toward its goal's
+bidding and the Conversions column; a secondary one is observation-only (All
+conversions). `countingType`, `category`, the value settings (`defaultValue`,
+`defaultCurrency`, `alwaysUseDefaultValue`) and the click-through / view-through
+lookback windows map to the same-named conversion_action fields.
+
+`status: REMOVED` removes the action (Google keeps it, with its history, as REMOVED) and
+must be sent alone; `status: ENABLED` restores a removed action. Google refuses HIDDEN
+on website actions, so it is not offered.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param actionId Google conversion action id

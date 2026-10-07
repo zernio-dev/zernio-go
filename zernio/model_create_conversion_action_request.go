@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.232.0
+API version: 1.233.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,18 @@ type CreateConversionActionRequest struct {
 	DefaultValue *float32 `json:"defaultValue,omitempty"`
 	// When true, always use defaultValue and ignore any value sent with the event. Defaults to true when defaultValue is set.
 	AlwaysUseDefaultValue *bool `json:"alwaysUseDefaultValue,omitempty"`
+	// conversion_action.category. Defaults to DEFAULT on create.
+	Category *string `json:"category,omitempty"`
+	// ONE_PER_CLICK counts one conversion per ad click (leads); MANY_PER_CLICK counts every one (purchases).
+	CountingType *string `json:"countingType,omitempty"`
+	// ISO 4217 currency of defaultValue (value_settings.default_currency_code).
+	DefaultCurrency *string `json:"defaultCurrency,omitempty" validate:"regexp=^[A-Z]{3}$"`
+	// Days after an ad click a conversion still counts.
+	ClickThroughLookbackWindowDays *int32 `json:"clickThroughLookbackWindowDays,omitempty"`
+	// Days after an ad view a view-through conversion still counts.
+	ViewThroughLookbackWindowDays *int32 `json:"viewThroughLookbackWindowDays,omitempty"`
+	// true = primary (counts toward bidding when its goal is biddable), false = secondary.
+	PrimaryForGoal *bool `json:"primaryForGoal,omitempty"`
 }
 
 type _CreateConversionActionRequest CreateConversionActionRequest
@@ -263,6 +275,198 @@ func (o *CreateConversionActionRequest) SetAlwaysUseDefaultValue(v bool) {
 	o.AlwaysUseDefaultValue = &v
 }
 
+// GetCategory returns the Category field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetCategory() string {
+	if o == nil || IsNil(o.Category) {
+		var ret string
+		return ret
+	}
+	return *o.Category
+}
+
+// GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetCategoryOk() (*string, bool) {
+	if o == nil || IsNil(o.Category) {
+		return nil, false
+	}
+	return o.Category, true
+}
+
+// HasCategory returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasCategory() bool {
+	if o != nil && !IsNil(o.Category) {
+		return true
+	}
+
+	return false
+}
+
+// SetCategory gets a reference to the given string and assigns it to the Category field.
+func (o *CreateConversionActionRequest) SetCategory(v string) {
+	o.Category = &v
+}
+
+// GetCountingType returns the CountingType field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetCountingType() string {
+	if o == nil || IsNil(o.CountingType) {
+		var ret string
+		return ret
+	}
+	return *o.CountingType
+}
+
+// GetCountingTypeOk returns a tuple with the CountingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetCountingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.CountingType) {
+		return nil, false
+	}
+	return o.CountingType, true
+}
+
+// HasCountingType returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasCountingType() bool {
+	if o != nil && !IsNil(o.CountingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetCountingType gets a reference to the given string and assigns it to the CountingType field.
+func (o *CreateConversionActionRequest) SetCountingType(v string) {
+	o.CountingType = &v
+}
+
+// GetDefaultCurrency returns the DefaultCurrency field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetDefaultCurrency() string {
+	if o == nil || IsNil(o.DefaultCurrency) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultCurrency
+}
+
+// GetDefaultCurrencyOk returns a tuple with the DefaultCurrency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetDefaultCurrencyOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultCurrency) {
+		return nil, false
+	}
+	return o.DefaultCurrency, true
+}
+
+// HasDefaultCurrency returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasDefaultCurrency() bool {
+	if o != nil && !IsNil(o.DefaultCurrency) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultCurrency gets a reference to the given string and assigns it to the DefaultCurrency field.
+func (o *CreateConversionActionRequest) SetDefaultCurrency(v string) {
+	o.DefaultCurrency = &v
+}
+
+// GetClickThroughLookbackWindowDays returns the ClickThroughLookbackWindowDays field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetClickThroughLookbackWindowDays() int32 {
+	if o == nil || IsNil(o.ClickThroughLookbackWindowDays) {
+		var ret int32
+		return ret
+	}
+	return *o.ClickThroughLookbackWindowDays
+}
+
+// GetClickThroughLookbackWindowDaysOk returns a tuple with the ClickThroughLookbackWindowDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetClickThroughLookbackWindowDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.ClickThroughLookbackWindowDays) {
+		return nil, false
+	}
+	return o.ClickThroughLookbackWindowDays, true
+}
+
+// HasClickThroughLookbackWindowDays returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasClickThroughLookbackWindowDays() bool {
+	if o != nil && !IsNil(o.ClickThroughLookbackWindowDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetClickThroughLookbackWindowDays gets a reference to the given int32 and assigns it to the ClickThroughLookbackWindowDays field.
+func (o *CreateConversionActionRequest) SetClickThroughLookbackWindowDays(v int32) {
+	o.ClickThroughLookbackWindowDays = &v
+}
+
+// GetViewThroughLookbackWindowDays returns the ViewThroughLookbackWindowDays field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetViewThroughLookbackWindowDays() int32 {
+	if o == nil || IsNil(o.ViewThroughLookbackWindowDays) {
+		var ret int32
+		return ret
+	}
+	return *o.ViewThroughLookbackWindowDays
+}
+
+// GetViewThroughLookbackWindowDaysOk returns a tuple with the ViewThroughLookbackWindowDays field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetViewThroughLookbackWindowDaysOk() (*int32, bool) {
+	if o == nil || IsNil(o.ViewThroughLookbackWindowDays) {
+		return nil, false
+	}
+	return o.ViewThroughLookbackWindowDays, true
+}
+
+// HasViewThroughLookbackWindowDays returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasViewThroughLookbackWindowDays() bool {
+	if o != nil && !IsNil(o.ViewThroughLookbackWindowDays) {
+		return true
+	}
+
+	return false
+}
+
+// SetViewThroughLookbackWindowDays gets a reference to the given int32 and assigns it to the ViewThroughLookbackWindowDays field.
+func (o *CreateConversionActionRequest) SetViewThroughLookbackWindowDays(v int32) {
+	o.ViewThroughLookbackWindowDays = &v
+}
+
+// GetPrimaryForGoal returns the PrimaryForGoal field value if set, zero value otherwise.
+func (o *CreateConversionActionRequest) GetPrimaryForGoal() bool {
+	if o == nil || IsNil(o.PrimaryForGoal) {
+		var ret bool
+		return ret
+	}
+	return *o.PrimaryForGoal
+}
+
+// GetPrimaryForGoalOk returns a tuple with the PrimaryForGoal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateConversionActionRequest) GetPrimaryForGoalOk() (*bool, bool) {
+	if o == nil || IsNil(o.PrimaryForGoal) {
+		return nil, false
+	}
+	return o.PrimaryForGoal, true
+}
+
+// HasPrimaryForGoal returns a boolean if a field has been set.
+func (o *CreateConversionActionRequest) HasPrimaryForGoal() bool {
+	if o != nil && !IsNil(o.PrimaryForGoal) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrimaryForGoal gets a reference to the given bool and assigns it to the PrimaryForGoal field.
+func (o *CreateConversionActionRequest) SetPrimaryForGoal(v bool) {
+	o.PrimaryForGoal = &v
+}
+
 func (o CreateConversionActionRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -287,6 +491,24 @@ func (o CreateConversionActionRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AlwaysUseDefaultValue) {
 		toSerialize["alwaysUseDefaultValue"] = o.AlwaysUseDefaultValue
+	}
+	if !IsNil(o.Category) {
+		toSerialize["category"] = o.Category
+	}
+	if !IsNil(o.CountingType) {
+		toSerialize["countingType"] = o.CountingType
+	}
+	if !IsNil(o.DefaultCurrency) {
+		toSerialize["defaultCurrency"] = o.DefaultCurrency
+	}
+	if !IsNil(o.ClickThroughLookbackWindowDays) {
+		toSerialize["clickThroughLookbackWindowDays"] = o.ClickThroughLookbackWindowDays
+	}
+	if !IsNil(o.ViewThroughLookbackWindowDays) {
+		toSerialize["viewThroughLookbackWindowDays"] = o.ViewThroughLookbackWindowDays
+	}
+	if !IsNil(o.PrimaryForGoal) {
+		toSerialize["primaryForGoal"] = o.PrimaryForGoal
 	}
 	return toSerialize, nil
 }
