@@ -381,11 +381,13 @@ func main() {
 | `client.AdCampaignsAPI.ListCampaignNegativeKeywords(ctx)` | List campaign-level negative keywords |
 | `client.AdCampaignsAPI.ListGoogleAssetGroups(ctx)` | List Performance Max asset groups |
 | `client.AdCampaignsAPI.ListGoogleRecommendations(ctx)` | List Google Ads recommendations |
+| `client.AdCampaignsAPI.ListSharedBudgets(ctx)` | List shared budgets |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |
 | `client.AdCampaignsAPI.CreateBidStrategy(ctx)` | Create portfolio bid strategy |
 | `client.AdCampaignsAPI.CreateGoogleAssetGroup(ctx)` | Create a Performance Max asset group |
+| `client.AdCampaignsAPI.CreateSharedBudget(ctx)` | Create a shared budget |
 | `client.AdCampaignsAPI.CreateStandaloneAd(ctx)` | Create standalone ad |
 | `client.AdCampaignsAPI.GetAd(ctx)` | Get ad details |
 | `client.AdCampaignsAPI.GetAdCampaignDetails(ctx)` | Get live campaign details |

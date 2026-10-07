@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.231.0
+API version: 1.232.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,9 @@ type UpdateAdCampaign200Response struct {
 	NetworkSettings        *GoogleNetworkSettings       `json:"networkSettings,omitempty"`
 	TrackingUrlTemplate    *string                      `json:"trackingUrlTemplate,omitempty"`
 	FinalUrlSuffix         *string                      `json:"finalUrlSuffix,omitempty"`
-	PlatformSpecificData   map[string]interface{}       `json:"platformSpecificData,omitempty"`
+	// Google only. Echoed back when the campaign moved budgets; `budget` is then the budget it now uses.
+	SharedBudgetId       NullableString         `json:"sharedBudgetId,omitempty"`
+	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
 }
 
 // NewUpdateAdCampaign200Response instantiates a new UpdateAdCampaign200Response object
@@ -438,6 +440,49 @@ func (o *UpdateAdCampaign200Response) SetFinalUrlSuffix(v string) {
 	o.FinalUrlSuffix = &v
 }
 
+// GetSharedBudgetId returns the SharedBudgetId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdCampaign200Response) GetSharedBudgetId() string {
+	if o == nil || IsNil(o.SharedBudgetId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SharedBudgetId.Get()
+}
+
+// GetSharedBudgetIdOk returns a tuple with the SharedBudgetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdCampaign200Response) GetSharedBudgetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SharedBudgetId.Get(), o.SharedBudgetId.IsSet()
+}
+
+// HasSharedBudgetId returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasSharedBudgetId() bool {
+	if o != nil && o.SharedBudgetId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSharedBudgetId gets a reference to the given NullableString and assigns it to the SharedBudgetId field.
+func (o *UpdateAdCampaign200Response) SetSharedBudgetId(v string) {
+	o.SharedBudgetId.Set(&v)
+}
+
+// SetSharedBudgetIdNil sets the value for SharedBudgetId to be an explicit nil
+func (o *UpdateAdCampaign200Response) SetSharedBudgetIdNil() {
+	o.SharedBudgetId.Set(nil)
+}
+
+// UnsetSharedBudgetId ensures that no value is present for SharedBudgetId, not even an explicit nil
+func (o *UpdateAdCampaign200Response) UnsetSharedBudgetId() {
+	o.SharedBudgetId.Unset()
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *UpdateAdCampaign200Response) GetPlatformSpecificData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -515,6 +560,9 @@ func (o UpdateAdCampaign200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FinalUrlSuffix) {
 		toSerialize["finalUrlSuffix"] = o.FinalUrlSuffix
+	}
+	if o.SharedBudgetId.IsSet() {
+		toSerialize["sharedBudgetId"] = o.SharedBudgetId.Get()
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

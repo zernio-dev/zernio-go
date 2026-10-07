@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.231.0
+API version: 1.232.0
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type UpdateAdCampaignRequest struct {
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
-	// Google only. Explicitly allow changing a shared campaign budget, affecting every campaign that uses it. Does not bypass an unknown sharing state.
+	// Google only. Explicitly allow changing a shared campaign budget, affecting every campaign that uses it. Does not bypass an unknown sharing state. Also required to move a campaign onto a shared budget with sharedBudgetId.
 	AllowSharedBudgetUpdate *bool `json:"allowSharedBudgetUpdate,omitempty"`
 	// Google Search only. Target impression share bidding. Exclusive with bidStrategy, portfolioBidStrategyId and manualCpc; bidAmount is refused alongside it (the ceiling is maxCpc).
 	TargetImpressionShare *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
@@ -43,7 +43,9 @@ type UpdateAdCampaignRequest struct {
 	// **Google only.** campaign.tracking_url_template; an empty string clears it.
 	TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
 	// **Google only.** campaign.final_url_suffix; an empty string clears it.
-	FinalUrlSuffix *string                        `json:"finalUrlSuffix,omitempty"`
+	FinalUrlSuffix *string `json:"finalUrlSuffix,omitempty"`
+	// **Google only.** Move the campaign onto this shared budget (id from GET /v1/ads/shared-budgets), or null to move it back onto a budget of its own sized by `budget`.
+	SharedBudgetId NullableString                 `json:"sharedBudgetId,omitempty" validate:"regexp=^\\\\d+$"`
 	Budget         *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// **Meta only.** Rename the campaign.
 	Name                 *string                                      `json:"name,omitempty"`
@@ -450,6 +452,49 @@ func (o *UpdateAdCampaignRequest) SetFinalUrlSuffix(v string) {
 	o.FinalUrlSuffix = &v
 }
 
+// GetSharedBudgetId returns the SharedBudgetId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateAdCampaignRequest) GetSharedBudgetId() string {
+	if o == nil || IsNil(o.SharedBudgetId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SharedBudgetId.Get()
+}
+
+// GetSharedBudgetIdOk returns a tuple with the SharedBudgetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateAdCampaignRequest) GetSharedBudgetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SharedBudgetId.Get(), o.SharedBudgetId.IsSet()
+}
+
+// HasSharedBudgetId returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasSharedBudgetId() bool {
+	if o != nil && o.SharedBudgetId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSharedBudgetId gets a reference to the given NullableString and assigns it to the SharedBudgetId field.
+func (o *UpdateAdCampaignRequest) SetSharedBudgetId(v string) {
+	o.SharedBudgetId.Set(&v)
+}
+
+// SetSharedBudgetIdNil sets the value for SharedBudgetId to be an explicit nil
+func (o *UpdateAdCampaignRequest) SetSharedBudgetIdNil() {
+	o.SharedBudgetId.Set(nil)
+}
+
+// UnsetSharedBudgetId ensures that no value is present for SharedBudgetId, not even an explicit nil
+func (o *UpdateAdCampaignRequest) UnsetSharedBudgetId() {
+	o.SharedBudgetId.Unset()
+}
+
 // GetBudget returns the Budget field value if set, zero value otherwise.
 func (o *UpdateAdCampaignRequest) GetBudget() UpdateAdCampaignRequestBudget {
 	if o == nil || IsNil(o.Budget) {
@@ -589,6 +634,9 @@ func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.FinalUrlSuffix) {
 		toSerialize["finalUrlSuffix"] = o.FinalUrlSuffix
+	}
+	if o.SharedBudgetId.IsSet() {
+		toSerialize["sharedBudgetId"] = o.SharedBudgetId.Get()
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
