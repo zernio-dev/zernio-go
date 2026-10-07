@@ -29,7 +29,9 @@ type UpdateCampaignTargeting200Response struct {
 	LocationTargetingType NullableString                                  `json:"locationTargetingType,omitempty"`
 	Devices               []GetCampaignTargeting200ResponseDevicesInner   `json:"devices,omitempty"`
 	Locations             []GetCampaignTargeting200ResponseLocationsInner `json:"locations,omitempty"`
-	Languages             []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
+	// The negative (excluded) location criteria read back after the edit, same item shape as `locations`.
+	ExcludedLocations []GetCampaignTargeting200ResponseLocationsInner `json:"excludedLocations,omitempty"`
+	Languages         []GetCampaignTargeting200ResponseLanguagesInner `json:"languages,omitempty"`
 }
 
 // NewUpdateCampaignTargeting200Response instantiates a new UpdateCampaignTargeting200Response object
@@ -252,6 +254,38 @@ func (o *UpdateCampaignTargeting200Response) SetLocations(v []GetCampaignTargeti
 	o.Locations = v
 }
 
+// GetExcludedLocations returns the ExcludedLocations field value if set, zero value otherwise.
+func (o *UpdateCampaignTargeting200Response) GetExcludedLocations() []GetCampaignTargeting200ResponseLocationsInner {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		var ret []GetCampaignTargeting200ResponseLocationsInner
+		return ret
+	}
+	return o.ExcludedLocations
+}
+
+// GetExcludedLocationsOk returns a tuple with the ExcludedLocations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargeting200Response) GetExcludedLocationsOk() ([]GetCampaignTargeting200ResponseLocationsInner, bool) {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		return nil, false
+	}
+	return o.ExcludedLocations, true
+}
+
+// HasExcludedLocations returns a boolean if a field has been set.
+func (o *UpdateCampaignTargeting200Response) HasExcludedLocations() bool {
+	if o != nil && !IsNil(o.ExcludedLocations) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludedLocations gets a reference to the given []GetCampaignTargeting200ResponseLocationsInner and assigns it to the ExcludedLocations field.
+func (o *UpdateCampaignTargeting200Response) SetExcludedLocations(v []GetCampaignTargeting200ResponseLocationsInner) {
+	o.ExcludedLocations = v
+}
+
 // GetLanguages returns the Languages field value if set, zero value otherwise.
 func (o *UpdateCampaignTargeting200Response) GetLanguages() []GetCampaignTargeting200ResponseLanguagesInner {
 	if o == nil || IsNil(o.Languages) {
@@ -311,6 +345,9 @@ func (o UpdateCampaignTargeting200Response) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Locations) {
 		toSerialize["locations"] = o.Locations
+	}
+	if !IsNil(o.ExcludedLocations) {
+		toSerialize["excludedLocations"] = o.ExcludedLocations
 	}
 	if !IsNil(o.Languages) {
 		toSerialize["languages"] = o.Languages

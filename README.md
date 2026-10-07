@@ -396,7 +396,7 @@ func main() {
 | `client.AdCampaignsAPI.GetCampaignAdSchedule(ctx)` | Read a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.GetCampaignBidding(ctx)` | Read a campaign's current bidding |
 | `client.AdCampaignsAPI.GetCampaignConversionGoals(ctx)` | Get campaign conversion goals |
-| `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, and language targeting |
+| `client.AdCampaignsAPI.GetCampaignTargeting(ctx)` | Read a Google campaign's device, location, excluded location, and language targeting |
 | `client.AdCampaignsAPI.GetGoogleAssetGroup(ctx)` | Get a Performance Max asset group |
 | `client.AdCampaignsAPI.UpdateAd(ctx)` | Update ad |
 | `client.AdCampaignsAPI.UpdateAdCampaign(ctx)` | Update a campaign |
@@ -410,7 +410,7 @@ func main() {
 | `client.AdCampaignsAPI.UpdateCampaignAdSchedule(ctx)` | Replace a campaign's ad schedule (dayparting) |
 | `client.AdCampaignsAPI.UpdateCampaignAssets(ctx)` | Update campaign assets |
 | `client.AdCampaignsAPI.UpdateCampaignConversionGoals(ctx)` | Update campaign conversion goals |
-| `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, or language targeting |
+| `client.AdCampaignsAPI.UpdateCampaignTargeting(ctx)` | Edit a Google campaign's device, location, excluded location, or language targeting |
 | `client.AdCampaignsAPI.UpdateGoogleAssetGroup(ctx)` | Update a Performance Max asset group |
 | `client.AdCampaignsAPI.DeleteAd(ctx)` | Cancel an ad |
 | `client.AdCampaignsAPI.DeleteAdCampaign(ctx)` | Delete a campaign |

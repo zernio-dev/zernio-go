@@ -18,7 +18,7 @@ import (
 // checks if the TargetingSpecExcludedLocations type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TargetingSpecExcludedLocations{}
 
-// TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape: excluded cities can carry a radius catchment and excluded custom (lat/lng) pins are supported, both on Meta (excluded_geo_locations).
+// TargetingSpecExcludedLocations Geo to exclude from the audience. Mirrors the inclusion geo shape: excluded cities can carry a radius catchment and excluded custom (lat/lng) pins are supported, both on Meta (excluded_geo_locations). Google (Search, Display, Performance Max) excludes countries, regions, cities and zips as negative location criteria; countryGroups, places, neighborhoods, customLocations and a city radius return 400 there, and Demand Gen returns 400 for any exclusion.
 type TargetingSpecExcludedLocations struct {
 	Countries []string `json:"countries,omitempty"`
 	// Meta only. Continents and trade blocs to exclude (`excluded_geo_locations.country_groups`).

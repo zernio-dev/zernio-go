@@ -24,8 +24,9 @@ type UpdateCampaignTargetingRequestTargeting struct {
 	Devices   []UpdateCampaignTargetingRequestTargetingDevicesInner `json:"devices,omitempty"`
 	Locations *UpdateCampaignTargetingRequestTargetingLocations     `json:"locations,omitempty"`
 	// Google's language codes (ISO 639-1, plus variants such as `zh_CN`), e.g. [\"en\", \"de\"].
-	Languages             []string                     `json:"languages,omitempty"`
-	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
+	Languages             []string                                                  `json:"languages,omitempty"`
+	ExcludedLocations     *UpdateCampaignTargetingRequestTargetingExcludedLocations `json:"excludedLocations,omitempty"`
+	LocationTargetingType *GoogleLocationTargetingType                              `json:"locationTargetingType,omitempty"`
 }
 
 // NewUpdateCampaignTargetingRequestTargeting instantiates a new UpdateCampaignTargetingRequestTargeting object
@@ -141,6 +142,38 @@ func (o *UpdateCampaignTargetingRequestTargeting) SetLanguages(v []string) {
 	o.Languages = v
 }
 
+// GetExcludedLocations returns the ExcludedLocations field value if set, zero value otherwise.
+func (o *UpdateCampaignTargetingRequestTargeting) GetExcludedLocations() UpdateCampaignTargetingRequestTargetingExcludedLocations {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		var ret UpdateCampaignTargetingRequestTargetingExcludedLocations
+		return ret
+	}
+	return *o.ExcludedLocations
+}
+
+// GetExcludedLocationsOk returns a tuple with the ExcludedLocations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateCampaignTargetingRequestTargeting) GetExcludedLocationsOk() (*UpdateCampaignTargetingRequestTargetingExcludedLocations, bool) {
+	if o == nil || IsNil(o.ExcludedLocations) {
+		return nil, false
+	}
+	return o.ExcludedLocations, true
+}
+
+// HasExcludedLocations returns a boolean if a field has been set.
+func (o *UpdateCampaignTargetingRequestTargeting) HasExcludedLocations() bool {
+	if o != nil && !IsNil(o.ExcludedLocations) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludedLocations gets a reference to the given UpdateCampaignTargetingRequestTargetingExcludedLocations and assigns it to the ExcludedLocations field.
+func (o *UpdateCampaignTargetingRequestTargeting) SetExcludedLocations(v UpdateCampaignTargetingRequestTargetingExcludedLocations) {
+	o.ExcludedLocations = &v
+}
+
 // GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise.
 func (o *UpdateCampaignTargetingRequestTargeting) GetLocationTargetingType() GoogleLocationTargetingType {
 	if o == nil || IsNil(o.LocationTargetingType) {
@@ -191,6 +224,9 @@ func (o UpdateCampaignTargetingRequestTargeting) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Languages) {
 		toSerialize["languages"] = o.Languages
+	}
+	if !IsNil(o.ExcludedLocations) {
+		toSerialize["excludedLocations"] = o.ExcludedLocations
 	}
 	if !IsNil(o.LocationTargetingType) {
 		toSerialize["locationTargetingType"] = o.LocationTargetingType
