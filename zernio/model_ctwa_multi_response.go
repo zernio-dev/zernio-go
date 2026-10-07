@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.237.0
+API version: 1.238.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type CtwaMultiResponse struct {
 	PlatformCampaignId string                   `json:"platformCampaignId"`
 	PlatformAdSetId    string                   `json:"platformAdSetId"`
 	Message            string                   `json:"message"`
+	// Present when Meta created the ad set differently from the request. Today: Meta kept the ad set without the requested `whatsappPhoneNumber` in its promoted_object (the ads still carry it on their WhatsApp button).
+	Warnings []string `json:"warnings,omitempty"`
 }
 
 type _CtwaMultiResponse CtwaMultiResponse
@@ -174,6 +176,38 @@ func (o *CtwaMultiResponse) SetMessage(v string) {
 	o.Message = v
 }
 
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *CtwaMultiResponse) GetWarnings() []string {
+	if o == nil || IsNil(o.Warnings) {
+		var ret []string
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaMultiResponse) GetWarningsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Warnings) {
+		return nil, false
+	}
+	return o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *CtwaMultiResponse) HasWarnings() bool {
+	if o != nil && !IsNil(o.Warnings) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarnings gets a reference to the given []string and assigns it to the Warnings field.
+func (o *CtwaMultiResponse) SetWarnings(v []string) {
+	o.Warnings = v
+}
+
 func (o CtwaMultiResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -189,6 +223,9 @@ func (o CtwaMultiResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["platformCampaignId"] = o.PlatformCampaignId
 	toSerialize["platformAdSetId"] = o.PlatformAdSetId
 	toSerialize["message"] = o.Message
+	if !IsNil(o.Warnings) {
+		toSerialize["warnings"] = o.Warnings
+	}
 	return toSerialize, nil
 }
 
