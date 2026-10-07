@@ -28,7 +28,8 @@ type ImessageSenderLifecycle struct {
 	Handle NullableString `json:"handle,omitempty"`
 	// imessage:// deep link that opens Messages on this sender with a prefilled text. Share it so contacts message you first (Apple only lets a sender reach contacts who wrote to it first); null until the handle is assigned.
 	OptInLink NullableString `json:"optInLink,omitempty"`
-	Status    *string        `json:"status,omitempty"`
+	// `awaiting_payment`: the first-month charge is still being confirmed by the card; the number is ordered automatically once it is paid (usually under 5 minutes), or the order fails with `failureReason` when the card declines or nothing confirms within 30 minutes.
+	Status *string `json:"status,omitempty"`
 	// Monthly price billed while the sender is active
 	PriceCents    *int32         `json:"priceCents,omitempty"`
 	Provider      *string        `json:"provider,omitempty"`
