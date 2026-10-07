@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.236.1
+API version: 1.237.0
 Contact: support@zernio.com
 */
 
@@ -29,6 +29,8 @@ type DialVoiceWebCallRequest struct {
 	// Which of your voice-enabled numbers to call from (optional when you have one).
 	FromNumber     *string `json:"fromNumber,omitempty" validate:"regexp=^\\\\+\\\\d{6,15}$"`
 	RecordOverride *bool   `json:"recordOverride,omitempty"`
+	// Seconds to let the callee's phone ring before the call ends as no_answer. The destination carrier can end it sooner.
+	RingTimeoutSeconds *int32 `json:"ringTimeoutSeconds,omitempty"`
 }
 
 type _DialVoiceWebCallRequest DialVoiceWebCallRequest
@@ -41,6 +43,8 @@ func NewDialVoiceWebCallRequest(to string, credentialId string) *DialVoiceWebCal
 	this := DialVoiceWebCallRequest{}
 	this.To = to
 	this.CredentialId = credentialId
+	var ringTimeoutSeconds int32 = 30
+	this.RingTimeoutSeconds = &ringTimeoutSeconds
 	return &this
 }
 
@@ -49,6 +53,8 @@ func NewDialVoiceWebCallRequest(to string, credentialId string) *DialVoiceWebCal
 // but it doesn't guarantee that properties required by API are set
 func NewDialVoiceWebCallRequestWithDefaults() *DialVoiceWebCallRequest {
 	this := DialVoiceWebCallRequest{}
+	var ringTimeoutSeconds int32 = 30
+	this.RingTimeoutSeconds = &ringTimeoutSeconds
 	return &this
 }
 
@@ -164,6 +170,38 @@ func (o *DialVoiceWebCallRequest) SetRecordOverride(v bool) {
 	o.RecordOverride = &v
 }
 
+// GetRingTimeoutSeconds returns the RingTimeoutSeconds field value if set, zero value otherwise.
+func (o *DialVoiceWebCallRequest) GetRingTimeoutSeconds() int32 {
+	if o == nil || IsNil(o.RingTimeoutSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.RingTimeoutSeconds
+}
+
+// GetRingTimeoutSecondsOk returns a tuple with the RingTimeoutSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DialVoiceWebCallRequest) GetRingTimeoutSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.RingTimeoutSeconds) {
+		return nil, false
+	}
+	return o.RingTimeoutSeconds, true
+}
+
+// HasRingTimeoutSeconds returns a boolean if a field has been set.
+func (o *DialVoiceWebCallRequest) HasRingTimeoutSeconds() bool {
+	if o != nil && !IsNil(o.RingTimeoutSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetRingTimeoutSeconds gets a reference to the given int32 and assigns it to the RingTimeoutSeconds field.
+func (o *DialVoiceWebCallRequest) SetRingTimeoutSeconds(v int32) {
+	o.RingTimeoutSeconds = &v
+}
+
 func (o DialVoiceWebCallRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -181,6 +219,9 @@ func (o DialVoiceWebCallRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.RecordOverride) {
 		toSerialize["recordOverride"] = o.RecordOverride
+	}
+	if !IsNil(o.RingTimeoutSeconds) {
+		toSerialize["ringTimeoutSeconds"] = o.RingTimeoutSeconds
 	}
 	return toSerialize, nil
 }

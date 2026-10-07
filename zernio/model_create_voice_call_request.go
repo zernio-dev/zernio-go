@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.236.1
+API version: 1.237.0
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,8 @@ type CreateVoiceCallRequest struct {
 	Amd *bool `json:"amd,omitempty"`
 	// Spoken to a detected machine, then hang up (implies `amd`). For outbound voicemail drops.
 	VoicemailDropMessage *string `json:"voicemailDropMessage,omitempty"`
+	// Seconds to let the callee's phone ring before the call ends as no_answer. The destination carrier can end it sooner.
+	RingTimeoutSeconds *int32 `json:"ringTimeoutSeconds,omitempty"`
 }
 
 type _CreateVoiceCallRequest CreateVoiceCallRequest
@@ -51,6 +53,8 @@ type _CreateVoiceCallRequest CreateVoiceCallRequest
 func NewCreateVoiceCallRequest(to string) *CreateVoiceCallRequest {
 	this := CreateVoiceCallRequest{}
 	this.To = to
+	var ringTimeoutSeconds int32 = 30
+	this.RingTimeoutSeconds = &ringTimeoutSeconds
 	return &this
 }
 
@@ -59,6 +63,8 @@ func NewCreateVoiceCallRequest(to string) *CreateVoiceCallRequest {
 // but it doesn't guarantee that properties required by API are set
 func NewCreateVoiceCallRequestWithDefaults() *CreateVoiceCallRequest {
 	this := CreateVoiceCallRequest{}
+	var ringTimeoutSeconds int32 = 30
+	this.RingTimeoutSeconds = &ringTimeoutSeconds
 	return &this
 }
 
@@ -342,6 +348,38 @@ func (o *CreateVoiceCallRequest) SetVoicemailDropMessage(v string) {
 	o.VoicemailDropMessage = &v
 }
 
+// GetRingTimeoutSeconds returns the RingTimeoutSeconds field value if set, zero value otherwise.
+func (o *CreateVoiceCallRequest) GetRingTimeoutSeconds() int32 {
+	if o == nil || IsNil(o.RingTimeoutSeconds) {
+		var ret int32
+		return ret
+	}
+	return *o.RingTimeoutSeconds
+}
+
+// GetRingTimeoutSecondsOk returns a tuple with the RingTimeoutSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateVoiceCallRequest) GetRingTimeoutSecondsOk() (*int32, bool) {
+	if o == nil || IsNil(o.RingTimeoutSeconds) {
+		return nil, false
+	}
+	return o.RingTimeoutSeconds, true
+}
+
+// HasRingTimeoutSeconds returns a boolean if a field has been set.
+func (o *CreateVoiceCallRequest) HasRingTimeoutSeconds() bool {
+	if o != nil && !IsNil(o.RingTimeoutSeconds) {
+		return true
+	}
+
+	return false
+}
+
+// SetRingTimeoutSeconds gets a reference to the given int32 and assigns it to the RingTimeoutSeconds field.
+func (o *CreateVoiceCallRequest) SetRingTimeoutSeconds(v int32) {
+	o.RingTimeoutSeconds = &v
+}
+
 func (o CreateVoiceCallRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -376,6 +414,9 @@ func (o CreateVoiceCallRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VoicemailDropMessage) {
 		toSerialize["voicemailDropMessage"] = o.VoicemailDropMessage
+	}
+	if !IsNil(o.RingTimeoutSeconds) {
+		toSerialize["ringTimeoutSeconds"] = o.RingTimeoutSeconds
 	}
 	return toSerialize, nil
 }
