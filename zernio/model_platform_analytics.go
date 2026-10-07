@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.228.0
+API version: 1.229.0
 Contact: support@zernio.com
 */
 
@@ -32,8 +32,10 @@ type PlatformAnalytics struct {
 	PlatformPostUrl NullableString `json:"platformPostUrl,omitempty"`
 	// Failure detail. On failed entries, why the post failed to publish. On unavailable entries, why analytics cannot be synced (e.g. Google Business Profile, a TikTok upload that never received a video id). On pending entries, the most recent analytics sync error for the account (null while no sync has failed), cleared after the next successful sync.
 	ErrorMessage NullableString `json:"errorMessage,omitempty"`
-	// Stable machine-readable reason for errorMessage. post_not_found: the post was deleted or is no longer visible to the account. permission_missing: the last analytics sync of the Facebook account failed because the Page no longer grants pages_read_engagement (pending entries only). null: no stable code, read errorMessage. New values may be added.
+	// Stable machine-readable reason for errorMessage. post_not_found: the post was deleted or is no longer visible to the account. not_post_owner: the post is owned by another Page or user (collab or visitor post); its analytics cannot be read with this Page's token. permission_missing: the last analytics sync of the Facebook account failed because the Page no longer grants pages_read_engagement (pending entries only). null: no stable code, read errorMessage. New values may be added.
 	ErrorCode NullableString `json:"errorCode,omitempty"`
+	// Facebook only: true when the connected Page authored the post, false when Facebook reports another author (a collab post), null when unknown or for other platforms.
+	IsOwner NullableBool `json:"isOwner,omitempty"`
 }
 
 // NewPlatformAnalytics instantiates a new PlatformAnalytics object
@@ -439,6 +441,49 @@ func (o *PlatformAnalytics) UnsetErrorCode() {
 	o.ErrorCode.Unset()
 }
 
+// GetIsOwner returns the IsOwner field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PlatformAnalytics) GetIsOwner() bool {
+	if o == nil || IsNil(o.IsOwner.Get()) {
+		var ret bool
+		return ret
+	}
+	return *o.IsOwner.Get()
+}
+
+// GetIsOwnerOk returns a tuple with the IsOwner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PlatformAnalytics) GetIsOwnerOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IsOwner.Get(), o.IsOwner.IsSet()
+}
+
+// HasIsOwner returns a boolean if a field has been set.
+func (o *PlatformAnalytics) HasIsOwner() bool {
+	if o != nil && o.IsOwner.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIsOwner gets a reference to the given NullableBool and assigns it to the IsOwner field.
+func (o *PlatformAnalytics) SetIsOwner(v bool) {
+	o.IsOwner.Set(&v)
+}
+
+// SetIsOwnerNil sets the value for IsOwner to be an explicit nil
+func (o *PlatformAnalytics) SetIsOwnerNil() {
+	o.IsOwner.Set(nil)
+}
+
+// UnsetIsOwner ensures that no value is present for IsOwner, not even an explicit nil
+func (o *PlatformAnalytics) UnsetIsOwner() {
+	o.IsOwner.Unset()
+}
+
 func (o PlatformAnalytics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -478,6 +523,9 @@ func (o PlatformAnalytics) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ErrorCode.IsSet() {
 		toSerialize["errorCode"] = o.ErrorCode.Get()
+	}
+	if o.IsOwner.IsSet() {
+		toSerialize["isOwner"] = o.IsOwner.Get()
 	}
 	return toSerialize, nil
 }
