@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.235.0
+API version: 1.236.0
 Contact: support@zernio.com
 */
 
@@ -655,11 +655,13 @@ func (a *AdCreativesAPIService) GenerateAdPreviewsExecute(r AdCreativesAPIGenera
 }
 
 type AdCreativesAPIGetAdCreativeRequest struct {
-	ctx        context.Context
-	ApiService *AdCreativesAPIService
-	creativeId string
-	accountId  *string
-	fields     *string
+	ctx             context.Context
+	ApiService      *AdCreativesAPIService
+	creativeId      string
+	accountId       *string
+	fields          *string
+	thumbnailWidth  *int32
+	thumbnailHeight *int32
 }
 
 // Zernio SocialAccount id (posting or ads variant) used to resolve the Meta token.
@@ -671,6 +673,18 @@ func (r AdCreativesAPIGetAdCreativeRequest) AccountId(accountId string) AdCreati
 // Comma-separated Graph field override. Supports nested {} projections and Graph field modifiers, so a nested edge can be paged explicitly: without a .limit() modifier the expansion runs at the Meta default page size and the tail is dropped silently.
 func (r AdCreativesAPIGetAdCreativeRequest) Fields(fields string) AdCreativesAPIGetAdCreativeRequest {
 	r.fields = &fields
+	return r
+}
+
+// Width in pixels of the &#x60;thumbnail_url&#x60; rendering, forwarded to Meta as &#x60;thumbnail_width&#x60;. Without it Meta returns a 64x64 thumbnail.
+func (r AdCreativesAPIGetAdCreativeRequest) ThumbnailWidth(thumbnailWidth int32) AdCreativesAPIGetAdCreativeRequest {
+	r.thumbnailWidth = &thumbnailWidth
+	return r
+}
+
+// Height in pixels of the &#x60;thumbnail_url&#x60; rendering, forwarded to Meta as &#x60;thumbnail_height&#x60;. Without it Meta returns a 64x64 thumbnail.
+func (r AdCreativesAPIGetAdCreativeRequest) ThumbnailHeight(thumbnailHeight int32) AdCreativesAPIGetAdCreativeRequest {
+	r.thumbnailHeight = &thumbnailHeight
 	return r
 }
 
@@ -725,6 +739,12 @@ func (a *AdCreativesAPIService) GetAdCreativeExecute(r AdCreativesAPIGetAdCreati
 	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
 	if r.fields != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
+	}
+	if r.thumbnailWidth != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "thumbnailWidth", r.thumbnailWidth, "form", "")
+	}
+	if r.thumbnailHeight != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "thumbnailHeight", r.thumbnailHeight, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
