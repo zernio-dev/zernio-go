@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ type PortfolioBidStrategy struct {
 	TargetCpa NullableFloat32 `json:"targetCpa,omitempty"`
 	// Current target as a decimal multiplier (2.0 = 2.0x). Null for a CPA-family type (TARGET_CPA, MAXIMIZE_CONVERSIONS), or a Maximize type with no target set.
 	TargetRoas NullableFloat32 `json:"targetRoas,omitempty"`
+	// Current target for a TARGET_IMPRESSION_SHARE strategy, null for every other type.
+	TargetImpressionShare NullableGoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
 }
 
 // NewPortfolioBidStrategy instantiates a new PortfolioBidStrategy object
@@ -498,6 +500,49 @@ func (o *PortfolioBidStrategy) UnsetTargetRoas() {
 	o.TargetRoas.Unset()
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PortfolioBidStrategy) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare.Get()) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare.Get()
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PortfolioBidStrategy) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TargetImpressionShare.Get(), o.TargetImpressionShare.IsSet()
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *PortfolioBidStrategy) HasTargetImpressionShare() bool {
+	if o != nil && o.TargetImpressionShare.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given NullableGoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *PortfolioBidStrategy) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare.Set(&v)
+}
+
+// SetTargetImpressionShareNil sets the value for TargetImpressionShare to be an explicit nil
+func (o *PortfolioBidStrategy) SetTargetImpressionShareNil() {
+	o.TargetImpressionShare.Set(nil)
+}
+
+// UnsetTargetImpressionShare ensures that no value is present for TargetImpressionShare, not even an explicit nil
+func (o *PortfolioBidStrategy) UnsetTargetImpressionShare() {
+	o.TargetImpressionShare.Unset()
+}
+
 func (o PortfolioBidStrategy) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -546,6 +591,9 @@ func (o PortfolioBidStrategy) ToMap() (map[string]interface{}, error) {
 	}
 	if o.TargetRoas.IsSet() {
 		toSerialize["targetRoas"] = o.TargetRoas.Get()
+	}
+	if o.TargetImpressionShare.IsSet() {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare.Get()
 	}
 	return toSerialize, nil
 }

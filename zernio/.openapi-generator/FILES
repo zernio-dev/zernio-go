@@ -1251,6 +1251,8 @@ model_google_listing_group_filter_node.go
 model_google_listing_group_node.go
 model_google_listing_group_tree.go
 model_google_location_targeting_type.go
+model_google_manual_cpc.go
+model_google_network_settings.go
 model_google_pmax_asset_group.go
 model_google_pmax_asset_group_assets_inner.go
 model_google_pmax_asset_group_detail.go
@@ -1266,6 +1268,7 @@ model_google_rsa_description.go
 model_google_rsa_headline.go
 model_google_sitelink.go
 model_google_structured_snippet.go
+model_google_target_impression_share.go
 model_grant_business_partner_200_response.go
 model_grant_business_partner_200_response_partner.go
 model_grant_business_partner_201_response.go
@@ -2157,6 +2160,7 @@ model_update_ad_200_response.go
 model_update_ad_account_200_response.go
 model_update_ad_account_200_response_dsa_defaults.go
 model_update_ad_account_200_response_settings.go
+model_update_ad_account_200_response_url_tracking.go
 model_update_ad_account_manager_link_request.go
 model_update_ad_account_request.go
 model_update_ad_audience_request.go

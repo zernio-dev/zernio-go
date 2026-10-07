@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -51,6 +51,10 @@ type CreateAdCampaignRequest struct {
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Google Search only. Target impression share bidding. Exclusive with bidStrategy, portfolioBidStrategyId and manualCpc; bidAmount is refused alongside it (the ceiling is maxCpc).
+	TargetImpressionShare *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
+	ManualCpc             *GoogleManualCpc             `json:"manualCpc,omitempty"`
+	NetworkSettings       *GoogleNetworkSettings       `json:"networkSettings,omitempty"`
 }
 
 type _CreateAdCampaignRequest CreateAdCampaignRequest
@@ -592,6 +596,102 @@ func (o *CreateAdCampaignRequest) SetPortfolioBidStrategyId(v string) {
 	o.PortfolioBidStrategyId = &v
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		return nil, false
+	}
+	return o.TargetImpressionShare, true
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasTargetImpressionShare() bool {
+	if o != nil && !IsNil(o.TargetImpressionShare) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given GoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *CreateAdCampaignRequest) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare = &v
+}
+
+// GetManualCpc returns the ManualCpc field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetManualCpc() GoogleManualCpc {
+	if o == nil || IsNil(o.ManualCpc) {
+		var ret GoogleManualCpc
+		return ret
+	}
+	return *o.ManualCpc
+}
+
+// GetManualCpcOk returns a tuple with the ManualCpc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetManualCpcOk() (*GoogleManualCpc, bool) {
+	if o == nil || IsNil(o.ManualCpc) {
+		return nil, false
+	}
+	return o.ManualCpc, true
+}
+
+// HasManualCpc returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasManualCpc() bool {
+	if o != nil && !IsNil(o.ManualCpc) {
+		return true
+	}
+
+	return false
+}
+
+// SetManualCpc gets a reference to the given GoogleManualCpc and assigns it to the ManualCpc field.
+func (o *CreateAdCampaignRequest) SetManualCpc(v GoogleManualCpc) {
+	o.ManualCpc = &v
+}
+
+// GetNetworkSettings returns the NetworkSettings field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetNetworkSettings() GoogleNetworkSettings {
+	if o == nil || IsNil(o.NetworkSettings) {
+		var ret GoogleNetworkSettings
+		return ret
+	}
+	return *o.NetworkSettings
+}
+
+// GetNetworkSettingsOk returns a tuple with the NetworkSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetNetworkSettingsOk() (*GoogleNetworkSettings, bool) {
+	if o == nil || IsNil(o.NetworkSettings) {
+		return nil, false
+	}
+	return o.NetworkSettings, true
+}
+
+// HasNetworkSettings returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasNetworkSettings() bool {
+	if o != nil && !IsNil(o.NetworkSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkSettings gets a reference to the given GoogleNetworkSettings and assigns it to the NetworkSettings field.
+func (o *CreateAdCampaignRequest) SetNetworkSettings(v GoogleNetworkSettings) {
+	o.NetworkSettings = &v
+}
+
 func (o CreateAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -644,6 +744,15 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PortfolioBidStrategyId) {
 		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
+	}
+	if !IsNil(o.TargetImpressionShare) {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare
+	}
+	if !IsNil(o.ManualCpc) {
+		toSerialize["manualCpc"] = o.ManualCpc
+	}
+	if !IsNil(o.NetworkSettings) {
+		toSerialize["networkSettings"] = o.NetworkSettings
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -36,6 +36,10 @@ type UpdateAdAccountRequest struct {
 	DefaultDsaBeneficiary *string `json:"defaultDsaBeneficiary,omitempty"`
 	// Legal entity paying for ads on this ad account. Defaults to defaultDsaBeneficiary when omitted. Requires defaultDsaBeneficiary.
 	DefaultDsaPayor *string `json:"defaultDsaPayor,omitempty"`
+	// **Google only.** Account tracking template (customer.tracking_url_template); an empty string clears it.
+	TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
+	// **Google only.** Account final URL suffix (customer.final_url_suffix); an empty string clears it.
+	FinalUrlSuffix *string `json:"finalUrlSuffix,omitempty"`
 }
 
 type _UpdateAdAccountRequest UpdateAdAccountRequest
@@ -278,6 +282,70 @@ func (o *UpdateAdAccountRequest) SetDefaultDsaPayor(v string) {
 	o.DefaultDsaPayor = &v
 }
 
+// GetTrackingUrlTemplate returns the TrackingUrlTemplate field value if set, zero value otherwise.
+func (o *UpdateAdAccountRequest) GetTrackingUrlTemplate() string {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		var ret string
+		return ret
+	}
+	return *o.TrackingUrlTemplate
+}
+
+// GetTrackingUrlTemplateOk returns a tuple with the TrackingUrlTemplate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdAccountRequest) GetTrackingUrlTemplateOk() (*string, bool) {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		return nil, false
+	}
+	return o.TrackingUrlTemplate, true
+}
+
+// HasTrackingUrlTemplate returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasTrackingUrlTemplate() bool {
+	if o != nil && !IsNil(o.TrackingUrlTemplate) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrackingUrlTemplate gets a reference to the given string and assigns it to the TrackingUrlTemplate field.
+func (o *UpdateAdAccountRequest) SetTrackingUrlTemplate(v string) {
+	o.TrackingUrlTemplate = &v
+}
+
+// GetFinalUrlSuffix returns the FinalUrlSuffix field value if set, zero value otherwise.
+func (o *UpdateAdAccountRequest) GetFinalUrlSuffix() string {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		var ret string
+		return ret
+	}
+	return *o.FinalUrlSuffix
+}
+
+// GetFinalUrlSuffixOk returns a tuple with the FinalUrlSuffix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdAccountRequest) GetFinalUrlSuffixOk() (*string, bool) {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		return nil, false
+	}
+	return o.FinalUrlSuffix, true
+}
+
+// HasFinalUrlSuffix returns a boolean if a field has been set.
+func (o *UpdateAdAccountRequest) HasFinalUrlSuffix() bool {
+	if o != nil && !IsNil(o.FinalUrlSuffix) {
+		return true
+	}
+
+	return false
+}
+
+// SetFinalUrlSuffix gets a reference to the given string and assigns it to the FinalUrlSuffix field.
+func (o *UpdateAdAccountRequest) SetFinalUrlSuffix(v string) {
+	o.FinalUrlSuffix = &v
+}
+
 func (o UpdateAdAccountRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -304,6 +372,12 @@ func (o UpdateAdAccountRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DefaultDsaPayor) {
 		toSerialize["defaultDsaPayor"] = o.DefaultDsaPayor
+	}
+	if !IsNil(o.TrackingUrlTemplate) {
+		toSerialize["trackingUrlTemplate"] = o.TrackingUrlTemplate
+	}
+	if !IsNil(o.FinalUrlSuffix) {
+		toSerialize["finalUrlSuffix"] = o.FinalUrlSuffix
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type CreateAdSetRequest struct {
 	CampaignId string  `json:"campaignId"`
 	Name       string  `json:"name"`
 	Status     *string `json:"status,omitempty"`
+	// Max CPC of the new ad group, in the account's currency units. Send it when the campaign uses Manual CPC: Google gives an ad group without one a 0.01 bid.
+	MaxCpc *float32 `json:"maxCpc,omitempty"`
 	// Platform ad account ID (Google customer ID, digits only). Only required when the connection has more than one.
 	AdAccountId *string `json:"adAccountId,omitempty"`
 	// Alias of adAccountId, kept for existing callers
@@ -192,6 +194,38 @@ func (o *CreateAdSetRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetMaxCpc returns the MaxCpc field value if set, zero value otherwise.
+func (o *CreateAdSetRequest) GetMaxCpc() float32 {
+	if o == nil || IsNil(o.MaxCpc) {
+		var ret float32
+		return ret
+	}
+	return *o.MaxCpc
+}
+
+// GetMaxCpcOk returns a tuple with the MaxCpc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdSetRequest) GetMaxCpcOk() (*float32, bool) {
+	if o == nil || IsNil(o.MaxCpc) {
+		return nil, false
+	}
+	return o.MaxCpc, true
+}
+
+// HasMaxCpc returns a boolean if a field has been set.
+func (o *CreateAdSetRequest) HasMaxCpc() bool {
+	if o != nil && !IsNil(o.MaxCpc) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxCpc gets a reference to the given float32 and assigns it to the MaxCpc field.
+func (o *CreateAdSetRequest) SetMaxCpc(v float32) {
+	o.MaxCpc = &v
+}
+
 // GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
 func (o *CreateAdSetRequest) GetAdAccountId() string {
 	if o == nil || IsNil(o.AdAccountId) {
@@ -275,6 +309,9 @@ func (o CreateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.MaxCpc) {
+		toSerialize["maxCpc"] = o.MaxCpc
 	}
 	if !IsNil(o.AdAccountId) {
 		toSerialize["adAccountId"] = o.AdAccountId

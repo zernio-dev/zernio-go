@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -10100,7 +10100,14 @@ If `defaultDsaPayor` is omitted, the beneficiary is also set as the payor, which
 covers the common case where the same entity benefits from and pays for the ads.
 Read the current values back with `GET /v1/ads/dsa-defaults`.
 
-Currently supported for Meta accounts only; other platforms return 400.
+**Google: account-level URL tracking.** On a Google Ads connection, `adAccountId` is the
+customer id and only `trackingUrlTemplate` / `finalUrlSuffix` are accepted (the Meta
+fields return 400). They write `customer.tracking_url_template` and
+`customer.final_url_suffix`, one update mask leaf per field sent; an empty string clears
+the field. The response carries `urlTracking` with the values written. For one campaign,
+send the same fields to PUT /v1/ads/campaigns/{campaignId}.
+
+Other platforms return 400.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIUpdateAdAccountRequest

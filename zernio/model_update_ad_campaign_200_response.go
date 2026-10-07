@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -28,8 +28,13 @@ type UpdateAdCampaign200Response struct {
 	BidAmount        *float32          `json:"bidAmount,omitempty"`
 	RoasAverageFloor *float32          `json:"roasAverageFloor,omitempty"`
 	// Google only. Echoed back, but NOT mirrored onto local Ad documents (no column for it yet).
-	PortfolioBidStrategyId *string                `json:"portfolioBidStrategyId,omitempty"`
-	PlatformSpecificData   map[string]interface{} `json:"platformSpecificData,omitempty"`
+	PortfolioBidStrategyId *string                      `json:"portfolioBidStrategyId,omitempty"`
+	TargetImpressionShare  *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
+	ManualCpc              *GoogleManualCpc             `json:"manualCpc,omitempty"`
+	NetworkSettings        *GoogleNetworkSettings       `json:"networkSettings,omitempty"`
+	TrackingUrlTemplate    *string                      `json:"trackingUrlTemplate,omitempty"`
+	FinalUrlSuffix         *string                      `json:"finalUrlSuffix,omitempty"`
+	PlatformSpecificData   map[string]interface{}       `json:"platformSpecificData,omitempty"`
 }
 
 // NewUpdateAdCampaign200Response instantiates a new UpdateAdCampaign200Response object
@@ -273,6 +278,166 @@ func (o *UpdateAdCampaign200Response) SetPortfolioBidStrategyId(v string) {
 	o.PortfolioBidStrategyId = &v
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		return nil, false
+	}
+	return o.TargetImpressionShare, true
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasTargetImpressionShare() bool {
+	if o != nil && !IsNil(o.TargetImpressionShare) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given GoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *UpdateAdCampaign200Response) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare = &v
+}
+
+// GetManualCpc returns the ManualCpc field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetManualCpc() GoogleManualCpc {
+	if o == nil || IsNil(o.ManualCpc) {
+		var ret GoogleManualCpc
+		return ret
+	}
+	return *o.ManualCpc
+}
+
+// GetManualCpcOk returns a tuple with the ManualCpc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetManualCpcOk() (*GoogleManualCpc, bool) {
+	if o == nil || IsNil(o.ManualCpc) {
+		return nil, false
+	}
+	return o.ManualCpc, true
+}
+
+// HasManualCpc returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasManualCpc() bool {
+	if o != nil && !IsNil(o.ManualCpc) {
+		return true
+	}
+
+	return false
+}
+
+// SetManualCpc gets a reference to the given GoogleManualCpc and assigns it to the ManualCpc field.
+func (o *UpdateAdCampaign200Response) SetManualCpc(v GoogleManualCpc) {
+	o.ManualCpc = &v
+}
+
+// GetNetworkSettings returns the NetworkSettings field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetNetworkSettings() GoogleNetworkSettings {
+	if o == nil || IsNil(o.NetworkSettings) {
+		var ret GoogleNetworkSettings
+		return ret
+	}
+	return *o.NetworkSettings
+}
+
+// GetNetworkSettingsOk returns a tuple with the NetworkSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetNetworkSettingsOk() (*GoogleNetworkSettings, bool) {
+	if o == nil || IsNil(o.NetworkSettings) {
+		return nil, false
+	}
+	return o.NetworkSettings, true
+}
+
+// HasNetworkSettings returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasNetworkSettings() bool {
+	if o != nil && !IsNil(o.NetworkSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkSettings gets a reference to the given GoogleNetworkSettings and assigns it to the NetworkSettings field.
+func (o *UpdateAdCampaign200Response) SetNetworkSettings(v GoogleNetworkSettings) {
+	o.NetworkSettings = &v
+}
+
+// GetTrackingUrlTemplate returns the TrackingUrlTemplate field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetTrackingUrlTemplate() string {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		var ret string
+		return ret
+	}
+	return *o.TrackingUrlTemplate
+}
+
+// GetTrackingUrlTemplateOk returns a tuple with the TrackingUrlTemplate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetTrackingUrlTemplateOk() (*string, bool) {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		return nil, false
+	}
+	return o.TrackingUrlTemplate, true
+}
+
+// HasTrackingUrlTemplate returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasTrackingUrlTemplate() bool {
+	if o != nil && !IsNil(o.TrackingUrlTemplate) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrackingUrlTemplate gets a reference to the given string and assigns it to the TrackingUrlTemplate field.
+func (o *UpdateAdCampaign200Response) SetTrackingUrlTemplate(v string) {
+	o.TrackingUrlTemplate = &v
+}
+
+// GetFinalUrlSuffix returns the FinalUrlSuffix field value if set, zero value otherwise.
+func (o *UpdateAdCampaign200Response) GetFinalUrlSuffix() string {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		var ret string
+		return ret
+	}
+	return *o.FinalUrlSuffix
+}
+
+// GetFinalUrlSuffixOk returns a tuple with the FinalUrlSuffix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaign200Response) GetFinalUrlSuffixOk() (*string, bool) {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		return nil, false
+	}
+	return o.FinalUrlSuffix, true
+}
+
+// HasFinalUrlSuffix returns a boolean if a field has been set.
+func (o *UpdateAdCampaign200Response) HasFinalUrlSuffix() bool {
+	if o != nil && !IsNil(o.FinalUrlSuffix) {
+		return true
+	}
+
+	return false
+}
+
+// SetFinalUrlSuffix gets a reference to the given string and assigns it to the FinalUrlSuffix field.
+func (o *UpdateAdCampaign200Response) SetFinalUrlSuffix(v string) {
+	o.FinalUrlSuffix = &v
+}
+
 // GetPlatformSpecificData returns the PlatformSpecificData field value if set, zero value otherwise.
 func (o *UpdateAdCampaign200Response) GetPlatformSpecificData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformSpecificData) {
@@ -335,6 +500,21 @@ func (o UpdateAdCampaign200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PortfolioBidStrategyId) {
 		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
+	}
+	if !IsNil(o.TargetImpressionShare) {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare
+	}
+	if !IsNil(o.ManualCpc) {
+		toSerialize["manualCpc"] = o.ManualCpc
+	}
+	if !IsNil(o.NetworkSettings) {
+		toSerialize["networkSettings"] = o.NetworkSettings
+	}
+	if !IsNil(o.TrackingUrlTemplate) {
+		toSerialize["trackingUrlTemplate"] = o.TrackingUrlTemplate
+	}
+	if !IsNil(o.FinalUrlSuffix) {
+		toSerialize["finalUrlSuffix"] = o.FinalUrlSuffix
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData

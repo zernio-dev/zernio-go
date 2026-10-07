@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,8 @@ type CreateBidStrategyRequest struct {
 	TargetCpa *float32 `json:"targetCpa,omitempty"`
 	// Required when type is TARGET_ROAS; a multiplier (2.0 = 2.0x).
 	TargetRoas *float32 `json:"targetRoas,omitempty"`
+	// Required when type is TARGET_IMPRESSION_SHARE, and refused with any other type.
+	TargetImpressionShare *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
 }
 
 type _CreateBidStrategyRequest CreateBidStrategyRequest
@@ -262,6 +264,38 @@ func (o *CreateBidStrategyRequest) SetTargetRoas(v float32) {
 	o.TargetRoas = &v
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise.
+func (o *CreateBidStrategyRequest) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateBidStrategyRequest) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		return nil, false
+	}
+	return o.TargetImpressionShare, true
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *CreateBidStrategyRequest) HasTargetImpressionShare() bool {
+	if o != nil && !IsNil(o.TargetImpressionShare) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given GoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *CreateBidStrategyRequest) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare = &v
+}
+
 func (o CreateBidStrategyRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -286,6 +320,9 @@ func (o CreateBidStrategyRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TargetRoas) {
 		toSerialize["targetRoas"] = o.TargetRoas
+	}
+	if !IsNil(o.TargetImpressionShare) {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare
 	}
 	return toSerialize, nil
 }

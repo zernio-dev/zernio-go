@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -213,6 +213,11 @@ type CreateStandaloneAdRequest struct {
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// Google Search and Display only. Performance Max rejects portfolio bidding. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Google Search only. Target impression share bidding. Exclusive with bidStrategy, portfolioBidStrategyId and manualCpc; bidAmount is refused alongside it (the ceiling is maxCpc).
+	TargetImpressionShare *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
+	ManualCpc             *GoogleManualCpc             `json:"manualCpc,omitempty"`
+	// Google Search only, when the call creates the campaign (400 with existingCampaignId or adSetId).
+	NetworkSettings *GoogleNetworkSettings `json:"networkSettings,omitempty"`
 	// Meta only (facebook, instagram; other platforms return 400). Value rule set to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is driven by this id, so `valueRulesApplied` is optional alongside it.  Rejected with 400 in `adSetId` attach mode: that shape inherits the existing ad set's attachment, so the field would be silently ignored. Use `PUT /v1/ads/ad-sets/{adSetId}` there instead.  Ignored (stripped before the ad-set create) when `buyingType` is `RESERVED`: value rules only apply to auction ad sets on `LOWEST_COST_WITHOUT_CAP` or `COST_CAP`, and a Reach & Frequency reservation has no auction bid strategy.  Read back with `GET /v1/ads/ad-sets/{adSetId}?fields=value_rule_set_id`; the attachment is not mirrored onto Zernio's ad documents.
 	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Meta only (facebook, instagram; other platforms return 400). Optional when attaching, and requires `valueRuleSetId`. `false` is REJECTED here with 400: a newly created ad set has nothing to detach, so detaching lives on `PUT /v1/ads/ad-sets/{adSetId}`.
@@ -3464,6 +3469,102 @@ func (o *CreateStandaloneAdRequest) SetPortfolioBidStrategyId(v string) {
 	o.PortfolioBidStrategyId = &v
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		return nil, false
+	}
+	return o.TargetImpressionShare, true
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasTargetImpressionShare() bool {
+	if o != nil && !IsNil(o.TargetImpressionShare) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given GoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *CreateStandaloneAdRequest) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare = &v
+}
+
+// GetManualCpc returns the ManualCpc field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetManualCpc() GoogleManualCpc {
+	if o == nil || IsNil(o.ManualCpc) {
+		var ret GoogleManualCpc
+		return ret
+	}
+	return *o.ManualCpc
+}
+
+// GetManualCpcOk returns a tuple with the ManualCpc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetManualCpcOk() (*GoogleManualCpc, bool) {
+	if o == nil || IsNil(o.ManualCpc) {
+		return nil, false
+	}
+	return o.ManualCpc, true
+}
+
+// HasManualCpc returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasManualCpc() bool {
+	if o != nil && !IsNil(o.ManualCpc) {
+		return true
+	}
+
+	return false
+}
+
+// SetManualCpc gets a reference to the given GoogleManualCpc and assigns it to the ManualCpc field.
+func (o *CreateStandaloneAdRequest) SetManualCpc(v GoogleManualCpc) {
+	o.ManualCpc = &v
+}
+
+// GetNetworkSettings returns the NetworkSettings field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetNetworkSettings() GoogleNetworkSettings {
+	if o == nil || IsNil(o.NetworkSettings) {
+		var ret GoogleNetworkSettings
+		return ret
+	}
+	return *o.NetworkSettings
+}
+
+// GetNetworkSettingsOk returns a tuple with the NetworkSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetNetworkSettingsOk() (*GoogleNetworkSettings, bool) {
+	if o == nil || IsNil(o.NetworkSettings) {
+		return nil, false
+	}
+	return o.NetworkSettings, true
+}
+
+// HasNetworkSettings returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasNetworkSettings() bool {
+	if o != nil && !IsNil(o.NetworkSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkSettings gets a reference to the given GoogleNetworkSettings and assigns it to the NetworkSettings field.
+func (o *CreateStandaloneAdRequest) SetNetworkSettings(v GoogleNetworkSettings) {
+	o.NetworkSettings = &v
+}
+
 // GetValueRuleSetId returns the ValueRuleSetId field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetValueRuleSetId() string {
 	if o == nil || IsNil(o.ValueRuleSetId) {
@@ -4215,6 +4316,15 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PortfolioBidStrategyId) {
 		toSerialize["portfolioBidStrategyId"] = o.PortfolioBidStrategyId
+	}
+	if !IsNil(o.TargetImpressionShare) {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare
+	}
+	if !IsNil(o.ManualCpc) {
+		toSerialize["manualCpc"] = o.ManualCpc
+	}
+	if !IsNil(o.NetworkSettings) {
+		toSerialize["networkSettings"] = o.NetworkSettings
 	}
 	if !IsNil(o.ValueRuleSetId) {
 		toSerialize["valueRuleSetId"] = o.ValueRuleSetId

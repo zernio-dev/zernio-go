@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.230.1
+API version: 1.231.0
 Contact: support@zernio.com
 */
 
@@ -35,8 +35,16 @@ type UpdateAdCampaignRequest struct {
 	// **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
 	PortfolioBidStrategyId *string `json:"portfolioBidStrategyId,omitempty" validate:"regexp=^\\\\d+$"`
 	// Google only. Explicitly allow changing a shared campaign budget, affecting every campaign that uses it. Does not bypass an unknown sharing state.
-	AllowSharedBudgetUpdate *bool                          `json:"allowSharedBudgetUpdate,omitempty"`
-	Budget                  *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
+	AllowSharedBudgetUpdate *bool `json:"allowSharedBudgetUpdate,omitempty"`
+	// Google Search only. Target impression share bidding. Exclusive with bidStrategy, portfolioBidStrategyId and manualCpc; bidAmount is refused alongside it (the ceiling is maxCpc).
+	TargetImpressionShare *GoogleTargetImpressionShare `json:"targetImpressionShare,omitempty"`
+	ManualCpc             *GoogleManualCpc             `json:"manualCpc,omitempty"`
+	NetworkSettings       *GoogleNetworkSettings       `json:"networkSettings,omitempty"`
+	// **Google only.** campaign.tracking_url_template; an empty string clears it.
+	TrackingUrlTemplate *string `json:"trackingUrlTemplate,omitempty"`
+	// **Google only.** campaign.final_url_suffix; an empty string clears it.
+	FinalUrlSuffix *string                        `json:"finalUrlSuffix,omitempty"`
+	Budget         *UpdateAdCampaignRequestBudget `json:"budget,omitempty"`
 	// **Meta only.** Rename the campaign.
 	Name                 *string                                      `json:"name,omitempty"`
 	PlatformSpecificData *UpdateAdCampaignRequestPlatformSpecificData `json:"platformSpecificData,omitempty"`
@@ -282,6 +290,166 @@ func (o *UpdateAdCampaignRequest) SetAllowSharedBudgetUpdate(v bool) {
 	o.AllowSharedBudgetUpdate = &v
 }
 
+// GetTargetImpressionShare returns the TargetImpressionShare field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetTargetImpressionShare() GoogleTargetImpressionShare {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		var ret GoogleTargetImpressionShare
+		return ret
+	}
+	return *o.TargetImpressionShare
+}
+
+// GetTargetImpressionShareOk returns a tuple with the TargetImpressionShare field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetTargetImpressionShareOk() (*GoogleTargetImpressionShare, bool) {
+	if o == nil || IsNil(o.TargetImpressionShare) {
+		return nil, false
+	}
+	return o.TargetImpressionShare, true
+}
+
+// HasTargetImpressionShare returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasTargetImpressionShare() bool {
+	if o != nil && !IsNil(o.TargetImpressionShare) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetImpressionShare gets a reference to the given GoogleTargetImpressionShare and assigns it to the TargetImpressionShare field.
+func (o *UpdateAdCampaignRequest) SetTargetImpressionShare(v GoogleTargetImpressionShare) {
+	o.TargetImpressionShare = &v
+}
+
+// GetManualCpc returns the ManualCpc field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetManualCpc() GoogleManualCpc {
+	if o == nil || IsNil(o.ManualCpc) {
+		var ret GoogleManualCpc
+		return ret
+	}
+	return *o.ManualCpc
+}
+
+// GetManualCpcOk returns a tuple with the ManualCpc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetManualCpcOk() (*GoogleManualCpc, bool) {
+	if o == nil || IsNil(o.ManualCpc) {
+		return nil, false
+	}
+	return o.ManualCpc, true
+}
+
+// HasManualCpc returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasManualCpc() bool {
+	if o != nil && !IsNil(o.ManualCpc) {
+		return true
+	}
+
+	return false
+}
+
+// SetManualCpc gets a reference to the given GoogleManualCpc and assigns it to the ManualCpc field.
+func (o *UpdateAdCampaignRequest) SetManualCpc(v GoogleManualCpc) {
+	o.ManualCpc = &v
+}
+
+// GetNetworkSettings returns the NetworkSettings field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetNetworkSettings() GoogleNetworkSettings {
+	if o == nil || IsNil(o.NetworkSettings) {
+		var ret GoogleNetworkSettings
+		return ret
+	}
+	return *o.NetworkSettings
+}
+
+// GetNetworkSettingsOk returns a tuple with the NetworkSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetNetworkSettingsOk() (*GoogleNetworkSettings, bool) {
+	if o == nil || IsNil(o.NetworkSettings) {
+		return nil, false
+	}
+	return o.NetworkSettings, true
+}
+
+// HasNetworkSettings returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasNetworkSettings() bool {
+	if o != nil && !IsNil(o.NetworkSettings) {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkSettings gets a reference to the given GoogleNetworkSettings and assigns it to the NetworkSettings field.
+func (o *UpdateAdCampaignRequest) SetNetworkSettings(v GoogleNetworkSettings) {
+	o.NetworkSettings = &v
+}
+
+// GetTrackingUrlTemplate returns the TrackingUrlTemplate field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetTrackingUrlTemplate() string {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		var ret string
+		return ret
+	}
+	return *o.TrackingUrlTemplate
+}
+
+// GetTrackingUrlTemplateOk returns a tuple with the TrackingUrlTemplate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetTrackingUrlTemplateOk() (*string, bool) {
+	if o == nil || IsNil(o.TrackingUrlTemplate) {
+		return nil, false
+	}
+	return o.TrackingUrlTemplate, true
+}
+
+// HasTrackingUrlTemplate returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasTrackingUrlTemplate() bool {
+	if o != nil && !IsNil(o.TrackingUrlTemplate) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrackingUrlTemplate gets a reference to the given string and assigns it to the TrackingUrlTemplate field.
+func (o *UpdateAdCampaignRequest) SetTrackingUrlTemplate(v string) {
+	o.TrackingUrlTemplate = &v
+}
+
+// GetFinalUrlSuffix returns the FinalUrlSuffix field value if set, zero value otherwise.
+func (o *UpdateAdCampaignRequest) GetFinalUrlSuffix() string {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		var ret string
+		return ret
+	}
+	return *o.FinalUrlSuffix
+}
+
+// GetFinalUrlSuffixOk returns a tuple with the FinalUrlSuffix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdCampaignRequest) GetFinalUrlSuffixOk() (*string, bool) {
+	if o == nil || IsNil(o.FinalUrlSuffix) {
+		return nil, false
+	}
+	return o.FinalUrlSuffix, true
+}
+
+// HasFinalUrlSuffix returns a boolean if a field has been set.
+func (o *UpdateAdCampaignRequest) HasFinalUrlSuffix() bool {
+	if o != nil && !IsNil(o.FinalUrlSuffix) {
+		return true
+	}
+
+	return false
+}
+
+// SetFinalUrlSuffix gets a reference to the given string and assigns it to the FinalUrlSuffix field.
+func (o *UpdateAdCampaignRequest) SetFinalUrlSuffix(v string) {
+	o.FinalUrlSuffix = &v
+}
+
 // GetBudget returns the Budget field value if set, zero value otherwise.
 func (o *UpdateAdCampaignRequest) GetBudget() UpdateAdCampaignRequestBudget {
 	if o == nil || IsNil(o.Budget) {
@@ -406,6 +574,21 @@ func (o UpdateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AllowSharedBudgetUpdate) {
 		toSerialize["allowSharedBudgetUpdate"] = o.AllowSharedBudgetUpdate
+	}
+	if !IsNil(o.TargetImpressionShare) {
+		toSerialize["targetImpressionShare"] = o.TargetImpressionShare
+	}
+	if !IsNil(o.ManualCpc) {
+		toSerialize["manualCpc"] = o.ManualCpc
+	}
+	if !IsNil(o.NetworkSettings) {
+		toSerialize["networkSettings"] = o.NetworkSettings
+	}
+	if !IsNil(o.TrackingUrlTemplate) {
+		toSerialize["trackingUrlTemplate"] = o.TrackingUrlTemplate
+	}
+	if !IsNil(o.FinalUrlSuffix) {
+		toSerialize["finalUrlSuffix"] = o.FinalUrlSuffix
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
