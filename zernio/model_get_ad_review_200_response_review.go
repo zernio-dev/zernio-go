@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.233.0
+API version: 1.234.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,11 @@ type GetAdReview200ResponseReview struct {
 	ForbiddenOperatingSystems []string       `json:"forbiddenOperatingSystems,omitempty"`
 	// One entry per rejected piece of content (TikTok `reject_info`). Empty when the ad was approved.
 	Rejections []GetAdReview200ResponseReviewRejectionsInner `json:"rejections,omitempty"`
-	// When the verdict was read from TikTok.
+	// Google only. ad_group_ad.policy_summary.approval_status, verbatim.
+	ApprovalStatus NullableString `json:"approvalStatus,omitempty"`
+	// Google only. ad_group_ad.policy_summary.policy_topic_entries.
+	PolicyTopics []GetAdReview200ResponseReviewPolicyTopicsInner `json:"policyTopics,omitempty"`
+	// When the verdict was read from the platform.
 	ReadAt *time.Time `json:"readAt,omitempty"`
 }
 
@@ -298,6 +302,81 @@ func (o *GetAdReview200ResponseReview) SetRejections(v []GetAdReview200ResponseR
 	o.Rejections = v
 }
 
+// GetApprovalStatus returns the ApprovalStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdReview200ResponseReview) GetApprovalStatus() string {
+	if o == nil || IsNil(o.ApprovalStatus.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ApprovalStatus.Get()
+}
+
+// GetApprovalStatusOk returns a tuple with the ApprovalStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdReview200ResponseReview) GetApprovalStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ApprovalStatus.Get(), o.ApprovalStatus.IsSet()
+}
+
+// HasApprovalStatus returns a boolean if a field has been set.
+func (o *GetAdReview200ResponseReview) HasApprovalStatus() bool {
+	if o != nil && o.ApprovalStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetApprovalStatus gets a reference to the given NullableString and assigns it to the ApprovalStatus field.
+func (o *GetAdReview200ResponseReview) SetApprovalStatus(v string) {
+	o.ApprovalStatus.Set(&v)
+}
+
+// SetApprovalStatusNil sets the value for ApprovalStatus to be an explicit nil
+func (o *GetAdReview200ResponseReview) SetApprovalStatusNil() {
+	o.ApprovalStatus.Set(nil)
+}
+
+// UnsetApprovalStatus ensures that no value is present for ApprovalStatus, not even an explicit nil
+func (o *GetAdReview200ResponseReview) UnsetApprovalStatus() {
+	o.ApprovalStatus.Unset()
+}
+
+// GetPolicyTopics returns the PolicyTopics field value if set, zero value otherwise.
+func (o *GetAdReview200ResponseReview) GetPolicyTopics() []GetAdReview200ResponseReviewPolicyTopicsInner {
+	if o == nil || IsNil(o.PolicyTopics) {
+		var ret []GetAdReview200ResponseReviewPolicyTopicsInner
+		return ret
+	}
+	return o.PolicyTopics
+}
+
+// GetPolicyTopicsOk returns a tuple with the PolicyTopics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdReview200ResponseReview) GetPolicyTopicsOk() ([]GetAdReview200ResponseReviewPolicyTopicsInner, bool) {
+	if o == nil || IsNil(o.PolicyTopics) {
+		return nil, false
+	}
+	return o.PolicyTopics, true
+}
+
+// HasPolicyTopics returns a boolean if a field has been set.
+func (o *GetAdReview200ResponseReview) HasPolicyTopics() bool {
+	if o != nil && !IsNil(o.PolicyTopics) {
+		return true
+	}
+
+	return false
+}
+
+// SetPolicyTopics gets a reference to the given []GetAdReview200ResponseReviewPolicyTopicsInner and assigns it to the PolicyTopics field.
+func (o *GetAdReview200ResponseReview) SetPolicyTopics(v []GetAdReview200ResponseReviewPolicyTopicsInner) {
+	o.PolicyTopics = v
+}
+
 // GetReadAt returns the ReadAt field value if set, zero value otherwise.
 func (o *GetAdReview200ResponseReview) GetReadAt() time.Time {
 	if o == nil || IsNil(o.ReadAt) {
@@ -360,6 +439,12 @@ func (o GetAdReview200ResponseReview) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Rejections) {
 		toSerialize["rejections"] = o.Rejections
+	}
+	if o.ApprovalStatus.IsSet() {
+		toSerialize["approvalStatus"] = o.ApprovalStatus.Get()
+	}
+	if !IsNil(o.PolicyTopics) {
+		toSerialize["policyTopics"] = o.PolicyTopics
 	}
 	if !IsNil(o.ReadAt) {
 		toSerialize["readAt"] = o.ReadAt

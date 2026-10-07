@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.233.0
+API version: 1.234.0
 Contact: support@zernio.com
 */
 
@@ -3651,13 +3651,13 @@ func (r AdAccountsAPIGetAdsActivityLogRequest) AccountId(accountId string) AdAcc
 	return r
 }
 
-// Meta ad account id (act_&lt;n&gt;).
+// Meta ad account id (act_&lt;n&gt;), or the Google customer id (digits only).
 func (r AdAccountsAPIGetAdsActivityLogRequest) AdAccountId(adAccountId string) AdAccountsAPIGetAdsActivityLogRequest {
 	r.adAccountId = &adAccountId
 	return r
 }
 
-// Start of range (YYYY-MM-DD).
+// Start of range (YYYY-MM-DD). Google: at most 29 days ago, the default.
 func (r AdAccountsAPIGetAdsActivityLogRequest) Since(since string) AdAccountsAPIGetAdsActivityLogRequest {
 	r.since = &since
 	return r
@@ -3669,7 +3669,7 @@ func (r AdAccountsAPIGetAdsActivityLogRequest) Until(until string) AdAccountsAPI
 	return r
 }
 
-// Client-side filter to one Meta object id (campaign, ad set or ad).
+// Client-side filter to one object id (campaign, ad set / ad group or ad).
 func (r AdAccountsAPIGetAdsActivityLogRequest) ObjectId(objectId string) AdAccountsAPIGetAdsActivityLogRequest {
 	r.objectId = &objectId
 	return r
@@ -3694,6 +3694,19 @@ func (r AdAccountsAPIGetAdsActivityLogRequest) Execute() (*GetAdsActivityLog200R
 /*
 GetAdsActivityLog Ad account change / audit log
 
+**Google**: reads the customer's `change_event` history, newest first. Google keeps 30 days
+of it, so `since` defaults to 29 days ago and an older `since` returns 400; `until`
+defaults to today. Each change is mapped onto the Meta row shape: `event_type` =
+resource_change_operation (CREATE, UPDATE, REMOVE), `event_time` = change_date_time,
+`actor_name` = user_email, `object_type` = change_resource_type, `object_id` = the last numeric id
+of `object_resource_name`, `application_name` = client_type, `changed_fields` (array), and
+`extra_data` = a JSON string `{ old, new }` with Google's old and new resource.
+Pass `paging.after` back as `after` for the next page; it is null when nothing older is
+left. A page never splits a change batch (the changes of one request share an
+`event_time`), so a page can hold fewer rows than `limit` while more follow, or more
+when one batch is larger than `limit`. `adAccountId` is the numeric customer id.
+
+**Meta**:
 Account-level audit log from Meta's `/act_X/activities`: who changed what and when
 (creates, edits, status flips, budget changes...) with Meta's translated event names and
 the structured before/after in `extra_data`. Rows are returned verbatim. Meta has no

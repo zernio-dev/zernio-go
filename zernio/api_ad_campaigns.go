@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.233.0
+API version: 1.234.0
 Contact: support@zernio.com
 */
 
@@ -3519,7 +3519,16 @@ Reads the ad's review verdict from the platform now: whether it was approved, wh
 not deliver, and every rejection reason with TikTok's suggestion and the piece of content it
 refers to. Read-only, so it works on a paused ad without re-enabling it.
 
-TikTok only (`/ad/review_info/`); every other platform returns 501. Use it alongside the ad's
+**Google**: reads `ad_group_ad.policy_summary` live. `approvalStatus` and `reviewStatus` are
+Google's verbatim (`approvalStatus`: APPROVED, APPROVED_LIMITED, AREA_OF_INTEREST_ONLY,
+DISAPPROVED, UNKNOWN; `reviewStatus`: REVIEW_IN_PROGRESS, REVIEWED, UNDER_APPEAL,
+ELIGIBLE_MAY_SERVE); `approved` is true for the three approved statuses, false for
+DISAPPROVED, null otherwise. `policyTopics` carries every policy topic entry with its
+`type` (PROHIBITED, LIMITED, ...) and Google's `evidences` and `constraints` verbatim; each
+PROHIBITED topic is also listed in `rejections` (reason = the topic). The `forbidden*`
+arrays are TikTok-only and always empty on Google.
+
+TikTok uses `/ad/review_info/`; every other platform returns 501. On TikTok, use it alongside the ad's
 `platformStatus`: TikTok reports `AD_STATUS_AUDIT` while the ad is in review and
 `AD_STATUS_AD_PRE_ONLINE` once it passed and is about to deliver (both map to
 `status: pending_review`); `AD_STATUS_AUDIT_DENY` maps to `rejected`.
