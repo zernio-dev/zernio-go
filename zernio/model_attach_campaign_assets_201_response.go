@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.227.0
+API version: 1.228.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,7 @@ type AttachCampaignAssets201Response struct {
 	SitelinkAssetResourceNames          []string `json:"sitelinkAssetResourceNames,omitempty"`
 	CalloutAssetResourceNames           []string `json:"calloutAssetResourceNames,omitempty"`
 	StructuredSnippetAssetResourceNames []string `json:"structuredSnippetAssetResourceNames,omitempty"`
+	ImageAssetResourceNames             []string `json:"imageAssetResourceNames,omitempty"`
 }
 
 // NewAttachCampaignAssets201Response instantiates a new AttachCampaignAssets201Response object
@@ -171,6 +172,38 @@ func (o *AttachCampaignAssets201Response) SetStructuredSnippetAssetResourceNames
 	o.StructuredSnippetAssetResourceNames = v
 }
 
+// GetImageAssetResourceNames returns the ImageAssetResourceNames field value if set, zero value otherwise.
+func (o *AttachCampaignAssets201Response) GetImageAssetResourceNames() []string {
+	if o == nil || IsNil(o.ImageAssetResourceNames) {
+		var ret []string
+		return ret
+	}
+	return o.ImageAssetResourceNames
+}
+
+// GetImageAssetResourceNamesOk returns a tuple with the ImageAssetResourceNames field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AttachCampaignAssets201Response) GetImageAssetResourceNamesOk() ([]string, bool) {
+	if o == nil || IsNil(o.ImageAssetResourceNames) {
+		return nil, false
+	}
+	return o.ImageAssetResourceNames, true
+}
+
+// HasImageAssetResourceNames returns a boolean if a field has been set.
+func (o *AttachCampaignAssets201Response) HasImageAssetResourceNames() bool {
+	if o != nil && !IsNil(o.ImageAssetResourceNames) {
+		return true
+	}
+
+	return false
+}
+
+// SetImageAssetResourceNames gets a reference to the given []string and assigns it to the ImageAssetResourceNames field.
+func (o *AttachCampaignAssets201Response) SetImageAssetResourceNames(v []string) {
+	o.ImageAssetResourceNames = v
+}
+
 func (o AttachCampaignAssets201Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +225,9 @@ func (o AttachCampaignAssets201Response) ToMap() (map[string]interface{}, error)
 	}
 	if !IsNil(o.StructuredSnippetAssetResourceNames) {
 		toSerialize["structuredSnippetAssetResourceNames"] = o.StructuredSnippetAssetResourceNames
+	}
+	if !IsNil(o.ImageAssetResourceNames) {
+		toSerialize["imageAssetResourceNames"] = o.ImageAssetResourceNames
 	}
 	return toSerialize, nil
 }

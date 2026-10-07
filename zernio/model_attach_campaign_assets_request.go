@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.227.0
+API version: 1.228.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the AttachCampaignAssetsRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AttachCampaignAssetsRequest{}
 
-// AttachCampaignAssetsRequest Provide at least one of sitelinks, callouts or structuredSnippets. Sitelink description1 and description2 must be supplied together.
+// AttachCampaignAssetsRequest Provide at least one of sitelinks, callouts, structuredSnippets or images. Sitelink description1 and description2 must be supplied together.
 type AttachCampaignAssetsRequest struct {
 	// Zernio Google Ads connection id.
 	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
@@ -32,6 +32,8 @@ type AttachCampaignAssetsRequest struct {
 	Sitelinks          []GoogleSitelink          `json:"sitelinks,omitempty"`
 	Callouts           []string                  `json:"callouts,omitempty"`
 	StructuredSnippets []GoogleStructuredSnippet `json:"structuredSnippets,omitempty"`
+	// Public image URLs, uploaded to Google as image assets. Landscape 1.91:1 (min 600x314) or square 1:1 (min 300x300), up to 5 MB each.
+	Images []string `json:"images,omitempty"`
 }
 
 type _AttachCampaignAssetsRequest AttachCampaignAssetsRequest
@@ -241,6 +243,38 @@ func (o *AttachCampaignAssetsRequest) SetStructuredSnippets(v []GoogleStructured
 	o.StructuredSnippets = v
 }
 
+// GetImages returns the Images field value if set, zero value otherwise.
+func (o *AttachCampaignAssetsRequest) GetImages() []string {
+	if o == nil || IsNil(o.Images) {
+		var ret []string
+		return ret
+	}
+	return o.Images
+}
+
+// GetImagesOk returns a tuple with the Images field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AttachCampaignAssetsRequest) GetImagesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Images) {
+		return nil, false
+	}
+	return o.Images, true
+}
+
+// HasImages returns a boolean if a field has been set.
+func (o *AttachCampaignAssetsRequest) HasImages() bool {
+	if o != nil && !IsNil(o.Images) {
+		return true
+	}
+
+	return false
+}
+
+// SetImages gets a reference to the given []string and assigns it to the Images field.
+func (o *AttachCampaignAssetsRequest) SetImages(v []string) {
+	o.Images = v
+}
+
 func (o AttachCampaignAssetsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -266,6 +300,9 @@ func (o AttachCampaignAssetsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.StructuredSnippets) {
 		toSerialize["structuredSnippets"] = o.StructuredSnippets
+	}
+	if !IsNil(o.Images) {
+		toSerialize["images"] = o.Images
 	}
 	return toSerialize, nil
 }

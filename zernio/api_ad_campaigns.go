@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.227.0
+API version: 1.228.0
 Contact: support@zernio.com
 */
 
@@ -347,7 +347,7 @@ func (r AdCampaignsAPIAttachAdGroupAssetsRequest) Execute() (*AttachAdGroupAsset
 /*
 AttachAdGroupAssets Attach ad-group assets
 
-Creates and attaches sitelinks, callouts and structured snippets in one Google mutation.
+Creates and attaches sitelinks, callouts, structured snippets and image assets in one Google mutation. Google shows images only on accounts it deems eligible (account age, policy history, vertical).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Numeric Google platform id.
@@ -506,7 +506,7 @@ func (r AdCampaignsAPIAttachCampaignAssetsRequest) Execute() (*AttachCampaignAss
 /*
 AttachCampaignAssets Attach campaign assets
 
-Creates and attaches sitelinks, callouts and structured snippets in one Google mutation.
+Creates and attaches sitelinks, callouts, structured snippets and image assets in one Google mutation. Google shows images only on accounts it deems eligible (account age, policy history, vertical).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Numeric Google platform id.

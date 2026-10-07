@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.227.0
+API version: 1.228.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,7 @@ type ListAdGroupAssets200Response struct {
 	Sitelinks          []ListAdGroupAssets200ResponseSitelinksInner          `json:"sitelinks,omitempty"`
 	Callouts           []ListAdGroupAssets200ResponseCalloutsInner           `json:"callouts,omitempty"`
 	StructuredSnippets []ListAdGroupAssets200ResponseStructuredSnippetsInner `json:"structuredSnippets,omitempty"`
+	Images             []ListAdGroupAssets200ResponseImagesInner             `json:"images,omitempty"`
 	// Time of the cached Google read. Null when no cache was used.
 	CachedAt NullableTime `json:"cachedAt,omitempty"`
 	// True when exhausted quota required returning the last successful read.
@@ -176,6 +177,38 @@ func (o *ListAdGroupAssets200Response) SetStructuredSnippets(v []ListAdGroupAsse
 	o.StructuredSnippets = v
 }
 
+// GetImages returns the Images field value if set, zero value otherwise.
+func (o *ListAdGroupAssets200Response) GetImages() []ListAdGroupAssets200ResponseImagesInner {
+	if o == nil || IsNil(o.Images) {
+		var ret []ListAdGroupAssets200ResponseImagesInner
+		return ret
+	}
+	return o.Images
+}
+
+// GetImagesOk returns a tuple with the Images field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdGroupAssets200Response) GetImagesOk() ([]ListAdGroupAssets200ResponseImagesInner, bool) {
+	if o == nil || IsNil(o.Images) {
+		return nil, false
+	}
+	return o.Images, true
+}
+
+// HasImages returns a boolean if a field has been set.
+func (o *ListAdGroupAssets200Response) HasImages() bool {
+	if o != nil && !IsNil(o.Images) {
+		return true
+	}
+
+	return false
+}
+
+// SetImages gets a reference to the given []ListAdGroupAssets200ResponseImagesInner and assigns it to the Images field.
+func (o *ListAdGroupAssets200Response) SetImages(v []ListAdGroupAssets200ResponseImagesInner) {
+	o.Images = v
+}
+
 // GetCachedAt returns the CachedAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListAdGroupAssets200Response) GetCachedAt() time.Time {
 	if o == nil || IsNil(o.CachedAt.Get()) {
@@ -272,6 +305,9 @@ func (o ListAdGroupAssets200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.StructuredSnippets) {
 		toSerialize["structuredSnippets"] = o.StructuredSnippets
+	}
+	if !IsNil(o.Images) {
+		toSerialize["images"] = o.Images
 	}
 	if o.CachedAt.IsSet() {
 		toSerialize["cachedAt"] = o.CachedAt.Get()
