@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.241.0
+API version: 1.241.1
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the AdEngagementCounts type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AdEngagementCounts{}
 
-// AdEngagementCounts The single `engagement` total split into the interactions behind it.  `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Populated for Meta and, since 2026-08, TikTok (`reactions` = paid likes, `comments`, `shares`; TikTok's `follow` count lives in `actions.follow`, not here). Other platforms leave these at 0. TikTok history note: paused TikTok ads are not re-synced, so campaigns that ended before the rollout keep 0s here.
+// AdEngagementCounts The single `engagement` total split into the interactions behind it.  `engagement` is not the sum of these: Meta's own `post_engagement` and `page_engagement` totals already contain the individual interactions, and all of them are counted into `engagement`. Use these fields when you need a specific interaction, and `engagement` only as the coarse total it has always been.  Populated for Meta and, since 2026-08, TikTok (`reactions` = paid likes, `comments`, `shares`; TikTok's `follow` count lives in `actions.follow`, not here). Other platforms leave these at 0. TikTok history note: these splits were added in 2026-08 and only the last 7 days are re-fetched on each sync (a stopped ad keeps syncing until its last delivery day is 7 days old), so days stored before the rollout keep 0s here. Spend, impressions, clicks and conversions are not affected.
 type AdEngagementCounts struct {
 	// Meta's own post-engagement total (`post_engagement`). Meta-only.
 	PostEngagement *int32 `json:"postEngagement,omitempty"`
