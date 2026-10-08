@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.244.2
+API version: 1.245.0
 Contact: support@zernio.com
 */
 
@@ -45,6 +45,10 @@ type PlatformTarget struct {
 	IsTrialReel *bool `json:"isTrialReel,omitempty"`
 	// Graduation strategy the trial reel was launched with. Present only when isTrialReel is true.
 	TrialGraduationStrategy *string `json:"trialGraduationStrategy,omitempty"`
+	// Number of times the publishing pipeline claimed this target to publish it since it was created or last manually retried (a manual retry resets it, except on TikTok). Not the number of retries (see publishRetries).
+	PublishAttempts *int32 `json:"publishAttempts,omitempty"`
+	// Instagram only. Automatic re-sends of media_publish on the same container that Zernio scheduled after Meta answered a transient error (30 min, 2 h and 6 h after each failure, at most 3). While the target is still processing, the latest one may not have been sent yet. Not reset by a manual retry. Independent of publishAttempts, which counts publish-leg claims. Absent when none was scheduled.
+	PublishRetries *int32 `json:"publishRetries,omitempty"`
 	// Human-readable error message when status is failed. Contains platform-specific error details explaining why the publish failed.
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 	// Error category for programmatic handling: auth_expired (token expired/revoked), user_content (wrong format/too long), user_abuse (rate limits/spam), account_issue (config problems), platform_rejected (policy violation), platform_error (5xx/maintenance), platform_rate_limit (platform throttling, retried automatically), quota_exhausted (a shared quota pool the integration draws on is empty, including our own capacity gate in front of one; not caused by your content or account, and safe to retry once the pool frees up), system_error (Zernio infra), unknown
@@ -509,6 +513,70 @@ func (o *PlatformTarget) SetTrialGraduationStrategy(v string) {
 	o.TrialGraduationStrategy = &v
 }
 
+// GetPublishAttempts returns the PublishAttempts field value if set, zero value otherwise.
+func (o *PlatformTarget) GetPublishAttempts() int32 {
+	if o == nil || IsNil(o.PublishAttempts) {
+		var ret int32
+		return ret
+	}
+	return *o.PublishAttempts
+}
+
+// GetPublishAttemptsOk returns a tuple with the PublishAttempts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PlatformTarget) GetPublishAttemptsOk() (*int32, bool) {
+	if o == nil || IsNil(o.PublishAttempts) {
+		return nil, false
+	}
+	return o.PublishAttempts, true
+}
+
+// HasPublishAttempts returns a boolean if a field has been set.
+func (o *PlatformTarget) HasPublishAttempts() bool {
+	if o != nil && !IsNil(o.PublishAttempts) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublishAttempts gets a reference to the given int32 and assigns it to the PublishAttempts field.
+func (o *PlatformTarget) SetPublishAttempts(v int32) {
+	o.PublishAttempts = &v
+}
+
+// GetPublishRetries returns the PublishRetries field value if set, zero value otherwise.
+func (o *PlatformTarget) GetPublishRetries() int32 {
+	if o == nil || IsNil(o.PublishRetries) {
+		var ret int32
+		return ret
+	}
+	return *o.PublishRetries
+}
+
+// GetPublishRetriesOk returns a tuple with the PublishRetries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PlatformTarget) GetPublishRetriesOk() (*int32, bool) {
+	if o == nil || IsNil(o.PublishRetries) {
+		return nil, false
+	}
+	return o.PublishRetries, true
+}
+
+// HasPublishRetries returns a boolean if a field has been set.
+func (o *PlatformTarget) HasPublishRetries() bool {
+	if o != nil && !IsNil(o.PublishRetries) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublishRetries gets a reference to the given int32 and assigns it to the PublishRetries field.
+func (o *PlatformTarget) SetPublishRetries(v int32) {
+	o.PublishRetries = &v
+}
+
 // GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
 func (o *PlatformTarget) GetErrorMessage() string {
 	if o == nil || IsNil(o.ErrorMessage) {
@@ -685,6 +753,12 @@ func (o PlatformTarget) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TrialGraduationStrategy) {
 		toSerialize["trialGraduationStrategy"] = o.TrialGraduationStrategy
+	}
+	if !IsNil(o.PublishAttempts) {
+		toSerialize["publishAttempts"] = o.PublishAttempts
+	}
+	if !IsNil(o.PublishRetries) {
+		toSerialize["publishRetries"] = o.PublishRetries
 	}
 	if !IsNil(o.ErrorMessage) {
 		toSerialize["errorMessage"] = o.ErrorMessage
