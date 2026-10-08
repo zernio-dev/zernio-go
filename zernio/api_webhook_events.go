@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.243.0
+API version: 1.244.0
 Contact: support@zernio.com
 */
 
@@ -5848,6 +5848,204 @@ func (a *WebhookEventsAPIService) OnSmsRegistrationStatusUpdatedExecute(r Webhoo
 	}
 	// body params
 	localVarPostBody = r.onSmsRegistrationStatusUpdatedRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnSupportRunCompletedRequest struct {
+	ctx                      context.Context
+	ApiService               *WebhookEventsAPIService
+	webhookPayloadSupportRun *WebhookPayloadSupportRun
+}
+
+func (r WebhookEventsAPIOnSupportRunCompletedRequest) WebhookPayloadSupportRun(webhookPayloadSupportRun WebhookPayloadSupportRun) WebhookEventsAPIOnSupportRunCompletedRequest {
+	r.webhookPayloadSupportRun = &webhookPayloadSupportRun
+	return r
+}
+
+func (r WebhookEventsAPIOnSupportRunCompletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnSupportRunCompletedExecute(r)
+}
+
+/*
+OnSupportRunCompleted Support run completed event
+
+Fired when an Ana support run finishes (private beta). run.status is completed, or needs_human when Ana handed the question to a person. The run object matches GET /v1/support/runs/{runId}.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnSupportRunCompletedRequest
+*/
+func (a *WebhookEventsAPIService) OnSupportRunCompleted(ctx context.Context) WebhookEventsAPIOnSupportRunCompletedRequest {
+	return WebhookEventsAPIOnSupportRunCompletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnSupportRunCompletedExecute(r WebhookEventsAPIOnSupportRunCompletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnSupportRunCompleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/support.run.completed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadSupportRun == nil {
+		return nil, reportError("webhookPayloadSupportRun is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadSupportRun
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnSupportRunFailedRequest struct {
+	ctx                      context.Context
+	ApiService               *WebhookEventsAPIService
+	webhookPayloadSupportRun *WebhookPayloadSupportRun
+}
+
+func (r WebhookEventsAPIOnSupportRunFailedRequest) WebhookPayloadSupportRun(webhookPayloadSupportRun WebhookPayloadSupportRun) WebhookEventsAPIOnSupportRunFailedRequest {
+	r.webhookPayloadSupportRun = &webhookPayloadSupportRun
+	return r
+}
+
+func (r WebhookEventsAPIOnSupportRunFailedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnSupportRunFailedExecute(r)
+}
+
+/*
+OnSupportRunFailed Support run failed event
+
+Fired when an Ana support run fails or expires (private beta). Failed runs are not billed.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnSupportRunFailedRequest
+*/
+func (a *WebhookEventsAPIService) OnSupportRunFailed(ctx context.Context) WebhookEventsAPIOnSupportRunFailedRequest {
+	return WebhookEventsAPIOnSupportRunFailedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnSupportRunFailedExecute(r WebhookEventsAPIOnSupportRunFailedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnSupportRunFailed")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/support.run.failed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadSupportRun == nil {
+		return nil, reportError("webhookPayloadSupportRun is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadSupportRun
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
