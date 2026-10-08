@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.241.1
+API version: 1.242.0
 Contact: support@zernio.com
 */
 
@@ -2575,6 +2575,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	reconnectAccountId     *string
 	expectedPlatformUserId *string
 	expectedUsername       *string
+	forceReauth            *bool
 	redirectUrl            *string
 	scopes                 *string
 	headless               *bool
@@ -2607,6 +2608,12 @@ func (r ConnectAPIGetConnectUrlRequest) ExpectedPlatformUserId(expectedPlatformU
 // Only connect if the authorized account&#39;s handle is this one (case-insensitive, a leading @ is ignored); otherwise the flow ends with &#x60;error&#x3D;account_mismatch&#x60;, &#x60;error_message&#x60; naming the handle that was authorized, and nothing is written. Same coverage and transport as expectedPlatformUserId; when both are sent both must match. Use this on a first connection, where you hold the handle the user typed but no Zernio id yet.
 func (r ConnectAPIGetConnectUrlRequest) ExpectedUsername(expectedUsername string) ConnectAPIGetConnectUrlRequest {
 	r.expectedUsername = &expectedUsername
+	return r
+}
+
+// Instagram Login only (the default loginMethod); ignored elsewhere. Makes Instagram show its login page and ask for the credentials of the account to connect even when another Instagram account is logged in on the device or in the app, and hides the Facebook login option on that page. Use it when the person connecting manages several Instagram accounts on one phone: Instagram otherwise logs in, and converts to a professional account, whichever account is active, before any consent screen. Pair it with expectedUsername to also refuse a wrong account at the end.
+func (r ConnectAPIGetConnectUrlRequest) ForceReauth(forceReauth bool) ConnectAPIGetConnectUrlRequest {
+	r.forceReauth = &forceReauth
 	return r
 }
 
@@ -2730,6 +2737,13 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.expectedUsername != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "expectedUsername", r.expectedUsername, "form", "")
+	}
+	if r.forceReauth != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "forceReauth", r.forceReauth, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "forceReauth", defaultValue, "form", "")
+		r.forceReauth = &defaultValue
 	}
 	if r.redirectUrl != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
