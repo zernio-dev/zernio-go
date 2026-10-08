@@ -77,6 +77,12 @@ type AdDailyMetrics struct {
 	VideoP95WatchedActions *int32 `json:"videoP95WatchedActions,omitempty"`
 	// Views reaching 100% of the video's length. Sources: Meta `video_p100_watched_actions`, TikTok `video_views_p100`.
 	VideoP100WatchedActions *int32 `json:"videoP100WatchedActions,omitempty"`
+	// Plays of at least 2 seconds, replays excluded. Hook rate = video2SecWatchedActions / impressions. Sources: TikTok `video_watched_2s` (TikTok only; Meta's closest field, 2-second continuous plays, is not synced). TikTok history note: added 2026-10, and each sync re-fetches only the last 7 days, so older days read 0.
+	Video2SecWatchedActions *int32 `json:"video2SecWatchedActions,omitempty"`
+	// Plays of at least 6 seconds, replays excluded. Hold rate = video6SecWatchedActions / video2SecWatchedActions. Sources: TikTok `video_watched_6s` (TikTok only). Same history note as `video2SecWatchedActions`.
+	Video6SecWatchedActions *int32 `json:"video6SecWatchedActions,omitempty"`
+	// TikTok's 6-second focused views: plays of at least 6 seconds (or to the end, for shorter videos) or with an interaction in the first 6 seconds, so it is at least `video6SecWatchedActions`. Sources: TikTok `engaged_view` (TikTok only). Same history note as `video2SecWatchedActions`.
+	Video6SecFocusedViews *int32 `json:"video6SecFocusedViews,omitempty"`
 	// Average seconds watched per play. Aggregated over date ranges and across children as a play-weighted average (total watch time / total plays), never a plain average of averages. Sources: Meta `video_avg_time_watched_actions`, TikTok `average_video_play`.
 	VideoAvgTimeWatchedActions *float32 `json:"videoAvgTimeWatchedActions,omitempty"`
 	// Derived `spend / videoThruplayWatchedActions`, in ad-account native currency. Rounded to 4 decimals rather than the usual 2 because a ThruPlay routinely costs well under a cent. 0 when the ad has no ThruPlays (ThruPlay is Meta-only).
@@ -1066,6 +1072,102 @@ func (o *AdDailyMetrics) SetVideoP100WatchedActions(v int32) {
 	o.VideoP100WatchedActions = &v
 }
 
+// GetVideo2SecWatchedActions returns the Video2SecWatchedActions field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetVideo2SecWatchedActions() int32 {
+	if o == nil || IsNil(o.Video2SecWatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.Video2SecWatchedActions
+}
+
+// GetVideo2SecWatchedActionsOk returns a tuple with the Video2SecWatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetVideo2SecWatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Video2SecWatchedActions) {
+		return nil, false
+	}
+	return o.Video2SecWatchedActions, true
+}
+
+// HasVideo2SecWatchedActions returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasVideo2SecWatchedActions() bool {
+	if o != nil && !IsNil(o.Video2SecWatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo2SecWatchedActions gets a reference to the given int32 and assigns it to the Video2SecWatchedActions field.
+func (o *AdDailyMetrics) SetVideo2SecWatchedActions(v int32) {
+	o.Video2SecWatchedActions = &v
+}
+
+// GetVideo6SecWatchedActions returns the Video6SecWatchedActions field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetVideo6SecWatchedActions() int32 {
+	if o == nil || IsNil(o.Video6SecWatchedActions) {
+		var ret int32
+		return ret
+	}
+	return *o.Video6SecWatchedActions
+}
+
+// GetVideo6SecWatchedActionsOk returns a tuple with the Video6SecWatchedActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetVideo6SecWatchedActionsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Video6SecWatchedActions) {
+		return nil, false
+	}
+	return o.Video6SecWatchedActions, true
+}
+
+// HasVideo6SecWatchedActions returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasVideo6SecWatchedActions() bool {
+	if o != nil && !IsNil(o.Video6SecWatchedActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo6SecWatchedActions gets a reference to the given int32 and assigns it to the Video6SecWatchedActions field.
+func (o *AdDailyMetrics) SetVideo6SecWatchedActions(v int32) {
+	o.Video6SecWatchedActions = &v
+}
+
+// GetVideo6SecFocusedViews returns the Video6SecFocusedViews field value if set, zero value otherwise.
+func (o *AdDailyMetrics) GetVideo6SecFocusedViews() int32 {
+	if o == nil || IsNil(o.Video6SecFocusedViews) {
+		var ret int32
+		return ret
+	}
+	return *o.Video6SecFocusedViews
+}
+
+// GetVideo6SecFocusedViewsOk returns a tuple with the Video6SecFocusedViews field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdDailyMetrics) GetVideo6SecFocusedViewsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Video6SecFocusedViews) {
+		return nil, false
+	}
+	return o.Video6SecFocusedViews, true
+}
+
+// HasVideo6SecFocusedViews returns a boolean if a field has been set.
+func (o *AdDailyMetrics) HasVideo6SecFocusedViews() bool {
+	if o != nil && !IsNil(o.Video6SecFocusedViews) {
+		return true
+	}
+
+	return false
+}
+
+// SetVideo6SecFocusedViews gets a reference to the given int32 and assigns it to the Video6SecFocusedViews field.
+func (o *AdDailyMetrics) SetVideo6SecFocusedViews(v int32) {
+	o.Video6SecFocusedViews = &v
+}
+
 // GetVideoAvgTimeWatchedActions returns the VideoAvgTimeWatchedActions field value if set, zero value otherwise.
 func (o *AdDailyMetrics) GetVideoAvgTimeWatchedActions() float32 {
 	if o == nil || IsNil(o.VideoAvgTimeWatchedActions) {
@@ -1357,6 +1459,15 @@ func (o AdDailyMetrics) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.VideoP100WatchedActions) {
 		toSerialize["videoP100WatchedActions"] = o.VideoP100WatchedActions
+	}
+	if !IsNil(o.Video2SecWatchedActions) {
+		toSerialize["video2SecWatchedActions"] = o.Video2SecWatchedActions
+	}
+	if !IsNil(o.Video6SecWatchedActions) {
+		toSerialize["video6SecWatchedActions"] = o.Video6SecWatchedActions
+	}
+	if !IsNil(o.Video6SecFocusedViews) {
+		toSerialize["video6SecFocusedViews"] = o.Video6SecFocusedViews
 	}
 	if !IsNil(o.VideoAvgTimeWatchedActions) {
 		toSerialize["videoAvgTimeWatchedActions"] = o.VideoAvgTimeWatchedActions
