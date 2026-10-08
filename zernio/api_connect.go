@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.240.1
+API version: 1.241.0
 Contact: support@zernio.com
 */
 
@@ -5108,6 +5108,8 @@ type ConnectAPIListFacebookPagesRequest struct {
 	ApiService     *ConnectAPIService
 	profileId      *string
 	tempToken      *string
+	xTempToken     *string
+	connectFlow    *string
 	selectionToken *string
 }
 
@@ -5117,9 +5119,21 @@ func (r ConnectAPIListFacebookPagesRequest) ProfileId(profileId string) ConnectA
 	return r
 }
 
-// Temporary Facebook access token from the classic OAuth callback. Required with profileId.
+// Temporary Facebook access token from the classic OAuth callback. Required with profileId unless sent in the X-Temp-Token header.
 func (r ConnectAPIListFacebookPagesRequest) TempToken(tempToken string) ConnectAPIListFacebookPagesRequest {
 	r.tempToken = &tempToken
+	return r
+}
+
+// The OAuth user token, in place of the tempToken query parameter. Prefer it: a query string is written to request logs along the way.
+func (r ConnectAPIListFacebookPagesRequest) XTempToken(xTempToken string) ConnectAPIListFacebookPagesRequest {
+	r.xTempToken = &xTempToken
+	return r
+}
+
+// Set by the Zernio-hosted picker, whose user token stays in an httpOnly cookie. Integrators send tempToken instead.
+func (r ConnectAPIListFacebookPagesRequest) ConnectFlow(connectFlow string) ConnectAPIListFacebookPagesRequest {
+	r.connectFlow = &connectFlow
 	return r
 }
 
@@ -5176,6 +5190,9 @@ func (a *ConnectAPIService) ListFacebookPagesExecute(r ConnectAPIListFacebookPag
 	if r.tempToken != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
 	}
+	if r.connectFlow != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "connectFlow", r.connectFlow, "form", "")
+	}
 	if r.selectionToken != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "selectionToken", r.selectionToken, "form", "")
 	}
@@ -5195,6 +5212,9 @@ func (a *ConnectAPIService) ListFacebookPagesExecute(r ConnectAPIListFacebookPag
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.xTempToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Temp-Token", r.xTempToken, "simple", "")
 	}
 	if r.ctx != nil {
 		// API Key Authentication
@@ -5454,10 +5474,12 @@ func (a *ConnectAPIService) ListGoogleBusinessLocationsExecute(r ConnectAPIListG
 }
 
 type ConnectAPIListInstagramPagesRequest struct {
-	ctx        context.Context
-	ApiService *ConnectAPIService
-	profileId  *string
-	tempToken  *string
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	tempToken   *string
+	xTempToken  *string
+	connectFlow *string
 }
 
 // Profile ID from your connection flow
@@ -5466,9 +5488,21 @@ func (r ConnectAPIListInstagramPagesRequest) ProfileId(profileId string) Connect
 	return r
 }
 
-// Long-lived Facebook user access token from the OAuth callback redirect
+// Long-lived Facebook user access token from the OAuth callback redirect. Required unless sent in the X-Temp-Token header.
 func (r ConnectAPIListInstagramPagesRequest) TempToken(tempToken string) ConnectAPIListInstagramPagesRequest {
 	r.tempToken = &tempToken
+	return r
+}
+
+// The OAuth user token, in place of the tempToken query parameter. Prefer it: a query string is written to request logs along the way.
+func (r ConnectAPIListInstagramPagesRequest) XTempToken(xTempToken string) ConnectAPIListInstagramPagesRequest {
+	r.xTempToken = &xTempToken
+	return r
+}
+
+// Set by the Zernio-hosted picker, whose user token stays in an httpOnly cookie. Integrators send tempToken instead.
+func (r ConnectAPIListInstagramPagesRequest) ConnectFlow(connectFlow string) ConnectAPIListInstagramPagesRequest {
+	r.connectFlow = &connectFlow
 	return r
 }
 
@@ -5519,12 +5553,14 @@ func (a *ConnectAPIService) ListInstagramPagesExecute(r ConnectAPIListInstagramP
 	if r.profileId == nil {
 		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
 	}
-	if r.tempToken == nil {
-		return localVarReturnValue, nil, reportError("tempToken is required and must be specified")
-	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	if r.tempToken != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tempToken", r.tempToken, "form", "")
+	}
+	if r.connectFlow != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "connectFlow", r.connectFlow, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -5541,6 +5577,9 @@ func (a *ConnectAPIService) ListInstagramPagesExecute(r ConnectAPIListInstagramP
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.xTempToken != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Temp-Token", r.xTempToken, "simple", "")
 	}
 	if r.ctx != nil {
 		// API Key Authentication
