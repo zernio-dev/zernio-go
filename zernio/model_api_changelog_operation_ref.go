@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.248.0
+API version: 1.249.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,10 @@ type ApiChangelogOperationRef struct {
 	Method      string  `json:"method"`
 	Path        string  `json:"path"`
 	OperationId *string `json:"operationId,omitempty"`
+	// OpenAPI tags of the operation.
+	Tags []string `json:"tags,omitempty"`
+	// The operation's `x-platforms` list, verbatim.
+	XPlatforms []string `json:"xPlatforms,omitempty"`
 }
 
 type _ApiChangelogOperationRef ApiChangelogOperationRef
@@ -128,6 +132,70 @@ func (o *ApiChangelogOperationRef) SetOperationId(v string) {
 	o.OperationId = &v
 }
 
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *ApiChangelogOperationRef) GetTags() []string {
+	if o == nil || IsNil(o.Tags) {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiChangelogOperationRef) GetTagsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Tags) {
+		return nil, false
+	}
+	return o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *ApiChangelogOperationRef) HasTags() bool {
+	if o != nil && !IsNil(o.Tags) {
+		return true
+	}
+
+	return false
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *ApiChangelogOperationRef) SetTags(v []string) {
+	o.Tags = v
+}
+
+// GetXPlatforms returns the XPlatforms field value if set, zero value otherwise.
+func (o *ApiChangelogOperationRef) GetXPlatforms() []string {
+	if o == nil || IsNil(o.XPlatforms) {
+		var ret []string
+		return ret
+	}
+	return o.XPlatforms
+}
+
+// GetXPlatformsOk returns a tuple with the XPlatforms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiChangelogOperationRef) GetXPlatformsOk() ([]string, bool) {
+	if o == nil || IsNil(o.XPlatforms) {
+		return nil, false
+	}
+	return o.XPlatforms, true
+}
+
+// HasXPlatforms returns a boolean if a field has been set.
+func (o *ApiChangelogOperationRef) HasXPlatforms() bool {
+	if o != nil && !IsNil(o.XPlatforms) {
+		return true
+	}
+
+	return false
+}
+
+// SetXPlatforms gets a reference to the given []string and assigns it to the XPlatforms field.
+func (o *ApiChangelogOperationRef) SetXPlatforms(v []string) {
+	o.XPlatforms = v
+}
+
 func (o ApiChangelogOperationRef) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -142,6 +210,12 @@ func (o ApiChangelogOperationRef) ToMap() (map[string]interface{}, error) {
 	toSerialize["path"] = o.Path
 	if !IsNil(o.OperationId) {
 		toSerialize["operationId"] = o.OperationId
+	}
+	if !IsNil(o.Tags) {
+		toSerialize["tags"] = o.Tags
+	}
+	if !IsNil(o.XPlatforms) {
+		toSerialize["xPlatforms"] = o.XPlatforms
 	}
 	return toSerialize, nil
 }

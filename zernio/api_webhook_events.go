@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.248.0
+API version: 1.249.0
 Contact: support@zernio.com
 */
 
@@ -885,7 +885,7 @@ func (r WebhookEventsAPIOnApiChangelogPublishedRequest) Execute() (*http.Respons
 /*
 OnApiChangelogPublished API changelog entry published event
 
-Fired when an entry is published to the API changelog (https://docs.zernio.com/changelog), which happens when a change to this OpenAPI spec goes live. The event belongs to no profile or account: every active subscription that opted in receives it, scoped subscriptions (`profileIds` / `accountIds`) do not. `entry.changes` is the deterministic diff of the spec (operations and schemas added, removed and modified); `entry.message` is the written announcement. Act on `changes` and `type`, read `message` for the why. Entries are listed by `GET /v1/changelog`.
+Fired when an entry is published to the API changelog (https://docs.zernio.com/changelog), which happens when a change to this OpenAPI spec goes live. The event belongs to no profile or account: every active subscription that opted in receives it, scoped subscriptions (`profileIds` / `accountIds`) do not. `entry.changes` is the deterministic diff of the spec (operations and schemas added, removed and modified); `entry.impact` says whether an existing integration must act (`action_required`), only gained something (`additive`) or nothing changed beyond descriptions (`none`); `entry.message` is the written announcement. Act on `impact` and `changes`, read `message` for the why. Entries are listed by `GET /v1/changelog`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WebhookEventsAPIOnApiChangelogPublishedRequest

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.248.0
+API version: 1.249.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,7 @@ type ChangelogAPIListChangelogRequest struct {
 	ctx        context.Context
 	ApiService *ChangelogAPIService
 	type_      *string
+	impact     *string
 	platform   *string
 	before     *time.Time
 	limit      *int32
@@ -35,6 +36,12 @@ type ChangelogAPIListChangelogRequest struct {
 // Only entries of this type.
 func (r ChangelogAPIListChangelogRequest) Type_(type_ string) ChangelogAPIListChangelogRequest {
 	r.type_ = &type_
+	return r
+}
+
+// Only entries with this impact. &#x60;action_required&#x60; lists the changes an integration may need to act on.
+func (r ChangelogAPIListChangelogRequest) Impact(impact string) ChangelogAPIListChangelogRequest {
+	r.impact = &impact
 	return r
 }
 
@@ -62,7 +69,7 @@ func (r ChangelogAPIListChangelogRequest) Execute() (*ListChangelog200Response, 
 /*
 ListChangelog List API changelog entries
 
-The API changelog, newest first. No API key needed; one address may make 120 requests a minute. Each entry is what the `api.changelog.published` webhook delivered: the announcement in `message`, and in `changes` the deterministic diff of the OpenAPI spec (operations and schemas added, removed and modified) for automation to act on. Page with `before` set to the previous page's `nextCursor`.
+The API changelog, newest first. No API key needed; one address may make 120 requests a minute. Each entry is what the `api.changelog.published` webhook delivered: the announcement in `message`, its `impact` on existing integrations, and in `changes` the deterministic diff of the OpenAPI spec (operations and schemas added, removed and modified) for automation to act on. Page with `before` set to the previous page's `nextCursor`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ChangelogAPIListChangelogRequest
@@ -98,6 +105,9 @@ func (a *ChangelogAPIService) ListChangelogExecute(r ChangelogAPIListChangelogRe
 
 	if r.type_ != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
+	}
+	if r.impact != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "impact", r.impact, "form", "")
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")

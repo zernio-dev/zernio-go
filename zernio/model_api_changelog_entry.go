@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.248.0
+API version: 1.249.0
 Contact: support@zernio.com
 */
 
@@ -24,8 +24,11 @@ var _ MappedNullable = &ApiChangelogEntry{}
 // ApiChangelogEntry One API changelog entry, as shown on https://docs.zernio.com/changelog.
 type ApiChangelogEntry struct {
 	// Stable entry id; the same entry is never published twice.
-	Id   string `json:"id"`
+	Id string `json:"id"`
+	// When `impact` is set, `breaking_change` means exactly `impact: action_required`.
 	Type string `json:"type"`
+	// What an integrator has to do, computed from the OpenAPI diff rather than from the prose. `action_required`: an existing call or parser can break (an operation, parameter or field removed, a field newly required, a type narrowed, an enum value removed, or authentication changed). `additive`: only new or looser things, existing integrations keep working. `none`: descriptions or examples only. Null on entries published before October 2026.
+	Impact NullableString `json:"impact"`
 	// Platform and area slugs the entry is about: a platform (`instagram`, `facebook`, `threads`, `tiktok`, `x`, `linkedin`, `youtube`, `pinterest`, `reddit`, `bluesky`, `telegram`, `snapchat`, `whatsapp`, `discord`, `slack`, `google-business`, `imessage`), an ads platform (`meta-ads`, `google-ads`, `tiktok-ads`, `linkedin-ads`, `pinterest-ads`, `x-ads`) or an area (`ads`, `publishing`, `inbox`, `telephony`, `commerce`, `analytics`, `webhooks`, `general`). Filter with the `platform` query parameter.
 	Platforms []string `json:"platforms"`
 	// The announcement, in Markdown.
@@ -44,10 +47,11 @@ type _ApiChangelogEntry ApiChangelogEntry
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApiChangelogEntry(id string, type_ string, platforms []string, message string, publishedAt time.Time, specVersion NullableString, url string, changes ApiChangelogEntryChanges) *ApiChangelogEntry {
+func NewApiChangelogEntry(id string, type_ string, impact NullableString, platforms []string, message string, publishedAt time.Time, specVersion NullableString, url string, changes ApiChangelogEntryChanges) *ApiChangelogEntry {
 	this := ApiChangelogEntry{}
 	this.Id = id
 	this.Type = type_
+	this.Impact = impact
 	this.Platforms = platforms
 	this.Message = message
 	this.PublishedAt = publishedAt
@@ -111,6 +115,32 @@ func (o *ApiChangelogEntry) GetTypeOk() (*string, bool) {
 // SetType sets field value
 func (o *ApiChangelogEntry) SetType(v string) {
 	o.Type = v
+}
+
+// GetImpact returns the Impact field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *ApiChangelogEntry) GetImpact() string {
+	if o == nil || o.Impact.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Impact.Get()
+}
+
+// GetImpactOk returns a tuple with the Impact field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiChangelogEntry) GetImpactOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Impact.Get(), o.Impact.IsSet()
+}
+
+// SetImpact sets field value
+func (o *ApiChangelogEntry) SetImpact(v string) {
+	o.Impact.Set(&v)
 }
 
 // GetPlatforms returns the Platforms field value
@@ -271,6 +301,7 @@ func (o ApiChangelogEntry) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["type"] = o.Type
+	toSerialize["impact"] = o.Impact.Get()
 	toSerialize["platforms"] = o.Platforms
 	toSerialize["message"] = o.Message
 	toSerialize["publishedAt"] = o.PublishedAt
@@ -287,6 +318,7 @@ func (o *ApiChangelogEntry) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"id",
 		"type",
+		"impact",
 		"platforms",
 		"message",
 		"publishedAt",
