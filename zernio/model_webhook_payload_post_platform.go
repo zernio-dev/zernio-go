@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ var _ MappedNullable = &WebhookPayloadPostPlatform{}
 // WebhookPayloadPostPlatform Webhook payload for the per-platform terminal events `post.platform.published` and `post.platform.failed`, for `post.platform.deleted` (same shape, fired when Zernio's background sync detects that a platform target published through Zernio was later deleted on the platform; poll-driven ~hourly, not real-time), and for `post.tiktok.url_resolved` (same shape, fired when a published TikTok post's public URL is backfilled). Terminal events fire once per platform target inside a post as that platform reaches a terminal state (published or permanent failure), except that a target which later fails background reconciliation emits `post.platform.failed` a second time, after its own `post.platform.published`. The `post` envelope mirrors the shape of `WebhookPayloadPost` so consumers can reuse rendering logic; the `platform` block identifies which specific platform transitioned; the `account` block identifies the connected account behind that platform-write.
 type WebhookPayloadPostPlatform struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
-	Id       string                             `json:"id"`
+	Id string `json:"id"`
+	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
+	Test     *bool                              `json:"test,omitempty"`
 	Event    string                             `json:"event"`
 	Post     WebhookPayloadPostPost             `json:"post"`
 	Platform WebhookPayloadPostPlatformPlatform `json:"platform"`
@@ -80,6 +82,38 @@ func (o *WebhookPayloadPostPlatform) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadPostPlatform) SetId(v string) {
 	o.Id = v
+}
+
+// GetTest returns the Test field value if set, zero value otherwise.
+func (o *WebhookPayloadPostPlatform) GetTest() bool {
+	if o == nil || IsNil(o.Test) {
+		var ret bool
+		return ret
+	}
+	return *o.Test
+}
+
+// GetTestOk returns a tuple with the Test field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadPostPlatform) GetTestOk() (*bool, bool) {
+	if o == nil || IsNil(o.Test) {
+		return nil, false
+	}
+	return o.Test, true
+}
+
+// HasTest returns a boolean if a field has been set.
+func (o *WebhookPayloadPostPlatform) HasTest() bool {
+	if o != nil && !IsNil(o.Test) {
+		return true
+	}
+
+	return false
+}
+
+// SetTest gets a reference to the given bool and assigns it to the Test field.
+func (o *WebhookPayloadPostPlatform) SetTest(v bool) {
+	o.Test = &v
 }
 
 // GetEvent returns the Event field value
@@ -213,6 +247,9 @@ func (o WebhookPayloadPostPlatform) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadPostPlatform) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Test) {
+		toSerialize["test"] = o.Test
+	}
 	toSerialize["event"] = o.Event
 	toSerialize["post"] = o.Post
 	toSerialize["platform"] = o.Platform

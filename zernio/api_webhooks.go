@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -813,6 +813,15 @@ func (r WebhooksAPITestWebhookRequest) Execute() (*UnpublishPost200Response, *ht
 TestWebhook Send test webhook
 
 Send a test webhook to verify your endpoint is configured correctly. The test payload includes event: "webhook.test" to distinguish it from real events.
+
+Pass `event` to receive a sample payload of that event instead, so you can exercise the handler
+for an event that only fires on a real outage or lifecycle change (e.g. `account.ads.sync_failed`).
+The sample has the exact shape documented for the event under Webhook Events and is delivered
+like a real one (same `X-Zernio-Event`, `X-Zernio-Event-Id` and `X-Zernio-Signature` headers),
+with a top-level `test: true` and placeholder ids, never your data. The webhook does not have
+to be subscribed to the event, but a webhook that lists the event's resource group in its
+`disabledResourceGroups` answers 403, as does an API key with that group disabled. The delivery
+shows up in the webhook logs with `test: true`.
 
 `webhook.test` belongs to the `webhooks` resource group, so a key with that
 group disabled is rejected with 403, as is a test fire on a subscription that

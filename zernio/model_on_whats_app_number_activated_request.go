@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,8 @@ var _ MappedNullable = &OnWhatsAppNumberActivatedRequest{}
 
 // OnWhatsAppNumberActivatedRequest struct for OnWhatsAppNumberActivatedRequest
 type OnWhatsAppNumberActivatedRequest struct {
+	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
+	Test *bool `json:"test,omitempty"`
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id    *string `json:"id,omitempty"`
 	Event *string `json:"event,omitempty"`
@@ -44,6 +46,38 @@ func NewOnWhatsAppNumberActivatedRequest() *OnWhatsAppNumberActivatedRequest {
 func NewOnWhatsAppNumberActivatedRequestWithDefaults() *OnWhatsAppNumberActivatedRequest {
 	this := OnWhatsAppNumberActivatedRequest{}
 	return &this
+}
+
+// GetTest returns the Test field value if set, zero value otherwise.
+func (o *OnWhatsAppNumberActivatedRequest) GetTest() bool {
+	if o == nil || IsNil(o.Test) {
+		var ret bool
+		return ret
+	}
+	return *o.Test
+}
+
+// GetTestOk returns a tuple with the Test field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OnWhatsAppNumberActivatedRequest) GetTestOk() (*bool, bool) {
+	if o == nil || IsNil(o.Test) {
+		return nil, false
+	}
+	return o.Test, true
+}
+
+// HasTest returns a boolean if a field has been set.
+func (o *OnWhatsAppNumberActivatedRequest) HasTest() bool {
+	if o != nil && !IsNil(o.Test) {
+		return true
+	}
+
+	return false
+}
+
+// SetTest gets a reference to the given bool and assigns it to the Test field.
+func (o *OnWhatsAppNumberActivatedRequest) SetTest(v bool) {
+	o.Test = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -184,6 +218,9 @@ func (o OnWhatsAppNumberActivatedRequest) MarshalJSON() ([]byte, error) {
 
 func (o OnWhatsAppNumberActivatedRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Test) {
+		toSerialize["test"] = o.Test
+	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}

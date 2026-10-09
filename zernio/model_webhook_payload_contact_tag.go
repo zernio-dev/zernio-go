@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,8 @@ var _ MappedNullable = &WebhookPayloadContactTag{}
 
 // WebhookPayloadContactTag struct for WebhookPayloadContactTag
 type WebhookPayloadContactTag struct {
+	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
+	Test *bool `json:"test,omitempty"`
 	// Event id, the dedupe key.
 	Id        string                            `json:"id"`
 	Event     string                            `json:"event"`
@@ -56,6 +58,38 @@ func NewWebhookPayloadContactTag(id string, event string, timestamp time.Time, c
 func NewWebhookPayloadContactTagWithDefaults() *WebhookPayloadContactTag {
 	this := WebhookPayloadContactTag{}
 	return &this
+}
+
+// GetTest returns the Test field value if set, zero value otherwise.
+func (o *WebhookPayloadContactTag) GetTest() bool {
+	if o == nil || IsNil(o.Test) {
+		var ret bool
+		return ret
+	}
+	return *o.Test
+}
+
+// GetTestOk returns a tuple with the Test field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadContactTag) GetTestOk() (*bool, bool) {
+	if o == nil || IsNil(o.Test) {
+		return nil, false
+	}
+	return o.Test, true
+}
+
+// HasTest returns a boolean if a field has been set.
+func (o *WebhookPayloadContactTag) HasTest() bool {
+	if o != nil && !IsNil(o.Test) {
+		return true
+	}
+
+	return false
+}
+
+// SetTest gets a reference to the given bool and assigns it to the Test field.
+func (o *WebhookPayloadContactTag) SetTest(v bool) {
+	o.Test = &v
 }
 
 // GetId returns the Id field value
@@ -212,6 +246,9 @@ func (o WebhookPayloadContactTag) MarshalJSON() ([]byte, error) {
 
 func (o WebhookPayloadContactTag) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Test) {
+		toSerialize["test"] = o.Test
+	}
 	toSerialize["id"] = o.Id
 	toSerialize["event"] = o.Event
 	toSerialize["timestamp"] = o.Timestamp

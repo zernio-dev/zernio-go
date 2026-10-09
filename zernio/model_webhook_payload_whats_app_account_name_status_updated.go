@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ var _ MappedNullable = &WebhookPayloadWhatsAppAccountNameStatusUpdated{}
 // WebhookPayloadWhatsAppAccountNameStatusUpdated Webhook payload for the `whatsapp.account.name_status_updated` event. Fired when Meta finishes reviewing a WhatsApp display-name change on a connected number. Maps Meta's `phone_number_name_update` WABA webhook field onto our event envelope. Fires only for a review outcome (APPROVED, DECLINED, PENDING_REVIEW); a name applied without review reports `name_status: AVAILABLE_WITHOUT_REVIEW` on the phone node instead, and Meta never sends this webhook field for that case.
 type WebhookPayloadWhatsAppAccountNameStatusUpdated struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
-	Id      string                                             `json:"id"`
+	Id string `json:"id"`
+	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
+	Test    *bool                                              `json:"test,omitempty"`
 	Event   string                                             `json:"event"`
 	Account WebhookPayloadWhatsAppTemplateStatusUpdatedAccount `json:"account"`
 	Name    WebhookPayloadWhatsAppAccountNameStatusUpdatedName `json:"name"`
@@ -78,6 +80,38 @@ func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) GetIdOk() (*string, boo
 // SetId sets field value
 func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) SetId(v string) {
 	o.Id = v
+}
+
+// GetTest returns the Test field value if set, zero value otherwise.
+func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) GetTest() bool {
+	if o == nil || IsNil(o.Test) {
+		var ret bool
+		return ret
+	}
+	return *o.Test
+}
+
+// GetTestOk returns a tuple with the Test field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) GetTestOk() (*bool, bool) {
+	if o == nil || IsNil(o.Test) {
+		return nil, false
+	}
+	return o.Test, true
+}
+
+// HasTest returns a boolean if a field has been set.
+func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) HasTest() bool {
+	if o != nil && !IsNil(o.Test) {
+		return true
+	}
+
+	return false
+}
+
+// SetTest gets a reference to the given bool and assigns it to the Test field.
+func (o *WebhookPayloadWhatsAppAccountNameStatusUpdated) SetTest(v bool) {
+	o.Test = &v
 }
 
 // GetEvent returns the Event field value
@@ -187,6 +221,9 @@ func (o WebhookPayloadWhatsAppAccountNameStatusUpdated) MarshalJSON() ([]byte, e
 func (o WebhookPayloadWhatsAppAccountNameStatusUpdated) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Test) {
+		toSerialize["test"] = o.Test
+	}
 	toSerialize["event"] = o.Event
 	toSerialize["account"] = o.Account
 	toSerialize["name"] = o.Name

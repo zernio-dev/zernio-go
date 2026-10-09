@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &TestWebhookRequest{}
 type TestWebhookRequest struct {
 	// ID of the webhook to test
 	WebhookId string `json:"webhookId"`
+	// Send a sample payload of this event instead of `webhook.test`. The sample is marked with `test: true`.
+	Event *string `json:"event,omitempty"`
 }
 
 type _TestWebhookRequest TestWebhookRequest
@@ -70,6 +72,38 @@ func (o *TestWebhookRequest) SetWebhookId(v string) {
 	o.WebhookId = v
 }
 
+// GetEvent returns the Event field value if set, zero value otherwise.
+func (o *TestWebhookRequest) GetEvent() string {
+	if o == nil || IsNil(o.Event) {
+		var ret string
+		return ret
+	}
+	return *o.Event
+}
+
+// GetEventOk returns a tuple with the Event field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestWebhookRequest) GetEventOk() (*string, bool) {
+	if o == nil || IsNil(o.Event) {
+		return nil, false
+	}
+	return o.Event, true
+}
+
+// HasEvent returns a boolean if a field has been set.
+func (o *TestWebhookRequest) HasEvent() bool {
+	if o != nil && !IsNil(o.Event) {
+		return true
+	}
+
+	return false
+}
+
+// SetEvent gets a reference to the given string and assigns it to the Event field.
+func (o *TestWebhookRequest) SetEvent(v string) {
+	o.Event = &v
+}
+
 func (o TestWebhookRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -81,6 +115,9 @@ func (o TestWebhookRequest) MarshalJSON() ([]byte, error) {
 func (o TestWebhookRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["webhookId"] = o.WebhookId
+	if !IsNil(o.Event) {
+		toSerialize["event"] = o.Event
+	}
 	return toSerialize, nil
 }
 

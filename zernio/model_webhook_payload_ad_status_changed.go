@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.245.1
+API version: 1.246.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ var _ MappedNullable = &WebhookPayloadAdStatusChanged{}
 // WebhookPayloadAdStatusChanged Webhook payload for the `ad.status_changed` event. Currently emitted only for Meta (`metaads`).  Sourced from two Meta `ad_account` webhook fields:   - `in_process_ad_objects` - the ad object finished processing and     exited `IN_PROCESS`. `status.raw` carries Meta's `status_name`.   - `with_issues_ad_objects` - the ad object entered `WITH_ISSUES`.     `status.raw` is `WITH_ISSUES` and the `error` block is populated     from Meta's `error_code` / `error_summary` / `error_message`.  Review outcomes (an ad leaving `PENDING_REVIEW` for `ACTIVE`, `DISAPPROVED` and so on) are also emitted from Zernio's own ad sync, so they arrive even when Meta skips the webhook. `status.raw` is Meta's `effective_status`. An ad-level outcome is delivered once per status: whichever source sees it first sends it.
 type WebhookPayloadAdStatusChanged struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
-	Id       string                                `json:"id"`
+	Id string `json:"id"`
+	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
+	Test     *bool                                 `json:"test,omitempty"`
 	Event    string                                `json:"event"`
 	Account  WebhookPayloadAccountConnectedAccount `json:"account"`
 	AdObject WebhookPayloadAdStatusChangedAdObject `json:"adObject"`
@@ -81,6 +83,38 @@ func (o *WebhookPayloadAdStatusChanged) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadAdStatusChanged) SetId(v string) {
 	o.Id = v
+}
+
+// GetTest returns the Test field value if set, zero value otherwise.
+func (o *WebhookPayloadAdStatusChanged) GetTest() bool {
+	if o == nil || IsNil(o.Test) {
+		var ret bool
+		return ret
+	}
+	return *o.Test
+}
+
+// GetTestOk returns a tuple with the Test field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAdStatusChanged) GetTestOk() (*bool, bool) {
+	if o == nil || IsNil(o.Test) {
+		return nil, false
+	}
+	return o.Test, true
+}
+
+// HasTest returns a boolean if a field has been set.
+func (o *WebhookPayloadAdStatusChanged) HasTest() bool {
+	if o != nil && !IsNil(o.Test) {
+		return true
+	}
+
+	return false
+}
+
+// SetTest gets a reference to the given bool and assigns it to the Test field.
+func (o *WebhookPayloadAdStatusChanged) SetTest(v bool) {
+	o.Test = &v
 }
 
 // GetEvent returns the Event field value
@@ -246,6 +280,9 @@ func (o WebhookPayloadAdStatusChanged) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadAdStatusChanged) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Test) {
+		toSerialize["test"] = o.Test
+	}
 	toSerialize["event"] = o.Event
 	toSerialize["account"] = o.Account
 	toSerialize["adObject"] = o.AdObject
