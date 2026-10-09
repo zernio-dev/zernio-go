@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.246.0
+API version: 1.247.0
 Contact: support@zernio.com
 */
 
@@ -21,6 +21,238 @@ import (
 
 // AdTargetingAPIService AdTargetingAPI service
 type AdTargetingAPIService service
+
+type AdTargetingAPIBrowseAdTargetingRequest struct {
+	ctx          context.Context
+	ApiService   *AdTargetingAPIService
+	accountId    *string
+	adAccountId  *string
+	type_        *string
+	parentNodeId *string
+	selectable   *bool
+}
+
+// A connected Meta account (metaads, facebook or instagram). Any other ad platform returns 501 platform_not_supported.
+func (r AdTargetingAPIBrowseAdTargetingRequest) AccountId(accountId string) AdTargetingAPIBrowseAdTargetingRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// The Meta ad account to browse as, in the form \&quot;act_&lt;digits&gt;\&quot;.
+func (r AdTargetingAPIBrowseAdTargetingRequest) AdAccountId(adAccountId string) AdTargetingAPIBrowseAdTargetingRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Only the nodes of this Meta type (e.g. interests, behaviors, life_events, income), plus the organizational nodes leading to them. A type that is not in the catalog returns 400.
+func (r AdTargetingAPIBrowseAdTargetingRequest) Type_(type_ string) AdTargetingAPIBrowseAdTargetingRequest {
+	r.type_ = &type_
+	return r
+}
+
+// Only the descendants (every depth) of this organizational node, e.g. &#x60;Demographics &gt; Financial&#x60;. A nodeId that is not an organizational node of the catalog returns 400.
+func (r AdTargetingAPIBrowseAdTargetingRequest) ParentNodeId(parentNodeId string) AdTargetingAPIBrowseAdTargetingRequest {
+	r.parentNodeId = &parentNodeId
+	return r
+}
+
+// &#x60;true&#x60; for selectable entities only, &#x60;false&#x60; for organizational nodes only.
+func (r AdTargetingAPIBrowseAdTargetingRequest) Selectable(selectable bool) AdTargetingAPIBrowseAdTargetingRequest {
+	r.selectable = &selectable
+	return r
+}
+
+func (r AdTargetingAPIBrowseAdTargetingRequest) Execute() (*BrowseAdTargeting200Response, *http.Response, error) {
+	return r.ApiService.BrowseAdTargetingExecute(r)
+}
+
+/*
+BrowseAdTargeting Browse targeting categories
+
+The whole Meta detailed-targeting category tree of one ad account (Meta's
+`GET /act_{ad_account_id}/targetingbrowse`), as one flat list you can render as a
+tree. Use it to show what can be targeted without a keyword; use
+`GET /v1/ads/targeting/search` to find an entry by name.
+
+Every node is one of two kinds:
+
+  - **Selectable entity** (`selectable: true`): an interest, behavior or demographic Meta
+    gives an id. `id` plus `type` is what a targeting spec takes. `interests`, `behaviors`
+    and `industries` ids go in `TargetingSpec.interests`, `behaviors` and `workIndustries`
+    on `POST /v1/ads/create`; every other type goes in `rawTargeting.flexible_spec` under
+    its `type` as the key. `life_events`, `family_statuses` and `income` take objects
+    (`{ "flexible_spec": [{ "life_events": [{ "id": "6017476616183" }] }] }`), while
+    `education_statuses` and `relationship_statuses` take the bare number
+    (`{ "flexible_spec": [{ "education_statuses": [3] }] }`): Meta answers an object
+    there with a 500.
+  - **Organizational node** (`selectable: false`, `id: null`): a category such as
+    `Demographics > Financial > Income` that only groups other nodes and cannot be targeted.
+    A few carry a `type` and have no children (`Schools`, `Employers`, `Job titles`,
+    `Fields of study`, `Undergrad years`): those are open-ended categories Meta only exposes
+    through search (`dimension=workEmployer` / `workPosition` on the search endpoint).
+
+`nodeId` identifies a node within this response and `parentNodeId` points at its parent
+(`null` for the three roots `Demographics`, `Interests`, `Behaviors`). A selectable node's
+`nodeId` is `{type}:{id}`, because Meta reuses small ids across types (education status 3
+and relationship status 3 are different entities). An organizational node's `nodeId` is
+its full path joined with ` > `. Labels are kept exactly as Meta sends them, including
+stray leading or trailing spaces, because Meta has sibling nodes that differ only by
+whitespace.
+
+The interests branch is Meta's curated browse list (a few hundred entries), not every
+interest Meta can target: search finds the long tail.
+
+**No pagination.** Meta returns the whole catalog in one response (about 770 nodes) and
+ignores `limit`, so there is no cursor. Narrow it with `type`, `parentNodeId` and
+`selectable` instead; they are applied by Zernio. The catalog is cached for an hour per
+ad account and connection.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdTargetingAPIBrowseAdTargetingRequest
+*/
+func (a *AdTargetingAPIService) BrowseAdTargeting(ctx context.Context) AdTargetingAPIBrowseAdTargetingRequest {
+	return AdTargetingAPIBrowseAdTargetingRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return BrowseAdTargeting200Response
+func (a *AdTargetingAPIService) BrowseAdTargetingExecute(r AdTargetingAPIBrowseAdTargetingRequest) (*BrowseAdTargeting200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BrowseAdTargeting200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdTargetingAPIService.BrowseAdTargeting")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/targeting/browse"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.type_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
+	}
+	if r.parentNodeId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "parentNodeId", r.parentNodeId, "form", "")
+	}
+	if r.selectable != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "selectable", r.selectable, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type AdTargetingAPIEstimateAdReachRequest struct {
 	ctx                    context.Context
