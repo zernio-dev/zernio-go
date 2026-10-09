@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.249.0
+API version: 1.249.1
 Contact: support@zernio.com
 */
 
@@ -1330,7 +1330,7 @@ func (r AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest) Execute() (*GetTik
 /*
 GetTikTokSmartPlusMaterialReport Per-creative performance inside TikTok Smart+ ads
 
-Breaks a Smart+ ad (or ad group) down by creative material, one row per Spark post, video or image, from TikTok's Smart+ material report. For a Spark post `tiktokItemId` is the TikTok post id. Conversion metrics are TikTok web (pixel) events. TikTok allows two dimensions per report, so rows are keyed by the Smart+ ad (`level=ad`) or by the ad group (`level=adGroup`), not both. Metrics TikTok returns empty come back as null.
+Breaks a Smart+ ad (or ad group) down by creative material, one row per Spark post, video or image, from TikTok's Smart+ material report. For a Spark post `tiktokItemId` is the TikTok post id. Conversion metrics are TikTok web (pixel) events. `purchases`, `purchaseValue` and `roas` come from Complete Payment, or from Place an Order (legacy ON_WEB_ORDER pixels) when that reports more; the two are never summed. TikTok allows two dimensions per report, so rows are keyed by the Smart+ ad (`level=ad`) or by the ad group (`level=adGroup`), not both. Metrics TikTok returns empty come back as null.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdInsightsAPIGetTikTokSmartPlusMaterialReportRequest
