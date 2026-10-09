@@ -760,7 +760,7 @@ func (r ConnectAPIConnectAdsRequest) PageId(pageId string) ConnectAPIConnectAdsR
 	return r
 }
 
-// Existing SocialAccount ID. Required for &#x60;twitter&#x60; (X Ads). Optional for &#x60;tiktok&#x60;: omit to enter ads-only mode (no TikTok posting account linked; ad creation uses a Brand Identity instead of a TT_USER). For same-token platforms (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) it picks which posting account the ads connection uses when the profile holds several of that platform; with one it can be omitted, and an id that names no active account of the platform on the profile is ignored. Ignored for standalone platforms (&#x60;googleads&#x60;).
+// Existing SocialAccount ID. Required for &#x60;twitter&#x60; (X Ads). Optional for &#x60;tiktok&#x60;: omit to enter ads-only mode (no TikTok posting account linked; ad creation uses a Brand Identity instead of a TT_USER). For same-token platforms (&#x60;facebook&#x60;, &#x60;instagram&#x60;, &#x60;linkedin&#x60;, &#x60;pinterest&#x60;) it picks which posting account the ads connection uses when the profile holds several of that platform; with one it can be omitted, and an id that names no active account of the platform on the profile is ignored, except with &#x60;force&#x3D;true&#x60; when it names the posting account the profile&#39;s ads connection hangs off: that account is no longer connected, so the call returns 409 &#x60;reconnect_required&#x60; instead of reconnecting another account. Reconnect it via GET /v1/connect/{platform} first. Ignored for standalone platforms (&#x60;googleads&#x60;).
 func (r ConnectAPIConnectAdsRequest) AccountId(accountId string) ConnectAPIConnectAdsRequest {
 	r.accountId = &accountId
 	return r
