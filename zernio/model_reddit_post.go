@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.247.0
+API version: 1.248.0
 Contact: support@zernio.com
 */
 
@@ -18,34 +18,34 @@ import (
 // checks if the RedditPost type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RedditPost{}
 
-// RedditPost A normalized Reddit post returned by the feed and search endpoints
+// RedditPost struct for RedditPost
 type RedditPost struct {
-	// Reddit post ID (without type prefix)
+	// Reddit post base36 id (e.g. \"1tjtj26\")
 	Id *string `json:"id,omitempty"`
-	// Reddit fullname (e.g. t3_abc123)
-	Fullname  *string `json:"fullname,omitempty"`
-	Title     *string `json:"title,omitempty"`
-	Author    *string `json:"author,omitempty"`
-	Subreddit *string `json:"subreddit,omitempty"`
-	// Post URL (may be a gallery URL, external link, or self-post URL)
-	Url *string `json:"url,omitempty"`
-	// Full permalink to the Reddit post
-	Permalink *string `json:"permalink,omitempty"`
-	// Self-post body text (empty string for link posts)
+	// Fullname with type prefix (e.g. \"t3_1tjtj26\")
+	Fullname *string `json:"fullname,omitempty"`
+	Title    *string `json:"title,omitempty"`
+	// Body text for self-posts (empty for link posts)
 	Selftext *string `json:"selftext,omitempty"`
-	// Unix timestamp of post creation
-	CreatedUtc  *float32 `json:"createdUtc,omitempty"`
-	Score       *int32   `json:"score,omitempty"`
-	NumComments *int32   `json:"numComments,omitempty"`
-	// Whether the post is marked NSFW
-	Over18   *bool `json:"over18,omitempty"`
-	Stickied *bool `json:"stickied,omitempty"`
-	// Link flair text if set
+	// Reddit username, without the u/ prefix
+	Author *string `json:"author,omitempty"`
+	// Subreddit name, without the r/ prefix
+	Subreddit *string `json:"subreddit,omitempty"`
+	// Absolute URL to the post on reddit.com
+	Permalink *string `json:"permalink,omitempty"`
+	// For link posts, the external URL; for self-posts, the Reddit permalink
+	Url *string `json:"url,omitempty"`
+	// Net upvotes (upvotes minus downvotes)
+	Score       *int32 `json:"score,omitempty"`
+	NumComments *int32 `json:"numComments,omitempty"`
+	// Unix timestamp in seconds
+	CreatedUtc *int32 `json:"createdUtc,omitempty"`
+	Over18     *bool  `json:"over18,omitempty"`
+	Stickied   *bool  `json:"stickied,omitempty"`
+	// Link flair text if any
 	FlairText NullableString `json:"flairText,omitempty"`
-	// Whether the post is a gallery with multiple images
+	// True if the post is a Reddit gallery (multiple images)
 	IsGallery *bool `json:"isGallery,omitempty"`
-	// Individual image URLs for gallery posts (only present when isGallery is true)
-	GalleryImages []string `json:"galleryImages,omitempty"`
 }
 
 // NewRedditPost instantiates a new RedditPost object
@@ -161,6 +161,38 @@ func (o *RedditPost) SetTitle(v string) {
 	o.Title = &v
 }
 
+// GetSelftext returns the Selftext field value if set, zero value otherwise.
+func (o *RedditPost) GetSelftext() string {
+	if o == nil || IsNil(o.Selftext) {
+		var ret string
+		return ret
+	}
+	return *o.Selftext
+}
+
+// GetSelftextOk returns a tuple with the Selftext field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RedditPost) GetSelftextOk() (*string, bool) {
+	if o == nil || IsNil(o.Selftext) {
+		return nil, false
+	}
+	return o.Selftext, true
+}
+
+// HasSelftext returns a boolean if a field has been set.
+func (o *RedditPost) HasSelftext() bool {
+	if o != nil && !IsNil(o.Selftext) {
+		return true
+	}
+
+	return false
+}
+
+// SetSelftext gets a reference to the given string and assigns it to the Selftext field.
+func (o *RedditPost) SetSelftext(v string) {
+	o.Selftext = &v
+}
+
 // GetAuthor returns the Author field value if set, zero value otherwise.
 func (o *RedditPost) GetAuthor() string {
 	if o == nil || IsNil(o.Author) {
@@ -225,38 +257,6 @@ func (o *RedditPost) SetSubreddit(v string) {
 	o.Subreddit = &v
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
-func (o *RedditPost) GetUrl() string {
-	if o == nil || IsNil(o.Url) {
-		var ret string
-		return ret
-	}
-	return *o.Url
-}
-
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RedditPost) GetUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.Url) {
-		return nil, false
-	}
-	return o.Url, true
-}
-
-// HasUrl returns a boolean if a field has been set.
-func (o *RedditPost) HasUrl() bool {
-	if o != nil && !IsNil(o.Url) {
-		return true
-	}
-
-	return false
-}
-
-// SetUrl gets a reference to the given string and assigns it to the Url field.
-func (o *RedditPost) SetUrl(v string) {
-	o.Url = &v
-}
-
 // GetPermalink returns the Permalink field value if set, zero value otherwise.
 func (o *RedditPost) GetPermalink() string {
 	if o == nil || IsNil(o.Permalink) {
@@ -289,68 +289,36 @@ func (o *RedditPost) SetPermalink(v string) {
 	o.Permalink = &v
 }
 
-// GetSelftext returns the Selftext field value if set, zero value otherwise.
-func (o *RedditPost) GetSelftext() string {
-	if o == nil || IsNil(o.Selftext) {
+// GetUrl returns the Url field value if set, zero value otherwise.
+func (o *RedditPost) GetUrl() string {
+	if o == nil || IsNil(o.Url) {
 		var ret string
 		return ret
 	}
-	return *o.Selftext
+	return *o.Url
 }
 
-// GetSelftextOk returns a tuple with the Selftext field value if set, nil otherwise
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RedditPost) GetSelftextOk() (*string, bool) {
-	if o == nil || IsNil(o.Selftext) {
+func (o *RedditPost) GetUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.Url) {
 		return nil, false
 	}
-	return o.Selftext, true
+	return o.Url, true
 }
 
-// HasSelftext returns a boolean if a field has been set.
-func (o *RedditPost) HasSelftext() bool {
-	if o != nil && !IsNil(o.Selftext) {
+// HasUrl returns a boolean if a field has been set.
+func (o *RedditPost) HasUrl() bool {
+	if o != nil && !IsNil(o.Url) {
 		return true
 	}
 
 	return false
 }
 
-// SetSelftext gets a reference to the given string and assigns it to the Selftext field.
-func (o *RedditPost) SetSelftext(v string) {
-	o.Selftext = &v
-}
-
-// GetCreatedUtc returns the CreatedUtc field value if set, zero value otherwise.
-func (o *RedditPost) GetCreatedUtc() float32 {
-	if o == nil || IsNil(o.CreatedUtc) {
-		var ret float32
-		return ret
-	}
-	return *o.CreatedUtc
-}
-
-// GetCreatedUtcOk returns a tuple with the CreatedUtc field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RedditPost) GetCreatedUtcOk() (*float32, bool) {
-	if o == nil || IsNil(o.CreatedUtc) {
-		return nil, false
-	}
-	return o.CreatedUtc, true
-}
-
-// HasCreatedUtc returns a boolean if a field has been set.
-func (o *RedditPost) HasCreatedUtc() bool {
-	if o != nil && !IsNil(o.CreatedUtc) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedUtc gets a reference to the given float32 and assigns it to the CreatedUtc field.
-func (o *RedditPost) SetCreatedUtc(v float32) {
-	o.CreatedUtc = &v
+// SetUrl gets a reference to the given string and assigns it to the Url field.
+func (o *RedditPost) SetUrl(v string) {
+	o.Url = &v
 }
 
 // GetScore returns the Score field value if set, zero value otherwise.
@@ -415,6 +383,38 @@ func (o *RedditPost) HasNumComments() bool {
 // SetNumComments gets a reference to the given int32 and assigns it to the NumComments field.
 func (o *RedditPost) SetNumComments(v int32) {
 	o.NumComments = &v
+}
+
+// GetCreatedUtc returns the CreatedUtc field value if set, zero value otherwise.
+func (o *RedditPost) GetCreatedUtc() int32 {
+	if o == nil || IsNil(o.CreatedUtc) {
+		var ret int32
+		return ret
+	}
+	return *o.CreatedUtc
+}
+
+// GetCreatedUtcOk returns a tuple with the CreatedUtc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RedditPost) GetCreatedUtcOk() (*int32, bool) {
+	if o == nil || IsNil(o.CreatedUtc) {
+		return nil, false
+	}
+	return o.CreatedUtc, true
+}
+
+// HasCreatedUtc returns a boolean if a field has been set.
+func (o *RedditPost) HasCreatedUtc() bool {
+	if o != nil && !IsNil(o.CreatedUtc) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedUtc gets a reference to the given int32 and assigns it to the CreatedUtc field.
+func (o *RedditPost) SetCreatedUtc(v int32) {
+	o.CreatedUtc = &v
 }
 
 // GetOver18 returns the Over18 field value if set, zero value otherwise.
@@ -556,38 +556,6 @@ func (o *RedditPost) SetIsGallery(v bool) {
 	o.IsGallery = &v
 }
 
-// GetGalleryImages returns the GalleryImages field value if set, zero value otherwise.
-func (o *RedditPost) GetGalleryImages() []string {
-	if o == nil || IsNil(o.GalleryImages) {
-		var ret []string
-		return ret
-	}
-	return o.GalleryImages
-}
-
-// GetGalleryImagesOk returns a tuple with the GalleryImages field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RedditPost) GetGalleryImagesOk() ([]string, bool) {
-	if o == nil || IsNil(o.GalleryImages) {
-		return nil, false
-	}
-	return o.GalleryImages, true
-}
-
-// HasGalleryImages returns a boolean if a field has been set.
-func (o *RedditPost) HasGalleryImages() bool {
-	if o != nil && !IsNil(o.GalleryImages) {
-		return true
-	}
-
-	return false
-}
-
-// SetGalleryImages gets a reference to the given []string and assigns it to the GalleryImages field.
-func (o *RedditPost) SetGalleryImages(v []string) {
-	o.GalleryImages = v
-}
-
 func (o RedditPost) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -607,29 +575,29 @@ func (o RedditPost) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Title) {
 		toSerialize["title"] = o.Title
 	}
+	if !IsNil(o.Selftext) {
+		toSerialize["selftext"] = o.Selftext
+	}
 	if !IsNil(o.Author) {
 		toSerialize["author"] = o.Author
 	}
 	if !IsNil(o.Subreddit) {
 		toSerialize["subreddit"] = o.Subreddit
 	}
-	if !IsNil(o.Url) {
-		toSerialize["url"] = o.Url
-	}
 	if !IsNil(o.Permalink) {
 		toSerialize["permalink"] = o.Permalink
 	}
-	if !IsNil(o.Selftext) {
-		toSerialize["selftext"] = o.Selftext
-	}
-	if !IsNil(o.CreatedUtc) {
-		toSerialize["createdUtc"] = o.CreatedUtc
+	if !IsNil(o.Url) {
+		toSerialize["url"] = o.Url
 	}
 	if !IsNil(o.Score) {
 		toSerialize["score"] = o.Score
 	}
 	if !IsNil(o.NumComments) {
 		toSerialize["numComments"] = o.NumComments
+	}
+	if !IsNil(o.CreatedUtc) {
+		toSerialize["createdUtc"] = o.CreatedUtc
 	}
 	if !IsNil(o.Over18) {
 		toSerialize["over18"] = o.Over18
@@ -642,9 +610,6 @@ func (o RedditPost) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsGallery) {
 		toSerialize["isGallery"] = o.IsGallery
-	}
-	if !IsNil(o.GalleryImages) {
-		toSerialize["galleryImages"] = o.GalleryImages
 	}
 	return toSerialize, nil
 }
