@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.251.1
+API version: 1.251.2
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &SetConversationThreadControlRequest{}
 type SetConversationThreadControlRequest struct {
 	// Social account ID
 	AccountId string `json:"accountId"`
-	// `request` is Facebook and Instagram only.
+	// `request` is Facebook and Instagram only. `take` and `request` are refused with `platform_not_supported` on Instagram accounts connected with Instagram Login.
 	Action string `json:"action"`
 	// WhatsApp only. With action pass: send control to Meta Business Agent instead of the escalation partner.
 	Target *string `json:"target,omitempty"`
