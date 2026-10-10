@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.249.1
+API version: 1.250.0
 Contact: support@zernio.com
 */
 
@@ -26,12 +26,14 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	Id string `json:"id"`
 	// Human-readable label.
 	Name string `json:"name"`
-	// What the result is. Equals the requested dimension (interest, behavior, income, language, workPosition, workEmployer, workIndustry, industry, jobFunction, seniority, companySize), or the location level for geo (country, region, city, zip, metro, ...).
+	// What the result is. Equals the requested dimension (interest, interestKeyword, behavior, hashtag, income, language, workPosition, workEmployer, workIndustry, industry, jobFunction, seniority, companySize), or the location level for geo (country, region, city, zip, metro, ...).
 	Type string `json:"type"`
 	// Optional breadcrumb of parent labels (e.g. ['United States', 'California', 'Los Angeles']). Disambiguates same-named results.
 	Path []string `json:"path,omitempty"`
 	// Optional estimated reachable users for this option, when the platform returns it.
 	AudienceSize NullableInt32 `json:"audienceSize,omitempty"`
+	// TikTok `interestKeyword` and `hashtag` results only: TikTok's availability status. `EFFECTIVE` / `INEFFECTIVE` for additional interests, `ONLINE` / `OFFLINE` for hashtags. Only `EFFECTIVE` and `ONLINE` ids can be targeted.
+	Status *string `json:"status,omitempty"`
 	// ISO-3166 alpha-2 of the country a sub-country geo result (city, region, zip, metro) belongs to, when the platform reports it (Meta does). Useful to know whether a location falls under the EU DSA disclosure rules before creating the ad.
 	CountryCode *string `json:"countryCode,omitempty"`
 	// Only on `country` results: the platform's own id for the country, which `id` replaced with the ISO code (TikTok's native location_id, a GeoNames id such as 2635167 for GB; Meta's country key; Google's geo target constant id; X's targeting value; LinkedIn's geo URN). Use it to match a country against what the platform reports back, e.g. `location_ids` in a TikTok `nativeSettings` read.
@@ -207,6 +209,38 @@ func (o *SearchAdTargeting200ResponseResultsInner) UnsetAudienceSize() {
 	o.AudienceSize.Unset()
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *SearchAdTargeting200ResponseResultsInner) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *SearchAdTargeting200ResponseResultsInner) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *SearchAdTargeting200ResponseResultsInner) SetStatus(v string) {
+	o.Status = &v
+}
+
 // GetCountryCode returns the CountryCode field value if set, zero value otherwise.
 func (o *SearchAdTargeting200ResponseResultsInner) GetCountryCode() string {
 	if o == nil || IsNil(o.CountryCode) {
@@ -289,6 +323,9 @@ func (o SearchAdTargeting200ResponseResultsInner) ToMap() (map[string]interface{
 	}
 	if o.AudienceSize.IsSet() {
 		toSerialize["audienceSize"] = o.AudienceSize.Get()
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
 	}
 	if !IsNil(o.CountryCode) {
 		toSerialize["countryCode"] = o.CountryCode

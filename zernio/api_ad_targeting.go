@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.249.1
+API version: 1.250.0
 Contact: support@zernio.com
 */
 
@@ -903,7 +903,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; is Meta only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; on Meta, TikTok and LinkedIn), &#x60;interestKeyword&#x60;/&#x60;hashtag&#x60; resolve TikTok additional interests and hashtags (TikTok only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -953,10 +953,17 @@ The `dimension` param selects what is searched:
     Meta: its fixed behaviors catalog (e.g. `Small business owners`, `Frequent Travelers`).
     TikTok: video and creator interaction categories (e.g. `Software & Apps`), with ids like
     `video:1913101` or `creator:24001` and `path` starting with `Video interactions` or
-    `Creator interactions`. LinkedIn: member behaviors (e.g. `Frequent Travelers`,
+    `Creator interactions` (hashtags are their own `hashtag` dimension). LinkedIn: member behaviors (e.g. `Frequent Travelers`,
     `Job Seekers`, `Recently Promoted`), ids like `urn:li:memberBehavior:9`. Google has no
     separate behavior catalog: its in-market and affinity segments come back from `interest`,
     and X removed behavior targeting from its Ads API
+  - `interestKeyword`: TikTok only. The "Additional interests" of TikTok Ads Manager (e.g. `folk`
+    returns `Folk Music`), from TikTok's keyword recommendations for the seed `q`. Ids look like
+    `keyword:123456` and go in `TargetingSpec.interests`, next to interest categories. Only keywords
+    TikTok lets an ad group target come back (`status` `EFFECTIVE`). TikTok returns no audience size
+  - `hashtag`: TikTok only. Hashtags recommended for the seed `q`, to target people who viewed videos
+    with them. Ids look like `hashtag:123456` and go in `TargetingSpec.behaviors`. Only hashtags
+    TikTok reports `ONLINE` come back. Spaces in `q` are removed first, because TikTok recommends no hashtags for a multi-word seed (`acoustic guitar` searches `acousticguitar`)
   - `income`: the household-income tiers the platform can target (Meta, TikTok, Google).
     The id is the normalized tier (`top_5`, `top_10`, `top_10_25`, `top_25_50`) to pass as
     `TargetingSpec.incomeTier`, never a platform segment id. Meta's tiers are US-only
@@ -976,6 +983,10 @@ result's `type` is the requested dimension (or the geo level for `geo`).
 TikTok `interest` searches TikTok's interest category catalog (about 700 categories over
 four levels, `path` holds the parent categories), matched by name in Zernio. The ids are
 what `TargetingSpec.interests` sends to TikTok as `interest_category_ids`.
+For `interestKeyword` and `hashtag`, a `q` made only of prefixed ids (`keyword:101,keyword:102` or
+`hashtag:201`) looks those ids up instead of searching, unavailable ones included with their `status`
+(`INEFFECTIVE` or `OFFLINE`), so ids read back from an ad group (`interest_keyword_ids`, `actions`
+in `nativeSettings`) resolve to names. An `interestKeyword` lookup takes at most 50 ids (more returns 400 naming `q`).
 Work industries are a fixed ~30-entry Meta catalog with no server-side query,
 so `workIndustry` matching, ranking and `limit` happen in Zernio. `language`
 is likewise a fixed, checked-in table of Google's targetable

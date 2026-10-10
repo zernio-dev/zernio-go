@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.249.1
+API version: 1.250.0
 Contact: support@zernio.com
 */
 
@@ -122,7 +122,7 @@ type CreateStandaloneAdRequest struct {
 	Regions []CreateStandaloneAdRequestRegionsInner `json:"regions,omitempty"`
 	AgeMin  *int32                                  `json:"ageMin,omitempty"`
 	AgeMax  *int32                                  `json:"ageMax,omitempty"`
-	// Interest objects from /v1/ads/interests. Each must include id and name.
+	// Interest objects from /v1/ads/targeting/search?dimension=interest (or dimension=interestKeyword on TikTok). Each must include id and name. On TikTok, bare numeric ids are interest categories (`interest_category_ids`) and ids like `keyword:123456` from `dimension=interestKeyword` are additional interests (`interest_keyword_ids`); any other id returns 422 naming `targeting.interests`. TikTok matches people who fit ANY selected interest, additional interest or behavior (one OR'd group), and that group is ANDed with location, age, gender and the other dimensions.
 	Interests []UpdateAdRequestTargetingInterestsInner `json:"interests,omitempty"`
 	// Postal/ZIP geo targeting. `key` is the platform's postal location ID from /v1/ads/targeting/search?dimension=geo&geoType=zip. Supported on Meta, Google, TikTok, Pinterest, X.
 	Zips []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"zips,omitempty"`
@@ -130,7 +130,7 @@ type CreateStandaloneAdRequest struct {
 	Metros []UpdateCampaignTargetingRequestTargetingLocationsOneOfRegionsInner `json:"metros,omitempty"`
 	// Point-radius (lat/lng) geo targeting. Meta only (custom_locations). Rejected on platforms without radius support.
 	CustomLocations []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
-	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior (Meta, TikTok and LinkedIn). On TikTok they target people who interacted with videos (watched to the end, liked, commented or shared, last 15 days) or creators (followed or viewed the profile) in the picked categories, and the ad group uses the TikTok placement only. Each must include id.
+	// Behaviour entities from /v1/ads/targeting/search?dimension=behavior (Meta, TikTok and LinkedIn). On TikTok they target people who interacted with videos (watched to the end, liked, commented or shared, last 15 days) or creators (followed or viewed the profile) in the picked categories, or who viewed videos with a picked hashtag (`hashtag:<id>` ids from `dimension=hashtag`, sent as a `HASHTAG_RELATED` action with `VIEW_HASHTAG`), and the ad group uses the TikTok placement only. On TikTok, behaviors are OR'd with interests and additional interests. Each must include id.
 	Behaviors []CreateStandaloneAdRequestBehaviorsInner `json:"behaviors,omitempty"`
 	// Meta only. Job title entities from /v1/ads/targeting/search?dimension=workPosition. Each must include id. Rejected on other platforms (use LinkedIn's `jobTitles` there).
 	WorkPositions []CreateStandaloneAdRequestBehaviorsInner `json:"workPositions,omitempty"`
