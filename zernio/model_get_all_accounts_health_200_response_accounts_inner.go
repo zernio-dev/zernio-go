@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.250.1
+API version: 1.251.0
 Contact: support@zernio.com
 */
 
@@ -34,6 +34,7 @@ type GetAllAccountsHealth200ResponseAccountsInner struct {
 	// True when the token is expired or revoked, permissions are missing, the account is inactive, or the platform rejected its stored credentials (the same flag the account listing reports as needsReconnection).
 	NeedsReconnect       *bool                                                             `json:"needsReconnect,omitempty"`
 	Issues               []string                                                          `json:"issues,omitempty"`
+	AnalyticsSync        *GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync        `json:"analyticsSync,omitempty"`
 	MessagingRestriction *GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction `json:"messagingRestriction,omitempty"`
 }
 
@@ -438,6 +439,38 @@ func (o *GetAllAccountsHealth200ResponseAccountsInner) SetIssues(v []string) {
 	o.Issues = v
 }
 
+// GetAnalyticsSync returns the AnalyticsSync field value if set, zero value otherwise.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetAnalyticsSync() GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync {
+	if o == nil || IsNil(o.AnalyticsSync) {
+		var ret GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync
+		return ret
+	}
+	return *o.AnalyticsSync
+}
+
+// GetAnalyticsSyncOk returns a tuple with the AnalyticsSync field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) GetAnalyticsSyncOk() (*GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync, bool) {
+	if o == nil || IsNil(o.AnalyticsSync) {
+		return nil, false
+	}
+	return o.AnalyticsSync, true
+}
+
+// HasAnalyticsSync returns a boolean if a field has been set.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) HasAnalyticsSync() bool {
+	if o != nil && !IsNil(o.AnalyticsSync) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnalyticsSync gets a reference to the given GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync and assigns it to the AnalyticsSync field.
+func (o *GetAllAccountsHealth200ResponseAccountsInner) SetAnalyticsSync(v GetAllAccountsHealth200ResponseAccountsInnerAnalyticsSync) {
+	o.AnalyticsSync = &v
+}
+
 // GetMessagingRestriction returns the MessagingRestriction field value if set, zero value otherwise.
 func (o *GetAllAccountsHealth200ResponseAccountsInner) GetMessagingRestriction() GetAllAccountsHealth200ResponseAccountsInnerMessagingRestriction {
 	if o == nil || IsNil(o.MessagingRestriction) {
@@ -515,6 +548,9 @@ func (o GetAllAccountsHealth200ResponseAccountsInner) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Issues) {
 		toSerialize["issues"] = o.Issues
+	}
+	if !IsNil(o.AnalyticsSync) {
+		toSerialize["analyticsSync"] = o.AnalyticsSync
 	}
 	if !IsNil(o.MessagingRestriction) {
 		toSerialize["messagingRestriction"] = o.MessagingRestriction
