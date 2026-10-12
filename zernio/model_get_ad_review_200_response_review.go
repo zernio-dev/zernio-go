@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.1
+API version: 1.255.0
 Contact: support@zernio.com
 */
 
@@ -21,9 +21,9 @@ var _ MappedNullable = &GetAdReview200ResponseReview{}
 
 // GetAdReview200ResponseReview struct for GetAdReview200ResponseReview
 type GetAdReview200ResponseReview struct {
-	// TikTok `is_approved`.
+	// TikTok `is_approved`. Google and Meta: derived from the platform status (see the description).
 	Approved NullableBool `json:"approved,omitempty"`
-	// TikTok `review_status`, verbatim: ALL_AVAILABLE (approved everywhere), PART_AVAILABLE (approved for part of the targeting), UNAVAILABLE (rejected).
+	// TikTok `review_status`, verbatim: ALL_AVAILABLE (approved everywhere), PART_AVAILABLE (approved for part of the targeting), UNAVAILABLE (rejected). Google: `review_status`. Meta: the ad's `effective_status`.
 	ReviewStatus              NullableString `json:"reviewStatus,omitempty"`
 	ForbiddenPlacements       []string       `json:"forbiddenPlacements,omitempty"`
 	ForbiddenAges             []string       `json:"forbiddenAges,omitempty"`
@@ -34,7 +34,10 @@ type GetAdReview200ResponseReview struct {
 	// Google only. ad_group_ad.policy_summary.approval_status, verbatim.
 	ApprovalStatus NullableString `json:"approvalStatus,omitempty"`
 	// Google only. ad_group_ad.policy_summary.policy_topic_entries.
-	PolicyTopics []GetAdReview200ResponseReviewPolicyTopicsInner `json:"policyTopics,omitempty"`
+	PolicyTopics   []GetAdReview200ResponseReviewPolicyTopicsInner `json:"policyTopics,omitempty"`
+	ReviewFeedback *GetAdReview200ResponseReviewReviewFeedback     `json:"reviewFeedback,omitempty"`
+	// Meta only. The Ad's `issues_info` objects (`error_code`, `error_message`, `error_summary`, `error_type`, `level`), verbatim.
+	Issues []map[string]interface{} `json:"issues,omitempty"`
 	// When the verdict was read from the platform.
 	ReadAt *time.Time `json:"readAt,omitempty"`
 }
@@ -377,6 +380,70 @@ func (o *GetAdReview200ResponseReview) SetPolicyTopics(v []GetAdReview200Respons
 	o.PolicyTopics = v
 }
 
+// GetReviewFeedback returns the ReviewFeedback field value if set, zero value otherwise.
+func (o *GetAdReview200ResponseReview) GetReviewFeedback() GetAdReview200ResponseReviewReviewFeedback {
+	if o == nil || IsNil(o.ReviewFeedback) {
+		var ret GetAdReview200ResponseReviewReviewFeedback
+		return ret
+	}
+	return *o.ReviewFeedback
+}
+
+// GetReviewFeedbackOk returns a tuple with the ReviewFeedback field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdReview200ResponseReview) GetReviewFeedbackOk() (*GetAdReview200ResponseReviewReviewFeedback, bool) {
+	if o == nil || IsNil(o.ReviewFeedback) {
+		return nil, false
+	}
+	return o.ReviewFeedback, true
+}
+
+// HasReviewFeedback returns a boolean if a field has been set.
+func (o *GetAdReview200ResponseReview) HasReviewFeedback() bool {
+	if o != nil && !IsNil(o.ReviewFeedback) {
+		return true
+	}
+
+	return false
+}
+
+// SetReviewFeedback gets a reference to the given GetAdReview200ResponseReviewReviewFeedback and assigns it to the ReviewFeedback field.
+func (o *GetAdReview200ResponseReview) SetReviewFeedback(v GetAdReview200ResponseReviewReviewFeedback) {
+	o.ReviewFeedback = &v
+}
+
+// GetIssues returns the Issues field value if set, zero value otherwise.
+func (o *GetAdReview200ResponseReview) GetIssues() []map[string]interface{} {
+	if o == nil || IsNil(o.Issues) {
+		var ret []map[string]interface{}
+		return ret
+	}
+	return o.Issues
+}
+
+// GetIssuesOk returns a tuple with the Issues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAdReview200ResponseReview) GetIssuesOk() ([]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Issues) {
+		return nil, false
+	}
+	return o.Issues, true
+}
+
+// HasIssues returns a boolean if a field has been set.
+func (o *GetAdReview200ResponseReview) HasIssues() bool {
+	if o != nil && !IsNil(o.Issues) {
+		return true
+	}
+
+	return false
+}
+
+// SetIssues gets a reference to the given []map[string]interface{} and assigns it to the Issues field.
+func (o *GetAdReview200ResponseReview) SetIssues(v []map[string]interface{}) {
+	o.Issues = v
+}
+
 // GetReadAt returns the ReadAt field value if set, zero value otherwise.
 func (o *GetAdReview200ResponseReview) GetReadAt() time.Time {
 	if o == nil || IsNil(o.ReadAt) {
@@ -445,6 +512,12 @@ func (o GetAdReview200ResponseReview) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PolicyTopics) {
 		toSerialize["policyTopics"] = o.PolicyTopics
+	}
+	if !IsNil(o.ReviewFeedback) {
+		toSerialize["reviewFeedback"] = o.ReviewFeedback
+	}
+	if !IsNil(o.Issues) {
+		toSerialize["issues"] = o.Issues
 	}
 	if !IsNil(o.ReadAt) {
 		toSerialize["readAt"] = o.ReadAt

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.1
+API version: 1.255.0
 Contact: support@zernio.com
 */
 
@@ -3575,7 +3575,21 @@ DISAPPROVED, null otherwise. `policyTopics` carries every policy topic entry wit
 PROHIBITED topic is also listed in `rejections` (reason = the topic). The `forbidden*`
 arrays are TikTok-only and always empty on Google.
 
-TikTok uses `/ad/review_info/`; every other platform returns 501. On TikTok, use it alongside the ad's
+**Meta** (Facebook and Instagram ads): reads the Ad's `ad_review_feedback`, `effective_status`
+and `issues_info` live. `reviewStatus` is Meta's `effective_status` verbatim (ACTIVE, PAUSED,
+PENDING_REVIEW, DISAPPROVED, PREAPPROVED, WITH_ISSUES, IN_PROCESS, ...); `approved` is true for
+ACTIVE and PREAPPROVED, false for DISAPPROVED, null otherwise. `reviewFeedback` carries Meta's
+feedback verbatim: `global` (reason -> explanation) and `placementSpecific` (placement ->
+reason -> explanation). Each global reason is listed in `rejections`, and so is each
+placement-specific reason, with that placement in its `forbiddenPlacements`; the review's
+`forbiddenPlacements` lists every placement with feedback. When Meta returns no feedback (usually
+an ad in review or approved everywhere), the status comes back with empty `rejections` and empty
+`reviewFeedback` maps; an ACTIVE ad rejected on one placement still carries that placement's
+feedback. A deleted ad answers 404. `issues` is Meta's
+`issues_info` verbatim. `forbiddenAges`, `forbiddenLocations` and `forbiddenOperatingSystems`
+are always empty on Meta.
+
+TikTok uses `/ad/review_info/`. Platforms other than TikTok, Google and Meta return 501. On TikTok, use it alongside the ad's
 `platformStatus`: TikTok reports `AD_STATUS_AUDIT` while the ad is in review and
 `AD_STATUS_AD_PRE_ONLINE` once it passed and is about to deliver (both map to
 `status: pending_review`); `AD_STATUS_AUDIT_DENY` maps to `rejected`.
@@ -3666,6 +3680,17 @@ func (a *AdCampaignsAPIService) GetAdReviewExecute(r AdCampaignsAPIGetAdReviewRe
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
