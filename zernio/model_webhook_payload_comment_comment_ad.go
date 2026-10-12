@@ -18,7 +18,7 @@ import (
 // checks if the WebhookPayloadCommentCommentAd type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadCommentCommentAd{}
 
-// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id, value.media.ad_title and value.media.original_media_id, each only when Meta includes it. Facebook: populated via a Graph API lookup of the parent post's promotion_status. Absent for comments on organic posts that are not currently promoted.
+// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id, value.media.ad_title and value.media.original_media_id, each only when Meta includes it. Facebook: populated from a Graph API lookup of the parent post. Present when the post is an ad dark post (isDarkPost true, whatever its promotionStatus) or an organic post that is or was boosted (promotionStatus \"active\", \"extendable\" or \"finished\"). Meta does not link a dark post back to its ad, so id and title are never set on Facebook. Absent for comments on organic posts that are not promoted.
 type WebhookPayloadCommentCommentAd struct {
 	// Meta ad ID (Instagram only).
 	Id *string `json:"id,omitempty"`
@@ -26,8 +26,10 @@ type WebhookPayloadCommentCommentAd struct {
 	Title *string `json:"title,omitempty"`
 	// Original media ID that Meta reports for the ad (Instagram only).
 	OriginalMediaId *string `json:"originalMediaId,omitempty"`
-	// Facebook promotion status returned by Graph API. Common values: \"active\" (organic post currently boosted), \"ineligible\" (dark post or ad creative, not promotable because it already is an ad).
+	// Facebook only. The parent post's promotion_status as the Graph API returns it, for example \"active\" (organic post currently boosted). Ad dark posts usually report \"inactive\" and sometimes \"ineligible\", so use isDarkPost, not this value, to tell an ad comment apart.
 	PromotionStatus *string `json:"promotionStatus,omitempty"`
+	// Facebook only: true when the post is an unpublished ad creative (dark post), false for a boosted organic post.
+	IsDarkPost *bool `json:"isDarkPost,omitempty"`
 }
 
 // NewWebhookPayloadCommentCommentAd instantiates a new WebhookPayloadCommentCommentAd object
@@ -175,6 +177,38 @@ func (o *WebhookPayloadCommentCommentAd) SetPromotionStatus(v string) {
 	o.PromotionStatus = &v
 }
 
+// GetIsDarkPost returns the IsDarkPost field value if set, zero value otherwise.
+func (o *WebhookPayloadCommentCommentAd) GetIsDarkPost() bool {
+	if o == nil || IsNil(o.IsDarkPost) {
+		var ret bool
+		return ret
+	}
+	return *o.IsDarkPost
+}
+
+// GetIsDarkPostOk returns a tuple with the IsDarkPost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadCommentCommentAd) GetIsDarkPostOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsDarkPost) {
+		return nil, false
+	}
+	return o.IsDarkPost, true
+}
+
+// HasIsDarkPost returns a boolean if a field has been set.
+func (o *WebhookPayloadCommentCommentAd) HasIsDarkPost() bool {
+	if o != nil && !IsNil(o.IsDarkPost) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsDarkPost gets a reference to the given bool and assigns it to the IsDarkPost field.
+func (o *WebhookPayloadCommentCommentAd) SetIsDarkPost(v bool) {
+	o.IsDarkPost = &v
+}
+
 func (o WebhookPayloadCommentCommentAd) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -196,6 +230,9 @@ func (o WebhookPayloadCommentCommentAd) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.PromotionStatus) {
 		toSerialize["promotionStatus"] = o.PromotionStatus
+	}
+	if !IsNil(o.IsDarkPost) {
+		toSerialize["isDarkPost"] = o.IsDarkPost
 	}
 	return toSerialize, nil
 }
