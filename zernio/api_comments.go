@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.253.1
+API version: 1.254.0
 Contact: support@zernio.com
 */
 
@@ -1564,6 +1564,9 @@ comment's single private reply. On an affected account, send plain text to reach
 non-followers and add buttons once they reply. `quickReplies` and `buttons` are mutually
 exclusive. When the comment's single private reply is spent (by this call or an earlier
 one) the 400 carries `details.privateReplyConsumed: true`; never retry it.
+A 502 means Meta answered a server error after receiving the reply; it carries
+`details.privateReplyOutcome: "unknown"`, the reply is usually delivered and the comment's
+private reply spent, so check the conversation before retrying.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId The media/post ID (Instagram media ID or Facebook post ID)
@@ -1668,6 +1671,16 @@ func (a *CommentsAPIService) SendPrivateReplyToCommentExecute(r CommentsAPISendP
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
