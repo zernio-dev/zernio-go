@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.252.4
+API version: 1.253.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,7 @@ type SupportRun struct {
 	RunId string `json:"runId"`
 	// Conversation thread id. Send it back as `threadId` to ask a follow-up in the same thread.
 	ThreadId string `json:"threadId"`
-	// queued and running are in progress. needs_human means Ana handed the question to a person instead of answering.
+	// queued and running are in progress. needs_human means Ana handed the question to a person instead of answering; when `supportTicket` is set, a Zernio teammate has been notified and will follow up by email.
 	Status string `json:"status"`
 	// Why the run stopped. Null while it is in progress.
 	StopReason NullableString `json:"stopReason"`
@@ -37,10 +37,11 @@ type SupportRun struct {
 	// The amount billed for the run, in USD: the model cost plus 20%, never above `maxCostUsd`. 0 for a failed run.
 	CostUsd float32 `json:"costUsd"`
 	// The cost cap this run was started with, in USD.
-	MaxCostUsd float32      `json:"maxCostUsd"`
-	CreatedAt  time.Time    `json:"createdAt"`
-	StartedAt  NullableTime `json:"startedAt"`
-	FinishedAt NullableTime `json:"finishedAt"`
+	MaxCostUsd    float32                 `json:"maxCostUsd"`
+	CreatedAt     time.Time               `json:"createdAt"`
+	StartedAt     NullableTime            `json:"startedAt"`
+	FinishedAt    NullableTime            `json:"finishedAt"`
+	SupportTicket SupportRunSupportTicket `json:"supportTicket"`
 	// Seconds to wait before polling again. Present only while the run is queued or running.
 	PollAfterSeconds *int32 `json:"pollAfterSeconds,omitempty"`
 }
@@ -51,7 +52,7 @@ type _SupportRun SupportRun
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, answer NullableString, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime) *SupportRun {
+func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, answer NullableString, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime, supportTicket SupportRunSupportTicket) *SupportRun {
 	this := SupportRun{}
 	this.RunId = runId
 	this.ThreadId = threadId
@@ -64,6 +65,7 @@ func NewSupportRun(runId string, threadId string, status string, stopReason Null
 	this.CreatedAt = createdAt
 	this.StartedAt = startedAt
 	this.FinishedAt = finishedAt
+	this.SupportTicket = supportTicket
 	return &this
 }
 
@@ -347,6 +349,30 @@ func (o *SupportRun) SetFinishedAt(v time.Time) {
 	o.FinishedAt.Set(&v)
 }
 
+// GetSupportTicket returns the SupportTicket field value
+func (o *SupportRun) GetSupportTicket() SupportRunSupportTicket {
+	if o == nil {
+		var ret SupportRunSupportTicket
+		return ret
+	}
+
+	return o.SupportTicket
+}
+
+// GetSupportTicketOk returns a tuple with the SupportTicket field value
+// and a boolean to check if the value has been set.
+func (o *SupportRun) GetSupportTicketOk() (*SupportRunSupportTicket, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SupportTicket, true
+}
+
+// SetSupportTicket sets field value
+func (o *SupportRun) SetSupportTicket(v SupportRunSupportTicket) {
+	o.SupportTicket = v
+}
+
 // GetPollAfterSeconds returns the PollAfterSeconds field value if set, zero value otherwise.
 func (o *SupportRun) GetPollAfterSeconds() int32 {
 	if o == nil || IsNil(o.PollAfterSeconds) {
@@ -400,6 +426,7 @@ func (o SupportRun) ToMap() (map[string]interface{}, error) {
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["startedAt"] = o.StartedAt.Get()
 	toSerialize["finishedAt"] = o.FinishedAt.Get()
+	toSerialize["supportTicket"] = o.SupportTicket
 	if !IsNil(o.PollAfterSeconds) {
 		toSerialize["pollAfterSeconds"] = o.PollAfterSeconds
 	}
@@ -422,6 +449,7 @@ func (o *SupportRun) UnmarshalJSON(data []byte) (err error) {
 		"createdAt",
 		"startedAt",
 		"finishedAt",
+		"supportTicket",
 	}
 
 	allProperties := make(map[string]interface{})
