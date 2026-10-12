@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -182,6 +182,8 @@ func (r ConnectAPICompleteMetaAdsBusinessLoginRequest) Execute() (*http.Response
 
 /*
 CompleteMetaAdsBusinessLogin Complete Meta business login
+
+Finishes a Meta business login after the user approves access, connects the Meta ads account and sends them back to your app.
 
 Facebook Login for Business redirect target. Meta supplies the single-use authorization code and the authenticated state returned by connectAds. The state expires after 30 minutes and binds the user, profile, Page selection and ad-account scope. No bearer token is sent by the browser. Success reconnects only metaads and redirects to the original redirect_url. Invalid state returns 400; inaccessible profiles or missing ads access cannot connect. Dashboard logins with several Pages redirect to the Facebook Page picker with an encrypted selectionToken valid for ten minutes. Listing and selecting require the initiating user and current profile access. No plaintext platform token is returned to the browser.
 
@@ -803,7 +805,9 @@ func (r ConnectAPIConnectAdsRequest) Execute() (*ConnectAds200Response, *http.Re
 /*
 ConnectAds Connect ads for a platform
 
-Unified ads connection endpoint. Creates a dedicated ads SocialAccount for the specified platform.
+Starts connecting a platform's ads account, giving you a dedicated ads connection to manage campaigns without touching posting accounts.
+
+Creates a dedicated ads SocialAccount for the specified platform.
 
 **Meta business login (opt-in).** Set `loginMode=business` for `facebook` or
 `instagram` to use Facebook Login for Business and a Business Integration System User
@@ -5164,7 +5168,9 @@ func (r ConnectAPIListFacebookPagesRequest) Execute() (*ListFacebookPages200Resp
 /*
 ListFacebookPages List Facebook pages
 
-Returns Facebook Pages after OAuth. Classic connections require profileId and tempToken from the OAuth redirect. Use X-Connect-Token for headless connections. The dashboard business-login picker instead sends only selectionToken, an encrypted grant valid for ten minutes. This requires the initiating user and current profile access and returns only Page IDs and names. X-Connect-Token cannot authorize business selection.
+Lists the Facebook Pages a user can pick from after signing in, so they can choose which Page to connect.
+
+Classic connections require profileId and tempToken from the OAuth redirect. Use X-Connect-Token for headless connections. The dashboard business-login picker instead sends only selectionToken, an encrypted grant valid for ten minutes. This requires the initiating user and current profile access and returns only Page IDs and names. X-Connect-Token cannot authorize business selection.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ConnectAPIListFacebookPagesRequest
@@ -6570,6 +6576,8 @@ func (r ConnectAPISelectFacebookPageRequest) Execute() (*SelectFacebookPage200Re
 
 /*
 SelectFacebookPage Select Facebook page
+
+Connects the Facebook Page the user picked after signing in, completing the Facebook or Meta Ads connection.
 
 Complete a classic Facebook Page connection with profileId, pageId, tempToken and userProfile. Use X-Connect-Token for headless connections. The dashboard business-login picker instead sends only selectionToken and pageId to complete a Meta Ads connection. The server verifies the initiating user, profile access, current grants and connection eligibility. The profile, platform token, ad-account scope and return URL come only from the encrypted grant. Business selection requires a session or bearer authentication for the initiating user; X-Connect-Token is not accepted. It returns redirect_url with connected=metaads on success or an eligibility error redirect.
 

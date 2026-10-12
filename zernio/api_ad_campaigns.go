@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -42,6 +42,8 @@ func (r AdCampaignsAPIAddAdKeywordsRequest) Execute() (*AddAdKeywords201Response
 
 /*
 AddAdKeywords Add Search ad-group keywords
+
+Adds keywords, or negative keywords, to a Google Search ad group without replacing the ones already there.
 
 Adds one or more keyword criteria to an existing Google Search ad group,
 without touching the keywords already there (unlike the whole-set diff on
@@ -202,6 +204,8 @@ func (r AdCampaignsAPIApplyGoogleRecommendationsRequest) Execute() (*ApplyGoogle
 /*
 ApplyGoogleRecommendations Apply Google Ads recommendations
 
+Applies Google's optimization suggestions to an ad account, using Google's values or your own; the changes cannot be undone.
+
 Apply up to 100 recommendations. This changes the account (budgets, bidding, keywords, assets) and is not reversible or idempotent; Google offers no validate-only mode for it. Items run in partial-failure mode, so one stale recommendation does not block the rest. `parameters` is optional and takes exactly one key named for the recommendation type, in Google's ApplyRecommendationOperation shape (for example `campaignBudget: { newBudgetAmountMicros }` or `keyword: { matchType, cpcBidMicros }`); omit it to apply Google's suggested values.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -346,6 +350,8 @@ func (r AdCampaignsAPIAttachAdGroupAssetsRequest) Execute() (*AttachAdGroupAsset
 
 /*
 AttachAdGroupAssets Attach ad-group assets
+
+Creates sitelinks, callouts, structured snippets or image assets and attaches them to a Google ad group in one step.
 
 Creates and attaches sitelinks, callouts, structured snippets and image assets in one Google mutation. Google shows images only on accounts it deems eligible (account age, policy history, vertical).
 
@@ -505,6 +511,8 @@ func (r AdCampaignsAPIAttachCampaignAssetsRequest) Execute() (*AttachCampaignAss
 
 /*
 AttachCampaignAssets Attach campaign assets
+
+Adds sitelinks, callouts, structured snippets and images to a Google campaign in one step.
 
 Creates and attaches sitelinks, callouts, structured snippets and image assets in one Google mutation. Google shows images only on accounts it deems eligible (account age, policy history, vertical).
 
@@ -671,8 +679,9 @@ func (r AdCampaignsAPIBoostPostRequest) Execute() (*UpdateAd200Response, *http.R
 /*
 BoostPost Boost post as ad
 
-Creates a paid ad from an existing published post, keeping the post's
-engagement. By default it provisions the whole hierarchy (campaign, ad
+Turns an already published post into a paid ad that keeps the post's likes and comments, creating the campaign around it.
+
+By default it provisions the whole hierarchy (campaign, ad
 set, ad).
 
 **Attach shape (Meta).** Send `adSetId` to put the ad under an EXISTING
@@ -862,7 +871,9 @@ func (r AdCampaignsAPIBulkUpdateAdCampaignStatusRequest) Execute() (*BulkUpdateA
 /*
 BulkUpdateAdCampaignStatus Pause or resume many campaigns
 
-Process up to 50 campaigns in one call. Each campaign is updated
+Pauses or resumes up to 50 campaigns in one call, with a separate result per campaign so one failure does not block the rest.
+
+Each campaign is updated
 concurrently and the response contains a per-campaign result so a
 single bad row does not fail the whole batch. Each campaign is read,
 written and re-read exactly as PUT /v1/ads/campaigns/{campaignId}/status
@@ -995,6 +1006,8 @@ func (r AdCampaignsAPICreateAdCampaignRequest) Execute() (*CreateAdCampaign200Re
 
 /*
 CreateAdCampaign Create a standalone campaign
+
+Creates an empty campaign, paused, so you can add ad sets and ads to it afterwards.
 
 Creates a campaign WITHOUT its first ad set / ad, on the platform of the given
 `accountId`. Ad sets join it later via `existingCampaignId` on the create endpoints.
@@ -1163,6 +1176,8 @@ func (r AdCampaignsAPICreateAdSetRequest) Execute() (*CreateAdSet201Response, *h
 /*
 CreateAdSet Create a standalone ad group
 
+Creates an empty Google ad group under an existing campaign, ready for ads to be added later.
+
 Google Ads compliance row C.190: creates an ad group WITHOUT an ad,
 under an existing campaign. Ads join it later via `adSetId`
 on POST /v1/ads/create. Google only; every other platform returns 501.
@@ -1330,7 +1345,9 @@ func (r AdCampaignsAPICreateBidStrategyRequest) Execute() (*CreateBidStrategy201
 /*
 CreateBidStrategy Create portfolio bid strategy
 
-Creates a standalone bid strategy shared across campaigns. Attach it to a campaign with `portfolioBidStrategyId` on POST /v1/ads/create, PUT /v1/ads/campaigns/{campaignId}, or PUT /v1/ads/ad-sets/{adSetId}. Attaching a strategy aligned to a shared budget fails there with a 400 (Google's `BIDDING_STRATEGY_AND_BUDGET_MUST_BE_ALIGNED`); this is not retryable.
+Creates a Google Ads bid strategy that several campaigns can share, such as one target CPA or ROAS.
+
+Attach it to a campaign with `portfolioBidStrategyId` on POST /v1/ads/create, PUT /v1/ads/campaigns/{campaignId}, or PUT /v1/ads/ad-sets/{adSetId}. Attaching a strategy aligned to a shared budget fails there with a 400 (Google's `BIDDING_STRATEGY_AND_BUDGET_MUST_BE_ALIGNED`); this is not retryable.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPICreateBidStrategyRequest
@@ -1475,7 +1492,9 @@ func (r AdCampaignsAPICreateGoogleAssetGroupRequest) Execute() (*CreateGoogleAss
 /*
 CreateGoogleAssetGroup Create a Performance Max asset group
 
-Add an asset group to an existing Performance Max campaign. The group, any new assets, their links and an optional listing-group tree are created in one atomic request, so Google checks the asset minimums (for non-retail campaigns) against the whole set. Created PAUSED unless status is ENABLED. validateOnly: true runs Google's validation without creating anything.
+Adds an asset group with its assets and optional product targeting to a Performance Max campaign, or just validates it without creating anything.
+
+The group, any new assets, their links and an optional listing-group tree are created in one atomic request, so Google checks the asset minimums (for non-retail campaigns) against the whole set. Created PAUSED unless status is ENABLED. validateOnly: true runs Google's validation without creating anything.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Google Ads campaign id.
@@ -1621,6 +1640,8 @@ func (r AdCampaignsAPICreateSharedBudgetRequest) Execute() (*CreateSharedBudget2
 
 /*
 CreateSharedBudget Create a shared budget
+
+Creates a daily Google Ads budget that several campaigns can share.
 
 Creates a daily shared campaign budget (`explicitly_shared: true`, standard delivery) that
 several campaigns can draw from. A lifetime budget returns 422, like every Google budget.
@@ -1786,6 +1807,8 @@ func (r AdCampaignsAPICreateStandaloneAdRequest) Execute() (*CreateStandaloneAd2
 
 /*
 CreateStandaloneAd Create standalone ad
+
+Creates a paid ad with your own creative, building the campaign and ad set it needs or adding it to existing ones.
 
 Create a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, and OpenAI Ads (ChatGPT Ads).
 
@@ -2003,6 +2026,8 @@ func (r AdCampaignsAPIDeleteAdRequest) Execute() (*DeleteAccountGroup200Response
 /*
 DeleteAd Cancel an ad
 
+Deletes an ad on the platform while keeping its history, and removes empty parents only when they were created through this API.
+
 Deletes the ad on the platform and marks it as cancelled in the database. The ad is preserved for history. OpenAI Ads has no delete API; the ad is archived instead (a terminal state, the closest equivalent).
 
 Only the ad is deleted; a campaign or ad set is never deleted while it still holds another ad. On Meta, when the ad set and campaign were created by Zernio (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and Meta lists no other ad in the ad set (archived ads count), the emptied ad set is deleted too, then the campaign once it holds no other ad set. Parents created outside Zernio, and the parents of an ad imported from the platform, are always kept. On LinkedIn the ad is a creative inside a campaign inside a campaign group: the creative is always removed, the campaign only when Zernio created it and LinkedIn lists no other creative in it that is not archived, canceled or deleted, and the campaign group only when Zernio created it and LinkedIn lists no other campaign in it that is not canceled or deleted (archived campaigns count). If the creative itself cannot be removed the request fails and no parent is touched. To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
@@ -2136,8 +2161,9 @@ func (r AdCampaignsAPIDeleteAdCampaignRequest) Execute() (*DeleteAdCampaign200Re
 /*
 DeleteAdCampaign Delete a campaign
 
-Deletes the whole campaign on the platform, cascading to its ad sets
-and ads. Locally, all Ad documents for this campaign are marked
+Deletes a campaign along with all of its ad sets and ads, including a campaign that never got any ads.
+
+Locally, all Ad documents for this campaign are marked
 `status: cancelled`.
 
 **Empty campaigns.** A campaign with zero ads has no local Ad documents
@@ -2299,8 +2325,9 @@ func (r AdCampaignsAPIDeleteAdSetRequest) Execute() (*DeleteAdCampaign200Respons
 /*
 DeleteAdSet Delete an ad set
 
-Deletes the ad set on the platform, cascading to its ads only (never the
-campaign). Locally, every Ad document under the ad set is marked
+Deletes an ad set and its ads while keeping the campaign, archiving it instead on platforms without a hard delete.
+
+Locally, every Ad document under the ad set is marked
 `status: cancelled`.
 
 Delete is soft on platforms that have no hard delete: LinkedIn moves the
@@ -2425,6 +2452,8 @@ func (r AdCampaignsAPIDismissGoogleRecommendationsRequest) Execute() (*ApplyGoog
 
 /*
 DismissGoogleRecommendations Dismiss Google Ads recommendations
+
+Dismisses Google optimization suggestions so Google stops showing them.
 
 Dismiss up to 100 recommendations so Google stops suggesting them. Items run in partial-failure mode.
 
@@ -2578,6 +2607,8 @@ func (r AdCampaignsAPIDuplicateAdRequest) Execute() (*DuplicateAd200Response, *h
 /*
 DuplicateAd Duplicate an ad
 
+Copies a single Meta ad, optionally into another ad set, created paused so you can review it before launch.
+
 Duplicates a single ad via Meta's native `POST /{ad-id}/copies`. The copy is created
 paused. `adSetId` retargets the copy into another ad set; omitted = the source's own ad
 set. Accepts the Zernio ad id or the platform ad id. Sync discovery is triggered
@@ -2719,6 +2750,8 @@ func (r AdCampaignsAPIDuplicateAdCampaignRequest) Execute() (*DuplicateAdCampaig
 
 /*
 DuplicateAdCampaign Duplicate a campaign
+
+Copies a campaign with its ad sets, ads, creatives and targeting, created paused so you can review it before launch.
 
 Duplicates a campaign, including its ad sets, ads, creatives, and
 targeting by default (`deepCopy: true`). The copy is created paused
@@ -2884,7 +2917,9 @@ func (r AdCampaignsAPIDuplicateAdSetRequest) Execute() (*DuplicateAdSet200Respon
 /*
 DuplicateAdSet Duplicate an ad set
 
-Duplicates an ad set. The copy is created paused so callers can review before launching.
+Copies an ad set, optionally with its ads and into another campaign, created paused so you can review it before launch.
+
+The copy is created paused so callers can review before launching.
 `campaignId` retargets the copy into another campaign; omitted = the source's own campaign.
 
 Meta: ads and creatives are included by default (`deepCopy: true`) via Meta's native
@@ -3023,6 +3058,8 @@ func (r AdCampaignsAPIEditGoogleAssetGroupAssetsRequest) Execute() (*EditGoogleA
 
 /*
 EditGoogleAssetGroupAssets Link or unlink asset group assets
+
+Links new or existing assets to a Performance Max asset group and unlinks others in one change, keeping unlinked assets in the account library.
 
 Link existing assets or new content to the asset group, and unlink assets, in one atomic request. Links are applied before unlinks, so swapping the last asset of a role does not trip Google's per-role minimum. Unlinking removes the link only; the asset stays in the account library. validateOnly: true validates without writing.
 
@@ -3176,7 +3213,8 @@ func (r AdCampaignsAPIGetAdRequest) Execute() (*GetAd200Response, *http.Response
 /*
 GetAd Get ad details
 
-Returns an ad with its creative, targeting, status, and performance metrics.
+Shows one ad with its creative, targeting, status and performance metrics.
+
 Google Search ads include current creative.headlines, creative.descriptions and creative.finalUrls,
 preserving pinnedField. Top-level cachedAt and stale report cache freshness. Google mutations invalidate this read.
 RSA enrichment requires a stored advertisingChannelType of SEARCH. Ads with an unknown or other channel
@@ -3360,6 +3398,8 @@ func (r AdCampaignsAPIGetAdCampaignDetailsRequest) Execute() (*GetAdCampaignDeta
 /*
 GetAdCampaignDetails Get live campaign details
 
+Shows a Meta campaign's current settings straight from Meta, such as its objective, budget, bid strategy, schedule and delivery issues.
+
 Reads one campaign live from Meta, returned verbatim, so a caller that knows a
 campaign id no longer has to page `GET /v1/ads/campaigns` to find it. The default
 projection covers name, status, objective, buying type, bid strategy, budgets,
@@ -3520,6 +3560,8 @@ func (r AdCampaignsAPIGetAdReviewRequest) Execute() (*GetAdReview200Response, *h
 /*
 GetAdReview Read the platform's review verdict for an ad
 
+Shows whether the platform approved an ad, where it may not deliver, and every rejection reason, without re-enabling a paused ad.
+
 Reads the ad's review verdict from the platform now: whether it was approved, where it may
 not deliver, and every rejection reason with TikTok's suggestion and the piece of content it
 refers to. Read-only, so it works on a paused ad without re-enabling it.
@@ -3675,6 +3717,8 @@ func (r AdCampaignsAPIGetAdSetDetailsRequest) Execute() (*GetAdSetDetails200Resp
 
 /*
 GetAdSetDetails Get live ad-set details
+
+Shows a Meta ad set's current settings straight from Meta, including its learning phase, budget, schedule and targeting.
 
 Reads the ad set live from Meta, returned verbatim. The default projection includes
 `learning_stage_info` (learning-phase status: LEARNING / SUCCESS / FAIL / WAIVING; Meta
@@ -3955,7 +3999,8 @@ func (r AdCampaignsAPIGetAdTreeRequest) Execute() (*AdTreeResponse, *http.Respon
 /*
 GetAdTree Get campaign tree
 
-Returns a nested Campaign > Ad Set > Ad hierarchy with rolled-up metrics at each level.
+Shows your campaigns with their ad sets and ads nested inside, with spend and results rolled up at every level.
+
 Uses a two-stage aggregation: ads are grouped into ad sets, then ad sets into campaigns.
 Metrics are computed over an optional date range, then rolled up from ad level to ad set
 and campaign levels. Pagination is at the campaign level. Ads without a campaign or ad set
@@ -4194,6 +4239,8 @@ func (r AdCampaignsAPIGetAdsTimelineRequest) Execute() (*AdsTimelineResponse, *h
 /*
 GetAdsTimeline Get daily account metrics
 
+Returns an ads account's spend, results and other metrics day by day, ready for a daily performance chart.
+
 Returns daily aggregate metrics across all ads in a SocialAccount as a single
 time series, one row per calendar day in the requested range. Use this for
 dashboards that draw a daily-spend or daily-conversions chart, instead of
@@ -4381,6 +4428,8 @@ func (r AdCampaignsAPIGetCampaignAdScheduleRequest) Execute() (*GetCampaignAdSch
 
 /*
 GetCampaignAdSchedule Read a campaign's ad schedule (dayparting)
+
+Shows the days and hours a Google campaign runs and its bid adjustments, optionally with performance by day and hour.
 
 The windows a Google campaign serves in, with the bid modifier on each, plus the
 criterion ids Google minted for them.
@@ -4579,6 +4628,8 @@ func (r AdCampaignsAPIGetCampaignBiddingRequest) Execute() (*GetCampaignBidding2
 /*
 GetCampaignBidding Read a campaign's current bidding
 
+Shows a Google campaign's current bidding strategy and targets, ready to prefill an edit.
+
 Read of the campaign's bidding strategy on Google, cached for the quota window, for
 pre-filling the bid strategy block before a PUT to /v1/ads/campaigns/{campaignId}.
 Google Ads only; `platform` is required and rejected when it is anything else, since
@@ -4742,6 +4793,8 @@ func (r AdCampaignsAPIGetCampaignConversionGoalsRequest) Execute() (*GetCampaign
 /*
 GetCampaignConversionGoals Get campaign conversion goals
 
+Shows which conversion goals a Google campaign bids on, and whether it follows the account defaults or uses its own or a custom goal.
+
 A Google campaign's conversion goals (CampaignConversionGoal, `biddable` per category
 and origin) and its goal config (ConversionGoalCampaignConfig): `goalConfigLevel`
 CUSTOMER means the campaign follows the account-default goals, CAMPAIGN means it uses
@@ -4877,6 +4930,8 @@ func (r AdCampaignsAPIGetCampaignTargetingRequest) Execute() (*GetCampaignTarget
 
 /*
 GetCampaignTargeting Read a Google campaign's device, location, excluded location, and language targeting
+
+Shows a Google campaign's device, location, excluded location and language targeting so you can build an editor for it.
 
 Google Ads compliance requires geo, language, budget, and bidding targeting
 set at creation to stay editable afterwards; this reads the campaign state
@@ -5022,6 +5077,8 @@ func (r AdCampaignsAPIGetGoogleAssetGroupRequest) Execute() (*GetGoogleAssetGrou
 
 /*
 GetGoogleAssetGroup Get a Performance Max asset group
+
+Shows one Performance Max asset group with its linked assets, ad strength, status and product targeting tree.
 
 One asset group with its linked assets, ad strength, primary status and listing-group tree. Uses a 10-minute cache, served stale when Google quota is exhausted; any write below clears it.
 
@@ -5272,6 +5329,8 @@ func (r AdCampaignsAPIListAdCampaignsRequest) Execute() (*ListAdCampaigns200Resp
 /*
 ListAdCampaigns List campaigns
 
+Lists your campaigns with spend, impressions and clicks summed across their ads, plus each campaign's status and budget.
+
 Returns campaigns as virtual aggregations over ad documents grouped by platform campaign ID.
 Metrics (spend, impressions, clicks, etc.) are summed across all ads in each campaign.
 Campaign status is derived from child ad statuses (active > pending_review > paused > error > completed > cancelled > rejected).
@@ -5519,7 +5578,9 @@ func (r AdCampaignsAPIListAdGroupAssetsRequest) Execute() (*ListAdGroupAssets200
 /*
 ListAdGroupAssets List ad-group assets
 
-Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+Lists the sitelinks, callouts, snippets and images attached directly to a Google ad group, not those inherited from the campaign or account.
+
+Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Numeric Google platform id.
@@ -5752,6 +5813,8 @@ func (r AdCampaignsAPIListAdKeywordsRequest) Execute() (*ListAdKeywords200Respon
 /*
 ListAdKeywords List Search keywords
 
+Lists the keywords and negative keywords in your Google Search ad groups.
+
 Returns the Google Search keyword criteria (positive and negative) synced from
 connected Google Ads accounts, one row per ad-group keyword. Refreshed about
 once a day per Google Ads customer (the keyword sweep rides the ads discovery
@@ -5963,6 +6026,8 @@ func (r AdCampaignsAPIListAdSetsRequest) Execute() (*ListAdSets200Response, *htt
 
 /*
 ListAdSets List ad sets
+
+Lists ad sets (ad groups on Google) with their targeting, bidding and optimization settings, optionally for one campaign.
 
 Ad sets (Google ad groups) synced for the connection, optionally
 filtered by platform and campaignId. Reads the `ad_sets` table
@@ -6253,6 +6318,8 @@ func (r AdCampaignsAPIListAdsRequest) Execute() (*AdsListResponse, *http.Respons
 /*
 ListAds List ads
 
+Lists your ads with their performance over a date range, including ads created directly in each platform's ads manager.
+
 Returns a paginated list of ads with metrics computed over an optional date range.
 Use source=all to include externally-synced ads from platform ad managers.
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
@@ -6479,6 +6546,8 @@ func (r AdCampaignsAPIListBidStrategiesRequest) Execute() (*ListBidStrategies200
 /*
 ListBidStrategies List portfolio bid strategies
 
+Lists a Google Ads account's shared bid strategies with how many campaigns use each and how they performed.
+
 Bidding strategy report: type, status, campaign count, clicks, cost, cost per conversion, impressions, average CPC and conversions over the date range (default last 30 days). Reads Google's `bidding_strategy` resource, cached for the quota window. Draws on the shared Google Ads operations budget. The response carries `cachedAt` and `stale`, set when a quota-exhausted call falls back to the last-good copy instead of a live read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -6659,7 +6728,9 @@ func (r AdCampaignsAPIListCampaignAssetsRequest) Execute() (*ListCampaignAssets2
 /*
 ListCampaignAssets List campaign assets
 
-Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+Lists the sitelinks, callouts and other assets attached directly to a Google campaign.
+
+Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Numeric Google platform id.
@@ -6823,7 +6894,9 @@ func (r AdCampaignsAPIListCampaignNegativeKeywordListsRequest) Execute() (*ListA
 /*
 ListCampaignNegativeKeywordLists List campaign negative lists
 
-Returns shared negative keyword lists attached to the campaign, separate from campaign-level negative keywords. Google Ads shared negative keyword lists (shared_set type NEGATIVE_KEYWORDS). Reads are cached for 10 minutes; quota exhaustion may return the last successful result for up to 7 days with stale=true. Customer selection is limited to this connection and its account scope.
+Lists the shared negative keyword lists attached to a Google campaign, separate from its own campaign-level negatives.
+
+Google Ads shared negative keyword lists (shared_set type NEGATIVE_KEYWORDS). Reads are cached for 10 minutes; quota exhaustion may return the last successful result for up to 7 days with stale=true. Customer selection is limited to this connection and its account scope.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId
@@ -6970,6 +7043,8 @@ func (r AdCampaignsAPIListCampaignNegativeKeywordsRequest) Execute() (*ListCampa
 /*
 ListCampaignNegativeKeywords List campaign-level negative keywords
 
+Lists the negative keywords set on a whole Google campaign, separate from ad group negatives.
+
 Returns the campaign-level negative keywords (`campaign_criterion.negative`),
 distinct from the ad-group-level negatives under `GET /v1/ads/keywords`. Cached
 for the quota window (not synced to Postgres), and gated by the shared Google
@@ -7096,7 +7171,9 @@ func (r AdCampaignsAPIListGoogleAssetGroupsRequest) Execute() (*ListGoogleAssetG
 /*
 ListGoogleAssetGroups List Performance Max asset groups
 
-Read Performance Max asset groups and their linked text, image and YouTube assets. campaignId is the platform campaign id returned by creation or the campaign list. The campaign must be visible to the caller. Uses a 10-minute cache, with the last successful response served as stale when Google quota is exhausted. Removed groups and asset links are excluded. Campaign-level brand assets on campaigns with brand guidelines enabled are not included.
+Lists a Performance Max campaign's asset groups with their linked text, image and YouTube assets.
+
+campaignId is the platform campaign id returned by creation or the campaign list. The campaign must be visible to the caller. Uses a 10-minute cache, with the last successful response served as stale when Google quota is exhausted. Removed groups and asset links are excluded. Campaign-level brand assets on campaigns with brand guidelines enabled are not included.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Google Ads campaign id.
@@ -7268,6 +7345,8 @@ func (r AdCampaignsAPIListGoogleRecommendationsRequest) Execute() (*ListGoogleRe
 /*
 ListGoogleRecommendations List Google Ads recommendations
 
+Lists Google's optimization suggestions for an ad account, with the estimated impact of each.
+
 Google's optimization recommendations for one ad account: type, estimated impact (base vs potential metrics, cost in account currency units), the campaign, ad group or budget they target, and the type-specific payload Google returns (`details`, in Google's own shape with micros). Filter by campaignId and types. Cached for 10 minutes and cleared by apply or dismiss; served stale when Google quota is exhausted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -7430,6 +7509,8 @@ func (r AdCampaignsAPIListSharedBudgetsRequest) Execute() (*ListSharedBudgets200
 
 /*
 ListSharedBudgets List shared budgets
+
+Lists a Google Ads account's shared budgets and how many campaigns draw from each.
 
 Lists the Google Ads customer's shared campaign budgets (`campaign_budget.explicitly_shared`
 = true, not removed), with how many campaigns use each. Move a campaign onto one with
@@ -7621,7 +7702,9 @@ func (r AdCampaignsAPIRemoveAdGroupAssetsRequest) Execute() (*RemoveCampaignAsse
 /*
 RemoveAdGroupAssets Remove ad-group assets
 
-Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
+Detaches assets from a Google ad group without deleting them, so they stay in the account and on anything else they are attached to.
+
+Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Numeric Google platform id.
@@ -7813,6 +7896,8 @@ func (r AdCampaignsAPIRemoveAdKeywordRequest) Execute() (*RemoveAdKeyword200Resp
 /*
 RemoveAdKeyword Remove a Search keyword
 
+Removes a single keyword or negative keyword from a Google Search ad group.
+
 Removes one keyword criterion (positive or negative) from its ad group (M.140).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -7996,7 +8081,9 @@ func (r AdCampaignsAPIRemoveCampaignAssetsRequest) Execute() (*RemoveCampaignAss
 /*
 RemoveCampaignAssets Remove campaign assets
 
-Removes the specified attachments only. Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
+Detaches assets from a Google campaign without deleting them, so they stay in the account and on anything else they are attached to.
+
+Google assets cannot be deleted. Other attachments remain. assetResourceNames is retained for compatibility. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Numeric Google platform id.
@@ -8195,6 +8282,8 @@ func (r AdCampaignsAPIRemoveGoogleAssetGroupRequest) Execute() (*RemoveGoogleAss
 /*
 RemoveGoogleAssetGroup Remove a Performance Max asset group
 
+Permanently removes an asset group from a Performance Max campaign (this cannot be undone).
+
 Removes the asset group on Google (status REMOVED, not reversible). Pass validateOnly=true to validate without removing.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -8348,7 +8437,9 @@ func (r AdCampaignsAPIReplaceCampaignNegativeKeywordListsRequest) Execute() (*Re
 /*
 ReplaceCampaignNegativeKeywordLists Replace campaign negative lists
 
-Sets the full desired set of shared negative keyword list associations on this campaign. Send listIds=[] to detach all negative keyword lists. Only campaign_shared_set links are changed; the lists and their keywords are preserved. Every list must belong to the campaign customer and have type NEGATIVE_KEYWORDS.
+Sets exactly which shared negative keyword lists apply to a Google campaign, or detaches them all, without changing the lists themselves.
+
+Send listIds=[] to detach all negative keyword lists. Only campaign_shared_set links are changed; the lists and their keywords are preserved. Every list must belong to the campaign customer and have type NEGATIVE_KEYWORDS.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId
@@ -8496,6 +8587,8 @@ func (r AdCampaignsAPIReplaceCampaignNegativeKeywordsRequest) Execute() (*Replac
 /*
 ReplaceCampaignNegativeKeywords Replace campaign-level negative keywords
 
+Replaces a Google campaign's full list of campaign-level negative keywords, or clears it.
+
 Replaces the FULL set of campaign-level negative keywords (C.270): the desired
 list is diffed against what Google already has, and the difference is applied
 as one `create`/`remove` mutate. Send an empty array to clear every campaign
@@ -8639,6 +8732,8 @@ func (r AdCampaignsAPIReplaceGoogleListingGroupFiltersRequest) Execute() (*Repla
 
 /*
 ReplaceGoogleListingGroupFilters Replace an asset group's listing-group tree
+
+Replaces the product targeting tree of a Performance Max retail asset group; only works on campaigns linked to Merchant Center.
 
 Replace the product (listing-group) tree of a Performance Max retail asset group. The current tree is removed and the new one created in one atomic request. Read the current tree with GET on the asset group. Requires a campaign linked to Merchant Center; other campaigns return 400 LISTING_SOURCE_NOT_ALLOWED from Google. validateOnly: true validates without writing.
 
@@ -8790,6 +8885,8 @@ func (r AdCampaignsAPIUpdateAdRequest) Execute() (*UpdateAd200Response, *http.Re
 
 /*
 UpdateAd Update ad
+
+Changes an ad's status, budget, targeting or creative and applies the change on the platform.
 
 Patch one or more fields on an ad. Status, budget, targeting, and creative changes
 are propagated to the platform.
@@ -9018,7 +9115,9 @@ func (r AdCampaignsAPIUpdateAdCampaignRequest) Execute() (*UpdateAdCampaign200Re
 /*
 UpdateAdCampaign Update a campaign
 
-Campaign-level edits. Send at least one of `budget`, `bidStrategy`,
+Changes a campaign's settings, such as its name, budget, bidding or tracking URLs.
+
+Send at least one of `budget`, `bidStrategy`,
 `portfolioBidStrategyId`, `targetImpressionShare`, `manualCpc`, `networkSettings`,
 `trackingUrlTemplate`, `finalUrlSuffix`, `sharedBudgetId`, `name` or `platformSpecificData`. An unsupported
 field is always an error, never a silent drop.
@@ -9213,6 +9312,8 @@ func (r AdCampaignsAPIUpdateAdCampaignStatusRequest) Execute() (*UpdateAdCampaig
 /*
 UpdateAdCampaignStatus Pause or resume a campaign
 
+Pauses or resumes a campaign, leaving the on/off switches of its ad sets and ads as they are.
+
 Writes the campaign's own on/off switch and nothing else, on every platform (Meta, TikTok,
 Google, LinkedIn campaign group, Pinterest, X, ChatGPT (OpenAI)). Its ad sets and ads keep
 their own switches: pausing stops their delivery through the campaign, and resuming lets
@@ -9353,7 +9454,9 @@ func (r AdCampaignsAPIUpdateAdGroupAssetsRequest) Execute() (*UpdateCampaignAsse
 /*
 UpdateAdGroupAssets Update ad-group assets
 
-Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+Edits a Google ad group's existing assets in place; the change applies everywhere that asset is used.
+
+Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Numeric Google platform id.
@@ -9511,6 +9614,8 @@ func (r AdCampaignsAPIUpdateAdKeywordRequest) Execute() (*UpdateAdKeyword200Resp
 
 /*
 UpdateAdKeyword Pause or enable a Search keyword
+
+Pauses or re-enables a single Google Search keyword.
 
 Changes `ad_group_criterion.status` for one keyword criterion (M.140).
 Negative keywords have no status on Google and cannot be paused or enabled.
@@ -9672,7 +9777,9 @@ func (r AdCampaignsAPIUpdateAdSetRequest) Execute() (*UpdateAdSet200Response, *h
 /*
 UpdateAdSet Update an ad set
 
-Ad-set-level writes. Use this for ABO budget updates, ad-set-scoped
+Changes an ad set's settings, such as its budget, bid strategy, status or delivery options.
+
+Use this for ABO budget updates, ad-set-scoped
 pause/resume, bid-strategy edits, Meta value-rule-set attach/detach, and
 Meta-only post-launch delivery settings via `platformSpecificData`. At
 least one updatable field is required.
@@ -9839,7 +9946,9 @@ func (r AdCampaignsAPIUpdateAdSetStatusRequest) Execute() (*UpdateAdSetStatus200
 /*
 UpdateAdSetStatus Pause or resume a single ad set
 
-Ad-set-scoped pause/resume (doesn't touch sibling ad sets). Thin wrapper
+Pauses or resumes one ad set without touching its campaign, its sibling ad sets or the switches of its ads.
+
+Thin wrapper
 over PUT /v1/ads/ad-sets/{adSetId} for callers that only want the
 status toggle and prefer a symmetric URL to
 /v1/ads/campaigns/{campaignId}/status.
@@ -9987,6 +10096,8 @@ func (r AdCampaignsAPIUpdateAdStatusRequest) Execute() (*UpdateAdStatus200Respon
 
 /*
 UpdateAdStatus Pause or resume a single ad
+
+Pauses or resumes a single ad without touching its ad set, campaign or sibling ads.
 
 Ad-scoped pause/resume: flips ONLY this ad's own switch (Meta
 `configured_status`, TikTok `operation_status`, Google ad group ad
@@ -10138,7 +10249,9 @@ func (r AdCampaignsAPIUpdateBidStrategyRequest) Execute() (*UpdateBidStrategy200
 /*
 UpdateBidStrategy Update portfolio bid strategy
 
-Renames or retargets a portfolio bid strategy. The strategy's status is output only on Google's side, so it cannot be changed here; remove a strategy in Google Ads. `type` is only needed alongside `targetCpa`/`targetRoas` to disambiguate the field Google writes to (TARGET_CPA and MAXIMIZE_CONVERSIONS both take a target CPA; TARGET_ROAS and MAXIMIZE_CONVERSION_VALUE both take a target ROAS); the strategy's family is otherwise immutable once created.
+Renames a shared Google Ads bid strategy or changes its target CPA or ROAS.
+
+The strategy's status is output only on Google's side, so it cannot be changed here; remove a strategy in Google Ads. `type` is only needed alongside `targetCpa`/`targetRoas` to disambiguate the field Google writes to (TARGET_CPA and MAXIMIZE_CONVERSIONS both take a target CPA; TARGET_ROAS and MAXIMIZE_CONVERSION_VALUE both take a target ROAS); the strategy's family is otherwise immutable once created.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param strategyId Numeric Google Ads bid strategy id.
@@ -10297,7 +10410,9 @@ func (r AdCampaignsAPIUpdateCampaignAdScheduleRequest) Execute() (*UpdateCampaig
 /*
 UpdateCampaignAdSchedule Replace a campaign's ad schedule (dayparting)
 
-Replaces the campaign's whole ad schedule with the windows you send. This is a
+Replaces the days and hours a Google campaign runs, or clears them so it serves around the clock.
+
+This is a
 REPLACE, not a merge: windows you leave out stop serving.
 
 Send `schedule: []` to clear dayparting, which returns the campaign to serving around
@@ -10462,7 +10577,9 @@ func (r AdCampaignsAPIUpdateCampaignAssetsRequest) Execute() (*UpdateCampaignAss
 /*
 UpdateCampaignAssets Update campaign assets
 
-Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+Edits a Google campaign's existing assets, such as sitelinks or callouts, in place; the change applies everywhere that asset is used.
+
+Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Numeric Google platform id.
@@ -10621,6 +10738,8 @@ func (r AdCampaignsAPIUpdateCampaignConversionGoalsRequest) Execute() (*UpdateCa
 /*
 UpdateCampaignConversionGoals Update campaign conversion goals
 
+Changes which conversions a Google campaign bids on, switching between account-default goals, its own goals or a custom goal.
+
 Sets `biddable` on campaign goals, switches `goalConfigLevel`, and/or points the
 campaign at a custom conversion goal, in one mutate. `customConversionGoalId: null`
 clears it; Google refuses that (400) while the campaign stays at CAMPAIGN level with
@@ -10761,6 +10880,8 @@ func (r AdCampaignsAPIUpdateCampaignTargetingRequest) Execute() (*UpdateCampaign
 
 /*
 UpdateCampaignTargeting Edit a Google campaign's device, location, excluded location, or language targeting
+
+Changes a Google campaign's device, location, excluded location or language targeting after it was created.
 
 Google Ads compliance row M.10: geo and language targeting set at
 creation must stay editable afterwards. Send at least one of `devices`,
@@ -10948,6 +11069,8 @@ func (r AdCampaignsAPIUpdateGoogleAssetGroupRequest) Execute() (*UpdateGoogleAss
 
 /*
 UpdateGoogleAssetGroup Update a Performance Max asset group
+
+Changes a Performance Max asset group's name, status, final URLs or display paths.
 
 Change the name, status (ENABLED or PAUSED), final URLs or display paths. Only the fields sent are written; null on path1 or path2 clears it. Change assets with the /assets endpoint and product targeting with /listing-group-filters. validateOnly: true validates without writing.
 

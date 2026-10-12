@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ func (r AdAccountsAPIAddAccountCalloutsRequest) Execute() (*AddAccountCallouts20
 
 /*
 AddAccountCallouts Add account callouts
+
+Creates callouts and attaches them at account level in Google Ads so they can show on ads across all campaigns.
 
 Creates assets and customer_asset links for this Google customer. Links apply at account level.
 
@@ -197,6 +199,8 @@ func (r AdAccountsAPIAddAccountSitelinksRequest) Execute() (*AddAccountSitelinks
 /*
 AddAccountSitelinks Add account sitelinks
 
+Creates sitelinks and attaches them at account level in Google Ads so they can show on ads across all campaigns.
+
 Creates assets and customer_asset links for this Google customer. Links apply at account level.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -351,6 +355,8 @@ func (r AdAccountsAPIAddAccountStructuredSnippetsRequest) Execute() (*AddAccount
 
 /*
 AddAccountStructuredSnippets Add account snippets
+
+Creates structured snippets and attaches them at account level in Google Ads so they can show on ads across all campaigns.
 
 Creates assets and customer_asset links for this Google customer. Links apply at account level.
 
@@ -507,7 +513,9 @@ func (r AdAccountsAPIAssignAdAccountUserRequest) Execute() (*AssignAdAccountUser
 /*
 AssignAdAccountUser Assign a user to an ad account
 
-Gives a person of the portfolio tasks on the ad account. `MANAGE` is admin, `ADVERTISE`
+Gives a person in your business portfolio access to a Meta ad account, as admin, advertiser, analyst or draft editor.
+
+`MANAGE` is admin, `ADVERTISE`
 creates and edits ads, `ANALYZE` reads reports, `DRAFT` edits drafts only. Assigning an
 already assigned user replaces their task set.
 
@@ -652,6 +660,8 @@ func (r AdAccountsAPIAssignPageUserRequest) Execute() (*AssignPageUser201Respons
 
 /*
 AssignPageUser Assign a user to a Page
+
+Gives a person in your business portfolio tasks on a Facebook Page, such as advertising, so they can run ads for it.
 
 Gives a person of the portfolio tasks on a Page the portfolio owns or was granted as a
 partner. Meta does not assign partner admins automatically, so after an owner shares a
@@ -801,6 +811,8 @@ func (r AdAccountsAPIAttachAdLabelRequest) Execute() (*AttachAdLabel200Response,
 
 /*
 AttachAdLabel Attach a Google Ads label
+
+Attaches a Google Ads label to campaigns, ad groups, ads and keywords in one call, skipping any that already have it.
 
 Attaches the label to campaigns, ad groups, ads and keywords (Google CampaignLabel,
 AdGroupLabel, AdGroupAdLabel and AdGroupCriterionLabel) in one mutate. Idempotent: a
@@ -953,6 +965,8 @@ func (r AdAccountsAPICreateAdAccountRequest) Execute() (*CreateAdAccount201Respo
 
 /*
 CreateAdAccount Create Meta ad account
+
+Creates a new Meta ad account in the user's own business portfolio (a payment method must then be added in Ads Manager).
 
 Creates a durable Meta ad account in the end user's own business portfolio using
 their connected Meta Ads token. Requires an active metaads accountId, Ads access,
@@ -1157,7 +1171,9 @@ func (r AdAccountsAPICreateAdLabelRequest) Execute() (*CreateBidStrategy201Respo
 /*
 CreateAdLabel Create a Google Ads label
 
-Creates a label on a Google Ads customer. Attach it to campaigns, ad groups, ads and
+Creates a Google Ads label you can then attach to campaigns, ad groups, ads and keywords to organize and filter them.
+
+Attach it to campaigns, ad groups, ads and
 keywords with `POST /v1/ads/labels/{labelId}/assignments`. Label names are unique per
 customer; a duplicate is a 400.
 
@@ -1314,6 +1330,8 @@ func (r AdAccountsAPICreateAdNegativeKeywordListRequest) Execute() (*CreateAdNeg
 /*
 CreateAdNegativeKeywordList Create a negative keyword list
 
+Creates a shared Google Ads negative keyword list, optionally with starting keywords; it is not attached to any campaign yet.
+
 Creates one Google Ads shared negative keyword list with optional initial keywords in a single atomic mutation. Daily quota is reserved for every mutate item, so large batches may return 429 before any change. This operation is not idempotent. The list is not attached to any campaign.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1458,6 +1476,8 @@ func (r AdAccountsAPICreateCustomConversionRequest) Execute() (*CustomConversion
 
 /*
 CreateCustomConversion Create custom conversion
+
+Creates a Meta custom conversion for ads to optimise toward, reusing an existing one with the same name and pixel.
 
 Provision the Meta custom conversion an ads flow optimises toward, and hand back the
 `customConversionId` for `promotedObject.customConversionId` on POST /v1/ads/create.
@@ -1616,8 +1636,9 @@ func (r AdAccountsAPICreateHighDemandPeriodRequest) Execute() (*CreateHighDemand
 /*
 CreateHighDemandPeriod Schedule a budget increase
 
-Pre-schedule a temporary budget increase (Black Friday, a launch, a sale) instead of
-editing the budget by hand on the day. Same target rule as the GET: exactly one of
+Schedules a temporary budget increase on a Meta campaign or ad set for a busy period, like Black Friday or a launch.
+
+Same target rule as the GET: exactly one of
 `campaignId` / `adSetId`.
 
 Two Meta constraints worth knowing before you call it. `timeStart` / `timeEnd` must
@@ -1767,6 +1788,8 @@ func (r AdAccountsAPICreateValueRuleSetRequest) Execute() (*CreateValueRuleSet20
 
 /*
 CreateValueRuleSet Create a value rule set
+
+Creates a Meta value rule set that raises or lowers bids for chosen audience segments, ready to attach to ad sets.
 
 Creates a value rule set on the ad account (Meta's `POST /act_X/value_rule_set`).
 Attach the returned id to an ad set with `valueRuleSetId` on `POST /v1/ads/create` or
@@ -2127,7 +2150,9 @@ func (r AdAccountsAPIDeleteAdNegativeKeywordListRequest) Execute() (*DeleteAdNeg
 /*
 DeleteAdNegativeKeywordList Delete a negative keyword list
 
-Removes the Google shared negative keyword list. Detach it from all campaigns first; an in-use list is rejected. Only NEGATIVE_KEYWORDS shared sets are supported.
+Deletes a shared Google Ads negative keyword list; detach it from every campaign first.
+
+Detach it from all campaigns first; an in-use list is rejected. Only NEGATIVE_KEYWORDS shared sets are supported.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param listId
@@ -2283,6 +2308,8 @@ func (r AdAccountsAPIDeleteValueRuleSetRequest) Execute() (*DeleteValueRuleSet20
 
 /*
 DeleteValueRuleSet Delete a value rule set
+
+Deletes a Meta value rule set (detach it from ad sets first, since they are not changed here).
 
 Deletes the rule set (Meta's `POST /{value-rule-set-id}/delete_rule_set`, a custom
 action edge rather than an HTTP DELETE on its side). Ad sets pointing at it are not
@@ -2478,7 +2505,9 @@ func (r AdAccountsAPIDetachAdLabelRequest) Execute() (*DetachAdLabel200Response,
 /*
 DetachAdLabel Detach a Google Ads label
 
-Removes the label from the given targets. Idempotent; a target without the label is counted in `unchanged`. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
+Removes a Google Ads label from the campaigns, ad groups, ads or keywords you name, skipping any that do not have it.
+
+Idempotent; a target without the label is counted in `unchanged`. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param labelId Google label id
@@ -2682,6 +2711,8 @@ func (r AdAccountsAPIGetAdAccountFinanceRequest) Execute() (*GetAdAccountFinance
 /*
 GetAdAccountFinance Ad account finances
 
+Shows a Meta ad account's balance, total spend, spend cap and funding source.
+
 Finances of one Meta ad account: prepaid `balance`, lifetime `amountSpent`, account
 `spendCap` (null = no cap) and the `fundingSource`. Money values are converted from
 Meta's minor units to whole units of `currency`.
@@ -2846,6 +2877,8 @@ func (r AdAccountsAPIGetAdAccountHierarchyRequest) Execute() (*GetAdAccountHiera
 
 /*
 GetAdAccountHierarchy Get manager account hierarchy
+
+Shows the Google Ads manager (MCC) and client account tree for a connection, including pending invitations and link status.
 
 Live manager (MCC) and client tree for a Google Ads connection. Starts from every customer the Google user behind the connection can access directly and walks each tree to any depth with `customer_client`, then reads each manager's own client links so every client carries its direct parent, the `managerLinkId` and the link status. Invitations a manager sent that the client has not accepted yet appear as clients with `linkStatus: PENDING` (Google returns no name or currency for them). Refused, canceled and ended links are history and are omitted. `managerLinks` on a root lists the managers linked to that account, including invitations it can still accept with PATCH /v1/ads/accounts/manager-links. A directly accessible account that is also nested in another tree appears only once, inside that tree. `directCustomers` lists every account the Google user accesses directly (the ones this connection can accept or decline invitations for) with their pending invitations, including accounts that are also nested in a tree. Customers Google refuses to read (for example a cancelled account) are listed in `unavailable` with Google's reason instead of failing the call. Up to 50 roots and 50 managers per root are read; `truncated` is true when more exist. Cached for 10 minutes per connection; the response carries `cachedAt` and `stale`. When the connection is scoped to specific ad accounts, client accounts outside that scope are hidden (managers stay visible).
 
@@ -3042,6 +3075,8 @@ func (r AdAccountsAPIGetAdAccountLiveEntitiesRequest) Execute() (*GetAdAccountLi
 
 /*
 GetAdAccountLiveEntities Read an ad account's campaigns and ad sets live
+
+Reads an ad account's campaigns and ad sets straight from Meta or TikTok, so checks like budget limits see current values.
 
 Reads the campaigns and ad sets of one Meta ad account or TikTok advertiser **live from
 the platform**, so it is cheap enough to run before every write: for example a
@@ -3279,7 +3314,9 @@ func (r AdAccountsAPIGetAdCommentsRequest) Execute() (*GetAdComments200Response,
 /*
 GetAdComments List comments on an ad
 
-Returns comments on an ad's underlying creative post. Useful for moderating or analyzing
+Lists the comments on an ad's post, including dark posts that never ran organically, so you can moderate ad engagement.
+
+Useful for moderating or analyzing
 engagement on dark posts (ad creatives that never went live organically), which the
 regular GET /v1/inbox/comments/{postId} endpoint cannot serve because dark posts are
 not in Zernio's post database.
@@ -3496,6 +3533,8 @@ func (r AdAccountsAPIGetAdNegativeKeywordListRequest) Execute() (*GetAdNegativeK
 /*
 GetAdNegativeKeywordList Get a negative keyword list
 
+Shows one shared Google Ads negative keyword list with all of its keywords.
+
 Google Ads shared negative keyword lists (shared_set type NEGATIVE_KEYWORDS). Reads are cached for 10 minutes; quota exhaustion may return the last successful result for up to 7 days with stale=true. Customer selection is limited to this connection and its account scope. Includes the keywords and their criterion ids.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -3694,6 +3733,8 @@ func (r AdAccountsAPIGetAdsActivityLogRequest) Execute() (*GetAdsActivityLog200R
 /*
 GetAdsActivityLog Ad account change / audit log
 
+Shows who changed what in an ad account and when, as an audit log of edits to campaigns, ad sets and ads.
+
 **Google**: reads the customer's `change_event` history, newest first. Google keeps 30 days
 of it, so `since` defaults to 29 days ago and an older `since` returns 400; `until`
 defaults to today. Each change is mapped onto the Meta row shape: `event_type` =
@@ -3885,6 +3926,8 @@ func (r AdAccountsAPIGetDsaDefaultsRequest) Execute() (*GetDsaDefaults200Respons
 /*
 GetDsaDefaults Get ad account DSA defaults
 
+Shows the default EU DSA beneficiary and payor set on a Meta ad account.
+
 Returns the default DSA beneficiary and payor currently set on a Meta ad account,
 whether they were set via `PATCH /v1/ads/accounts` or in Meta Ads Manager. Fields
 are omitted when no default is configured. Meta accounts only.
@@ -4040,6 +4083,8 @@ func (r AdAccountsAPIGetDsaRecommendationsRequest) Execute() (*GetDsaRecommendat
 
 /*
 GetDsaRecommendations Get DSA recommendations
+
+Suggests beneficiary and payor names for a Meta ad account's EU DSA disclosures, for your user to pick from.
 
 Returns Meta's suggested beneficiary/payor names for an ad account, derived by Meta
 from the account's recent activity. Useful for prefilling `dsaBeneficiary`/`dsaPayor`
@@ -4209,7 +4254,9 @@ func (r AdAccountsAPIGetIosFourteenCampaignLimitsRequest) Execute() (*GetIosFour
 /*
 GetIosFourteenCampaignLimits Get iOS 14 campaign limits
 
-Reads Meta iOS 14 campaign limits for an application on an ad account. applicationId is sent as Meta app_id. This read does not establish that the application is configured for iOS promotion.
+Shows Meta's iOS 14 campaign limits for an app on an ad account (it does not confirm the app is set up for iOS promotion).
+
+applicationId is sent as Meta app_id. This read does not establish that the application is configured for iOS promotion.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIGetIosFourteenCampaignLimitsRequest
@@ -4372,6 +4419,8 @@ func (r AdAccountsAPIGetValueRuleSetRequest) Execute() (*GetValueRuleSet200Respo
 
 /*
 GetValueRuleSet Read a value rule set
+
+Shows one Meta value rule set with all its rules and criteria, the first step before editing it.
 
 Reads one value rule set including every nested rule id and criterion id. This is step
 one of any edit: `PUT` is a full replace, so you need the ids before you can keep the
@@ -4694,6 +4743,8 @@ func (r AdAccountsAPIInviteAdAccountToManagerRequest) Execute() (*GoogleAdsManag
 /*
 InviteAdAccountToManager Invite a client account to a manager
 
+Invites a Google Ads account to be managed by one of your manager accounts; the link stays pending until the client accepts.
+
 Sends a manager-to-client link invitation from `managerCustomerId` to `clientCustomerId` (Google's CustomerClientLinkService). The manager must be one the connection's Google user reaches, directly or under another manager (see GET /v1/ads/accounts/hierarchy); the client can be any Google Ads account. The link stays `PENDING` until someone with access to the client accepts it in Google Ads or through PATCH on this path. Not idempotent: Google refuses a second invitation while one is pending. Send `validateOnly: true` to have Google check the request without sending anything.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -4862,7 +4913,9 @@ func (r AdAccountsAPIListAccountCalloutsRequest) Execute() (*ListAccountCallouts
 /*
 ListAccountCallouts List account callouts
 
-Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included. Preserves Google RMF C.75 account-level callouts.
+Lists the callouts attached at account level in Google Ads, which can show on ads across all campaigns.
+
+Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included. Preserves Google RMF C.75 account-level callouts.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAccountCalloutsRequest
@@ -5035,7 +5088,9 @@ func (r AdAccountsAPIListAccountSitelinksRequest) Execute() (*ListAccountSitelin
 /*
 ListAccountSitelinks List account sitelinks
 
-Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+Lists the sitelinks attached at account level in Google Ads, which can show on ads across all campaigns.
+
+Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAccountSitelinksRequest
@@ -5208,7 +5263,9 @@ func (r AdAccountsAPIListAccountStructuredSnippetsRequest) Execute() (*ListAccou
 /*
 ListAccountStructuredSnippets List account snippets
 
-Lists directly attached Google assets. Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
+Lists the structured snippets attached at account level in Google Ads, which can show on ads across all campaigns.
+
+Fresh reads are cached for 10 minutes; exhausted quota may return the last successful read with stale=true. Inherited assets are not included.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAccountStructuredSnippetsRequest
@@ -5383,7 +5440,8 @@ func (r AdAccountsAPIListAdAccountUsersRequest) Execute() (*ListAdAccountUsers20
 /*
 ListAdAccountUsers Ad account users
 
-People of a business portfolio assigned to a Meta ad account, with their tasks.
+Lists the people in a business portfolio assigned to a Meta ad account, with what each can do.
+
 Ids are business-scoped user ids (see `GET /v1/ads/businesses/users`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -5560,6 +5618,8 @@ func (r AdAccountsAPIListAdAccountsRequest) Execute() (*ListAdAccounts200Respons
 
 /*
 ListAdAccounts List ad accounts
+
+Lists the ad accounts a connection can manage, such as Meta ad accounts, TikTok advertisers or Google Ads customers.
 
 Returns the platform ad accounts available for the given account (e.g. Meta ad
 accounts, TikTok advertiser IDs, Google Ads customer IDs).
@@ -5774,7 +5834,7 @@ func (r AdAccountsAPIListAdLabelsRequest) Execute() (*ListAdLabels200Response, *
 /*
 ListAdLabels List ad labels
 
-Lists the organizational labels on an ad account.
+Lists the labels used to organise campaigns and ads in an ad account.
 
   - **Meta**: pass `adAccountId=act_<n>`. Rows are Meta's `/act_X/adlabels` returned verbatim
     (id, name, created/updated time), paginated with `limit` / `after`.
@@ -5971,6 +6031,8 @@ func (r AdAccountsAPIListAdNegativeKeywordListsRequest) Execute() (*ListAdNegati
 /*
 ListAdNegativeKeywordLists List negative keyword lists
 
+Lists the shared negative keyword lists in a Google Ads account, which you can apply to many campaigns at once.
+
 Google Ads shared negative keyword lists (shared_set type NEGATIVE_KEYWORDS). Reads are cached for 10 minutes; quota exhaustion may return the last successful result for up to 7 days with stale=true. Customer selection is limited to this connection and its account scope.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -6151,6 +6213,8 @@ func (r AdAccountsAPIListAdStudiesRequest) Execute() (*GetAdsActivityLog200Respo
 
 /*
 ListAdStudies A/B tests and lift studies
+
+Lists the A/B tests and lift studies on a Meta ad account, with their timing and test groups.
 
 Lists the ad account's A/B tests and lift studies (Meta's `/act_X/ad_studies`), rows
 returned verbatim. The default projection covers id, name, type, timing and cells with
@@ -6481,6 +6545,8 @@ func (r AdAccountsAPIListAdsInstagramAccountsRequest) Execute() (*ListAdsInstagr
 /*
 ListAdsInstagramAccounts List Instagram ad identities
 
+Lists the Instagram accounts a Meta ad connection can run ads as, so you can pick the identity for a new ad.
+
 Discovers identities through connected_instagram_accounts, Page linkage and Page-backed identities, with a best-effort business fallback. Business permission errors do not fail discovery. The resolved object uses the same profile-scoped resolver as ad creation; null means no identity was resolved. Format-specific observed-actor fallbacks at creative creation are not predicted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -6668,6 +6734,8 @@ func (r AdAccountsAPIListAdsInstagramPostsRequest) Execute() (*ListAdsInstagramP
 /*
 ListAdsInstagramPosts List Instagram posts to boost
 
+Lists posts from the Instagram account a Meta ad connection can reach, so you can boost one as an ad.
+
 Lists the media of the Instagram account this Meta connection can reach, so an existing Instagram post can be boosted without connecting the Instagram account separately. Each `posts[].id` is the existing-post id to send as `platformPostId` when creating the ad; Meta turns it into `source_instagram_media_id` on the creative. Identity resolution reuses the same resolver as `/v1/ads/instagram-accounts`. `igUserId` is always checked against the identities the connection can reach and is never trusted as sent. When no identity is reachable the endpoint fails instead of returning an empty list, and the two causes stay apart: `403 reconnect_required` means the connection predates Instagram access (Meta then omits `instagram_business_account` from the Page read rather than erroring, so it looks identical to having no data) and the account must be reconnected granting Instagram access, while `422 instagram_business_account_unresolved` means the Page genuinely has no Instagram professional account linked.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -6846,6 +6914,8 @@ func (r AdAccountsAPIListAdvertisableApplicationsRequest) Execute() (*ListAdvert
 /*
 ListAdvertisableApplications List advertisable apps
 
+Lists the mobile apps a Meta ad account can promote, with their platforms and store links, for app install campaigns.
+
 Lists applications available to a Meta ad account, their supported platforms and unmodified object store URLs. A listed app still needs a configured mobile platform and store URL to run install promotion.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -7005,6 +7075,8 @@ func (r AdAccountsAPIListCustomConversionsRequest) Execute() (*ListCustomConvers
 
 /*
 ListCustomConversions List custom conversions
+
+Lists a Meta ad account's custom conversions, including archived ones.
 
 The ad account's Meta custom conversions, including archived ones (`isArchived`).
 
@@ -7180,6 +7252,8 @@ func (r AdAccountsAPIListHighDemandPeriodsRequest) Execute() (*ListHighDemandPer
 /*
 ListHighDemandPeriods List high-demand periods
 
+Lists the scheduled budget increases set on a Meta campaign or ad set.
+
 Scheduled budget increases (Meta's budget-scheduling API). The Graph edge lives on the
 campaign and ad-set nodes only, so exactly one of `campaignId` / `adSetId` (platform
 ids) is required. Rows returned verbatim (budget_value, budget_value_type, time window,
@@ -7349,6 +7423,8 @@ func (r AdAccountsAPIListMetaBusinessUsersRequest) Execute() (*ListMetaBusinessU
 
 /*
 ListMetaBusinessUsers Business users
+
+Lists the people and system users of a Meta business portfolio, with the ids you need to assign them to Pages or ad accounts.
 
 People and system users of a Meta business portfolio, with the business-scoped ids that
 `POST /v1/ads/accounts/users` and `POST /v1/ads/page-users` take. The connected Meta
@@ -7525,6 +7601,8 @@ func (r AdAccountsAPIListMetaBusinessesRequest) Execute() (*ListMetaBusinesses20
 /*
 ListMetaBusinesses Businesses list
 
+Lists the Meta business portfolios the connected user belongs to, with their verification status.
+
 Business Manager portfolios the connected Meta user belongs to (Meta's `/me/businesses`),
 rows returned verbatim (id, name, verification_status, created_time). Token-scoped, so no
 `adAccountId` is needed. For TikTok Business Centers use
@@ -7695,6 +7773,8 @@ func (r AdAccountsAPIListPageUsersRequest) Execute() (*ListPageUsers200Response,
 
 /*
 ListPageUsers Page users of a business
+
+Lists the people in a business portfolio who are assigned to a Facebook Page it owns or was shared as a partner.
 
 People of a business portfolio assigned to a Facebook Page the portfolio owns or was
 granted as a partner (`POST /v1/accounts/{accountId}/business-partners` on the owner side).
@@ -8067,6 +8147,8 @@ func (r AdAccountsAPIListValueRuleSetsRequest) Execute() (*ListValueRuleSets200R
 /*
 ListValueRuleSets List value rule sets
 
+Lists a Meta ad account's value rule sets, which raise or lower bids for audience segments you value differently.
+
 Lists the ad account's value rule sets (Meta's `/act_X/value_rule_set`). A value rule
 set adjusts the auction bid up or down for audience segments you value differently;
 attach one to an ad set with `valueRuleSetId` on `POST /v1/ads/create` or
@@ -8263,6 +8345,8 @@ func (r AdAccountsAPIRemoveAccountCalloutRequest) Execute() (*RemoveAccountCallo
 /*
 RemoveAccountCallout Remove account callout
 
+Detaches a callout from the Google Ads account level, leaving it on any campaigns or ad groups that still use it.
+
 Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -8449,6 +8533,8 @@ func (r AdAccountsAPIRemoveAccountSitelinkRequest) Execute() (*RemoveAccountCall
 
 /*
 RemoveAccountSitelink Remove account sitelink
+
+Detaches a sitelink from the Google Ads account level, leaving it on any campaigns or ad groups that still use it.
 
 Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
@@ -8637,6 +8723,8 @@ func (r AdAccountsAPIRemoveAccountStructuredSnippetRequest) Execute() (*RemoveAc
 /*
 RemoveAccountStructuredSnippet Remove account snippet
 
+Detaches a structured snippet from the Google Ads account level, leaving it on any campaigns or ad groups that still use it.
+
 Removes the customer_asset attachment only. The underlying shared asset and its campaign or ad-group attachments remain. Fields go in the query string. A JSON body with the same fields is also accepted and, when sent, the query string is ignored.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -8816,6 +8904,8 @@ func (r AdAccountsAPIRemoveAdAccountUserRequest) Execute() (*RemoveAdAccountUser
 /*
 RemoveAdAccountUser Remove a user from an ad account
 
+Removes a person's access to a Meta ad account assigned through your business portfolio.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIRemoveAdAccountUserRequest
 */
@@ -8982,7 +9072,9 @@ func (r AdAccountsAPIRemoveAdLabelRequest) Execute() (*RemoveAdLabel200Response,
 /*
 RemoveAdLabel Remove a Google Ads label
 
-Removes the label. Google drops it from every campaign, ad group, ad and keyword it was attached to.
+Deletes a Google Ads label and removes it from everything it was attached to.
+
+Google drops it from every campaign, ad group, ad and keyword it was attached to.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param labelId Google label id
@@ -9149,6 +9241,8 @@ func (r AdAccountsAPIRemovePageUserRequest) Execute() (*RemovePageUser200Respons
 /*
 RemovePageUser Remove a user from a Page
 
+Removes a person's access to a Facebook Page assigned through your business portfolio.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIRemovePageUserRequest
 */
@@ -9299,7 +9393,9 @@ func (r AdAccountsAPIReplaceAdNegativeKeywordListKeywordsRequest) Execute() (*Re
 /*
 ReplaceAdNegativeKeywordListKeywords Replace negative list keywords
 
-Replaces the full desired keyword set. Existing keywords are diffed by normalized text and match type; creates and removals are applied atomically in one mutation. Unchanged criteria retain their ids. Send an empty keywords array to clear the list. Changes affect every campaign using this list. Each create or removal consumes one daily operation; the entire batch must fit the remaining quota.
+Replaces all keywords in a shared Google Ads negative keyword list (or clears it), affecting every campaign that uses the list.
+
+Existing keywords are diffed by normalized text and match type; creates and removals are applied atomically in one mutation. Unchanged criteria retain their ids. Send an empty keywords array to clear the list. Changes affect every campaign using this list. Each create or removal consumes one daily operation; the entire batch must fit the remaining quota.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param listId
@@ -9623,7 +9719,9 @@ func (r AdAccountsAPIUpdateAccountCalloutsRequest) Execute() (*UpdateAccountCall
 /*
 UpdateAccountCallouts Update account callouts
 
-Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+Edits existing Google Ads callouts in place; the change applies everywhere that callout is used.
+
+Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIUpdateAccountCalloutsRequest
@@ -9778,7 +9876,9 @@ func (r AdAccountsAPIUpdateAccountSitelinksRequest) Execute() (*UpdateAccountCal
 /*
 UpdateAccountSitelinks Update account sitelinks
 
-Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+Edits existing Google Ads sitelinks in place; the change applies everywhere that sitelink is used.
+
+Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIUpdateAccountSitelinksRequest
@@ -9933,7 +10033,9 @@ func (r AdAccountsAPIUpdateAccountStructuredSnippetsRequest) Execute() (*UpdateA
 /*
 UpdateAccountStructuredSnippets Update account snippets
 
-Edits existing Google assets in place. Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
+Edits existing Google Ads structured snippets in place; the change applies everywhere that snippet is used.
+
+Send updates with assetResourceName and the fields to change. An asset is shared: changes affect every attachment using it. Omitted fields stay unchanged. The operation consumes the Google operations budget and invalidates affected cached lists.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIUpdateAccountStructuredSnippetsRequest
@@ -10088,8 +10190,9 @@ func (r AdAccountsAPIUpdateAdAccountRequest) Execute() (*UpdateAdAccount200Respo
 /*
 UpdateAdAccount Update ad account settings
 
-Updates a Meta ad account in place: its name, its account-level spend cap, and its
-default DSA beneficiary and payor. Pass any combination of fields.
+Changes a Meta ad account's name, spend cap or default EU DSA beneficiary and payor.
+
+Pass any combination of fields.
 
 **Spend cap.** `spendCap` is the total the account may spend before Meta pauses every
 campaign in it, in whole units of the account currency. `spendCap: null` removes the
@@ -10274,6 +10377,8 @@ func (r AdAccountsAPIUpdateAdAccountManagerLinkRequest) Execute() (*GoogleAdsMan
 /*
 UpdateAdAccountManagerLink Accept, decline, cancel or end a manager link
 
+Accepts, declines or cancels a Google Ads manager invitation, or ends an existing manager-client link.
+
 Changes one manager-client link, identified by `managerCustomerId`, `clientCustomerId` and `managerLinkId` (all from GET /v1/ads/accounts/hierarchy). `accept` and `decline` answer a pending invitation as the client (CustomerManagerLinkService), so the connection's Google user needs direct access to the client account; access through a manager is not enough, because the link does not exist yet. `cancel` withdraws a pending invitation and `unlink` ends an active link, both as the manager (CustomerClientLinkService). Send `validateOnly: true` to have Google check the change without applying it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -10430,7 +10535,9 @@ func (r AdAccountsAPIUpdateAdLabelRequest) Execute() (*UpdateAdLabel200Response,
 /*
 UpdateAdLabel Update a Google Ads label
 
-Changes the name, color or description of a label. Only the fields sent are written.
+Changes a Google Ads label's name, color or description.
+
+Only the fields sent are written.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param labelId Google label id
@@ -10578,7 +10685,9 @@ func (r AdAccountsAPIUpdateAdNegativeKeywordListRequest) Execute() (*UpdateAdNeg
 /*
 UpdateAdNegativeKeywordList Rename a negative keyword list
 
-Renames a shared negative keyword list. Keywords and campaign associations are unchanged. Use the keywords endpoint to edit the desired keyword set.
+Renames a shared Google Ads negative keyword list without changing its keywords or the campaigns using it.
+
+Keywords and campaign associations are unchanged. Use the keywords endpoint to edit the desired keyword set.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param listId
@@ -10725,6 +10834,8 @@ func (r AdAccountsAPIUpdateValueRuleSetRequest) Execute() (*UpdateValueRuleSet20
 
 /*
 UpdateValueRuleSet Replace a value rule set
+
+Replaces a Meta value rule set with the rules you send, so any rule left out is deleted.
 
 **THIS IS A FULL REPLACE, NOT A PATCH.** Meta's update is declarative: the body you
 send becomes the rule set.

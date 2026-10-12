@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -42,7 +42,9 @@ func (r AdAudiencesAPIAddUsersToAdAudienceRequest) Execute() (*AddUsersToAdAudie
 /*
 AddUsersToAdAudience Add users to audience
 
-Upload user data to a customer_list audience. Data is SHA256-hashed server-side before sending to the platform.
+Uploads customer emails (and phone numbers on Meta) to a customer list audience, hashed before they are sent.
+
+Data is SHA256-hashed server-side before sending to the platform.
 Email is used on every platform; phone is used on Meta only (other platforms ignore it). On TikTok and Pinterest,
 the first upload also provisions the audience (deferred create). LinkedIn uploads are full-replace. Max 10,000 users per request.
 
@@ -183,7 +185,9 @@ func (r AdAudiencesAPICreateAdAudienceRequest) Execute() (*CreateAdAudience201Re
 /*
 CreateAdAudience Create custom audience
 
-Create a custom audience. `customer_list` is supported on Meta, Google, X, LinkedIn, TikTok, and Pinterest.
+Creates a custom audience from a customer list, website visitors, a lookalike, or people who engaged with your content.
+
+`customer_list` is supported on Meta, Google, X, LinkedIn, TikTok, and Pinterest.
 `website` (pixel/tag visitors) and `lookalike` are supported on Meta, TikTok, Pinterest and Google.
 `meta_engagement` is Meta-only, `tiktok_engagement` TikTok-only, `pinterest_engagement` Pinterest-only;
 `company_list`, `engagement` and `website_retargeting` are LinkedIn-only. A type sent to a platform
@@ -357,6 +361,8 @@ func (r AdAudiencesAPIDeleteAdAudienceRequest) Execute() (*DeleteAccountGroup200
 /*
 DeleteAdAudience Delete custom audience
 
+Removes a custom audience from its ad platform (archiving it where the platform does not delete).
+
 Removes the audience on its ad platform, then deletes the Zernio record. Meta, Google, TikTok,
 LinkedIn list and engagement segments, and X are deleted; Pinterest audiences and LinkedIn
 `website_retargeting` segments are archived, which is how those platforms remove them.
@@ -489,6 +495,8 @@ func (r AdAudiencesAPIGetAdAudienceRequest) Execute() (*GetAdAudience200Response
 
 /*
 GetAdAudience Get audience details
+
+Shows a custom audience's details, including its latest data from the ad platform when available.
 
 Returns the local audience record and fresh data from Meta (if available).
 
@@ -641,7 +649,9 @@ func (r AdAudiencesAPIListAdAudiencesRequest) Execute() (*ListAdAudiences200Resp
 /*
 ListAdAudiences List custom audiences
 
-Returns custom audiences for the given ad account. Supports Meta, Google, TikTok, Pinterest, LinkedIn, and X.
+Lists the custom audiences in an ad account so you can reuse them for targeting.
+
+Supports Meta, Google, TikTok, Pinterest, LinkedIn, and X.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAudiencesAPIListAdAudiencesRequest
@@ -961,7 +971,9 @@ func (r AdAudiencesAPIUpdateAdAudienceRequest) Execute() (*CreateAdAudience201Re
 /*
 UpdateAdAudience Update an audience
 
-Update an audience. `saved_targeting` audiences accept `name`, `description`, and `spec`
+Renames or redescribes an audience, or replaces a saved targeting audience's rules; platform audience rules cannot change.
+
+`saved_targeting` audiences accept `name`, `description`, and `spec`
 (full replacement, no merge, Zernio-only, no platform call). Platform audiences
 (uploaded/website/lookalike) accept `name` and `description` only, updated on the
 platform first and then mirrored locally; their rules are immutable, so `spec` returns

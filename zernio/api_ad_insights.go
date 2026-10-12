@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,9 @@ func (r AdInsightsAPICreateAdInsightsReportRequest) Execute() (*CreateAdInsights
 /*
 CreateAdInsightsReport Submit async insights report
 
-Submits an asynchronous Meta insights report. Same query surface as GET /v1/ads/insights, but
+Starts a background Meta insights report for long date ranges or large accounts where a live query would be too slow.
+
+Same query surface as GET /v1/ads/insights, but
 in the JSON body; Meta processes the report server-side, which is the right choice for long
 ranges or large accounts where the sync query is slow or rate-limited. Returns a `reportRunId`
 to poll via GET /v1/ads/insights/reports/{reportRunId}.
@@ -199,6 +201,8 @@ func (r AdInsightsAPIGenerateKeywordHistoricalMetricsRequest) Execute() (*Genera
 /*
 GenerateKeywordHistoricalMetrics Get historical keyword metrics
 
+Gets historical search volume, competition and bid ranges for up to 1,000 keywords from Google Keyword Planner.
+
 Google Ads only. Runs Keyword Planner's generateKeywordHistoricalMetrics for up to 1,000
 exact keywords: historical search volume, competition and top-of-page bid ranges, plus
 averageCpcMicros when includeAverageCpc is set. Rows come back verbatim; counters are int64s
@@ -345,6 +349,8 @@ func (r AdInsightsAPIGenerateKeywordIdeasRequest) Execute() (*GenerateKeywordIde
 
 /*
 GenerateKeywordIdeas Generate keyword ideas
+
+Suggests new keywords from seed keywords or a website using Google Keyword Planner, with search volume, competition and bid estimates.
 
 Google Ads only. Runs Keyword Planner's generateKeywordIdeas from seed keywords, a seed URL,
 or both, returning idea rows verbatim (avgMonthlySearches, competition, competitionIndex,
@@ -509,7 +515,9 @@ func (r AdInsightsAPIGetAdAnalyticsRequest) Execute() (*AdAnalyticsResponse, *ht
 /*
 GetAdAnalytics Get ad analytics
 
-Returns detailed performance analytics for an ad. Includes summary metrics, a daily timeline
+Returns one ad's performance summary and daily timeline, with optional audience breakdowns on Meta and TikTok.
+
+Includes summary metrics, a daily timeline
 over the requested date range, and optional demographic breakdowns (Meta and TikTok only).
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
 
@@ -674,6 +682,8 @@ func (r AdInsightsAPIGetAdInsightsReportRequest) Execute() (*GetAdInsightsReport
 
 /*
 GetAdInsightsReport Poll an async insights report run
+
+Checks progress of a background Meta insights report and returns its results once it has finished.
 
 Status and results for a report run created via POST /v1/ads/insights/reports. While the job
 runs, returns `status` and `percentCompletion`. Once `status` is "Job Completed" the response
@@ -903,6 +913,8 @@ func (r AdInsightsAPIGetAdsSearchTermsRequest) Execute() (*GetAdsSearchTerms200R
 /*
 GetAdsSearchTerms Google Ads search terms report
 
+Shows the actual Google searches that triggered your ads, with spend and results, so you can spot wasted spend and add negative keywords.
+
 The actual search queries that triggered your ads, with matched-keyword
 status and spend metrics, the raw material for wasted-spend analysis and
 negative-keyword lists. Reads Google's `search_term_view`, cached for
@@ -1109,6 +1121,8 @@ func (r AdInsightsAPIGetCampaignAnalyticsRequest) Execute() (*CampaignAnalyticsR
 
 /*
 GetCampaignAnalytics Get campaign analytics
+
+Returns a campaign's performance summary and daily timeline, with optional breakdowns by age, gender and other audience dimensions.
 
 Returns performance analytics for a whole campaign in one call: summary metrics, a daily
 timeline over the requested date range (summed across the campaign's ads), and optional
@@ -1546,6 +1560,8 @@ func (r AdInsightsAPIListLocalServicesLeadConversationsRequest) Execute() (*List
 /*
 ListLocalServicesLeadConversations List lead conversations
 
+Shows the calls (with recordings) and messages exchanged with one Google Local Services lead, oldest first.
+
 Conversation entries of one Local Services lead: phone calls (duration,
 recording URL) and messages (text, attachment URLs), oldest first. Read
 live from `local_services_lead_conversation`, always scoped to a single
@@ -1772,6 +1788,8 @@ func (r AdInsightsAPIListLocalServicesLeadsRequest) Execute() (*ListLocalService
 
 /*
 ListLocalServicesLeads Google Local Services Ads leads
+
+Lists the calls, messages and bookings your Google Local Services Ads generated, newest first.
 
 Leads generated by Local Services Ads (phone calls, messages, bookings),
 read live from Google's `local_services_lead` resource, newest first.
@@ -2133,7 +2151,9 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Execute() (*QueryAdInsights200Respo
 /*
 QueryAdInsights Flexible live insights query
 
-Live, flexible insights query. The account's platform picks the contract:
+Runs a custom performance query against Meta, Google Ads or TikTok and returns the platform's rows as is, for reports the fixed endpoints don't cover.
+
+The account's platform picks the contract:
 
 **Meta (facebook/instagram)**: forwards caller-chosen `fields`, `breakdowns` and `filtering`
 to any Meta insights node and returns Meta's rows verbatim. `objectId` (required) selects the

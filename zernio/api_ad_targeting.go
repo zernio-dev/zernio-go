@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -68,6 +68,8 @@ func (r AdTargetingAPIBrowseAdTargetingRequest) Execute() (*BrowseAdTargeting200
 
 /*
 BrowseAdTargeting Browse targeting categories
+
+Shows Meta's full tree of detailed targeting categories for an ad account, so you can browse options without a keyword.
 
 The whole Meta detailed-targeting category tree of one ad account (Meta's
 `GET /act_{ad_account_id}/targetingbrowse`), as one flat list you can render as a
@@ -271,6 +273,8 @@ func (r AdTargetingAPIEstimateAdReachRequest) Execute() (*EstimateAdReach200Resp
 
 /*
 EstimateAdReach Estimate audience reach
+
+Estimates how many people a targeting setup would reach before you create a campaign.
 
 Returns a normalized pre-flight audience-size estimate for a targeting spec,
 before any campaign is created. Backed by each platform's native reach API
@@ -939,6 +943,8 @@ func (r AdTargetingAPISearchAdTargetingRequest) Execute() (*SearchAdTargeting200
 
 /*
 SearchAdTargeting Search targeting options
+
+Finds targeting options by name, such as locations, interests or behaviors, and returns the ids to use in ad targeting.
 
 Resolve a human-readable query into the platform's opaque targeting ids used in
 the `TargetingSpec` (`countries`/`regions`/`cities`/`zips`/`metros` geo keys, and

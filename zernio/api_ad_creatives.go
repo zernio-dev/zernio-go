@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,8 @@ func (r AdCreativesAPICreateAdCreativeRequest) Execute() (*CreateAdCreative201Re
 
 /*
 CreateAdCreative Create a standalone creative
+
+Creates a reusable Meta creative from an image or carousel without creating an ad, ready to attach to ads later.
 
 Creates a creative in the library WITHOUT an ad, reusable on the create endpoints via
 `existingCreativeId`. Provide exactly one of `imageUrl` (uploaded server-side),
@@ -192,7 +194,9 @@ func (r AdCreativesAPIDeleteAdCreativeRequest) Execute() (*DeleteAdCreative200Re
 /*
 DeleteAdCreative Delete a creative
 
-Deletes a creative from the library. Meta only allows deleting creatives not referenced
+Deletes a Meta creative from the library, which Meta only allows when no ad uses it.
+
+Meta only allows deleting creatives not referenced
 by any ad; otherwise its 400 surfaces verbatim.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -348,7 +352,9 @@ func (r AdCreativesAPIDeleteAdVideoRequest) Execute() (*DeleteAdVideo200Response
 /*
 DeleteAdVideo Delete an ad video
 
-Removes a video from the ad account's video library. Meta's canonical
+Removes a video from a Meta ad account's video library.
+
+Meta's canonical
 `DELETE /{video_id}` fails with code 10 / subcode 1363055 for videos uploaded via
 `/act_X/advideos` even with `ads_management`; this endpoint uses the working
 account-scoped shape `DELETE /act_X/advideos?video_id=<id>` and returns Meta's
@@ -513,6 +519,8 @@ func (r AdCreativesAPIGenerateAdPreviewsRequest) Execute() (*GenerateAdPreviews2
 
 /*
 GenerateAdPreviews Render pre-create ad previews
+
+Shows how a Meta creative will look in each placement before you create the ad, as embeddable previews.
 
 Renders how a creative would look per placement BEFORE any ad exists, via Meta's
 `/generatepreviews`. Provide exactly one creative source: `existingCreativeId` or `creativeSpec`.
@@ -695,6 +703,8 @@ func (r AdCreativesAPIGetAdCreativeRequest) Execute() (*GetAdCreative200Response
 /*
 GetAdCreative Creative details
 
+Shows the details of one Meta creative, such as its content, status and thumbnail.
+
 One creative's details, verbatim from Meta. `fields` is a raw-passthrough override of
 the default projection.
 
@@ -846,6 +856,8 @@ func (r AdCreativesAPIGetAdMediaRequest) Execute() (*GetAdMedia200Response, *htt
 /*
 GetAdMedia Direct video and image URLs for an ad
 
+Returns fresh, short-lived download links for every image and video a Meta ad uses, including the original media of a boosted Instagram post.
+
 Returns the direct signed URLs for every video and image asset used by an ad's live
 creative, normalised across shapes: single image/video, carousel,
 Reels/Story (`object_story_spec.video_data`) and dynamic
@@ -981,6 +993,8 @@ func (r AdCreativesAPIGetAdPreviewsRequest) Execute() (*GetAdPreviews200Response
 
 /*
 GetAdPreviews Render previews of an existing ad
+
+Shows how an existing Meta ad looks in each placement, as embeddable previews.
 
 Renders an EXISTING ad per placement via Meta's `/{ad_id}/previews`. Each preview is an HTML
 `<iframe>` snippet embeddable directly. Unknown `formats` values return Meta's 400 verbatim.
@@ -1125,6 +1139,8 @@ func (r AdCreativesAPIGetAdVideoStatusRequest) Execute() (*GetAdVideoStatus200Re
 
 /*
 GetAdVideoStatus Get ad video processing status
+
+Checks whether an uploaded Meta ad video has finished processing and is ready to use in an ad.
 
 Reads a video's processing state live from Meta (`GET /{video-id}?fields=status`).
 Poll this after `POST /v1/ads/videos` with `async: true` until `status` is `ready`;
@@ -1323,6 +1339,8 @@ func (r AdCreativesAPIListAdCreativesRequest) Execute() (*GetAdsActivityLog200Re
 /*
 ListAdCreatives Creative library
 
+Lists the creatives saved in a Meta ad account so you can reuse one in a new ad.
+
 Lists the ad account's creative library (Meta's `/act_X/adcreatives`), rows returned
 verbatim. The default projection covers id, name, status, object type, thumbnail,
 object_story_spec / asset_feed_spec and url_tags; `fields` is a raw-passthrough
@@ -1516,6 +1534,8 @@ func (r AdCreativesAPIListAdImagesRequest) Execute() (*GetAdsActivityLog200Respo
 /*
 ListAdImages Ad image library
 
+Lists the images in a Meta ad account's library so you can reuse one in a creative.
+
 Lists the ad account's image library (Meta's `/act_X/adimages`), rows returned verbatim.
 The default projection covers hash, url, name, dimensions and status; `fields` is a
 raw-passthrough override. Any `hash` here is reusable wherever Meta accepts
@@ -1707,6 +1727,8 @@ func (r AdCreativesAPIListAdVideosRequest) Execute() (*GetAdsActivityLog200Respo
 
 /*
 ListAdVideos Ad video library
+
+Lists the videos in a Meta ad account's library, including ones uploaded elsewhere, so you can reuse one across ads.
 
 Lists the ad account's video library (Meta's `/act_X/advideos`), rows returned verbatim.
 The default projection covers id, title, status, poster frames, length and `source` (the
@@ -2080,7 +2102,9 @@ func (r AdCreativesAPIListPartnershipAdContentRequest) Execute() (*ListPartnersh
 /*
 ListPartnershipAdContent List partnership ad content
 
-Private beta. Lists creator Instagram posts available to the advertiser for Partnership Ads. Supply creatorUsername or postUrl. Requires instagram_branded_content_ads_brand permission and an advertiser Instagram Business Account.
+Lists a creator's Instagram posts you can run as Partnership Ads, looked up by creator or post link (private beta).
+
+Lists creator Instagram posts available to the advertiser for Partnership Ads. Supply creatorUsername or postUrl. Requires instagram_branded_content_ads_brand permission and an advertiser Instagram Business Account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPIListPartnershipAdContentRequest
@@ -2251,7 +2275,9 @@ func (r AdCreativesAPIListPartnershipAdPermissionsRequest) Execute() (*ListPartn
 /*
 ListPartnershipAdPermissions List partnership permissions
 
-Private beta. Lists granted or pending creator permissions for the advertiser Instagram Business Account. Requires instagram_branded_content_ads_brand permission.
+Lists the creators who have granted, or have pending, permission for your Instagram account to run Partnership Ads with them (private beta).
+
+Lists granted or pending creator permissions for the advertiser Instagram Business Account. Requires instagram_branded_content_ads_brand permission.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPIListPartnershipAdPermissionsRequest
@@ -2408,7 +2434,9 @@ func (r AdCreativesAPISetPartnershipAdPermissionRequest) Execute() (*SetPartners
 /*
 SetPartnershipAdPermission Set partnership permission
 
-Private beta. Requests permission from a creator or revokes it when revoke is true. Requests require the creator to approve in Instagram. Requires instagram_branded_content_ads_brand permission.
+Asks a creator for permission to run Partnership Ads with their content, or revokes it (private beta).
+
+Requests permission from a creator or revokes it when revoke is true. Requests require the creator to approve in Instagram. Requires instagram_branded_content_ads_brand permission.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCreativesAPISetPartnershipAdPermissionRequest
@@ -2564,7 +2592,9 @@ func (r AdCreativesAPIUpdateAdCreativeRequest) Execute() (*UpdateAdCreative200Re
 /*
 UpdateAdCreative Rename a creative
 
-Renames a creative. Creatives are immutable on Meta beyond `name`. For content changes
+Renames a Meta creative (Meta does not allow other changes, so make a new creative to change its content).
+
+Creatives are immutable on Meta beyond `name`. For content changes
 create a new creative (POST /v1/ads/creatives) and swap it onto the ad
 (PUT /v1/ads/{adId} with `creative`).
 
@@ -2713,8 +2743,9 @@ func (r AdCreativesAPIUploadAdImageRequest) Execute() (*UploadAdImage201Response
 /*
 UploadAdImage Upload an ad image from base64
 
-Uploads raw image bytes to the Meta ad account's image library, for callers whose
-creatives aren't hosted at a public URL. Returns the image `hash` (Meta's identifier for
+Uploads an image file to a Meta ad account's library, for creatives that are not hosted at a public URL.
+
+Returns the image `hash` (Meta's identifier for
 the asset) and the Meta-hosted `url`, which can be used directly as `imageUrl` on the
 create endpoints. Max 30 MB decoded.
 
@@ -2859,6 +2890,8 @@ func (r AdCreativesAPIUploadAdVideoRequest) Execute() (*UploadAdVideo201Response
 
 /*
 UploadAdVideo Upload an ad video
+
+Uploads a video to a Meta ad account from a URL or file, so you can preview it or use it in ads before any ad exists.
 
 Standalone ad-video upload (parallel to POST /v1/ads/images), so a video creative can
 be rendered via POST /v1/ads/preview or attached via `video.id` on POST /v1/ads/create

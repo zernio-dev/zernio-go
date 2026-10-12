@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -43,8 +43,9 @@ func (r TrackingTagsAPIAddTrackingTagSharedAccountRequest) Execute() (*AddTracki
 /*
 AddTrackingTagSharedAccount Share with an ad account
 
-Shares the pixel with another ad account so campaigns/audiences in that
-account can use it. Requires that you administer both the pixel's owning
+Shares a pixel with another ad account so its campaigns and audiences can use it.
+
+Requires that you administer both the pixel's owning
 Business Manager and the target ad account; a pixel on a personal
 (non-BM) ad account can't be shared (Meta will reject the call). Meta
 and LinkedIn; other platforms return 501.
@@ -209,7 +210,9 @@ func (r TrackingTagsAPIAssignTrackingTagUserRequest) Execute() (*AssignTrackingT
 /*
 AssignTrackingTagUser Assign a user to a tag
 
-Gives a user of the owning business access to the tag. Assigning an already assigned user
+Gives a person in the owning Meta business access to a pixel, or replaces the tasks they already have on it.
+
+Assigning an already assigned user
 replaces their task set.
 
 Meta: `tasks` are `AA_ANALYZE`, `ADVERTISE`, `ANALYZE`, `EDIT`, `UPLOAD`; `userId` is the
@@ -375,6 +378,8 @@ func (r TrackingTagsAPICreateTrackingTagRequest) Execute() (*CreateTrackingTag20
 
 /*
 CreateTrackingTag Create a tracking tag
+
+Creates a measurement pixel on an ad account and returns the snippet to install on your site.
 
 Meta: creates a Meta Pixel on the given ad account (`POST /act_{id}/adspixels`,
 where `name` is the only input). Returns the created tag including its
@@ -583,7 +588,9 @@ func (r TrackingTagsAPICreateTrackingTagEventRequest) Execute() (*CreateTracking
 /*
 CreateTrackingTagEvent Create a conversion event
 
-Creates a conversion event tied to the tag. Pass the platform's own event type in `type`
+Creates a conversion event on a tracking tag, such as a purchase or lead, so ads can measure and optimise toward it.
+
+Pass the platform's own event type in `type`
 (e.g. Google `PURCHASE`, LinkedIn `ADD_TO_CART`, X `CHECKOUT_INITIATED`) or a neutral
 `siteEvent` the platform maps to its closest type. Each platform stores a subset of the
 optional fields; sending one it does not store answers 400 naming the supported fields.
@@ -816,7 +823,9 @@ func (r TrackingTagsAPIDeleteTrackingTagEventRequest) Execute() (*DeleteTracking
 /*
 DeleteTrackingTagEvent Delete a conversion event
 
-Removes the conversion event. Platforms without a hard delete archive or disable it
+Removes a conversion event from a tracking tag, or archives or disables it on platforms that have no hard delete.
+
+Platforms without a hard delete archive or disable it
 instead; `state` in the response says which (`deleted`, `archived`, `disabled`).
 
 OpenAI Ads answers 501: there is no delete or archive route for event settings
@@ -999,6 +1008,8 @@ func (r TrackingTagsAPIGetAdTrackingTagsRequest) Execute() (*GetAdTrackingTags20
 /*
 GetAdTrackingTags Get ad tracking tags
 
+Shows the tracking parameters added to an ad's click URLs, such as UTM tags (not pixels).
+
 Unified read of the platform's native click-URL tracking params.
 - Meta (facebook/instagram): the creative's `url_tags` (and template_url_spec).
 - Google (googleads): the campaign's `trackingUrlTemplate` + `finalUrlSuffix`.
@@ -1130,6 +1141,8 @@ func (r TrackingTagsAPIGetTrackingTagRequest) Execute() (*GetTrackingTag200Respo
 
 /*
 GetTrackingTag Get a tracking tag
+
+Shows one pixel or measurement tag in full, including its install snippet, when it last fired and its conversion events.
 
 Returns the full tag record including the base-code `code` snippet,
 `lastFiredTime`, `ownerBusinessId`, `isUnavailable`, etc. Meta only
@@ -1316,7 +1329,9 @@ func (r TrackingTagsAPIGetTrackingTagDiagnosticsRequest) Execute() (*GetTracking
 /*
 GetTrackingTagDiagnostics Get tag diagnostics
 
-The platform's health checks for the tag. Platforms without tag diagnostics answer 501.
+Shows Meta's health checks for a pixel, such as events missing parameters or product ids that do not match your catalogs.
+
+Platforms without tag diagnostics answer 501.
 
 Meta: the pixel's checks from Events Manager (`da_checks`), e.g. whether events miss
 parameters or their content ids do not match the pixel's catalogs.
@@ -1499,8 +1514,9 @@ func (r TrackingTagsAPIGetTrackingTagStatsRequest) Execute() (*GetTrackingTagSta
 /*
 GetTrackingTagStats Get aggregated event stats
 
-Returns event counts / health for the tag, where the platform exposes
-them. Meta: aggregated counts (`GET /{pixel_id}/stats`), rows passed
+Shows event counts or health for a tracking tag so you can confirm it is firing, where the platform reports them.
+
+Meta: aggregated counts (`GET /{pixel_id}/stats`), rows passed
 through as-is; their shape depends on the `aggregation` requested.
 Platforms without a stats API answer 501.
 
@@ -1709,6 +1725,8 @@ func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) Execute() (*GetTrackin
 /*
 GetTrackingTagStoreInstall Get store install status
 
+Shows whether a tracking tag is live on your Shopify store or WordPress site, and whether a WordPress install would be blocked.
+
 Whether this tag is the one the Shopify store fires for its platform. `installedTagId`
 names the tag of that platform the store currently fires, which can be a different tag,
 and `tags` lists every Zernio tag on the store (all platforms).
@@ -1882,6 +1900,8 @@ func (r TrackingTagsAPIInstallTrackingTagOnStoreRequest) Execute() (*InstallTrac
 
 /*
 InstallTrackingTagOnStore Install on a Shopify store or WordPress site
+
+Installs a pixel on a connected Shopify store or WordPress site, so store visits and purchases are reported without editing the theme.
 
 Puts the Meta pixel on a connected Shopify store's storefront and checkout through
 Zernio's Shopify web pixel (a Shopify app pixel, no theme edits). The store then sends
@@ -2134,6 +2154,8 @@ func (r TrackingTagsAPIListTrackingTagEventsRequest) Execute() (*ListTrackingTag
 /*
 ListTrackingTagEvents List conversion events
 
+Lists the conversion events tied to a tracking tag, such as Google conversion actions or Meta custom conversions.
+
 The tag's conversion events, on platforms where each conversion is its own object:
 Google conversion actions, LinkedIn conversion rules, X web event tags, OpenAI event
 settings, TikTok pixel events, Meta custom conversions, Pinterest advertiser defined
@@ -2329,7 +2351,9 @@ func (r TrackingTagsAPIListTrackingTagPartnersRequest) Execute() (*ListTrackingT
 /*
 ListTrackingTagPartners List partner businesses of a tag
 
-Other businesses the tag is shared with. Read-only. Platforms without partner sharing
+Lists the partner businesses a Meta pixel is shared with (read-only, sharing with new partners is not supported).
+
+Read-only. Platforms without partner sharing
 answer 501.
 
 Meta: the pixel's shared agencies. Sharing a pixel with a new partner is not available:
@@ -2485,6 +2509,8 @@ func (r TrackingTagsAPIListTrackingTagSharedAccountsRequest) Execute() (*ListTra
 
 /*
 ListTrackingTagSharedAccounts List accounts it is shared with
+
+Lists the other ad accounts a pixel is shared with.
 
 Meta (`metaads`) and LinkedIn (`linkedinads`); other platforms return 501.
 
@@ -2645,7 +2671,9 @@ func (r TrackingTagsAPIListTrackingTagUsersRequest) Execute() (*ListTrackingTagU
 /*
 ListTrackingTagUsers List tag users
 
-People and system users of the owning business with access to the tag. Platforms without
+Lists the people and system users in the owning Meta business who have access to a pixel.
+
+Platforms without
 tag user assignment answer 501.
 
 Meta: the pixel's assigned users in its owning Business Manager. A pixel on a personal ad
@@ -2808,6 +2836,8 @@ func (r TrackingTagsAPIListTrackingTagsRequest) Execute() (*ListTrackingTags200R
 
 /*
 ListTrackingTags List tracking tags
+
+Lists the pixels and other measurement tags an ads account can see, so you can inspect or install them.
 
 Returns the tracking tags (Meta Pixels, or OpenAI Ads pixels) the
 connected ads account can see. Pass `?adAccountId=act_...` (Meta only)
@@ -2996,7 +3026,9 @@ func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) Execute() (*RemoveTrac
 /*
 RemoveTrackingTagFromStore Remove from a Shopify store or WordPress site
 
-Removes the tag from the store. Idempotent: nothing installed returns 200 with
+Removes a tracking tag from your Shopify store or WordPress site, leaving other platforms' tags and hand-added pixel code in place.
+
+Idempotent: nothing installed returns 200 with
 `installed: false`. If the store fires a different tag of the same platform, nothing is
 removed and the call answers 409 `invalid_resource_state`. Shopify: other platforms'
 tags stay; the web pixel itself is deleted once no tag remains.
@@ -3156,6 +3188,8 @@ func (r TrackingTagsAPIRemoveTrackingTagSharedAccountRequest) Execute() (*http.R
 
 /*
 RemoveTrackingTagSharedAccount Stop sharing with an account
+
+Stops sharing a pixel with an ad account.
 
 `adAccountId` may be passed as a query parameter (recommended) or as a
 JSON body field for clients that can send DELETE bodies. Meta and
@@ -3462,7 +3496,9 @@ func (r TrackingTagsAPIUpdateAdTrackingTagsRequest) Execute() (*UpdateAdTracking
 /*
 UpdateAdTrackingTags Set ad tracking tags
 
-Unified update. Send only the fields for the ad's platform:
+Sets the tracking parameters added to an ad's click URLs, such as UTM tags, without rebuilding the rest of the ad.
+
+Send only the fields for the ad's platform:
 
   - Meta: `urlTags` (array of {key,value}). Meta creatives are immutable, so this rebuilds the
     creative and repoints the ad. By DEFAULT we PRESERVE the existing creative verbatim
@@ -3602,6 +3638,8 @@ func (r TrackingTagsAPIUpdateTrackingTagRequest) Execute() (*GetTrackingTag200Re
 
 /*
 UpdateTrackingTag Update a tracking tag
+
+Changes a pixel's settings, such as its name or automatic matching, on platforms that allow edits.
 
 Partial-update a pixel. Whitelisted fields: `name` (rename),
 `enableAutomaticMatching`, `automaticMatchingFields`,
@@ -3798,6 +3836,8 @@ func (r TrackingTagsAPIUpdateTrackingTagEventRequest) Execute() (*CreateTracking
 
 /*
 UpdateTrackingTagEvent Update a conversion event
+
+Changes a conversion event's settings, such as its name or default value, where the platform allows edits.
 
 Partial update; at least one field. A field the platform does not store answers 400.
 

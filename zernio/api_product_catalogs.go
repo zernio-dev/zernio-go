@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,8 @@ func (r ProductCatalogsAPIBatchAdCatalogProductsRequest) Execute() (*BatchAdCata
 
 /*
 BatchAdCatalogProducts Create, update or delete products in bulk
+
+Creates, updates or deletes up to 5,000 catalog products in one request, processed in the background by Meta.
 
 Up to 5000 CREATE / UPDATE / DELETE requests keyed by `retailerId`, processed asynchronously by Meta. Returns handles; poll GET /v1/ads/catalogs/{catalogId}/batches/{handle} for the outcome and per-item errors. CREATE requests need name, url, imageUrl, price and currency.
 
@@ -198,6 +200,8 @@ func (r ProductCatalogsAPICreateAdCatalogRequest) Execute() (*CreateAdCatalog201
 
 /*
 CreateAdCatalog Create a Meta product catalog
+
+Creates a Meta product catalog that can power catalog ads, Instagram and Facebook Shops, and a WhatsApp Business catalog.
 
 Creates a Meta Commerce catalog in the business portfolio (resolved like GET). The same catalog serves Advantage+ catalog ads, Instagram/Facebook Shops and the WhatsApp Business catalog: link it to a WhatsApp number with POST /v1/whatsapp/catalogs. Needs catalog_management on the Meta login.
 
@@ -365,6 +369,8 @@ func (r ProductCatalogsAPICreateAdCatalogFeedRequest) Execute() (*CreateAdCatalo
 /*
 CreateAdCatalogFeed Create a product feed
 
+Creates a product feed that imports a CSV, TSV or XML product file into a Meta catalog, on a schedule or on demand.
+
 A feed pulls a CSV/TSV/XML product file from a URL. With `schedule` Meta fetches it on a cadence; without it, trigger fetches with POST /v1/ads/catalogs/{catalogId}/feeds/{feedId}/uploads.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -523,6 +529,8 @@ func (r ProductCatalogsAPICreateAdCatalogFeedUploadRequest) Execute() (*CreateAd
 
 /*
 CreateAdCatalogFeedUpload Fetch a feed file now
+
+Asks Meta to import a product file into a feed right away instead of waiting for its schedule.
 
 Asks Meta to fetch the product file at `url` into the feed. Processing is asynchronous: read the outcome with GET uploads.
 
@@ -685,7 +693,9 @@ func (r ProductCatalogsAPICreateAdCatalogProductRequest) Execute() (*CreateAdCat
 /*
 CreateAdCatalogProduct Add a product to a catalog
 
-Adds one product. `retailerId` is your SKU and stays the handle for later lookups and batch updates. For many products at once use POST /v1/ads/catalogs/{catalogId}/products/batch. Needs catalog_management on the Meta login.
+Adds a single product to a Meta catalog, keyed by your own SKU for later lookups and updates.
+
+`retailerId` is your SKU and stays the handle for later lookups and batch updates. For many products at once use POST /v1/ads/catalogs/{catalogId}/products/batch. Needs catalog_management on the Meta login.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -842,6 +852,8 @@ func (r ProductCatalogsAPICreateAdCatalogProductSetRequest) Execute() (*CreateAd
 
 /*
 CreateAdCatalogProductSet Create a product set
+
+Creates a product set, a filtered group of catalog products (by SKU, brand and so on) to promote in catalog ads.
 
 A product set is a filter over the catalog, e.g. `{"retailer_id": {"is_any": ["sku-1", "sku-2"]}}` or `{"brand": {"i_contains": "acme"}}` (Meta's product set filter syntax).
 
@@ -1009,7 +1021,9 @@ func (r ProductCatalogsAPIDeleteAdCatalogRequest) Execute() (*DeleteAdCatalog200
 /*
 DeleteAdCatalog Delete a product catalog
 
-Deletes the catalog and every product in it on Meta. Ads and WhatsApp numbers that use it lose their catalog.
+Deletes a Meta product catalog and all its products, removing it from any ads or WhatsApp numbers that use it.
+
+Ads and WhatsApp numbers that use it lose their catalog.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -1177,6 +1191,8 @@ func (r ProductCatalogsAPIDeleteAdCatalogProductRequest) Execute() (*DeleteAdCat
 
 /*
 DeleteAdCatalogProduct Delete a product
+
+Removes one product from a Meta catalog.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -1348,6 +1364,8 @@ func (r ProductCatalogsAPIDeleteAdCatalogProductSetRequest) Execute() (*DeleteAd
 /*
 DeleteAdCatalogProductSet Delete a product set
 
+Deletes a product set from a Meta catalog.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
 	@param productSetId
@@ -1517,6 +1535,8 @@ func (r ProductCatalogsAPIGetAdCatalogRequest) Execute() (*CreateAdCatalog201Res
 /*
 GetAdCatalog Get a product catalog
 
+Shows one Meta product catalog and its details.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
 	@return ProductCatalogsAPIGetAdCatalogRequest
@@ -1683,6 +1703,8 @@ func (r ProductCatalogsAPIGetAdCatalogBatchRequest) Execute() (*GetAdCatalogBatc
 
 /*
 GetAdCatalogBatch Get a bulk request's status
+
+Shows whether a bulk catalog product request has finished, with any per-product errors.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -1854,6 +1876,8 @@ func (r ProductCatalogsAPIGetAdCatalogProductRequest) Execute() (*CreateAdCatalo
 /*
 GetAdCatalogProduct Get a product
 
+Shows one product from a Meta catalog.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
 	@param productId Meta product item ID (from the products list; not the retailer id)
@@ -2024,6 +2048,8 @@ func (r ProductCatalogsAPIListAdCatalogFeedUploadsRequest) Execute() (*ListAdCat
 /*
 ListAdCatalogFeedUploads List a feed's uploads
 
+Lists a product feed's past file imports so you can check how each one went.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
 	@param feedId
@@ -2193,6 +2219,8 @@ func (r ProductCatalogsAPIListAdCatalogFeedsRequest) Execute() (*ListAdCatalogFe
 /*
 ListAdCatalogFeeds List a catalog's product feeds
 
+Lists the product feeds that keep a Meta catalog filled from your product files.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
 	@return ProductCatalogsAPIListAdCatalogFeedsRequest
@@ -2359,7 +2387,9 @@ func (r ProductCatalogsAPIListAdCatalogProductSetsRequest) Execute() (*ListAdCat
 /*
 ListAdCatalogProductSets List a catalog's product sets
 
-Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set id, not the parent catalog id, as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
+Lists a Meta catalog's product sets, the groups of products a catalog ad promotes.
+
+Pass the chosen set id, not the parent catalog id, as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -2547,7 +2577,9 @@ func (r ProductCatalogsAPIListAdCatalogProductsRequest) Execute() (*ListAdCatalo
 /*
 ListAdCatalogProducts List a catalog's products
 
-Pages through the catalog's products. Filter by your own `retailerId` to look one up. `price` and `salePrice` come back formatted by Meta (for example "€49.90").
+Lists the products in a Meta catalog, or looks one up by your own SKU.
+
+Filter by your own `retailerId` to look one up. `price` and `salePrice` come back formatted by Meta (for example "€49.90").
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -2741,7 +2773,9 @@ func (r ProductCatalogsAPIListAdCatalogsRequest) Execute() (*ListAdCatalogs200Re
 /*
 ListAdCatalogs List Meta product catalogs
 
-Lists the Meta Commerce catalogs of a business portfolio (owned + agency-shared). The business comes from `businessId`, else the ad account's owner (`adAccountId`), else the WhatsApp Business Account's owner when `accountId` is a WhatsApp connection, else the only business the Meta login can see. Reads work with scopes customers already granted.
+Lists the Meta product catalogs a business portfolio owns or has been shared, for catalog and shopping ads.
+
+The business comes from `businessId`, else the ad account's owner (`adAccountId`), else the WhatsApp Business Account's owner when `accountId` is a WhatsApp connection, else the only business the Meta login can see. Reads work with scopes customers already granted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ProductCatalogsAPIListAdCatalogsRequest
@@ -2916,7 +2950,9 @@ func (r ProductCatalogsAPIUpdateAdCatalogProductRequest) Execute() (*CreateAdCat
 /*
 UpdateAdCatalogProduct Update a product
 
-Partial update: only the fields sent change. `retailerId` cannot change.
+Changes some fields of a catalog product, such as its price or image, leaving the rest as they are.
+
+`retailerId` cannot change.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)
@@ -3077,6 +3113,8 @@ func (r ProductCatalogsAPIUpdateAdCatalogProductSetRequest) Execute() (*CreateAd
 
 /*
 UpdateAdCatalogProductSet Update a product set
+
+Changes a product set's name or the filter that decides which products it includes.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param catalogId Meta product catalog ID (from GET /v1/ads/catalogs)

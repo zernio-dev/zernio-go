@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.254.0
+API version: 1.254.1
 Contact: support@zernio.com
 */
 
@@ -43,7 +43,9 @@ func (r ConversionsAPIAddConversionAssociationsRequest) Execute() (*AddConversio
 /*
 AddConversionAssociations Associate campaigns
 
-Associate one or more campaigns with this conversion rule. Returns a
+Links campaigns to a LinkedIn conversion rule so they track it, reporting which links succeeded or failed.
+
+Returns a
 per-campaign success/failure result so callers can retry only the
 rows that failed (e.g. wrong campaign type for the rule's objective).
 
@@ -194,6 +196,8 @@ func (r ConversionsAPIAdjustConversionsRequest) Execute() (*AdjustConversions200
 
 /*
 AdjustConversions Adjust uploaded conversions
+
+Retracts, restates the value of, or enhances conversions you already sent to Google Ads, for refunds or late customer data.
 
 Adjust conversions that were previously uploaded via `POST /v1/ads/conversions`:
 retract them, restate their value, or enhance them with first-party data. Requires
@@ -365,6 +369,8 @@ func (r ConversionsAPICreateConversionActionRequest) Execute() (*CreateConversio
 /*
 CreateConversionAction Create website conversion action
 
+Creates a Google Ads website conversion action and returns the tag snippets to install on your site.
+
 Creates a `WEBPAGE` conversion action (category `DEFAULT`) and returns it with
 its tag snippets, read back after creation since Google never returns them on
 the create response itself. Invalidates the cached list `GET` on this resource
@@ -525,7 +531,9 @@ func (r ConversionsAPICreateConversionDestinationRequest) Execute() (*CreateConv
 /*
 CreateConversionDestination Create a conversion destination
 
-Create a new conversion destination on the platform. Supported for
+Creates a new place to send conversion events: a Google Ads conversion action or a LinkedIn conversion rule.
+
+Supported for
 LinkedIn (conversion rule) and Google Ads (conversion action). Meta
 and OpenAI Ads pixels are created via their own tracking-tags flow
 instead (`POST /v1/accounts/{accountId}/tracking-tags`); this endpoint
@@ -695,6 +703,8 @@ func (r ConversionsAPICreateCustomConversionGoalRequest) Execute() (*CreateBidSt
 /*
 CreateCustomConversionGoal Create a custom conversion goal
 
+Creates a Google Ads custom conversion goal from a set of conversion actions, so a campaign can bid on just those.
+
 Creates a custom conversion goal from conversion action ids. Point a campaign at it with `PATCH /v1/ads/campaigns/{campaignId}/conversion-goals`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -853,6 +863,8 @@ func (r ConversionsAPIDeleteConversionDestinationRequest) Execute() (*http.Respo
 /*
 DeleteConversionDestination Delete a conversion destination
 
+Disables a LinkedIn conversion rule, which is how LinkedIn deletes it; the rule can still be read afterwards.
+
 LinkedIn-only today. LinkedIn does not expose hard-delete on conversion
 rules; what their UI calls "delete" is the same `enabled: false` flip
 we apply here. The rule remains fetchable via GET with
@@ -998,6 +1010,8 @@ func (r ConversionsAPIGetConversionDestinationRequest) Execute() (*GetConversion
 
 /*
 GetConversionDestination Get a conversion destination
+
+Shows one LinkedIn conversion rule with its full settings.
 
 LinkedIn-only today. Returns the full destination record for one
 conversion rule. The `adAccountId` query parameter is required because
@@ -1169,6 +1183,8 @@ func (r ConversionsAPIGetConversionMetricsRequest) Execute() (*GetConversionMetr
 
 /*
 GetConversionMetrics Get attribution metrics
+
+Shows a LinkedIn conversion rule's attributed conversions, value, leads and cost over time.
 
 LinkedIn-only today. Returns conversion-attribution metrics
 (`externalWebsiteConversions`, `externalWebsitePostClickConversions`,
@@ -1353,6 +1369,8 @@ func (r ConversionsAPIGetConversionsQualityRequest) Execute() (*GetConversionsQu
 /*
 GetConversionsQuality Get Event Match Quality
 
+Shows how well your server-side conversion events match users, with event match quality and coverage for Meta or Pinterest.
+
 Reads Meta Event Match Quality (EMQ) and pixel↔CAPI event coverage for a
 pixel/dataset, live from Meta's Dataset Quality API. Web events only (a
 Meta limitation). Other platforms return 405, except Pinterest. Requires the Ads add-on.
@@ -1532,6 +1550,8 @@ func (r ConversionsAPIListAdConversionGoalsRequest) Execute() (*ListAdConversion
 
 /*
 ListAdConversionGoals List account conversion goals
+
+Lists a Google Ads account's default conversion goals, which ones are used for bidding, and the conversion actions in each.
 
 Google Ads account-default conversion goals (CustomerConversionGoal), one per
 category and origin, with `biddable` (whether the goal is used for bidding and
@@ -1721,6 +1741,8 @@ func (r ConversionsAPIListConversionActionsRequest) Execute() (*ListConversionAc
 /*
 ListConversionActions List conversion actions
 
+Lists the conversion actions in a Google Ads account, with the website tag snippets to install where available.
+
 Lists Google Ads conversion actions on the resolved customer, all types by
 default. Each action's `tagSnippets` (global site tag + event snippet) is
 included when Google has them for that action's type, e.g. `WEBPAGE`.
@@ -1898,6 +1920,8 @@ func (r ConversionsAPIListConversionAssociationsRequest) Execute() (*ListConvers
 /*
 ListConversionAssociations List associated campaigns
 
+Lists the LinkedIn campaigns that track a conversion rule, so you can spot newer campaigns that still need linking.
+
 LinkedIn-only today. Returns the campaigns currently associated with
 this conversion rule. Auto-association on rule creation
 runs once at create time; campaigns created after the rule still need
@@ -2044,6 +2068,8 @@ func (r ConversionsAPIListConversionDestinationsRequest) Execute() (*ListConvers
 
 /*
 ListConversionDestinations List conversion destinations
+
+Lists where an ad account can receive conversion events (pixels, conversion actions or rules), so you know where to send them.
 
 Returns the list of pixels (Meta), conversion actions (Google),
 conversion rules (LinkedIn), pixels (OpenAI Ads) or ad accounts
@@ -2216,6 +2242,8 @@ func (r ConversionsAPIListCustomConversionGoalsRequest) Execute() (*ListCustomCo
 /*
 ListCustomConversionGoals List custom conversion goals
 
+Lists the custom conversion goals in a Google Ads account, each a named set of conversion actions a campaign can bid on.
+
 Google Ads custom conversion goals (a named set of conversion actions a campaign can bid on). Removed goals are excluded. Cached like the other Google reads.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2385,7 +2413,8 @@ func (r ConversionsAPIRemoveConversionAssociationsRequest) Execute() (*AddConver
 /*
 RemoveConversionAssociations Remove associated campaigns
 
-Remove one or more campaign associations from this conversion rule.
+Unlinks campaigns from a LinkedIn conversion rule so they stop tracking it.
+
 Pass `adAccountId` and `campaignIds` as query parameters
 (`campaignIds` is comma-separated). The route also accepts a JSON
 body with the same fields for clients that prefer DELETE-with-body,
@@ -2561,7 +2590,9 @@ func (r ConversionsAPIRemoveCustomConversionGoalRequest) Execute() (*RemoveCusto
 /*
 RemoveCustomConversionGoal Remove a custom conversion goal
 
-Removes the goal. Google refuses (400) while any campaign still uses it: switch those campaigns to another goal first.
+Deletes a Google Ads custom conversion goal; switch any campaigns using it to another goal first.
+
+Google refuses (400) while any campaign still uses it: switch those campaigns to another goal first.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param goalId Google custom conversion goal id
@@ -2712,6 +2743,8 @@ func (r ConversionsAPISendConversionsRequest) Execute() (*SendConversions200Resp
 
 /*
 SendConversions Send conversion events
+
+Sends conversion events, such as purchases or leads, from your server to an ad platform so it can attribute and optimize ads.
 
 Relay one or more conversion events to the target ad platform's native Conversions API.
 Platform is inferred from the provided `accountId`. Requires the Ads add-on.
@@ -2919,6 +2952,8 @@ func (r ConversionsAPIUpdateAdConversionGoalsRequest) Execute() (*UpdateAdConver
 /*
 UpdateAdConversionGoals Update account conversion goals
 
+Turns bidding on or off for a Google Ads account's default conversion goals, which campaigns using account goals follow.
+
 Sets `biddable` on one or more account-default goals, addressed by category and
 origin, in one mutate. Campaigns that use account-level goals
 (`goalConfigLevel: CUSTOMER`) follow the change. Returns the re-read goal list.
@@ -3076,6 +3111,8 @@ func (r ConversionsAPIUpdateConversionActionRequest) Execute() (*UpdateConversio
 
 /*
 UpdateConversionAction Update a conversion action's settings
+
+Changes a Google Ads conversion action's settings, such as primary or secondary, counting, value and lookback windows, or removes or restores it.
 
 Updates a Google Ads conversion action in one mutate, each field sent written on its own
 update mask leaf so omitted fields keep their value. Send at least one field.
@@ -3248,6 +3285,8 @@ func (r ConversionsAPIUpdateConversionDestinationRequest) Execute() (*GetConvers
 /*
 UpdateConversionDestination Update a conversion destination
 
+Changes a LinkedIn conversion rule's name, value, attribution windows, or turns it on or off.
+
 Partial-update a conversion rule. LinkedIn-only today. Whitelisted
 fields: `name`, `enabled`, attribution windows, `valueType`, `value`,
 `attributionType`. The rule's `type` and parent ad account are
@@ -3403,7 +3442,9 @@ func (r ConversionsAPIUpdateCustomConversionGoalRequest) Execute() (*UpdateCusto
 /*
 UpdateCustomConversionGoal Update a custom conversion goal
 
-Renames the goal and/or replaces its conversion actions. Returns the re-read goal.
+Renames a Google Ads custom conversion goal or replaces the conversion actions in it.
+
+Returns the re-read goal.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param goalId Google custom conversion goal id
