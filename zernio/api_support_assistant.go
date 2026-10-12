@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.257.0
+API version: 1.258.1
 Contact: support@zernio.com
 */
 
@@ -46,9 +46,32 @@ func (r SupportAssistantAPIAskSupportQuestionRequest) Execute() (*AskSupportQues
 }
 
 /*
-AskSupportQuestion Ask a support question (private beta)
+AskSupportQuestion Ask a support question
 
-Private beta: returns 403 `feature_not_available` unless enabled for your account. Asks Ana, the Zernio support agent, a question about your workspace. Each question starts a run that answers asynchronously: this returns 202 with a `runId`, and the answer arrives through the `support.run.completed` and `support.run.failed` webhooks. `GET /v1/support/runs/{runId}` is the fallback. Pass `threadId` to continue an earlier conversation, and `context` to point Ana at a post, account or profile. Billed when the run finishes at the model cost plus 20%, never above `maxCostUsd`; failed runs are free. When Ana finds a problem on Zernio's side she opens a support ticket with the team (see `supportTicket` on the run) and the run ends as `needs_human`. Requires an unrestricted API key, usage-based billing and a card on file. Limits per account: 3 active runs and $100 of runs per UTC month. Send an Idempotency-Key header to make retries safe.
+Asks Ana, the Zernio support agent, a question about your workspace. Each question
+starts a run that answers asynchronously: this returns 202 with a `runId`, and the
+answer arrives through the `support.run.completed` and `support.run.failed` webhooks.
+`GET /v1/support/runs/{runId}` is the fallback. Pass `threadId` to continue an earlier
+conversation, and `context` to point Ana at a post, account or profile. When Ana finds
+a problem on Zernio's side she opens a support ticket with the team (see
+`supportTicket` on the run) and the run ends as `needs_human`.
+
+**Pricing.** Each question is billed once, when its run finishes, for the tokens Ana used:
+
+- Input: $6 per million tokens
+- Output: $30 per million tokens
+- Cache reads: $0.60 per million tokens
+- Cache writes: $7.50 per million tokens
+
+Most questions cost between $0.10 and $0.50. A run never bills more than its
+`maxCostUsd` ($0.50 to $3, $3 by default): near the cap Ana stops investigating and
+answers with what she found. Runs that end as `needs_human` are billed like any other;
+failed runs are free. The run's `usage` holds the token counts and `costUsd` the amount
+billed. Charges appear as "Support API" on your invoice.
+
+Requires an unrestricted API key, usage-based billing and a card on file. Limits per
+account: 3 active runs and $100 of runs per UTC month. Send an Idempotency-Key header
+to make retries safe.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SupportAssistantAPIAskSupportQuestionRequest
@@ -253,9 +276,9 @@ func (r SupportAssistantAPIGetSupportAnswerRequest) Execute() (*SupportRun, *htt
 }
 
 /*
-GetSupportAnswer Get a support answer (private beta)
+GetSupportAnswer Get a support answer
 
-Private beta: returns 403 `feature_not_available` unless enabled for your account. Returns a run started by your team, with Ana's answer once it is ready. Prefer the `support.run.completed` and `support.run.failed` webhooks; use this as the fallback, waiting `pollAfterSeconds` between polls. `costUsd` is the amount billed: the model cost plus 20%, never above `maxCostUsd`, and 0 for a failed run.
+Returns a run started by your team, with Ana's answer once it is ready. Prefer the `support.run.completed` and `support.run.failed` webhooks; use this as the fallback, waiting `pollAfterSeconds` between polls. `costUsd` is the amount billed for the question, never above `maxCostUsd`, and 0 for a failed run (rates on Ask a support question).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param runId

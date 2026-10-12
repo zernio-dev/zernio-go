@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.257.0
+API version: 1.258.1
 Contact: support@zernio.com
 */
 
@@ -164,6 +164,13 @@ GetAccountHealth Check account health
 Returns detailed health info for a specific account including token status, permissions, and recommendations.
 
 A failing or stalled analytics sync (see `analyticsSync`) raises a healthy account to at least `warning`.
+
+On Facebook, Instagram and Threads the token is also probed live. A probe Meta refuses with a
+dead-token error sets `tokenStatus.valid` to `false` and names Meta's code, subcode and
+fbtrace in `issues`, unless an analytics sync succeeded with that token in the last six
+hours: then the token stays `valid` and `issues` reports the probe as inconclusive, since
+Meta answers a transient 190 to live tokens now and then. Neither verdict disconnects the
+account; that happens only when a real operation fails, and `account.disconnected` is sent.
 
 For WhatsApp accounts the response also includes `platformConnection`, a live probe of the
 Meta link behind the channel (the same read as `GET /v1/whatsapp/number-info`). The OAuth
