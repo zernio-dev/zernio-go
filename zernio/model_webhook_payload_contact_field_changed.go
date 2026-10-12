@@ -26,7 +26,9 @@ type WebhookPayloadContactFieldChanged struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test *bool `json:"test,omitempty"`
 	// Event id, the dedupe key.
-	Id        string                            `json:"id"`
+	Id string `json:"id"`
+	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
+	Profiles  []WebhookProfilesInner            `json:"profiles,omitempty"`
 	Event     string                            `json:"event"`
 	Timestamp time.Time                         `json:"timestamp"`
 	Contact   CreateTestLead200ResponseTestLead `json:"contact"`
@@ -119,6 +121,38 @@ func (o *WebhookPayloadContactFieldChanged) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadContactFieldChanged) SetId(v string) {
 	o.Id = v
+}
+
+// GetProfiles returns the Profiles field value if set, zero value otherwise.
+func (o *WebhookPayloadContactFieldChanged) GetProfiles() []WebhookProfilesInner {
+	if o == nil || IsNil(o.Profiles) {
+		var ret []WebhookProfilesInner
+		return ret
+	}
+	return o.Profiles
+}
+
+// GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadContactFieldChanged) GetProfilesOk() ([]WebhookProfilesInner, bool) {
+	if o == nil || IsNil(o.Profiles) {
+		return nil, false
+	}
+	return o.Profiles, true
+}
+
+// HasProfiles returns a boolean if a field has been set.
+func (o *WebhookPayloadContactFieldChanged) HasProfiles() bool {
+	if o != nil && !IsNil(o.Profiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfiles gets a reference to the given []WebhookProfilesInner and assigns it to the Profiles field.
+func (o *WebhookPayloadContactFieldChanged) SetProfiles(v []WebhookProfilesInner) {
+	o.Profiles = v
 }
 
 // GetEvent returns the Event field value
@@ -307,6 +341,9 @@ func (o WebhookPayloadContactFieldChanged) ToMap() (map[string]interface{}, erro
 		toSerialize["test"] = o.Test
 	}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Profiles) {
+		toSerialize["profiles"] = o.Profiles
+	}
 	toSerialize["event"] = o.Event
 	toSerialize["timestamp"] = o.Timestamp
 	toSerialize["contact"] = o.Contact

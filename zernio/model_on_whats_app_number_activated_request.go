@@ -24,8 +24,10 @@ type OnWhatsAppNumberActivatedRequest struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test *bool `json:"test,omitempty"`
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
-	Id    *string `json:"id,omitempty"`
-	Event *string `json:"event,omitempty"`
+	Id *string `json:"id,omitempty"`
+	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
+	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
+	Event    *string                `json:"event,omitempty"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp *time.Time                              `json:"timestamp,omitempty"`
 	Number    *OnWhatsAppNumberActivatedRequestNumber `json:"number,omitempty"`
@@ -110,6 +112,38 @@ func (o *OnWhatsAppNumberActivatedRequest) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *OnWhatsAppNumberActivatedRequest) SetId(v string) {
 	o.Id = &v
+}
+
+// GetProfiles returns the Profiles field value if set, zero value otherwise.
+func (o *OnWhatsAppNumberActivatedRequest) GetProfiles() []WebhookProfilesInner {
+	if o == nil || IsNil(o.Profiles) {
+		var ret []WebhookProfilesInner
+		return ret
+	}
+	return o.Profiles
+}
+
+// GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OnWhatsAppNumberActivatedRequest) GetProfilesOk() ([]WebhookProfilesInner, bool) {
+	if o == nil || IsNil(o.Profiles) {
+		return nil, false
+	}
+	return o.Profiles, true
+}
+
+// HasProfiles returns a boolean if a field has been set.
+func (o *OnWhatsAppNumberActivatedRequest) HasProfiles() bool {
+	if o != nil && !IsNil(o.Profiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfiles gets a reference to the given []WebhookProfilesInner and assigns it to the Profiles field.
+func (o *OnWhatsAppNumberActivatedRequest) SetProfiles(v []WebhookProfilesInner) {
+	o.Profiles = v
 }
 
 // GetEvent returns the Event field value if set, zero value otherwise.
@@ -223,6 +257,9 @@ func (o OnWhatsAppNumberActivatedRequest) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.Profiles) {
+		toSerialize["profiles"] = o.Profiles
 	}
 	if !IsNil(o.Event) {
 		toSerialize["event"] = o.Event

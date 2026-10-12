@@ -25,6 +25,8 @@ var _ MappedNullable = &WebhookPayloadMessageSent{}
 type WebhookPayloadMessageSent struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id string `json:"id"`
+	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
+	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test                *bool                              `json:"test,omitempty"`
 	Event               string                             `json:"event"`
@@ -85,6 +87,38 @@ func (o *WebhookPayloadMessageSent) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *WebhookPayloadMessageSent) SetId(v string) {
 	o.Id = v
+}
+
+// GetProfiles returns the Profiles field value if set, zero value otherwise.
+func (o *WebhookPayloadMessageSent) GetProfiles() []WebhookProfilesInner {
+	if o == nil || IsNil(o.Profiles) {
+		var ret []WebhookProfilesInner
+		return ret
+	}
+	return o.Profiles
+}
+
+// GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadMessageSent) GetProfilesOk() ([]WebhookProfilesInner, bool) {
+	if o == nil || IsNil(o.Profiles) {
+		return nil, false
+	}
+	return o.Profiles, true
+}
+
+// HasProfiles returns a boolean if a field has been set.
+func (o *WebhookPayloadMessageSent) HasProfiles() bool {
+	if o != nil && !IsNil(o.Profiles) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfiles gets a reference to the given []WebhookProfilesInner and assigns it to the Profiles field.
+func (o *WebhookPayloadMessageSent) SetProfiles(v []WebhookProfilesInner) {
+	o.Profiles = v
 }
 
 // GetTest returns the Test field value if set, zero value otherwise.
@@ -346,6 +380,9 @@ func (o WebhookPayloadMessageSent) MarshalJSON() ([]byte, error) {
 func (o WebhookPayloadMessageSent) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Profiles) {
+		toSerialize["profiles"] = o.Profiles
+	}
 	if !IsNil(o.Test) {
 		toSerialize["test"] = o.Test
 	}
