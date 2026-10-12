@@ -60,7 +60,7 @@ api_reviews.go
 api_sequences.go
 api_slack.go
 api_sms.go
-api_support_runs.go
+api_support_assistant.go
 api_tools.go
 api_tracking_tags.go
 api_twitter_engagement.go
@@ -194,6 +194,9 @@ model_apply_google_recommendations_200_response.go
 model_apply_google_recommendations_request.go
 model_apply_google_recommendations_request_recommendations_inner.go
 model_archive_lead_form_200_response.go
+model_ask_support_question_202_response.go
+model_ask_support_question_request.go
+model_ask_support_question_request_context.go
 model_assign_ad_account_user_201_response.go
 model_assign_ad_account_user_request.go
 model_assign_google_business_location_200_response.go
@@ -640,9 +643,6 @@ model_create_standalone_ad_request_sitelinks_inner.go
 model_create_standalone_ad_request_structured_snippets_inner.go
 model_create_standalone_ad_request_translations_inner.go
 model_create_standalone_ad_request_video.go
-model_create_support_run_202_response.go
-model_create_support_run_request.go
-model_create_support_run_request_context.go
 model_create_test_lead_200_response.go
 model_create_test_lead_200_response_test_lead.go
 model_create_test_lead_request.go

@@ -1057,11 +1057,11 @@ func main() {
 |--------|-------------|
 | `client.SlackAPI.ListSlackMembers(ctx)` | List Slack workspace members |
 
-### Support Runs
+### Support Assistant
 | Method | Description |
 |--------|-------------|
-| `client.SupportRunsAPI.CreateSupportRun(ctx)` | Start a support run (private beta) |
-| `client.SupportRunsAPI.GetSupportRun(ctx)` | Get a support run (private beta) |
+| `client.SupportAssistantAPI.GetSupportAnswer(ctx)` | Get a support answer (private beta) |
+| `client.SupportAssistantAPI.AskSupportQuestion(ctx)` | Ask a support question (private beta) |
 
 ### Tracking Tags
 | Method | Description |
