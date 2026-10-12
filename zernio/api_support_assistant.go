@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.261.1
+API version: 1.262.0
 Contact: support@zernio.com
 */
 
@@ -458,7 +458,7 @@ func (r SupportAssistantAPIListSupportAnswersRequest) Execute() (*ListSupportAns
 /*
 ListSupportAnswers List a thread's support answers
 
-Lists the runs of one thread that your team started, with their answers, oldest first. Replies from the Zernio team after a support ticket arrive by email and are not included. Runs are kept for 90 days. Page through a long thread with `limit` and `cursor`: pass `nextCursor` as `cursor` until it is null.
+Lists the runs of one thread that your team started, with each question and its answer, oldest first. Replies from the Zernio team after a support ticket arrive by email and are not included. Runs are kept for 90 days. Page through a long thread with `limit` and `cursor`: pass `nextCursor` as `cursor` until it is null.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return SupportAssistantAPIListSupportAnswersRequest

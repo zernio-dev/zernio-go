@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.261.1
+API version: 1.262.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,8 @@ type SupportRun struct {
 	Status string `json:"status"`
 	// Why the run stopped. Null while it is in progress.
 	StopReason NullableString `json:"stopReason"`
+	// The question as asked, with leading and trailing whitespace trimmed. Null only on runs created before this field was added.
+	Question NullableString `json:"question"`
 	// The assistant's answer. Null while the run is in progress or when it failed.
 	Answer NullableString  `json:"answer"`
 	Usage  SupportRunUsage `json:"usage"`
@@ -52,12 +54,13 @@ type _SupportRun SupportRun
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, answer NullableString, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime, supportTicket SupportRunSupportTicket) *SupportRun {
+func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, question NullableString, answer NullableString, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime, supportTicket SupportRunSupportTicket) *SupportRun {
 	this := SupportRun{}
 	this.RunId = runId
 	this.ThreadId = threadId
 	this.Status = status
 	this.StopReason = stopReason
+	this.Question = question
 	this.Answer = answer
 	this.Usage = usage
 	this.CostUsd = costUsd
@@ -173,6 +176,32 @@ func (o *SupportRun) GetStopReasonOk() (*string, bool) {
 // SetStopReason sets field value
 func (o *SupportRun) SetStopReason(v string) {
 	o.StopReason.Set(&v)
+}
+
+// GetQuestion returns the Question field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *SupportRun) GetQuestion() string {
+	if o == nil || o.Question.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Question.Get()
+}
+
+// GetQuestionOk returns a tuple with the Question field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SupportRun) GetQuestionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Question.Get(), o.Question.IsSet()
+}
+
+// SetQuestion sets field value
+func (o *SupportRun) SetQuestion(v string) {
+	o.Question.Set(&v)
 }
 
 // GetAnswer returns the Answer field value
@@ -419,6 +448,7 @@ func (o SupportRun) ToMap() (map[string]interface{}, error) {
 	toSerialize["threadId"] = o.ThreadId
 	toSerialize["status"] = o.Status
 	toSerialize["stopReason"] = o.StopReason.Get()
+	toSerialize["question"] = o.Question.Get()
 	toSerialize["answer"] = o.Answer.Get()
 	toSerialize["usage"] = o.Usage
 	toSerialize["costUsd"] = o.CostUsd
@@ -442,6 +472,7 @@ func (o *SupportRun) UnmarshalJSON(data []byte) (err error) {
 		"threadId",
 		"status",
 		"stopReason",
+		"question",
 		"answer",
 		"usage",
 		"costUsd",
