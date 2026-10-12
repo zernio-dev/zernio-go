@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.256.0
+API version: 1.257.0
 Contact: support@zernio.com
 */
 
@@ -25,8 +25,10 @@ type UpdateProfileRequest struct {
 	Description NullableString `json:"description,omitempty"`
 	Color       *string        `json:"color,omitempty"`
 	// IANA timezone new posts on this profile use when they name no `timezone`. Set to null to go back to UTC. An unknown name returns 400.
-	Timezone  NullableString `json:"timezone,omitempty"`
-	IsDefault *bool          `json:"isDefault,omitempty"`
+	Timezone NullableString `json:"timezone,omitempty"`
+	// Your own identifier for this profile (1 to 255 characters, trimmed). Set to null to clear it. A value another profile of the same owner already holds returns 409 profile_external_id_conflict.
+	ExternalId NullableString `json:"externalId,omitempty"`
+	IsDefault  *bool          `json:"isDefault,omitempty"`
 }
 
 // NewUpdateProfileRequest instantiates a new UpdateProfileRequest object
@@ -196,6 +198,49 @@ func (o *UpdateProfileRequest) UnsetTimezone() {
 	o.Timezone.Unset()
 }
 
+// GetExternalId returns the ExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateProfileRequest) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId.Get()
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateProfileRequest) GetExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalId.Get(), o.ExternalId.IsSet()
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *UpdateProfileRequest) HasExternalId() bool {
+	if o != nil && o.ExternalId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given NullableString and assigns it to the ExternalId field.
+func (o *UpdateProfileRequest) SetExternalId(v string) {
+	o.ExternalId.Set(&v)
+}
+
+// SetExternalIdNil sets the value for ExternalId to be an explicit nil
+func (o *UpdateProfileRequest) SetExternalIdNil() {
+	o.ExternalId.Set(nil)
+}
+
+// UnsetExternalId ensures that no value is present for ExternalId, not even an explicit nil
+func (o *UpdateProfileRequest) UnsetExternalId() {
+	o.ExternalId.Unset()
+}
+
 // GetIsDefault returns the IsDefault field value if set, zero value otherwise.
 func (o *UpdateProfileRequest) GetIsDefault() bool {
 	if o == nil || IsNil(o.IsDefault) {
@@ -249,6 +294,9 @@ func (o UpdateProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Timezone.IsSet() {
 		toSerialize["timezone"] = o.Timezone.Get()
+	}
+	if o.ExternalId.IsSet() {
+		toSerialize["externalId"] = o.ExternalId.Get()
 	}
 	if !IsNil(o.IsDefault) {
 		toSerialize["isDefault"] = o.IsDefault

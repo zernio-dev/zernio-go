@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.256.0
+API version: 1.257.0
 Contact: support@zernio.com
 */
 
@@ -27,6 +27,8 @@ type CreateProfileRequest struct {
 	Color       *string `json:"color,omitempty"`
 	// IANA timezone new posts on this profile use when they name no `timezone`. Omit to keep UTC. An unknown name returns 400.
 	Timezone *string `json:"timezone,omitempty"`
+	// Your own identifier for this profile, typically the id of the tenant or client it serves in your system (1 to 255 characters, trimmed). Unique among the profiles of the user who owns the profile: a duplicate returns 409 profile_external_id_conflict. Look a profile up by it with GET /v1/profiles?externalId=.
+	ExternalId *string `json:"externalId,omitempty"`
 }
 
 type _CreateProfileRequest CreateProfileRequest
@@ -169,6 +171,38 @@ func (o *CreateProfileRequest) SetTimezone(v string) {
 	o.Timezone = &v
 }
 
+// GetExternalId returns the ExternalId field value if set, zero value otherwise.
+func (o *CreateProfileRequest) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateProfileRequest) GetExternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExternalId) {
+		return nil, false
+	}
+	return o.ExternalId, true
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *CreateProfileRequest) HasExternalId() bool {
+	if o != nil && !IsNil(o.ExternalId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given string and assigns it to the ExternalId field.
+func (o *CreateProfileRequest) SetExternalId(v string) {
+	o.ExternalId = &v
+}
+
 func (o CreateProfileRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -188,6 +222,9 @@ func (o CreateProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Timezone) {
 		toSerialize["timezone"] = o.Timezone
+	}
+	if !IsNil(o.ExternalId) {
+		toSerialize["externalId"] = o.ExternalId
 	}
 	return toSerialize, nil
 }

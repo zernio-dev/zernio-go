@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.256.0
+API version: 1.257.0
 Contact: support@zernio.com
 */
 
@@ -48,7 +48,7 @@ func (r ProfilesAPICreateProfileRequest) Execute() (*ProfileCreateResponse, *htt
 /*
 CreateProfile Create profile
 
-Creates a new profile with a name, optional description, and color. Names are unique per team: a duplicate returns a 409 whose details.existingProfileId carries the id of the existing profile. Send an Idempotency-Key header to make retries safe: a retried create with the same key and body replays the original 201 (same _id) instead of conflicting.
+Creates a new profile with a name, optional description, and color. Names are unique per team: a duplicate returns a 409 whose details.existingProfileId carries the id of the existing profile. Set externalId to your own tenant or client id to find the profile later without storing its Zernio id. A duplicate externalId returns the same kind of 409, with code profile_external_id_conflict. Send an Idempotency-Key header to make retries safe: a retried create with the same key and body replays the original 201 (same _id) instead of conflicting.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ProfilesAPICreateProfileRequest
@@ -421,6 +421,7 @@ type ProfilesAPIListProfilesRequest struct {
 	ApiService       *ProfilesAPIService
 	includeOverLimit *bool
 	name             *string
+	externalId       *string
 	limit            *int32
 	skip             *int32
 }
@@ -434,6 +435,12 @@ func (r ProfilesAPIListProfilesRequest) IncludeOverLimit(includeOverLimit bool) 
 // Exact-match filter on the profile name. Useful to recover a profile id after an ambiguous create (timeout followed by a 409 on retry).
 func (r ProfilesAPIListProfilesRequest) Name(name string) ProfilesAPIListProfilesRequest {
 	r.name = &name
+	return r
+}
+
+// Exact-match filter on the externalId you set on the profile, to find the profile of one of your tenants without storing its Zernio id. Team members can each own a profile with the same externalId, so the result is a list.
+func (r ProfilesAPIListProfilesRequest) ExternalId(externalId string) ProfilesAPIListProfilesRequest {
+	r.externalId = &externalId
 	return r
 }
 
@@ -456,7 +463,7 @@ func (r ProfilesAPIListProfilesRequest) Execute() (*ProfilesListResponse, *http.
 /*
 ListProfiles List profiles
 
-Returns profiles sorted default-first, then by creation date. Filter with name (exact match) and paginate with limit/skip; without those params the full list is returned unchanged. Use includeOverLimit=true to include profiles that exceed the plan limit.
+Returns profiles sorted default-first, then by creation date. Filter with name or externalId (exact match) and paginate with limit/skip; without those params the full list is returned unchanged. Use includeOverLimit=true to include profiles that exceed the plan limit.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ProfilesAPIListProfilesRequest
@@ -499,6 +506,9 @@ func (a *ProfilesAPIService) ListProfilesExecute(r ProfilesAPIListProfilesReques
 	}
 	if r.name != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "externalId", r.externalId, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
@@ -600,7 +610,7 @@ func (r ProfilesAPIUpdateProfileRequest) Execute() (*ProfileUpdateResponse, *htt
 /*
 UpdateProfile Update profile
 
-Updates a profile's name, description, color, default timezone, or default status.
+Updates a profile's name, description, color, default timezone, externalId, or default status.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param profileId
