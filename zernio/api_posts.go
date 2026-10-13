@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.264.1
+API version: 1.265.0
 Contact: support@zernio.com
 */
 
@@ -996,6 +996,7 @@ type PostsAPIListPostsRequest struct {
 	dateTo        *string
 	includeHidden *bool
 	search        *string
+	tags          *string
 	sortBy        *string
 	accountId     *string
 }
@@ -1080,6 +1081,12 @@ func (r PostsAPIListPostsRequest) IncludeHidden(includeHidden bool) PostsAPIList
 // Search posts by text content.
 func (r PostsAPIListPostsRequest) Search(search string) PostsAPIListPostsRequest {
 	r.search = &search
+	return r
+}
+
+// Comma-separated tags (at most 20). Returns only posts carrying every listed tag, matched exactly and case-sensitively against the tags set when the post was created. An empty value means no tag filter. &#x60;tag&#x60; is accepted as an alias.
+func (r PostsAPIListPostsRequest) Tags(tags string) PostsAPIListPostsRequest {
+	r.tags = &tags
 	return r
 }
 
@@ -1193,6 +1200,9 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.search != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	if r.sortBy != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "sortBy", r.sortBy, "form", "")
