@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -39,15 +39,15 @@ type TargetingSpec struct {
 	// Point-radius (lat/lng) targeting (Meta custom_locations / Google proximity). Honoured on Meta and Google; ignored on platforms without radius support.
 	CustomLocations   []BoostPostRequestTargetingCustomLocationsInner `json:"customLocations,omitempty"`
 	ExcludedLocations *TargetingSpecExcludedLocations                 `json:"excludedLocations,omitempty"`
-	// Minimum age. Applied on Meta, TikTok, Pinterest, LinkedIn, X and Google Search/Display (Google excludes the age ranges outside the request); rejected with 400 on OpenAI and on Google Performance Max / Demand Gen. Each platform clamps to its own range: Meta and Pinterest effectively cap at 65 (65 = 65+), TikTok maps up to 100. LinkedIn rounds out to its buckets (18-24, 25-34, 35-54, 55+) and has no under-18 audience; X rounds out to the narrowest of its fixed ranges (e.g. 25-34 becomes 25-49, 18-65 becomes 18+). Pinterest has no under-18 bucket, so an ageMin below 18 starts at 18 there.
+	// Minimum age. Applied on Meta, TikTok, Pinterest, LinkedIn, X and Google Search/Display (Google excludes the age ranges outside the request); rejected with 400 on OpenAI, Reddit and on Google Performance Max / Demand Gen. Each platform clamps to its own range: Meta and Pinterest effectively cap at 65 (65 = 65+), TikTok maps up to 100. LinkedIn rounds out to its buckets (18-24, 25-34, 35-54, 55+) and has no under-18 audience; X rounds out to the narrowest of its fixed ranges (e.g. 25-34 becomes 25-49, 18-65 becomes 18+). Pinterest has no under-18 bucket, so an ageMin below 18 starts at 18 there.
 	AgeMin *int32 `json:"ageMin,omitempty"`
 	// Maximum age. Same per-platform application and clamping as ageMin.
 	AgeMax *int32 `json:"ageMax,omitempty"`
-	// Restrict by gender. 'all' (default) targets everyone. Applied on Meta, TikTok, Pinterest, LinkedIn, X and Google Search/Display (Google excludes the other gender); rejected with 400 on OpenAI and on Google Performance Max / Demand Gen.
+	// Restrict by gender. 'all' (default) targets everyone. Applied on Meta, TikTok, Pinterest, LinkedIn, X, Reddit and Google Search/Display (Google excludes the other gender); rejected with 400 on OpenAI and on Google Performance Max / Demand Gen.
 	Gender *string `json:"gender,omitempty"`
 	// Normalized household-income tier (ZIP/percentile based). Meta and TikTok express all four. Google maps only `top_10` (its INCOME_RANGE_90_UP); other tiers on Google, and any income tier on LinkedIn / X / Pinterest, are rejected. On Meta, income/zip targeting requires the relevant `specialAdCategories` to be unset (housing/employment/credit ads cannot use it).
 	IncomeTier *string `json:"incomeTier,omitempty"`
-	// Language codes restricting the audience by language. Applied on Meta, Google, TikTok, LinkedIn, X and Pinterest; rejected with 400 on OpenAI. A code the platform cannot target returns 400 listing the ones it can. On Meta, ISO 639-1 codes (e.g. ['en']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code (\"en_GB\", \"pt_BR\") for a specific one. Unknown codes are rejected.
+	// Language codes restricting the audience by language. Applied on Meta, Google, TikTok, LinkedIn, X, Pinterest and Reddit; rejected with 400 on OpenAI. A code the platform cannot target returns 400 listing the ones it can. On Meta, ISO 639-1 codes (e.g. ['en']); a bare code targets all regional variants (\"en\" = all English), or use a region-qualified code (\"en_GB\", \"pt_BR\") for a specific one. Unknown codes are rejected.
 	Languages []string `json:"languages,omitempty"`
 	// Interest entities from /v1/ads/targeting/search?dimension=interest. Each carries the platform's opaque id. On Google, applied as ad-group interest criteria (affinity and in-market categories) on Display and Search ad groups the request creates; rejected with 400 on Performance Max, on Demand Gen (use the Demand Gen audience `userInterests` there), when attaching to an existing ad group (`adSetId`), and on OpenAI. On Google, interests are create-only. On TikTok, bare numeric ids are interest categories (`interest_category_ids`) and ids like `keyword:123456` from `dimension=interestKeyword` are additional interests (`interest_keyword_ids`); any other id returns 422 naming `targeting.interests`. TikTok matches people who fit ANY selected interest, additional interest or behavior (one OR'd group), and that group is ANDed with location, age, gender and the other dimensions.
 	Interests []CreateStandaloneAdRequestBehaviorsInner `json:"interests,omitempty"`
@@ -67,10 +67,18 @@ type TargetingSpec struct {
 	Seniorities []string `json:"seniorities,omitempty"`
 	// LinkedIn B2B only. Function URN id fragments, or the full urn:li:function:* URN from /v1/ads/targeting/search?dimension=jobFunction.
 	JobFunctions []string `json:"jobFunctions,omitempty"`
-	// Platform audience IDs to include, as returned by GET /v1/ads/audiences (Meta custom audience ids, TikTok audience ids, Pinterest customer list ids, LinkedIn segment ids (the platformAudienceId from GET /v1/ads/audiences; Zernio resolves it to the targetable LinkedIn ad segment, an unknown id returns 400), Google user list ids, X custom audience ids). Not supported on OpenAI (400).
+	// Platform audience IDs to include, as returned by GET /v1/ads/audiences (Meta custom audience ids, TikTok audience ids, Pinterest customer list ids, LinkedIn segment ids (the platformAudienceId from GET /v1/ads/audiences; Zernio resolves it to the targetable LinkedIn ad segment, an unknown id returns 400), Google user list ids, X custom audience ids). On Reddit, the ids of custom audiences built in Reddit Ads Manager (GET /v1/ads/audiences does not list Reddit audiences). Not supported on OpenAI (400).
 	AudienceInclude []string `json:"audienceInclude,omitempty"`
 	// Platform audience IDs to exclude; same ID formats as audienceInclude. Not supported on OpenAI (400).
 	AudienceExclude []string `json:"audienceExclude,omitempty"`
+	// Reddit only (400 elsewhere). Subreddits to target, by name, with or without the `r/` prefix (e.g. `['marketing', 'r/startups']`), as returned by /v1/ads/targeting/search?dimension=community.
+	Communities []string `json:"communities,omitempty"`
+	// Reddit only (400 elsewhere). Subreddits to exclude, named like `communities`.
+	ExcludedCommunities []string `json:"excludedCommunities,omitempty"`
+	// Reddit only (400 elsewhere). Keywords that place the ad in Reddit conversations about them, as returned by /v1/ads/targeting/search?dimension=conversationKeyword.
+	ConversationKeywords []string `json:"conversationKeywords,omitempty"`
+	// Reddit only (400 elsewhere). Conversation keywords to keep the ad away from.
+	ExcludedConversationKeywords []string `json:"excludedConversationKeywords,omitempty"`
 }
 
 // NewTargetingSpec instantiates a new TargetingSpec object
@@ -922,6 +930,134 @@ func (o *TargetingSpec) SetAudienceExclude(v []string) {
 	o.AudienceExclude = v
 }
 
+// GetCommunities returns the Communities field value if set, zero value otherwise.
+func (o *TargetingSpec) GetCommunities() []string {
+	if o == nil || IsNil(o.Communities) {
+		var ret []string
+		return ret
+	}
+	return o.Communities
+}
+
+// GetCommunitiesOk returns a tuple with the Communities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetCommunitiesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Communities) {
+		return nil, false
+	}
+	return o.Communities, true
+}
+
+// HasCommunities returns a boolean if a field has been set.
+func (o *TargetingSpec) HasCommunities() bool {
+	if o != nil && !IsNil(o.Communities) {
+		return true
+	}
+
+	return false
+}
+
+// SetCommunities gets a reference to the given []string and assigns it to the Communities field.
+func (o *TargetingSpec) SetCommunities(v []string) {
+	o.Communities = v
+}
+
+// GetExcludedCommunities returns the ExcludedCommunities field value if set, zero value otherwise.
+func (o *TargetingSpec) GetExcludedCommunities() []string {
+	if o == nil || IsNil(o.ExcludedCommunities) {
+		var ret []string
+		return ret
+	}
+	return o.ExcludedCommunities
+}
+
+// GetExcludedCommunitiesOk returns a tuple with the ExcludedCommunities field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetExcludedCommunitiesOk() ([]string, bool) {
+	if o == nil || IsNil(o.ExcludedCommunities) {
+		return nil, false
+	}
+	return o.ExcludedCommunities, true
+}
+
+// HasExcludedCommunities returns a boolean if a field has been set.
+func (o *TargetingSpec) HasExcludedCommunities() bool {
+	if o != nil && !IsNil(o.ExcludedCommunities) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludedCommunities gets a reference to the given []string and assigns it to the ExcludedCommunities field.
+func (o *TargetingSpec) SetExcludedCommunities(v []string) {
+	o.ExcludedCommunities = v
+}
+
+// GetConversationKeywords returns the ConversationKeywords field value if set, zero value otherwise.
+func (o *TargetingSpec) GetConversationKeywords() []string {
+	if o == nil || IsNil(o.ConversationKeywords) {
+		var ret []string
+		return ret
+	}
+	return o.ConversationKeywords
+}
+
+// GetConversationKeywordsOk returns a tuple with the ConversationKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetConversationKeywordsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ConversationKeywords) {
+		return nil, false
+	}
+	return o.ConversationKeywords, true
+}
+
+// HasConversationKeywords returns a boolean if a field has been set.
+func (o *TargetingSpec) HasConversationKeywords() bool {
+	if o != nil && !IsNil(o.ConversationKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetConversationKeywords gets a reference to the given []string and assigns it to the ConversationKeywords field.
+func (o *TargetingSpec) SetConversationKeywords(v []string) {
+	o.ConversationKeywords = v
+}
+
+// GetExcludedConversationKeywords returns the ExcludedConversationKeywords field value if set, zero value otherwise.
+func (o *TargetingSpec) GetExcludedConversationKeywords() []string {
+	if o == nil || IsNil(o.ExcludedConversationKeywords) {
+		var ret []string
+		return ret
+	}
+	return o.ExcludedConversationKeywords
+}
+
+// GetExcludedConversationKeywordsOk returns a tuple with the ExcludedConversationKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetExcludedConversationKeywordsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ExcludedConversationKeywords) {
+		return nil, false
+	}
+	return o.ExcludedConversationKeywords, true
+}
+
+// HasExcludedConversationKeywords returns a boolean if a field has been set.
+func (o *TargetingSpec) HasExcludedConversationKeywords() bool {
+	if o != nil && !IsNil(o.ExcludedConversationKeywords) {
+		return true
+	}
+
+	return false
+}
+
+// SetExcludedConversationKeywords gets a reference to the given []string and assigns it to the ExcludedConversationKeywords field.
+func (o *TargetingSpec) SetExcludedConversationKeywords(v []string) {
+	o.ExcludedConversationKeywords = v
+}
+
 func (o TargetingSpec) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -1009,6 +1145,18 @@ func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AudienceExclude) {
 		toSerialize["audienceExclude"] = o.AudienceExclude
+	}
+	if !IsNil(o.Communities) {
+		toSerialize["communities"] = o.Communities
+	}
+	if !IsNil(o.ExcludedCommunities) {
+		toSerialize["excludedCommunities"] = o.ExcludedCommunities
+	}
+	if !IsNil(o.ConversationKeywords) {
+		toSerialize["conversationKeywords"] = o.ConversationKeywords
+	}
+	if !IsNil(o.ExcludedConversationKeywords) {
+		toSerialize["excludedConversationKeywords"] = o.ExcludedConversationKeywords
 	}
 	return toSerialize, nil
 }

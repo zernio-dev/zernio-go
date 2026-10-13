@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -981,6 +981,11 @@ The `dimension` param selects what is searched:
     ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`
   - `industry`, `jobFunction`, `seniority`, `companySize`: the LinkedIn-only B2B facets, whose
     URNs feed `TargetingSpec.industries`/`jobFunctions`/`seniorities`/`companySizes`
+  - `community`: Reddit only. Subreddits matching `q`; the id is the subreddit name for
+    `TargetingSpec.communities` / `excludedCommunities`, `platformId` Reddit's own id and
+    `audienceSize` its subscriber count when Reddit reports it
+  - `conversationKeyword`: Reddit only. Reddit's keyword suggestions for the seed `q`; the id is
+    the keyword for `TargetingSpec.conversationKeywords` / `excludedConversationKeywords`
 
 Availability of each dimension varies by platform. A dimension a platform cannot search
 returns a 400 naming `dimension`; it never falls back to another dimension, and every
@@ -1000,7 +1005,7 @@ is likewise a fixed, checked-in table of Google's targetable
 at 20, with no network call; its ids feed `TargetingSpec.languages`.
 
 Results are normalized across platforms into a single shape, so the same client code
-consumes Meta, TikTok, LinkedIn, X, Pinterest, and Google results.
+consumes Meta, TikTok, LinkedIn, X, Pinterest, Google and Reddit results.
 
 TikTok geo searches return every matching level in one list (`type` is
 `country`, `region`, `city`, `district`, or `metro` for DMA areas), and
@@ -1061,6 +1066,15 @@ whatever language that account returns.
   - `zip`, `subcity`, `neighborhood`, `place` and `geo_market` return a 400: Pinterest
     exposes no postal-code catalog, pass postal codes directly as
     `targeting.zips: [{ key }]` on `POST /v1/ads/create`
+
+Reddit (`redditads` connection) searches `geo`, `interest`, `community` and
+`conversationKeyword`; any other dimension returns 400. Its geo search honours `geoType`
+`city` (the default, a server-side city search), `zip` (`q` is the postal code), `country`,
+`region` and `metro_area` (matched in Zernio against Reddit's geolocation catalog) and
+`all`; other values return 400. `countryCode` scopes every geo search. Each result's id is
+Reddit's geolocation id, usable as a `regions`/`metros`/`cities`/`zips` `key` (country
+ids go in `countries`). `interest` matches Reddit's interest catalog in Zernio, with the
+category as `path`.
 
 For geo queries, `q` should contain only the locality name (e.g. `"Amsterdam"`,
 not `"Amsterdam, NL"`). Use `countryCode` to disambiguate.

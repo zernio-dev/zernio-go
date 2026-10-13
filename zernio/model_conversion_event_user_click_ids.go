@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -34,6 +34,10 @@ type ConversionEventUserClickIds struct {
 	LiFatId *string `json:"li_fat_id,omitempty"`
 	// Pinterest click ID (the `epik` URL param or `_epik` cookie). Sent to Pinterest as `click_id`, not hashed.
 	Epik *string `json:"epik,omitempty"`
+	// Reddit click ID (the `rdt_cid` URL param Reddit adds to ad clicks). Sent to Reddit as `click_id`, not hashed.
+	RdtCid *string `json:"rdt_cid,omitempty"`
+	// Reddit Pixel browser id (the `_rdt_uuid` first-party cookie). Sent to Reddit as `user.uuid`, not hashed.
+	RdtUuid *string `json:"rdt_uuid,omitempty"`
 }
 
 // NewConversionEventUserClickIds instantiates a new ConversionEventUserClickIds object
@@ -277,6 +281,70 @@ func (o *ConversionEventUserClickIds) SetEpik(v string) {
 	o.Epik = &v
 }
 
+// GetRdtCid returns the RdtCid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetRdtCid() string {
+	if o == nil || IsNil(o.RdtCid) {
+		var ret string
+		return ret
+	}
+	return *o.RdtCid
+}
+
+// GetRdtCidOk returns a tuple with the RdtCid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetRdtCidOk() (*string, bool) {
+	if o == nil || IsNil(o.RdtCid) {
+		return nil, false
+	}
+	return o.RdtCid, true
+}
+
+// HasRdtCid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasRdtCid() bool {
+	if o != nil && !IsNil(o.RdtCid) {
+		return true
+	}
+
+	return false
+}
+
+// SetRdtCid gets a reference to the given string and assigns it to the RdtCid field.
+func (o *ConversionEventUserClickIds) SetRdtCid(v string) {
+	o.RdtCid = &v
+}
+
+// GetRdtUuid returns the RdtUuid field value if set, zero value otherwise.
+func (o *ConversionEventUserClickIds) GetRdtUuid() string {
+	if o == nil || IsNil(o.RdtUuid) {
+		var ret string
+		return ret
+	}
+	return *o.RdtUuid
+}
+
+// GetRdtUuidOk returns a tuple with the RdtUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventUserClickIds) GetRdtUuidOk() (*string, bool) {
+	if o == nil || IsNil(o.RdtUuid) {
+		return nil, false
+	}
+	return o.RdtUuid, true
+}
+
+// HasRdtUuid returns a boolean if a field has been set.
+func (o *ConversionEventUserClickIds) HasRdtUuid() bool {
+	if o != nil && !IsNil(o.RdtUuid) {
+		return true
+	}
+
+	return false
+}
+
+// SetRdtUuid gets a reference to the given string and assigns it to the RdtUuid field.
+func (o *ConversionEventUserClickIds) SetRdtUuid(v string) {
+	o.RdtUuid = &v
+}
+
 func (o ConversionEventUserClickIds) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -307,6 +375,12 @@ func (o ConversionEventUserClickIds) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Epik) {
 		toSerialize["epik"] = o.Epik
+	}
+	if !IsNil(o.RdtCid) {
+		toSerialize["rdt_cid"] = o.RdtCid
+	}
+	if !IsNil(o.RdtUuid) {
+		toSerialize["rdt_uuid"] = o.RdtUuid
 	}
 	return toSerialize, nil
 }

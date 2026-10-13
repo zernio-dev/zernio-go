@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -537,7 +537,7 @@ Supported for
 LinkedIn (conversion rule) and Google Ads (conversion action). Meta
 and OpenAI Ads pixels are created via their own tracking-tags flow
 instead (`POST /v1/accounts/{accountId}/tracking-tags`); this endpoint
-returns 405 for both.
+returns 405 for both, and for Reddit (create Reddit pixels in Reddit Ads Manager).
 
 **LinkedIn:** creation is NOT idempotent. A retry creates a second
 destination. Deduplicate before retrying.
@@ -2072,14 +2072,18 @@ ListConversionDestinations List conversion destinations
 Lists where an ad account can receive conversion events (pixels, conversion actions or rules), so you know where to send them.
 
 Returns the list of pixels (Meta), conversion actions (Google),
-conversion rules (LinkedIn), pixels (OpenAI Ads) or ad accounts
+conversion rules (LinkedIn), pixels (OpenAI Ads, Reddit) or ad accounts
 (Pinterest) accessible to the connected ads account. Use the returned `id` as `destinationId` when
 posting to `POST /v1/ads/conversions`.
 
 For Google and LinkedIn, each destination's `type` reflects the
 conversion type (PURCHASE, LEAD, SIGN_UP, etc.), and the event type is
-locked to the destination. For Meta and OpenAI Ads, `type` is absent:
+locked to the destination. For Meta, OpenAI Ads and Reddit, `type` is absent:
 pixels accept any event name per request.
+
+For Reddit, the pixels of every ad account the connection reaches (only the scoped
+ones when the connection has an ad-account scope), each with the `adAccountId` that owns
+it. Reddit pixels are created in Reddit Ads Manager, not through Zernio.
 
 For LinkedIn, destinations are returned across every sponsored ad
 account the connected token can access; the `adAccountId` field on
@@ -2087,7 +2091,7 @@ each destination identifies the parent ad account and is required for
 subsequent CRUD calls (update, delete, associations, metrics).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, openaiads, or pinterestads).
+	@param accountId SocialAccount ID (metaads, googleads, linkedinads, tiktokads, openaiads, pinterestads, or redditads).
 	@return ConversionsAPIListConversionDestinationsRequest
 */
 func (a *ConversionsAPIService) ListConversionDestinations(ctx context.Context, accountId string) ConversionsAPIListConversionDestinationsRequest {
@@ -2757,6 +2761,7 @@ Supported platforms:
 - TikTok (`tiktokads`) via the Offline Events API `/offline/batch/` (OFFLINE conversions only)
 - OpenAI Ads (`openaiads`) via its Conversions API (a separate host, `bzr.openai.com`)
 - Pinterest (`pinterestads`) via `POST /v5/ad_accounts/{id}/events`
+- Reddit (`redditads`) via the Reddit Conversions API (`POST /api/v3/pixels/{pixelId}/conversion_events`)
 
 `destinationId` semantics differ per platform:
 
@@ -2766,6 +2771,7 @@ Supported platforms:
 - TikTok: Offline Event Set ID, e.g. `7057103914977558530`
 - OpenAI Ads: pixel wire id (numeric `pixel_id`, distinct from the internal pixel id), as returned by `GET /v1/accounts/{accountId}/conversion-destinations`
 - Pinterest: numeric ad account id, e.g. `549755885175` (Pinterest attributes to the ad account, not to a tag)
+- Reddit: pixel id, e.g. `a2_abc123`, as returned by `GET /v1/accounts/{accountId}/conversion-destinations` (any other shape returns 400)
 
 Pinterest notes: each event needs an `email`, or `ipAddress` plus `userAgent`; others are
 listed in `failures` with code `INVALID_EVENT` and the rest are still sent. `clickIds.epik`
@@ -2774,6 +2780,21 @@ sources become `offline`, and app events need `platformData.action_source` `app_
 or `app_ios`. Pinterest answers per event, so one bad event does not fail its chunk
 (failures carry code `PINTEREST_EVENT_FAILED`). `consent.adUserData: DENIED` sets `opt_out`.
 The connected user needs a Business Access role on the ad account (403 otherwise).
+
+Reddit notes: each event needs a match key: `clickIds.rdt_cid`, `clickIds.rdt_uuid`,
+`email`, `phone`, `externalId`, or `ipAddress` plus `userAgent`. Reddit accepts events up to
+7 days old, and `eventTime` is unix SECONDS (a value more than an hour in the future is
+refused as milliseconds). Events failing these checks are listed in `failures` with code
+`INVALID_EVENT` and the rest are still sent. Email (lowercased, dots and `+tags` stripped
+from the local part), phone (E.164 with the leading `+`) and `externalId` are SHA-256
+hashed; IP and user agent go plaintext. `consent.adUserData: DENIED` sends no user fields.
+`actionSource` maps to WEBSITE (`web`), APP (`app`) or OTHER, overridable with
+`platformData.action_source`; `platformData.order_id` is forwarded. `testCode` is sent as
+Reddit's `test_id`. The connection must hold the `adsconversions` permission: one
+authorized without it returns 403 `reconnect_required` (reconnect via
+GET /v1/connect/redditads/ads), and a Reddit user with no role on the ad account that owns
+the pixel returns 403 `insufficient_permissions`. Reddit throttling and other rejections are
+reported per chunk in `failures` with code `REDDIT_REJECTED`.
 
 TikTok notes: this path sends OFFLINE conversions (in-store / CRM / call-center), not web-pixel
 events. Each event must carry an email or phone (TikTok requires at least one). The connected
@@ -2797,10 +2818,11 @@ Batching is handled automatically. Meta caps at 1000 events per request and reje
 entire batch if any event is malformed. Google caps at 2000. LinkedIn caps at 5000 and is
 also all-or-nothing per chunk. OpenAI Ads caps at 1000 per request; larger submissions are
 split into 1000-event chunks, each all-or-nothing (a malformed event fails every event in
-that chunk, not the whole request).
+that chunk, not the whole request). Reddit works the same way, in chunks of 1000.
 
 Dedup: pass a stable `eventId` on every event. Meta and LinkedIn use it to dedupe against
-browser-side pixel/Insight Tag events; Google maps it to `transactionId`.
+browser-side pixel/Insight Tag events; Google maps it to `transactionId`; Reddit receives it as
+`conversion_id`, its dedup key against Reddit Pixel events.
 
 Per-platform `eventName` semantics:
 

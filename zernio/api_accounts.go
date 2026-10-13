@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -180,6 +180,13 @@ liveness signal for WhatsApp. When the Meta link is dead, `platformConnection.st
 `disconnected` and the overall `status` is `error`. When Meta reports that the number's
 inbound message webhook does not reach Zernio, `platformConnection.inboundWebhookSubscribed`
 is `false`, an entry is added to `issues`, and the overall `status` is at least `warning`.
+
+For the standalone ads connections (`googleads`, `redditads`) a connection that cannot serve
+requests until a fresh OAuth repairs it adds an entry to `issues` and a recommendation to call
+`GET /v1/connect/{platform}/ads`, whose `authUrl` reconnects the same account. On `redditads`
+this is a connection authorized before Zernio needed a Reddit permission it now uses (for
+example `adsconversions`): Reddit refuses those requests until the user reconnects and allows
+every permission on Reddit's consent screen.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId The account ID to check
@@ -1583,7 +1590,7 @@ func (r AccountsAPIListAccountsRequest) Search(search string) AccountsAPIListAcc
 	return r
 }
 
-// Only accounts of this kind. ads &#x3D; ad accounts (Meta, Google, LinkedIn, Pinterest, TikTok, X, OpenAI), communication &#x3D; WhatsApp, Telegram, Discord, Slack and iMessage, blogs &#x3D; Shopify and WordPress, social &#x3D; every other platform.
+// Only accounts of this kind. ads &#x3D; ad accounts (Meta, Google, LinkedIn, Pinterest, TikTok, X, OpenAI, Reddit), communication &#x3D; WhatsApp, Telegram, Discord, Slack and iMessage, blogs &#x3D; Shopify and WordPress, social &#x3D; every other platform.
 func (r AccountsAPIListAccountsRequest) Category(category string) AccountsAPIListAccountsRequest {
 	r.category = &category
 	return r

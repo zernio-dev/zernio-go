@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -31,8 +31,12 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	// LinkedIn only. LinkedIn's own ad account status. In practice always `ACTIVE`, because the LinkedIn query filters to active accounts. Meta, Google, TikTok and Pinterest report `accountStatus` instead; X reports `approvalStatus`.
 	Status        *string     `json:"status,omitempty"`
 	AccountStatus interface{} `json:"accountStatus,omitempty"`
-	// X only. X's own ad account approval status. Observed values are `ACCEPTED`, `PENDING` and `REJECTED`, but X does not publish the full vocabulary, so treat an unrecognised value as not usable. Other platforms report `accountStatus` or `status` instead.
+	// X and Reddit only. X's own ad account approval status, or Reddit's `admin_approval`. Observed X values are `ACCEPTED`, `PENDING` and `REJECTED`, but X does not publish the full vocabulary, so treat an unrecognised value as not usable. Other platforms report `accountStatus` or `status` instead.
 	ApprovalStatus *string `json:"approvalStatus,omitempty"`
+	// Reddit only. The ad account's time zone as Reddit reports it (`time_zone_id`). Schedules on Reddit ads are read in this zone.
+	Timezone *string `json:"timezone,omitempty"`
+	// Reddit only. Reddit's ad account type, forwarded unchanged.
+	Type *string `json:"type,omitempty"`
 	// Meta only. Meta's `disable_reason` code, forwarded unchanged. Present when `accountStatus` is `2` (DISABLED) and Meta gives a reason, which is what separates a policy action from a payment problem. Meta does not publish a stable list of values for this field, so none are enumerated here: resolve the code against Meta's own ad account reference. Absent when Meta reports no reason, or when the connected token cannot read the field.
 	DisableReason *int32 `json:"disableReason,omitempty"`
 	// TikTok only. Total balance the advertiser can spend (cash plus grant), in whole units of `currency`. Read from the Business Center balance when the connection has a finance role there, which is the only TikTok source that counts cash held in a shared payment portfolio; otherwise TikTok's advertiser-level balance, which can read 0 for a cash-funded advertiser.
@@ -330,6 +334,70 @@ func (o *ListAdAccounts200ResponseAccountsInner) HasApprovalStatus() bool {
 // SetApprovalStatus gets a reference to the given string and assigns it to the ApprovalStatus field.
 func (o *ListAdAccounts200ResponseAccountsInner) SetApprovalStatus(v string) {
 	o.ApprovalStatus = &v
+}
+
+// GetTimezone returns the Timezone field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetTimezone() string {
+	if o == nil || IsNil(o.Timezone) {
+		var ret string
+		return ret
+	}
+	return *o.Timezone
+}
+
+// GetTimezoneOk returns a tuple with the Timezone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetTimezoneOk() (*string, bool) {
+	if o == nil || IsNil(o.Timezone) {
+		return nil, false
+	}
+	return o.Timezone, true
+}
+
+// HasTimezone returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasTimezone() bool {
+	if o != nil && !IsNil(o.Timezone) {
+		return true
+	}
+
+	return false
+}
+
+// SetTimezone gets a reference to the given string and assigns it to the Timezone field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetTimezone(v string) {
+	o.Timezone = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ListAdAccounts200ResponseAccountsInner) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ListAdAccounts200ResponseAccountsInner) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ListAdAccounts200ResponseAccountsInner) SetType(v string) {
+	o.Type = &v
 }
 
 // GetDisableReason returns the DisableReason field value if set, zero value otherwise.
@@ -760,6 +828,12 @@ func (o ListAdAccounts200ResponseAccountsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.ApprovalStatus) {
 		toSerialize["approvalStatus"] = o.ApprovalStatus
+	}
+	if !IsNil(o.Timezone) {
+		toSerialize["timezone"] = o.Timezone
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	if !IsNil(o.DisableReason) {
 		toSerialize["disableReason"] = o.DisableReason

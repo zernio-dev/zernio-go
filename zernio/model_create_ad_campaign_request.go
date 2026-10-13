@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // checks if the CreateAdCampaignRequest type satisfies the MappedNullable interface at compile time
@@ -41,6 +42,10 @@ type CreateAdCampaignRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	BudgetType   *string  `json:"budgetType,omitempty"`
 	Status       *string  `json:"status,omitempty"`
+	// Reddit only (400 elsewhere). Campaign start (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (`budgetAmount` + `budgetType`, 400 otherwise). Defaults to now.
+	StartDate *time.Time `json:"startDate,omitempty"`
+	// Reddit only (400 elsewhere). Campaign end (ISO 8601); a value without an offset is read in the ad account time zone. Requires a campaign budget (400 otherwise), and is required for `budgetType: lifetime`.
+	EndDate *time.Time `json:"endDate,omitempty"`
 	// Google only (400 elsewhere). Written on the new campaign.
 	LocationTargetingType *GoogleLocationTargetingType `json:"locationTargetingType,omitempty"`
 	// Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level on Meta, set the strategy there instead. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
@@ -436,6 +441,70 @@ func (o *CreateAdCampaignRequest) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetStartDate() time.Time {
+	if o == nil || IsNil(o.StartDate) {
+		var ret time.Time
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetStartDateOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.StartDate) {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasStartDate() bool {
+	if o != nil && !IsNil(o.StartDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetStartDate gets a reference to the given time.Time and assigns it to the StartDate field.
+func (o *CreateAdCampaignRequest) SetStartDate(v time.Time) {
+	o.StartDate = &v
+}
+
+// GetEndDate returns the EndDate field value if set, zero value otherwise.
+func (o *CreateAdCampaignRequest) GetEndDate() time.Time {
+	if o == nil || IsNil(o.EndDate) {
+		var ret time.Time
+		return ret
+	}
+	return *o.EndDate
+}
+
+// GetEndDateOk returns a tuple with the EndDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateAdCampaignRequest) GetEndDateOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.EndDate) {
+		return nil, false
+	}
+	return o.EndDate, true
+}
+
+// HasEndDate returns a boolean if a field has been set.
+func (o *CreateAdCampaignRequest) HasEndDate() bool {
+	if o != nil && !IsNil(o.EndDate) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndDate gets a reference to the given time.Time and assigns it to the EndDate field.
+func (o *CreateAdCampaignRequest) SetEndDate(v time.Time) {
+	o.EndDate = &v
+}
+
 // GetLocationTargetingType returns the LocationTargetingType field value if set, zero value otherwise.
 func (o *CreateAdCampaignRequest) GetLocationTargetingType() GoogleLocationTargetingType {
 	if o == nil || IsNil(o.LocationTargetingType) {
@@ -729,6 +798,12 @@ func (o CreateAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.StartDate) {
+		toSerialize["startDate"] = o.StartDate
+	}
+	if !IsNil(o.EndDate) {
+		toSerialize["endDate"] = o.EndDate
 	}
 	if !IsNil(o.LocationTargetingType) {
 		toSerialize["locationTargetingType"] = o.LocationTargetingType

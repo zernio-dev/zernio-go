@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -703,6 +703,22 @@ connection: either resolves the other on the same profile. A Zernio
 `postId` on an X Ads connection resolves through its X account, and is
 a 400 when the profile has none (pass `platformPostId` instead).
 
+**Reddit.** `accountId` is the Reddit Ads connection (platform `redditads`).
+Pass the Reddit post as `platformPostId` (`t3_abc123` or the bare id), or a
+Zernio `postId`, which resolves through the Reddit account connected on the
+same profile (400 when there is none). Reddit promotes only posts made by a
+profile of the ad account: a post by any other author returns 422. Goals are
+traffic, awareness, conversions, video_views (the post must be a video, 422
+otherwise) and lead_generation; conversions and lead_generation need a pixel
+that already received the event (see `promotedObject`). `leadGenFormId` returns
+400: Reddit retired its native lead forms, so `lead_generation` sends people to
+`linkUrl` and optimizes toward the pixel's Lead event. Each boost creates a
+campaign, an ad group carrying the budget, the targeting and the bid, and the ad.
+`bidStrategy` sets the ad group's bid: LOWEST_COST_WITHOUT_CAP (or omitted) is
+automatic bidding (BIDLESS), LOWEST_COST_WITH_BID_CAP is MANUAL_BIDDING with
+`bidAmount` as the bid, COST_CAP is MAXIMIZE_VOLUME with `bidAmount` as the cap; any
+other strategy returns 422 before anything is created.
+
 **Messaging boosts (Meta).** Use `goal: engagement` with
 `callToAction: WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, or `INSTAGRAM_MESSAGE`.
 The CTA implies WHATSAPP, MESSENGER, or INSTAGRAM_DIRECT respectively;
@@ -1017,7 +1033,14 @@ for ABO (each ad set carries its own budget), and `specialAdCategories` is Meta-
 accepts `portfolioBidStrategyId` instead. Google, X and OpenAI require a budget
 (422 without one; OpenAI accepts daily or lifetime, Google only
 `budgetType: daily`). On OpenAI `goal` sets the campaign objective, and
-`conversions` needs an active standard conversion event on the account. LinkedIn creates the
+`conversions` needs an active standard conversion event on the account. On Reddit
+`goal` is one of traffic, awareness, conversions, video_views or lead_generation
+(422 otherwise) and the budget is optional: with one, the campaign uses Reddit's
+campaign budget optimization and carries the pixel (see `promotedObject`, which then
+needs `customEventType` for `conversions`), daily or lifetime (a lifetime budget
+needs `endDate`, 400 otherwise). `startDate` / `endDate` set the campaign's schedule
+and need that campaign budget (400 without one). Without a budget, each ad set
+carries its own budget and dates. LinkedIn creates the
 campaign GROUP (our campaign level) and rejects a budget, which lives on the
 campaign (ad set) level there; it comes back `status: DRAFT`. Created `PAUSED`
 (TikTok `DISABLE`) unless `status: ACTIVE` where the platform supports it.
@@ -1810,7 +1833,7 @@ CreateStandaloneAd Create standalone ad
 
 Creates a paid ad with your own creative, building the campaign and ad set it needs or adding it to existing ones.
 
-Create a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, and OpenAI Ads (ChatGPT Ads).
+Create a paid ad with custom creative across Meta, Google Ads, Pinterest, TikTok, X, LinkedIn, OpenAI Ads (ChatGPT Ads) and Reddit Ads.
 
 Google Performance Max: set `campaignType: "pmax"` and supply `assetGroup` with
 text, images by role, business name and finalUrl. Creates a daily budget, PAUSED
@@ -1862,6 +1885,8 @@ Requested settings are persisted for lists, exports, and default ad-detail reads
 Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
 LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
+
+Reddit Ads (`accountId` of a `redditads` connection, `adAccountId` like `a2_abc123`) creates a campaign, an ad group carrying the budget, schedule, targeting and pixel, and an ad running a new promoted post authored by the ad account's first profile (422 when it has none). The creative format follows the body: `carouselCards` builds a carousel, `video` a video ad, `imageUrl` an image ad, and none of them a text ad, which cannot link out (`linkUrl` is a 400 there; `body` is required). Only the legacy single-creative shape is available: `creatives[]`, `adSetId`, `existingCampaignId` and `validateOnly` are refused. Reddit throttling surfaces as 429 `rate_limited` with `platform: reddit`; retry after a delay. To promote an existing Reddit post use POST /v1/ads/boost.
 
 **Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
 
@@ -2028,7 +2053,7 @@ DeleteAd Cancel an ad
 
 Deletes an ad on the platform while keeping its history, and removes empty parents only when they were created through this API.
 
-Deletes the ad on the platform and marks it as cancelled in the database. The ad is preserved for history. OpenAI Ads has no delete API; the ad is archived instead (a terminal state, the closest equivalent).
+Deletes the ad on the platform and marks it as cancelled in the database. The ad is preserved for history. OpenAI Ads has no delete API; the ad is archived instead (a terminal state, the closest equivalent). Reddit Ads has no delete either: the ad is archived (`configured_status` ARCHIVED).
 
 Only the ad is deleted; a campaign or ad set is never deleted while it still holds another ad. On Meta, when the ad set and campaign were created by Zernio (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and Meta lists no other ad in the ad set (archived ads count), the emptied ad set is deleted too, then the campaign once it holds no other ad set. Parents created outside Zernio, and the parents of an ad imported from the platform, are always kept. On LinkedIn the ad is a creative inside a campaign inside a campaign group: the creative is always removed, the campaign only when Zernio created it and LinkedIn lists no other creative in it that is not archived, canceled or deleted, and the campaign group only when Zernio created it and LinkedIn lists no other campaign in it that is not canceled or deleted (archived campaigns count). If the creative itself cannot be removed the request fails and no parent is touched. On X the ad is a promoted post inside a line item inside a campaign: the promoted post is always removed, the line item only when Zernio created it (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and X lists no other undeleted promoted post in it, and the campaign only when Zernio created it and X lists no other undeleted line item in it. If X refuses the promoted post delete the request fails and no parent is touched. To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
 
@@ -2179,6 +2204,10 @@ whether the campaign still holds undeleted line items (ads not synced
 yet); if it does the answer is 409 and nothing is deleted, so sync the ad
 account and retry. Other platforms answer 501 for an empty campaign.
 `accountId` is ignored when the campaign does have ads.
+
+Reddit Ads has no delete: the campaign is archived instead (`configured_status`
+ARCHIVED), which stops delivery for good. Its ad groups and ads keep their own
+switches but cannot deliver under an archived campaign.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -2337,7 +2366,7 @@ Locally, every Ad document under the ad set is marked
 `status: cancelled`.
 
 Delete is soft on platforms that have no hard delete: LinkedIn moves the
-campaign to `PENDING_DELETION`, Pinterest archives the ad group, and X
+campaign to `PENDING_DELETION`, Pinterest and Reddit archive the ad group, and X
 soft-flags the line item. Google removes the ad group. All remain readable
 for reporting.
 
@@ -5377,7 +5406,7 @@ here only after the next sync. Controllers that act on a switch should pass `liv
 which reads the switches from the platform now, stores them, and returns `statusReadAt`
 (null when the read failed and the stored values were returned).
 With `live=true` (which needs `limit` of 20 or less) each returned campaign's own switch
-(`platformCampaignStatus`) is read live. Live reads cover TikTok, Meta, Google and OpenAI.
+(`platformCampaignStatus`) is read live. Live reads cover TikTok, Meta, Google, OpenAI and Reddit.
 The rolled-up `status` is not re-derived by a live read.
 
 **Budgets here are SYNCED**, never read live, including with `live=true`. To read the
@@ -6086,7 +6115,7 @@ which reads the switches from the platform now, stores them, and returns `status
 (null when the read failed and the stored values were returned).
 With `live=true` (which needs a `campaignId` or `adSetId` filter) each listed ad set's own
 switch (`platformAdSetStatus`) is read live, for the first 20 rows; later rows keep their
-synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google and OpenAI.
+synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google, OpenAI and Reddit.
 The rolled-up `status` is not re-derived by a live read. On TikTok the same live read also
 returns the ad group's applied `optimizationGoal` and `billingEvent`, as TikTok's adgroup/get
 reports them, so you can verify the goal TikTok applied rather than the one you requested.
@@ -8965,6 +8994,12 @@ Per-platform support:
   - **Pinterest / X / OpenAI Ads**: status + budget only. Sending
     `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
     OpenAI Ads budget is the campaign's spend cap, daily or lifetime (see `budget.type` below).
+  - **Reddit Ads**: status, budget, `name` (renames the ad) and targeting. `budget` goes to
+    the ad's ad group, or to its campaign when the ad group spends a campaign budget, and
+    keeps its daily or lifetime type (422 to switch). `targeting` REPLACES the ad group's
+    whole targeting (geo, communities, conversation keywords, interests, audiences,
+    languages, gender), so it applies to every ad in the ad group. `creative` returns 501:
+    a Reddit ad runs a post, so create a new ad with the new creative instead.
 
 **Google location and language replacement:** locations, languages and devices are
 campaign-level criteria on Google, so these edits apply to every ad group and ad in
@@ -9163,8 +9198,8 @@ field is always an error, never a silent drop.
 | `networkSettings` | 400 | Search only | 400 |
 | `trackingUrlTemplate`, `finalUrlSuffix` | 400 | Yes | 400 |
 | `sharedBudgetId` | 400 | Yes | 400 |
-| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI: daily or lifetime; others 501 |
-| `name` | Yes | 501 | 501 |
+| `budget` (CBO; ABO returns 409) | Yes | Daily only | OpenAI and Reddit: daily or lifetime; others 501 |
+| `name` | Yes | 501 | Reddit: Yes; others 501 |
 | `platformSpecificData.spendCap` | Yes | 400 | 400 |
 | `accountId` (empty campaigns) | Yes | - | - |
 
@@ -9204,6 +9239,12 @@ OpenAI Ads campaigns carry exactly one spend cap: `budget.type` daily or lifetim
 replaces whichever cap the campaign had, with a minimum of 1 in the ad account's
 currency (422 below it). Lifetime can switch to daily, but OpenAI never switches a
 daily cap back to lifetime (422).
+
+Reddit Ads: `budget` changes the amount of a campaign budget (Reddit campaign budget
+optimization); a campaign whose ad groups carry the budget returns 409 or 422, use
+PUT /v1/ads/ad-sets/{adSetId} there. Reddit cannot switch a published budget between
+daily and lifetime, so `budget.type` must match the current one (422 otherwise).
+`bidStrategy` is set per ad group on Reddit (PUT /v1/ads/ad-sets/{adSetId}).
 
 `accountId` forwards the update straight to Meta for a campaign with zero ads,
 which would otherwise 404; the response then carries `updated: 0`.
@@ -9848,6 +9889,14 @@ When updating `budget` on an ABO campaign: if the parent campaign is
 CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH. Route to
 PUT /v1/ads/campaigns/{campaignId} instead.
 
+Reddit Ads: `budget` changes the ad group's amount; an ad group that spends its
+campaign budget returns 422 (update the campaign instead), and Reddit cannot switch
+a published budget between daily and lifetime, so `budget.type` must match the
+current one (422 otherwise). `name` renames the ad group. `bidStrategy` maps to the
+ad group's `bid_strategy`: LOWEST_COST_WITHOUT_CAP = automatic bidding (BIDLESS),
+LOWEST_COST_WITH_BID_CAP = MANUAL_BIDDING with `bidAmount` as the bid, COST_CAP =
+MAXIMIZE_VOLUME with `bidAmount` as the cap; LOWEST_COST_WITH_MIN_ROAS returns 422.
+
 `status` behaves exactly as PUT /v1/ads/ad-sets/{adSetId}/status
 describes: only the ad set's own switch is written, its ads keep
 theirs, and `statusUpdated` / `statusSkipped` report whether that switch
@@ -9987,7 +10036,7 @@ status toggle and prefer a symmetric URL to
 Writes the ad set's own on/off switch and nothing else, on every platform
 (Meta `configured_status`, TikTok ad group `operation_status`, Google ad
 group status, LinkedIn campaign, Pinterest ad group, X line item, ChatGPT
-(OpenAI) ad group). Its ads keep their own switches: an ad you paused
+(OpenAI) ad group, Reddit ad group `configured_status`). Its ads keep their own switches: an ad you paused
 individually stays paused when the ad set resumes. The campaign above is
 not touched either, so an ad set resumed under a paused campaign reads
 `status: paused` until the campaign is resumed too. See the Status model
@@ -10132,7 +10181,7 @@ Pauses or resumes a single ad without touching its ad set, campaign or sibling a
 
 Ad-scoped pause/resume: flips ONLY this ad's own switch (Meta
 `configured_status`, TikTok `operation_status`, Google ad group ad
-status, LinkedIn creative, Pinterest ad), never its parent ad set or
+status, LinkedIn creative, Pinterest ad, Reddit ad `configured_status`), never its parent ad set or
 campaign, so sibling ads keep running. X is the exception: its smallest
 switch is the line item. Thin wrapper over the `status` field of
 PUT /v1/ads/{adId}, for callers that want a URL symmetric to

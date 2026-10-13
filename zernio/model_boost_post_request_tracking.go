@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.263.0
+API version: 1.264.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the BoostPostRequestTracking type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BoostPostRequestTracking{}
 
-// BoostPostRequestTracking Meta only. Tracking specs (pixel, URL tags).
+// BoostPostRequestTracking Meta only, except `pixelId`, which also picks the Reddit pixel of the new ad group (`promotedObject.pixelId` wins when both are sent). Tracking specs (pixel, URL tags).
 type BoostPostRequestTracking struct {
 	PixelId *string `json:"pixelId,omitempty"`
 	// URL parameters appended to the ad link, rendered as `key=value` pairs joined with `&`. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
