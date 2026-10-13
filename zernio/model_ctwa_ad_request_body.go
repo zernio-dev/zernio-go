@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.268.0
+API version: 1.269.0
 Contact: support@zernio.com
 */
 
@@ -56,8 +56,10 @@ type CtwaAdRequestBody struct {
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
-	// Messaging and CTWA only (a 400 on POST /v1/ads/call). A hand-built carousel of 2-10 image cards, sent to Meta in the order given as `link_data.child_attachments` (Meta may reorder them for performance, since `multi_share_optimized` defaults to true and no field fixes the order today); every card (and the carousel itself) carries the destination's messaging call to action (WHATSAPP_MESSAGE, MESSAGE_PAGE or INSTAGRAM_MESSAGE), so a tap on any card opens the conversation. Replaces `imageUrl` / `video` (sending either is a 400). `body` is required as the primary text; `headline` is optional and only names the creative (each card has its own `headline`); a top-level `description` is a 400 (set it per card). `welcomeMessage`, `whatsappPhoneNumber` and `destinations` apply as on a single-image ad. Also a 400 with `placementAssets`, `platformPostId`, `existingPostId` or `objectStoryId`. Single-creative shape; for `creatives[]` set it per entry.
+	// Messaging and CTWA only (a 400 on POST /v1/ads/call). A hand-built carousel of 2-10 image cards, sent to Meta in the order given as `link_data.child_attachments` (by default Meta may reorder them for performance, since `multi_share_optimized` defaults to true; `optimizeCardOrder: false` keeps the order given); every card (and the carousel itself) carries the destination's messaging call to action (WHATSAPP_MESSAGE, MESSAGE_PAGE or INSTAGRAM_MESSAGE), so a tap on any card opens the conversation. Replaces `imageUrl` / `video` (sending either is a 400). `body` is required as the primary text; `headline` is optional and only names the creative (each card has its own `headline`); a top-level `description` is a 400 (set it per card). `welcomeMessage`, `whatsappPhoneNumber` and `destinations` apply as on a single-image ad. Also a 400 with `placementAssets`, `platformPostId`, `existingPostId` or `objectStoryId`. Single-creative shape; for `creatives[]` set it per entry.
 	CarouselCards []MessagingCarouselCard `json:"carouselCards,omitempty"`
+	// Only with `carouselCards` (a 400 without them). Sets the creative's `link_data.multi_share_optimized`. `false` keeps the cards in the order given; Meta then takes at most 5 cards, so `false` with more than 5 `carouselCards` is a 400. `true` lets Meta pick and reorder the cards for performance (up to 10). Omitted, nothing is sent and Meta's default (`true`) applies. Single-creative shape; for `creatives[]` set it per entry.
+	OptimizeCardOrder *bool `json:"optimizeCardOrder,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or a platformPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`
 	// Attach the creatives to this EXISTING messaging ad set instead of building a campaign, so the ad set keeps its learning phase. It then owns budget, targeting and schedule, so `budgetAmount`, `budgetType`, `budgetLevel`, `startDate`, `endDate`, `objective`, `campaignStatus`, `adSetStatus`, `existingCampaignId`, the special ad category fields and every targeting field except `ageMin`, `ageMax`, `placements` and `advantageAudience` are rejected with a 400 alongside it. Its `destination_type` must match the ad's destination.
@@ -766,6 +768,38 @@ func (o *CtwaAdRequestBody) HasCarouselCards() bool {
 // SetCarouselCards gets a reference to the given []MessagingCarouselCard and assigns it to the CarouselCards field.
 func (o *CtwaAdRequestBody) SetCarouselCards(v []MessagingCarouselCard) {
 	o.CarouselCards = v
+}
+
+// GetOptimizeCardOrder returns the OptimizeCardOrder field value if set, zero value otherwise.
+func (o *CtwaAdRequestBody) GetOptimizeCardOrder() bool {
+	if o == nil || IsNil(o.OptimizeCardOrder) {
+		var ret bool
+		return ret
+	}
+	return *o.OptimizeCardOrder
+}
+
+// GetOptimizeCardOrderOk returns a tuple with the OptimizeCardOrder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CtwaAdRequestBody) GetOptimizeCardOrderOk() (*bool, bool) {
+	if o == nil || IsNil(o.OptimizeCardOrder) {
+		return nil, false
+	}
+	return o.OptimizeCardOrder, true
+}
+
+// HasOptimizeCardOrder returns a boolean if a field has been set.
+func (o *CtwaAdRequestBody) HasOptimizeCardOrder() bool {
+	if o != nil && !IsNil(o.OptimizeCardOrder) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizeCardOrder gets a reference to the given bool and assigns it to the OptimizeCardOrder field.
+func (o *CtwaAdRequestBody) SetOptimizeCardOrder(v bool) {
+	o.OptimizeCardOrder = &v
 }
 
 // GetCreatives returns the Creatives field value if set, zero value otherwise.
@@ -2524,6 +2558,9 @@ func (o CtwaAdRequestBody) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselCards) {
 		toSerialize["carouselCards"] = o.CarouselCards
+	}
+	if !IsNil(o.OptimizeCardOrder) {
+		toSerialize["optimizeCardOrder"] = o.OptimizeCardOrder
 	}
 	if !IsNil(o.Creatives) {
 		toSerialize["creatives"] = o.Creatives

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.268.0
+API version: 1.269.0
 Contact: support@zernio.com
 */
 
@@ -164,8 +164,10 @@ type CreateStandaloneAdRequest struct {
 	// Meta only. Override the Instagram account the ad is delivered as. Pass an Instagram Business Account ID (e.g. 17841...), mapped to the creative's `instagram_user_id`. When omitted we use the Instagram actor Meta already runs the Page's other ads as, falling back to the Page's page-backed Instagram account. Useful when a Page has more than one eligible IG account.
 	InstagramAccountId *string                                   `json:"instagramAccountId,omitempty"`
 	DynamicCreative    *CreateStandaloneAdRequestDynamicCreative `json:"dynamicCreative,omitempty"`
-	// Reddit: builds a carousel ad, each card with its image, destination (card `linkUrl`, falling back to the top-level `linkUrl`, 400 when neither is set), call to action (card `callToAction`, falling back to the top-level one) and caption (card `headline`, else `description`). `headline` is still required.  Meta only. Hand-built carousel: 2-10 authored cards, sent in the order given as the creative's `link_data.child_attachments`. Unlike `dynamicCreative`, you author every card's copy and link, but Meta may still reorder the cards for performance (`multi_share_optimized` defaults to true and Zernio does not send it), and no field fixes the order today. Requires top-level `body` and `callToAction`; `linkUrl` is also required UNLESS `leadGenFormId` is set. Those become the ad's own Destination and button (`link_data.link` / `link_data.call_to_action`), and double as the per-card fallback when a card omits its own. Mutually exclusive with `imageUrl`/`video`, `creatives[]`, `dynamicCreative`, `placementAssets`, `existingCreativeId`, `adSetId` and goal `catalog_sales`. Combines with `leadGenFormId` to build a carousel Instant-Form lead ad: `linkUrl` and per-card `linkUrl` become OPTIONAL and, when sent, are forwarded as the real card and top-level destinations; when omitted, the destination falls back to Meta's lead-form link.
+	// Reddit: builds a carousel ad, each card with its image, destination (card `linkUrl`, falling back to the top-level `linkUrl`, 400 when neither is set), call to action (card `callToAction`, falling back to the top-level one) and caption (card `headline`, else `description`). `headline` is still required.  Meta only. Hand-built carousel: 2-10 authored cards, sent in the order given as the creative's `link_data.child_attachments`. Unlike `dynamicCreative`, you author every card's copy and link, but by default Meta may still reorder the cards for performance (`multi_share_optimized` defaults to true); send `optimizeCardOrder: false` to keep the order given. Requires top-level `body` and `callToAction`; `linkUrl` is also required UNLESS `leadGenFormId` is set. Those become the ad's own Destination and button (`link_data.link` / `link_data.call_to_action`), and double as the per-card fallback when a card omits its own. Mutually exclusive with `imageUrl`/`video`, `creatives[]`, `dynamicCreative`, `placementAssets`, `existingCreativeId`, `adSetId` and goal `catalog_sales`. Combines with `leadGenFormId` to build a carousel Instant-Form lead ad: `linkUrl` and per-card `linkUrl` become OPTIONAL and, when sent, are forwarded as the real card and top-level destinations; when omitted, the destination falls back to Meta's lead-form link.
 	CarouselCards []CreateStandaloneAdRequestCarouselCardsInner `json:"carouselCards,omitempty"`
+	// Meta only (a 400 on any other platform), and only with `carouselCards` (a 400 without them). Sets the creative's `link_data.multi_share_optimized`. `false` keeps the cards in the order given; Meta then takes at most 5 cards, so `false` with more than 5 `carouselCards` is a 400. `true` lets Meta pick and reorder the cards for performance (up to 10). Omitted, nothing is sent and Meta's default (`true`) applies.
+	OptimizeCardOrder *bool `json:"optimizeCardOrder,omitempty"`
 	// Meta only. Language the top-level copy is written in (e.g. `en`, `pt_BR`), used by the `translations` default rule. Defaults to `en`. Meta rejects a language asset feed whose default rule carries no locales of its own. Must NOT also appear as an entry in `translations`.
 	DefaultLocale *string `json:"defaultLocale,omitempty"`
 	// Meta only. Multi-language ads (Dynamic Language Optimization): ONE ad carrying per-locale copy and, optionally, per-locale media: the \"Languages\" toggle in Ads Manager. Keeps social proof (likes/comments/shares) on a SINGLE post instead of splitting it across one ad per language.  The ad's top-level copy is the DEFAULT shown to every locale you do NOT list, and it counts as one of the language variants.  IMPORTANT, and the opposite of what you might expect: text does NOT inherit. Every entry must carry its own `headline`, `body` AND `description`, and all of them must be DISTINCT from each other and from the ad's top-level copy. Meta deduplicates identical strings inside the asset feed, so two locales sharing a string collapse into one asset and the create fails with a misleading \"Too few ... texts provided in asset creation\" (subcode 1885817) that names a field which is actually present. We validate this before calling Meta and return a 400 naming the offending locale and field. `description` is therefore effectively required on the ad whenever `translations` is present, even though it is optional otherwise.  Do NOT list `defaultLocale` inside `translations`: Meta rejects the duplicate with \"The language asset feed includes an unsupported targeting field\" (subcode 1885985).  Media DOES inherit and is uploaded once when shared, and `linkUrl` inherits too: each locale may name its own landing page and unlisted locales fall back to the ad's top-level `linkUrl`. Meta enforces Dynamic Creative image dimensions on language feeds, so an `imageUrl` that works on a normal ad may be rejected with \"The following images have invalid dimensions for Dynamic Creative\" (subcode 1885558). Video is not affected.  Mutually exclusive with `dynamicCreative`, `placementAssets`, `carouselCards`, `existingCreativeId` and `creatives[]`. Meta allows one `asset_feed_spec` shape per creative.
@@ -2724,6 +2726,38 @@ func (o *CreateStandaloneAdRequest) SetCarouselCards(v []CreateStandaloneAdReque
 	o.CarouselCards = v
 }
 
+// GetOptimizeCardOrder returns the OptimizeCardOrder field value if set, zero value otherwise.
+func (o *CreateStandaloneAdRequest) GetOptimizeCardOrder() bool {
+	if o == nil || IsNil(o.OptimizeCardOrder) {
+		var ret bool
+		return ret
+	}
+	return *o.OptimizeCardOrder
+}
+
+// GetOptimizeCardOrderOk returns a tuple with the OptimizeCardOrder field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateStandaloneAdRequest) GetOptimizeCardOrderOk() (*bool, bool) {
+	if o == nil || IsNil(o.OptimizeCardOrder) {
+		return nil, false
+	}
+	return o.OptimizeCardOrder, true
+}
+
+// HasOptimizeCardOrder returns a boolean if a field has been set.
+func (o *CreateStandaloneAdRequest) HasOptimizeCardOrder() bool {
+	if o != nil && !IsNil(o.OptimizeCardOrder) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizeCardOrder gets a reference to the given bool and assigns it to the OptimizeCardOrder field.
+func (o *CreateStandaloneAdRequest) SetOptimizeCardOrder(v bool) {
+	o.OptimizeCardOrder = &v
+}
+
 // GetDefaultLocale returns the DefaultLocale field value if set, zero value otherwise.
 func (o *CreateStandaloneAdRequest) GetDefaultLocale() string {
 	if o == nil || IsNil(o.DefaultLocale) {
@@ -4247,6 +4281,9 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CarouselCards) {
 		toSerialize["carouselCards"] = o.CarouselCards
+	}
+	if !IsNil(o.OptimizeCardOrder) {
+		toSerialize["optimizeCardOrder"] = o.OptimizeCardOrder
 	}
 	if !IsNil(o.DefaultLocale) {
 		toSerialize["defaultLocale"] = o.DefaultLocale
