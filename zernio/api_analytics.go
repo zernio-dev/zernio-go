@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.272.0
+API version: 1.273.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,7 @@ type AnalyticsAPIGetAnalyticsRequest struct {
 	page       *int32
 	sortBy     *string
 	order      *string
+	tags       *string
 }
 
 // Returns analytics for a single post. Accepts both Zernio Post IDs and External Post IDs. Zernio IDs are auto-resolved to External Post analytics.
@@ -103,6 +104,12 @@ func (r AnalyticsAPIGetAnalyticsRequest) SortBy(sortBy string) AnalyticsAPIGetAn
 // Sort order
 func (r AnalyticsAPIGetAnalyticsRequest) Order(order string) AnalyticsAPIGetAnalyticsRequest {
 	r.order = &order
+	return r
+}
+
+// Comma-separated tags (at most 20). Lists only posts created through Zernio that carry every listed tag, matched exactly and case-sensitively. Up to 200 published posts can match within the date range; more returns 400 asking to narrow fromDate and toDate. Ignored when postId is set.
+func (r AnalyticsAPIGetAnalyticsRequest) Tags(tags string) AnalyticsAPIGetAnalyticsRequest {
+	r.tags = &tags
 	return r
 }
 
@@ -205,6 +212,9 @@ func (a *AnalyticsAPIService) GetAnalyticsExecute(r AnalyticsAPIGetAnalyticsRequ
 		var defaultValue string = "desc"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "order", defaultValue, "form", "")
 		r.order = &defaultValue
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
