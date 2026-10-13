@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.262.0
+API version: 1.263.0
 Contact: support@zernio.com
 */
 
@@ -2030,7 +2030,7 @@ Deletes an ad on the platform while keeping its history, and removes empty paren
 
 Deletes the ad on the platform and marks it as cancelled in the database. The ad is preserved for history. OpenAI Ads has no delete API; the ad is archived instead (a terminal state, the closest equivalent).
 
-Only the ad is deleted; a campaign or ad set is never deleted while it still holds another ad. On Meta, when the ad set and campaign were created by Zernio (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and Meta lists no other ad in the ad set (archived ads count), the emptied ad set is deleted too, then the campaign once it holds no other ad set. Parents created outside Zernio, and the parents of an ad imported from the platform, are always kept. On LinkedIn the ad is a creative inside a campaign inside a campaign group: the creative is always removed, the campaign only when Zernio created it and LinkedIn lists no other creative in it that is not archived, canceled or deleted, and the campaign group only when Zernio created it and LinkedIn lists no other campaign in it that is not canceled or deleted (archived campaigns count). If the creative itself cannot be removed the request fails and no parent is touched. To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
+Only the ad is deleted; a campaign or ad set is never deleted while it still holds another ad. On Meta, when the ad set and campaign were created by Zernio (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and Meta lists no other ad in the ad set (archived ads count), the emptied ad set is deleted too, then the campaign once it holds no other ad set. Parents created outside Zernio, and the parents of an ad imported from the platform, are always kept. On LinkedIn the ad is a creative inside a campaign inside a campaign group: the creative is always removed, the campaign only when Zernio created it and LinkedIn lists no other creative in it that is not archived, canceled or deleted, and the campaign group only when Zernio created it and LinkedIn lists no other campaign in it that is not canceled or deleted (archived campaigns count). If the creative itself cannot be removed the request fails and no parent is touched. On X the ad is a promoted post inside a line item inside a campaign: the promoted post is always removed, the line item only when Zernio created it (by `POST /v1/ads/create` or `POST /v1/ads/boost`) and X lists no other undeleted promoted post in it, and the campaign only when Zernio created it and X lists no other undeleted line item in it. If X refuses the promoted post delete the request fails and no parent is touched. To delete a whole campaign on purpose use `DELETE /v1/ads/campaigns/{campaignId}`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId
@@ -2170,9 +2170,15 @@ Locally, all Ad documents for this campaign are marked
 to resolve, so it is invisible to `/v1/ads/tree` and this endpoint would
 404. That state is produced by the two-step create flow (campaign, then
 ads via `existingCampaignId`) whenever Meta rejects the ad step. To
-delete such a shell, send `accountId` in the body: we skip the local
-lookup entirely and forward the delete to Meta. `accountId` is ignored
-when the campaign does have ads.
+delete such a shell, send `accountId` in the body or the query string:
+we skip the local lookup entirely and forward the delete to Meta, or to
+X when `accountId` is an X or X Ads connection. On X the ad account comes
+from the synced campaign, which wins over `adAccountId`; when the campaign
+was never synced, send `adAccountId` too. Before deleting, Zernio asks X
+whether the campaign still holds undeleted line items (ads not synced
+yet); if it does the answer is 409 and nothing is deleted, so sync the ad
+account and retry. Other platforms answer 501 for an empty campaign.
+`accountId` is ignored when the campaign does have ads.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param campaignId Platform campaign ID
@@ -3200,7 +3206,7 @@ type AdCampaignsAPIGetAdRequest struct {
 	live       *bool
 }
 
-// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description. On X the budget is read live in the same read: on GET /v1/ads/{adId} &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches); on the ad set and campaign listings &#x60;budget&#x60; is the one that line item or campaign holds now (returned, not stored); a row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIGetAdRequest) Live(live bool) AdCampaignsAPIGetAdRequest {
 	r.live = &live
 	return r
@@ -5341,7 +5347,7 @@ func (r AdCampaignsAPIListAdCampaignsRequest) MinSpend(minSpend float32) AdCampa
 	return r
 }
 
-// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description. On X the budget is read live in the same read: on GET /v1/ads/{adId} &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches); on the ad set and campaign listings &#x60;budget&#x60; is the one that line item or campaign holds now (returned, not stored); a row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdCampaignsRequest) Live(live bool) AdCampaignsAPIListAdCampaignsRequest {
 	r.live = &live
 	return r
@@ -6039,7 +6045,7 @@ func (r AdCampaignsAPIListAdSetsRequest) Platform(platform string) AdCampaignsAP
 	return r
 }
 
-// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description.
+// Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description. On X the budget is read live in the same read: on GET /v1/ads/{adId} &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches); on the ad set and campaign listings &#x60;budget&#x60; is the one that line item or campaign holds now (returned, not stored); a row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdSetsRequest) Live(live bool) AdCampaignsAPIListAdSetsRequest {
 	r.live = &live
 	return r

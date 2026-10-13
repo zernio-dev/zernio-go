@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.262.0
+API version: 1.263.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,9 @@ var _ MappedNullable = &ListAdSets200ResponseAdSetsInnerBudget{}
 type ListAdSets200ResponseAdSetsInnerBudget struct {
 	Amount *float32 `json:"amount,omitempty"`
 	Type   *string  `json:"type,omitempty"`
-	// LinkedIn only. The campaign's `dailyBudget`. LinkedIn allows a daily AND a lifetime budget on the same campaign, which `amount`/`type` cannot express (daily wins there); read `daily` and `lifetime` to see both.
+	// LinkedIn and X only. The daily budget (LinkedIn: the campaign's `dailyBudget`; X: the line item's `daily_budget_amount_local_micro`). Both allow a daily AND a lifetime budget together, which `amount`/`type` cannot express (daily wins there); read `daily` and `lifetime` to see both.
 	Daily *float32 `json:"daily,omitempty"`
-	// LinkedIn only. The campaign's `totalBudget`, readable even when a daily budget is also set.
+	// LinkedIn and X only. The lifetime total (LinkedIn: the campaign's `totalBudget`; X: the line item's `total_budget_amount_local_micro`), readable even when a daily budget is also set.
 	Lifetime *float32 `json:"lifetime,omitempty"`
 	// LinkedIn only. The campaign's `pacingStrategy`: how fast LinkedIn may spend the budget. Typically LINEAR or ACCELERATED; the list is open.
 	Pacing *string `json:"pacing,omitempty"`

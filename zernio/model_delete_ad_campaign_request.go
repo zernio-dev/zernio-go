@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.262.0
+API version: 1.263.0
 Contact: support@zernio.com
 */
 
@@ -25,6 +25,8 @@ type DeleteAdCampaignRequest struct {
 	Platform string `json:"platform"`
 	// Zernio SocialAccount id owning the ad account. Required only to delete an EMPTY campaign (zero ads), which has no local Ad documents to resolve a token from.
 	AccountId *string `json:"accountId,omitempty"`
+	// X only, for an EMPTY campaign that was never synced: the X ad account id the campaign belongs to (lowercase letters and digits). The synced campaign's ad account wins when there is one. Also accepted on the query string.
+	AdAccountId *string `json:"adAccountId,omitempty" validate:"regexp=^[0-9a-z]{1,32}$"`
 }
 
 type _DeleteAdCampaignRequest DeleteAdCampaignRequest
@@ -103,6 +105,38 @@ func (o *DeleteAdCampaignRequest) SetAccountId(v string) {
 	o.AccountId = &v
 }
 
+// GetAdAccountId returns the AdAccountId field value if set, zero value otherwise.
+func (o *DeleteAdCampaignRequest) GetAdAccountId() string {
+	if o == nil || IsNil(o.AdAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.AdAccountId
+}
+
+// GetAdAccountIdOk returns a tuple with the AdAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeleteAdCampaignRequest) GetAdAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AdAccountId) {
+		return nil, false
+	}
+	return o.AdAccountId, true
+}
+
+// HasAdAccountId returns a boolean if a field has been set.
+func (o *DeleteAdCampaignRequest) HasAdAccountId() bool {
+	if o != nil && !IsNil(o.AdAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAccountId gets a reference to the given string and assigns it to the AdAccountId field.
+func (o *DeleteAdCampaignRequest) SetAdAccountId(v string) {
+	o.AdAccountId = &v
+}
+
 func (o DeleteAdCampaignRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -116,6 +150,9 @@ func (o DeleteAdCampaignRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize["platform"] = o.Platform
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId
+	}
+	if !IsNil(o.AdAccountId) {
+		toSerialize["adAccountId"] = o.AdAccountId
 	}
 	return toSerialize, nil
 }

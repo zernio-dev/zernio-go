@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.262.0
+API version: 1.263.0
 Contact: support@zernio.com
 */
 
@@ -52,6 +52,8 @@ type BoostPostRequest struct {
 	BudgetAmount *float32 `json:"budgetAmount,omitempty"`
 	// Goes together with budgetAmount. lifetime requires schedule.endDate.
 	BudgetType *string `json:"budgetType,omitempty"`
+	// X only. A lifetime total, in whole currency units, that caps a daily budget (budgetType daily): the line item gets both daily_budget_amount_local_micro and total_budget_amount_local_micro, and stops spending once the total is reached. Must be at least budgetAmount. Read back as budget.daily and budget.lifetime. 400 on a lifetime budget or on another platform.
+	LifetimeBudgetCap *float32 `json:"lifetimeBudgetCap,omitempty"`
 	// Deprecated
 	Budget *BoostPostRequestBudget `json:"budget,omitempty"`
 	// Meta only. Instagram identity the ad runs AS (creative.instagram_user_id), overriding the account linked to the Page. Live-verified against a Page-post creative.
@@ -66,7 +68,7 @@ type BoostPostRequest struct {
 	Currency *string `json:"currency,omitempty"`
 	// Ad-set start time (ISO 8601, e.g. \"2026-06-10T09:00:00Z\"), mapped to the ad set's `start_time`. When omitted the ad starts delivering immediately. On Meta, TikTok, X and Pinterest a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone. Same field as on POST /v1/ads/create.
 	StartDate *time.Time `json:"startDate,omitempty"`
-	// Ad-set end time (ISO 8601), mapped to the ad set's `end_time`. Required for lifetime budgets. On Meta, TikTok, X and Pinterest a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone, and a date-only end runs to 23:59:59 local. Same field as on POST /v1/ads/create.
+	// Ad-set end time (ISO 8601), mapped to the ad set's `end_time` (on X, the line item's `end_time`; X campaigns carry no flight dates). Required for lifetime budgets. On Meta, TikTok, X and Pinterest a value without an offset (`YYYY-MM-DD`, `YYYY-MM-DD HH:MM:SS` or `YYYY-MM-DDTHH:MM:SS`) is read in the ad account timezone, and a date-only end runs to 23:59:59 local. Same field as on POST /v1/ads/create.
 	EndDate *time.Time `json:"endDate,omitempty"`
 	// Deprecated
 	Schedule  *BoostPostRequestSchedule  `json:"schedule,omitempty"`
@@ -601,6 +603,38 @@ func (o *BoostPostRequest) HasBudgetType() bool {
 // SetBudgetType gets a reference to the given string and assigns it to the BudgetType field.
 func (o *BoostPostRequest) SetBudgetType(v string) {
 	o.BudgetType = &v
+}
+
+// GetLifetimeBudgetCap returns the LifetimeBudgetCap field value if set, zero value otherwise.
+func (o *BoostPostRequest) GetLifetimeBudgetCap() float32 {
+	if o == nil || IsNil(o.LifetimeBudgetCap) {
+		var ret float32
+		return ret
+	}
+	return *o.LifetimeBudgetCap
+}
+
+// GetLifetimeBudgetCapOk returns a tuple with the LifetimeBudgetCap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BoostPostRequest) GetLifetimeBudgetCapOk() (*float32, bool) {
+	if o == nil || IsNil(o.LifetimeBudgetCap) {
+		return nil, false
+	}
+	return o.LifetimeBudgetCap, true
+}
+
+// HasLifetimeBudgetCap returns a boolean if a field has been set.
+func (o *BoostPostRequest) HasLifetimeBudgetCap() bool {
+	if o != nil && !IsNil(o.LifetimeBudgetCap) {
+		return true
+	}
+
+	return false
+}
+
+// SetLifetimeBudgetCap gets a reference to the given float32 and assigns it to the LifetimeBudgetCap field.
+func (o *BoostPostRequest) SetLifetimeBudgetCap(v float32) {
+	o.LifetimeBudgetCap = &v
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
@@ -1944,6 +1978,9 @@ func (o BoostPostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.BudgetType) {
 		toSerialize["budgetType"] = o.BudgetType
+	}
+	if !IsNil(o.LifetimeBudgetCap) {
+		toSerialize["lifetimeBudgetCap"] = o.LifetimeBudgetCap
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
