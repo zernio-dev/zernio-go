@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.270.0
+API version: 1.271.0
 Contact: support@zernio.com
 */
 
@@ -1042,7 +1042,7 @@ func (r CommentsAPIListInboxCommentsRequest) Cursor(cursor string) CommentsAPILi
 	return r
 }
 
-// Filter by specific account ID
+// Filter by specific account ID. With &#x60;platform&#x3D;metaads&#x60; it takes the Meta Ads account ID, or the Facebook or Instagram account ID the Meta Ads connection belongs to, which returns that Meta Ads connection&#39;s ad rows. A Facebook or Instagram account with no Meta Ads connection returns no rows; an account on any other platform returns 400.
 func (r CommentsAPIListInboxCommentsRequest) AccountId(accountId string) CommentsAPIListInboxCommentsRequest {
 	r.accountId = &accountId
 	return r
@@ -1199,6 +1199,17 @@ func (a *CommentsAPIService) ListInboxCommentsExecute(r CommentsAPIListInboxComm
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
