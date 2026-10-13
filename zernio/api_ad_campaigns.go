@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.265.0
+API version: 1.265.1
 Contact: support@zernio.com
 */
 
@@ -2201,8 +2201,10 @@ X when `accountId` is an X or X Ads connection. On X the ad account comes
 from the synced campaign, which wins over `adAccountId`; when the campaign
 was never synced, send `adAccountId` too. Before deleting, Zernio asks X
 whether the campaign still holds undeleted line items (ads not synced
-yet); if it does the answer is 409 and nothing is deleted, so sync the ad
-account and retry. Other platforms answer 501 for an empty campaign.
+yet); if it does the answer is 409 `invalid_field_value` on `campaignId`
+and nothing is deleted. Sync the ad account and retry when those line items
+hold promoted posts; line items without promoted posts never sync, so delete
+them in X Ads Manager first. Other platforms answer 501 for an empty campaign.
 `accountId` is ignored when the campaign does have ads.
 
 Reddit Ads has no delete: the campaign is archived instead (`configured_status`
