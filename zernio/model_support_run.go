@@ -34,8 +34,10 @@ type SupportRun struct {
 	// The question as asked, with leading and trailing whitespace trimmed. Null only on runs created before this field was added.
 	Question NullableString `json:"question"`
 	// The assistant's answer. Null while the run is in progress or when it failed.
-	Answer NullableString  `json:"answer"`
-	Usage  SupportRunUsage `json:"usage"`
+	Answer NullableString `json:"answer"`
+	// The answer as structured fields you can route on. Null while in progress, when the run failed or went to a person (needs_human), or when no diagnosis could be produced.
+	Diagnosis NullableSupportRunDiagnosis `json:"diagnosis"`
+	Usage     SupportRunUsage             `json:"usage"`
 	// The exact amount charged for the question, in USD, never above `maxCostUsd`. 0 for a failed run.
 	CostUsd float32 `json:"costUsd"`
 	// The cost cap this run was started with, in USD.
@@ -54,7 +56,7 @@ type _SupportRun SupportRun
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, question NullableString, answer NullableString, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime, supportTicket SupportRunSupportTicket) *SupportRun {
+func NewSupportRun(runId string, threadId string, status string, stopReason NullableString, question NullableString, answer NullableString, diagnosis NullableSupportRunDiagnosis, usage SupportRunUsage, costUsd float32, maxCostUsd float32, createdAt time.Time, startedAt NullableTime, finishedAt NullableTime, supportTicket SupportRunSupportTicket) *SupportRun {
 	this := SupportRun{}
 	this.RunId = runId
 	this.ThreadId = threadId
@@ -62,6 +64,7 @@ func NewSupportRun(runId string, threadId string, status string, stopReason Null
 	this.StopReason = stopReason
 	this.Question = question
 	this.Answer = answer
+	this.Diagnosis = diagnosis
 	this.Usage = usage
 	this.CostUsd = costUsd
 	this.MaxCostUsd = maxCostUsd
@@ -228,6 +231,32 @@ func (o *SupportRun) GetAnswerOk() (*string, bool) {
 // SetAnswer sets field value
 func (o *SupportRun) SetAnswer(v string) {
 	o.Answer.Set(&v)
+}
+
+// GetDiagnosis returns the Diagnosis field value
+// If the value is explicit nil, the zero value for SupportRunDiagnosis will be returned
+func (o *SupportRun) GetDiagnosis() SupportRunDiagnosis {
+	if o == nil || o.Diagnosis.Get() == nil {
+		var ret SupportRunDiagnosis
+		return ret
+	}
+
+	return *o.Diagnosis.Get()
+}
+
+// GetDiagnosisOk returns a tuple with the Diagnosis field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SupportRun) GetDiagnosisOk() (*SupportRunDiagnosis, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Diagnosis.Get(), o.Diagnosis.IsSet()
+}
+
+// SetDiagnosis sets field value
+func (o *SupportRun) SetDiagnosis(v SupportRunDiagnosis) {
+	o.Diagnosis.Set(&v)
 }
 
 // GetUsage returns the Usage field value
@@ -450,6 +479,7 @@ func (o SupportRun) ToMap() (map[string]interface{}, error) {
 	toSerialize["stopReason"] = o.StopReason.Get()
 	toSerialize["question"] = o.Question.Get()
 	toSerialize["answer"] = o.Answer.Get()
+	toSerialize["diagnosis"] = o.Diagnosis.Get()
 	toSerialize["usage"] = o.Usage
 	toSerialize["costUsd"] = o.CostUsd
 	toSerialize["maxCostUsd"] = o.MaxCostUsd
@@ -474,6 +504,7 @@ func (o *SupportRun) UnmarshalJSON(data []byte) (err error) {
 		"stopReason",
 		"question",
 		"answer",
+		"diagnosis",
 		"usage",
 		"costUsd",
 		"maxCostUsd",
