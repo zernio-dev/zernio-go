@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.266.1
+API version: 1.267.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type YouTubePlatformData struct {
 	FirstComment *string `json:"firstComment,omitempty"`
 	// AI-generated content disclosure. Set true if the video contains synthetic content that could be mistaken for real. YouTube may add a label.
 	ContainsSyntheticMedia *bool `json:"containsSyntheticMedia,omitempty"`
+	// Set false to skip notifying subscribers about this upload (YouTube's notifySubscribers). Defaults to true.
+	NotifySubscribers *bool `json:"notifySubscribers,omitempty"`
 	// YouTube video category ID. Defaults to 22 (People & Blogs). Common: 1 (Film), 2 (Autos), 10 (Music), 15 (Pets), 17 (Sports), 20 (Gaming), 23 (Comedy), 24 (Entertainment), 25 (News), 26 (Howto), 27 (Education), 28 (Science & Tech).
 	CategoryId *string `json:"categoryId,omitempty"`
 	// Optional YouTube playlist ID to add the video to after upload (e.g. 'PLxxxxxxxxxxxxx'). Use GET /v1/accounts/{id}/youtube-playlists to list available playlists. Works for both immediate and scheduled uploads. Quota cost: 50 YouTube API units per call.
@@ -48,6 +50,8 @@ func NewYouTubePlatformData() *YouTubePlatformData {
 	this.MadeForKids = &madeForKids
 	var containsSyntheticMedia bool = false
 	this.ContainsSyntheticMedia = &containsSyntheticMedia
+	var notifySubscribers bool = true
+	this.NotifySubscribers = &notifySubscribers
 	var categoryId string = "22"
 	this.CategoryId = &categoryId
 	return &this
@@ -64,6 +68,8 @@ func NewYouTubePlatformDataWithDefaults() *YouTubePlatformData {
 	this.MadeForKids = &madeForKids
 	var containsSyntheticMedia bool = false
 	this.ContainsSyntheticMedia = &containsSyntheticMedia
+	var notifySubscribers bool = true
+	this.NotifySubscribers = &notifySubscribers
 	var categoryId string = "22"
 	this.CategoryId = &categoryId
 	return &this
@@ -229,6 +235,38 @@ func (o *YouTubePlatformData) SetContainsSyntheticMedia(v bool) {
 	o.ContainsSyntheticMedia = &v
 }
 
+// GetNotifySubscribers returns the NotifySubscribers field value if set, zero value otherwise.
+func (o *YouTubePlatformData) GetNotifySubscribers() bool {
+	if o == nil || IsNil(o.NotifySubscribers) {
+		var ret bool
+		return ret
+	}
+	return *o.NotifySubscribers
+}
+
+// GetNotifySubscribersOk returns a tuple with the NotifySubscribers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *YouTubePlatformData) GetNotifySubscribersOk() (*bool, bool) {
+	if o == nil || IsNil(o.NotifySubscribers) {
+		return nil, false
+	}
+	return o.NotifySubscribers, true
+}
+
+// HasNotifySubscribers returns a boolean if a field has been set.
+func (o *YouTubePlatformData) HasNotifySubscribers() bool {
+	if o != nil && !IsNil(o.NotifySubscribers) {
+		return true
+	}
+
+	return false
+}
+
+// SetNotifySubscribers gets a reference to the given bool and assigns it to the NotifySubscribers field.
+func (o *YouTubePlatformData) SetNotifySubscribers(v bool) {
+	o.NotifySubscribers = &v
+}
+
 // GetCategoryId returns the CategoryId field value if set, zero value otherwise.
 func (o *YouTubePlatformData) GetCategoryId() string {
 	if o == nil || IsNil(o.CategoryId) {
@@ -317,6 +355,9 @@ func (o YouTubePlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ContainsSyntheticMedia) {
 		toSerialize["containsSyntheticMedia"] = o.ContainsSyntheticMedia
+	}
+	if !IsNil(o.NotifySubscribers) {
+		toSerialize["notifySubscribers"] = o.NotifySubscribers
 	}
 	if !IsNil(o.CategoryId) {
 		toSerialize["categoryId"] = o.CategoryId
