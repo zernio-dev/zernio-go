@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.269.0
+API version: 1.270.0
 Contact: support@zernio.com
 */
 
@@ -26,8 +26,10 @@ type AdTreeAdSet struct {
 	// Derived from child ad statuses
 	Status *AdStatus `json:"status,omitempty"`
 	// Earliest `platformCreatedAt` (platform ad creation time; falls back to `createdAt`, Zernio's sync time, for ads synced before that field existed) across this ad set's ads. Not the ad set's own creation time on the platform, but a proxy usable for sorting.
-	CreatedTime NullableTime                            `json:"createdTime,omitempty"`
-	AdCount     *int32                                  `json:"adCount,omitempty"`
+	CreatedTime NullableTime `json:"createdTime,omitempty"`
+	AdCount     *int32       `json:"adCount,omitempty"`
+	// TikTok only. true when this ad group belongs to an Upgraded Smart+ campaign. See AdTreeCampaign.isSmartPlus.
+	IsSmartPlus *bool                                   `json:"isSmartPlus,omitempty"`
 	Budget      *ListAdSets200ResponseAdSetsInnerBudget `json:"budget,omitempty"`
 	AdSetBudget *ListAdSets200ResponseAdSetsInnerBudget `json:"adSetBudget,omitempty"`
 	Metrics     *AdMetrics                              `json:"metrics,omitempty"`
@@ -236,6 +238,38 @@ func (o *AdTreeAdSet) HasAdCount() bool {
 // SetAdCount gets a reference to the given int32 and assigns it to the AdCount field.
 func (o *AdTreeAdSet) SetAdCount(v int32) {
 	o.AdCount = &v
+}
+
+// GetIsSmartPlus returns the IsSmartPlus field value if set, zero value otherwise.
+func (o *AdTreeAdSet) GetIsSmartPlus() bool {
+	if o == nil || IsNil(o.IsSmartPlus) {
+		var ret bool
+		return ret
+	}
+	return *o.IsSmartPlus
+}
+
+// GetIsSmartPlusOk returns a tuple with the IsSmartPlus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdTreeAdSet) GetIsSmartPlusOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsSmartPlus) {
+		return nil, false
+	}
+	return o.IsSmartPlus, true
+}
+
+// HasIsSmartPlus returns a boolean if a field has been set.
+func (o *AdTreeAdSet) HasIsSmartPlus() bool {
+	if o != nil && !IsNil(o.IsSmartPlus) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsSmartPlus gets a reference to the given bool and assigns it to the IsSmartPlus field.
+func (o *AdTreeAdSet) SetIsSmartPlus(v bool) {
+	o.IsSmartPlus = &v
 }
 
 // GetBudget returns the Budget field value if set, zero value otherwise.
@@ -701,6 +735,9 @@ func (o AdTreeAdSet) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AdCount) {
 		toSerialize["adCount"] = o.AdCount
+	}
+	if !IsNil(o.IsSmartPlus) {
+		toSerialize["isSmartPlus"] = o.IsSmartPlus
 	}
 	if !IsNil(o.Budget) {
 		toSerialize["budget"] = o.Budget
