@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.265.1
+API version: 1.266.0
 Contact: support@zernio.com
 */
 
@@ -18,11 +18,13 @@ import (
 // checks if the AskSupportQuestionRequestContext type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &AskSupportQuestionRequestContext{}
 
-// AskSupportQuestionRequestContext Ids the assistant should look at. Each must belong to your workspace.
+// AskSupportQuestionRequestContext Ids the assistant should look at. postId, accountId and profileId must belong to your workspace (404 otherwise).
 type AskSupportQuestionRequestContext struct {
-	PostId               *string `json:"postId,omitempty"`
-	AccountId            *string `json:"accountId,omitempty"`
-	ProfileId            *string `json:"profileId,omitempty"`
+	PostId    *string `json:"postId,omitempty"`
+	AccountId *string `json:"accountId,omitempty"`
+	ProfileId *string `json:"profileId,omitempty"`
+	// The X-Request-Id of a call you want explained. The assistant reads that request's logged record. Not checked up front.
+	RequestId            *string `json:"requestId,omitempty" validate:"regexp=^[\\\\w.-]{1,128}$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -141,6 +143,38 @@ func (o *AskSupportQuestionRequestContext) SetProfileId(v string) {
 	o.ProfileId = &v
 }
 
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *AskSupportQuestionRequestContext) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AskSupportQuestionRequestContext) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *AskSupportQuestionRequestContext) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *AskSupportQuestionRequestContext) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
 func (o AskSupportQuestionRequestContext) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -159,6 +193,9 @@ func (o AskSupportQuestionRequestContext) ToMap() (map[string]interface{}, error
 	}
 	if !IsNil(o.ProfileId) {
 		toSerialize["profileId"] = o.ProfileId
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["requestId"] = o.RequestId
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -185,6 +222,7 @@ func (o *AskSupportQuestionRequestContext) UnmarshalJSON(data []byte) (err error
 		delete(additionalProperties, "postId")
 		delete(additionalProperties, "accountId")
 		delete(additionalProperties, "profileId")
+		delete(additionalProperties, "requestId")
 		o.AdditionalProperties = additionalProperties
 	}
 
