@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.267.1
+API version: 1.267.2
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ func (r MessagingAdsAPICreateCallAdRequest) CreateCallAdRequest(createCallAdRequ
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r MessagingAdsAPICreateCallAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateCallAdRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -54,7 +54,7 @@ via a tel: link. The ad set is destination_type PHONE_CALL optimizing QUALITY_CA
 and the campaign objective defaults to OUTCOME_LEADS.
 Supports the same single-creative and multi-creative shapes as CTWA.
 
-**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). If the first request is cut off mid-create (for example by a function timeout), its key can stay in progress and keep returning 409 until it expires; use a new key to retry sooner, after checking whether the ad was created. Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateCallAdRequest
@@ -195,7 +195,7 @@ func (r MessagingAdsAPICreateCtwaAdRequest) CtwaAdRequestBody(ctwaAdRequestBody 
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r MessagingAdsAPICreateCtwaAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateCtwaAdRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -228,7 +228,7 @@ a number already paired with the Page (WhatsApp destination only).
 
 **WhatsApp number prerequisite.** Link the WhatsApp number to the Facebook Page used for the ad before creating it: Meta checks the pairing at creation. Link it from the WhatsApp Business app (Settings > Business tools > Facebook & Instagram) or from the Page settings (Linked accounts > WhatsApp). Linking does not affect the number's WhatsApp connection in Zernio (Cloud API or coexistence), so no reconnect or re-sync is needed. If Meta creates a new ad set without the requested `whatsappPhoneNumber`, the 201 response carries a `warnings` entry. This can happen even when the number is linked (Meta can drop a Page's second linked number).
 
-**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). If the first request is cut off mid-create (for example by a function timeout), its key can stay in progress and keep returning 409 until it expires; use a new key to retry sooner, after checking whether the ad was created. Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateCtwaAdRequest
@@ -373,7 +373,7 @@ func (r MessagingAdsAPICreateMessagingAdRequest) CreateMessagingAdRequest(create
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r MessagingAdsAPICreateMessagingAdRequest) IdempotencyKey(idempotencyKey string) MessagingAdsAPICreateMessagingAdRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -402,9 +402,19 @@ a number already paired with the Page (WhatsApp destination only).
 `accountId` is a Facebook, Instagram or Meta ads (business login) connection;
 `pageId` picks the Page when that connection was granted several.
 
+**Required fields per shape** (a missing one is a 400 naming it in `param`):
+
+- Always `accountId`, `adAccountId`, `name`, and exactly one of `destination` / `destinations`.
+- `budgetAmount` and `budgetType` unless `adSetId` or `existingCampaignId` is set, plus `endDate` for a lifetime budget.
+- Single image or video: `headline`, `body`, and exactly one of `imageUrl` / `video`. With `placementAssets`, `headline` and `body` only (the media comes from `placementAssets`).
+- `carouselCards`: `body` and the 2-10 cards; `headline` is optional, `imageUrl` / `video` / top-level `description` are a 400.
+- Existing post (`platformPostId` or `objectStoryId`): no copy or media fields.
+- `creatives[]`: the same rules per entry, with no top-level creative fields.
+- `welcomeMessage`, when sent: `text` plus exactly one of `prefillText` / `quickReplies`.
+
 **WhatsApp number prerequisite.** For the WhatsApp destination, link the WhatsApp number to the Facebook Page used for the ad before creating it: Meta checks the pairing at creation. Link it from the WhatsApp Business app (Settings > Business tools > Facebook & Instagram) or from the Page settings (Linked accounts > WhatsApp). Linking does not affect the number's WhatsApp connection in Zernio (Cloud API or coexistence), so no reconnect or re-sync is needed. If Meta creates a new ad set without the requested `whatsappPhoneNumber`, the 201 response carries a `warnings` entry. This can happen even when the number is linked (Meta can drop a Page's second linked number).
 
-**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). If the first request is cut off mid-create (for example by a function timeout), its key can stay in progress and keep returning 409 until it expires; use a new key to retry sooner, after checking whether the ad was created. Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MessagingAdsAPICreateMessagingAdRequest

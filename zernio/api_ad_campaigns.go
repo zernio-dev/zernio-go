@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.267.1
+API version: 1.267.2
 Contact: support@zernio.com
 */
 
@@ -666,7 +666,7 @@ func (r AdCampaignsAPIBoostPostRequest) BoostPostRequest(boostPostRequest BoostP
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r AdCampaignsAPIBoostPostRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPIBoostPostRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1818,7 +1818,7 @@ func (r AdCampaignsAPICreateStandaloneAdRequest) CreateStandaloneAdRequest(creat
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r AdCampaignsAPICreateStandaloneAdRequest) IdempotencyKey(idempotencyKey string) AdCampaignsAPICreateStandaloneAdRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -1884,11 +1884,23 @@ Requested settings are persisted for lists, exports, and default ad-detail reads
 
 Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
 
+**Meta required fields per shape** (a missing one is a 400 naming it in `param`):
+
+- Every shape that builds a new ad set (no `adSetId`, `existingCampaignId` or `buyingType: "RESERVED"`): `budgetAmount` and `budgetType`, plus `endDate` for a lifetime budget.
+- Single image or video (the default), also with `adSetId`: `headline` (max 255), `body`, `callToAction`, exactly one of `imageUrl` / `video` (none for goal `catalog_sales`), and `linkUrl` unless the goal is `lead_generation` or `page_visits` or `leadGenFormId` is set.
+- `bodies[]` / `headlines[]` text variations: `body`, one list with 2+ items, `callToAction`, `imageUrl` or `video`, and `linkUrl` unless the goal is `lead_generation` or `leadGenFormId` is set. `headline` is not required.
+- `placementAssets`: `headline`, `body`, `callToAction`, and `linkUrl` with the same exemptions as the single shape; the media comes from `placementAssets`.
+- `carouselCards`: `body`, `callToAction`, and `linkUrl` unless the goal is `lead_generation` or `leadGenFormId` is set. `headline` is not required.
+- `creatives[]`: per entry `headline`, `body`, `callToAction`, `imageUrl` or `video`, and `linkUrl` unless the goal is `lead_generation`. Top-level `body` is not required.
+- `dynamicCreative`: `imageUrls` or `videoUrls`, `callToActionTypes`, and `linkUrls` unless the goal is `lead_generation`. Top-level `body` is not required.
+- `existingCreativeId`: no creative fields. Goal `page_likes`: `body` only.
+- Goal `lead_generation` always needs `leadGenFormId`, except with `existingCreativeId`.
+
 LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
 
 Reddit Ads (`accountId` of a `redditads` connection, `adAccountId` like `a2_abc123`) creates a campaign, an ad group carrying the budget, schedule, targeting and pixel, and an ad running a new promoted post authored by the ad account's first profile (422 when it has none). The creative format follows the body: `carouselCards` builds a carousel, `video` a video ad, `imageUrl` an image ad, and none of them a text ad, which cannot link out (`linkUrl` is a 400 there; `body` is required). Only the legacy single-creative shape is available: `creatives[]`, `adSetId`, `existingCampaignId` and `validateOnly` are refused. Reddit throttling surfaces as 429 `rate_limited` with `platform: reddit`; retry after a delay. To promote an existing Reddit post use POST /v1/ads/boost.
 
-**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). Keys are scoped to your credential and expire after 24h.
+**Idempotency:** this endpoint is not idempotent at the platform level (a blind retry creates a second campaign/ad set/ad). Send an `Idempotency-Key` header to make retries safe: the first request with a given key creates the ad and we store the response; a retry with the same key replays that exact response (with `Idempotent-Replayed: true`) instead of creating duplicates. Reusing a key with a different body returns 422; a key whose first request is still in flight returns 409 (retry after a short backoff). If the first request is cut off mid-create (for example by a function timeout), its key can stay in progress and keep returning 409 until it expires; use a new key to retry sooner, after checking whether the ad was created. Keys are scoped to your credential and expire after 24h.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdCampaignsAPICreateStandaloneAdRequest

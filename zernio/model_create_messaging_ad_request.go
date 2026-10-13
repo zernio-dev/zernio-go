@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.267.1
+API version: 1.267.2
 Contact: support@zernio.com
 */
 
@@ -46,7 +46,7 @@ type CreateMessagingAdRequest struct {
 	PageId *string `json:"pageId,omitempty"`
 	// WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Meta can accept the number yet create the ad set without it; the response then carries a `warnings` entry. Attach requests do not change the existing ad set. Stored as creative.whatsappPhoneNumber on every created ad.
 	WhatsappPhoneNumber *string `json:"whatsappPhoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
-	// Single-creative shape only. Mutually exclusive with `creatives[]`.
+	// Single-creative shape only. Mutually exclusive with `creatives[]`. Required on a single image or video ad (including one built with `placementAssets`); not used by a `carouselCards` ad and not accepted with an existing post reference.
 	Headline *string `json:"headline,omitempty"`
 	// Primary text shown above the image / video. Single-creative shape only. Mutually exclusive with `creatives[]`.
 	Body *string `json:"body,omitempty"`
@@ -56,7 +56,7 @@ type CreateMessagingAdRequest struct {
 	ImageUrl       *string                          `json:"imageUrl,omitempty"`
 	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
 	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
-	// Messaging and CTWA only (a 400 on POST /v1/ads/call). A hand-built carousel of 2-10 image cards, sent to Meta as `link_data.child_attachments`; every card (and the carousel itself) carries the destination's messaging call to action (WHATSAPP_MESSAGE, MESSAGE_PAGE or INSTAGRAM_MESSAGE), so a tap on any card opens the conversation. Replaces `imageUrl` / `video` (sending either is a 400). `body` is required as the primary text; `headline` is optional and only names the creative (each card has its own `headline`); a top-level `description` is a 400 (set it per card). `welcomeMessage`, `whatsappPhoneNumber` and `destinations` apply as on a single-image ad. Also a 400 with `placementAssets`, `platformPostId`, `existingPostId` or `objectStoryId`. Single-creative shape; for `creatives[]` set it per entry.
+	// Messaging and CTWA only (a 400 on POST /v1/ads/call). A hand-built carousel of 2-10 image cards, sent to Meta in the order given as `link_data.child_attachments` (Meta may reorder them for performance, since `multi_share_optimized` defaults to true and no field fixes the order today); every card (and the carousel itself) carries the destination's messaging call to action (WHATSAPP_MESSAGE, MESSAGE_PAGE or INSTAGRAM_MESSAGE), so a tap on any card opens the conversation. Replaces `imageUrl` / `video` (sending either is a 400). `body` is required as the primary text; `headline` is optional and only names the creative (each card has its own `headline`); a top-level `description` is a 400 (set it per card). `welcomeMessage`, `whatsappPhoneNumber` and `destinations` apply as on a single-image ad. Also a 400 with `placementAssets`, `platformPostId`, `existingPostId` or `objectStoryId`. Single-creative shape; for `creatives[]` set it per entry.
 	CarouselCards []MessagingCarouselCard `json:"carouselCards,omitempty"`
 	// Multi-creative shape: N CTWA ads under one campaign + one ad set, sharing budget and targeting. Mutually exclusive with the top-level single-creative fields (`headline` / `body` / `imageUrl` / `video`): setting both is a 400, unlike `POST /v1/ads/create` where the top-level fields are silently ignored in multi-creative mode. Each entry supplies headline, body, and image/video, or a platformPostId or objectStoryId reference. Fresh and existing creatives can be mixed.
 	Creatives []CtwaAdRequestBodyCreativesInner `json:"creatives,omitempty"`

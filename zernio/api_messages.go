@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.267.1
+API version: 1.267.2
 Contact: support@zernio.com
 */
 
@@ -2051,7 +2051,7 @@ func (r MessagesAPISendInboxMessageRequest) SendInboxMessageRequest(sendInboxMes
 	return r
 }
 
-// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409.
+// Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. A request cut off mid-handler (for example by a function timeout) can leave its key in progress, answering 409 until the key expires after 24 hours.
 func (r MessagesAPISendInboxMessageRequest) IdempotencyKey(idempotencyKey string) MessagesAPISendInboxMessageRequest {
 	r.idempotencyKey = &idempotencyKey
 	return r
@@ -2749,7 +2749,7 @@ type MessagesAPIUploadMediaDirectRequest struct {
 	contentType *string
 }
 
-// The file to upload (max 25MB)
+// The file to upload (about 4.5 MB at most in practice; use POST /v1/media/presign for larger files)
 func (r MessagesAPIUploadMediaDirectRequest) File(file *os.File) MessagesAPIUploadMediaDirectRequest {
 	r.file = file
 	return r
@@ -2772,7 +2772,10 @@ Upload a media file using API key authentication and get back a publicly accessi
 The URL can be used as attachmentUrl when sending inbox messages.
 
 Files are stored in temporary storage and auto-delete after 7 days.
-Maximum file size is 25MB.
+The effective maximum is about 4.5 MB: the multipart body goes through
+the hosting platform's request body limit, which answers 413 before the
+endpoint's own 25 MB check is reached. For larger files use
+POST /v1/media/presign and upload straight to storage.
 
 Unlike /v1/media/upload (which uses upload tokens for end-user flows),
 this endpoint takes your API key in the Authorization header, for programmatic use.

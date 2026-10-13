@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.267.1
+API version: 1.267.2
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the CtwaAdRequestBodyCreativesInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &CtwaAdRequestBodyCreativesInner{}
 
-// CtwaAdRequestBodyCreativesInner Supply headline, body, and image/video, or exactly one existing post reference. References cannot be combined with headline, body, imageUrl or video; welcomeMessage works on both.
+// CtwaAdRequestBodyCreativesInner Supply headline, body, and image/video; or body and carouselCards (no headline); or exactly one existing post reference. References cannot be combined with headline, body, imageUrl, video or carouselCards; welcomeMessage works on all three.
 type CtwaAdRequestBodyCreativesInner struct {
 	// Messaging and CTWA only. Platform post or reel ID, the same input boostPost takes as platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id run as the media owner (resolved from the media on a Meta ads business-login connection, so no Instagram connection is needed). Mutually exclusive with objectStoryId and fresh creative fields.
 	PlatformPostId *string `json:"platformPostId,omitempty"`
@@ -33,9 +33,9 @@ type CtwaAdRequestBodyCreativesInner struct {
 	// Primary text shown above the image / video.
 	Body *string `json:"body,omitempty"`
 	// Image asset. Mutually exclusive with this entry's `video`. Required if neither `video` nor an existing post reference is supplied.
-	ImageUrl       *string                                        `json:"imageUrl,omitempty"`
-	Video          *CreateStandaloneAdRequestVideo                `json:"video,omitempty"`
-	WelcomeMessage *CtwaAdRequestBodyCreativesInnerWelcomeMessage `json:"welcomeMessage,omitempty"`
+	ImageUrl       *string                          `json:"imageUrl,omitempty"`
+	Video          *CreateStandaloneAdRequestVideo  `json:"video,omitempty"`
+	WelcomeMessage *CtwaAdRequestBodyWelcomeMessage `json:"welcomeMessage,omitempty"`
 	// A 2-10 card carousel for this entry instead of `imageUrl` / `video`; `body` is required. Same rules as the top-level `carouselCards`. Carousel and single-media entries can be mixed on one ad set.
 	CarouselCards []MessagingCarouselCard `json:"carouselCards,omitempty"`
 }
@@ -317,9 +317,9 @@ func (o *CtwaAdRequestBodyCreativesInner) SetVideo(v CreateStandaloneAdRequestVi
 }
 
 // GetWelcomeMessage returns the WelcomeMessage field value if set, zero value otherwise.
-func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyCreativesInnerWelcomeMessage {
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyWelcomeMessage {
 	if o == nil || IsNil(o.WelcomeMessage) {
-		var ret CtwaAdRequestBodyCreativesInnerWelcomeMessage
+		var ret CtwaAdRequestBodyWelcomeMessage
 		return ret
 	}
 	return *o.WelcomeMessage
@@ -327,7 +327,7 @@ func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessage() CtwaAdRequestBodyC
 
 // GetWelcomeMessageOk returns a tuple with the WelcomeMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessageOk() (*CtwaAdRequestBodyCreativesInnerWelcomeMessage, bool) {
+func (o *CtwaAdRequestBodyCreativesInner) GetWelcomeMessageOk() (*CtwaAdRequestBodyWelcomeMessage, bool) {
 	if o == nil || IsNil(o.WelcomeMessage) {
 		return nil, false
 	}
@@ -343,8 +343,8 @@ func (o *CtwaAdRequestBodyCreativesInner) HasWelcomeMessage() bool {
 	return false
 }
 
-// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyCreativesInnerWelcomeMessage and assigns it to the WelcomeMessage field.
-func (o *CtwaAdRequestBodyCreativesInner) SetWelcomeMessage(v CtwaAdRequestBodyCreativesInnerWelcomeMessage) {
+// SetWelcomeMessage gets a reference to the given CtwaAdRequestBodyWelcomeMessage and assigns it to the WelcomeMessage field.
+func (o *CtwaAdRequestBodyCreativesInner) SetWelcomeMessage(v CtwaAdRequestBodyWelcomeMessage) {
 	o.WelcomeMessage = &v
 }
 
