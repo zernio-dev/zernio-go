@@ -853,11 +853,13 @@ func (r VoiceAPIDialVoiceWebCallRequest) Execute() (*DialVoiceWebCall200Response
 /*
 DialVoiceWebCall Dial from the browser softphone
 
-Step 2 of the browser softphone handshake: places an outbound call
-whose answered leg is bridged to the browser registered with the
-credential from `POST /v1/voice/calls/web`. The call runs through the
-normal outbound lane, so it is logged as outbound (from = your number,
-to = target) and recorded per the number's settings.
+Step 2 of the browser softphone handshake: rings the browser registered
+with the credential from `POST /v1/voice/calls/web` first, and dials
+the target only once the browser answers, so the callee's pickup
+connects immediately with no ringing after they answer. The call is
+logged as outbound (from = your number, to = target) and recorded per
+the number's settings. `ringTimeoutSeconds` applies to the target's
+phone, not to the browser.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return VoiceAPIDialVoiceWebCallRequest
