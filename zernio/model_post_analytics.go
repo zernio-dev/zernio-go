@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.274.0
+API version: 1.275.0
 Contact: support@zernio.com
 */
 
@@ -41,7 +41,7 @@ type PostAnalytics struct {
 	ReelsSkipRate *float32 `json:"reelsSkipRate,omitempty"`
 	// TikTok accounts connected through the TikTok for Business app only: share of viewers who watched the video to the end, 0 to 1, as TikTok reports it (T+24-48h, only for posts active in the last 7 days). 0 for other platforms. When a post is published to several accounts, the aggregate is weighted by views.
 	CompletionRate *float32 `json:"completionRate,omitempty"`
-	// TikTok accounts connected through the TikTok for Business app only: profile views from users who reached the profile through this post (T+24-48h). 0 for other platforms.
+	// Instagram feed posts (images and carousels; 0 on Reels and Stories) and TikTok accounts connected through the TikTok for Business app: profile views from users who reached the profile through this post (TikTok T+24-48h). 0 for other platforms.
 	ProfileViews *int32 `json:"profileViews,omitempty"`
 	// TikTok accounts connected through the TikTok for Business app only: clicks on the profile website link attributed to this post (T+24-48h). Also counted inside `clicks`, which sums every profile-link type (website, phone, email, address, app download). 0 for other platforms.
 	WebsiteClicks *int32 `json:"websiteClicks,omitempty"`
