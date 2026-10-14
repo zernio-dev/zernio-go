@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.275.3
+API version: 1.276.0
 Contact: support@zernio.com
 */
 
@@ -26,17 +26,18 @@ type ListAdSets200ResponseAdSetsInner struct {
 	AdSetName       NullableString `json:"adSetName,omitempty"`
 	Status          NullableString `json:"status,omitempty"`
 	// Raw platform ad set status. On TikTok the ad group's own switch `operation_status` (ENABLE / DISABLE), independent of its campaign.
-	PlatformAdSetStatus NullableString                             `json:"platformAdSetStatus,omitempty"`
-	PlatformCampaignId  NullableString                             `json:"platformCampaignId,omitempty"`
-	PlatformAdAccountId *string                                    `json:"platformAdAccountId,omitempty"`
-	AccountId           NullableString                             `json:"accountId,omitempty"`
-	ProfileId           *string                                    `json:"profileId,omitempty"`
-	Currency            NullableString                             `json:"currency,omitempty"`
-	Budget              *ListAdSets200ResponseAdSetsInnerBudget    `json:"budget,omitempty"`
-	Schedule            *ListAdSets200ResponseAdSetsInnerSchedule  `json:"schedule,omitempty"`
-	Targeting           *ListAdSets200ResponseAdSetsInnerTargeting `json:"targeting,omitempty"`
-	IsExternal          NullableBool                               `json:"isExternal,omitempty"`
-	PlatformCreatedAt   NullableTime                               `json:"platformCreatedAt,omitempty"`
+	PlatformAdSetStatus NullableString `json:"platformAdSetStatus,omitempty"`
+	PlatformCampaignId  NullableString `json:"platformCampaignId,omitempty"`
+	PlatformAdAccountId *string        `json:"platformAdAccountId,omitempty"`
+	AccountId           NullableString `json:"accountId,omitempty"`
+	// Profile the row belongs to: the profile of its owning connection (`accountId`); when that connection no longer exists, the requested profile (`profileId` filter) that reaches the row ad account, else the profile of the oldest connection of the row owner that reaches it.
+	ProfileId         *string                                    `json:"profileId,omitempty"`
+	Currency          NullableString                             `json:"currency,omitempty"`
+	Budget            *ListAdSets200ResponseAdSetsInnerBudget    `json:"budget,omitempty"`
+	Schedule          *ListAdSets200ResponseAdSetsInnerSchedule  `json:"schedule,omitempty"`
+	Targeting         *ListAdSets200ResponseAdSetsInnerTargeting `json:"targeting,omitempty"`
+	IsExternal        NullableBool                               `json:"isExternal,omitempty"`
+	PlatformCreatedAt NullableTime                               `json:"platformCreatedAt,omitempty"`
 	// Only with `live=true`. When `platformAdSetStatus` was read from the platform; null when this row was not read live.
 	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
 	// The ad set's optimization goal as last synced, in the platform's own enum (Meta `optimization_goal`, for example OFFSITE_CONVERSIONS or LINK_CLICKS; TikTok `optimization_goal`; Pinterest the conversion event of `optimization_goal_metadata`, for example CHECKOUT; X the line item `goal`; OpenAI the campaign `bidding_type`). Always null on Google, which has no per-ad-group optimization goal. On TikTok with `live=true`, rows read live carry the ad group's `optimization_goal` exactly as TikTok's adgroup/get returns it now (for example ENGAGED_VIEW, ENGAGED_VIEW_FIFTEEN, CLICK, CONVERT).

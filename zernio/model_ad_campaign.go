@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.275.3
+API version: 1.276.0
 Contact: support@zernio.com
 */
 
@@ -54,7 +54,8 @@ type AdCampaign struct {
 	// Human-readable advertiser/account name from the platform. Refreshed on every sync.
 	PlatformAdAccountName NullableString `json:"platformAdAccountName,omitempty"`
 	AccountId             *string        `json:"accountId,omitempty"`
-	ProfileId             *string        `json:"profileId,omitempty"`
+	// Profile the row belongs to: the profile of its owning connection (`accountId`); when that connection no longer exists, the requested profile (`profileId` filter) that reaches the row ad account, else the profile of the oldest connection of the row owner that reaches it.
+	ProfileId *string `json:"profileId,omitempty"`
 	// TikTok only. true when the campaign is an Upgraded Smart+ campaign. See AdTreeCampaign.isSmartPlus.
 	IsSmartPlus *bool `json:"isSmartPlus,omitempty"`
 	// Google-only. Raw campaign.advertising_channel_type. See AdTreeCampaign.advertisingChannelType.
