@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.278.1
+API version: 1.279.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,9 @@ import (
 // checks if the WebhookPayloadCommentCommentAd type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadCommentCommentAd{}
 
-// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id, value.media.ad_title and value.media.original_media_id, each only when Meta includes it. Facebook: populated from a Graph API lookup of the parent post. Present when the post is an ad dark post (isDarkPost true, whatever its promotionStatus) or an organic post that is or was boosted (promotionStatus \"active\", \"extendable\" or \"finished\"). Meta does not link a dark post back to its ad, so id and title are never set on Facebook. Absent for comments on organic posts that are not promoted.
+// WebhookPayloadCommentCommentAd Ad context. Present only when the comment was made on paid content. Instagram: populated from the webhook payload's value.media.ad_id, value.media.ad_title and value.media.original_media_id, each only when Meta includes it. Facebook: populated from a Graph API lookup of the parent post. Present when the post is an ad dark post (isDarkPost true, whatever its promotionStatus) or an organic post that is or was boosted (promotionStatus \"active\", \"extendable\" or \"finished\"). Meta does not link a dark post back to its ad, so on Facebook id is set only when exactly one ad on the Page, created before the dark post, carries the same copy as the post. title is never set on Facebook. Absent for comments on organic posts that are not promoted.
 type WebhookPayloadCommentCommentAd struct {
-	// Meta ad ID (Instagram only).
+	// Meta ad ID. Instagram: from the webhook. Facebook: only on a dark post matched to a single ad by its copy.
 	Id *string `json:"id,omitempty"`
 	// Ad creative title (Instagram only).
 	Title *string `json:"title,omitempty"`

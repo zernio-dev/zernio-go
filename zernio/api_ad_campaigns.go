@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.278.1
+API version: 1.279.0
 Contact: support@zernio.com
 */
 
@@ -3287,9 +3287,20 @@ The `{adId}` path segment accepts any identifier dialect Zernio indexes for the 
 - the creative's `effective_object_story_id` (`{pageId}_{postId}` shape, Facebook side)
 - the creative's `effective_instagram_media_id` (Instagram side)
 
-Any of the four resolve to the same ad. Caller doesn't need a translation step.
+  - an Instagram media id an ad comment arrived on (`comment.platformPostId` of a `comment.received`
+    carrying `comment.ad.id`), including the extra media Meta creates for placement variants
+
+Any of these resolve to the same ad. Caller doesn't need a translation step.
 `creative.creativeFeatures` holds the stored requested settings, which do not confirm
 platform application.
+
+**Facebook ad dark posts.** Meta gives an ad with per-placement assets one extra unpublished
+post per placement, and comments land on it. Meta exposes no link from that post to its ad.
+When exactly one ad on the Page, created before the dark post, carries the same copy as the
+post, the dark post id resolves to that ad. Otherwise, when the id is a dark post Zernio has
+seen comments on and its Page is connected, the response is `ad: null` plus `darkPost`, which
+carries the Meta Ads account and the ad accounts running ads for that Page. Read its comments
+with GET /v1/ads/{adId}/comments using the same id.
 
 **Status freshness.** `status`, `configuredStatus`, `platformStatus`, `platformAdSetStatus`
 and `platformCampaignStatus` are the values Zernio last stored. Background sync refreshes

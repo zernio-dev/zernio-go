@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.278.1
+API version: 1.279.0
 Contact: support@zernio.com
 */
 
@@ -27,7 +27,8 @@ type GetAd200Response struct {
 	// Whether Google RSA details use the last successful cached response.
 	Stale *bool `json:"stale,omitempty"`
 	// Only with `live=true`. When the switches were read from the platform; null when the live read failed and the stored values were returned.
-	StatusReadAt NullableTime `json:"statusReadAt,omitempty"`
+	StatusReadAt NullableTime              `json:"statusReadAt,omitempty"`
+	DarkPost     *GetAd200ResponseDarkPost `json:"darkPost,omitempty"`
 }
 
 // NewGetAd200Response instantiates a new GetAd200Response object
@@ -197,6 +198,38 @@ func (o *GetAd200Response) UnsetStatusReadAt() {
 	o.StatusReadAt.Unset()
 }
 
+// GetDarkPost returns the DarkPost field value if set, zero value otherwise.
+func (o *GetAd200Response) GetDarkPost() GetAd200ResponseDarkPost {
+	if o == nil || IsNil(o.DarkPost) {
+		var ret GetAd200ResponseDarkPost
+		return ret
+	}
+	return *o.DarkPost
+}
+
+// GetDarkPostOk returns a tuple with the DarkPost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetAd200Response) GetDarkPostOk() (*GetAd200ResponseDarkPost, bool) {
+	if o == nil || IsNil(o.DarkPost) {
+		return nil, false
+	}
+	return o.DarkPost, true
+}
+
+// HasDarkPost returns a boolean if a field has been set.
+func (o *GetAd200Response) HasDarkPost() bool {
+	if o != nil && !IsNil(o.DarkPost) {
+		return true
+	}
+
+	return false
+}
+
+// SetDarkPost gets a reference to the given GetAd200ResponseDarkPost and assigns it to the DarkPost field.
+func (o *GetAd200Response) SetDarkPost(v GetAd200ResponseDarkPost) {
+	o.DarkPost = &v
+}
+
 func (o GetAd200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -218,6 +251,9 @@ func (o GetAd200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if o.StatusReadAt.IsSet() {
 		toSerialize["statusReadAt"] = o.StatusReadAt.Get()
+	}
+	if !IsNil(o.DarkPost) {
+		toSerialize["darkPost"] = o.DarkPost
 	}
 	return toSerialize, nil
 }
