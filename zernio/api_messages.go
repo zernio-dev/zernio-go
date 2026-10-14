@@ -1373,7 +1373,7 @@ func (r MessagesAPIListInboxConversationsRequest) Status(status string) Messages
 	return r
 }
 
-// requests lists Facebook and Instagram Message Requests (threads from people the account has not accepted) live from Meta, first page only, each item with &#x60;folder: requests&#x60;. Meta has no accept call: replying moves a thread to the inbox, which is what POST /v1/inbox/conversations/{conversationId}/accept does. When Meta will not list the folder for the one account asked (&#x60;accountId&#x60;), the call answers 400 PLATFORM_LIMITATION; across several accounts the refusal is reported per account in meta.failedAccounts.
+// requests lists Facebook and Instagram Message Requests (threads from people the account has not accepted) live from Meta, each item with &#x60;folder: requests&#x60;. Meta has no accept call: replying moves a thread to the inbox, which is what POST /v1/inbox/conversations/{conversationId}/accept does. When Meta will not list the folder for the one account asked (&#x60;accountId&#x60;), the call answers 400 PLATFORM_LIMITATION; across several accounts the refusal is reported per account in meta.failedAccounts. Instagram accounts connected with Instagram Login answer PLATFORM_LIMITATION (Meta does not expose the folder on that login); Facebook and Instagram via Facebook Login are served. One page of up to &#x60;limit&#x60; threads; &#x60;pagination.hasMore&#x60; is true when threads past &#x60;limit&#x60; were cut (narrow with &#x60;accountId&#x60;), &#x60;pagination.nextCursor&#x60; is always null and a &#x60;cursor&#x60; answers 400.
 func (r MessagesAPIListInboxConversationsRequest) Folder(folder string) MessagesAPIListInboxConversationsRequest {
 	r.folder = &folder
 	return r
@@ -1385,7 +1385,7 @@ func (r MessagesAPIListInboxConversationsRequest) SortOrder(sortOrder string) Me
 	return r
 }
 
-// Maximum number of conversations to return
+// Maximum number of conversations to return; values above 100 are served as 100.
 func (r MessagesAPIListInboxConversationsRequest) Limit(limit int32) MessagesAPIListInboxConversationsRequest {
 	r.limit = &limit
 	return r
