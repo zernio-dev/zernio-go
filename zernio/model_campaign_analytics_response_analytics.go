@@ -23,8 +23,17 @@ type CampaignAnalyticsResponseAnalytics struct {
 	Summary              *CampaignAnalyticsResponseAnalyticsSummary              `json:"summary,omitempty"`
 	ImpressionShareCache *CampaignAnalyticsResponseAnalyticsImpressionShareCache `json:"impressionShareCache,omitempty"`
 	Daily                []CampaignAnalyticsResponseAnalyticsDailyInner          `json:"daily,omitempty"`
-	// Requested demographic breakdowns, keyed by dimension. Fetched live from the platform per request and never stored, so these rows can carry fields the stored `summary` and `daily` series do not.  LinkedIn rows carry `value` (the pivot URN), `name` (resolved label where LinkedIn provides one), the usual spend/impressions/clicks/ctr/cpc/cpm/engagement figures, plus two reach fields:  - `reach`: the segment's `approximateMemberReach`. - `audiencePenetration`: LinkedIn's own ratio of members reached to the size of   the targeted audience, passed through verbatim.  LinkedIn withholds both below its audience privacy threshold, in which case the keys are ABSENT rather than 0. `audiencePenetration` is available here only: it is not part of the stored metrics series.
+	// Requested demographic breakdowns, keyed by dimension. Fetched live from the platform per request and never stored, so these rows can carry fields the stored `summary` and `daily` series do not.  LinkedIn rows carry `value` (the pivot URN), `name` (resolved label where LinkedIn provides one), the usual spend/impressions/clicks/ctr/cpc/cpm/engagement figures, plus two reach fields:  - `reach`: the segment's `approximateMemberReach`. - `audiencePenetration`: LinkedIn's own ratio of members reached to the size of   the targeted audience, passed through verbatim.  LinkedIn withholds both below its audience privacy threshold, in which case the keys are ABSENT rather than 0. `audiencePenetration` is available here only: it is not part of the stored metrics series.  TikTok rows are keyed by TikTok's own dimension name (`country_code` for `country`, `platform` for `publisher_platform`). `placement` rows carry the label TikTok Ads Manager shows (`TikTok`, `TikTok Ad Network`, `News Feed App Series`) in `placement` and TikTok's API value (`PLACEMENT_TIKTOK`, `PLACEMENT_PANGLE`, `PLACEMENT_GLOBAL_APP_BUNDLE`) in `placementRaw`; a value without a known label carries the raw value in both.  A requested dimension with no data in the range is an empty array.
 	Breakdowns map[string][]map[string]interface{} `json:"breakdowns,omitempty"`
+	// Requested breakdowns this platform cannot break down by (e.g. region on TikTok, any breakdown on Google). Absent when every requested breakdown is supported.
+	UnsupportedBreakdowns []string `json:"unsupportedBreakdowns,omitempty"`
+	// Guidance for some names in unsupportedBreakdowns, keyed by that name (e.g. placement on Meta points at publisher_platform and platform_position; platform_position on TikTok points at placement). Absent when no unsupported name has a hint.
+	BreakdownHints map[string]string `json:"breakdownHints,omitempty"`
+	// TikTok only: breakdowns the platform failed to return (rate limit, permission, rejected query). Each one is an empty array under breakdowns; summary and daily are unaffected. Absent when every breakdown answered.
+	BreakdownErrors []CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner `json:"breakdownErrors,omitempty"`
+	// TikTok only: TikTok metric names TikTok refused for a breakdown, keyed by the requested breakdown (e.g. total_purchase and total_purchase_value have no relation to platform, ac or language). Every row value derived from a refused metric is null in that breakdown (purchaseValue and roas, or the matching actions and actionValues entries), never a number computed without it. Absent when no metric was refused.
+	BreakdownDroppedMetrics map[string][]string                        `json:"breakdownDroppedMetrics,omitempty"`
+	BreakdownsRange         *GetAnalyticsDashboard200ResponseDateRange `json:"breakdownsRange,omitempty"`
 }
 
 // NewCampaignAnalyticsResponseAnalytics instantiates a new CampaignAnalyticsResponseAnalytics object
@@ -172,6 +181,166 @@ func (o *CampaignAnalyticsResponseAnalytics) SetBreakdowns(v map[string][]map[st
 	o.Breakdowns = v
 }
 
+// GetUnsupportedBreakdowns returns the UnsupportedBreakdowns field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetUnsupportedBreakdowns() []string {
+	if o == nil || IsNil(o.UnsupportedBreakdowns) {
+		var ret []string
+		return ret
+	}
+	return o.UnsupportedBreakdowns
+}
+
+// GetUnsupportedBreakdownsOk returns a tuple with the UnsupportedBreakdowns field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetUnsupportedBreakdownsOk() ([]string, bool) {
+	if o == nil || IsNil(o.UnsupportedBreakdowns) {
+		return nil, false
+	}
+	return o.UnsupportedBreakdowns, true
+}
+
+// HasUnsupportedBreakdowns returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasUnsupportedBreakdowns() bool {
+	if o != nil && !IsNil(o.UnsupportedBreakdowns) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnsupportedBreakdowns gets a reference to the given []string and assigns it to the UnsupportedBreakdowns field.
+func (o *CampaignAnalyticsResponseAnalytics) SetUnsupportedBreakdowns(v []string) {
+	o.UnsupportedBreakdowns = v
+}
+
+// GetBreakdownHints returns the BreakdownHints field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownHints() map[string]string {
+	if o == nil || IsNil(o.BreakdownHints) {
+		var ret map[string]string
+		return ret
+	}
+	return o.BreakdownHints
+}
+
+// GetBreakdownHintsOk returns a tuple with the BreakdownHints field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownHintsOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.BreakdownHints) {
+		return map[string]string{}, false
+	}
+	return o.BreakdownHints, true
+}
+
+// HasBreakdownHints returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasBreakdownHints() bool {
+	if o != nil && !IsNil(o.BreakdownHints) {
+		return true
+	}
+
+	return false
+}
+
+// SetBreakdownHints gets a reference to the given map[string]string and assigns it to the BreakdownHints field.
+func (o *CampaignAnalyticsResponseAnalytics) SetBreakdownHints(v map[string]string) {
+	o.BreakdownHints = v
+}
+
+// GetBreakdownErrors returns the BreakdownErrors field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownErrors() []CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner {
+	if o == nil || IsNil(o.BreakdownErrors) {
+		var ret []CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner
+		return ret
+	}
+	return o.BreakdownErrors
+}
+
+// GetBreakdownErrorsOk returns a tuple with the BreakdownErrors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownErrorsOk() ([]CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner, bool) {
+	if o == nil || IsNil(o.BreakdownErrors) {
+		return nil, false
+	}
+	return o.BreakdownErrors, true
+}
+
+// HasBreakdownErrors returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasBreakdownErrors() bool {
+	if o != nil && !IsNil(o.BreakdownErrors) {
+		return true
+	}
+
+	return false
+}
+
+// SetBreakdownErrors gets a reference to the given []CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner and assigns it to the BreakdownErrors field.
+func (o *CampaignAnalyticsResponseAnalytics) SetBreakdownErrors(v []CampaignAnalyticsResponseAnalyticsBreakdownErrorsInner) {
+	o.BreakdownErrors = v
+}
+
+// GetBreakdownDroppedMetrics returns the BreakdownDroppedMetrics field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownDroppedMetrics() map[string][]string {
+	if o == nil || IsNil(o.BreakdownDroppedMetrics) {
+		var ret map[string][]string
+		return ret
+	}
+	return o.BreakdownDroppedMetrics
+}
+
+// GetBreakdownDroppedMetricsOk returns a tuple with the BreakdownDroppedMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownDroppedMetricsOk() (map[string][]string, bool) {
+	if o == nil || IsNil(o.BreakdownDroppedMetrics) {
+		return map[string][]string{}, false
+	}
+	return o.BreakdownDroppedMetrics, true
+}
+
+// HasBreakdownDroppedMetrics returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasBreakdownDroppedMetrics() bool {
+	if o != nil && !IsNil(o.BreakdownDroppedMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetBreakdownDroppedMetrics gets a reference to the given map[string][]string and assigns it to the BreakdownDroppedMetrics field.
+func (o *CampaignAnalyticsResponseAnalytics) SetBreakdownDroppedMetrics(v map[string][]string) {
+	o.BreakdownDroppedMetrics = v
+}
+
+// GetBreakdownsRange returns the BreakdownsRange field value if set, zero value otherwise.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownsRange() GetAnalyticsDashboard200ResponseDateRange {
+	if o == nil || IsNil(o.BreakdownsRange) {
+		var ret GetAnalyticsDashboard200ResponseDateRange
+		return ret
+	}
+	return *o.BreakdownsRange
+}
+
+// GetBreakdownsRangeOk returns a tuple with the BreakdownsRange field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CampaignAnalyticsResponseAnalytics) GetBreakdownsRangeOk() (*GetAnalyticsDashboard200ResponseDateRange, bool) {
+	if o == nil || IsNil(o.BreakdownsRange) {
+		return nil, false
+	}
+	return o.BreakdownsRange, true
+}
+
+// HasBreakdownsRange returns a boolean if a field has been set.
+func (o *CampaignAnalyticsResponseAnalytics) HasBreakdownsRange() bool {
+	if o != nil && !IsNil(o.BreakdownsRange) {
+		return true
+	}
+
+	return false
+}
+
+// SetBreakdownsRange gets a reference to the given GetAnalyticsDashboard200ResponseDateRange and assigns it to the BreakdownsRange field.
+func (o *CampaignAnalyticsResponseAnalytics) SetBreakdownsRange(v GetAnalyticsDashboard200ResponseDateRange) {
+	o.BreakdownsRange = &v
+}
+
 func (o CampaignAnalyticsResponseAnalytics) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -193,6 +362,21 @@ func (o CampaignAnalyticsResponseAnalytics) ToMap() (map[string]interface{}, err
 	}
 	if !IsNil(o.Breakdowns) {
 		toSerialize["breakdowns"] = o.Breakdowns
+	}
+	if !IsNil(o.UnsupportedBreakdowns) {
+		toSerialize["unsupportedBreakdowns"] = o.UnsupportedBreakdowns
+	}
+	if !IsNil(o.BreakdownHints) {
+		toSerialize["breakdownHints"] = o.BreakdownHints
+	}
+	if !IsNil(o.BreakdownErrors) {
+		toSerialize["breakdownErrors"] = o.BreakdownErrors
+	}
+	if !IsNil(o.BreakdownDroppedMetrics) {
+		toSerialize["breakdownDroppedMetrics"] = o.BreakdownDroppedMetrics
+	}
+	if !IsNil(o.BreakdownsRange) {
+		toSerialize["breakdownsRange"] = o.BreakdownsRange
 	}
 	return toSerialize, nil
 }

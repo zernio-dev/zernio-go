@@ -502,7 +502,7 @@ func (r AdInsightsAPIGetAdAnalyticsRequest) ToDate(toDate string) AdInsightsAPIG
 	return r
 }
 
-// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region.  **TikTok**: gender, age, country_code, platform, ac, language.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.
+// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.  A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of being dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where there is an alternative); the rest of the response is unchanged. An unknown name returns 400. A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and the row values derived from them are null.
 func (r AdInsightsAPIGetAdAnalyticsRequest) Breakdowns(breakdowns string) AdInsightsAPIGetAdAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -515,10 +515,10 @@ func (r AdInsightsAPIGetAdAnalyticsRequest) Execute() (*AdAnalyticsResponse, *ht
 /*
 GetAdAnalytics Get ad analytics
 
-Returns one ad's performance summary and daily timeline, with optional audience breakdowns on Meta and TikTok.
+Returns one ad's performance summary and daily timeline, with optional audience breakdowns on Meta, TikTok and LinkedIn.
 
 Includes summary metrics, a daily timeline
-over the requested date range, and optional demographic breakdowns (Meta and TikTok only).
+over the requested date range, and optional demographic breakdowns (Meta, TikTok and LinkedIn only).
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1109,7 +1109,7 @@ func (r AdInsightsAPIGetCampaignAnalyticsRequest) ToDate(toDate string) AdInsigh
 	return r
 }
 
-// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.
+// Comma-separated breakdown dimensions.  **Meta**: age, gender, country, publisher_platform, device_platform, region, platform_position, impression_device, video_asset, image_asset, body_asset, title_asset.  **TikTok**: gender, age, country (or country_code), publisher_platform (or platform), ac, language, placement. TikTok serves at most 365 days per breakdown, so a longer range is read over its last 365 days and &#x60;analytics.breakdownsRange&#x60; says which window.  **LinkedIn** (firmographics): job_title, job_function, seniority, industry, company, company_size, country, region. Rows carry the raw pivot &#x60;value&#x60; plus a resolved &#x60;name&#x60;. LinkedIn serves these aggregated over the whole range, delays the data 12-24h, and omits segments with fewer than 3 events.  A known dimension the platform cannot break down by is listed in &#x60;analytics.unsupportedBreakdowns&#x60; instead of being dropped (with guidance in &#x60;analytics.breakdownHints&#x60; where there is an alternative); the rest of the response is unchanged. An unknown name returns 400. A TikTok dimension that fails is listed in &#x60;analytics.breakdownErrors&#x60; and the response stays 200. Metrics TikTok refuses for a dimension are listed in &#x60;analytics.breakdownDroppedMetrics&#x60;, and the row values derived from them are null.
 func (r AdInsightsAPIGetCampaignAnalyticsRequest) Breakdowns(breakdowns string) AdInsightsAPIGetCampaignAnalyticsRequest {
 	r.breakdowns = &breakdowns
 	return r
@@ -1126,9 +1126,9 @@ Returns a campaign's performance summary and daily timeline, with optional break
 
 Returns performance analytics for a whole campaign in one call: summary metrics, a daily
 timeline over the requested date range (summed across the campaign's ads), and optional
-demographic breakdowns. Breakdowns are fetched live from Meta at the campaign level (one call
-per dimension, no per-ad fan-out), so an agency dashboard gets campaign-level age/gender/etc.
-without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
+demographic breakdowns. Breakdowns are fetched live from Meta, TikTok or LinkedIn at the campaign
+level (one call per dimension, no per-ad fan-out), so an agency dashboard gets campaign-level
+age/gender/placement/etc. without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
 `platform` when a campaign id could be ambiguous across platforms. If no date range is provided,
 defaults to the last 90 days. Date range is capped at 730 days max.
 Google adds searchImpressionShare, searchBudgetLostImpressionShare,
@@ -2072,7 +2072,7 @@ func (r AdInsightsAPIQueryAdInsightsRequest) Fields(fields string) AdInsightsAPI
 	return r
 }
 
-// Comma-separated Graph breakdowns (e.g. age,gender or publisher_platform).
+// Meta only: comma-separated Graph breakdowns (e.g. age,gender or publisher_platform). Returns 400 on TikTok (add the breakdown to dimensions with reportType&#x3D;AUDIENCE, e.g. dimensions&#x3D;campaign_id,placement) and on Google (select segments.* in the query).
 func (r AdInsightsAPIQueryAdInsightsRequest) Breakdowns(breakdowns string) AdInsightsAPIQueryAdInsightsRequest {
 	r.breakdowns = &breakdowns
 	return r
