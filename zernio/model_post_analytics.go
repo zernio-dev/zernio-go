@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.276.0
+API version: 1.277.0
 Contact: support@zernio.com
 */
 
@@ -57,7 +57,7 @@ type PostAnalytics struct {
 	RetentionCurve map[string]float32 `json:"retentionCurve,omitempty"`
 	// Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
 	Reposts *int32 `json:"reposts,omitempty"`
-	// Video length in seconds. Currently Instagram Reels only; combine with igReelsAvgWatchTime (ms) to estimate retention. Null when unknown (other platforms, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio).
+	// Video length in seconds. Filled for public YouTube videos once their analytics next refresh (from the Data API; live streams may report null). The YouTube Data API has no Shorts flag: a video over 180 seconds cannot be a Short, but a shorter one may be a regular upload. Also filled for Instagram Reels (combine with igReelsAvgWatchTime (ms) to estimate retention). Null when unknown: platforms that do not report a length, non-video media, or when Instagram does not expose the media URL, e.g. reels with copyrighted audio.
 	VideoDurationSeconds NullableInt32 `json:"videoDurationSeconds,omitempty"`
 	// Percentage, rounded to 2 decimals: (likes + comments + shares + saves) / (impressions or reach or views) * 100. Clicks and follows are never counted. The denominator is the FIRST of impressions, reach, views that is non-zero, so it is not the same basis on every post: a post with impressions divides by impressions, one without falls back to reach, then to views. If you need a single consistent basis (e.g. interactions / reach), compute it from the raw fields above. When this object is the post-level roll-up of a cross-posted post, the denominator is the SUM of the denominators resolved per platform entry: an entry reporting none of impressions, reach or views is excluded from both sides of the ratio. Each platformAnalytics entry below keeps its own single denominator. The engagementRate on the LinkedIn account endpoints is a different formula.
 	EngagementRate *float32   `json:"engagementRate,omitempty"`
