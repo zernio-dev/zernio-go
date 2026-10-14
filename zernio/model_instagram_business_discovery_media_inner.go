@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.277.0
+API version: 1.278.0
 Contact: support@zernio.com
 */
 
@@ -12,7 +12,9 @@ Contact: support@zernio.com
 package zernio
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -21,25 +23,47 @@ var _ MappedNullable = &InstagramBusinessDiscoveryMediaInner{}
 
 // InstagramBusinessDiscoveryMediaInner struct for InstagramBusinessDiscoveryMediaInner
 type InstagramBusinessDiscoveryMediaInner struct {
-	Id      *string        `json:"id,omitempty"`
-	Caption NullableString `json:"caption,omitempty"`
+	Id      string         `json:"id"`
+	Caption NullableString `json:"caption"`
 	// IMAGE, VIDEO or CAROUSEL_ALBUM
-	MediaType NullableString `json:"mediaType,omitempty"`
+	MediaType NullableString `json:"mediaType"`
 	// FEED or REELS
-	MediaProductType NullableString `json:"mediaProductType,omitempty"`
-	Timestamp        NullableTime   `json:"timestamp,omitempty"`
-	Permalink        NullableString `json:"permalink,omitempty"`
+	MediaProductType NullableString `json:"mediaProductType"`
+	Timestamp        NullableTime   `json:"timestamp"`
+	Permalink        NullableString `json:"permalink"`
 	// Null when the owner hides like counts
-	LikeCount     NullableInt32 `json:"likeCount,omitempty"`
-	CommentsCount NullableInt32 `json:"commentsCount,omitempty"`
+	LikeCount     NullableInt32 `json:"likeCount"`
+	CommentsCount NullableInt32 `json:"commentsCount"`
+	// Temporary CDN URL that expires; download the file rather than storing the link. Null on videos whose audio is licensed music, use thumbnailUrl for the cover.
+	MediaUrl NullableString `json:"mediaUrl"`
+	// Video cover frame, VIDEO only. Temporary CDN URL.
+	ThumbnailUrl NullableString `json:"thumbnailUrl"`
+	// Reels only. Null on images and carousels.
+	ViewCount NullableInt32 `json:"viewCount"`
+	// Carousel slides in order. Null unless mediaType is CAROUSEL_ALBUM.
+	Children []InstagramBusinessDiscoveryMediaInnerChildrenInner `json:"children"`
 }
+
+type _InstagramBusinessDiscoveryMediaInner InstagramBusinessDiscoveryMediaInner
 
 // NewInstagramBusinessDiscoveryMediaInner instantiates a new InstagramBusinessDiscoveryMediaInner object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInstagramBusinessDiscoveryMediaInner() *InstagramBusinessDiscoveryMediaInner {
+func NewInstagramBusinessDiscoveryMediaInner(id string, caption NullableString, mediaType NullableString, mediaProductType NullableString, timestamp NullableTime, permalink NullableString, likeCount NullableInt32, commentsCount NullableInt32, mediaUrl NullableString, thumbnailUrl NullableString, viewCount NullableInt32, children []InstagramBusinessDiscoveryMediaInnerChildrenInner) *InstagramBusinessDiscoveryMediaInner {
 	this := InstagramBusinessDiscoveryMediaInner{}
+	this.Id = id
+	this.Caption = caption
+	this.MediaType = mediaType
+	this.MediaProductType = mediaProductType
+	this.Timestamp = timestamp
+	this.Permalink = permalink
+	this.LikeCount = likeCount
+	this.CommentsCount = commentsCount
+	this.MediaUrl = mediaUrl
+	this.ThumbnailUrl = thumbnailUrl
+	this.ViewCount = viewCount
+	this.Children = children
 	return &this
 }
 
@@ -51,48 +75,42 @@ func NewInstagramBusinessDiscoveryMediaInnerWithDefaults() *InstagramBusinessDis
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *InstagramBusinessDiscoveryMediaInner) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *InstagramBusinessDiscoveryMediaInner) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetCaption returns the Caption field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetCaption returns the Caption field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetCaption() string {
-	if o == nil || IsNil(o.Caption.Get()) {
+	if o == nil || o.Caption.Get() == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Caption.Get()
 }
 
-// GetCaptionOk returns a tuple with the Caption field value if set, nil otherwise
+// GetCaptionOk returns a tuple with the Caption field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetCaptionOk() (*string, bool) {
@@ -102,40 +120,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetCaptionOk() (*string, bool) {
 	return o.Caption.Get(), o.Caption.IsSet()
 }
 
-// HasCaption returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasCaption() bool {
-	if o != nil && o.Caption.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCaption gets a reference to the given NullableString and assigns it to the Caption field.
+// SetCaption sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetCaption(v string) {
 	o.Caption.Set(&v)
 }
 
-// SetCaptionNil sets the value for Caption to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetCaptionNil() {
-	o.Caption.Set(nil)
-}
-
-// UnsetCaption ensures that no value is present for Caption, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetCaption() {
-	o.Caption.Unset()
-}
-
-// GetMediaType returns the MediaType field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetMediaType returns the MediaType field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetMediaType() string {
-	if o == nil || IsNil(o.MediaType.Get()) {
+	if o == nil || o.MediaType.Get() == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MediaType.Get()
 }
 
-// GetMediaTypeOk returns a tuple with the MediaType field value if set, nil otherwise
+// GetMediaTypeOk returns a tuple with the MediaType field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetMediaTypeOk() (*string, bool) {
@@ -145,40 +146,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetMediaTypeOk() (*string, bool) 
 	return o.MediaType.Get(), o.MediaType.IsSet()
 }
 
-// HasMediaType returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasMediaType() bool {
-	if o != nil && o.MediaType.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMediaType gets a reference to the given NullableString and assigns it to the MediaType field.
+// SetMediaType sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetMediaType(v string) {
 	o.MediaType.Set(&v)
 }
 
-// SetMediaTypeNil sets the value for MediaType to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetMediaTypeNil() {
-	o.MediaType.Set(nil)
-}
-
-// UnsetMediaType ensures that no value is present for MediaType, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetMediaType() {
-	o.MediaType.Unset()
-}
-
-// GetMediaProductType returns the MediaProductType field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetMediaProductType returns the MediaProductType field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetMediaProductType() string {
-	if o == nil || IsNil(o.MediaProductType.Get()) {
+	if o == nil || o.MediaProductType.Get() == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MediaProductType.Get()
 }
 
-// GetMediaProductTypeOk returns a tuple with the MediaProductType field value if set, nil otherwise
+// GetMediaProductTypeOk returns a tuple with the MediaProductType field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetMediaProductTypeOk() (*string, bool) {
@@ -188,40 +172,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetMediaProductTypeOk() (*string,
 	return o.MediaProductType.Get(), o.MediaProductType.IsSet()
 }
 
-// HasMediaProductType returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasMediaProductType() bool {
-	if o != nil && o.MediaProductType.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMediaProductType gets a reference to the given NullableString and assigns it to the MediaProductType field.
+// SetMediaProductType sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetMediaProductType(v string) {
 	o.MediaProductType.Set(&v)
 }
 
-// SetMediaProductTypeNil sets the value for MediaProductType to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetMediaProductTypeNil() {
-	o.MediaProductType.Set(nil)
-}
-
-// UnsetMediaProductType ensures that no value is present for MediaProductType, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetMediaProductType() {
-	o.MediaProductType.Unset()
-}
-
-// GetTimestamp returns the Timestamp field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetTimestamp returns the Timestamp field value
+// If the value is explicit nil, the zero value for time.Time will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetTimestamp() time.Time {
-	if o == nil || IsNil(o.Timestamp.Get()) {
+	if o == nil || o.Timestamp.Get() == nil {
 		var ret time.Time
 		return ret
 	}
+
 	return *o.Timestamp.Get()
 }
 
-// GetTimestampOk returns a tuple with the Timestamp field value if set, nil otherwise
+// GetTimestampOk returns a tuple with the Timestamp field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetTimestampOk() (*time.Time, bool) {
@@ -231,40 +198,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetTimestampOk() (*time.Time, boo
 	return o.Timestamp.Get(), o.Timestamp.IsSet()
 }
 
-// HasTimestamp returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasTimestamp() bool {
-	if o != nil && o.Timestamp.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetTimestamp gets a reference to the given NullableTime and assigns it to the Timestamp field.
+// SetTimestamp sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetTimestamp(v time.Time) {
 	o.Timestamp.Set(&v)
 }
 
-// SetTimestampNil sets the value for Timestamp to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetTimestampNil() {
-	o.Timestamp.Set(nil)
-}
-
-// UnsetTimestamp ensures that no value is present for Timestamp, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetTimestamp() {
-	o.Timestamp.Unset()
-}
-
-// GetPermalink returns the Permalink field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetPermalink returns the Permalink field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetPermalink() string {
-	if o == nil || IsNil(o.Permalink.Get()) {
+	if o == nil || o.Permalink.Get() == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Permalink.Get()
 }
 
-// GetPermalinkOk returns a tuple with the Permalink field value if set, nil otherwise
+// GetPermalinkOk returns a tuple with the Permalink field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetPermalinkOk() (*string, bool) {
@@ -274,40 +224,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetPermalinkOk() (*string, bool) 
 	return o.Permalink.Get(), o.Permalink.IsSet()
 }
 
-// HasPermalink returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasPermalink() bool {
-	if o != nil && o.Permalink.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPermalink gets a reference to the given NullableString and assigns it to the Permalink field.
+// SetPermalink sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetPermalink(v string) {
 	o.Permalink.Set(&v)
 }
 
-// SetPermalinkNil sets the value for Permalink to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetPermalinkNil() {
-	o.Permalink.Set(nil)
-}
-
-// UnsetPermalink ensures that no value is present for Permalink, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetPermalink() {
-	o.Permalink.Unset()
-}
-
-// GetLikeCount returns the LikeCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetLikeCount returns the LikeCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetLikeCount() int32 {
-	if o == nil || IsNil(o.LikeCount.Get()) {
+	if o == nil || o.LikeCount.Get() == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.LikeCount.Get()
 }
 
-// GetLikeCountOk returns a tuple with the LikeCount field value if set, nil otherwise
+// GetLikeCountOk returns a tuple with the LikeCount field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetLikeCountOk() (*int32, bool) {
@@ -317,40 +250,23 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetLikeCountOk() (*int32, bool) {
 	return o.LikeCount.Get(), o.LikeCount.IsSet()
 }
 
-// HasLikeCount returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasLikeCount() bool {
-	if o != nil && o.LikeCount.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetLikeCount gets a reference to the given NullableInt32 and assigns it to the LikeCount field.
+// SetLikeCount sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetLikeCount(v int32) {
 	o.LikeCount.Set(&v)
 }
 
-// SetLikeCountNil sets the value for LikeCount to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetLikeCountNil() {
-	o.LikeCount.Set(nil)
-}
-
-// UnsetLikeCount ensures that no value is present for LikeCount, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetLikeCount() {
-	o.LikeCount.Unset()
-}
-
-// GetCommentsCount returns the CommentsCount field value if set, zero value otherwise (both if not set or set to explicit null).
+// GetCommentsCount returns the CommentsCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetCommentsCount() int32 {
-	if o == nil || IsNil(o.CommentsCount.Get()) {
+	if o == nil || o.CommentsCount.Get() == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.CommentsCount.Get()
 }
 
-// GetCommentsCountOk returns a tuple with the CommentsCount field value if set, nil otherwise
+// GetCommentsCountOk returns a tuple with the CommentsCount field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *InstagramBusinessDiscoveryMediaInner) GetCommentsCountOk() (*int32, bool) {
@@ -360,28 +276,113 @@ func (o *InstagramBusinessDiscoveryMediaInner) GetCommentsCountOk() (*int32, boo
 	return o.CommentsCount.Get(), o.CommentsCount.IsSet()
 }
 
-// HasCommentsCount returns a boolean if a field has been set.
-func (o *InstagramBusinessDiscoveryMediaInner) HasCommentsCount() bool {
-	if o != nil && o.CommentsCount.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCommentsCount gets a reference to the given NullableInt32 and assigns it to the CommentsCount field.
+// SetCommentsCount sets field value
 func (o *InstagramBusinessDiscoveryMediaInner) SetCommentsCount(v int32) {
 	o.CommentsCount.Set(&v)
 }
 
-// SetCommentsCountNil sets the value for CommentsCount to be an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) SetCommentsCountNil() {
-	o.CommentsCount.Set(nil)
+// GetMediaUrl returns the MediaUrl field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetMediaUrl() string {
+	if o == nil || o.MediaUrl.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.MediaUrl.Get()
 }
 
-// UnsetCommentsCount ensures that no value is present for CommentsCount, not even an explicit nil
-func (o *InstagramBusinessDiscoveryMediaInner) UnsetCommentsCount() {
-	o.CommentsCount.Unset()
+// GetMediaUrlOk returns a tuple with the MediaUrl field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetMediaUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MediaUrl.Get(), o.MediaUrl.IsSet()
+}
+
+// SetMediaUrl sets field value
+func (o *InstagramBusinessDiscoveryMediaInner) SetMediaUrl(v string) {
+	o.MediaUrl.Set(&v)
+}
+
+// GetThumbnailUrl returns the ThumbnailUrl field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetThumbnailUrl() string {
+	if o == nil || o.ThumbnailUrl.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.ThumbnailUrl.Get()
+}
+
+// GetThumbnailUrlOk returns a tuple with the ThumbnailUrl field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetThumbnailUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ThumbnailUrl.Get(), o.ThumbnailUrl.IsSet()
+}
+
+// SetThumbnailUrl sets field value
+func (o *InstagramBusinessDiscoveryMediaInner) SetThumbnailUrl(v string) {
+	o.ThumbnailUrl.Set(&v)
+}
+
+// GetViewCount returns the ViewCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetViewCount() int32 {
+	if o == nil || o.ViewCount.Get() == nil {
+		var ret int32
+		return ret
+	}
+
+	return *o.ViewCount.Get()
+}
+
+// GetViewCountOk returns a tuple with the ViewCount field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetViewCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ViewCount.Get(), o.ViewCount.IsSet()
+}
+
+// SetViewCount sets field value
+func (o *InstagramBusinessDiscoveryMediaInner) SetViewCount(v int32) {
+	o.ViewCount.Set(&v)
+}
+
+// GetChildren returns the Children field value
+// If the value is explicit nil, the zero value for []InstagramBusinessDiscoveryMediaInnerChildrenInner will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetChildren() []InstagramBusinessDiscoveryMediaInnerChildrenInner {
+	if o == nil {
+		var ret []InstagramBusinessDiscoveryMediaInnerChildrenInner
+		return ret
+	}
+
+	return o.Children
+}
+
+// GetChildrenOk returns a tuple with the Children field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InstagramBusinessDiscoveryMediaInner) GetChildrenOk() ([]InstagramBusinessDiscoveryMediaInnerChildrenInner, bool) {
+	if o == nil || IsNil(o.Children) {
+		return nil, false
+	}
+	return o.Children, true
+}
+
+// SetChildren sets field value
+func (o *InstagramBusinessDiscoveryMediaInner) SetChildren(v []InstagramBusinessDiscoveryMediaInnerChildrenInner) {
+	o.Children = v
 }
 
 func (o InstagramBusinessDiscoveryMediaInner) MarshalJSON() ([]byte, error) {
@@ -394,31 +395,69 @@ func (o InstagramBusinessDiscoveryMediaInner) MarshalJSON() ([]byte, error) {
 
 func (o InstagramBusinessDiscoveryMediaInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
-	if o.Caption.IsSet() {
-		toSerialize["caption"] = o.Caption.Get()
-	}
-	if o.MediaType.IsSet() {
-		toSerialize["mediaType"] = o.MediaType.Get()
-	}
-	if o.MediaProductType.IsSet() {
-		toSerialize["mediaProductType"] = o.MediaProductType.Get()
-	}
-	if o.Timestamp.IsSet() {
-		toSerialize["timestamp"] = o.Timestamp.Get()
-	}
-	if o.Permalink.IsSet() {
-		toSerialize["permalink"] = o.Permalink.Get()
-	}
-	if o.LikeCount.IsSet() {
-		toSerialize["likeCount"] = o.LikeCount.Get()
-	}
-	if o.CommentsCount.IsSet() {
-		toSerialize["commentsCount"] = o.CommentsCount.Get()
+	toSerialize["id"] = o.Id
+	toSerialize["caption"] = o.Caption.Get()
+	toSerialize["mediaType"] = o.MediaType.Get()
+	toSerialize["mediaProductType"] = o.MediaProductType.Get()
+	toSerialize["timestamp"] = o.Timestamp.Get()
+	toSerialize["permalink"] = o.Permalink.Get()
+	toSerialize["likeCount"] = o.LikeCount.Get()
+	toSerialize["commentsCount"] = o.CommentsCount.Get()
+	toSerialize["mediaUrl"] = o.MediaUrl.Get()
+	toSerialize["thumbnailUrl"] = o.ThumbnailUrl.Get()
+	toSerialize["viewCount"] = o.ViewCount.Get()
+	if o.Children != nil {
+		toSerialize["children"] = o.Children
 	}
 	return toSerialize, nil
+}
+
+func (o *InstagramBusinessDiscoveryMediaInner) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"id",
+		"caption",
+		"mediaType",
+		"mediaProductType",
+		"timestamp",
+		"permalink",
+		"likeCount",
+		"commentsCount",
+		"mediaUrl",
+		"thumbnailUrl",
+		"viewCount",
+		"children",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varInstagramBusinessDiscoveryMediaInner := _InstagramBusinessDiscoveryMediaInner{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varInstagramBusinessDiscoveryMediaInner)
+
+	if err != nil {
+		return err
+	}
+
+	*o = InstagramBusinessDiscoveryMediaInner(varInstagramBusinessDiscoveryMediaInner)
+
+	return err
 }
 
 type NullableInstagramBusinessDiscoveryMediaInner struct {
