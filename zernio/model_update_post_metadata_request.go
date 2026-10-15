@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.285.0
+API version: 1.285.1
 Contact: support@zernio.com
 */
 
@@ -38,7 +38,7 @@ type UpdatePostMetadataRequest struct {
 	CategoryId *string `json:"categoryId,omitempty"`
 	// Video privacy setting
 	PrivacyStatus *string `json:"privacyStatus,omitempty"`
-	// Public URL of a custom thumbnail image (JPEG, PNG, or GIF, max 50 MB, recommended 1280x720). Works on any video you own, including existing videos not published through Zernio. The channel must be verified (phone verification) to set custom thumbnails.
+	// Public URL of a custom thumbnail image (JPEG, PNG, or GIF, max 50 MB, recommended 1280x720). Works on any video you own, including existing videos not published through Zernio. The channel must be verified (phone verification) to set custom thumbnails. If the thumbnail cannot be set (YouTube refuses it, for example a channel without the custom-thumbnail permission or a video not owned by the connected channel, or the image URL cannot be fetched or is not a supported format or size), the request answers 400 with the reason and no field is updated. A temporary YouTube or network failure answers 500 and can be retried.
 	ThumbnailUrl *string `json:"thumbnailUrl,omitempty"`
 	// COPPA compliance flag. Set true for child-directed content (restricts comments, notifications, ad targeting).
 	MadeForKids *bool `json:"madeForKids,omitempty"`
