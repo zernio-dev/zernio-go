@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.280.0
+API version: 1.281.0
 Contact: support@zernio.com
 */
 
@@ -33,7 +33,7 @@ type UpdateAdSetRequest struct {
 	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI and X) to micros (× 1,000,000). Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP (the strategy is inherited from the campaign and is left untouched).
 	BidAmount *float32 `json:"bidAmount,omitempty"`
-	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Not supported on OpenAI (422).
+	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Meta only: may be sent alone, WITHOUT bidStrategy, to update the floor on an ad set whose strategy (its own, or the campaign's under CBO) is LOWEST_COST_WITH_MIN_ROAS. Not supported on OpenAI (422).
 	RoasAverageFloor *float32 `json:"roasAverageFloor,omitempty"`
 	// Meta only (other platforms return 501). Value rule set to attach to this ad set, from `/v1/ads/value-rule-sets`. Sending a different id replaces the current association. To DETACH, send `valueRulesApplied: false` and omit this field.
 	ValueRuleSetId *string `json:"valueRuleSetId,omitempty" validate:"regexp=^\\\\d+$"`
