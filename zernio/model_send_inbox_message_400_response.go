@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.284.0
+API version: 1.285.0
 Contact: support@zernio.com
 */
 
@@ -21,13 +21,13 @@ var _ MappedNullable = &SendInboxMessage400Response{}
 // SendInboxMessage400Response struct for SendInboxMessage400Response
 type SendInboxMessage400Response struct {
 	Error *string `json:"error,omitempty"`
-	// Present on Meta pass-through rejections: platform_error when Meta rejected the send (see platform/platformError below), invalid_request_error for validation failures.
+	// Present on Meta and TikTok pass-through rejections: platform_error when the platform rejected the send (see platform/platformError below), invalid_request_error for validation failures.
 	Type *string `json:"type,omitempty"`
-	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own; platform_api_error means Meta itself rejected the send (see platformError).
+	// Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own; platform_api_error means the platform itself rejected the send (see platformError).
 	Code *string `json:"code,omitempty"`
-	// Present alongside code platform_api_error. The platform that rejected the send (e.g. instagram, facebook, whatsapp).
-	Platform      *string                                                     `json:"platform,omitempty"`
-	PlatformError *SendInboxMessage200ResponseDataPartialFailurePlatformError `json:"platformError,omitempty"`
+	// Present alongside code platform_api_error. The platform that rejected the send (e.g. instagram, facebook, whatsapp, tiktok).
+	Platform      *string                                   `json:"platform,omitempty"`
+	PlatformError *SendInboxMessage400ResponsePlatformError `json:"platformError,omitempty"`
 }
 
 // NewSendInboxMessage400Response instantiates a new SendInboxMessage400Response object
@@ -176,9 +176,9 @@ func (o *SendInboxMessage400Response) SetPlatform(v string) {
 }
 
 // GetPlatformError returns the PlatformError field value if set, zero value otherwise.
-func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage200ResponseDataPartialFailurePlatformError {
+func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage400ResponsePlatformError {
 	if o == nil || IsNil(o.PlatformError) {
-		var ret SendInboxMessage200ResponseDataPartialFailurePlatformError
+		var ret SendInboxMessage400ResponsePlatformError
 		return ret
 	}
 	return *o.PlatformError
@@ -186,7 +186,7 @@ func (o *SendInboxMessage400Response) GetPlatformError() SendInboxMessage200Resp
 
 // GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SendInboxMessage400Response) GetPlatformErrorOk() (*SendInboxMessage200ResponseDataPartialFailurePlatformError, bool) {
+func (o *SendInboxMessage400Response) GetPlatformErrorOk() (*SendInboxMessage400ResponsePlatformError, bool) {
 	if o == nil || IsNil(o.PlatformError) {
 		return nil, false
 	}
@@ -202,8 +202,8 @@ func (o *SendInboxMessage400Response) HasPlatformError() bool {
 	return false
 }
 
-// SetPlatformError gets a reference to the given SendInboxMessage200ResponseDataPartialFailurePlatformError and assigns it to the PlatformError field.
-func (o *SendInboxMessage400Response) SetPlatformError(v SendInboxMessage200ResponseDataPartialFailurePlatformError) {
+// SetPlatformError gets a reference to the given SendInboxMessage400ResponsePlatformError and assigns it to the PlatformError field.
+func (o *SendInboxMessage400Response) SetPlatformError(v SendInboxMessage400ResponsePlatformError) {
 	o.PlatformError = &v
 }
 

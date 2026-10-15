@@ -1,9 +1,9 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.0.4
+API version: 1.285.0
 Contact: support@zernio.com
 */
 
@@ -18,9 +18,9 @@ import (
 // checks if the SendInboxMessage400ResponsePlatformError type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &SendInboxMessage400ResponsePlatformError{}
 
-// SendInboxMessage400ResponsePlatformError Instagram/Facebook only. Meta's own diagnostic fields for the rejected send, passed through verbatim so you can tell failure classes apart and quote them to Meta. Absent when the failure did not come from Meta.
+// SendInboxMessage400ResponsePlatformError Instagram, Facebook, WhatsApp, or TikTok. The platform's diagnostic fields for the rejected send or template lookup. WhatsApp lookup errors retain only code, message, and error_data.details. On TikTok only code, message, and request_id are set. Absent when the failure did not come from the platform.
 type SendInboxMessage400ResponsePlatformError struct {
-	// Meta error code
+	// Meta or TikTok error code
 	Code *int32 `json:"code,omitempty"`
 	// Meta error_subcode
 	Subcode *int32 `json:"subcode,omitempty"`
@@ -28,6 +28,10 @@ type SendInboxMessage400ResponsePlatformError struct {
 	FbtraceId *string `json:"fbtraceId,omitempty"`
 	// Meta error type (e.g. OAuthException)
 	Type *string `json:"type,omitempty"`
+	// TikTok error message
+	Message *string `json:"message,omitempty"`
+	// TikTok request_id, quote this in a TikTok support ticket
+	RequestId *string `json:"request_id,omitempty"`
 }
 
 // NewSendInboxMessage400ResponsePlatformError instantiates a new SendInboxMessage400ResponsePlatformError object
@@ -175,6 +179,70 @@ func (o *SendInboxMessage400ResponsePlatformError) SetType(v string) {
 	o.Type = &v
 }
 
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *SendInboxMessage400ResponsePlatformError) GetMessage() string {
+	if o == nil || IsNil(o.Message) {
+		var ret string
+		return ret
+	}
+	return *o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage400ResponsePlatformError) GetMessageOk() (*string, bool) {
+	if o == nil || IsNil(o.Message) {
+		return nil, false
+	}
+	return o.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (o *SendInboxMessage400ResponsePlatformError) HasMessage() bool {
+	if o != nil && !IsNil(o.Message) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessage gets a reference to the given string and assigns it to the Message field.
+func (o *SendInboxMessage400ResponsePlatformError) SetMessage(v string) {
+	o.Message = &v
+}
+
+// GetRequestId returns the RequestId field value if set, zero value otherwise.
+func (o *SendInboxMessage400ResponsePlatformError) GetRequestId() string {
+	if o == nil || IsNil(o.RequestId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestId
+}
+
+// GetRequestIdOk returns a tuple with the RequestId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessage400ResponsePlatformError) GetRequestIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestId) {
+		return nil, false
+	}
+	return o.RequestId, true
+}
+
+// HasRequestId returns a boolean if a field has been set.
+func (o *SendInboxMessage400ResponsePlatformError) HasRequestId() bool {
+	if o != nil && !IsNil(o.RequestId) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequestId gets a reference to the given string and assigns it to the RequestId field.
+func (o *SendInboxMessage400ResponsePlatformError) SetRequestId(v string) {
+	o.RequestId = &v
+}
+
 func (o SendInboxMessage400ResponsePlatformError) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -196,6 +264,12 @@ func (o SendInboxMessage400ResponsePlatformError) ToMap() (map[string]interface{
 	}
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.Message) {
+		toSerialize["message"] = o.Message
+	}
+	if !IsNil(o.RequestId) {
+		toSerialize["request_id"] = o.RequestId
 	}
 	return toSerialize, nil
 }
