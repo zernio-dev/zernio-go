@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.282.0
+API version: 1.283.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,7 @@ type UpdateAdSet200Response struct {
 	BudgetLevel *string   `json:"budgetLevel,omitempty"`
 	// As in PUT /v1/ads/ad-sets/{adSetId}/status: delivery derived from the switches read back.
 	Status *string `json:"status,omitempty"`
-	// The ad set's own switch read back from the platform; null when it could not be read.
+	// The ad set's status read back from the platform, as in PUT /v1/ads/ad-sets/{adSetId}/status (Meta and Reddit return the ad set's effective_status); null when it could not be read.
 	PlatformAdSetStatus    NullableString `json:"platformAdSetStatus,omitempty"`
 	PlatformCampaignStatus NullableString `json:"platformCampaignStatus,omitempty"`
 	StatusReadAt           NullableTime   `json:"statusReadAt,omitempty"`
