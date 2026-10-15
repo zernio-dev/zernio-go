@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.281.0
+API version: 1.282.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount struct {
 	Id                *string `json:"id,omitempty"`
 	Username          *string `json:"username,omitempty"`
 	ProfilePictureUrl *string `json:"profile_picture_url,omitempty"`
+	// Followers of the Instagram account when Meta returns it
+	FollowersCount *int32 `json:"followers_count,omitempty"`
 }
 
 // NewListInstagramPages200ResponsePagesInnerInstagramBusinessAccount instantiates a new ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount object
@@ -139,6 +141,38 @@ func (o *ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) SetPro
 	o.ProfilePictureUrl = &v
 }
 
+// GetFollowersCount returns the FollowersCount field value if set, zero value otherwise.
+func (o *ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) GetFollowersCount() int32 {
+	if o == nil || IsNil(o.FollowersCount) {
+		var ret int32
+		return ret
+	}
+	return *o.FollowersCount
+}
+
+// GetFollowersCountOk returns a tuple with the FollowersCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) GetFollowersCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.FollowersCount) {
+		return nil, false
+	}
+	return o.FollowersCount, true
+}
+
+// HasFollowersCount returns a boolean if a field has been set.
+func (o *ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) HasFollowersCount() bool {
+	if o != nil && !IsNil(o.FollowersCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetFollowersCount gets a reference to the given int32 and assigns it to the FollowersCount field.
+func (o *ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) SetFollowersCount(v int32) {
+	o.FollowersCount = &v
+}
+
 func (o ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -157,6 +191,9 @@ func (o ListInstagramPages200ResponsePagesInnerInstagramBusinessAccount) ToMap()
 	}
 	if !IsNil(o.ProfilePictureUrl) {
 		toSerialize["profile_picture_url"] = o.ProfilePictureUrl
+	}
+	if !IsNil(o.FollowersCount) {
+		toSerialize["followers_count"] = o.FollowersCount
 	}
 	return toSerialize, nil
 }
