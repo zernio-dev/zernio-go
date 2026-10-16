@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.286.1
+API version: 1.286.2
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,9 @@ type GetInboxPostComments200ResponseMeta struct {
 	PostId    *string `json:"postId,omitempty"`
 	AccountId *string `json:"accountId,omitempty"`
 	// (Reddit only) Subreddit name
-	Subreddit   NullableString                                 `json:"subreddit,omitempty"`
+	Subreddit NullableString `json:"subreddit,omitempty"`
+	// (LinkedIn only) The post URN that was queried, after a bare number is read as urn:li:activity:<n>
+	PostUrn     *string                                        `json:"postUrn,omitempty"`
 	LastUpdated *time.Time                                     `json:"lastUpdated,omitempty"`
 	AdComments  *GetInboxPostComments200ResponseMetaAdComments `json:"adComments,omitempty"`
 }
@@ -186,6 +188,38 @@ func (o *GetInboxPostComments200ResponseMeta) UnsetSubreddit() {
 	o.Subreddit.Unset()
 }
 
+// GetPostUrn returns the PostUrn field value if set, zero value otherwise.
+func (o *GetInboxPostComments200ResponseMeta) GetPostUrn() string {
+	if o == nil || IsNil(o.PostUrn) {
+		var ret string
+		return ret
+	}
+	return *o.PostUrn
+}
+
+// GetPostUrnOk returns a tuple with the PostUrn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetInboxPostComments200ResponseMeta) GetPostUrnOk() (*string, bool) {
+	if o == nil || IsNil(o.PostUrn) {
+		return nil, false
+	}
+	return o.PostUrn, true
+}
+
+// HasPostUrn returns a boolean if a field has been set.
+func (o *GetInboxPostComments200ResponseMeta) HasPostUrn() bool {
+	if o != nil && !IsNil(o.PostUrn) {
+		return true
+	}
+
+	return false
+}
+
+// SetPostUrn gets a reference to the given string and assigns it to the PostUrn field.
+func (o *GetInboxPostComments200ResponseMeta) SetPostUrn(v string) {
+	o.PostUrn = &v
+}
+
 // GetLastUpdated returns the LastUpdated field value if set, zero value otherwise.
 func (o *GetInboxPostComments200ResponseMeta) GetLastUpdated() time.Time {
 	if o == nil || IsNil(o.LastUpdated) {
@@ -271,6 +305,9 @@ func (o GetInboxPostComments200ResponseMeta) ToMap() (map[string]interface{}, er
 	}
 	if o.Subreddit.IsSet() {
 		toSerialize["subreddit"] = o.Subreddit.Get()
+	}
+	if !IsNil(o.PostUrn) {
+		toSerialize["postUrn"] = o.PostUrn
 	}
 	if !IsNil(o.LastUpdated) {
 		toSerialize["lastUpdated"] = o.LastUpdated

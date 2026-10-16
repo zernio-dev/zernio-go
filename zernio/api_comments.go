@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.286.1
+API version: 1.286.2
 Contact: support@zernio.com
 */
 
@@ -54,7 +54,7 @@ Delete a comment on a post. Supported by Facebook, Instagram, Threads, LinkedIn,
 Requires accountId and commentId query parameters.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. LinkedIn third-party posts accept full activity URN or numeric ID.
+	@param postId Zernio post ID or platform-specific post ID. On LinkedIn, pass the post id exactly as the feed returns it (urn:li:share:<id> or urn:li:ugcPost:<id>); a bare number is read as an activity id (urn:li:activity:<n>).
 	@return CommentsAPIDeleteInboxCommentRequest
 */
 func (a *CommentsAPIService) DeleteInboxComment(ctx context.Context, postId string) CommentsAPIDeleteInboxCommentRequest {
@@ -397,7 +397,7 @@ not return them at all (Meta omits them, together with their replies), so a hidd
 and a deleted one look the same on this read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. LinkedIn third-party posts accept full activity URN or numeric ID. On Facebook, a comment ID is also accepted here and returns that comment's replies, kept for backwards compatibility; prefer the `commentId` query parameter, which also works on Instagram.
+	@param postId Zernio post ID or platform-specific post ID. Zernio IDs are auto-resolved. On LinkedIn, pass the post id exactly as the feed returns it (urn:li:share:<id> or urn:li:ugcPost:<id>). A bare number is read as an activity id (urn:li:activity:<n>, the number in a linkedin.com/feed/update URL); a share or ugcPost number passed bare returns an empty list. On Facebook, a comment ID is also accepted here and returns that comment's replies, kept for backwards compatibility; prefer the `commentId` query parameter, which also works on Instagram.
 	@return CommentsAPIGetInboxPostCommentsRequest
 */
 func (a *CommentsAPIService) GetInboxPostComments(ctx context.Context, postId string) CommentsAPIGetInboxPostCommentsRequest {
@@ -1424,7 +1424,7 @@ before retrying with the same key, and treat an empty result as
 inconclusive rather than as proof nothing was posted.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param postId Zernio post ID or platform-specific post ID. LinkedIn third-party posts accept full activity URN or numeric ID.
+	@param postId Zernio post ID or platform-specific post ID. On LinkedIn, pass the post id exactly as the feed returns it (urn:li:share:<id> or urn:li:ugcPost:<id>); a bare number is read as an activity id (urn:li:activity:<n>).
 	@return CommentsAPIReplyToInboxPostRequest
 */
 func (a *CommentsAPIService) ReplyToInboxPost(ctx context.Context, postId string) CommentsAPIReplyToInboxPostRequest {
