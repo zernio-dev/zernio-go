@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.287.0
+API version: 1.288.0
 Contact: support@zernio.com
 */
 
@@ -41,6 +41,7 @@ type LogsAPIListLogsRequest struct {
 	to                  *time.Time
 	statusCode          *int32
 	apiKeyId            *string
+	profileId           *string
 	includeReadReceipts *bool
 }
 
@@ -131,6 +132,12 @@ func (r LogsAPIListLogsRequest) StatusCode(statusCode int32) LogsAPIListLogsRequ
 // Filter by the API key that made the request (api_request logs)
 func (r LogsAPIListLogsRequest) ApiKeyId(apiKeyId string) LogsAPIListLogsRequest {
 	r.apiKeyId = &apiKeyId
+	return r
+}
+
+// Filter by profile: every log type carries the profile it belongs to, and an API request log carries the profileId the call named
+func (r LogsAPIListLogsRequest) ProfileId(profileId string) LogsAPIListLogsRequest {
+	r.profileId = &profileId
 	return r
 }
 
@@ -244,6 +251,9 @@ func (a *LogsAPIService) ListLogsExecute(r LogsAPIListLogsRequest) (*ListLogs200
 	}
 	if r.apiKeyId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "apiKeyId", r.apiKeyId, "form", "")
+	}
+	if r.profileId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
 	}
 	if r.includeReadReceipts != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "includeReadReceipts", r.includeReadReceipts, "form", "")

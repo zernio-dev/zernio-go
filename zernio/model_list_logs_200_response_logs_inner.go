@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.287.0
+API version: 1.288.0
 Contact: support@zernio.com
 */
 
@@ -24,10 +24,14 @@ type ListLogs200ResponseLogsInner struct {
 	// Log category (publishing, connections, webhooks, messaging)
 	Type *string `json:"type,omitempty"`
 	// Specific action (post.published, message.sent, account.connected, etc.)
-	Action       *string `json:"action,omitempty"`
-	UserId       *string `json:"user_id,omitempty"`
-	Platform     *string `json:"platform,omitempty"`
-	AccountId    *string `json:"account_id,omitempty"`
+	Action    *string `json:"action,omitempty"`
+	UserId    *string `json:"user_id,omitempty"`
+	Platform  *string `json:"platform,omitempty"`
+	AccountId *string `json:"account_id,omitempty"`
+	// The profile the entry belongs to; on API request logs, the profileId the call named in its query or body
+	ProfileId *string `json:"profile_id,omitempty"`
+	// API request logs only: the operationId of the public operation the request hit (e.g. createPost), absent for routes outside this spec
+	OperationId  *string `json:"operation_id,omitempty"`
 	Status       *string `json:"status,omitempty"`
 	StatusCode   *int32  `json:"status_code,omitempty"`
 	ErrorMessage *string `json:"error_message,omitempty"`
@@ -231,6 +235,70 @@ func (o *ListLogs200ResponseLogsInner) HasAccountId() bool {
 // SetAccountId gets a reference to the given string and assigns it to the AccountId field.
 func (o *ListLogs200ResponseLogsInner) SetAccountId(v string) {
 	o.AccountId = &v
+}
+
+// GetProfileId returns the ProfileId field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetProfileId() string {
+	if o == nil || IsNil(o.ProfileId) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileId
+}
+
+// GetProfileIdOk returns a tuple with the ProfileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetProfileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileId) {
+		return nil, false
+	}
+	return o.ProfileId, true
+}
+
+// HasProfileId returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasProfileId() bool {
+	if o != nil && !IsNil(o.ProfileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileId gets a reference to the given string and assigns it to the ProfileId field.
+func (o *ListLogs200ResponseLogsInner) SetProfileId(v string) {
+	o.ProfileId = &v
+}
+
+// GetOperationId returns the OperationId field value if set, zero value otherwise.
+func (o *ListLogs200ResponseLogsInner) GetOperationId() string {
+	if o == nil || IsNil(o.OperationId) {
+		var ret string
+		return ret
+	}
+	return *o.OperationId
+}
+
+// GetOperationIdOk returns a tuple with the OperationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLogs200ResponseLogsInner) GetOperationIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OperationId) {
+		return nil, false
+	}
+	return o.OperationId, true
+}
+
+// HasOperationId returns a boolean if a field has been set.
+func (o *ListLogs200ResponseLogsInner) HasOperationId() bool {
+	if o != nil && !IsNil(o.OperationId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOperationId gets a reference to the given string and assigns it to the OperationId field.
+func (o *ListLogs200ResponseLogsInner) SetOperationId(v string) {
+	o.OperationId = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -769,6 +837,12 @@ func (o ListLogs200ResponseLogsInner) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AccountId) {
 		toSerialize["account_id"] = o.AccountId
+	}
+	if !IsNil(o.ProfileId) {
+		toSerialize["profile_id"] = o.ProfileId
+	}
+	if !IsNil(o.OperationId) {
+		toSerialize["operation_id"] = o.OperationId
 	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status

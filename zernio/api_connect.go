@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.287.0
+API version: 1.288.0
 Contact: support@zernio.com
 */
 
@@ -2604,6 +2604,9 @@ type ConnectAPIGetConnectUrlRequest struct {
 	signup                 *string
 	brandName              *string
 	primaryColor           *string
+	welcome                *bool
+	welcomeTheme           *string
+	logoUrl                *string
 	language               *string
 }
 
@@ -2673,15 +2676,33 @@ func (r ConnectAPIGetConnectUrlRequest) Signup(signup string) ConnectAPIGetConne
 	return r
 }
 
-// Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): name shown in the page title (\&quot;Connect your WhatsApp number to &lt;brandName&gt;\&quot;) instead of Zernio. The Zernio logo stays: the page is co-branded, not white-label. Trimmed; 1 to 60 characters. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; without &#x60;signup&#x3D;hosted&#x60;. Stored on the signup session at issue time, so the page URL cannot change it.
+// Your product name, for the two branded pages. With &#x60;signup&#x3D;hosted&#x60; (WhatsApp) it replaces Zernio in the page title (\&quot;Connect your WhatsApp number to &lt;brandName&gt;\&quot;). With &#x60;welcome&#x3D;true&#x60; it fills the heading (\&quot;&lt;brandName&gt; wants to connect to your &lt;platform&gt;\&quot;); without it the screen shows Zernio and the Zernio mark. Both pages keep a Zernio mark: they are co-branded, not white-label. Trimmed; 1 to 60 characters. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; without &#x60;signup&#x3D;hosted&#x60; or &#x60;welcome&#x3D;true&#x60;. Sealed into the page link at issue time, so editing the URL cannot change it.
 func (r ConnectAPIGetConnectUrlRequest) BrandName(brandName string) ConnectAPIGetConnectUrlRequest {
 	r.brandName = &brandName
 	return r
 }
 
-// Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): hex colour (&#x60;#RRGGBB&#x60;) for the primary button and step accents. Validated server-side; anything else is a 400 &#x60;INVALID_FIELD_VALUE&#x60;. Rejected without &#x60;signup&#x3D;hosted&#x60;.
+// Hex colour (&#x60;#RRGGBB&#x60;) for the primary button on the hosted WhatsApp signup page (&#x60;signup&#x3D;hosted&#x60;) or the welcome screen (&#x60;welcome&#x3D;true&#x60;). Validated server-side; anything else is a 400 &#x60;INVALID_FIELD_VALUE&#x60;. Rejected without one of the two.
 func (r ConnectAPIGetConnectUrlRequest) PrimaryColor(primaryColor string) ConnectAPIGetConnectUrlRequest {
 	r.primaryColor = &primaryColor
+	return r
+}
+
+// Any platform. When &#x60;true&#x60;, &#x60;authUrl&#x60; points to a Zernio-hosted welcome screen that shows your brand next to the platform (\&quot;&lt;brandName&gt; wants to connect to your &lt;platform&gt;\&quot;) with a Continue button; Continue sends the user to the platform&#39;s own authorization screen and the rest of the flow is unchanged. &#x60;brandName&#x60;, &#x60;logoUrl&#x60;, &#x60;primaryColor&#x60; and &#x60;welcomeTheme&#x60; are optional and default to Zernio&#39;s own name, mark and look. The link is valid for 30 minutes, after which the page asks the user to start again. The brand also carries to the account and channel pickers Zernio shows after authorization, and when you pass no &#x60;redirect_url&#x60; the flow ends on a branded Zernio-hosted page saying whether the account connected, instead of the Zernio dashboard. Cannot be combined with &#x60;headless&#x3D;true&#x60; or &#x60;signup&#x3D;hosted&#x60; (400 &#x60;INVALID_FIELD_VALUE&#x60;). The platform&#39;s authorization screen still names the Zernio app.
+func (r ConnectAPIGetConnectUrlRequest) Welcome(welcome bool) ConnectAPIGetConnectUrlRequest {
+	r.welcome = &welcome
+	return r
+}
+
+// Welcome screen only (&#x60;welcome&#x3D;true&#x60;): a URL-encoded JSON object that restyles and rewords the screen. All keys are optional. Copy: &#x60;heading&#x60; (up to 120 characters), &#x60;trustLine&#x60; and &#x60;consentLine&#x60; (up to 200 each), &#x60;buttonLabel&#x60; (up to 30); each may contain the placeholders &#x60;{brand}&#x60; and &#x60;{platform}&#x60;. Style: &#x60;primaryColor&#x60;, &#x60;pageColor&#x60;, &#x60;cardColor&#x60; and &#x60;textColor&#x60; as &#x60;#RRGGBB&#x60;, &#x60;cornerRadius&#x60; as an integer from 0 to 24 (pixels), &#x60;font&#x60; as &#x60;sans&#x60;, &#x60;serif&#x60; or &#x60;mono&#x60;. A &#x60;primaryColor&#x60; here wins over the &#x60;primaryColor&#x60; parameter. Unknown keys, invalid JSON or an invalid value are a 400 &#x60;INVALID_FIELD_VALUE&#x60;. Rejected without &#x60;welcome&#x3D;true&#x60;. Example: &#x60;{\&quot;heading\&quot;:\&quot;Link your {platform} to {brand}\&quot;,\&quot;cardColor\&quot;:\&quot;#FFF7ED\&quot;,\&quot;cornerRadius\&quot;:12}&#x60;.
+func (r ConnectAPIGetConnectUrlRequest) WelcomeTheme(welcomeTheme string) ConnectAPIGetConnectUrlRequest {
+	r.welcomeTheme = &welcomeTheme
+	return r
+}
+
+// Welcome screen only (&#x60;welcome&#x3D;true&#x60;): https URL of your logo, shown in a square tile, so use a square image. Without it the tile shows the first letter of &#x60;brandName&#x60;, or the Zernio mark when there is no &#x60;brandName&#x60; either. Rejected with 400 &#x60;INVALID_FIELD_VALUE&#x60; without &#x60;welcome&#x3D;true&#x60;.
+func (r ConnectAPIGetConnectUrlRequest) LogoUrl(logoUrl string) ConnectAPIGetConnectUrlRequest {
+	r.logoUrl = &logoUrl
 	return r
 }
 
@@ -2796,6 +2817,19 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.primaryColor != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "primaryColor", r.primaryColor, "form", "")
+	}
+	if r.welcome != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "welcome", r.welcome, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "welcome", defaultValue, "form", "")
+		r.welcome = &defaultValue
+	}
+	if r.welcomeTheme != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "welcomeTheme", r.welcomeTheme, "form", "")
+	}
+	if r.logoUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "logoUrl", r.logoUrl, "form", "")
 	}
 	if r.language != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
