@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.288.2
+API version: 1.289.0
 Contact: support@zernio.com
 */
 
@@ -40,6 +40,9 @@ type AdCreative struct {
 	VideoUrl NullableString `json:"videoUrl,omitempty"`
 	// Meta ad creative id backing this ad. Reusable via existingCreativeId on POST /v1/ads/create.
 	CreativeId NullableString `json:"creativeId,omitempty"`
+	// Meta only. The creativeFeatures map sent at creation (degrees_of_freedom_spec.creative_features_spec). Absent on ads synced from Meta.
+	CreativeFeatures map[string]string  `json:"creativeFeatures,omitempty"`
+	Catalog          *AdCreativeCatalog `json:"catalog,omitempty"`
 	// Meta creative object_type (e.g. SHARE, VIDEO, PRIVACY_CHECK_FAIL, POST_DELETED). Use this to render state-aware previews: when Meta moderation strips image/video fields, only thumbnailUrl at 64x64 is available.
 	ObjectType *string `json:"objectType,omitempty"`
 	// Meta creative `object_story_id` (the SHARE reference). Frequently absent, because Meta omits it for SHARE creatives. Use effectiveObjectStoryId instead.
@@ -460,6 +463,70 @@ func (o *AdCreative) SetCreativeIdNil() {
 // UnsetCreativeId ensures that no value is present for CreativeId, not even an explicit nil
 func (o *AdCreative) UnsetCreativeId() {
 	o.CreativeId.Unset()
+}
+
+// GetCreativeFeatures returns the CreativeFeatures field value if set, zero value otherwise.
+func (o *AdCreative) GetCreativeFeatures() map[string]string {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		var ret map[string]string
+		return ret
+	}
+	return o.CreativeFeatures
+}
+
+// GetCreativeFeaturesOk returns a tuple with the CreativeFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetCreativeFeaturesOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.CreativeFeatures) {
+		return map[string]string{}, false
+	}
+	return o.CreativeFeatures, true
+}
+
+// HasCreativeFeatures returns a boolean if a field has been set.
+func (o *AdCreative) HasCreativeFeatures() bool {
+	if o != nil && !IsNil(o.CreativeFeatures) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreativeFeatures gets a reference to the given map[string]string and assigns it to the CreativeFeatures field.
+func (o *AdCreative) SetCreativeFeatures(v map[string]string) {
+	o.CreativeFeatures = v
+}
+
+// GetCatalog returns the Catalog field value if set, zero value otherwise.
+func (o *AdCreative) GetCatalog() AdCreativeCatalog {
+	if o == nil || IsNil(o.Catalog) {
+		var ret AdCreativeCatalog
+		return ret
+	}
+	return *o.Catalog
+}
+
+// GetCatalogOk returns a tuple with the Catalog field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetCatalogOk() (*AdCreativeCatalog, bool) {
+	if o == nil || IsNil(o.Catalog) {
+		return nil, false
+	}
+	return o.Catalog, true
+}
+
+// HasCatalog returns a boolean if a field has been set.
+func (o *AdCreative) HasCatalog() bool {
+	if o != nil && !IsNil(o.Catalog) {
+		return true
+	}
+
+	return false
+}
+
+// SetCatalog gets a reference to the given AdCreativeCatalog and assigns it to the Catalog field.
+func (o *AdCreative) SetCatalog(v AdCreativeCatalog) {
+	o.Catalog = &v
 }
 
 // GetObjectType returns the ObjectType field value if set, zero value otherwise.
@@ -1261,6 +1328,12 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if o.CreativeId.IsSet() {
 		toSerialize["creativeId"] = o.CreativeId.Get()
+	}
+	if !IsNil(o.CreativeFeatures) {
+		toSerialize["creativeFeatures"] = o.CreativeFeatures
+	}
+	if !IsNil(o.Catalog) {
+		toSerialize["catalog"] = o.Catalog
 	}
 	if !IsNil(o.ObjectType) {
 		toSerialize["objectType"] = o.ObjectType
