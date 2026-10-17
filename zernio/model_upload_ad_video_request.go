@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.289.2
+API version: 1.290.0
 Contact: support@zernio.com
 */
 
@@ -30,8 +30,10 @@ type UploadAdVideoRequest struct {
 	VideoUrl *string `json:"videoUrl,omitempty"`
 	// Raw base64 video bytes, or a full data URL (the data:video/...;base64, prefix is stripped). Capped by Vercel's body limit (~4.5 MB payload). Provide exactly one of videoUrl or videoBase64.
 	VideoBase64 *string `json:"videoBase64,omitempty"`
-	// Optional filename shown alongside the upload session. Applied only when uploading via videoBase64.
+	// Optional file name, sent to Meta as the video's name and title so it shows and is searchable in the Ads Manager media library. Applies to both videoUrl and videoBase64. Without it (and without name), a videoUrl upload is named after the last path segment of the URL.
 	Filename *string `json:"filename,omitempty"`
+	// Optional video name shown in the Ads Manager media library. Takes precedence over filename.
+	Name *string `json:"name,omitempty"`
 	// true: answer 202 once Meta accepts the upload instead of waiting for processing. Poll GET /v1/ads/videos/{videoId} or subscribe to ad.video.processed.
 	Async *bool `json:"async,omitempty"`
 }
@@ -205,6 +207,38 @@ func (o *UploadAdVideoRequest) SetFilename(v string) {
 	o.Filename = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UploadAdVideoRequest) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UploadAdVideoRequest) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *UploadAdVideoRequest) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UploadAdVideoRequest) SetName(v string) {
+	o.Name = &v
+}
+
 // GetAsync returns the Async field value if set, zero value otherwise.
 func (o *UploadAdVideoRequest) GetAsync() bool {
 	if o == nil || IsNil(o.Async) {
@@ -257,6 +291,9 @@ func (o UploadAdVideoRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Filename) {
 		toSerialize["filename"] = o.Filename
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Async) {
 		toSerialize["async"] = o.Async
