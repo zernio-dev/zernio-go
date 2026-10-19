@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.294.0
+API version: 1.295.0
 Contact: support@zernio.com
 */
 
@@ -113,7 +113,7 @@ type CreateStandaloneAdRequest struct {
 	// LinkedIn only. The Company Page that authors the Direct Sponsored Content (\"dark\") post backing the ad. Accepts a numeric organization ID or a full `urn:li:organization:N` URN. Required unless the resolved `accountId` is a connected LinkedIn Company-Page account (defaults to that page) or the LinkedIn ad account is org-owned (defaults to the account's owning organization). The authenticated member must be an ADMINISTRATOR or DIRECT_SPONSORED_CONTENT_POSTER of this page (and the page must be associated with the ad account), or LinkedIn returns 403. Ignored by every other platform.
 	OrganizationId *string `json:"organizationId,omitempty"`
 	// Nested targeting object, the same TargetingSpec shape as `POST /v1/ads/boost`, `POST /v1/ads/targeting/reach-estimate`, and `saved_targeting` audiences. Merged UNDER the flat inline targeting fields below: `savedTargetingId` < `targeting` < flat fields (a flat field present on the body replaces the nested value entirely). Both forms are equivalent; use whichever your integration already builds. Reddit-only targeting (`communities`, `excludedCommunities`, `conversationKeywords`, `excludedConversationKeywords`) is sent here.
-	Targeting *TargetingSpec `json:"targeting,omitempty"`
+	Targeting NullableTargetingSpec `json:"targeting,omitempty"`
 	// ISO 3166-1 alpha-2 country codes (e.g. ['NL']). Defaults to ['US'] when no other geo targeting (flat or nested `targeting`) is provided. (LinkedIn and OpenAI Ads currently honour country-level targeting only; any other targeting field returns 400 for OpenAI Ads.)
 	Countries []string `json:"countries,omitempty"`
 	// Meta only. Continents and trade blocs (`geo_locations.country_groups`), for targeting a whole region without listing its countries. Combines with `countries` rather than replacing it. Discoverable via `GET /v1/ads/targeting/search?dimension=geo&geoType=country_group`.
@@ -1800,36 +1800,47 @@ func (o *CreateStandaloneAdRequest) SetOrganizationId(v string) {
 	o.OrganizationId = &v
 }
 
-// GetTargeting returns the Targeting field value if set, zero value otherwise.
+// GetTargeting returns the Targeting field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CreateStandaloneAdRequest) GetTargeting() TargetingSpec {
-	if o == nil || IsNil(o.Targeting) {
+	if o == nil || IsNil(o.Targeting.Get()) {
 		var ret TargetingSpec
 		return ret
 	}
-	return *o.Targeting
+	return *o.Targeting.Get()
 }
 
 // GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *CreateStandaloneAdRequest) GetTargetingOk() (*TargetingSpec, bool) {
-	if o == nil || IsNil(o.Targeting) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Targeting, true
+	return o.Targeting.Get(), o.Targeting.IsSet()
 }
 
 // HasTargeting returns a boolean if a field has been set.
 func (o *CreateStandaloneAdRequest) HasTargeting() bool {
-	if o != nil && !IsNil(o.Targeting) {
+	if o != nil && o.Targeting.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTargeting gets a reference to the given TargetingSpec and assigns it to the Targeting field.
+// SetTargeting gets a reference to the given NullableTargetingSpec and assigns it to the Targeting field.
 func (o *CreateStandaloneAdRequest) SetTargeting(v TargetingSpec) {
-	o.Targeting = &v
+	o.Targeting.Set(&v)
+}
+
+// SetTargetingNil sets the value for Targeting to be an explicit nil
+func (o *CreateStandaloneAdRequest) SetTargetingNil() {
+	o.Targeting.Set(nil)
+}
+
+// UnsetTargeting ensures that no value is present for Targeting, not even an explicit nil
+func (o *CreateStandaloneAdRequest) UnsetTargeting() {
+	o.Targeting.Unset()
 }
 
 // GetCountries returns the Countries field value if set, zero value otherwise.
@@ -4229,8 +4240,8 @@ func (o CreateStandaloneAdRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.OrganizationId) {
 		toSerialize["organizationId"] = o.OrganizationId
 	}
-	if !IsNil(o.Targeting) {
-		toSerialize["targeting"] = o.Targeting
+	if o.Targeting.IsSet() {
+		toSerialize["targeting"] = o.Targeting.Get()
 	}
 	if !IsNil(o.Countries) {
 		toSerialize["countries"] = o.Countries

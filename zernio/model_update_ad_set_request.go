@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.294.0
+API version: 1.295.0
 Contact: support@zernio.com
 */
 
@@ -31,6 +31,9 @@ type UpdateAdSetRequest struct {
 	// Ad-set-level bid strategy. Overrides the campaign-level default. Supported on Meta (facebook, instagram), TikTok, and OpenAI. On TikTok the Meta-style enum is mapped to bid_type / bid_price / deep_bid_type automatically. On OpenAI, LOWEST_COST_WITH_BID_CAP and COST_CAP both map to the ad group's `bidding_config.max_bid_micros` (one knob covers both); LOWEST_COST_WITH_MIN_ROAS is rejected with 422 (OpenAI has no ROAS-based bidding). On X it writes the line item's `bid_strategy`: LOWEST_COST_WITHOUT_CAP = AUTO, LOWEST_COST_WITH_BID_CAP = MAX and COST_CAP = TARGET, with `bidAmount` as `bid_amount_local_micro`; LOWEST_COST_WITH_MIN_ROAS is rejected with 422. X decides which strategy the line item's objective allows (TARGET only on REACH, FOLLOWERS and WEBSITE_CLICKS, MAX not on REACH or FOLLOWERS). On Reddit, see the mapping in the description above (LOWEST_COST_WITH_MIN_ROAS returns 422). Other platforms (linkedin, pinterest, google) return 501 Not Implemented when bidStrategy is set.
 	BidStrategy    *BidStrategy                      `json:"bidStrategy,omitempty"`
 	SmartTargeting *UpdateAdSetRequestSmartTargeting `json:"smartTargeting,omitempty"`
+	Placements     *UpdateAdSetRequestPlacements     `json:"placements,omitempty"`
+	// Meta only (400 elsewhere). Targeting fields to change, same shape as the `targeting` object on POST /v1/ads/create. Only the keys you send change: Zernio reads the ad set's live targeting from Meta, merges these keys over it and writes the full spec back, so everything you do not send (custom audiences, geo, age, interest groups, `targeting_automation`) is kept. Setting any location replaces every location list. An empty list or `gender: all` clears that key. `incomeTier` is resolved to Meta's income segment first (422 when Meta has none). Fields Meta cannot target (LinkedIn B2B, Google `devices`, Reddit communities and keywords) return 400 with `param: targeting.<field>`. An empty object is a 400, and so is a `targeting.placements` object with no non-empty list (`param: targeting.placements`). When the live targeting cannot be read the request returns 502 and nothing is written.
+	Targeting *TargetingSpec `json:"targeting,omitempty"`
 	// Bid cap in WHOLE currency units (USD: 5 = $5.00; JPY: 100 = ¥100). Required when bidStrategy is LOWEST_COST_WITH_BID_CAP or COST_CAP. Internally converted to Meta's smallest-denomination integer, or (on OpenAI and X) to micros (× 1,000,000). Meta only: may be sent alone, WITHOUT bidStrategy, to update the cap amount on an ad set whose parent campaign is COST_CAP or LOWEST_COST_WITH_BID_CAP (the strategy is inherited from the campaign and is left untouched).
 	BidAmount *float32 `json:"bidAmount,omitempty"`
 	// Minimum ROAS as a decimal multiplier (2.0 = 2.0x). Required when bidStrategy is LOWEST_COST_WITH_MIN_ROAS. Sent to Meta as `bid_constraints.roas_average_floor` × 10000. Meta only: may be sent alone, WITHOUT bidStrategy, to update the floor on an ad set whose strategy (its own, or the campaign's under CBO) is LOWEST_COST_WITH_MIN_ROAS. Not supported on OpenAI (422).
@@ -246,6 +249,70 @@ func (o *UpdateAdSetRequest) SetSmartTargeting(v UpdateAdSetRequestSmartTargetin
 	o.SmartTargeting = &v
 }
 
+// GetPlacements returns the Placements field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetPlacements() UpdateAdSetRequestPlacements {
+	if o == nil || IsNil(o.Placements) {
+		var ret UpdateAdSetRequestPlacements
+		return ret
+	}
+	return *o.Placements
+}
+
+// GetPlacementsOk returns a tuple with the Placements field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetPlacementsOk() (*UpdateAdSetRequestPlacements, bool) {
+	if o == nil || IsNil(o.Placements) {
+		return nil, false
+	}
+	return o.Placements, true
+}
+
+// HasPlacements returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasPlacements() bool {
+	if o != nil && !IsNil(o.Placements) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlacements gets a reference to the given UpdateAdSetRequestPlacements and assigns it to the Placements field.
+func (o *UpdateAdSetRequest) SetPlacements(v UpdateAdSetRequestPlacements) {
+	o.Placements = &v
+}
+
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *UpdateAdSetRequest) GetTargeting() TargetingSpec {
+	if o == nil || IsNil(o.Targeting) {
+		var ret TargetingSpec
+		return ret
+	}
+	return *o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSetRequest) GetTargetingOk() (*TargetingSpec, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return nil, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *UpdateAdSetRequest) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given TargetingSpec and assigns it to the Targeting field.
+func (o *UpdateAdSetRequest) SetTargeting(v TargetingSpec) {
+	o.Targeting = &v
+}
+
 // GetBidAmount returns the BidAmount field value if set, zero value otherwise.
 func (o *UpdateAdSetRequest) GetBidAmount() float32 {
 	if o == nil || IsNil(o.BidAmount) {
@@ -431,6 +498,12 @@ func (o UpdateAdSetRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SmartTargeting) {
 		toSerialize["smartTargeting"] = o.SmartTargeting
+	}
+	if !IsNil(o.Placements) {
+		toSerialize["placements"] = o.Placements
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
 	}
 	if !IsNil(o.BidAmount) {
 		toSerialize["bidAmount"] = o.BidAmount

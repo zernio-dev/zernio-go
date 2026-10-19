@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.294.0
+API version: 1.295.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type UpdateAdSet200Response struct {
 	BidAmount            NullableFloat32        `json:"bidAmount,omitempty"`
 	RoasAverageFloor     NullableFloat32        `json:"roasAverageFloor,omitempty"`
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
+	// Present when `placements` or `targeting` was sent. The ad set's full Meta targeting as written (Meta snake_case). The same snake_case object is stored as the ad set's and its ads' `targeting`.
+	Targeting map[string]interface{} `json:"targeting,omitempty"`
 }
 
 // NewUpdateAdSet200Response instantiates a new UpdateAdSet200Response object
@@ -528,6 +530,38 @@ func (o *UpdateAdSet200Response) SetPlatformSpecificData(v map[string]interface{
 	o.PlatformSpecificData = v
 }
 
+// GetTargeting returns the Targeting field value if set, zero value otherwise.
+func (o *UpdateAdSet200Response) GetTargeting() map[string]interface{} {
+	if o == nil || IsNil(o.Targeting) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Targeting
+}
+
+// GetTargetingOk returns a tuple with the Targeting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAdSet200Response) GetTargetingOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Targeting) {
+		return map[string]interface{}{}, false
+	}
+	return o.Targeting, true
+}
+
+// HasTargeting returns a boolean if a field has been set.
+func (o *UpdateAdSet200Response) HasTargeting() bool {
+	if o != nil && !IsNil(o.Targeting) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargeting gets a reference to the given map[string]interface{} and assigns it to the Targeting field.
+func (o *UpdateAdSet200Response) SetTargeting(v map[string]interface{}) {
+	o.Targeting = v
+}
+
 func (o UpdateAdSet200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -576,6 +610,9 @@ func (o UpdateAdSet200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PlatformSpecificData) {
 		toSerialize["platformSpecificData"] = o.PlatformSpecificData
+	}
+	if !IsNil(o.Targeting) {
+		toSerialize["targeting"] = o.Targeting
 	}
 	return toSerialize, nil
 }

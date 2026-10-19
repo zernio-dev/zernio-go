@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.294.0
+API version: 1.295.0
 Contact: support@zernio.com
 */
 
@@ -9958,6 +9958,17 @@ MAXIMIZE_VOLUME with `bidAmount` as the cap; LOWEST_COST_WITH_MIN_ROAS returns 4
 describes: only the ad set's own switch is written, its ads keep
 theirs, and `statusUpdated` / `statusSkipped` report whether that switch
 was written or a live read showed it already in place.
+
+Placements and targeting (Meta only): `placements` and `targeting` take the same shapes
+as POST /v1/ads/create. Meta replaces an ad set's targeting wholesale, so Zernio reads
+the live targeting first, changes only what the request names and writes the merged
+spec back: custom audiences, geo, age, interest groups and `targeting_automation` you do
+not send are kept. `placements` replaces the whole placement set, `placements: null`
+returns the ad set to automatic placements, and omitting it leaves placements as they
+are. Other platforms return 400 for either field before anything in the request is
+written (use PUT /v1/ads/{adId} with `targeting` where that platform supports it). The
+live read and the `incomeTier` lookup run before any other field is written, so a 502
+or 422 from them leaves the ad set unchanged.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adSetId Platform ad set ID
