@@ -119,6 +119,7 @@ func main() {
 | `client.AnalyticsAPI.GetInstagramFollowerHistory(ctx)` | Get Instagram follower history |
 | `client.AnalyticsAPI.GetInstagramOnlineFollowers(ctx)` | Get Instagram online followers |
 | `client.AnalyticsAPI.GetLinkedInAggregateAnalytics(ctx)` | Get LinkedIn aggregate stats |
+| `client.AnalyticsAPI.GetLinkedInDemographics(ctx)` | Get LinkedIn organization follower demographics |
 | `client.AnalyticsAPI.GetLinkedInOrgAggregateAnalytics(ctx)` | Get LinkedIn org analytics |
 | `client.AnalyticsAPI.GetLinkedInPostAnalytics(ctx)` | Get LinkedIn post stats |
 | `client.AnalyticsAPI.GetLinkedInPostReactions(ctx)` | Get LinkedIn post reactions |
