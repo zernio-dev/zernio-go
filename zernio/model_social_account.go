@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.292.0
+API version: 1.293.0
 Contact: support@zernio.com
 */
 
@@ -47,6 +47,8 @@ type SocialAccount struct {
 	ParentAccountId NullableString `json:"parentAccountId,omitempty"`
 	// Whether the user explicitly activated this account. false means the account was created as a side effect (e.g., posting account auto-created when user connected ads first). GET /v1/accounts still returns such accounts unless `excludeHidden=true` is passed. They cannot be posted to (`ACCOUNT_NOT_ENABLED_FOR_POSTING`) and are not billed as connected accounts. On an ads account (`metaads`, `googleads`, ...) the value does not hide the connection: ads accounts are listed whatever their `enabled` value and keep working for ads.
 	Enabled *bool `json:"enabled,omitempty"`
+	// End of the account's publishing cooldown. Compare it with the current time: a value in the past means the cooldown has ended (the field is cleared on the next successful publish), null means no cooldown since the last successful publish. A cooldown starts when a post to the account fails with `errorCategory` `user_abuse` (spam, abuse or rate-limit errors), or when 10 or more posts to it fail within an hour with `user_content`, `platform_error`, `platform_rate_limit` or `unknown`. It doubles with each start inside a 24-hour window that opens at the first one (10, 20, 40, 80 minutes and so on, capped at 24 hours). On a YouTube account with a recorded successful upload it instead runs until 24 hours after that upload, or 1 hour when that upload is older than 24 hours. While it is in the future, POST /v1/posts (drafts excepted) and POST /v1/posts/{postId}/retry return 429 for this account, and this account's pending targets on posts scheduled before the cooldown ends are failed when it starts.
+	RateLimitedUntil NullableTime `json:"rateLimitedUntil,omitempty"`
 	// Platform-specific metadata. Fields vary by platform. For WhatsApp accounts, includes: - qualityRating: Phone number quality rating from Meta (GREEN, YELLOW, RED, or UNKNOWN) - nameStatus: Display name review status (APPROVED, PENDING_REVIEW, DECLINED, or NONE). A declined or pending display name does not by itself block sending; sendability is reported separately via health_status (can_send_message). - messagingLimitTier: Maximum unique business-initiated conversations per 24h rolling window (TIER_250, TIER_1K, TIER_10K, TIER_100K, or TIER_UNLIMITED). Scales automatically as quality rating improves. - verifiedName: Meta-verified business display name - displayPhoneNumber: Formatted phone number (e.g., \"+1 555-123-4567\") - wabaId: WhatsApp Business Account ID - phoneNumberId: Meta phone number ID  For Meta ads business-login accounts: - tokenType: system-user - businessId: The owning Business Manager ID when there is one owner; null for multiple owners. - businessIds: Owning Business Manager IDs discovered from granted ad accounts. - grantedAdAccountIds: Ad-account IDs granted to the token. - adAccountBusinesses: Map from ad-account ID to its owning business ID or null. - availablePages: Granted Page IDs and names. No Page tokens are exposed. - selectedPageId: The Page selected for creatives and lead forms, or null. - scopedAdAccountIds: Existing sync scope preserved on reconnect. Non-expiring tokens have no tokenExpiresAt field. Parent posting reconnects do not replace this token.  For LinkedIn accounts, profileData carries the profile details refreshed on each daily snapshot: - profileData.bio: The member's headline for personal accounts, or the organization description for organization accounts. null when the member has not set one. - profileData.extraData.vanityName: The member's profile slug, i.e. the /in/{vanityName} segment of profileUrl. Personal accounts only; an organization's own slug is in metadata.organizationInfo.vanityName.  For Instagram accounts: - loginMethod: \"facebook_login\" when the account was connected through Facebook Login. Absent on accounts connected with Instagram Login. On facebook_login accounts, comment reads leave hidden comments out entirely instead of returning them with isHidden true. - instagramScopedId: the Instagram professional account id (`17841...`). On Instagram Login accounts this is the id that is the same whichever app connected the account, while platformUserId is app-scoped; Facebook Login accounts hold this id as platformUserId.  For X (Twitter) accounts: - profileData.extraData.isPremium: Whether X reports a paid subscription (Basic, Premium, Premium+, or a blue verified badge), which raises the post length limit from 280 to 25,000 characters. Read live at connect and reconnect and refreshed by the daily follower snapshot; because X intermittently reports no subscription for subscribed accounts, a cancellation is stored on the fourth consecutive daily snapshot that reports it (about four days). Accounts connected before the extraData layout carry the same flag at profileData.isPremium.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }
@@ -544,6 +546,49 @@ func (o *SocialAccount) SetEnabled(v bool) {
 	o.Enabled = &v
 }
 
+// GetRateLimitedUntil returns the RateLimitedUntil field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SocialAccount) GetRateLimitedUntil() time.Time {
+	if o == nil || IsNil(o.RateLimitedUntil.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.RateLimitedUntil.Get()
+}
+
+// GetRateLimitedUntilOk returns a tuple with the RateLimitedUntil field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SocialAccount) GetRateLimitedUntilOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RateLimitedUntil.Get(), o.RateLimitedUntil.IsSet()
+}
+
+// HasRateLimitedUntil returns a boolean if a field has been set.
+func (o *SocialAccount) HasRateLimitedUntil() bool {
+	if o != nil && o.RateLimitedUntil.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRateLimitedUntil gets a reference to the given NullableTime and assigns it to the RateLimitedUntil field.
+func (o *SocialAccount) SetRateLimitedUntil(v time.Time) {
+	o.RateLimitedUntil.Set(&v)
+}
+
+// SetRateLimitedUntilNil sets the value for RateLimitedUntil to be an explicit nil
+func (o *SocialAccount) SetRateLimitedUntilNil() {
+	o.RateLimitedUntil.Set(nil)
+}
+
+// UnsetRateLimitedUntil ensures that no value is present for RateLimitedUntil, not even an explicit nil
+func (o *SocialAccount) UnsetRateLimitedUntil() {
+	o.RateLimitedUntil.Unset()
+}
+
 // GetMetadata returns the Metadata field value if set, zero value otherwise.
 func (o *SocialAccount) GetMetadata() map[string]interface{} {
 	if o == nil || IsNil(o.Metadata) {
@@ -622,6 +667,9 @@ func (o SocialAccount) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
+	}
+	if o.RateLimitedUntil.IsSet() {
+		toSerialize["rateLimitedUntil"] = o.RateLimitedUntil.Get()
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
