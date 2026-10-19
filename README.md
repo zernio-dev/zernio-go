@@ -652,6 +652,7 @@ func main() {
 | `client.CommerceAPI.ListCommerceMenus(ctx)` | List navigation menus |
 | `client.CommerceAPI.ListCommerceMetaobjectDefinitions(ctx)` | List metaobject definitions |
 | `client.CommerceAPI.ListCommerceMetaobjects(ctx)` | List metaobjects of a type |
+| `client.CommerceAPI.ListCommerceOrders(ctx)` | List orders |
 | `client.CommerceAPI.ListCommercePages(ctx)` | List pages |
 | `client.CommerceAPI.ListCommercePriceLists(ctx)` | List price lists |
 | `client.CommerceAPI.ListCommerceProductMetafields(ctx)` | List product metafields |
@@ -672,6 +673,7 @@ func main() {
 | `client.CommerceAPI.GetCommerceDiscount(ctx)` | Get a discount |
 | `client.CommerceAPI.GetCommerceMenu(ctx)` | Get a navigation menu |
 | `client.CommerceAPI.GetCommerceMetaobject(ctx)` | Get a metaobject |
+| `client.CommerceAPI.GetCommerceOrder(ctx)` | Get an order |
 | `client.CommerceAPI.GetCommercePage(ctx)` | Get a page |
 | `client.CommerceAPI.GetCommerceProduct(ctx)` | Get a product |
 | `client.CommerceAPI.GetCommerceStore(ctx)` | Get a store |

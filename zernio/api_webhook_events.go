@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.297.2
+API version: 1.298.0
 Contact: support@zernio.com
 */
 
@@ -1759,6 +1759,309 @@ func (a *WebhookEventsAPIService) OnCommentReceivedExecute(r WebhookEventsAPIOnC
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadComment
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceOrderCreatedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCommerceOrder *WebhookPayloadCommerceOrder
+}
+
+func (r WebhookEventsAPIOnCommerceOrderCreatedRequest) WebhookPayloadCommerceOrder(webhookPayloadCommerceOrder WebhookPayloadCommerceOrder) WebhookEventsAPIOnCommerceOrderCreatedRequest {
+	r.webhookPayloadCommerceOrder = &webhookPayloadCommerceOrder
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceOrderCreatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceOrderCreatedExecute(r)
+}
+
+/*
+OnCommerceOrderCreated Commerce order created event
+
+Fired when an order is placed on a connected store. The payload carries identifiers only; read the order with
+`GET /v1/commerce/orders/{orderId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceOrderCreatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceOrderCreated(ctx context.Context) WebhookEventsAPIOnCommerceOrderCreatedRequest {
+	return WebhookEventsAPIOnCommerceOrderCreatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceOrderCreatedExecute(r WebhookEventsAPIOnCommerceOrderCreatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceOrderCreated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.order.created"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceOrder == nil {
+		return nil, reportError("webhookPayloadCommerceOrder is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceOrder
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceOrderRefundedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCommerceOrder *WebhookPayloadCommerceOrder
+}
+
+func (r WebhookEventsAPIOnCommerceOrderRefundedRequest) WebhookPayloadCommerceOrder(webhookPayloadCommerceOrder WebhookPayloadCommerceOrder) WebhookEventsAPIOnCommerceOrderRefundedRequest {
+	r.webhookPayloadCommerceOrder = &webhookPayloadCommerceOrder
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceOrderRefundedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceOrderRefundedExecute(r)
+}
+
+/*
+OnCommerceOrderRefunded Commerce order refunded event
+
+Fired when a refund is issued on an order of a connected store. A commerce.order.updated usually follows for the same change. The payload carries identifiers only; read the order with
+`GET /v1/commerce/orders/{orderId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceOrderRefundedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceOrderRefunded(ctx context.Context) WebhookEventsAPIOnCommerceOrderRefundedRequest {
+	return WebhookEventsAPIOnCommerceOrderRefundedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceOrderRefundedExecute(r WebhookEventsAPIOnCommerceOrderRefundedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceOrderRefunded")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.order.refunded"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceOrder == nil {
+		return nil, reportError("webhookPayloadCommerceOrder is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceOrder
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCommerceOrderUpdatedRequest struct {
+	ctx                         context.Context
+	ApiService                  *WebhookEventsAPIService
+	webhookPayloadCommerceOrder *WebhookPayloadCommerceOrder
+}
+
+func (r WebhookEventsAPIOnCommerceOrderUpdatedRequest) WebhookPayloadCommerceOrder(webhookPayloadCommerceOrder WebhookPayloadCommerceOrder) WebhookEventsAPIOnCommerceOrderUpdatedRequest {
+	r.webhookPayloadCommerceOrder = &webhookPayloadCommerceOrder
+	return r
+}
+
+func (r WebhookEventsAPIOnCommerceOrderUpdatedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCommerceOrderUpdatedExecute(r)
+}
+
+/*
+OnCommerceOrderUpdated Commerce order updated event
+
+Fired when an order on a connected store changes: payment, fulfilment, cancellation, edits, and refunds too. The payload carries identifiers only; read the order with
+`GET /v1/commerce/orders/{orderId}?accountId=...`. Fired once per
+Zernio account connected to the store.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCommerceOrderUpdatedRequest
+*/
+func (a *WebhookEventsAPIService) OnCommerceOrderUpdated(ctx context.Context) WebhookEventsAPIOnCommerceOrderUpdatedRequest {
+	return WebhookEventsAPIOnCommerceOrderUpdatedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCommerceOrderUpdatedExecute(r WebhookEventsAPIOnCommerceOrderUpdatedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCommerceOrderUpdated")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/commerce.order.updated"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCommerceOrder == nil {
+		return nil, reportError("webhookPayloadCommerceOrder is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCommerceOrder
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
