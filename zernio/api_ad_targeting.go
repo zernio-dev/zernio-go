@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.293.0
+API version: 1.294.0
 Contact: support@zernio.com
 */
 
@@ -901,13 +901,13 @@ func (r AdTargetingAPISearchAdTargetingRequest) AccountId(accountId string) AdTa
 	return r
 }
 
-// Search query. For geo, the locality name only (no region/country suffix).
+// Search query. For geo, the locality name only (no region/country suffix). For &#x60;interestSuggestion&#x60;, the interest names: comma-separated, or a JSON array of strings when a name contains a comma (a &#x60;q&#x60; starting with &#x60;[&#x60; is read as JSON).
 func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearchAdTargetingRequest {
 	r.q = &q
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; on Meta, TikTok and LinkedIn), &#x60;interestKeyword&#x60;/&#x60;hashtag&#x60; resolve TikTok additional interests and hashtags (TikTok only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; on Meta, TikTok and LinkedIn), &#x60;interestSuggestion&#x60; suggests interests related to the names in &#x60;q&#x60; (Meta only), &#x60;interestKeyword&#x60;/&#x60;hashtag&#x60; resolve TikTok additional interests and hashtags (TikTok only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -955,6 +955,15 @@ The `dimension` param selects what is searched:
 
   - `geo`: locations, further scoped by `geoType`
   - `interest`
+  - `interestSuggestion`: Meta only. Interests related to the interest names in `q`, from Meta's
+    interest suggestions. `q` lists interest names, case sensitive, names and not ids: either
+    comma-separated (`NBA,Michael Jordan`) or, for names that contain a comma, a JSON array of
+    strings (`["Earth, Wind & Fire","Yoga"]`, URL-encoded). A `q` starting with `[` is always read as
+    JSON. A `q` with no name or malformed JSON returns 400 naming `q`. Meta also suggests behaviors
+    and demographics; Zernio keeps only interests (entries whose `path` starts with `Interests`), so
+    every id goes in `TargetingSpec.interests`, like `interest` results. Zernio asks Meta for three
+    times `limit` (at most 100) before filtering, so fewer than `limit` results can come back. Meta
+    weights the first name heavily: a multi-name `q` mostly returns suggestions for the first one
   - `behavior`: Meta, TikTok and LinkedIn, matched by name; ids feed `TargetingSpec.behaviors`.
     Meta: its fixed behaviors catalog (e.g. `Small business owners`, `Frequent Travelers`).
     TikTok: video and creator interaction categories (e.g. `Software & Apps`), with ids like
