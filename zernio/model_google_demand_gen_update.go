@@ -31,7 +31,7 @@ type GoogleDemandGenUpdate struct {
 	Images       *GoogleDemandGenUpdateImages `json:"images,omitempty"`
 	// Video ads only.
 	YoutubeVideoIds []string `json:"youtubeVideoIds,omitempty"`
-	// Replaces the ad group's channel controls; only the listed channels serve.
+	// Replaces the ad group's channel controls. Only the listed channels serve; Google Maps, which this list cannot select, is turned off. Omit to leave the ad group's channel controls unchanged.
 	Channels []string                 `json:"channels,omitempty"`
 	Audience *GoogleDemandGenAudience `json:"audience,omitempty"`
 	// Attach an existing Google Audience by numeric id instead of audience.

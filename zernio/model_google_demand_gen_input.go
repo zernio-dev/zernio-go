@@ -38,7 +38,7 @@ type GoogleDemandGenInput struct {
 	YoutubeVideoIds []string `json:"youtubeVideoIds,omitempty"`
 	// Makes the ad a carousel ad. Each card needs its own image (no two cards may share one); use the same image shape on every card. Card images are uploaded to the account's asset library before the campaign is created, validateOnly included (Google checks cards against existing images; identical images are reused, not duplicated).
 	CarouselCards []GoogleDemandGenInputCarouselCardsInner `json:"carouselCards,omitempty"`
-	// Channel controls on the ad group. Only the listed channels serve; omit to serve on all of them.
+	// Channel controls on the new ad group. Only the listed channels serve; Google Maps, which this list cannot select, is turned off. Omit to send no channel controls, so Google applies its default for a new ad group: all Demand Gen channels, Google Maps included.
 	Channels []string                 `json:"channels,omitempty"`
 	Audience *GoogleDemandGenAudience `json:"audience,omitempty"`
 	// Attach an existing Google Audience by numeric id instead of audience.
