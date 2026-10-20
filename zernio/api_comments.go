@@ -1578,6 +1578,8 @@ one) the 400 carries `details.privateReplyConsumed: true`; never retry it.
 A 502 means Meta answered a server error after receiving the reply; it carries
 `details.privateReplyOutcome: "unknown"`, the reply is usually delivered and the comment's
 private reply spent, so check the conversation before retrying.
+The reply is recorded in the inbox conversation with the commenter (`sentVia` `api` for
+key auth, `human` for a session) and fires `message.sent` once.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId The media/post ID (Instagram media ID or Facebook post ID)
