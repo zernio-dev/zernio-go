@@ -3698,6 +3698,8 @@ func (r ConnectAPIGetRedditFlairsRequest) Execute() (*GetRedditFlairs200Response
 /*
 GetRedditFlairs List subreddit flairs
 
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
+
 Returns available post flairs for a subreddit. Some subreddits require a flair when posting.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -3819,6 +3821,8 @@ func (r ConnectAPIGetRedditSubredditsRequest) Execute() (*GetRedditSubreddits200
 
 /*
 GetRedditSubreddits List Reddit subreddits
+
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
 Returns the subreddits the connected Reddit account can post to. Use this to get a subreddit name when creating a Reddit post.
 
@@ -4101,6 +4105,8 @@ func (r ConnectAPIGetSubredditRulesRequest) Execute() (*GetSubredditRules200Resp
 
 /*
 GetSubredditRules Get subreddit rules
+
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
 Returns a subreddit's posting rules plus Reddit's site-wide rules, so you can check
 them before submitting and avoid a removal.
@@ -7669,6 +7675,8 @@ func (r ConnectAPISetRedditPostFlairRequest) Execute() (*UpdateYoutubeDefaultPla
 /*
 SetRedditPostFlair Set Reddit post flair
 
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
+
 Applies a flair to a post the connected account already published. Use the GET on this
 path to list the available `flairTemplateId` values for the subreddit.
 
@@ -8336,6 +8344,8 @@ func (r ConnectAPIUpdateRedditSubredditsRequest) Execute() (*UpdateYoutubeDefaul
 /*
 UpdateRedditSubreddits Set default subreddit
 
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
+
 Sets the default subreddit used when publishing posts for this Reddit account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -8587,6 +8597,8 @@ func (r ConnectAPIVoteRedditThingRequest) Execute() (*UpdateYoutubeDefaultPlayli
 
 /*
 VoteRedditThing Vote on a Reddit post or comment
+
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
 Cast, change, or clear the connected account's vote on a Reddit post or comment.
 

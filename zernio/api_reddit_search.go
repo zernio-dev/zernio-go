@@ -71,6 +71,8 @@ func (r RedditSearchAPIGetRedditFeedRequest) Execute() (*SearchReddit200Response
 /*
 GetRedditFeed Get subreddit feed
 
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
+
 Fetch posts from a subreddit feed. Supports sorting, time filtering, and cursor-based pagination.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -213,6 +215,7 @@ func (a *RedditSearchAPIService) GetRedditFeedExecute(r RedditSearchAPIGetReddit
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -268,6 +271,8 @@ func (r RedditSearchAPIGetRedditPostCommentsRequest) Execute() (*GetRedditPostCo
 
 /*
 GetRedditPostComments Get the comments of a Reddit post
+
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
 Reads the comments of any Reddit post the connected account can see, for example one found
 through `/v1/reddit/feed` or `/v1/reddit/search`, straight from Reddit on every call. The tree
@@ -427,6 +432,7 @@ func (a *RedditSearchAPIService) GetRedditPostCommentsExecute(r RedditSearchAPIG
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -496,6 +502,8 @@ func (r RedditSearchAPISearchRedditRequest) Execute() (*SearchReddit200Response,
 
 /*
 SearchReddit Search posts
+
+Temporarily unavailable: Reddit has blocked third-party apps from its API, so this endpoint returns 503 `PLATFORM_DISABLED` until Reddit restores access. Reddit Ads is not affected.
 
 Search Reddit posts using a connected account. Optionally scope to a specific subreddit.
 
@@ -643,6 +651,7 @@ func (a *RedditSearchAPIService) SearchRedditExecute(r RedditSearchAPISearchRedd
 			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
