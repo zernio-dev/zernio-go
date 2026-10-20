@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.309.2
+API version: 1.310.0
 Contact: support@zernio.com
 */
 
@@ -37,8 +37,9 @@ type ConversionEvent struct {
 	Items []ConversionEventItemsInner `json:"items,omitempty"`
 	// URL where the conversion originated (used by Meta).
 	SourceUrl *string `json:"sourceUrl,omitempty"`
-	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting.
-	ActionSource *string `json:"actionSource,omitempty"`
+	// Where the conversion happened. Used by Meta. Google also requires an event source internally; omitting this field sends OTHER to Google. Send an explicit value for accurate origin reporting. `business_messaging` (Meta) marks an event from a WhatsApp, Messenger or Instagram Direct conversation and needs `messaging`.
+	ActionSource *string                   `json:"actionSource,omitempty"`
+	Messaging    *ConversionEventMessaging `json:"messaging,omitempty"`
 	// Escape hatch for platform-specific fields we haven't normalized. On Meta, keys are shallow-merged into `custom_data` only: fields Zernio already builds (`value`, `currency`, `contents`, `num_items`) always win on collision, and `user_data` (hashed match keys) is never touched. Use first-class fields (e.g. `user.leadId`) for anything that must reach `user_data`.
 	PlatformData map[string]interface{} `json:"platformData,omitempty"`
 }
@@ -322,6 +323,38 @@ func (o *ConversionEvent) SetActionSource(v string) {
 	o.ActionSource = &v
 }
 
+// GetMessaging returns the Messaging field value if set, zero value otherwise.
+func (o *ConversionEvent) GetMessaging() ConversionEventMessaging {
+	if o == nil || IsNil(o.Messaging) {
+		var ret ConversionEventMessaging
+		return ret
+	}
+	return *o.Messaging
+}
+
+// GetMessagingOk returns a tuple with the Messaging field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEvent) GetMessagingOk() (*ConversionEventMessaging, bool) {
+	if o == nil || IsNil(o.Messaging) {
+		return nil, false
+	}
+	return o.Messaging, true
+}
+
+// HasMessaging returns a boolean if a field has been set.
+func (o *ConversionEvent) HasMessaging() bool {
+	if o != nil && !IsNil(o.Messaging) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessaging gets a reference to the given ConversionEventMessaging and assigns it to the Messaging field.
+func (o *ConversionEvent) SetMessaging(v ConversionEventMessaging) {
+	o.Messaging = &v
+}
+
 // GetPlatformData returns the PlatformData field value if set, zero value otherwise.
 func (o *ConversionEvent) GetPlatformData() map[string]interface{} {
 	if o == nil || IsNil(o.PlatformData) {
@@ -382,6 +415,9 @@ func (o ConversionEvent) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ActionSource) {
 		toSerialize["actionSource"] = o.ActionSource
+	}
+	if !IsNil(o.Messaging) {
+		toSerialize["messaging"] = o.Messaging
 	}
 	if !IsNil(o.PlatformData) {
 		toSerialize["platformData"] = o.PlatformData
