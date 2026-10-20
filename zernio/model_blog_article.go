@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.299.1
+API version: 1.300.0
 Contact: support@zernio.com
 */
 
@@ -21,19 +21,19 @@ var _ MappedNullable = &BlogArticle{}
 
 // BlogArticle An article inside a blog on the connected platform.
 type BlogArticle struct {
-	// Platform-native numeric article/post id.
+	// Platform-native article/post id: numeric on Shopify and WordPress, a GUID on Wix.
 	Id *string `json:"id,omitempty"`
 	// Platform-native id of the blog the article belongs to.
 	BlogId   *string `json:"blogId,omitempty"`
 	Platform *string `json:"platform,omitempty"`
 	Title    *string `json:"title,omitempty"`
-	// Article body as HTML.
+	// Article body as HTML. Wix stores rich content, converted from and to HTML; Wix lists return null (get the article for its body).
 	BodyHtml NullableString `json:"bodyHtml,omitempty"`
 	// URL slug of the article.
 	Handle *string `json:"handle,omitempty"`
-	// Tag names. On WordPress, missing tag names are created and matching is case-insensitive.
+	// Tag names. On WordPress and Wix, missing tag names are created and matching is case-insensitive.
 	Tags []string `json:"tags,omitempty"`
-	// Shopify author display name, or numeric WordPress user id serialized as a string.
+	// Shopify author display name, numeric WordPress user id serialized as a string, or Wix site member id. Wix posts without one are attributed to the site's default author.
 	Author NullableString `json:"author,omitempty"`
 	// Short summary shown in blog listings.
 	Excerpt NullableString    `json:"excerpt,omitempty"`
@@ -42,9 +42,9 @@ type BlogArticle struct {
 	IsPublished *bool `json:"isPublished,omitempty"`
 	// Publication time. On WordPress this is present only when status is `publish`; null for drafts, pending/private posts, and scheduled posts.
 	PublishedAt NullableTime `json:"publishedAt,omitempty"`
-	// WordPress only. Native post status returned by WordPress; omitted for Shopify.
+	// WordPress and Wix. Post status (`future` = scheduled, `pending` = in review on Wix); omitted for Shopify.
 	Status *string `json:"status,omitempty"`
-	// WordPress only. Scheduled publication time in UTC when status is `future`; null for other WordPress statuses and omitted for Shopify.
+	// WordPress and Wix. Scheduled publication time in UTC when status is `future`; null for other statuses and omitted for Shopify.
 	PublishDate NullableTime `json:"publishDate,omitempty"`
 	// Creation time when the platform exposes one. WordPress returns null because its core date is the editable publication date.
 	CreatedAt NullableTime `json:"createdAt,omitempty"`

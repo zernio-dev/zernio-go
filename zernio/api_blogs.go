@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.299.1
+API version: 1.300.0
 Contact: support@zernio.com
 */
 
@@ -45,8 +45,8 @@ CreateBlog Create a blog
 Creates a blog on the connected store. The platform generates the URL
 `handle` from the title when omitted.
 
-Supported on Shopify (platform `shopify`). A WordPress connection is
-its existing site, so WordPress returns 405 for blog creation.
+Supported on Shopify (platform `shopify`). A WordPress or Wix
+connection is its existing site, so both return 405 for blog creation.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
@@ -186,7 +186,8 @@ CreateBlogArticle Create a blog article
 
 Creates an article on the blog. Publishing behavior:
 
-  - WordPress defaults to a draft when both publishing fields are omitted.
+  - WordPress and Wix default to a draft when both publishing fields are
+    omitted.
   - `isPublished: false` keeps the article as a draft and takes priority
     over a future `publishDate`.
   - A future `publishDate` schedules publication natively on the
@@ -196,15 +197,19 @@ Creates an article on the blog. Publishing behavior:
     `publishDate`.
   - `seo.title` / `seo.description` map to Shopify's global `title_tag`
     and `description_tag` metafields (the fields Shopify themes read for
-    the page title and meta description). WordPress rejects `seo`; SEO
-    plugin and custom-field writes are not supported.
+    the page title and meta description), and on Wix to the post's SEO
+    title and meta description. WordPress rejects `seo`; SEO plugin and
+    custom-field writes are not supported.
+  - Wix stores rich content: `bodyHtml` is converted on write (each
+    top-level HTML element must fit 30,000 characters), and images in
+    the body are imported into the site's Media Manager.
 
-Supported on Shopify (`shopify`) and WordPress (`wordpress`). WordPress
+Supported on Shopify (`shopify`), WordPress (`wordpress`) and Wix (`wix`). WordPress
 native scheduling depends on the site's scheduler/WP-Cron.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
 	@return BlogsAPICreateBlogArticleRequest
 */
 func (a *BlogsAPIService) CreateBlogArticle(ctx context.Context, accountId string, blogId string) BlogsAPICreateBlogArticleRequest {
@@ -338,12 +343,12 @@ DeleteBlog Delete a blog
 Deletes the blog AND every article in it. The delete happens on the
 platform and is permanent; Zernio stores nothing to restore it from.
 
-Supported on Shopify (platform `shopify`). Disconnect a WordPress
-account instead of deleting its site; WordPress returns 405 here.
+Supported on Shopify (platform `shopify`). Disconnect a WordPress or
+Wix account instead of deleting its site; both return 405 here.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param blogId Platform-native blog id. Shopify blog ids are numeric; other values return 400.
 	@return BlogsAPIDeleteBlogRequest
 */
 func (a *BlogsAPIService) DeleteBlog(ctx context.Context, accountId string, blogId string) BlogsAPIDeleteBlogRequest {
@@ -463,12 +468,12 @@ permanent; Zernio stores nothing to restore it from. On WordPress the
 post is force-deleted, while uploaded attachments and tags remain in
 the site's media library and taxonomy.
 
-Supported on Shopify (`shopify`) and WordPress (`wordpress`).
+Supported on Shopify (`shopify`), WordPress (`wordpress`) and Wix (`wix`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
-	@param articleId Platform-native numeric article id. Non-numeric values return 400.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
+	@param articleId Platform-native article id: numeric on Shopify and WordPress, a GUID on Wix. Other formats return 400.
 	@return BlogsAPIDeleteBlogArticleRequest
 */
 func (a *BlogsAPIService) DeleteBlogArticle(ctx context.Context, accountId string, blogId string, articleId string) BlogsAPIDeleteBlogArticleRequest {
@@ -586,12 +591,12 @@ GetBlog Get a blog
 
 Fetches a single blog. Use the platform-native `blogId` returned by
 `GET /v1/accounts/{accountId}/blogs`: a Shopify numeric blog id, the
-WordPress.com numeric site id, or `1` for a self-hosted WordPress site.
-The self-hosted id is scoped to its connected account.
+WordPress.com numeric site id, or `1` for a self-hosted WordPress or a
+Wix site. That `1` is scoped to its connected account.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
 	@return BlogsAPIGetBlogRequest
 */
 func (a *BlogsAPIService) GetBlog(ctx context.Context, accountId string, blogId string) BlogsAPIGetBlogRequest {
@@ -721,14 +726,14 @@ GetBlogArticle Get a blog article
 Fetches a single article. An article addressed through a blog it does
 not belong to is a 404 (code blog_article_not_found).
 
-Supported on Shopify (`shopify`) and WordPress (`wordpress`). WordPress
+Supported on Shopify (`shopify`), WordPress (`wordpress`) and Wix (`wix`). WordPress
 returns its native `status`; `publishedAt` is present only for a
 published post and `publishDate` only for a scheduled post.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
-	@param articleId Platform-native numeric article id. Non-numeric values return 400.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
+	@param articleId Platform-native article id: numeric on Shopify and WordPress, a GUID on Wix. Other formats return 400.
 	@return BlogsAPIGetBlogArticleRequest
 */
 func (a *BlogsAPIService) GetBlogArticle(ctx context.Context, accountId string, blogId string, articleId string) BlogsAPIGetBlogArticleRequest {
@@ -873,13 +878,15 @@ ListBlogArticles List blog articles
 Lists the articles of a blog. Cursor-paginated: pass `limit` (1-50,
 default 20) and the `cursor` from a previous response's `nextCursor`;
 `nextCursor` is null when there are no more pages. Treat cursors as
-opaque and pass them unchanged. Supported on Shopify (`shopify`) and
-WordPress (`wordpress`). WordPress results include native `status` and
-include `publishDate` only for scheduled (`future`) posts.
+opaque and pass them unchanged. Supported on Shopify (`shopify`),
+WordPress (`wordpress`) and Wix (`wix`). WordPress and Wix results
+include `status` and include `publishDate` only for scheduled
+(`future`) posts. Wix lists return `bodyHtml: null`; get the article
+for its body.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
 	@return BlogsAPIListBlogArticlesRequest
 */
 func (a *BlogsAPIService) ListBlogArticles(ctx context.Context, accountId string, blogId string) BlogsAPIListBlogArticlesRequest {
@@ -1029,15 +1036,15 @@ func (r BlogsAPIListBlogsRequest) Execute() (*ListBlogs200Response, *http.Respon
 ListBlogs List blogs
 
 Lists blogs on the connected account. Shopify returns its store blogs
-with cursor pagination. A WordPress account represents one site and
-always returns exactly that one blog with `nextCursor: null`.
+with cursor pagination. A WordPress or Wix account represents one site
+and always returns exactly that one blog with `nextCursor: null`.
 
 `limit` is 1-50 (default 20). Treat `nextCursor` as opaque; pass it
-unchanged on the next request. Supported on Shopify (`shopify`) and
-WordPress (`wordpress`).
+unchanged on the next request. Supported on Shopify (`shopify`),
+WordPress (`wordpress`) and Wix (`wix`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
+	@param accountId Connected Shopify, WordPress or Wix account id.
 	@return BlogsAPIListBlogsRequest
 */
 func (a *BlogsAPIService) ListBlogs(ctx context.Context, accountId string) BlogsAPIListBlogsRequest {
@@ -1180,12 +1187,12 @@ UpdateBlog Update a blog
 Partial-updates a blog. Send any subset of `title` and `handle`; at
 least one field is required (an empty body returns 400).
 
-Supported on Shopify (platform `shopify`). WordPress site settings are
-not writable through this API, so WordPress returns 405.
+Supported on Shopify (platform `shopify`). WordPress and Wix site
+settings are not writable through this API, so both return 405.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId Connected Shopify SocialAccount id.
-	@param blogId Platform-native numeric blog id. Non-numeric values return 400.
+	@param blogId Platform-native blog id. Shopify blog ids are numeric; other values return 400.
 	@return BlogsAPIUpdateBlogRequest
 */
 func (a *BlogsAPIService) UpdateBlog(ctx context.Context, accountId string, blogId string) BlogsAPIUpdateBlogRequest {
@@ -1329,17 +1336,17 @@ Partial-updates an article. Send any subset of the create fields
 (an empty body returns 400). `isPublished` and `publishDate` behave as
 on create: `isPublished: false` unpublishes back to a draft and a
 future `publishDate` schedules publication natively on the platform.
-Omitting both fields preserves the current WordPress status. Omitting
+Omitting both fields preserves the current WordPress or Wix status. Omitting
 `image` preserves the current featured image; removal is not supported.
 WordPress rejects `seo` and does not support SEO-plugin/custom-field,
 category, or custom-post-type writes.
 
-Supported on Shopify (`shopify`) and WordPress (`wordpress`).
+Supported on Shopify (`shopify`), WordPress (`wordpress`) and Wix (`wix`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param accountId Connected Shopify or WordPress account id.
-	@param blogId Platform-native numeric blog/site id returned by the list operation.
-	@param articleId Platform-native numeric article id. Non-numeric values return 400.
+	@param accountId Connected Shopify, WordPress or Wix account id.
+	@param blogId Platform-native blog/site id returned by the list operation.
+	@param articleId Platform-native article id: numeric on Shopify and WordPress, a GUID on Wix. Other formats return 400.
 	@return BlogsAPIUpdateBlogArticleRequest
 */
 func (a *BlogsAPIService) UpdateBlogArticle(ctx context.Context, accountId string, blogId string, articleId string) BlogsAPIUpdateBlogArticleRequest {
