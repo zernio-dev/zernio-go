@@ -20,8 +20,8 @@ var _ MappedNullable = &PostsListResponse{}
 
 // PostsListResponse struct for PostsListResponse
 type PostsListResponse struct {
-	Posts      []Post      `json:"posts,omitempty"`
-	Pagination *Pagination `json:"pagination,omitempty"`
+	Posts      []Post                       `json:"posts,omitempty"`
+	Pagination *PostsListResponsePagination `json:"pagination,omitempty"`
 }
 
 // NewPostsListResponse instantiates a new PostsListResponse object
@@ -74,9 +74,9 @@ func (o *PostsListResponse) SetPosts(v []Post) {
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *PostsListResponse) GetPagination() Pagination {
+func (o *PostsListResponse) GetPagination() PostsListResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret Pagination
+		var ret PostsListResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -84,7 +84,7 @@ func (o *PostsListResponse) GetPagination() Pagination {
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PostsListResponse) GetPaginationOk() (*Pagination, bool) {
+func (o *PostsListResponse) GetPaginationOk() (*PostsListResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *PostsListResponse) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given Pagination and assigns it to the Pagination field.
-func (o *PostsListResponse) SetPagination(v Pagination) {
+// SetPagination gets a reference to the given PostsListResponsePagination and assigns it to the Pagination field.
+func (o *PostsListResponse) SetPagination(v PostsListResponsePagination) {
 	o.Pagination = &v
 }
 

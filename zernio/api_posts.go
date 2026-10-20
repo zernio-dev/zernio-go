@@ -985,6 +985,8 @@ type PostsAPIListPostsRequest struct {
 	page          *int32
 	limit         *int32
 	offset        *int32
+	cursor        *string
+	fields        *string
 	source        *string
 	status        *string
 	platform      *string
@@ -1016,6 +1018,18 @@ func (r PostsAPIListPostsRequest) Limit(limit int32) PostsAPIListPostsRequest {
 // Row offset. Takes precedence over page when both are sent; the response pagination.page is derived from it.
 func (r PostsAPIListPostsRequest) Offset(offset int32) PostsAPIListPostsRequest {
 	r.offset = &offset
+	return r
+}
+
+// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;. Returns the page that follows it in the same &#x60;sortBy&#x60; order, and takes precedence over &#x60;page&#x60; and &#x60;offset&#x60;. Each cursor page costs the same however deep it is, unlike &#x60;page&#x60;/&#x60;offset&#x60;, which get slower the further you go; prefer it to walk a long history. Send the same filters and &#x60;sortBy&#x60; as the request that issued it: a cursor from another &#x60;sortBy&#x60; returns 400. Not available with &#x60;sortBy&#x3D;status&#x60; or &#x60;sortBy&#x3D;platform&#x60;, or with &#x60;source&#x3D;external&#x60;.
+func (r PostsAPIListPostsRequest) Cursor(cursor string) PostsAPIListPostsRequest {
+	r.cursor = &cursor
+	return r
+}
+
+// Comma-separated list of post fields to return. Each post then carries &#x60;_id&#x60; plus only these fields, which makes large pages much cheaper: leave out &#x60;platforms&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60; or &#x60;metadata&#x60; when you do not need them. Accepted: &#x60;userId&#x60;, &#x60;title&#x60;, &#x60;content&#x60;, &#x60;mediaItems&#x60;, &#x60;platforms&#x60;, &#x60;scheduledFor&#x60;, &#x60;timezone&#x60;, &#x60;status&#x60;, &#x60;tags&#x60;, &#x60;hashtags&#x60;, &#x60;mentions&#x60;, &#x60;visibility&#x60;, &#x60;metadata&#x60;, &#x60;recycling&#x60;, &#x60;recycledFromPostId&#x60;, &#x60;queuedFromProfile&#x60;, &#x60;queueId&#x60;, &#x60;createdAt&#x60;, &#x60;updatedAt&#x60;. An unknown field returns 400 naming it. &#x60;fields&#x3D;_id&#x60; returns ids only. Omit it (or send it empty) for the full post. Not available with &#x60;source&#x3D;external&#x60;.
+func (r PostsAPIListPostsRequest) Fields(fields string) PostsAPIListPostsRequest {
+	r.fields = &fields
 	return r
 }
 
@@ -1159,6 +1173,12 @@ func (a *PostsAPIService) ListPostsExecute(r PostsAPIListPostsRequest) (*PostsLi
 	}
 	if r.offset != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "offset", r.offset, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.fields != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fields", r.fields, "form", "")
 	}
 	if r.source != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "source", r.source, "form", "")
