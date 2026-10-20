@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.307.1
+API version: 1.308.0
 Contact: support@zernio.com
 */
 
@@ -785,6 +785,8 @@ ListFormLeads List leads for a single form
 Lists the leads submitted through one Meta lead form.
 
 Serves persisted leads (ingested via the leadgen webhook) when available, falling back to a live Graph read. Accepts a Facebook account or a metaads business-login account with leads_retrieval access to the form; the latter uses its system-user token without a posting parent.
+
+Persisted leads arrive in real time through Meta's webhook, and a background pass re-reads every Page from Meta to catch the leads the webhook misses: every 15 minutes for Pages that received a lead in the last 7 days. `meta.lastCheckedAt` says when that pass last ran, so polling this endpoint faster than that returns nothing new; subscribe to the `lead.received` webhook instead. The live Graph read is cached for 5 minutes, and `meta.lastCheckedAt` is when it was read.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param formId

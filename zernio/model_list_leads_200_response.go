@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.307.1
+API version: 1.308.0
 Contact: support@zernio.com
 */
 
@@ -23,6 +23,7 @@ type ListLeads200Response struct {
 	Status     *string                                    `json:"status,omitempty"`
 	Leads      []ListLeads200ResponseLeadsInner           `json:"leads,omitempty"`
 	Pagination *GetInboxPostComments200ResponsePagination `json:"pagination,omitempty"`
+	Meta       *ListLeads200ResponseMeta                  `json:"meta,omitempty"`
 }
 
 // NewListLeads200Response instantiates a new ListLeads200Response object
@@ -138,6 +139,38 @@ func (o *ListLeads200Response) SetPagination(v GetInboxPostComments200ResponsePa
 	o.Pagination = &v
 }
 
+// GetMeta returns the Meta field value if set, zero value otherwise.
+func (o *ListLeads200Response) GetMeta() ListLeads200ResponseMeta {
+	if o == nil || IsNil(o.Meta) {
+		var ret ListLeads200ResponseMeta
+		return ret
+	}
+	return *o.Meta
+}
+
+// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListLeads200Response) GetMetaOk() (*ListLeads200ResponseMeta, bool) {
+	if o == nil || IsNil(o.Meta) {
+		return nil, false
+	}
+	return o.Meta, true
+}
+
+// HasMeta returns a boolean if a field has been set.
+func (o *ListLeads200Response) HasMeta() bool {
+	if o != nil && !IsNil(o.Meta) {
+		return true
+	}
+
+	return false
+}
+
+// SetMeta gets a reference to the given ListLeads200ResponseMeta and assigns it to the Meta field.
+func (o *ListLeads200Response) SetMeta(v ListLeads200ResponseMeta) {
+	o.Meta = &v
+}
+
 func (o ListLeads200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -156,6 +189,9 @@ func (o ListLeads200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Pagination) {
 		toSerialize["pagination"] = o.Pagination
+	}
+	if !IsNil(o.Meta) {
+		toSerialize["meta"] = o.Meta
 	}
 	return toSerialize, nil
 }
