@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.308.1
+API version: 1.309.0
 Contact: support@zernio.com
 */
 
@@ -3195,6 +3195,186 @@ func (a *ConnectAPIService) GetGmbLocationsExecute(r ConnectAPIGetGmbLocationsRe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetHubSpotConnectUrlRequest struct {
+	ctx         context.Context
+	ApiService  *ConnectAPIService
+	profileId   *string
+	redirectUrl *string
+}
+
+// Your Zernio profile ID (get from /v1/profiles).
+func (r ConnectAPIGetHubSpotConnectUrlRequest) ProfileId(profileId string) ConnectAPIGetHubSpotConnectUrlRequest {
+	r.profileId = &profileId
+	return r
+}
+
+// Custom redirect after connection. Must be an absolute http(s) URL or custom app scheme such as &#x60;myapp://callback&#x60;; relative and unsafe URLs return 400.
+func (r ConnectAPIGetHubSpotConnectUrlRequest) RedirectUrl(redirectUrl string) ConnectAPIGetHubSpotConnectUrlRequest {
+	r.redirectUrl = &redirectUrl
+	return r
+}
+
+func (r ConnectAPIGetHubSpotConnectUrlRequest) Execute() (*GetHubSpotConnectUrl200Response, *http.Response, error) {
+	return r.ApiService.GetHubSpotConnectUrlExecute(r)
+}
+
+/*
+GetHubSpotConnectUrl Get HubSpot OAuth connect URL
+
+Initiates OAuth for a HubSpot portal. HubSpot is a connect-only CRM
+platform: the connected account does not post, read analytics or run
+ads. One HubSpot portal can be connected per profile; connecting a
+different portal to a profile that already has one redirects with
+`error=hubspot_profile_has_portal`.
+Redirect the user to `authUrl`; after authorization, HubSpot returns
+the browser to Zernio's internal callback and Zernio redirects to
+`redirect_url` (or the dashboard when omitted). On success the redirect
+carries `connected=hubspot`, `profileId`, `accountId` and `username`
+(the portal domain); on failure it carries `error`, `platform=hubspot`
+and `error_message`. Reconnecting the same portal and profile updates
+the stored connection in place and keeps its settings.
+Requested scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ConnectAPIGetHubSpotConnectUrlRequest
+*/
+func (a *ConnectAPIService) GetHubSpotConnectUrl(ctx context.Context) ConnectAPIGetHubSpotConnectUrlRequest {
+	return ConnectAPIGetHubSpotConnectUrlRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetHubSpotConnectUrl200Response
+func (a *ConnectAPIService) GetHubSpotConnectUrlExecute(r ConnectAPIGetHubSpotConnectUrlRequest) (*GetHubSpotConnectUrl200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetHubSpotConnectUrl200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetHubSpotConnectUrl")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/hubspot"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.profileId == nil {
+		return localVarReturnValue, nil, reportError("profileId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "profileId", r.profileId, "form", "")
+	if r.redirectUrl != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "redirect_url", r.redirectUrl, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["connectToken"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["X-Connect-Token"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 402 {
+			var v InlineObject2
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetLinkedInOrganizationsRequest struct {
 	ctx        context.Context
 	ApiService *ConnectAPIService
@@ -4481,7 +4661,7 @@ func (r ConnectAPIGetWixConnectUrlRequest) RedirectUrl(redirectUrl string) Conne
 	return r
 }
 
-func (r ConnectAPIGetWixConnectUrlRequest) Execute() (*GetWordPressAuthUrl200Response, *http.Response, error) {
+func (r ConnectAPIGetWixConnectUrlRequest) Execute() (*GetHubSpotConnectUrl200Response, *http.Response, error) {
 	return r.ApiService.GetWixConnectUrlExecute(r)
 }
 
@@ -4510,13 +4690,13 @@ func (a *ConnectAPIService) GetWixConnectUrl(ctx context.Context) ConnectAPIGetW
 
 // Execute executes the request
 //
-//	@return GetWordPressAuthUrl200Response
-func (a *ConnectAPIService) GetWixConnectUrlExecute(r ConnectAPIGetWixConnectUrlRequest) (*GetWordPressAuthUrl200Response, *http.Response, error) {
+//	@return GetHubSpotConnectUrl200Response
+func (a *ConnectAPIService) GetWixConnectUrlExecute(r ConnectAPIGetWixConnectUrlRequest) (*GetHubSpotConnectUrl200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWordPressAuthUrl200Response
+		localVarReturnValue *GetHubSpotConnectUrl200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWixConnectUrl")
@@ -4646,7 +4826,7 @@ func (r ConnectAPIGetWordPressAuthUrlRequest) RedirectUrl(redirectUrl string) Co
 	return r
 }
 
-func (r ConnectAPIGetWordPressAuthUrlRequest) Execute() (*GetWordPressAuthUrl200Response, *http.Response, error) {
+func (r ConnectAPIGetWordPressAuthUrlRequest) Execute() (*GetHubSpotConnectUrl200Response, *http.Response, error) {
 	return r.ApiService.GetWordPressAuthUrlExecute(r)
 }
 
@@ -4678,13 +4858,13 @@ func (a *ConnectAPIService) GetWordPressAuthUrl(ctx context.Context) ConnectAPIG
 
 // Execute executes the request
 //
-//	@return GetWordPressAuthUrl200Response
-func (a *ConnectAPIService) GetWordPressAuthUrlExecute(r ConnectAPIGetWordPressAuthUrlRequest) (*GetWordPressAuthUrl200Response, *http.Response, error) {
+//	@return GetHubSpotConnectUrl200Response
+func (a *ConnectAPIService) GetWordPressAuthUrlExecute(r ConnectAPIGetWordPressAuthUrlRequest) (*GetHubSpotConnectUrl200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetWordPressAuthUrl200Response
+		localVarReturnValue *GetHubSpotConnectUrl200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetWordPressAuthUrl")
