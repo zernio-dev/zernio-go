@@ -317,7 +317,7 @@ func main() {
 | `client.AdAccountsAPI.ListPageUsers(ctx)` | Page users of a business |
 | `client.AdAccountsAPI.ListTikTokAdPixels(ctx)` | List TikTok ad pixels |
 | `client.AdAccountsAPI.ListValueRuleSets(ctx)` | List value rule sets |
-| `client.AdAccountsAPI.CreateAdAccount(ctx)` | Create Meta ad account |
+| `client.AdAccountsAPI.CreateAdAccount(ctx)` | Create ad account |
 | `client.AdAccountsAPI.CreateAdLabel(ctx)` | Create a Google Ads label |
 | `client.AdAccountsAPI.CreateAdNegativeKeywordList(ctx)` | Create a negative keyword list |
 | `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create custom conversion |

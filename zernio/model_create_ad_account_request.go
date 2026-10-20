@@ -14,633 +14,122 @@ package zernio
 import (
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the CreateAdAccountRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateAdAccountRequest{}
-
-// CreateAdAccountRequest struct for CreateAdAccountRequest
+// CreateAdAccountRequest - struct for CreateAdAccountRequest
 type CreateAdAccountRequest struct {
-	// Zernio metaads SocialAccount ID.
-	AccountId string `json:"accountId" validate:"regexp=^[a-fA-F0-9]{24}$"`
-	// Business portfolio that will own the account.
-	BusinessId string `json:"businessId" validate:"regexp=^[1-9][0-9]*$"`
-	// Ad account name. Whitespace is trimmed.
-	Name string `json:"name"`
-	// Uppercase ISO 4217 currency supported by Meta.
-	Currency string `json:"currency" validate:"regexp=^[A-Z]{3}$"`
-	// Numeric Meta timezone ID from the linked timezone list. For example 1 is America/Los_Angeles.
-	TimezoneId int32 `json:"timezoneId"`
-	// End advertiser business or page ID. NONE uses the owning business.
-	EndAdvertiser *string `json:"endAdvertiser,omitempty" validate:"regexp=^(NONE|[1-9][0-9]*)$"`
-	// Media agency business or page ID. NONE for self-serve customers.
-	MediaAgency *string `json:"mediaAgency,omitempty" validate:"regexp=^(NONE|[1-9][0-9]*)$"`
-	// Partner business or page ID. NONE for self-serve customers.
-	Partner *string `json:"partner,omitempty" validate:"regexp=^(NONE|[1-9][0-9]*)$"`
-	// Request Meta invoicing. Eligibility is determined by Meta.
-	Invoice *bool `json:"invoice,omitempty"`
-	// Existing Meta invoice group ID.
-	InvoiceGroupId *string `json:"invoiceGroupId,omitempty" validate:"regexp=^[1-9][0-9]*$"`
-	// Addresses for Meta invoices.
-	InvoicingEmails []string `json:"invoicingEmails,omitempty"`
-	// Meta insertion-order invoicing option.
-	Io *bool `json:"io,omitempty"`
-	// Purchase order number.
-	PoNumber *string `json:"poNumber,omitempty"`
-	// Existing Meta funding reference. Does not add a payment method.
-	FundingId *string `json:"fundingId,omitempty" validate:"regexp=^[1-9][0-9]*$"`
-	// Meta Business Manager creation flag.
-	AdAccountCreatedFromBmFlag *bool `json:"adAccountCreatedFromBmFlag,omitempty"`
-	AdditionalProperties       map[string]interface{}
+	CreateGoogleAdAccountRequest *CreateGoogleAdAccountRequest
+	CreateMetaAdAccountRequest   *CreateMetaAdAccountRequest
 }
 
-type _CreateAdAccountRequest CreateAdAccountRequest
-
-// NewCreateAdAccountRequest instantiates a new CreateAdAccountRequest object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreateAdAccountRequest(accountId string, businessId string, name string, currency string, timezoneId int32) *CreateAdAccountRequest {
-	this := CreateAdAccountRequest{}
-	this.AccountId = accountId
-	this.BusinessId = businessId
-	this.Name = name
-	this.Currency = currency
-	this.TimezoneId = timezoneId
-	var endAdvertiser string = "NONE"
-	this.EndAdvertiser = &endAdvertiser
-	var mediaAgency string = "NONE"
-	this.MediaAgency = &mediaAgency
-	var partner string = "NONE"
-	this.Partner = &partner
-	return &this
-}
-
-// NewCreateAdAccountRequestWithDefaults instantiates a new CreateAdAccountRequest object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreateAdAccountRequestWithDefaults() *CreateAdAccountRequest {
-	this := CreateAdAccountRequest{}
-	var endAdvertiser string = "NONE"
-	this.EndAdvertiser = &endAdvertiser
-	var mediaAgency string = "NONE"
-	this.MediaAgency = &mediaAgency
-	var partner string = "NONE"
-	this.Partner = &partner
-	return &this
-}
-
-// GetAccountId returns the AccountId field value
-func (o *CreateAdAccountRequest) GetAccountId() string {
-	if o == nil {
-		var ret string
-		return ret
+// CreateGoogleAdAccountRequestAsCreateAdAccountRequest is a convenience function that returns CreateGoogleAdAccountRequest wrapped in CreateAdAccountRequest
+func CreateGoogleAdAccountRequestAsCreateAdAccountRequest(v *CreateGoogleAdAccountRequest) CreateAdAccountRequest {
+	return CreateAdAccountRequest{
+		CreateGoogleAdAccountRequest: v,
 	}
-
-	return o.AccountId
 }
 
-// GetAccountIdOk returns a tuple with the AccountId field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetAccountIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// CreateMetaAdAccountRequestAsCreateAdAccountRequest is a convenience function that returns CreateMetaAdAccountRequest wrapped in CreateAdAccountRequest
+func CreateMetaAdAccountRequestAsCreateAdAccountRequest(v *CreateMetaAdAccountRequest) CreateAdAccountRequest {
+	return CreateAdAccountRequest{
+		CreateMetaAdAccountRequest: v,
 	}
-	return &o.AccountId, true
 }
 
-// SetAccountId sets field value
-func (o *CreateAdAccountRequest) SetAccountId(v string) {
-	o.AccountId = v
-}
-
-// GetBusinessId returns the BusinessId field value
-func (o *CreateAdAccountRequest) GetBusinessId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.BusinessId
-}
-
-// GetBusinessIdOk returns a tuple with the BusinessId field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetBusinessIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.BusinessId, true
-}
-
-// SetBusinessId sets field value
-func (o *CreateAdAccountRequest) SetBusinessId(v string) {
-	o.BusinessId = v
-}
-
-// GetName returns the Name field value
-func (o *CreateAdAccountRequest) GetName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Name, true
-}
-
-// SetName sets field value
-func (o *CreateAdAccountRequest) SetName(v string) {
-	o.Name = v
-}
-
-// GetCurrency returns the Currency field value
-func (o *CreateAdAccountRequest) GetCurrency() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Currency
-}
-
-// GetCurrencyOk returns a tuple with the Currency field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetCurrencyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Currency, true
-}
-
-// SetCurrency sets field value
-func (o *CreateAdAccountRequest) SetCurrency(v string) {
-	o.Currency = v
-}
-
-// GetTimezoneId returns the TimezoneId field value
-func (o *CreateAdAccountRequest) GetTimezoneId() int32 {
-	if o == nil {
-		var ret int32
-		return ret
-	}
-
-	return o.TimezoneId
-}
-
-// GetTimezoneIdOk returns a tuple with the TimezoneId field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetTimezoneIdOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.TimezoneId, true
-}
-
-// SetTimezoneId sets field value
-func (o *CreateAdAccountRequest) SetTimezoneId(v int32) {
-	o.TimezoneId = v
-}
-
-// GetEndAdvertiser returns the EndAdvertiser field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetEndAdvertiser() string {
-	if o == nil || IsNil(o.EndAdvertiser) {
-		var ret string
-		return ret
-	}
-	return *o.EndAdvertiser
-}
-
-// GetEndAdvertiserOk returns a tuple with the EndAdvertiser field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetEndAdvertiserOk() (*string, bool) {
-	if o == nil || IsNil(o.EndAdvertiser) {
-		return nil, false
-	}
-	return o.EndAdvertiser, true
-}
-
-// HasEndAdvertiser returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasEndAdvertiser() bool {
-	if o != nil && !IsNil(o.EndAdvertiser) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndAdvertiser gets a reference to the given string and assigns it to the EndAdvertiser field.
-func (o *CreateAdAccountRequest) SetEndAdvertiser(v string) {
-	o.EndAdvertiser = &v
-}
-
-// GetMediaAgency returns the MediaAgency field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetMediaAgency() string {
-	if o == nil || IsNil(o.MediaAgency) {
-		var ret string
-		return ret
-	}
-	return *o.MediaAgency
-}
-
-// GetMediaAgencyOk returns a tuple with the MediaAgency field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetMediaAgencyOk() (*string, bool) {
-	if o == nil || IsNil(o.MediaAgency) {
-		return nil, false
-	}
-	return o.MediaAgency, true
-}
-
-// HasMediaAgency returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasMediaAgency() bool {
-	if o != nil && !IsNil(o.MediaAgency) {
-		return true
-	}
-
-	return false
-}
-
-// SetMediaAgency gets a reference to the given string and assigns it to the MediaAgency field.
-func (o *CreateAdAccountRequest) SetMediaAgency(v string) {
-	o.MediaAgency = &v
-}
-
-// GetPartner returns the Partner field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetPartner() string {
-	if o == nil || IsNil(o.Partner) {
-		var ret string
-		return ret
-	}
-	return *o.Partner
-}
-
-// GetPartnerOk returns a tuple with the Partner field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetPartnerOk() (*string, bool) {
-	if o == nil || IsNil(o.Partner) {
-		return nil, false
-	}
-	return o.Partner, true
-}
-
-// HasPartner returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasPartner() bool {
-	if o != nil && !IsNil(o.Partner) {
-		return true
-	}
-
-	return false
-}
-
-// SetPartner gets a reference to the given string and assigns it to the Partner field.
-func (o *CreateAdAccountRequest) SetPartner(v string) {
-	o.Partner = &v
-}
-
-// GetInvoice returns the Invoice field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetInvoice() bool {
-	if o == nil || IsNil(o.Invoice) {
-		var ret bool
-		return ret
-	}
-	return *o.Invoice
-}
-
-// GetInvoiceOk returns a tuple with the Invoice field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetInvoiceOk() (*bool, bool) {
-	if o == nil || IsNil(o.Invoice) {
-		return nil, false
-	}
-	return o.Invoice, true
-}
-
-// HasInvoice returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasInvoice() bool {
-	if o != nil && !IsNil(o.Invoice) {
-		return true
-	}
-
-	return false
-}
-
-// SetInvoice gets a reference to the given bool and assigns it to the Invoice field.
-func (o *CreateAdAccountRequest) SetInvoice(v bool) {
-	o.Invoice = &v
-}
-
-// GetInvoiceGroupId returns the InvoiceGroupId field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetInvoiceGroupId() string {
-	if o == nil || IsNil(o.InvoiceGroupId) {
-		var ret string
-		return ret
-	}
-	return *o.InvoiceGroupId
-}
-
-// GetInvoiceGroupIdOk returns a tuple with the InvoiceGroupId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetInvoiceGroupIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InvoiceGroupId) {
-		return nil, false
-	}
-	return o.InvoiceGroupId, true
-}
-
-// HasInvoiceGroupId returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasInvoiceGroupId() bool {
-	if o != nil && !IsNil(o.InvoiceGroupId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInvoiceGroupId gets a reference to the given string and assigns it to the InvoiceGroupId field.
-func (o *CreateAdAccountRequest) SetInvoiceGroupId(v string) {
-	o.InvoiceGroupId = &v
-}
-
-// GetInvoicingEmails returns the InvoicingEmails field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetInvoicingEmails() []string {
-	if o == nil || IsNil(o.InvoicingEmails) {
-		var ret []string
-		return ret
-	}
-	return o.InvoicingEmails
-}
-
-// GetInvoicingEmailsOk returns a tuple with the InvoicingEmails field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetInvoicingEmailsOk() ([]string, bool) {
-	if o == nil || IsNil(o.InvoicingEmails) {
-		return nil, false
-	}
-	return o.InvoicingEmails, true
-}
-
-// HasInvoicingEmails returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasInvoicingEmails() bool {
-	if o != nil && !IsNil(o.InvoicingEmails) {
-		return true
-	}
-
-	return false
-}
-
-// SetInvoicingEmails gets a reference to the given []string and assigns it to the InvoicingEmails field.
-func (o *CreateAdAccountRequest) SetInvoicingEmails(v []string) {
-	o.InvoicingEmails = v
-}
-
-// GetIo returns the Io field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetIo() bool {
-	if o == nil || IsNil(o.Io) {
-		var ret bool
-		return ret
-	}
-	return *o.Io
-}
-
-// GetIoOk returns a tuple with the Io field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetIoOk() (*bool, bool) {
-	if o == nil || IsNil(o.Io) {
-		return nil, false
-	}
-	return o.Io, true
-}
-
-// HasIo returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasIo() bool {
-	if o != nil && !IsNil(o.Io) {
-		return true
-	}
-
-	return false
-}
-
-// SetIo gets a reference to the given bool and assigns it to the Io field.
-func (o *CreateAdAccountRequest) SetIo(v bool) {
-	o.Io = &v
-}
-
-// GetPoNumber returns the PoNumber field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetPoNumber() string {
-	if o == nil || IsNil(o.PoNumber) {
-		var ret string
-		return ret
-	}
-	return *o.PoNumber
-}
-
-// GetPoNumberOk returns a tuple with the PoNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetPoNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.PoNumber) {
-		return nil, false
-	}
-	return o.PoNumber, true
-}
-
-// HasPoNumber returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasPoNumber() bool {
-	if o != nil && !IsNil(o.PoNumber) {
-		return true
-	}
-
-	return false
-}
-
-// SetPoNumber gets a reference to the given string and assigns it to the PoNumber field.
-func (o *CreateAdAccountRequest) SetPoNumber(v string) {
-	o.PoNumber = &v
-}
-
-// GetFundingId returns the FundingId field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetFundingId() string {
-	if o == nil || IsNil(o.FundingId) {
-		var ret string
-		return ret
-	}
-	return *o.FundingId
-}
-
-// GetFundingIdOk returns a tuple with the FundingId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetFundingIdOk() (*string, bool) {
-	if o == nil || IsNil(o.FundingId) {
-		return nil, false
-	}
-	return o.FundingId, true
-}
-
-// HasFundingId returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasFundingId() bool {
-	if o != nil && !IsNil(o.FundingId) {
-		return true
-	}
-
-	return false
-}
-
-// SetFundingId gets a reference to the given string and assigns it to the FundingId field.
-func (o *CreateAdAccountRequest) SetFundingId(v string) {
-	o.FundingId = &v
-}
-
-// GetAdAccountCreatedFromBmFlag returns the AdAccountCreatedFromBmFlag field value if set, zero value otherwise.
-func (o *CreateAdAccountRequest) GetAdAccountCreatedFromBmFlag() bool {
-	if o == nil || IsNil(o.AdAccountCreatedFromBmFlag) {
-		var ret bool
-		return ret
-	}
-	return *o.AdAccountCreatedFromBmFlag
-}
-
-// GetAdAccountCreatedFromBmFlagOk returns a tuple with the AdAccountCreatedFromBmFlag field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccountRequest) GetAdAccountCreatedFromBmFlagOk() (*bool, bool) {
-	if o == nil || IsNil(o.AdAccountCreatedFromBmFlag) {
-		return nil, false
-	}
-	return o.AdAccountCreatedFromBmFlag, true
-}
-
-// HasAdAccountCreatedFromBmFlag returns a boolean if a field has been set.
-func (o *CreateAdAccountRequest) HasAdAccountCreatedFromBmFlag() bool {
-	if o != nil && !IsNil(o.AdAccountCreatedFromBmFlag) {
-		return true
-	}
-
-	return false
-}
-
-// SetAdAccountCreatedFromBmFlag gets a reference to the given bool and assigns it to the AdAccountCreatedFromBmFlag field.
-func (o *CreateAdAccountRequest) SetAdAccountCreatedFromBmFlag(v bool) {
-	o.AdAccountCreatedFromBmFlag = &v
-}
-
-func (o CreateAdAccountRequest) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o CreateAdAccountRequest) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["accountId"] = o.AccountId
-	toSerialize["businessId"] = o.BusinessId
-	toSerialize["name"] = o.Name
-	toSerialize["currency"] = o.Currency
-	toSerialize["timezoneId"] = o.TimezoneId
-	if !IsNil(o.EndAdvertiser) {
-		toSerialize["endAdvertiser"] = o.EndAdvertiser
-	}
-	if !IsNil(o.MediaAgency) {
-		toSerialize["mediaAgency"] = o.MediaAgency
-	}
-	if !IsNil(o.Partner) {
-		toSerialize["partner"] = o.Partner
-	}
-	if !IsNil(o.Invoice) {
-		toSerialize["invoice"] = o.Invoice
-	}
-	if !IsNil(o.InvoiceGroupId) {
-		toSerialize["invoiceGroupId"] = o.InvoiceGroupId
-	}
-	if !IsNil(o.InvoicingEmails) {
-		toSerialize["invoicingEmails"] = o.InvoicingEmails
-	}
-	if !IsNil(o.Io) {
-		toSerialize["io"] = o.Io
-	}
-	if !IsNil(o.PoNumber) {
-		toSerialize["poNumber"] = o.PoNumber
-	}
-	if !IsNil(o.FundingId) {
-		toSerialize["fundingId"] = o.FundingId
-	}
-	if !IsNil(o.AdAccountCreatedFromBmFlag) {
-		toSerialize["adAccountCreatedFromBmFlag"] = o.AdAccountCreatedFromBmFlag
-	}
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-
-	return toSerialize, nil
-}
-
-func (o *CreateAdAccountRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"accountId",
-		"businessId",
-		"name",
-		"currency",
-		"timezoneId",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *CreateAdAccountRequest) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into CreateGoogleAdAccountRequest
+	err = newStrictDecoder(data).Decode(&dst.CreateGoogleAdAccountRequest)
+	if err == nil {
+		jsonCreateGoogleAdAccountRequest, _ := json.Marshal(dst.CreateGoogleAdAccountRequest)
+		if string(jsonCreateGoogleAdAccountRequest) == "{}" { // empty struct
+			dst.CreateGoogleAdAccountRequest = nil
+		} else {
+			if err = validator.Validate(dst.CreateGoogleAdAccountRequest); err != nil {
+				dst.CreateGoogleAdAccountRequest = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.CreateGoogleAdAccountRequest = nil
 	}
 
-	varCreateAdAccountRequest := _CreateAdAccountRequest{}
-
-	err = json.Unmarshal(data, &varCreateAdAccountRequest)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into CreateMetaAdAccountRequest
+	err = newStrictDecoder(data).Decode(&dst.CreateMetaAdAccountRequest)
+	if err == nil {
+		jsonCreateMetaAdAccountRequest, _ := json.Marshal(dst.CreateMetaAdAccountRequest)
+		if string(jsonCreateMetaAdAccountRequest) == "{}" { // empty struct
+			dst.CreateMetaAdAccountRequest = nil
+		} else {
+			if err = validator.Validate(dst.CreateMetaAdAccountRequest); err != nil {
+				dst.CreateMetaAdAccountRequest = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreateMetaAdAccountRequest = nil
 	}
 
-	*o = CreateAdAccountRequest(varCreateAdAccountRequest)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.CreateGoogleAdAccountRequest = nil
+		dst.CreateMetaAdAccountRequest = nil
 
-	additionalProperties := make(map[string]interface{})
+		return fmt.Errorf("data matches more than one schema in oneOf(CreateAdAccountRequest)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(CreateAdAccountRequest)")
+	}
+}
 
-	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "accountId")
-		delete(additionalProperties, "businessId")
-		delete(additionalProperties, "name")
-		delete(additionalProperties, "currency")
-		delete(additionalProperties, "timezoneId")
-		delete(additionalProperties, "endAdvertiser")
-		delete(additionalProperties, "mediaAgency")
-		delete(additionalProperties, "partner")
-		delete(additionalProperties, "invoice")
-		delete(additionalProperties, "invoiceGroupId")
-		delete(additionalProperties, "invoicingEmails")
-		delete(additionalProperties, "io")
-		delete(additionalProperties, "poNumber")
-		delete(additionalProperties, "fundingId")
-		delete(additionalProperties, "adAccountCreatedFromBmFlag")
-		o.AdditionalProperties = additionalProperties
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreateAdAccountRequest) MarshalJSON() ([]byte, error) {
+	if src.CreateGoogleAdAccountRequest != nil {
+		return json.Marshal(&src.CreateGoogleAdAccountRequest)
 	}
 
-	return err
+	if src.CreateMetaAdAccountRequest != nil {
+		return json.Marshal(&src.CreateMetaAdAccountRequest)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *CreateAdAccountRequest) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.CreateGoogleAdAccountRequest != nil {
+		return obj.CreateGoogleAdAccountRequest
+	}
+
+	if obj.CreateMetaAdAccountRequest != nil {
+		return obj.CreateMetaAdAccountRequest
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj CreateAdAccountRequest) GetActualInstanceValue() interface{} {
+	if obj.CreateGoogleAdAccountRequest != nil {
+		return *obj.CreateGoogleAdAccountRequest
+	}
+
+	if obj.CreateMetaAdAccountRequest != nil {
+		return *obj.CreateMetaAdAccountRequest
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableCreateAdAccountRequest struct {

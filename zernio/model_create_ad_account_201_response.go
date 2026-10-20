@@ -12,287 +12,124 @@ Contact: support@zernio.com
 package zernio
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/validator.v2"
 )
 
-// checks if the CreateAdAccount201Response type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &CreateAdAccount201Response{}
-
-// CreateAdAccount201Response struct for CreateAdAccount201Response
+// CreateAdAccount201Response - struct for CreateAdAccount201Response
 type CreateAdAccount201Response struct {
-	// New Meta ad account ID for subsequent ads calls.
-	AdAccountId string `json:"adAccountId" validate:"regexp=^act_[0-9]+$"`
-	// Owning business portfolio ID.
-	BusinessId string `json:"businessId"`
-	// Whether the connection scope and discovery schedule were updated.
-	ConnectionUpdated bool `json:"connectionUpdated"`
-	// Always true as a delivery prerequisite. This is not a live funding-source check. Confirm payment or invoicing in Ads Manager.
-	PaymentMethodRequired bool `json:"paymentMethodRequired"`
-	// Open the created account in Ads Manager.
-	AdsManagerUrl string `json:"adsManagerUrl"`
-	// Payment setup instructions for the user.
-	NextSteps string `json:"nextSteps"`
-	// Recovery instructions if the account could not be attached to the connection.
-	Warnings []string `json:"warnings"`
+	CreatedGoogleAdAccount *CreatedGoogleAdAccount
+	CreatedMetaAdAccount   *CreatedMetaAdAccount
 }
 
-type _CreateAdAccount201Response CreateAdAccount201Response
-
-// NewCreateAdAccount201Response instantiates a new CreateAdAccount201Response object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCreateAdAccount201Response(adAccountId string, businessId string, connectionUpdated bool, paymentMethodRequired bool, adsManagerUrl string, nextSteps string, warnings []string) *CreateAdAccount201Response {
-	this := CreateAdAccount201Response{}
-	this.AdAccountId = adAccountId
-	this.BusinessId = businessId
-	this.ConnectionUpdated = connectionUpdated
-	this.PaymentMethodRequired = paymentMethodRequired
-	this.AdsManagerUrl = adsManagerUrl
-	this.NextSteps = nextSteps
-	this.Warnings = warnings
-	return &this
-}
-
-// NewCreateAdAccount201ResponseWithDefaults instantiates a new CreateAdAccount201Response object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewCreateAdAccount201ResponseWithDefaults() *CreateAdAccount201Response {
-	this := CreateAdAccount201Response{}
-	return &this
-}
-
-// GetAdAccountId returns the AdAccountId field value
-func (o *CreateAdAccount201Response) GetAdAccountId() string {
-	if o == nil {
-		var ret string
-		return ret
+// CreatedGoogleAdAccountAsCreateAdAccount201Response is a convenience function that returns CreatedGoogleAdAccount wrapped in CreateAdAccount201Response
+func CreatedGoogleAdAccountAsCreateAdAccount201Response(v *CreatedGoogleAdAccount) CreateAdAccount201Response {
+	return CreateAdAccount201Response{
+		CreatedGoogleAdAccount: v,
 	}
-
-	return o.AdAccountId
 }
 
-// GetAdAccountIdOk returns a tuple with the AdAccountId field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetAdAccountIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
+// CreatedMetaAdAccountAsCreateAdAccount201Response is a convenience function that returns CreatedMetaAdAccount wrapped in CreateAdAccount201Response
+func CreatedMetaAdAccountAsCreateAdAccount201Response(v *CreatedMetaAdAccount) CreateAdAccount201Response {
+	return CreateAdAccount201Response{
+		CreatedMetaAdAccount: v,
 	}
-	return &o.AdAccountId, true
 }
 
-// SetAdAccountId sets field value
-func (o *CreateAdAccount201Response) SetAdAccountId(v string) {
-	o.AdAccountId = v
-}
-
-// GetBusinessId returns the BusinessId field value
-func (o *CreateAdAccount201Response) GetBusinessId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.BusinessId
-}
-
-// GetBusinessIdOk returns a tuple with the BusinessId field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetBusinessIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.BusinessId, true
-}
-
-// SetBusinessId sets field value
-func (o *CreateAdAccount201Response) SetBusinessId(v string) {
-	o.BusinessId = v
-}
-
-// GetConnectionUpdated returns the ConnectionUpdated field value
-func (o *CreateAdAccount201Response) GetConnectionUpdated() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-
-	return o.ConnectionUpdated
-}
-
-// GetConnectionUpdatedOk returns a tuple with the ConnectionUpdated field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetConnectionUpdatedOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ConnectionUpdated, true
-}
-
-// SetConnectionUpdated sets field value
-func (o *CreateAdAccount201Response) SetConnectionUpdated(v bool) {
-	o.ConnectionUpdated = v
-}
-
-// GetPaymentMethodRequired returns the PaymentMethodRequired field value
-func (o *CreateAdAccount201Response) GetPaymentMethodRequired() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-
-	return o.PaymentMethodRequired
-}
-
-// GetPaymentMethodRequiredOk returns a tuple with the PaymentMethodRequired field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetPaymentMethodRequiredOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.PaymentMethodRequired, true
-}
-
-// SetPaymentMethodRequired sets field value
-func (o *CreateAdAccount201Response) SetPaymentMethodRequired(v bool) {
-	o.PaymentMethodRequired = v
-}
-
-// GetAdsManagerUrl returns the AdsManagerUrl field value
-func (o *CreateAdAccount201Response) GetAdsManagerUrl() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.AdsManagerUrl
-}
-
-// GetAdsManagerUrlOk returns a tuple with the AdsManagerUrl field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetAdsManagerUrlOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.AdsManagerUrl, true
-}
-
-// SetAdsManagerUrl sets field value
-func (o *CreateAdAccount201Response) SetAdsManagerUrl(v string) {
-	o.AdsManagerUrl = v
-}
-
-// GetNextSteps returns the NextSteps field value
-func (o *CreateAdAccount201Response) GetNextSteps() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.NextSteps
-}
-
-// GetNextStepsOk returns a tuple with the NextSteps field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetNextStepsOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.NextSteps, true
-}
-
-// SetNextSteps sets field value
-func (o *CreateAdAccount201Response) SetNextSteps(v string) {
-	o.NextSteps = v
-}
-
-// GetWarnings returns the Warnings field value
-func (o *CreateAdAccount201Response) GetWarnings() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-
-	return o.Warnings
-}
-
-// GetWarningsOk returns a tuple with the Warnings field value
-// and a boolean to check if the value has been set.
-func (o *CreateAdAccount201Response) GetWarningsOk() ([]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Warnings, true
-}
-
-// SetWarnings sets field value
-func (o *CreateAdAccount201Response) SetWarnings(v []string) {
-	o.Warnings = v
-}
-
-func (o CreateAdAccount201Response) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
-	if err != nil {
-		return []byte{}, err
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (o CreateAdAccount201Response) ToMap() (map[string]interface{}, error) {
-	toSerialize := map[string]interface{}{}
-	toSerialize["adAccountId"] = o.AdAccountId
-	toSerialize["businessId"] = o.BusinessId
-	toSerialize["connectionUpdated"] = o.ConnectionUpdated
-	toSerialize["paymentMethodRequired"] = o.PaymentMethodRequired
-	toSerialize["adsManagerUrl"] = o.AdsManagerUrl
-	toSerialize["nextSteps"] = o.NextSteps
-	toSerialize["warnings"] = o.Warnings
-	return toSerialize, nil
-}
-
-func (o *CreateAdAccount201Response) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"adAccountId",
-		"businessId",
-		"connectionUpdated",
-		"paymentMethodRequired",
-		"adsManagerUrl",
-		"nextSteps",
-		"warnings",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err
-	}
-
-	for _, requiredProperty := range requiredProperties {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *CreateAdAccount201Response) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into CreatedGoogleAdAccount
+	err = newStrictDecoder(data).Decode(&dst.CreatedGoogleAdAccount)
+	if err == nil {
+		jsonCreatedGoogleAdAccount, _ := json.Marshal(dst.CreatedGoogleAdAccount)
+		if string(jsonCreatedGoogleAdAccount) == "{}" { // empty struct
+			dst.CreatedGoogleAdAccount = nil
+		} else {
+			if err = validator.Validate(dst.CreatedGoogleAdAccount); err != nil {
+				dst.CreatedGoogleAdAccount = nil
+			} else {
+				match++
+			}
 		}
+	} else {
+		dst.CreatedGoogleAdAccount = nil
 	}
 
-	varCreateAdAccount201Response := _CreateAdAccount201Response{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varCreateAdAccount201Response)
-
-	if err != nil {
-		return err
+	// try to unmarshal data into CreatedMetaAdAccount
+	err = newStrictDecoder(data).Decode(&dst.CreatedMetaAdAccount)
+	if err == nil {
+		jsonCreatedMetaAdAccount, _ := json.Marshal(dst.CreatedMetaAdAccount)
+		if string(jsonCreatedMetaAdAccount) == "{}" { // empty struct
+			dst.CreatedMetaAdAccount = nil
+		} else {
+			if err = validator.Validate(dst.CreatedMetaAdAccount); err != nil {
+				dst.CreatedMetaAdAccount = nil
+			} else {
+				match++
+			}
+		}
+	} else {
+		dst.CreatedMetaAdAccount = nil
 	}
 
-	*o = CreateAdAccount201Response(varCreateAdAccount201Response)
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.CreatedGoogleAdAccount = nil
+		dst.CreatedMetaAdAccount = nil
 
-	return err
+		return fmt.Errorf("data matches more than one schema in oneOf(CreateAdAccount201Response)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("data failed to match schemas in oneOf(CreateAdAccount201Response)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src CreateAdAccount201Response) MarshalJSON() ([]byte, error) {
+	if src.CreatedGoogleAdAccount != nil {
+		return json.Marshal(&src.CreatedGoogleAdAccount)
+	}
+
+	if src.CreatedMetaAdAccount != nil {
+		return json.Marshal(&src.CreatedMetaAdAccount)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *CreateAdAccount201Response) GetActualInstance() interface{} {
+	if obj == nil {
+		return nil
+	}
+	if obj.CreatedGoogleAdAccount != nil {
+		return obj.CreatedGoogleAdAccount
+	}
+
+	if obj.CreatedMetaAdAccount != nil {
+		return obj.CreatedMetaAdAccount
+	}
+
+	// all schemas are nil
+	return nil
+}
+
+// Get the actual instance value
+func (obj CreateAdAccount201Response) GetActualInstanceValue() interface{} {
+	if obj.CreatedGoogleAdAccount != nil {
+		return *obj.CreatedGoogleAdAccount
+	}
+
+	if obj.CreatedMetaAdAccount != nil {
+		return *obj.CreatedMetaAdAccount
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableCreateAdAccount201Response struct {
