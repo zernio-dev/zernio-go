@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.307.0
+API version: 1.307.1
 Contact: support@zernio.com
 */
 
@@ -9286,7 +9286,7 @@ Per-platform support:
     and creative (uploads new media, creates a replacement inline creative on the same
     campaign, pauses the old one).
   - **Pinterest / X / OpenAI Ads**: status + budget only. Sending
-    `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
+    `targeting` or `creative` returns 501 with code `feature_not_available`.
     OpenAI Ads budget is the campaign's spend cap, daily or lifetime (see `budget.type` below).
   - **Reddit Ads**: status, budget, `name` (renames the ad) and targeting. `budget` goes to
     the ad's ad group, or to its campaign when the ad group spends a campaign budget, and
