@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.305.0
+API version: 1.306.0
 Contact: support@zernio.com
 */
 
@@ -20,8 +20,11 @@ var _ MappedNullable = &GetGoogleBusinessSearchKeywords200ResponseKeywordsInner{
 
 // GetGoogleBusinessSearchKeywords200ResponseKeywordsInner struct for GetGoogleBusinessSearchKeywords200ResponseKeywordsInner
 type GetGoogleBusinessSearchKeywords200ResponseKeywordsInner struct {
-	Keyword     *string `json:"keyword,omitempty"`
-	Impressions *int32  `json:"impressions,omitempty"`
+	Keyword *string `json:"keyword,omitempty"`
+	// Impressions for the range. 0 when Google reports only a threshold.
+	Impressions *int32 `json:"impressions,omitempty"`
+	// Set when Google reports only that impressions were below this value. null when impressions is exact.
+	ImpressionsThreshold NullableInt32 `json:"impressionsThreshold,omitempty"`
 }
 
 // NewGetGoogleBusinessSearchKeywords200ResponseKeywordsInner instantiates a new GetGoogleBusinessSearchKeywords200ResponseKeywordsInner object
@@ -105,6 +108,49 @@ func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) SetImpressions
 	o.Impressions = &v
 }
 
+// GetImpressionsThreshold returns the ImpressionsThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) GetImpressionsThreshold() int32 {
+	if o == nil || IsNil(o.ImpressionsThreshold.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.ImpressionsThreshold.Get()
+}
+
+// GetImpressionsThresholdOk returns a tuple with the ImpressionsThreshold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) GetImpressionsThresholdOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ImpressionsThreshold.Get(), o.ImpressionsThreshold.IsSet()
+}
+
+// HasImpressionsThreshold returns a boolean if a field has been set.
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) HasImpressionsThreshold() bool {
+	if o != nil && o.ImpressionsThreshold.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetImpressionsThreshold gets a reference to the given NullableInt32 and assigns it to the ImpressionsThreshold field.
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) SetImpressionsThreshold(v int32) {
+	o.ImpressionsThreshold.Set(&v)
+}
+
+// SetImpressionsThresholdNil sets the value for ImpressionsThreshold to be an explicit nil
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) SetImpressionsThresholdNil() {
+	o.ImpressionsThreshold.Set(nil)
+}
+
+// UnsetImpressionsThreshold ensures that no value is present for ImpressionsThreshold, not even an explicit nil
+func (o *GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) UnsetImpressionsThreshold() {
+	o.ImpressionsThreshold.Unset()
+}
+
 func (o GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +166,9 @@ func (o GetGoogleBusinessSearchKeywords200ResponseKeywordsInner) ToMap() (map[st
 	}
 	if !IsNil(o.Impressions) {
 		toSerialize["impressions"] = o.Impressions
+	}
+	if o.ImpressionsThreshold.IsSet() {
+		toSerialize["impressionsThreshold"] = o.ImpressionsThreshold.Get()
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.305.0
+API version: 1.306.0
 Contact: support@zernio.com
 */
 
@@ -25,7 +25,9 @@ type GetGoogleBusinessSearchKeywords200Response struct {
 	Platform   *string                                                   `json:"platform,omitempty"`
 	MonthRange *GetGoogleBusinessSearchKeywords200ResponseMonthRange     `json:"monthRange,omitempty"`
 	Keywords   []GetGoogleBusinessSearchKeywords200ResponseKeywordsInner `json:"keywords,omitempty"`
-	Note       *string                                                   `json:"note,omitempty"`
+	// Pass as pageToken to fetch the next page. null on the last page.
+	NextPageToken NullableString `json:"nextPageToken,omitempty"`
+	Note          *string        `json:"note,omitempty"`
 }
 
 // NewGetGoogleBusinessSearchKeywords200Response instantiates a new GetGoogleBusinessSearchKeywords200Response object
@@ -205,6 +207,49 @@ func (o *GetGoogleBusinessSearchKeywords200Response) SetKeywords(v []GetGoogleBu
 	o.Keywords = v
 }
 
+// GetNextPageToken returns the NextPageToken field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetGoogleBusinessSearchKeywords200Response) GetNextPageToken() string {
+	if o == nil || IsNil(o.NextPageToken.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.NextPageToken.Get()
+}
+
+// GetNextPageTokenOk returns a tuple with the NextPageToken field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetGoogleBusinessSearchKeywords200Response) GetNextPageTokenOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NextPageToken.Get(), o.NextPageToken.IsSet()
+}
+
+// HasNextPageToken returns a boolean if a field has been set.
+func (o *GetGoogleBusinessSearchKeywords200Response) HasNextPageToken() bool {
+	if o != nil && o.NextPageToken.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNextPageToken gets a reference to the given NullableString and assigns it to the NextPageToken field.
+func (o *GetGoogleBusinessSearchKeywords200Response) SetNextPageToken(v string) {
+	o.NextPageToken.Set(&v)
+}
+
+// SetNextPageTokenNil sets the value for NextPageToken to be an explicit nil
+func (o *GetGoogleBusinessSearchKeywords200Response) SetNextPageTokenNil() {
+	o.NextPageToken.Set(nil)
+}
+
+// UnsetNextPageToken ensures that no value is present for NextPageToken, not even an explicit nil
+func (o *GetGoogleBusinessSearchKeywords200Response) UnsetNextPageToken() {
+	o.NextPageToken.Unset()
+}
+
 // GetNote returns the Note field value if set, zero value otherwise.
 func (o *GetGoogleBusinessSearchKeywords200Response) GetNote() string {
 	if o == nil || IsNil(o.Note) {
@@ -261,6 +306,9 @@ func (o GetGoogleBusinessSearchKeywords200Response) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.Keywords) {
 		toSerialize["keywords"] = o.Keywords
+	}
+	if o.NextPageToken.IsSet() {
+		toSerialize["nextPageToken"] = o.NextPageToken.Get()
 	}
 	if !IsNil(o.Note) {
 		toSerialize["note"] = o.Note
