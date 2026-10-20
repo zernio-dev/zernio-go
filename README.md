@@ -301,6 +301,7 @@ func main() {
 | `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account callouts |
 | `client.AdAccountsAPI.ListAccountSitelinks(ctx)` | List account sitelinks |
 | `client.AdAccountsAPI.ListAccountStructuredSnippets(ctx)` | List account snippets |
+| `client.AdAccountsAPI.ListAdAccountUserInvitations(ctx)` | List user access invitations |
 | `client.AdAccountsAPI.ListAdAccountUsers(ctx)` | Ad account users |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
 | `client.AdAccountsAPI.ListAdLabels(ctx)` | List ad labels |
@@ -353,6 +354,7 @@ func main() {
 | `client.AdAccountsAPI.DetachAdLabel(ctx)` | Detach a Google Ads label |
 | `client.AdAccountsAPI.HideAdComment(ctx)` | Hide or unhide an ad comment |
 | `client.AdAccountsAPI.InviteAdAccountToManager(ctx)` | Invite a client account to a manager |
+| `client.AdAccountsAPI.InviteAdAccountUser(ctx)` | Invite a user to an ad account by email |
 | `client.AdAccountsAPI.RemoveAccountCallout(ctx)` | Remove account callout |
 | `client.AdAccountsAPI.RemoveAccountSitelink(ctx)` | Remove account sitelink |
 | `client.AdAccountsAPI.RemoveAccountStructuredSnippet(ctx)` | Remove account snippet |
@@ -361,6 +363,7 @@ func main() {
 | `client.AdAccountsAPI.RemovePageUser(ctx)` | Remove a user from a Page |
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
+| `client.AdAccountsAPI.RevokeAdAccountUserInvitation(ctx)` | Revoke a user access invitation |
 
 ### Ad Audiences
 | Method | Description |
