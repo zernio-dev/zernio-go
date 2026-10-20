@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.309.0
+API version: 1.309.1
 Contact: support@zernio.com
 */
 
@@ -52,7 +52,7 @@ AddWhatsAppGroupParticipants Add participants
 
 Add participants to a WhatsApp group. Maximum 8 participants per request. A group holds at most 8 participants in total (a Meta limit), so later requests cannot grow a group past 8. Meta documents groups as invite-only, so people normally join through the group's invite link.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -201,7 +201,7 @@ ApproveWhatsAppGroupJoinRequests Approve join requests
 
 Approve pending join requests for a WhatsApp group.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -609,7 +609,7 @@ CreateWhatsAppGroupChat Create group
 
 Create a new WhatsApp group chat. Returns the group ID and optionally an invite link.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppAPICreateWhatsAppGroupChatRequest
@@ -745,7 +745,7 @@ CreateWhatsAppGroupInviteLink Create invite link
 
 Create a new invite link for a WhatsApp group. The previous link is revoked.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -1156,7 +1156,7 @@ DeleteWhatsAppGroupChat Delete group
 
 Delete a WhatsApp group and remove all participants.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -2688,7 +2688,7 @@ GetWhatsAppGroupChat Get group info
 Retrieve metadata about a WhatsApp group including subject, description,
 participants, and settings.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -4315,7 +4315,7 @@ ListWhatsAppGroupChats List active groups
 List active WhatsApp group chats for a business phone number.
 These are actual WhatsApp group conversations on the platform.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return WhatsAppAPIListWhatsAppGroupChatsRequest
@@ -4460,7 +4460,7 @@ ListWhatsAppGroupJoinRequests List join requests
 
 List pending join requests for a WhatsApp group (only for groups with approval_required mode).
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -4731,7 +4731,7 @@ RejectWhatsAppGroupJoinRequests Reject join requests
 
 Reject pending join requests for a WhatsApp group.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -4880,7 +4880,7 @@ RemoveWhatsAppGroupParticipants Remove participants
 
 Remove participants from a WhatsApp group.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID
@@ -6321,7 +6321,7 @@ UpdateWhatsAppGroupChat Update group settings
 
 Update the subject, description, or join approval mode of a WhatsApp group.
 
-Not available on [Coexistence](/platforms/whatsapp/connection#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
+Not available on [Coexistence](/platforms/whatsapp/connect#whatsapp-business-app-coexistence) numbers. Requires a Cloud API-only number.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param groupId Group ID

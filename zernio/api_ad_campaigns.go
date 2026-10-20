@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.309.0
+API version: 1.309.1
 Contact: support@zernio.com
 */
 
@@ -10195,8 +10195,8 @@ Delivery settings are validated by Meta against the campaign objective;
 incompatible combinations (e.g. a billingEvent the optimization goal
 doesn't allow) surface as 400s from Meta.
 
-When updating `budget` on an ABO campaign: if the parent campaign is
-CBO, the response is 409 with code BUDGET_LEVEL_MISMATCH. Route to
+When updating `budget` on an ad set whose campaign holds the budget
+(CBO), the response is 409 with code `invalid_field_value`. Send it to
 PUT /v1/ads/campaigns/{campaignId} instead.
 
 Reddit Ads: `budget` changes the ad group's amount; an ad group that spends its

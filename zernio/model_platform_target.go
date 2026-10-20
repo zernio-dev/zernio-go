@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.309.0
+API version: 1.309.1
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,7 @@ type PlatformTarget struct {
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 	// The platform-specific options stored on this target, echoed back as they were sent. Typed per platform on the way in (see the *PlatformData schemas on the request body); free-form on the way out, because a response is not guaranteed to match exactly one of those variants and generated clients that pick a variant by structure reject the entire response when it doesn't. Zernio's internal publishing state (snapshots, container ids, publish stage) is never returned here, and the key is omitted rather than sent as an empty object.
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
-	// Platform-specific status: pending, processing, uploading, published, failed, cancelled (removed from the platform via DELETE /v1/posts/{postId}/unpublish)
+	// Platform-specific status: pending, processing, uploading, published, failed, cancelled (removed from the platform via POST /v1/posts/{postId}/unpublish)
 	Status *string `json:"status,omitempty"`
 	// The native post ID on the platform (populated after successful publish)
 	PlatformPostId *string `json:"platformPostId,omitempty"`

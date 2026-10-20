@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.309.0
+API version: 1.309.1
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type Post struct {
 	Platforms    []PlatformTarget `json:"platforms,omitempty"`
 	ScheduledFor *time.Time       `json:"scheduledFor,omitempty"`
 	Timezone     *string          `json:"timezone,omitempty"`
-	// `cancelled` is set by DELETE /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts.
+	// `cancelled` is set by POST /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts.
 	Status *string `json:"status,omitempty"`
 	// YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
 	Tags []string `json:"tags,omitempty"`
