@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.304.0
+API version: 1.305.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type TwitterPlatformData struct {
 	// When true, the post is labeled by X as containing AI-generated media. Per X, this label is for AI-generated media, not AI-written text. For threads, applies to the root tweet only.
 	MadeWithAi     *bool                              `json:"madeWithAi,omitempty"`
 	SensitiveMedia *TwitterPlatformDataSensitiveMedia `json:"sensitiveMedia,omitempty"`
+	// X usernames (with or without @) to tag on the photos of the post, up to 10. Photos only, not video or GIF. Applied to the media of every tweet in a thread. An unknown username fails the post.
+	MediaTaggedUsers []string `json:"mediaTaggedUsers,omitempty"`
 }
 
 // NewTwitterPlatformData instantiates a new TwitterPlatformData object
@@ -421,6 +423,38 @@ func (o *TwitterPlatformData) SetSensitiveMedia(v TwitterPlatformDataSensitiveMe
 	o.SensitiveMedia = &v
 }
 
+// GetMediaTaggedUsers returns the MediaTaggedUsers field value if set, zero value otherwise.
+func (o *TwitterPlatformData) GetMediaTaggedUsers() []string {
+	if o == nil || IsNil(o.MediaTaggedUsers) {
+		var ret []string
+		return ret
+	}
+	return o.MediaTaggedUsers
+}
+
+// GetMediaTaggedUsersOk returns a tuple with the MediaTaggedUsers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TwitterPlatformData) GetMediaTaggedUsersOk() ([]string, bool) {
+	if o == nil || IsNil(o.MediaTaggedUsers) {
+		return nil, false
+	}
+	return o.MediaTaggedUsers, true
+}
+
+// HasMediaTaggedUsers returns a boolean if a field has been set.
+func (o *TwitterPlatformData) HasMediaTaggedUsers() bool {
+	if o != nil && !IsNil(o.MediaTaggedUsers) {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaTaggedUsers gets a reference to the given []string and assigns it to the MediaTaggedUsers field.
+func (o *TwitterPlatformData) SetMediaTaggedUsers(v []string) {
+	o.MediaTaggedUsers = v
+}
+
 func (o TwitterPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -463,6 +497,9 @@ func (o TwitterPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SensitiveMedia) {
 		toSerialize["sensitiveMedia"] = o.SensitiveMedia
+	}
+	if !IsNil(o.MediaTaggedUsers) {
+		toSerialize["mediaTaggedUsers"] = o.MediaTaggedUsers
 	}
 	return toSerialize, nil
 }
