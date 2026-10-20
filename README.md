@@ -869,6 +869,7 @@ func main() {
 ### Instagram
 | Method | Description |
 |--------|-------------|
+| `client.InstagramAPI.ListInstagramMediaCollaborators(ctx)` | List the collaborators of an Instagram post |
 | `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
 | `client.InstagramAPI.GetInstagramAudio(ctx)` | Get Instagram audio metadata |
 | `client.InstagramAPI.GetInstagramBusinessDiscovery(ctx)` | Look up a public Instagram Business account |
