@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.298.0
+API version: 1.299.0
 Contact: support@zernio.com
 */
 
@@ -67,6 +67,8 @@ type TargetingSpec struct {
 	Seniorities []string `json:"seniorities,omitempty"`
 	// LinkedIn B2B only. Function URN id fragments, or the full urn:li:function:* URN from /v1/ads/targeting/search?dimension=jobFunction.
 	JobFunctions []string `json:"jobFunctions,omitempty"`
+	// LinkedIn B2B only. Member skills (e.g. Python, Recruiting): skill URN id fragments, or the full urn:li:skill:* URN from /v1/ads/targeting/search?dimension=skill. Values are ORed; the facet is ANDed with the other facets. On an ad set update an empty list removes the skills.
+	Skills []string `json:"skills,omitempty"`
 	// Platform audience IDs to include, as returned by GET /v1/ads/audiences (Meta custom audience ids, TikTok audience ids, Pinterest customer list ids, LinkedIn segment ids (the platformAudienceId from GET /v1/ads/audiences; Zernio resolves it to the targetable LinkedIn ad segment, an unknown id returns 400), Google user list ids, X custom audience ids). On Reddit, the ids of custom audiences built in Reddit Ads Manager (GET /v1/ads/audiences does not list Reddit audiences). Not supported on OpenAI (400).
 	AudienceInclude []string `json:"audienceInclude,omitempty"`
 	// Platform audience IDs to exclude; same ID formats as audienceInclude. Not supported on OpenAI (400).
@@ -866,6 +868,38 @@ func (o *TargetingSpec) SetJobFunctions(v []string) {
 	o.JobFunctions = v
 }
 
+// GetSkills returns the Skills field value if set, zero value otherwise.
+func (o *TargetingSpec) GetSkills() []string {
+	if o == nil || IsNil(o.Skills) {
+		var ret []string
+		return ret
+	}
+	return o.Skills
+}
+
+// GetSkillsOk returns a tuple with the Skills field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TargetingSpec) GetSkillsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Skills) {
+		return nil, false
+	}
+	return o.Skills, true
+}
+
+// HasSkills returns a boolean if a field has been set.
+func (o *TargetingSpec) HasSkills() bool {
+	if o != nil && !IsNil(o.Skills) {
+		return true
+	}
+
+	return false
+}
+
+// SetSkills gets a reference to the given []string and assigns it to the Skills field.
+func (o *TargetingSpec) SetSkills(v []string) {
+	o.Skills = v
+}
+
 // GetAudienceInclude returns the AudienceInclude field value if set, zero value otherwise.
 func (o *TargetingSpec) GetAudienceInclude() []string {
 	if o == nil || IsNil(o.AudienceInclude) {
@@ -1139,6 +1173,9 @@ func (o TargetingSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.JobFunctions) {
 		toSerialize["jobFunctions"] = o.JobFunctions
+	}
+	if !IsNil(o.Skills) {
+		toSerialize["skills"] = o.Skills
 	}
 	if !IsNil(o.AudienceInclude) {
 		toSerialize["audienceInclude"] = o.AudienceInclude

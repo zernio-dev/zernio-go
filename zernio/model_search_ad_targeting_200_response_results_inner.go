@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.298.0
+API version: 1.299.0
 Contact: support@zernio.com
 */
 
@@ -26,7 +26,7 @@ type SearchAdTargeting200ResponseResultsInner struct {
 	Id string `json:"id"`
 	// Human-readable label.
 	Name string `json:"name"`
-	// What the result is. Equals the requested dimension (interest, interestSuggestion, interestKeyword, behavior, hashtag, income, language, workPosition, workEmployer, workIndustry, industry, jobFunction, seniority, companySize, community, conversationKeyword), or the location level for geo (country, region, city, zip, metro, ...).
+	// What the result is. Equals the requested dimension (interest, interestSuggestion, interestKeyword, behavior, hashtag, income, language, workPosition, workEmployer, workIndustry, industry, jobFunction, seniority, companySize, skill, community, conversationKeyword), or the location level for geo (country, region, city, zip, metro, ...).
 	Type string `json:"type"`
 	// Optional breadcrumb of parent labels (e.g. ['United States', 'California', 'Los Angeles']). Disambiguates same-named results.
 	Path []string `json:"path,omitempty"`

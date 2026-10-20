@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.298.0
+API version: 1.299.0
 Contact: support@zernio.com
 */
 
@@ -907,7 +907,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) Q(q string) AdTargetingAPISearch
 	return r
 }
 
-// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; on Meta, TikTok and LinkedIn), &#x60;interestSuggestion&#x60; suggests interests related to the names in &#x60;q&#x60; (Meta only), &#x60;interestKeyword&#x60;/&#x60;hashtag&#x60; resolve TikTok additional interests and hashtags (TikTok only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
+// What to search. &#x60;geo&#x60; resolves locations (scope further with &#x60;geoType&#x60;), &#x60;interest&#x60;/&#x60;behavior&#x60; resolve audience entities (&#x60;behavior&#x60; on Meta, TikTok and LinkedIn), &#x60;interestSuggestion&#x60; suggests interests related to the names in &#x60;q&#x60; (Meta only), &#x60;interestKeyword&#x60;/&#x60;hashtag&#x60; resolve TikTok additional interests and hashtags (TikTok only), &#x60;income&#x60; resolves the normalized income tiers, &#x60;language&#x60; resolves Google&#39;s targetable language_constant table (Google only), &#x60;workPosition&#x60;/&#x60;workEmployer&#x60;/&#x60;workIndustry&#x60; resolve Meta work demographics, &#x60;industry&#x60;/&#x60;jobFunction&#x60;/&#x60;seniority&#x60;/&#x60;companySize&#x60;/&#x60;skill&#x60; resolve LinkedIn B2B facets (LinkedIn only). Defaults to &#x60;interest&#x60; for backward compatibility with the deprecated /v1/ads/interests alias.
 func (r AdTargetingAPISearchAdTargetingRequest) Dimension(dimension string) AdTargetingAPISearchAdTargetingRequest {
 	r.dimension = &dimension
 	return r
@@ -988,8 +988,8 @@ The `dimension` param selects what is searched:
   - `language`: Google-only
   - `workPosition`, `workEmployer`, `workIndustry`: the Meta-only work demographics, whose
     ids feed `TargetingSpec.workPositions`/`workEmployers`/`workIndustries`
-  - `industry`, `jobFunction`, `seniority`, `companySize`: the LinkedIn-only B2B facets, whose
-    URNs feed `TargetingSpec.industries`/`jobFunctions`/`seniorities`/`companySizes`
+  - `industry`, `jobFunction`, `seniority`, `companySize`, `skill`: the LinkedIn-only B2B facets, whose
+    URNs feed `TargetingSpec.industries`/`jobFunctions`/`seniorities`/`companySizes`/`skills`
   - `community`: Reddit only. Subreddits matching `q`; the id is the subreddit name for
     `TargetingSpec.communities` / `excludedCommunities`, `platformId` Reddit's own id and
     `audienceSize` its subscriber count when Reddit reports it
@@ -1035,10 +1035,10 @@ its `urn:li:geo:*` URN as the id, usable as a `regions[].key` on
 `POST /v1/ads/targeting/reach-estimate` (LinkedIn puts countries and
 regions in the same `locations` facet, so both target the same way).
 
-LinkedIn B2B searches (`industry`, `jobFunction`, `seniority`, `companySize`) return the
+LinkedIn B2B searches (`industry`, `jobFunction`, `seniority`, `companySize`, `skill`) return the
 full URN to pass straight back, so no URN id fragment has to be assembled by hand:
 `urn:li:industry:4`, `urn:li:function:8`, `urn:li:seniority:6`,
-`urn:li:staffCountRange:(51,200)`. Only `industry` is a server-side name search
+`urn:li:staffCountRange:(51,200)`, `urn:li:skill:1346`. Only `industry` and `skill` are server-side name searches
 (LinkedIn's typeahead finder). LinkedIn exposes no typeahead for job functions,
 seniorities and company sizes, so Zernio fetches each whole table (26, 10 and 9 entries),
 caches it, and does the matching, ranking and `limit` cutoff itself. Those three never
