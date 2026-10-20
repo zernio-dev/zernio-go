@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.300.0
+API version: 1.301.0
 Contact: support@zernio.com
 */
 
@@ -5619,7 +5619,7 @@ func (r AdAccountsAPIListAdAccountsRequest) Limit(limit int32) AdAccountsAPIList
 	return r
 }
 
-// Google Ads only. &#x60;true&#x60; returns only the customers this connection accepts as &#x60;adAccountId&#x60; (or &#x60;customerId&#x60;) on the other /v1/ads endpoints, i.e. those inside its ad-account selection. Without it every customer the Google login can reach is listed, including ones selected on another connection of the same login, which those endpoints answer with a 400. Ignored on other platforms.
+// Google Ads only. &#x60;true&#x60; returns only the customers this connection accepts as &#x60;adAccountId&#x60; (or &#x60;customerId&#x60;) on the other /v1/ads endpoints, i.e. those inside its ad-account selection. Without it every customer the Google login can reach is listed, including ones selected on another connection of the same login, which those endpoints answer with a 400. Ignored on other platforms. On every platform, each item&#39;s &#x60;selected&#x60; flags selection membership without narrowing the list.
 func (r AdAccountsAPIListAdAccountsRequest) InScopeOnly(inScopeOnly bool) AdAccountsAPIListAdAccountsRequest {
 	r.inScopeOnly = &inScopeOnly
 	return r
@@ -5651,6 +5651,13 @@ For Google Ads: responds `429` when Google's API quota is temporarily exhausted
 
 For Reddit Ads (`redditads`): every Reddit ad account the connected Reddit user can reach,
 with `businessId`, `approvalStatus` (Reddit's `admin_approval`), `timezone` and `type`.
+
+Every listed ad account carries `selected`: whether it is in the connection's ad-account
+selection (the ad accounts picked at connect time or in the dashboard picker, the ones
+Zernio syncs). On a connection without a selection every ad account is `selected: true`.
+Writes through /v1/ads endpoints to an ad account with `selected: false` are being
+restricted and will answer `403 ad_account_not_selected`; add it to the selection first
+(dashboard picker, or `GET /v1/connect/{platform}/ads` with `adAccountIds`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdAccountsAPIListAdAccountsRequest
