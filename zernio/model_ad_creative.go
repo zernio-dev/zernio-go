@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.302.1
+API version: 1.303.0
 Contact: support@zernio.com
 */
 
@@ -35,7 +35,8 @@ type AdCreative struct {
 	// Alternative image URL
 	ImageUrl *string `json:"imageUrl,omitempty"`
 	// Google Display only. Resource name of the landscape marketing image asset (`creative.imageUrl`), for example customers/1234567890/assets/123. Set at creation and updated when PUT /v1/ads/{adId} replaces `creative.imageUrl`; replacing only `creative.squareImageUrl` leaves it unchanged.
-	AssetResourceName *string `json:"assetResourceName,omitempty"`
+	AssetResourceName *string           `json:"assetResourceName,omitempty"`
+	Assets            *AdCreativeAssets `json:"assets,omitempty"`
 	// Meta video ID for VIDEO-type ads. Null for non-video ads. Callers that need an embeddable MP4 can call GET /{videoId}?fields=source with the page access token.
 	VideoId NullableString `json:"videoId,omitempty"`
 	// Public Facebook watch URL for VIDEO-type ads (https://www.facebook.com/watch/?v={videoId}). Null for non-video ads.
@@ -368,6 +369,38 @@ func (o *AdCreative) HasAssetResourceName() bool {
 // SetAssetResourceName gets a reference to the given string and assigns it to the AssetResourceName field.
 func (o *AdCreative) SetAssetResourceName(v string) {
 	o.AssetResourceName = &v
+}
+
+// GetAssets returns the Assets field value if set, zero value otherwise.
+func (o *AdCreative) GetAssets() AdCreativeAssets {
+	if o == nil || IsNil(o.Assets) {
+		var ret AdCreativeAssets
+		return ret
+	}
+	return *o.Assets
+}
+
+// GetAssetsOk returns a tuple with the Assets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdCreative) GetAssetsOk() (*AdCreativeAssets, bool) {
+	if o == nil || IsNil(o.Assets) {
+		return nil, false
+	}
+	return o.Assets, true
+}
+
+// HasAssets returns a boolean if a field has been set.
+func (o *AdCreative) HasAssets() bool {
+	if o != nil && !IsNil(o.Assets) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssets gets a reference to the given AdCreativeAssets and assigns it to the Assets field.
+func (o *AdCreative) SetAssets(v AdCreativeAssets) {
+	o.Assets = &v
 }
 
 // GetVideoId returns the VideoId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1356,6 +1389,9 @@ func (o AdCreative) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.AssetResourceName) {
 		toSerialize["assetResourceName"] = o.AssetResourceName
+	}
+	if !IsNil(o.Assets) {
+		toSerialize["assets"] = o.Assets
 	}
 	if o.VideoId.IsSet() {
 		toSerialize["videoId"] = o.VideoId.Get()

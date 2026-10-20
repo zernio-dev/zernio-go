@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.302.1
+API version: 1.303.0
 Contact: support@zernio.com
 */
 
@@ -9270,7 +9270,7 @@ Per-platform support:
     `creative.squareImageUrl`. Each image URL is uploaded as a new Google asset and the ad
     is pointed at it; Google assets are immutable, so the previous asset stays in the
     account's asset library. A new landscape image also updates `creative.assetResourceName`
-    to the new asset.
+    to the new asset, and each replaced image updates its own role in `creative.assets`.
   - **Performance Max**: top-level `assetGroup`, which swaps asset roles on the ad's asset
     group. The other creative fields return 422 for this channel, and `assetGroup` returns
     422 on any other channel.
