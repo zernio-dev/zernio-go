@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.317.0
+API version: 1.318.0
 Contact: support@zernio.com
 */
 
@@ -46,6 +46,10 @@ type SendInboxMessageRequest struct {
 	ContactCard *bool `json:"contactCard,omitempty"`
 	// iMessage only (JSON body only). Overrides the delivery channel for this one send; the provider otherwise picks it automatically. The sender must carry the matching add-on (SMS, RCS or WhatsApp), or the send fails. Not a default to set on every request. Rejected with 400 on other platforms.
 	Channel *string `json:"channel,omitempty"`
+	// Instagram only (JSON body only). Shares one of the account's own published posts in the DM, by its Instagram media id (the `id` returned by the media endpoints, not a permalink). Meta only accepts media the account owns. Sent on its own: cannot be combined with `message`, attachments, `quickReplies`, `buttons`, `template` or `sticker` (400). `messageTag: HUMAN_AGENT` is allowed. Rejected with 400 on other platforms. Works on accounts connected with Instagram Login and with Facebook Login.
+	SharedMediaId *string `json:"sharedMediaId,omitempty" validate:"regexp=^\\\\d+$"`
+	// Instagram only (JSON body only). Sends a sticker instead of text; `like_heart` is the heart sticker. Sent on its own: cannot be combined with `message`, attachments, `quickReplies`, `buttons`, `template` or `sharedMediaId` (400). `messageTag: HUMAN_AGENT` is allowed. Rejected with 400 on other platforms.
+	Sticker *string `json:"sticker,omitempty"`
 	// Quick reply buttons. Mutually exclusive with buttons. Max 13 items.
 	QuickReplies []SendInboxMessageRequestQuickRepliesInner `json:"quickReplies,omitempty"`
 	// Action buttons. Mutually exclusive with quickReplies. Max 3 items.  Instagram / Facebook: also mutually exclusive with `template`. A Meta message carries one body shape, so sending both is a 400 rather than a silent drop of the buttons. The buttons and `message` render as Meta's button_template (one bubble with the text and the buttons below it), so `message` must be 640 characters or less when buttons are attached (400 otherwise).  WhatsApp: buttons always render as interactive reply buttons. Only `title` and `payload` are used; `type`, `url`, and `phone` are ignored (WhatsApp has no URL/phone button in this field; use the `interactive` field with `type: cta_url` for a link button). `payload` becomes the button reply ID delivered on the `message.received` webhook when the user taps. To send a simple reply-button message, provide `title` + `payload` and set `type: postback`, e.g. `{ \"type\": \"postback\", \"title\": \"Yes\", \"payload\": \"yes\" }`.  Combine `buttons` with `attachmentUrl` and `attachmentType` `image`, `video`, or `file` to render one WhatsApp message with a media header, body text, and reply buttons. Audio is not a supported interactive header and returns 400 when combined with buttons.
@@ -464,6 +468,70 @@ func (o *SendInboxMessageRequest) SetChannel(v string) {
 	o.Channel = &v
 }
 
+// GetSharedMediaId returns the SharedMediaId field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetSharedMediaId() string {
+	if o == nil || IsNil(o.SharedMediaId) {
+		var ret string
+		return ret
+	}
+	return *o.SharedMediaId
+}
+
+// GetSharedMediaIdOk returns a tuple with the SharedMediaId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetSharedMediaIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SharedMediaId) {
+		return nil, false
+	}
+	return o.SharedMediaId, true
+}
+
+// HasSharedMediaId returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasSharedMediaId() bool {
+	if o != nil && !IsNil(o.SharedMediaId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSharedMediaId gets a reference to the given string and assigns it to the SharedMediaId field.
+func (o *SendInboxMessageRequest) SetSharedMediaId(v string) {
+	o.SharedMediaId = &v
+}
+
+// GetSticker returns the Sticker field value if set, zero value otherwise.
+func (o *SendInboxMessageRequest) GetSticker() string {
+	if o == nil || IsNil(o.Sticker) {
+		var ret string
+		return ret
+	}
+	return *o.Sticker
+}
+
+// GetStickerOk returns a tuple with the Sticker field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendInboxMessageRequest) GetStickerOk() (*string, bool) {
+	if o == nil || IsNil(o.Sticker) {
+		return nil, false
+	}
+	return o.Sticker, true
+}
+
+// HasSticker returns a boolean if a field has been set.
+func (o *SendInboxMessageRequest) HasSticker() bool {
+	if o != nil && !IsNil(o.Sticker) {
+		return true
+	}
+
+	return false
+}
+
+// SetSticker gets a reference to the given string and assigns it to the Sticker field.
+func (o *SendInboxMessageRequest) SetSticker(v string) {
+	o.Sticker = &v
+}
+
 // GetQuickReplies returns the QuickReplies field value if set, zero value otherwise.
 func (o *SendInboxMessageRequest) GetQuickReplies() []SendInboxMessageRequestQuickRepliesInner {
 	if o == nil || IsNil(o.QuickReplies) {
@@ -827,6 +895,12 @@ func (o SendInboxMessageRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Channel) {
 		toSerialize["channel"] = o.Channel
+	}
+	if !IsNil(o.SharedMediaId) {
+		toSerialize["sharedMediaId"] = o.SharedMediaId
+	}
+	if !IsNil(o.Sticker) {
+		toSerialize["sticker"] = o.Sticker
 	}
 	if !IsNil(o.QuickReplies) {
 		toSerialize["quickReplies"] = o.QuickReplies
