@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.314.1
+API version: 1.314.2
 Contact: support@zernio.com
 */
 
@@ -4239,6 +4239,13 @@ and campaign levels. Pagination is at the campaign level. Ads without a campaign
 ID are grouped into synthetic "Ungrouped" buckets.
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
 
+History: when an ad account connects, Zernio imports its last 90 days of metrics, so the
+metrics hold no data for days before that. When `accountId` or `adAccountId` resolves to a
+Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
+covered part while the older days (up to 730 days back) are imported in the background;
+repeat the request until it returns 200.
+A request scoped to no Meta account never returns `202`.
+
 Pass `timeIncrement=1` to also get a daily breakdown: each node gains a `daily[]` array of
 per-day metrics (same fields as the aggregated `metrics`) in the same call. Use `dailyLevel`
 (`campaign` default, or `adset` / `ad`) to choose which levels carry the series. This replaces
@@ -4482,10 +4489,14 @@ calling `/v1/ads/tree` once per day.
 ID also includes ads under the linked `facebook` / `instagram` posting account
 (and vice-versa), the same convention as `/v1/ads/tree` and `/v1/ads`.
 
-Date range defaults to the last 90 days. Capped at 730 days. Ranges older
-than the ingested history return a `202` immediately with the covered part
-and `backfillPending: true` while the rest is backfilled in the background;
-repeat the request shortly until it returns 200 with full data.
+Date range defaults to the last 90 days. Capped at 730 days.
+
+History: when an ad account connects, Zernio imports its last 90 days of metrics, so `rows`
+hold no data for days before that. When `accountId` or `adAccountId` resolves to a Meta ad
+account, a range reaching further back answers `202` with `backfillPending: true` and the
+covered part while the older days (up to 730 days back) are imported in the background;
+repeat the request until it returns 200.
+Other platforms never return `202`.
 
 With adAccountId set to a Google customer id this is the customer-level performance report (clicks, cost, impressions, conversions, all conversions per day).
 
@@ -6577,6 +6588,13 @@ Lists your ads with their performance over a date range, including ads created d
 Returns a paginated list of ads with metrics computed over an optional date range.
 Use source=all to include externally-synced ads from platform ad managers.
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
+
+History: when an ad account connects, Zernio imports its last 90 days of metrics, so the
+metrics hold no data for days before that. When `accountId` or `adAccountId` resolves to a
+Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
+covered part while the older days (up to 730 days back) are imported in the background;
+repeat the request until it returns 200.
+A request scoped to no Meta account never returns `202`.
 
 To find the Zernio ad behind a comment you see in Meta Business Manager, filter by
 platformAdId (the Meta ad ID), effectiveObjectStoryId (Facebook), or

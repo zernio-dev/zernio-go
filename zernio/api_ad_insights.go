@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.314.1
+API version: 1.314.2
 Contact: support@zernio.com
 */
 
@@ -542,6 +542,15 @@ Returns one ad's performance summary and daily timeline, with optional audience 
 Includes summary metrics, a daily timeline
 over the requested date range, and optional demographic breakdowns (Meta, TikTok and LinkedIn only).
 If no date range is provided, defaults to the last 90 days. Date range is capped at 730 days max.
+
+History: when an ad account connects, Zernio imports its last 90 days of metrics. `summary`
+and `daily` come from those synced metrics, so they hold no data for days before that.
+Breakdowns are read live from the platform over the requested range, so they are not limited
+by the import.
+When the ad belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
+covered part while the older days (up to 730 days back) are imported in the background;
+repeat the request until it returns 200.
+Other platforms never return `202`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId
@@ -1164,6 +1173,16 @@ level (one call per dimension, no per-ad fan-out), so an agency dashboard gets c
 age/gender/placement/etc. without summing thousands of per-ad reads. `campaignId` is the platform campaign id; pass
 `platform` when a campaign id could be ambiguous across platforms. If no date range is provided,
 defaults to the last 90 days. Date range is capped at 730 days max.
+
+History: when an ad account connects, Zernio imports its last 90 days of metrics. `summary`
+and `daily` come from those synced metrics, so they hold no data for days before that.
+Breakdowns and Google's impression share are read live from the platform over the requested
+range, so they are not limited by the import.
+When the campaign belongs to a Meta ad account, a range reaching further back answers `202` with `backfillPending: true` and the
+covered part while the older days (up to 730 days back) are imported in the background;
+repeat the request until it returns 200.
+Other platforms never return `202`.
+
 Google adds searchImpressionShare, searchBudgetLostImpressionShare,
 searchRankLostImpressionShare, searchTopImpressionShare and searchAbsoluteTopImpressionShare
 under analytics.summary for the requested inclusive range. These ratios are queried
