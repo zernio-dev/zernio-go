@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.321.1
+API version: 1.323.0
 Contact: support@zernio.com
 */
 
@@ -38,6 +38,8 @@ type UpdateBlogArticleRequest struct {
 	IsPublished *bool `json:"isPublished,omitempty"`
 	// ISO 8601 datetime with offset (or Z). A future date schedules publication natively on the platform.
 	PublishDate *time.Time `json:"publishDate,omitempty"`
+	// Webflow only. The collection's own fields that the Blogs API does not map, keyed by field slug, in Webflow's value format (a Reference is an item id, an Image is { url, alt }). Required by collections with required fields of their own; a create that leaves one empty answers 400 listing them. A slug the API already fills (name, slug, body, summary, image, tags, author, date) or one the collection lacks answers 400. Other platforms answer 400.
+	FieldData map[string]interface{} `json:"fieldData,omitempty"`
 }
 
 // NewUpdateBlogArticleRequest instantiates a new UpdateBlogArticleRequest object
@@ -377,6 +379,38 @@ func (o *UpdateBlogArticleRequest) SetPublishDate(v time.Time) {
 	o.PublishDate = &v
 }
 
+// GetFieldData returns the FieldData field value if set, zero value otherwise.
+func (o *UpdateBlogArticleRequest) GetFieldData() map[string]interface{} {
+	if o == nil || IsNil(o.FieldData) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.FieldData
+}
+
+// GetFieldDataOk returns a tuple with the FieldData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateBlogArticleRequest) GetFieldDataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.FieldData) {
+		return map[string]interface{}{}, false
+	}
+	return o.FieldData, true
+}
+
+// HasFieldData returns a boolean if a field has been set.
+func (o *UpdateBlogArticleRequest) HasFieldData() bool {
+	if o != nil && !IsNil(o.FieldData) {
+		return true
+	}
+
+	return false
+}
+
+// SetFieldData gets a reference to the given map[string]interface{} and assigns it to the FieldData field.
+func (o *UpdateBlogArticleRequest) SetFieldData(v map[string]interface{}) {
+	o.FieldData = v
+}
+
 func (o UpdateBlogArticleRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -416,6 +450,9 @@ func (o UpdateBlogArticleRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PublishDate) {
 		toSerialize["publishDate"] = o.PublishDate
+	}
+	if !IsNil(o.FieldData) {
+		toSerialize["fieldData"] = o.FieldData
 	}
 	return toSerialize, nil
 }
