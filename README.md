@@ -1105,8 +1105,8 @@ func main() {
 | `client.TrackingTagsAPI.DeleteTrackingTagEvent(ctx)` | Delete a conversion event |
 | `client.TrackingTagsAPI.AddTrackingTagSharedAccount(ctx)` | Share with an ad account |
 | `client.TrackingTagsAPI.AssignTrackingTagUser(ctx)` | Assign a user to a tag |
-| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store or WordPress site |
-| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store or WordPress site |
+| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store, WordPress site or Wix site |
+| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store, WordPress site or Wix site |
 | `client.TrackingTagsAPI.RemoveTrackingTagSharedAccount(ctx)` | Stop sharing with an account |
 | `client.TrackingTagsAPI.RemoveTrackingTagUser(ctx)` | Remove a user from a tag |
 

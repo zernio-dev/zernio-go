@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.323.0
+API version: 1.324.0
 Contact: support@zernio.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the StorePixelInstall type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &StorePixelInstall{}
 
-// StorePixelInstall A tracking tag's install on a connected store: a Shopify web pixel, or a Custom HTML widget on a WordPress site. Fields marked Shopify or WordPress are present only for that platform.
+// StorePixelInstall A tracking tag's install on a connected store: a Shopify web pixel, a Custom HTML widget on a WordPress site, or the Zernio embedded script on a Wix site. Fields marked Shopify, WordPress or Wix are present only for that platform.
 type StorePixelInstall struct {
 	StoreAccountId *string `json:"storeAccountId,omitempty"`
 	// The store platform.
@@ -27,18 +27,18 @@ type StorePixelInstall struct {
 	TagPlatform *string `json:"tagPlatform,omitempty"`
 	// The id the tag carries on the site (see `TrackingTag.siteTagId`).
 	SiteTagId *string `json:"siteTagId,omitempty"`
-	// Shopify: this tag is the one the store fires for its platform. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
+	// Shopify and Wix: this tag is the one the store fires for its platform. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
 	Installed *bool `json:"installed,omitempty"`
 	// Shopify only.
 	ShopDomain *string `json:"shopDomain,omitempty"`
-	// Shopify only: the tag of the same platform the store fires now (may be a different tag), or null.
+	// Shopify and Wix only: the tag of the same platform the store fires now (may be a different tag), or null.
 	InstalledTagId NullableString `json:"installedTagId,omitempty"`
-	// GET only on WordPress, always on Shopify: every Zernio tag on the store, all platforms.
+	// GET only on WordPress, always on Shopify and Wix: every Zernio tag on the store, all platforms.
 	Tags []StorePixelInstallTagsInner `json:"tags,omitempty"`
 	// Shopify only: web pixel id, or null when nothing is installed.
 	WebPixelId NullableString `json:"webPixelId,omitempty"`
-	// WordPress only.
-	SiteUrl *string `json:"siteUrl,omitempty"`
+	// WordPress and Wix only. Null on a Wix site that was never published.
+	SiteUrl NullableString `json:"siteUrl,omitempty"`
 	// WordPress only.
 	Method *string `json:"method,omitempty"`
 	// WordPress only: widget id, e.g. `custom_html-3`.
@@ -374,36 +374,47 @@ func (o *StorePixelInstall) UnsetWebPixelId() {
 	o.WebPixelId.Unset()
 }
 
-// GetSiteUrl returns the SiteUrl field value if set, zero value otherwise.
+// GetSiteUrl returns the SiteUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorePixelInstall) GetSiteUrl() string {
-	if o == nil || IsNil(o.SiteUrl) {
+	if o == nil || IsNil(o.SiteUrl.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.SiteUrl
+	return *o.SiteUrl.Get()
 }
 
 // GetSiteUrlOk returns a tuple with the SiteUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorePixelInstall) GetSiteUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.SiteUrl) {
+	if o == nil {
 		return nil, false
 	}
-	return o.SiteUrl, true
+	return o.SiteUrl.Get(), o.SiteUrl.IsSet()
 }
 
 // HasSiteUrl returns a boolean if a field has been set.
 func (o *StorePixelInstall) HasSiteUrl() bool {
-	if o != nil && !IsNil(o.SiteUrl) {
+	if o != nil && o.SiteUrl.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSiteUrl gets a reference to the given string and assigns it to the SiteUrl field.
+// SetSiteUrl gets a reference to the given NullableString and assigns it to the SiteUrl field.
 func (o *StorePixelInstall) SetSiteUrl(v string) {
-	o.SiteUrl = &v
+	o.SiteUrl.Set(&v)
+}
+
+// SetSiteUrlNil sets the value for SiteUrl to be an explicit nil
+func (o *StorePixelInstall) SetSiteUrlNil() {
+	o.SiteUrl.Set(nil)
+}
+
+// UnsetSiteUrl ensures that no value is present for SiteUrl, not even an explicit nil
+func (o *StorePixelInstall) UnsetSiteUrl() {
+	o.SiteUrl.Unset()
 }
 
 // GetMethod returns the Method field value if set, zero value otherwise.
@@ -561,8 +572,8 @@ func (o StorePixelInstall) ToMap() (map[string]interface{}, error) {
 	if o.WebPixelId.IsSet() {
 		toSerialize["webPixelId"] = o.WebPixelId.Get()
 	}
-	if !IsNil(o.SiteUrl) {
-		toSerialize["siteUrl"] = o.SiteUrl
+	if o.SiteUrl.IsSet() {
+		toSerialize["siteUrl"] = o.SiteUrl.Get()
 	}
 	if !IsNil(o.Method) {
 		toSerialize["method"] = o.Method

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.323.0
+API version: 1.324.0
 Contact: support@zernio.com
 */
 
@@ -27,17 +27,17 @@ type GetTrackingTagStoreInstall200ResponseInstall struct {
 	TagPlatform *string `json:"tagPlatform,omitempty"`
 	// The id the tag carries on the site (see `TrackingTag.siteTagId`).
 	SiteTagId *string `json:"siteTagId,omitempty"`
-	// Shopify: this tag is the one the store fires for its platform. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
+	// Shopify and Wix: this tag is the one the store fires for its platform. WordPress: the Zernio widget for this tag is in an active widget area with its script intact.
 	Installed *bool `json:"installed,omitempty"`
 	// Shopify only.
 	ShopDomain *string `json:"shopDomain,omitempty"`
-	// Shopify only: the tag of the same platform the store fires now (may be a different tag), or null.
+	// Shopify and Wix only: the tag of the same platform the store fires now (may be a different tag), or null.
 	InstalledTagId *string `json:"installedTagId,omitempty"`
-	// GET only on WordPress, always on Shopify: every Zernio tag on the store, all platforms.
+	// GET only on WordPress, always on Shopify and Wix: every Zernio tag on the store, all platforms.
 	Tags []StorePixelInstallTagsInner `json:"tags,omitempty"`
 	// Shopify only: web pixel id, or null when nothing is installed.
 	WebPixelId *string `json:"webPixelId,omitempty"`
-	// WordPress only.
+	// WordPress and Wix only. Null on a Wix site that was never published.
 	SiteUrl *string `json:"siteUrl,omitempty"`
 	// WordPress only.
 	Method *string `json:"method,omitempty"`
