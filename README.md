@@ -328,6 +328,7 @@ func main() {
 | `client.AdAccountsAPI.CreateCustomConversion(ctx)` | Create custom conversion |
 | `client.AdAccountsAPI.CreateHighDemandPeriod(ctx)` | Schedule a budget increase |
 | `client.AdAccountsAPI.CreateValueRuleSet(ctx)` | Create a value rule set |
+| `client.AdAccountsAPI.GetAdAccountBilling(ctx)` | Get ad account billing |
 | `client.AdAccountsAPI.GetAdAccountFinance(ctx)` | Ad account finances |
 | `client.AdAccountsAPI.GetAdAccountHierarchy(ctx)` | Get manager account hierarchy |
 | `client.AdAccountsAPI.GetAdAccountLiveEntities(ctx)` | Read an ad account's campaigns and ad sets live |
@@ -368,6 +369,7 @@ func main() {
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
 | `client.AdAccountsAPI.RevokeAdAccountUserInvitation(ctx)` | Revoke a user access invitation |
+| `client.AdAccountsAPI.SetUpAdAccountBilling(ctx)` | Set up ad account billing (monthly invoicing) |
 | `client.AdAccountsAPI.WithdrawAdAccountUserInvitationApproval(ctx)` | Withdraw an invitation awaiting multi-party approval |
 
 ### Ad Audiences

@@ -2783,6 +2783,184 @@ func (a *AdAccountsAPIService) DetachAdLabelExecute(r AdAccountsAPIDetachAdLabel
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type AdAccountsAPIGetAdAccountBillingRequest struct {
+	ctx         context.Context
+	ApiService  *AdAccountsAPIService
+	accountId   *string
+	adAccountId *string
+}
+
+// Google ads SocialAccount id.
+func (r AdAccountsAPIGetAdAccountBillingRequest) AccountId(accountId string) AdAccountsAPIGetAdAccountBillingRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// Google Ads customer id, digits only. Defaults to the connection&#39;s selected customer.
+func (r AdAccountsAPIGetAdAccountBillingRequest) AdAccountId(adAccountId string) AdAccountsAPIGetAdAccountBillingRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+func (r AdAccountsAPIGetAdAccountBillingRequest) Execute() (*GetAdAccountBilling200Response, *http.Response, error) {
+	return r.ApiService.GetAdAccountBillingExecute(r)
+}
+
+/*
+GetAdAccountBilling Get ad account billing
+
+Reads the payments accounts a Google Ads account can be billed to, plus its billing setups and account budgets.
+
+Payments accounts come from Google's PaymentsAccountService, read as the manager above the customer: they are the monthly invoicing (consolidated billing) accounts of that manager. An empty `paymentsAccounts` means the manager has no monthly invoicing, so billing cannot be set up through the API and has to be added in Google Ads. Billing setups and account budgets are read live from Google with their status. Results are cached for 10 minutes and dropped on every setup through Zernio.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPIGetAdAccountBillingRequest
+*/
+func (a *AdAccountsAPIService) GetAdAccountBilling(ctx context.Context) AdAccountsAPIGetAdAccountBillingRequest {
+	return AdAccountsAPIGetAdAccountBillingRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return GetAdAccountBilling200Response
+func (a *AdAccountsAPIService) GetAdAccountBillingExecute(r AdAccountsAPIGetAdAccountBillingRequest) (*GetAdAccountBilling200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GetAdAccountBilling200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.GetAdAccountBilling")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/accounts/billing"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	if r.adAccountId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type AdAccountsAPIGetAdAccountFinanceRequest struct {
 	ctx         context.Context
 	ApiService  *AdAccountsAPIService
@@ -10571,6 +10749,188 @@ func (a *AdAccountsAPIService) RevokeAdAccountUserInvitationExecute(r AdAccounts
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdAccountsAPISetUpAdAccountBillingRequest struct {
+	ctx                          context.Context
+	ApiService                   *AdAccountsAPIService
+	setUpAdAccountBillingRequest *SetUpAdAccountBillingRequest
+}
+
+func (r AdAccountsAPISetUpAdAccountBillingRequest) SetUpAdAccountBillingRequest(setUpAdAccountBillingRequest SetUpAdAccountBillingRequest) AdAccountsAPISetUpAdAccountBillingRequest {
+	r.setUpAdAccountBillingRequest = &setUpAdAccountBillingRequest
+	return r
+}
+
+func (r AdAccountsAPISetUpAdAccountBillingRequest) Execute() (*SetUpAdAccountBilling200Response, *http.Response, error) {
+	return r.ApiService.SetUpAdAccountBillingExecute(r)
+}
+
+/*
+SetUpAdAccountBilling Set up ad account billing (monthly invoicing)
+
+Bills a Google Ads account to a monthly invoicing payments account of a manager above it, and proposes its account budget, so the account can serve without anyone opening Google Ads.
+
+Monthly invoicing only. Google's API cannot add a card or other payment method, so `paymentsAccountId` must be one of the manager's monthly invoicing (consolidated billing) payments accounts listed by GET /v1/ads/accounts/billing. A manager without monthly invoicing has none, and billing has to be added in Google Ads instead.
+
+Creates a billing setup (Google's BillingSetupService) that starts now on that payments account, then an account budget proposal that starts now and never ends: unlimited by default, or capped at `spendingLimit` in the account currency. Google reviews the budget offline, usually within an hour; until then the setup reads `APPROVED_HELD` and ads do not serve. A customer whose current billing setup already has a budget is refused with 409, and so is one billed to another payments account: this call never replaces existing billing. A current setup on the same payments account without a budget (for example after a budget rejection) is reused, so resending the same request finishes it.
+
+Not idempotent and never retried: after a 502 with details.creationStatus=unknown, read GET /v1/ads/accounts/billing before retrying. Google has no dry run for billing setups, so `validateOnly: true` checks the payments account and the existing billing without creating anything (and asks Google to validate the budget when a setup would be reused).
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdAccountsAPISetUpAdAccountBillingRequest
+*/
+func (a *AdAccountsAPIService) SetUpAdAccountBilling(ctx context.Context) AdAccountsAPISetUpAdAccountBillingRequest {
+	return AdAccountsAPISetUpAdAccountBillingRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SetUpAdAccountBilling200Response
+func (a *AdAccountsAPIService) SetUpAdAccountBillingExecute(r AdAccountsAPISetUpAdAccountBillingRequest) (*SetUpAdAccountBilling200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SetUpAdAccountBilling200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdAccountsAPIService.SetUpAdAccountBilling")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/accounts/billing"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.setUpAdAccountBillingRequest == nil {
+		return localVarReturnValue, nil, reportError("setUpAdAccountBillingRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.setUpAdAccountBillingRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
