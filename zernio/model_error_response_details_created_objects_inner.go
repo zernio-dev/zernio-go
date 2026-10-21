@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.318.0
+API version: 1.318.1
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,7 @@ type ErrorResponseDetailsCreatedObjectsInner struct {
 	Type *string `json:"type,omitempty"`
 	// Meta object id; for `image` the image hash.
 	Id *string `json:"id,omitempty"`
-	// `deleted`: Zernio deleted it. `left_behind`: Meta refused the delete, so it still exists. `kept`: deliberately not deleted (image hashes are shared by every upload of the same file).
+	// `deleted`: Zernio deleted it. `left_behind`: cleanup could not delete it (Meta refused the delete, or the delete hit a network error), so it still exists. `kept`: deliberately not deleted (image hashes are shared by every upload of the same file).
 	Cleanup *string `json:"cleanup,omitempty"`
 }
 
