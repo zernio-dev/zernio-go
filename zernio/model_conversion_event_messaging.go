@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.319.0
+API version: 1.319.1
 Contact: support@zernio.com
 */
 
@@ -27,9 +27,9 @@ type ConversionEventMessaging struct {
 	WabaId *string `json:"wabaId,omitempty"`
 	// WhatsApp only. Click-to-WhatsApp click id from the first inbound message referral, sent as `ctwa_clid`.
 	CtwaClid *string `json:"ctwaClid,omitempty"`
-	// Messenger: Facebook Page id, sent as `page_id`. Instagram Direct: when `instagramBusinessAccountId` is absent, Zernio reads the Instagram professional account linked to this Page and sends its id as `instagram_business_account_id`; if none is linked or the lookup fails, `page_id` is sent instead.
+	// Messenger: Facebook Page id, sent as `page_id`. Instagram Direct: when `instagramBusinessAccountId` is absent, Zernio reads the Instagram professional account linked to this Page and sends its id as `ig_account_id`; if none is linked or the lookup fails, `page_id` is sent instead.
 	PageId *string `json:"pageId,omitempty"`
-	// Instagram Direct only. Instagram professional account id (`instagram_business_account` on the Page), sent as `instagram_business_account_id` next to `ig_sid`.
+	// Instagram Direct only. Instagram professional account id (`instagram_business_account` on the Page), sent as `ig_account_id` next to `ig_sid`.
 	InstagramBusinessAccountId *string `json:"instagramBusinessAccountId,omitempty"`
 	// Messenger only. The page-scoped user id (PSID) your Messenger webhook gives for the person, sent as `page_scoped_user_id` next to `page_id`.
 	PageScopedUserId *string `json:"pageScopedUserId,omitempty"`
