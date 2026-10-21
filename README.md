@@ -876,6 +876,7 @@ func main() {
 ### Instagram
 | Method | Description |
 |--------|-------------|
+| `client.InstagramAPI.ListInstagramLiveMedia(ctx)` | List the live broadcasts of an Instagram account |
 | `client.InstagramAPI.ListInstagramMediaCollaborators(ctx)` | List the collaborators of an Instagram post |
 | `client.InstagramAPI.ListInstagramStories(ctx)` | List active Instagram stories |
 | `client.InstagramAPI.GetInstagramAudio(ctx)` | Get Instagram audio metadata |
