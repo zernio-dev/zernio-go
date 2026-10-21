@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.320.0
+API version: 1.321.0
 Contact: support@zernio.com
 */
 
@@ -892,6 +892,7 @@ type AdTargetingAPISearchAdTargetingRequest struct {
 	geoType     *string
 	countryCode *string
 	adAccountId *string
+	locale      *string
 	limit       *int32
 }
 
@@ -928,6 +929,12 @@ func (r AdTargetingAPISearchAdTargetingRequest) CountryCode(countryCode string) 
 // TikTok only: the advertiser to search as, when the connection holds several. Each TikTok advertiser has its own targetable regions and catalogs. Defaults to the connection&#39;s first advertiser; an advertiser the connection does not hold returns 400.
 func (r AdTargetingAPISearchAdTargetingRequest) AdAccountId(adAccountId string) AdTargetingAPISearchAdTargetingRequest {
 	r.adAccountId = &adAccountId
+	return r
+}
+
+// Meta only: the language Meta matches &#x60;q&#x60; against and names results and &#x60;path&#x60; in, as language_TERRITORY (e.g. &#x60;pl_PL&#x60;, &#x60;en_US&#x60;). Applies to &#x60;geo&#x60;, &#x60;interest&#x60;, &#x60;interestSuggestion&#x60;, &#x60;behavior&#x60;, &#x60;workPosition&#x60;, &#x60;workEmployer&#x60; and &#x60;workIndustry&#x60;. Without it, &#x60;behavior&#x60; and &#x60;workIndustry&#x60; use &#x60;en_US&#x60; and the other searches use the language of the Facebook user who connected the account. &#x60;income&#x60; always uses &#x60;en_US&#x60;. Ignored on other platforms.
+func (r AdTargetingAPISearchAdTargetingRequest) Locale(locale string) AdTargetingAPISearchAdTargetingRequest {
+	r.locale = &locale
 	return r
 }
 
@@ -1088,6 +1095,18 @@ category as `path`.
 For geo queries, `q` should contain only the locality name (e.g. `"Amsterdam"`,
 not `"Amsterdam, NL"`). Use `countryCode` to disambiguate.
 
+Meta language: Meta matches `q` against names in one language and returns names and `path` in
+that language. Pass `locale` (e.g. `pl_PL`) to choose it. Without `locale`, the `behavior` and
+`workIndustry` catalogs are in `en_US`, and `interest`, `interestSuggestion`, `geo`, `workPosition`
+and `workEmployer` follow the language of the Facebook user who connected the account (so a
+Russian-language Facebook user gets Russian paths, and Polish names need `locale=pl_PL`).
+A non-English `behavior` or `workIndustry` query without `locale` never matches, so pass the
+locale of the names you search. Meta's `interest` search matches its own interest names and has no fuzzy or
+synonym mode, so a phrase Meta does not use as an interest name (e.g. `dental implants`) can
+return nothing while a shorter word (`dentistry`) does. If Meta returns an empty `behavior`,
+`workIndustry` or `income` catalog the request fails with a 502 `platform_api_error` instead of
+an empty `results` list.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AdTargetingAPISearchAdTargetingRequest
 */
@@ -1147,6 +1166,9 @@ func (a *AdTargetingAPIService) SearchAdTargetingExecute(r AdTargetingAPISearchA
 	}
 	if r.adAccountId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	}
+	if r.locale != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "locale", r.locale, "form", "")
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
