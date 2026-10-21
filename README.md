@@ -303,6 +303,7 @@ func main() {
 | `client.AdAccountsAPI.ListAccountCallouts(ctx)` | List account callouts |
 | `client.AdAccountsAPI.ListAccountSitelinks(ctx)` | List account sitelinks |
 | `client.AdAccountsAPI.ListAccountStructuredSnippets(ctx)` | List account snippets |
+| `client.AdAccountsAPI.ListAdAccountUserInvitationApprovals(ctx)` | List invitations awaiting multi-party approval |
 | `client.AdAccountsAPI.ListAdAccountUserInvitations(ctx)` | List user access invitations |
 | `client.AdAccountsAPI.ListAdAccountUsers(ctx)` | Ad account users |
 | `client.AdAccountsAPI.ListAdAccounts(ctx)` | List ad accounts |
@@ -366,6 +367,7 @@ func main() {
 | `client.AdAccountsAPI.ReplaceAdNegativeKeywordListKeywords(ctx)` | Replace negative list keywords |
 | `client.AdAccountsAPI.ReplyToAdComment(ctx)` | Reply to an ad comment |
 | `client.AdAccountsAPI.RevokeAdAccountUserInvitation(ctx)` | Revoke a user access invitation |
+| `client.AdAccountsAPI.WithdrawAdAccountUserInvitationApproval(ctx)` | Withdraw an invitation awaiting multi-party approval |
 
 ### Ad Audiences
 | Method | Description |

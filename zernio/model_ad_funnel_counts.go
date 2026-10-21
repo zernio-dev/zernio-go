@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.314.2
+API version: 1.315.1
 Contact: support@zernio.com
 */
 
@@ -34,7 +34,7 @@ type AdFunnelCounts struct {
 	CheckoutsInitiated *int32 `json:"checkoutsInitiated,omitempty"`
 	// Payment details added at checkout (Meta `AddPaymentInfo` pixel event).
 	PaymentInfoAdds *int32 `json:"paymentInfoAdds,omitempty"`
-	// Purchases (Meta `Purchase` pixel event). Pair with `purchaseValue` for revenue.
+	// Purchases. Meta reports one purchase under several action types at once, so this takes the FIRST one present, in this order, never a sum: `offsite_conversion.fb_pixel_purchase`, `omni_purchase`, `app_custom_event.fb_mobile_purchase`, `onsite_conversion.purchase`, `purchase`. It always counts purchases, whatever the ad set optimizes for. `conversions` instead follows the ad set's optimization event (PURCHASE when the ad set names none), so the two can differ on any other goal. TikTok: app purchases (`purchase`), else website complete payments (`complete_payment`), else Place an Order (`place_order`). Pair with `purchaseValue` for revenue.
 	Purchases *int32 `json:"purchases,omitempty"`
 	// Leads, from either the website pixel or an instant form, whichever the ad uses.
 	Leads *int32 `json:"leads,omitempty"`
