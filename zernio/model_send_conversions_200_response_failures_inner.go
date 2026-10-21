@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.315.2
+API version: 1.316.0
 Contact: support@zernio.com
 */
 
@@ -26,6 +26,8 @@ type SendConversions200ResponseFailuresInner struct {
 	EventId *string                                      `json:"eventId,omitempty"`
 	Message *string                                      `json:"message,omitempty"`
 	Code    *SendConversions200ResponseFailuresInnerCode `json:"code,omitempty"`
+	// Meta only. Meta's own error for the rejected chunk, with credentials redacted: `message`, `type`, `code`, `error_subcode`, `error_user_title`, `error_user_msg` and `fbtrace_id` when Meta sends them. `message` above already ends with `error_user_msg`. Absent when Meta returned no error body.
+	PlatformError map[string]interface{} `json:"platformError,omitempty"`
 }
 
 // NewSendConversions200ResponseFailuresInner instantiates a new SendConversions200ResponseFailuresInner object
@@ -173,6 +175,38 @@ func (o *SendConversions200ResponseFailuresInner) SetCode(v SendConversions200Re
 	o.Code = &v
 }
 
+// GetPlatformError returns the PlatformError field value if set, zero value otherwise.
+func (o *SendConversions200ResponseFailuresInner) GetPlatformError() map[string]interface{} {
+	if o == nil || IsNil(o.PlatformError) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.PlatformError
+}
+
+// GetPlatformErrorOk returns a tuple with the PlatformError field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SendConversions200ResponseFailuresInner) GetPlatformErrorOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.PlatformError) {
+		return map[string]interface{}{}, false
+	}
+	return o.PlatformError, true
+}
+
+// HasPlatformError returns a boolean if a field has been set.
+func (o *SendConversions200ResponseFailuresInner) HasPlatformError() bool {
+	if o != nil && !IsNil(o.PlatformError) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlatformError gets a reference to the given map[string]interface{} and assigns it to the PlatformError field.
+func (o *SendConversions200ResponseFailuresInner) SetPlatformError(v map[string]interface{}) {
+	o.PlatformError = v
+}
+
 func (o SendConversions200ResponseFailuresInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -194,6 +228,9 @@ func (o SendConversions200ResponseFailuresInner) ToMap() (map[string]interface{}
 	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
+	}
+	if !IsNil(o.PlatformError) {
+		toSerialize["platformError"] = o.PlatformError
 	}
 	return toSerialize, nil
 }

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.315.2
+API version: 1.316.0
 Contact: support@zernio.com
 */
 
@@ -27,8 +27,10 @@ type ConversionEventMessaging struct {
 	WabaId *string `json:"wabaId,omitempty"`
 	// WhatsApp only. Click-to-WhatsApp click id from the first inbound message referral, sent as `ctwa_clid`.
 	CtwaClid *string `json:"ctwaClid,omitempty"`
-	// Messenger and Instagram Direct. Facebook Page id, sent as `page_id`.
+	// Messenger: Facebook Page id, sent as `page_id`. Instagram Direct: when `instagramBusinessAccountId` is absent, Zernio reads the Instagram professional account linked to this Page and sends its id as `instagram_business_account_id`; if none is linked or the lookup fails, `page_id` is sent instead.
 	PageId *string `json:"pageId,omitempty"`
+	// Instagram Direct only. Instagram professional account id (`instagram_business_account` on the Page), sent as `instagram_business_account_id` next to `ig_sid`.
+	InstagramBusinessAccountId *string `json:"instagramBusinessAccountId,omitempty"`
 	// Messenger only. The page-scoped user id (PSID) your Messenger webhook gives for the person, sent as `page_scoped_user_id` next to `page_id`.
 	PageScopedUserId *string `json:"pageScopedUserId,omitempty"`
 	// Instagram Direct only. The Instagram-scoped user id (IGSID) your Instagram messaging webhook gives for the person, sent as `ig_sid`.
@@ -175,6 +177,38 @@ func (o *ConversionEventMessaging) SetPageId(v string) {
 	o.PageId = &v
 }
 
+// GetInstagramBusinessAccountId returns the InstagramBusinessAccountId field value if set, zero value otherwise.
+func (o *ConversionEventMessaging) GetInstagramBusinessAccountId() string {
+	if o == nil || IsNil(o.InstagramBusinessAccountId) {
+		var ret string
+		return ret
+	}
+	return *o.InstagramBusinessAccountId
+}
+
+// GetInstagramBusinessAccountIdOk returns a tuple with the InstagramBusinessAccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConversionEventMessaging) GetInstagramBusinessAccountIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InstagramBusinessAccountId) {
+		return nil, false
+	}
+	return o.InstagramBusinessAccountId, true
+}
+
+// HasInstagramBusinessAccountId returns a boolean if a field has been set.
+func (o *ConversionEventMessaging) HasInstagramBusinessAccountId() bool {
+	if o != nil && !IsNil(o.InstagramBusinessAccountId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstagramBusinessAccountId gets a reference to the given string and assigns it to the InstagramBusinessAccountId field.
+func (o *ConversionEventMessaging) SetInstagramBusinessAccountId(v string) {
+	o.InstagramBusinessAccountId = &v
+}
+
 // GetPageScopedUserId returns the PageScopedUserId field value if set, zero value otherwise.
 func (o *ConversionEventMessaging) GetPageScopedUserId() string {
 	if o == nil || IsNil(o.PageScopedUserId) {
@@ -258,6 +292,9 @@ func (o ConversionEventMessaging) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.PageId) {
 		toSerialize["pageId"] = o.PageId
+	}
+	if !IsNil(o.InstagramBusinessAccountId) {
+		toSerialize["instagramBusinessAccountId"] = o.InstagramBusinessAccountId
 	}
 	if !IsNil(o.PageScopedUserId) {
 		toSerialize["pageScopedUserId"] = o.PageScopedUserId
