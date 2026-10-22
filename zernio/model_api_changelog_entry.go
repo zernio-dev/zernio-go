@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.326.0
+API version: 1.327.0
 Contact: support@zernio.com
 */
 
@@ -31,7 +31,11 @@ type ApiChangelogEntry struct {
 	Impact NullableString `json:"impact"`
 	// Platform and area slugs the entry is about: a platform (`instagram`, `facebook`, `threads`, `tiktok`, `x`, `linkedin`, `youtube`, `pinterest`, `reddit`, `bluesky`, `telegram`, `snapchat`, `whatsapp`, `discord`, `slack`, `google-business`, `imessage`), an ads platform (`meta-ads`, `google-ads`, `tiktok-ads`, `linkedin-ads`, `pinterest-ads`, `x-ads`) or an area (`ads`, `publishing`, `inbox`, `telephony`, `commerce`, `analytics`, `webhooks`, `general`). Filter with the `platform` query parameter.
 	Platforms []string `json:"platforms"`
-	// The announcement, in Markdown.
+	// The change in a few words, for example `Delete inbox conversations`. Null on older entries.
+	Title NullableString `json:"title"`
+	// One or two plain sentences on what changed and why it matters. Null when `title` is.
+	Summary NullableString `json:"summary"`
+	// The details in Markdown: endpoints, fields and how to use them.
 	Message     string    `json:"message"`
 	PublishedAt time.Time `json:"publishedAt"`
 	// The `info.version` of the OpenAPI spec the entry describes, when known.
@@ -47,12 +51,14 @@ type _ApiChangelogEntry ApiChangelogEntry
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApiChangelogEntry(id string, type_ string, impact NullableString, platforms []string, message string, publishedAt time.Time, specVersion NullableString, url string, changes ApiChangelogEntryChanges) *ApiChangelogEntry {
+func NewApiChangelogEntry(id string, type_ string, impact NullableString, platforms []string, title NullableString, summary NullableString, message string, publishedAt time.Time, specVersion NullableString, url string, changes ApiChangelogEntryChanges) *ApiChangelogEntry {
 	this := ApiChangelogEntry{}
 	this.Id = id
 	this.Type = type_
 	this.Impact = impact
 	this.Platforms = platforms
+	this.Title = title
+	this.Summary = summary
 	this.Message = message
 	this.PublishedAt = publishedAt
 	this.SpecVersion = specVersion
@@ -165,6 +171,58 @@ func (o *ApiChangelogEntry) GetPlatformsOk() ([]string, bool) {
 // SetPlatforms sets field value
 func (o *ApiChangelogEntry) SetPlatforms(v []string) {
 	o.Platforms = v
+}
+
+// GetTitle returns the Title field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *ApiChangelogEntry) GetTitle() string {
+	if o == nil || o.Title.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Title.Get()
+}
+
+// GetTitleOk returns a tuple with the Title field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiChangelogEntry) GetTitleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Title.Get(), o.Title.IsSet()
+}
+
+// SetTitle sets field value
+func (o *ApiChangelogEntry) SetTitle(v string) {
+	o.Title.Set(&v)
+}
+
+// GetSummary returns the Summary field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *ApiChangelogEntry) GetSummary() string {
+	if o == nil || o.Summary.Get() == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Summary.Get()
+}
+
+// GetSummaryOk returns a tuple with the Summary field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiChangelogEntry) GetSummaryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Summary.Get(), o.Summary.IsSet()
+}
+
+// SetSummary sets field value
+func (o *ApiChangelogEntry) SetSummary(v string) {
+	o.Summary.Set(&v)
 }
 
 // GetMessage returns the Message field value
@@ -303,6 +361,8 @@ func (o ApiChangelogEntry) ToMap() (map[string]interface{}, error) {
 	toSerialize["type"] = o.Type
 	toSerialize["impact"] = o.Impact.Get()
 	toSerialize["platforms"] = o.Platforms
+	toSerialize["title"] = o.Title.Get()
+	toSerialize["summary"] = o.Summary.Get()
 	toSerialize["message"] = o.Message
 	toSerialize["publishedAt"] = o.PublishedAt
 	toSerialize["specVersion"] = o.SpecVersion.Get()
@@ -320,6 +380,8 @@ func (o *ApiChangelogEntry) UnmarshalJSON(data []byte) (err error) {
 		"type",
 		"impact",
 		"platforms",
+		"title",
+		"summary",
 		"message",
 		"publishedAt",
 		"specVersion",
