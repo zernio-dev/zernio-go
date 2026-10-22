@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.334.0
+API version: 1.335.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,9 @@ type GetAdsSearchTerms200ResponseDataInner struct {
 	// ADDED / EXCLUDED / ADDED_EXCLUDED / NONE: whether the term is already a keyword or a negative.
 	Status NullableString `json:"status,omitempty"`
 	// How the term matched (BROAD, PHRASE, EXACT, NEAR_PHRASE, NEAR_EXACT).
-	MatchType    NullableString `json:"matchType,omitempty"`
+	MatchType NullableString `json:"matchType,omitempty"`
+	// What matched the term: ADVERTISER_PROVIDED_KEYWORD (one of your keywords), AI_MAX_BROAD_MATCH or AI_MAX_KEYWORDLESS (AI Max expansion).
+	MatchSource  NullableString `json:"matchSource,omitempty"`
 	CampaignId   NullableString `json:"campaignId,omitempty"`
 	CampaignName NullableString `json:"campaignName,omitempty"`
 	AdGroupId    NullableString `json:"adGroupId,omitempty"`
@@ -181,6 +183,49 @@ func (o *GetAdsSearchTerms200ResponseDataInner) SetMatchTypeNil() {
 // UnsetMatchType ensures that no value is present for MatchType, not even an explicit nil
 func (o *GetAdsSearchTerms200ResponseDataInner) UnsetMatchType() {
 	o.MatchType.Unset()
+}
+
+// GetMatchSource returns the MatchSource field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GetAdsSearchTerms200ResponseDataInner) GetMatchSource() string {
+	if o == nil || IsNil(o.MatchSource.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.MatchSource.Get()
+}
+
+// GetMatchSourceOk returns a tuple with the MatchSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GetAdsSearchTerms200ResponseDataInner) GetMatchSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MatchSource.Get(), o.MatchSource.IsSet()
+}
+
+// HasMatchSource returns a boolean if a field has been set.
+func (o *GetAdsSearchTerms200ResponseDataInner) HasMatchSource() bool {
+	if o != nil && o.MatchSource.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchSource gets a reference to the given NullableString and assigns it to the MatchSource field.
+func (o *GetAdsSearchTerms200ResponseDataInner) SetMatchSource(v string) {
+	o.MatchSource.Set(&v)
+}
+
+// SetMatchSourceNil sets the value for MatchSource to be an explicit nil
+func (o *GetAdsSearchTerms200ResponseDataInner) SetMatchSourceNil() {
+	o.MatchSource.Set(nil)
+}
+
+// UnsetMatchSource ensures that no value is present for MatchSource, not even an explicit nil
+func (o *GetAdsSearchTerms200ResponseDataInner) UnsetMatchSource() {
+	o.MatchSource.Unset()
 }
 
 // GetCampaignId returns the CampaignId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -533,6 +578,9 @@ func (o GetAdsSearchTerms200ResponseDataInner) ToMap() (map[string]interface{}, 
 	}
 	if o.MatchType.IsSet() {
 		toSerialize["matchType"] = o.MatchType.Get()
+	}
+	if o.MatchSource.IsSet() {
+		toSerialize["matchSource"] = o.MatchSource.Get()
 	}
 	if o.CampaignId.IsSet() {
 		toSerialize["campaignId"] = o.CampaignId.Get()
