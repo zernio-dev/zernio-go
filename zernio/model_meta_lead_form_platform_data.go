@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.324.0
+API version: 1.325.0
 Contact: support@zernio.com
 */
 
@@ -36,10 +36,11 @@ type MetaLeadFormPlatformData struct {
 	// Set true for a higher-intent form (adds a review step before submit).
 	IsOptimizedForQuality *bool `json:"isOptimizedForQuality,omitempty"`
 	// Requires the lead to verify their phone number over SMS before the form submits (Meta is_phone_sms_verify_enabled). Only meaningful on a form with a PHONE question. Meta can restrict this parameter to apps holding a capability: when it does, the create fails with a 422 naming platformSpecificData.isPhoneSmsVerifyEnabled, and the toggle then has to be set in Meta's form builder.
-	IsPhoneSmsVerifyEnabled          *bool                                `json:"isPhoneSmsVerifyEnabled,omitempty"`
-	BlockDisplayForNonTargetedViewer *bool                                `json:"blockDisplayForNonTargetedViewer,omitempty"`
-	QuestionPageCustomHeadline       *string                              `json:"questionPageCustomHeadline,omitempty"`
-	ContextCard                      *MetaLeadFormPlatformDataContextCard `json:"contextCard,omitempty"`
+	IsPhoneSmsVerifyEnabled          *bool                                     `json:"isPhoneSmsVerifyEnabled,omitempty"`
+	BlockDisplayForNonTargetedViewer *bool                                     `json:"blockDisplayForNonTargetedViewer,omitempty"`
+	QuestionPageCustomHeadline       *string                                   `json:"questionPageCustomHeadline,omitempty"`
+	ContextCard                      *MetaLeadFormPlatformDataContextCard      `json:"contextCard,omitempty"`
+	CustomDisclaimer                 *MetaLeadFormPlatformDataCustomDisclaimer `json:"customDisclaimer,omitempty"`
 }
 
 type _MetaLeadFormPlatformData MetaLeadFormPlatformData
@@ -542,6 +543,38 @@ func (o *MetaLeadFormPlatformData) SetContextCard(v MetaLeadFormPlatformDataCont
 	o.ContextCard = &v
 }
 
+// GetCustomDisclaimer returns the CustomDisclaimer field value if set, zero value otherwise.
+func (o *MetaLeadFormPlatformData) GetCustomDisclaimer() MetaLeadFormPlatformDataCustomDisclaimer {
+	if o == nil || IsNil(o.CustomDisclaimer) {
+		var ret MetaLeadFormPlatformDataCustomDisclaimer
+		return ret
+	}
+	return *o.CustomDisclaimer
+}
+
+// GetCustomDisclaimerOk returns a tuple with the CustomDisclaimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaLeadFormPlatformData) GetCustomDisclaimerOk() (*MetaLeadFormPlatformDataCustomDisclaimer, bool) {
+	if o == nil || IsNil(o.CustomDisclaimer) {
+		return nil, false
+	}
+	return o.CustomDisclaimer, true
+}
+
+// HasCustomDisclaimer returns a boolean if a field has been set.
+func (o *MetaLeadFormPlatformData) HasCustomDisclaimer() bool {
+	if o != nil && !IsNil(o.CustomDisclaimer) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomDisclaimer gets a reference to the given MetaLeadFormPlatformDataCustomDisclaimer and assigns it to the CustomDisclaimer field.
+func (o *MetaLeadFormPlatformData) SetCustomDisclaimer(v MetaLeadFormPlatformDataCustomDisclaimer) {
+	o.CustomDisclaimer = &v
+}
+
 func (o MetaLeadFormPlatformData) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -594,6 +627,9 @@ func (o MetaLeadFormPlatformData) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ContextCard) {
 		toSerialize["contextCard"] = o.ContextCard
+	}
+	if !IsNil(o.CustomDisclaimer) {
+		toSerialize["customDisclaimer"] = o.CustomDisclaimer
 	}
 	return toSerialize, nil
 }

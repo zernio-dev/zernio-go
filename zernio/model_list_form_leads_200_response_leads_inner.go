@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.324.0
+API version: 1.325.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,12 @@ var _ MappedNullable = &ListFormLeads200ResponseLeadsInner{}
 
 // ListFormLeads200ResponseLeadsInner struct for ListFormLeads200ResponseLeadsInner
 type ListFormLeads200ResponseLeadsInner struct {
-	Id          *string                  `json:"id,omitempty"`
+	// Meta leadgenId.
+	Id *string `json:"id,omitempty"`
+	// Zernio lead id, for PATCH /v1/ads/leads/{id}. Only on persisted leads.
+	LeadId *string `json:"leadId,omitempty"`
+	// Lead status (see PATCH /v1/ads/leads/{id}). Only on persisted leads.
+	Status      *string                  `json:"status,omitempty"`
 	CreatedTime NullableString           `json:"createdTime,omitempty"`
 	AdId        NullableString           `json:"adId,omitempty"`
 	FormId      *string                  `json:"formId,omitempty"`
@@ -75,6 +80,70 @@ func (o *ListFormLeads200ResponseLeadsInner) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *ListFormLeads200ResponseLeadsInner) SetId(v string) {
 	o.Id = &v
+}
+
+// GetLeadId returns the LeadId field value if set, zero value otherwise.
+func (o *ListFormLeads200ResponseLeadsInner) GetLeadId() string {
+	if o == nil || IsNil(o.LeadId) {
+		var ret string
+		return ret
+	}
+	return *o.LeadId
+}
+
+// GetLeadIdOk returns a tuple with the LeadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListFormLeads200ResponseLeadsInner) GetLeadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.LeadId) {
+		return nil, false
+	}
+	return o.LeadId, true
+}
+
+// HasLeadId returns a boolean if a field has been set.
+func (o *ListFormLeads200ResponseLeadsInner) HasLeadId() bool {
+	if o != nil && !IsNil(o.LeadId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLeadId gets a reference to the given string and assigns it to the LeadId field.
+func (o *ListFormLeads200ResponseLeadsInner) SetLeadId(v string) {
+	o.LeadId = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *ListFormLeads200ResponseLeadsInner) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListFormLeads200ResponseLeadsInner) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *ListFormLeads200ResponseLeadsInner) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *ListFormLeads200ResponseLeadsInner) SetStatus(v string) {
+	o.Status = &v
 }
 
 // GetCreatedTime returns the CreatedTime field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -271,6 +340,12 @@ func (o ListFormLeads200ResponseLeadsInner) ToMap() (map[string]interface{}, err
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.LeadId) {
+		toSerialize["leadId"] = o.LeadId
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
 	}
 	if o.CreatedTime.IsSet() {
 		toSerialize["createdTime"] = o.CreatedTime.Get()

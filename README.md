@@ -899,6 +899,7 @@ func main() {
 | `client.LeadGenAPI.CreateLeadForm(ctx)` | Create a lead form |
 | `client.LeadGenAPI.CreateTestLead(ctx)` | Create a test lead |
 | `client.LeadGenAPI.GetLeadForm(ctx)` | Get a lead form |
+| `client.LeadGenAPI.UpdateLead(ctx)` | Update a lead's status |
 | `client.LeadGenAPI.DeleteTestLead(ctx)` | Delete a test lead |
 | `client.LeadGenAPI.ArchiveLeadForm(ctx)` | Archive a lead form |
 

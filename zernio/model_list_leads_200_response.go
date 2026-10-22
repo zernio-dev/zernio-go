@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.324.0
+API version: 1.325.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &ListLeads200Response{}
 // ListLeads200Response struct for ListLeads200Response
 type ListLeads200Response struct {
 	Status     *string                                    `json:"status,omitempty"`
-	Leads      []ListLeads200ResponseLeadsInner           `json:"leads,omitempty"`
+	Leads      []AdLead                                   `json:"leads,omitempty"`
 	Pagination *GetInboxPostComments200ResponsePagination `json:"pagination,omitempty"`
 	Meta       *ListLeads200ResponseMeta                  `json:"meta,omitempty"`
 }
@@ -76,9 +76,9 @@ func (o *ListLeads200Response) SetStatus(v string) {
 }
 
 // GetLeads returns the Leads field value if set, zero value otherwise.
-func (o *ListLeads200Response) GetLeads() []ListLeads200ResponseLeadsInner {
+func (o *ListLeads200Response) GetLeads() []AdLead {
 	if o == nil || IsNil(o.Leads) {
-		var ret []ListLeads200ResponseLeadsInner
+		var ret []AdLead
 		return ret
 	}
 	return o.Leads
@@ -86,7 +86,7 @@ func (o *ListLeads200Response) GetLeads() []ListLeads200ResponseLeadsInner {
 
 // GetLeadsOk returns a tuple with the Leads field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListLeads200Response) GetLeadsOk() ([]ListLeads200ResponseLeadsInner, bool) {
+func (o *ListLeads200Response) GetLeadsOk() ([]AdLead, bool) {
 	if o == nil || IsNil(o.Leads) {
 		return nil, false
 	}
@@ -102,8 +102,8 @@ func (o *ListLeads200Response) HasLeads() bool {
 	return false
 }
 
-// SetLeads gets a reference to the given []ListLeads200ResponseLeadsInner and assigns it to the Leads field.
-func (o *ListLeads200Response) SetLeads(v []ListLeads200ResponseLeadsInner) {
+// SetLeads gets a reference to the given []AdLead and assigns it to the Leads field.
+func (o *ListLeads200Response) SetLeads(v []AdLead) {
 	o.Leads = v
 }
 
