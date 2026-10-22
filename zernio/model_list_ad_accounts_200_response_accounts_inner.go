@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.333.2
+API version: 1.334.0
 Contact: support@zernio.com
 */
 
@@ -60,7 +60,7 @@ type ListAdAccounts200ResponseAccountsInner struct {
 	Selectable *bool `json:"selectable,omitempty"`
 	// Meta and X only. Always present on every Meta and X account. Human-readable reason when selectable is false; null when selectable.
 	UnusableReason NullableString `json:"unusableReason,omitempty"`
-	// Always present. True when the ad account is in this connection's ad-account selection, or when the connection has no selection (then every ad account is usable). For a posting account (e.g. facebook, twitter) the selection of its ads connection applies. Unrelated to `selectable`, which is the platform's own status. Writes to an ad account with `selected: false` will answer 403 `ad_account_not_selected`.
+	// Always present. True when the ad account is in this connection's ad-account selection, or when the connection has no selection (then every ad account is usable). For a posting account (e.g. facebook, twitter) the selection of its ads connection applies. Unrelated to `selectable`, which is the platform's own status. Writes to an ad account with `selected: false` answer 403 `ad_account_not_selected`; `inScopeOnly=true` lists only the selected ones.
 	Selected *bool `json:"selected,omitempty"`
 }
 
