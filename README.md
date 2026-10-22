@@ -889,6 +889,8 @@ func main() {
 | `client.InstagramAPI.ListInstagramTaggedMedia(ctx)` | List the posts an Instagram account is tagged in |
 | `client.InstagramAPI.GetInstagramAudio(ctx)` | Get Instagram audio metadata |
 | `client.InstagramAPI.GetInstagramBusinessDiscovery(ctx)` | Look up a public Instagram Business account |
+| `client.InstagramAPI.GetInstagramMentionedComment(ctx)` | Get a comment that mentions an Instagram account |
+| `client.InstagramAPI.GetInstagramMentionedMedia(ctx)` | Get a post that mentions an Instagram account in its caption |
 | `client.InstagramAPI.GetInstagramPublishingLimit(ctx)` | Get Instagram publishing limit |
 | `client.InstagramAPI.GetInstagramStoryInsights(ctx)` | Get Instagram story insights |
 | `client.InstagramAPI.SearchInstagramAudio(ctx)` | Search Instagram audio |
