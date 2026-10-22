@@ -397,6 +397,7 @@ model_commerce_metaobject_definition_fields_inner.go
 model_commerce_metaobject_fields_inner.go
 model_commerce_money.go
 model_commerce_order.go
+model_commerce_order_attribution.go
 model_commerce_order_charge_line.go
 model_commerce_order_customer.go
 model_commerce_order_fulfillments_inner.go
@@ -404,6 +405,8 @@ model_commerce_order_line_items_inner.go
 model_commerce_order_refunds_inner.go
 model_commerce_order_refunds_inner_line_items_inner.go
 model_commerce_order_status.go
+model_commerce_order_visit.go
+model_commerce_order_visit_utm.go
 model_commerce_page.go
 model_commerce_price_list.go
 model_commerce_product.go

@@ -55,6 +55,7 @@ type CommerceOrder struct {
 	BillingAddress  NullableCommerceAddress       `json:"billingAddress,omitempty"`
 	ShippingAddress NullableCommerceAddress       `json:"shippingAddress,omitempty"`
 	BuyerNote       NullableString                `json:"buyerNote,omitempty"`
+	Attribution     *CommerceOrderAttribution     `json:"attribution,omitempty"`
 	LineItems       []CommerceOrderLineItemsInner `json:"lineItems,omitempty"`
 	ShippingLines   []CommerceOrderChargeLine     `json:"shippingLines,omitempty"`
 	// WooCommerce fees. Always empty on Shopify.
@@ -1036,6 +1037,38 @@ func (o *CommerceOrder) UnsetBuyerNote() {
 	o.BuyerNote.Unset()
 }
 
+// GetAttribution returns the Attribution field value if set, zero value otherwise.
+func (o *CommerceOrder) GetAttribution() CommerceOrderAttribution {
+	if o == nil || IsNil(o.Attribution) {
+		var ret CommerceOrderAttribution
+		return ret
+	}
+	return *o.Attribution
+}
+
+// GetAttributionOk returns a tuple with the Attribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommerceOrder) GetAttributionOk() (*CommerceOrderAttribution, bool) {
+	if o == nil || IsNil(o.Attribution) {
+		return nil, false
+	}
+	return o.Attribution, true
+}
+
+// HasAttribution returns a boolean if a field has been set.
+func (o *CommerceOrder) HasAttribution() bool {
+	if o != nil && !IsNil(o.Attribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttribution gets a reference to the given CommerceOrderAttribution and assigns it to the Attribution field.
+func (o *CommerceOrder) SetAttribution(v CommerceOrderAttribution) {
+	o.Attribution = &v
+}
+
 // GetLineItems returns the LineItems field value if set, zero value otherwise.
 func (o *CommerceOrder) GetLineItems() []CommerceOrderLineItemsInner {
 	if o == nil || IsNil(o.LineItems) {
@@ -1351,6 +1384,9 @@ func (o CommerceOrder) ToMap() (map[string]interface{}, error) {
 	}
 	if o.BuyerNote.IsSet() {
 		toSerialize["buyerNote"] = o.BuyerNote.Get()
+	}
+	if !IsNil(o.Attribution) {
+		toSerialize["attribution"] = o.Attribution
 	}
 	if !IsNil(o.LineItems) {
 		toSerialize["lineItems"] = o.LineItems
