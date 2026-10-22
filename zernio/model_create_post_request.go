@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.327.0
+API version: 1.328.0
 Contact: support@zernio.com
 */
 
@@ -35,6 +35,8 @@ type CreatePostRequest struct {
 	PublishNow *bool `json:"publishNow,omitempty"`
 	// When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
 	IsDraft *bool `json:"isDraft,omitempty"`
+	// When true, saves the post as pending_approval instead of scheduled. Needs scheduledFor, at the root or on every platform; cannot be combined with isDraft, publishNow, queuedFromProfile or queueId. The post publishes only after POST /v1/posts/{postId}/review approves it; approving after the scheduled time publishes within a couple of minutes.
+	RequiresApproval *bool `json:"requiresApproval,omitempty"`
 	// TikTok only. Preview whether each `tiktok` entry in `platforms` could publish right now under the TikTok Direct Post daily limits, without creating, scheduling or publishing anything: no post is persisted and no upload slot is claimed, so it can be repeated freely. The request still goes through auth, the payment gate and body validation, then returns HTTP 200 with `{ dryRun: true, canPublish, tiktok: [...] }` instead of 201. Only `tiktok` entries are evaluated; other platforms in the body are ignored, and a body with no `tiktok` entry is rejected with 400 `invalid_field_value` on `platforms`. An entry with `platformSpecificData.tiktokSettings.draft: true` (Creator Inbox upload) is not subject to the limit and always reports `canPublish: true`. Accounts connected through the TikTok for Business app do not go through these limits at all and also always report `canPublish: true`, so on those accounts a dry run confirms the request is well-formed rather than gating it.
 	DryRun *bool `json:"dryRun,omitempty"`
 	// IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset, and stored on the post. Has no effect on values that already carry one. When omitted, the post takes its profile's `timezone` (the queue's profile for a queued post, else the profile its accounts share), and UTC when there is none or the accounts sit on profiles with different timezones. An unknown name returns 400 when `scheduledFor` is set.
@@ -70,6 +72,8 @@ func NewCreatePostRequest() *CreatePostRequest {
 	this.PublishNow = &publishNow
 	var isDraft bool = false
 	this.IsDraft = &isDraft
+	var requiresApproval bool = false
+	this.RequiresApproval = &requiresApproval
 	var dryRun bool = false
 	this.DryRun = &dryRun
 	var crosspostingEnabled bool = true
@@ -86,6 +90,8 @@ func NewCreatePostRequestWithDefaults() *CreatePostRequest {
 	this.PublishNow = &publishNow
 	var isDraft bool = false
 	this.IsDraft = &isDraft
+	var requiresApproval bool = false
+	this.RequiresApproval = &requiresApproval
 	var dryRun bool = false
 	this.DryRun = &dryRun
 	var crosspostingEnabled bool = true
@@ -315,6 +321,38 @@ func (o *CreatePostRequest) HasIsDraft() bool {
 // SetIsDraft gets a reference to the given bool and assigns it to the IsDraft field.
 func (o *CreatePostRequest) SetIsDraft(v bool) {
 	o.IsDraft = &v
+}
+
+// GetRequiresApproval returns the RequiresApproval field value if set, zero value otherwise.
+func (o *CreatePostRequest) GetRequiresApproval() bool {
+	if o == nil || IsNil(o.RequiresApproval) {
+		var ret bool
+		return ret
+	}
+	return *o.RequiresApproval
+}
+
+// GetRequiresApprovalOk returns a tuple with the RequiresApproval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreatePostRequest) GetRequiresApprovalOk() (*bool, bool) {
+	if o == nil || IsNil(o.RequiresApproval) {
+		return nil, false
+	}
+	return o.RequiresApproval, true
+}
+
+// HasRequiresApproval returns a boolean if a field has been set.
+func (o *CreatePostRequest) HasRequiresApproval() bool {
+	if o != nil && !IsNil(o.RequiresApproval) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequiresApproval gets a reference to the given bool and assigns it to the RequiresApproval field.
+func (o *CreatePostRequest) SetRequiresApproval(v bool) {
+	o.RequiresApproval = &v
 }
 
 // GetDryRun returns the DryRun field value if set, zero value otherwise.
@@ -731,6 +769,9 @@ func (o CreatePostRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IsDraft) {
 		toSerialize["isDraft"] = o.IsDraft
+	}
+	if !IsNil(o.RequiresApproval) {
+		toSerialize["requiresApproval"] = o.RequiresApproval
 	}
 	if !IsNil(o.DryRun) {
 		toSerialize["dryRun"] = o.DryRun

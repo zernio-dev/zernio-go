@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.327.0
+API version: 1.328.0
 Contact: support@zernio.com
 */
 
@@ -30,10 +30,12 @@ type UpdatePostRequest struct {
 	ScheduledFor *time.Time                        `json:"scheduledFor,omitempty"`
 	PublishNow   *bool                             `json:"publishNow,omitempty"`
 	// When omitted, the post keeps its current draft status. Send `false` to promote a draft to scheduled (combined with `scheduledFor`, `publishNow`, or a queue).
-	IsDraft    *bool    `json:"isDraft,omitempty"`
-	Timezone   *string  `json:"timezone,omitempty"`
-	Visibility *string  `json:"visibility,omitempty"`
-	Tags       []string `json:"tags,omitempty"`
+	IsDraft *bool `json:"isDraft,omitempty"`
+	// Send true on a draft to submit it for approval: it becomes pending_approval and publishes only after POST /v1/posts/{postId}/review approves it. Cannot be combined with isDraft, publishNow, queuedFromProfile or queueId. Returns 409 when the post is not a draft.
+	RequiresApproval *bool    `json:"requiresApproval,omitempty"`
+	Timezone         *string  `json:"timezone,omitempty"`
+	Visibility       *string  `json:"visibility,omitempty"`
+	Tags             []string `json:"tags,omitempty"`
 	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags            []string               `json:"hashtags,omitempty"`
 	Mentions            []string               `json:"mentions,omitempty"`
@@ -296,6 +298,38 @@ func (o *UpdatePostRequest) HasIsDraft() bool {
 // SetIsDraft gets a reference to the given bool and assigns it to the IsDraft field.
 func (o *UpdatePostRequest) SetIsDraft(v bool) {
 	o.IsDraft = &v
+}
+
+// GetRequiresApproval returns the RequiresApproval field value if set, zero value otherwise.
+func (o *UpdatePostRequest) GetRequiresApproval() bool {
+	if o == nil || IsNil(o.RequiresApproval) {
+		var ret bool
+		return ret
+	}
+	return *o.RequiresApproval
+}
+
+// GetRequiresApprovalOk returns a tuple with the RequiresApproval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdatePostRequest) GetRequiresApprovalOk() (*bool, bool) {
+	if o == nil || IsNil(o.RequiresApproval) {
+		return nil, false
+	}
+	return o.RequiresApproval, true
+}
+
+// HasRequiresApproval returns a boolean if a field has been set.
+func (o *UpdatePostRequest) HasRequiresApproval() bool {
+	if o != nil && !IsNil(o.RequiresApproval) {
+		return true
+	}
+
+	return false
+}
+
+// SetRequiresApproval gets a reference to the given bool and assigns it to the RequiresApproval field.
+func (o *UpdatePostRequest) SetRequiresApproval(v bool) {
+	o.RequiresApproval = &v
 }
 
 // GetTimezone returns the Timezone field value if set, zero value otherwise.
@@ -713,6 +747,9 @@ func (o UpdatePostRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.IsDraft) {
 		toSerialize["isDraft"] = o.IsDraft
 	}
+	if !IsNil(o.RequiresApproval) {
+		toSerialize["requiresApproval"] = o.RequiresApproval
+	}
 	if !IsNil(o.Timezone) {
 		toSerialize["timezone"] = o.Timezone
 	}
@@ -778,6 +815,7 @@ func (o *UpdatePostRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "scheduledFor")
 		delete(additionalProperties, "publishNow")
 		delete(additionalProperties, "isDraft")
+		delete(additionalProperties, "requiresApproval")
 		delete(additionalProperties, "timezone")
 		delete(additionalProperties, "visibility")
 		delete(additionalProperties, "tags")
