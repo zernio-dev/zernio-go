@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.331.4
+API version: 1.332.0
 Contact: support@zernio.com
 */
 
@@ -8131,6 +8131,230 @@ func (a *AdCampaignsAPIService) ListSharedBudgetsExecute(r AdCampaignsAPIListSha
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type AdCampaignsAPIListTikTokSmartPlusReviewsRequest struct {
+	ctx            context.Context
+	ApiService     *AdCampaignsAPIService
+	accountId      *string
+	adAccountId    *string
+	includeDeleted *bool
+	page           *int32
+	pageSize       *int32
+}
+
+// A tiktok or tiktokads account ID
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) AccountId(accountId string) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.accountId = &accountId
+	return r
+}
+
+// TikTok advertiser ID
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) AdAccountId(adAccountId string) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.adAccountId = &adAccountId
+	return r
+}
+
+// Also return Smart+ ads deleted on TikTok (listed with &#x60;primary_status: STATUS_ALL&#x60;).
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) IncludeDeleted(includeDeleted bool) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.includeDeleted = &includeDeleted
+	return r
+}
+
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) Page(page int32) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.page = &page
+	return r
+}
+
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) PageSize(pageSize int32) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	r.pageSize = &pageSize
+	return r
+}
+
+func (r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) Execute() (*ListTikTokSmartPlusReviews200Response, *http.Response, error) {
+	return r.ApiService.ListTikTokSmartPlusReviewsExecute(r)
+}
+
+/*
+ListTikTokSmartPlusReviews Review status of every TikTok Smart+ ad of an advertiser
+
+Returns the review verdict of every Upgraded Smart+ ad of one TikTok advertiser, with each creative's verdict, in one paginated read. Use it to refresh reviews periodically: one call (plus its pages) per advertiser per refresh, instead of `GET /v1/ads/{adId}/tiktok-smart-plus-review` per ad.
+
+Zernio lists the advertiser's Smart+ ads with `/smart_plus/ad/get/` (deleted ones only with `includeDeleted=true`; the listing is cached for 5 minutes) and reads `/smart_plus/ad/review_info/` for up to 100 Smart+ ads per call, across ad groups, one call after another. A full refresh of N Smart+ ads costs about `ceil(N / 100)` listing calls and `ceil(N / 100)` review calls on TikTok. Each review is cached for 10 minutes per connection, advertiser and Smart+ ad, shared with the single-ad read, so cached reviews are served without calling TikTok and `readAt` can be up to 10 minutes old.
+
+TikTok's review endpoint has a strict quota of its own. When it is over quota (or Zernio is holding review reads for this advertiser and connection after an overage), Zernio stops calling TikTok and answers 200 with the reviews it has: `incomplete: true`, the Smart+ ads still to read in `pendingSmartPlusAdIds`, and `retryAfterSeconds` (also in the `Retry-After` header). Every Smart+ ad of the page is in `items`, `failedSmartPlusAds` or `pendingSmartPlusAdIds`. Wait `retryAfterSeconds` and read the same page again: only the pending ads reach TikTok.
+
+A Smart+ ad whose review TikTok refuses on its own (for example one deleted on TikTok since the listing was cached) is returned in `failedSmartPlusAds` with TikTok's error, and the rest of the page is still read. Zernio finds it by splitting the refused batch in halves, at most 16 extra TikTok calls per page; ads still unresolved after that come back in `failedSmartPlusAds` with the batch error. A refusal of a single ad is remembered for 10 minutes. When both halves of a refused batch are refused with the same TikTok error (for example a permission error), the whole request fails with that error instead.
+
+Items are sorted by `adGroupId`, then `smartPlusAdId`, so pages are stable. Read the pages of one advertiser one after another, not in parallel: parallel pages spend the review quota at the same time and come back incomplete.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return AdCampaignsAPIListTikTokSmartPlusReviewsRequest
+*/
+func (a *AdCampaignsAPIService) ListTikTokSmartPlusReviews(ctx context.Context) AdCampaignsAPIListTikTokSmartPlusReviewsRequest {
+	return AdCampaignsAPIListTikTokSmartPlusReviewsRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ListTikTokSmartPlusReviews200Response
+func (a *AdCampaignsAPIService) ListTikTokSmartPlusReviewsExecute(r AdCampaignsAPIListTikTokSmartPlusReviewsRequest) (*ListTikTokSmartPlusReviews200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ListTikTokSmartPlusReviews200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdCampaignsAPIService.ListTikTokSmartPlusReviews")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/ads/tiktok-smart-plus-reviews"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.accountId == nil {
+		return localVarReturnValue, nil, reportError("accountId is required and must be specified")
+	}
+	if r.adAccountId == nil {
+		return localVarReturnValue, nil, reportError("adAccountId is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "accountId", r.accountId, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "adAccountId", r.adAccountId, "form", "")
+	if r.includeDeleted != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDeleted", r.includeDeleted, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "includeDeleted", defaultValue, "form", "")
+		r.includeDeleted = &defaultValue
+	}
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	} else {
+		var defaultValue int32 = 1
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", defaultValue, "form", "")
+		r.page = &defaultValue
+	}
+	if r.pageSize != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", r.pageSize, "form", "")
+	} else {
+		var defaultValue int32 = 500
+		parameterAddToHeaderOrQuery(localVarQueryParams, "pageSize", defaultValue, "form", "")
+		r.pageSize = &defaultValue
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

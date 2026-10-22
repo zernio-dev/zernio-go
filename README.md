@@ -401,6 +401,7 @@ func main() {
 | `client.AdCampaignsAPI.ListGoogleAssetGroups(ctx)` | List Performance Max asset groups |
 | `client.AdCampaignsAPI.ListGoogleRecommendations(ctx)` | List Google Ads recommendations |
 | `client.AdCampaignsAPI.ListSharedBudgets(ctx)` | List shared budgets |
+| `client.AdCampaignsAPI.ListTikTokSmartPlusReviews(ctx)` | Review status of every TikTok Smart+ ad of an advertiser |
 | `client.AdCampaignsAPI.BulkUpdateAdCampaignStatus(ctx)` | Pause or resume many campaigns |
 | `client.AdCampaignsAPI.CreateAdCampaign(ctx)` | Create a standalone campaign |
 | `client.AdCampaignsAPI.CreateAdSet(ctx)` | Create a standalone ad group |

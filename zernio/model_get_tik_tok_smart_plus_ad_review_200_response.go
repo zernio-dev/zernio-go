@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.331.4
+API version: 1.332.0
 Contact: support@zernio.com
 */
 
@@ -25,10 +25,10 @@ type GetTikTokSmartPlusAdReview200Response struct {
 	Platform     *string `json:"platform,omitempty"`
 	PlatformAdId *string `json:"platformAdId,omitempty"`
 	// The TikTok Smart+ ad whose review this is.
-	SmartPlusAdId *string                                      `json:"smartPlusAdId,omitempty"`
-	Review        *GetTikTokSmartPlusAdReview200ResponseReview `json:"review,omitempty"`
+	SmartPlusAdId *string                       `json:"smartPlusAdId,omitempty"`
+	Review        *TikTokSmartPlusAdLevelReview `json:"review,omitempty"`
 	// One entry per creative TikTok reviewed (`material_review_infos`).
-	Materials []GetTikTokSmartPlusAdReview200ResponseMaterialsInner `json:"materials,omitempty"`
+	Materials []TikTokSmartPlusMaterialReview `json:"materials,omitempty"`
 	// When the verdict was read from TikTok.
 	ReadAt *time.Time `json:"readAt,omitempty"`
 }
@@ -179,9 +179,9 @@ func (o *GetTikTokSmartPlusAdReview200Response) SetSmartPlusAdId(v string) {
 }
 
 // GetReview returns the Review field value if set, zero value otherwise.
-func (o *GetTikTokSmartPlusAdReview200Response) GetReview() GetTikTokSmartPlusAdReview200ResponseReview {
+func (o *GetTikTokSmartPlusAdReview200Response) GetReview() TikTokSmartPlusAdLevelReview {
 	if o == nil || IsNil(o.Review) {
-		var ret GetTikTokSmartPlusAdReview200ResponseReview
+		var ret TikTokSmartPlusAdLevelReview
 		return ret
 	}
 	return *o.Review
@@ -189,7 +189,7 @@ func (o *GetTikTokSmartPlusAdReview200Response) GetReview() GetTikTokSmartPlusAd
 
 // GetReviewOk returns a tuple with the Review field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetTikTokSmartPlusAdReview200Response) GetReviewOk() (*GetTikTokSmartPlusAdReview200ResponseReview, bool) {
+func (o *GetTikTokSmartPlusAdReview200Response) GetReviewOk() (*TikTokSmartPlusAdLevelReview, bool) {
 	if o == nil || IsNil(o.Review) {
 		return nil, false
 	}
@@ -205,15 +205,15 @@ func (o *GetTikTokSmartPlusAdReview200Response) HasReview() bool {
 	return false
 }
 
-// SetReview gets a reference to the given GetTikTokSmartPlusAdReview200ResponseReview and assigns it to the Review field.
-func (o *GetTikTokSmartPlusAdReview200Response) SetReview(v GetTikTokSmartPlusAdReview200ResponseReview) {
+// SetReview gets a reference to the given TikTokSmartPlusAdLevelReview and assigns it to the Review field.
+func (o *GetTikTokSmartPlusAdReview200Response) SetReview(v TikTokSmartPlusAdLevelReview) {
 	o.Review = &v
 }
 
 // GetMaterials returns the Materials field value if set, zero value otherwise.
-func (o *GetTikTokSmartPlusAdReview200Response) GetMaterials() []GetTikTokSmartPlusAdReview200ResponseMaterialsInner {
+func (o *GetTikTokSmartPlusAdReview200Response) GetMaterials() []TikTokSmartPlusMaterialReview {
 	if o == nil || IsNil(o.Materials) {
-		var ret []GetTikTokSmartPlusAdReview200ResponseMaterialsInner
+		var ret []TikTokSmartPlusMaterialReview
 		return ret
 	}
 	return o.Materials
@@ -221,7 +221,7 @@ func (o *GetTikTokSmartPlusAdReview200Response) GetMaterials() []GetTikTokSmartP
 
 // GetMaterialsOk returns a tuple with the Materials field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GetTikTokSmartPlusAdReview200Response) GetMaterialsOk() ([]GetTikTokSmartPlusAdReview200ResponseMaterialsInner, bool) {
+func (o *GetTikTokSmartPlusAdReview200Response) GetMaterialsOk() ([]TikTokSmartPlusMaterialReview, bool) {
 	if o == nil || IsNil(o.Materials) {
 		return nil, false
 	}
@@ -237,8 +237,8 @@ func (o *GetTikTokSmartPlusAdReview200Response) HasMaterials() bool {
 	return false
 }
 
-// SetMaterials gets a reference to the given []GetTikTokSmartPlusAdReview200ResponseMaterialsInner and assigns it to the Materials field.
-func (o *GetTikTokSmartPlusAdReview200Response) SetMaterials(v []GetTikTokSmartPlusAdReview200ResponseMaterialsInner) {
+// SetMaterials gets a reference to the given []TikTokSmartPlusMaterialReview and assigns it to the Materials field.
+func (o *GetTikTokSmartPlusAdReview200Response) SetMaterials(v []TikTokSmartPlusMaterialReview) {
 	o.Materials = v
 }
 
