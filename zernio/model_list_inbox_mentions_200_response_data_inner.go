@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.330.1
+API version: 1.331.0
 Contact: support@zernio.com
 */
 
@@ -22,23 +22,29 @@ var _ MappedNullable = &ListInboxMentions200ResponseDataInner{}
 // ListInboxMentions200ResponseDataInner struct for ListInboxMentions200ResponseDataInner
 type ListInboxMentions200ResponseDataInner struct {
 	// Mention document ID
-	Id              *string `json:"id,omitempty"`
-	Platform        *string `json:"platform,omitempty"`
-	AccountId       *string `json:"accountId,omitempty"`
-	AccountUsername *string `json:"accountUsername,omitempty"`
-	// Text of the post that mentioned you
+	Id       *string `json:"id,omitempty"`
+	Platform *string `json:"platform,omitempty"`
+	// Instagram only: `caption` when the account was tagged in a media caption, `comment` when it was tagged in a comment. Null for LinkedIn.
+	Type NullableString `json:"type,omitempty"`
+	// Instagram only: ID of the media the account was mentioned in (or under). Null for LinkedIn.
+	MediaId NullableString `json:"mediaId,omitempty"`
+	// Instagram only: ID of the comment that mentioned the account. Null for caption mentions and LinkedIn.
+	CommentId       NullableString `json:"commentId,omitempty"`
+	AccountId       *string        `json:"accountId,omitempty"`
+	AccountUsername *string        `json:"accountUsername,omitempty"`
+	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram. Empty until it has been read.
 	Content *string `json:"content,omitempty"`
-	// URL to the source post on LinkedIn
+	// URL to the source post on LinkedIn. Null on Instagram.
 	Permalink NullableString `json:"permalink,omitempty"`
-	// LinkedIn URN of the person who mentioned you
+	// LinkedIn URN of the person who mentioned you, or the Instagram-scoped ID of the commenter on an Instagram comment mention.
 	AuthorUrn NullableString `json:"authorUrn,omitempty"`
 	// Display name of the author, resolved from authorUrn. Null when LinkedIn does not allow resolving the profile.
 	AuthorName NullableString `json:"authorName,omitempty"`
-	// LinkedIn vanity name of the author (the slug in their profile URL)
+	// LinkedIn vanity name of the author (the slug in their profile URL), or the Instagram username of the commenter or media owner.
 	AuthorUsername NullableString `json:"authorUsername,omitempty"`
 	// Profile picture URL of the author. LinkedIn CDN URLs expire after some time, so fetch promptly rather than storing long-term.
 	AuthorPicture NullableString `json:"authorPicture,omitempty"`
-	// URN of the organization that was mentioned
+	// URN of the LinkedIn organization that was mentioned, or the Instagram user ID of the mentioned account.
 	OrganizationalEntity *string    `json:"organizationalEntity,omitempty"`
 	PublishedAt          *time.Time `json:"publishedAt,omitempty"`
 	CreatedAt            *time.Time `json:"createdAt,omitempty"`
@@ -123,6 +129,135 @@ func (o *ListInboxMentions200ResponseDataInner) HasPlatform() bool {
 // SetPlatform gets a reference to the given string and assigns it to the Platform field.
 func (o *ListInboxMentions200ResponseDataInner) SetPlatform(v string) {
 	o.Platform = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetType() string {
+	if o == nil || IsNil(o.Type.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Type.Get()
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type.Get(), o.Type.IsSet()
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasType() bool {
+	if o != nil && o.Type.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given NullableString and assigns it to the Type field.
+func (o *ListInboxMentions200ResponseDataInner) SetType(v string) {
+	o.Type.Set(&v)
+}
+
+// SetTypeNil sets the value for Type to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetTypeNil() {
+	o.Type.Set(nil)
+}
+
+// UnsetType ensures that no value is present for Type, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetType() {
+	o.Type.Unset()
+}
+
+// GetMediaId returns the MediaId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetMediaId() string {
+	if o == nil || IsNil(o.MediaId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.MediaId.Get()
+}
+
+// GetMediaIdOk returns a tuple with the MediaId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetMediaIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MediaId.Get(), o.MediaId.IsSet()
+}
+
+// HasMediaId returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasMediaId() bool {
+	if o != nil && o.MediaId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMediaId gets a reference to the given NullableString and assigns it to the MediaId field.
+func (o *ListInboxMentions200ResponseDataInner) SetMediaId(v string) {
+	o.MediaId.Set(&v)
+}
+
+// SetMediaIdNil sets the value for MediaId to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetMediaIdNil() {
+	o.MediaId.Set(nil)
+}
+
+// UnsetMediaId ensures that no value is present for MediaId, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetMediaId() {
+	o.MediaId.Unset()
+}
+
+// GetCommentId returns the CommentId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetCommentId() string {
+	if o == nil || IsNil(o.CommentId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CommentId.Get()
+}
+
+// GetCommentIdOk returns a tuple with the CommentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetCommentIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CommentId.Get(), o.CommentId.IsSet()
+}
+
+// HasCommentId returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasCommentId() bool {
+	if o != nil && o.CommentId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCommentId gets a reference to the given NullableString and assigns it to the CommentId field.
+func (o *ListInboxMentions200ResponseDataInner) SetCommentId(v string) {
+	o.CommentId.Set(&v)
+}
+
+// SetCommentIdNil sets the value for CommentId to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetCommentIdNil() {
+	o.CommentId.Set(nil)
+}
+
+// UnsetCommentId ensures that no value is present for CommentId, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetCommentId() {
+	o.CommentId.Unset()
 }
 
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
@@ -547,6 +682,15 @@ func (o ListInboxMentions200ResponseDataInner) ToMap() (map[string]interface{}, 
 	}
 	if !IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
+	}
+	if o.Type.IsSet() {
+		toSerialize["type"] = o.Type.Get()
+	}
+	if o.MediaId.IsSet() {
+		toSerialize["mediaId"] = o.MediaId.Get()
+	}
+	if o.CommentId.IsSet() {
+		toSerialize["commentId"] = o.CommentId.Get()
 	}
 	if !IsNil(o.AccountId) {
 		toSerialize["accountId"] = o.AccountId

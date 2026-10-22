@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.330.1
+API version: 1.331.0
 Contact: support@zernio.com
 */
 
@@ -68,8 +68,15 @@ func (r MentionsAPIListInboxMentionsRequest) Execute() (*ListInboxMentions200Res
 /*
 ListInboxMentions List mentions
 
-Returns mentions of your connected organization accounts, delivered via platform webhooks.
-Currently supports LinkedIn organization mentions.
+Returns mentions of your connected accounts from the last 7 days.
+
+  - **LinkedIn**: organization mentions, delivered by webhooks and a background pull.
+  - **Instagram**: comment mentions (someone tags the account in a comment) and caption mentions
+    (someone tags it in their media caption), delivered by Meta webhooks. Accounts connected through
+    Instagram Login receive comment mentions only. Accounts connected through Facebook Login receive
+    both; their text is read from Instagram in the background after the first request, so `content`
+    can be empty on the first read. Pass `mediaId` and `commentId` to `POST /v1/inbox/mentions/reply`
+    to answer one.
 
 Requires Inbox addon.
 
@@ -222,10 +229,8 @@ Two shapes, selected by whether `commentId` is present:
 
 Story mentions are not supported by Instagram's API.
 
-`GET /v1/inbox/mentions` currently returns LinkedIn mentions only and does
-not surface Instagram mentions. Source `mediaId` and `commentId` from Instagram's
-`comments` webhook, which is where mention notifications are delivered for accounts
-connected through Instagram Login.
+`GET /v1/inbox/mentions` returns Instagram mentions with the `mediaId` and `commentId`
+to pass here.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return MentionsAPIReplyToMentionRequest
