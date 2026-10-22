@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.331.3
+API version: 1.331.4
 Contact: support@zernio.com
 */
 
@@ -4407,7 +4407,10 @@ the Blogs API (`/v1/accounts/{accountId}/blogs`) and the Products API
 to redirect the merchant to; after they approve the install, Shopify
 redirects their browser to Zernio's callback, the account is created on
 the profile (platform `shopify`), and the browser is redirected to
-`redirect_url` (or the Zernio dashboard when omitted). Requested scopes
+`redirect_url` with `connected`, `profileId`, `accountId` and `username`
+(the store's myshopify.com domain) added, or to the Zernio dashboard
+when omitted. The account is the store the merchant approved, which can
+differ from `shop`, so bind on `accountId`. Requested scopes
 are `read_content`, `write_content`, `read_products` and
 `write_products` (content and products only; no customer or order
 data). Connecting the same profile to a store again refreshes the
