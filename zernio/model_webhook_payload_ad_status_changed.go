@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.336.1
+API version: 1.337.0
 Contact: support@zernio.com
 */
 
@@ -28,12 +28,12 @@ type WebhookPayloadAdStatusChanged struct {
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
 	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
-	Test     *bool                                 `json:"test,omitempty"`
-	Event    string                                `json:"event"`
-	Account  WebhookPayloadAccountConnectedAccount `json:"account"`
-	AdObject WebhookPayloadAdStatusChangedAdObject `json:"adObject"`
-	Status   WebhookPayloadAdStatusChangedStatus   `json:"status"`
-	Error    *WebhookPayloadAdStatusChangedError   `json:"error,omitempty"`
+	Test     *bool                                      `json:"test,omitempty"`
+	Event    string                                     `json:"event"`
+	Account  WebhookPayloadAccountConnectedAccount      `json:"account"`
+	AdObject WebhookPayloadAdStatusChangedAdObject      `json:"adObject"`
+	Status   WebhookPayloadCampaignBudgetDepletedBudget `json:"status"`
+	Error    *WebhookPayloadAdStatusChangedError        `json:"error,omitempty"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -44,7 +44,7 @@ type _WebhookPayloadAdStatusChanged WebhookPayloadAdStatusChanged
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAdStatusChanged(id string, event string, account WebhookPayloadAccountConnectedAccount, adObject WebhookPayloadAdStatusChangedAdObject, status WebhookPayloadAdStatusChangedStatus, timestamp time.Time) *WebhookPayloadAdStatusChanged {
+func NewWebhookPayloadAdStatusChanged(id string, event string, account WebhookPayloadAccountConnectedAccount, adObject WebhookPayloadAdStatusChangedAdObject, status WebhookPayloadCampaignBudgetDepletedBudget, timestamp time.Time) *WebhookPayloadAdStatusChanged {
 	this := WebhookPayloadAdStatusChanged{}
 	this.Id = id
 	this.Event = event
@@ -224,9 +224,9 @@ func (o *WebhookPayloadAdStatusChanged) SetAdObject(v WebhookPayloadAdStatusChan
 }
 
 // GetStatus returns the Status field value
-func (o *WebhookPayloadAdStatusChanged) GetStatus() WebhookPayloadAdStatusChangedStatus {
+func (o *WebhookPayloadAdStatusChanged) GetStatus() WebhookPayloadCampaignBudgetDepletedBudget {
 	if o == nil {
-		var ret WebhookPayloadAdStatusChangedStatus
+		var ret WebhookPayloadCampaignBudgetDepletedBudget
 		return ret
 	}
 
@@ -235,7 +235,7 @@ func (o *WebhookPayloadAdStatusChanged) GetStatus() WebhookPayloadAdStatusChange
 
 // GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadAdStatusChanged) GetStatusOk() (*WebhookPayloadAdStatusChangedStatus, bool) {
+func (o *WebhookPayloadAdStatusChanged) GetStatusOk() (*WebhookPayloadCampaignBudgetDepletedBudget, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -243,7 +243,7 @@ func (o *WebhookPayloadAdStatusChanged) GetStatusOk() (*WebhookPayloadAdStatusCh
 }
 
 // SetStatus sets field value
-func (o *WebhookPayloadAdStatusChanged) SetStatus(v WebhookPayloadAdStatusChangedStatus) {
+func (o *WebhookPayloadAdStatusChanged) SetStatus(v WebhookPayloadCampaignBudgetDepletedBudget) {
 	o.Status = v
 }
 

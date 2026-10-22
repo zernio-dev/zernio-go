@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.336.1
+API version: 1.337.0
 Contact: support@zernio.com
 */
 
@@ -494,6 +494,206 @@ func (a *WebhookEventsAPIService) OnAccountDisconnectedExecute(r WebhookEventsAP
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAccountDisconnected
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdAccountStatusChangedRequest struct {
+	ctx                                  context.Context
+	ApiService                           *WebhookEventsAPIService
+	webhookPayloadAdAccountStatusChanged *WebhookPayloadAdAccountStatusChanged
+}
+
+func (r WebhookEventsAPIOnAdAccountStatusChangedRequest) WebhookPayloadAdAccountStatusChanged(webhookPayloadAdAccountStatusChanged WebhookPayloadAdAccountStatusChanged) WebhookEventsAPIOnAdAccountStatusChangedRequest {
+	r.webhookPayloadAdAccountStatusChanged = &webhookPayloadAdAccountStatusChanged
+	return r
+}
+
+func (r WebhookEventsAPIOnAdAccountStatusChangedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdAccountStatusChangedExecute(r)
+}
+
+/*
+OnAdAccountStatusChanged Ad account status changed event
+
+Fired when an ad account Zernio already tracked changes status (Meta, Google, TikTok, X).
+See `WebhookPayloadAdAccountStatusChanged` for when it fires and when it does not.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdAccountStatusChangedRequest
+*/
+func (a *WebhookEventsAPIService) OnAdAccountStatusChanged(ctx context.Context) WebhookEventsAPIOnAdAccountStatusChangedRequest {
+	return WebhookEventsAPIOnAdAccountStatusChangedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdAccountStatusChangedExecute(r WebhookEventsAPIOnAdAccountStatusChangedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdAccountStatusChanged")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad_account.status_changed"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdAccountStatusChanged == nil {
+		return nil, reportError("webhookPayloadAdAccountStatusChanged is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdAccountStatusChanged
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdDeliveryIssueRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadAdDeliveryIssue *WebhookPayloadAdDeliveryIssue
+}
+
+func (r WebhookEventsAPIOnAdDeliveryIssueRequest) WebhookPayloadAdDeliveryIssue(webhookPayloadAdDeliveryIssue WebhookPayloadAdDeliveryIssue) WebhookEventsAPIOnAdDeliveryIssueRequest {
+	r.webhookPayloadAdDeliveryIssue = &webhookPayloadAdDeliveryIssue
+	return r
+}
+
+func (r WebhookEventsAPIOnAdDeliveryIssueRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdDeliveryIssueExecute(r)
+}
+
+/*
+OnAdDeliveryIssue Ad delivery issue event
+
+Fired when an ad Zernio already tracked stops delivering for a platform reason (Meta, TikTok, LinkedIn).
+See `WebhookPayloadAdDeliveryIssue` for when it fires and when it does not.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdDeliveryIssueRequest
+*/
+func (a *WebhookEventsAPIService) OnAdDeliveryIssue(ctx context.Context) WebhookEventsAPIOnAdDeliveryIssueRequest {
+	return WebhookEventsAPIOnAdDeliveryIssueRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdDeliveryIssueExecute(r WebhookEventsAPIOnAdDeliveryIssueRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdDeliveryIssue")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad.delivery_issue"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdDeliveryIssue == nil {
+		return nil, reportError("webhookPayloadAdDeliveryIssue is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdDeliveryIssue
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1855,6 +2055,106 @@ func (a *WebhookEventsAPIService) OnCallReceivedExecute(r WebhookEventsAPIOnCall
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadCallReceived
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnCampaignBudgetDepletedRequest struct {
+	ctx                                  context.Context
+	ApiService                           *WebhookEventsAPIService
+	webhookPayloadCampaignBudgetDepleted *WebhookPayloadCampaignBudgetDepleted
+}
+
+func (r WebhookEventsAPIOnCampaignBudgetDepletedRequest) WebhookPayloadCampaignBudgetDepleted(webhookPayloadCampaignBudgetDepleted WebhookPayloadCampaignBudgetDepleted) WebhookEventsAPIOnCampaignBudgetDepletedRequest {
+	r.webhookPayloadCampaignBudgetDepleted = &webhookPayloadCampaignBudgetDepleted
+	return r
+}
+
+func (r WebhookEventsAPIOnCampaignBudgetDepletedRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnCampaignBudgetDepletedExecute(r)
+}
+
+/*
+OnCampaignBudgetDepleted Campaign budget depleted event
+
+Fired when a campaign Zernio already tracked runs out of budget (TikTok).
+See `WebhookPayloadCampaignBudgetDepleted` for when it fires and when it does not.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnCampaignBudgetDepletedRequest
+*/
+func (a *WebhookEventsAPIService) OnCampaignBudgetDepleted(ctx context.Context) WebhookEventsAPIOnCampaignBudgetDepletedRequest {
+	return WebhookEventsAPIOnCampaignBudgetDepletedRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnCampaignBudgetDepletedExecute(r WebhookEventsAPIOnCampaignBudgetDepletedRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnCampaignBudgetDepleted")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/campaign.budget.depleted"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadCampaignBudgetDepleted == nil {
+		return nil, reportError("webhookPayloadCampaignBudgetDepleted is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadCampaignBudgetDepleted
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

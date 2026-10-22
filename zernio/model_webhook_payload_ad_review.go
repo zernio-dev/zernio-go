@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.336.1
+API version: 1.337.0
 Contact: support@zernio.com
 */
 
@@ -28,11 +28,11 @@ type WebhookPayloadAdReview struct {
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
 	Profiles []WebhookProfilesInner `json:"profiles,omitempty"`
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
-	Test     *bool                                 `json:"test,omitempty"`
-	Event    string                                `json:"event"`
-	Account  WebhookPayloadAdVideoProcessedAccount `json:"account"`
-	AdObject WebhookPayloadAdReviewAdObject        `json:"adObject"`
-	Review   WebhookPayloadAdReviewReview          `json:"review"`
+	Test     *bool                          `json:"test,omitempty"`
+	Event    string                         `json:"event"`
+	Account  WebhookAdsAccount              `json:"account"`
+	AdObject WebhookPayloadAdReviewAdObject `json:"adObject"`
+	Review   WebhookPayloadAdReviewReview   `json:"review"`
 	// UTC time at which Zernio generated this event.
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -43,7 +43,7 @@ type _WebhookPayloadAdReview WebhookPayloadAdReview
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAdReview(id string, event string, account WebhookPayloadAdVideoProcessedAccount, adObject WebhookPayloadAdReviewAdObject, review WebhookPayloadAdReviewReview, timestamp time.Time) *WebhookPayloadAdReview {
+func NewWebhookPayloadAdReview(id string, event string, account WebhookAdsAccount, adObject WebhookPayloadAdReviewAdObject, review WebhookPayloadAdReviewReview, timestamp time.Time) *WebhookPayloadAdReview {
 	this := WebhookPayloadAdReview{}
 	this.Id = id
 	this.Event = event
@@ -175,9 +175,9 @@ func (o *WebhookPayloadAdReview) SetEvent(v string) {
 }
 
 // GetAccount returns the Account field value
-func (o *WebhookPayloadAdReview) GetAccount() WebhookPayloadAdVideoProcessedAccount {
+func (o *WebhookPayloadAdReview) GetAccount() WebhookAdsAccount {
 	if o == nil {
-		var ret WebhookPayloadAdVideoProcessedAccount
+		var ret WebhookAdsAccount
 		return ret
 	}
 
@@ -186,7 +186,7 @@ func (o *WebhookPayloadAdReview) GetAccount() WebhookPayloadAdVideoProcessedAcco
 
 // GetAccountOk returns a tuple with the Account field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadAdReview) GetAccountOk() (*WebhookPayloadAdVideoProcessedAccount, bool) {
+func (o *WebhookPayloadAdReview) GetAccountOk() (*WebhookAdsAccount, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -194,7 +194,7 @@ func (o *WebhookPayloadAdReview) GetAccountOk() (*WebhookPayloadAdVideoProcessed
 }
 
 // SetAccount sets field value
-func (o *WebhookPayloadAdReview) SetAccount(v WebhookPayloadAdVideoProcessedAccount) {
+func (o *WebhookPayloadAdReview) SetAccount(v WebhookAdsAccount) {
 	o.Account = v
 }
 
