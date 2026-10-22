@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.325.0
+API version: 1.326.0
 Contact: support@zernio.com
 */
 
@@ -1761,7 +1761,7 @@ type TrackingTagsAPIGetTrackingTagStoreInstallRequest struct {
 	adAccountId    *string
 }
 
-// The connected Shopify, WordPress or Wix account id.
+// The connected Shopify, WordPress, Wix or Webflow account id.
 func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIGetTrackingTagStoreInstallRequest {
 	r.storeAccountId = &storeAccountId
 	return r
@@ -1780,7 +1780,7 @@ func (r TrackingTagsAPIGetTrackingTagStoreInstallRequest) Execute() (*GetTrackin
 /*
 GetTrackingTagStoreInstall Get store install status
 
-Shows whether a tracking tag is live on your Shopify store, WordPress site or Wix site, and whether a WordPress install would be blocked.
+Shows whether a tracking tag is installed on your Shopify store or WordPress, Wix or Webflow site, and whether a WordPress install would be blocked.
 
 Whether this tag is the one the Shopify store fires for its platform. `installedTagId`
 names the tag of that platform the store currently fires, which can be a different tag,
@@ -1965,9 +1965,9 @@ func (r TrackingTagsAPIInstallTrackingTagOnStoreRequest) Execute() (*InstallTrac
 }
 
 /*
-InstallTrackingTagOnStore Install on a Shopify store, WordPress site or Wix site
+InstallTrackingTagOnStore Install on a Shopify, WordPress, Wix or Webflow site
 
-Installs a pixel on a connected Shopify store, WordPress site or Wix site, so store visits and purchases are reported without editing the theme.
+Installs a pixel on a connected Shopify store or WordPress, Wix or Webflow site, so store visits and purchases are reported without editing the theme.
 
 Puts the Meta pixel on a connected Shopify store's storefront and checkout through
 Zernio's Shopify web pixel (a Shopify app pixel, no theme edits). The store then sends
@@ -2058,6 +2058,14 @@ visitors who accept advertising cookies when the site shows a cookie banner. Sit
 connected before pixel support answer 409 `reconnect_required` until the owner approves
 the Zernio app's new permission (`details.authUrl`, or Apps > Manage Apps in the Wix
 dashboard).
+
+**Webflow** (`storeAccountId` is a Webflow site connected with "Connect with Webflow",
+`GET /v1/connect/webflow`): Zernio applies one script to the site's custom code that
+loads each tag's base code, one tag per platform, as on Wix. Webflow publishes custom
+code only with the site, so the install answers `publishRequired: true` and the tags fire
+after the site's next publish (Zernio never publishes it). A site connected with a site
+token answers 409 `reconnect_required` with `details.authUrl` to connect it with the app
+(the account id stays the same).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param accountId
@@ -3118,7 +3126,7 @@ type TrackingTagsAPIRemoveTrackingTagFromStoreRequest struct {
 	adAccountId    *string
 }
 
-// The connected Shopify, WordPress or Wix account id.
+// The connected Shopify, WordPress, Wix or Webflow account id.
 func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) StoreAccountId(storeAccountId string) TrackingTagsAPIRemoveTrackingTagFromStoreRequest {
 	r.storeAccountId = &storeAccountId
 	return r
@@ -3135,15 +3143,16 @@ func (r TrackingTagsAPIRemoveTrackingTagFromStoreRequest) Execute() (*RemoveTrac
 }
 
 /*
-RemoveTrackingTagFromStore Remove from a Shopify store, WordPress site or Wix site
+RemoveTrackingTagFromStore Remove from a Shopify, WordPress, Wix or Webflow site
 
-Removes a tracking tag from your Shopify store, WordPress site or Wix site, leaving other platforms' tags and hand-added pixel code in place.
+Removes a tracking tag from your Shopify store or WordPress, Wix or Webflow site, leaving other platforms' tags and hand-added pixel code in place.
 
 Idempotent: nothing installed returns 200 with
 `installed: false`. If the store fires a different tag of the same platform, nothing is
 removed and the call answers 409 `invalid_resource_state`. Shopify: other platforms'
 tags stay; the web pixel itself is deleted once no tag remains. Wix works the same way,
-and the site's Zernio script is disabled once no tag remains.
+and the site's Zernio script is disabled once no tag remains. Webflow too: the Zernio
+script leaves the site's custom code once no tag remains, live after the next publish.
 
 WordPress: deletes every widget Zernio created for this pixel and reports how many in
 `removed` (0 when nothing was installed). Pixel code added by hand is left alone.

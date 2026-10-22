@@ -229,6 +229,7 @@ func main() {
 | `client.ConnectAPI.GetShopifyConnectUrl(ctx)` | Get Shopify OAuth connect URL |
 | `client.ConnectAPI.GetSubredditRules(ctx)` | Get subreddit rules |
 | `client.ConnectAPI.GetTelegramConnectStatus(ctx)` | Generate Telegram code |
+| `client.ConnectAPI.GetWebflowConnectUrl(ctx)` | Get Webflow OAuth URL |
 | `client.ConnectAPI.GetWhatsAppSdkConfig(ctx)` | Get Embedded Signup SDK config |
 | `client.ConnectAPI.GetWixConnectUrl(ctx)` | Get Wix site install URL |
 | `client.ConnectAPI.GetWordPressAuthUrl(ctx)` | Get WordPress.com OAuth connect URL |
@@ -1108,8 +1109,8 @@ func main() {
 | `client.TrackingTagsAPI.DeleteTrackingTagEvent(ctx)` | Delete a conversion event |
 | `client.TrackingTagsAPI.AddTrackingTagSharedAccount(ctx)` | Share with an ad account |
 | `client.TrackingTagsAPI.AssignTrackingTagUser(ctx)` | Assign a user to a tag |
-| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify store, WordPress site or Wix site |
-| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify store, WordPress site or Wix site |
+| `client.TrackingTagsAPI.InstallTrackingTagOnStore(ctx)` | Install on a Shopify, WordPress, Wix or Webflow site |
+| `client.TrackingTagsAPI.RemoveTrackingTagFromStore(ctx)` | Remove from a Shopify, WordPress, Wix or Webflow site |
 | `client.TrackingTagsAPI.RemoveTrackingTagSharedAccount(ctx)` | Stop sharing with an account |
 | `client.TrackingTagsAPI.RemoveTrackingTagUser(ctx)` | Remove a user from a tag |
 
