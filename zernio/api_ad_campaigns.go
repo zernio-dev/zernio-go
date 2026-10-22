@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.331.1
+API version: 1.331.2
 Contact: support@zernio.com
 */
 
@@ -5508,6 +5508,14 @@ ad's `creative_list`. TikTok leaves out of that list the creatives it added on i
 (creator content, authorized TikTok posts, Creative Library content) and lists each image of a
 carousel under its own material id, so those entries come back with the review verdict and
 null descriptive fields. TikTok returns no review timestamp; `readAt` is when Zernio read it.
+
+TikTok's review endpoint has a strict quota of its own. One TikTok call reads the review of
+every live Smart+ ad of the ad group (up to 100), and each review is cached for 10 minutes per
+connection, advertiser and Smart+ ad, so sibling ads are answered from the cache and `readAt`
+can be up to 10 minutes old. Read reviews when you need them instead of sweeping every ad on a
+loop. When TikTok answers over quota, Zernio returns 429 with `Retry-After: 60` and answers
+429 for that advertiser and connection without calling TikTok until the minute is over; cached
+reviews are still served.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param adId Zernio ad id (24-char hex) or the TikTok ad id: the Smart+ ad id or the ad id of one of its creatives.
