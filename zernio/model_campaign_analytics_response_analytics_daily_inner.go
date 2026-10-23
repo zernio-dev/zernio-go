@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.338.4
+API version: 1.338.5
 Contact: support@zernio.com
 */
 
@@ -61,21 +61,21 @@ type CampaignAnalyticsResponseAnalyticsDailyInner struct {
 	UniqueClicks *int32 `json:"uniqueClicks,omitempty"`
 	// Derived `uniqueClicks / impressions * 100` (NOT Meta's reach-based unique_ctr). Inherits the non-additivity caveat of `uniqueClicks`.
 	UniqueCtr *float32 `json:"uniqueCtr,omitempty"`
-	// Number of times the video started playing, summed over the date range and across children at ad-set/campaign level. 0 for non-video ads. Sources: Meta `video_play_actions`, TikTok `video_play_actions`, X `video_content_starts`, Reddit `video_started`. X and Reddit history note: added 2026-10-23, and their syncs only re-fetch recent days, so older days read 0 on every X and Reddit video field.
+	// Number of times the video started playing, summed over the date range and across children at ad-set/campaign level. 0 for non-video ads. Sources: Meta `video_play_actions`, TikTok `video_play_actions`, X `video_content_starts`, Reddit `video_started`, Pinterest `TOTAL_VIDEO_P0_COMBINED`. X, Reddit and Pinterest history note: added 2026-10-23, and their syncs only re-fetch recent days, so older days read 0 on every X, Reddit and Pinterest video field.
 	VideoPlayActions *int32 `json:"videoPlayActions,omitempty"`
 	// Views of at least 30 seconds (or to the end, for shorter videos). Sources: Meta `video_30_sec_watched_actions`, Google `video_trueview_views` (a TrueView view: 30 seconds, the whole video if shorter, or an interaction; Google history note: added 2026-10-23, older days read 0).
 	Video30SecWatchedActions *int32 `json:"video30SecWatchedActions,omitempty"`
 	// ThruPlays (watched to completion, or at least 15 seconds). Sources: Meta `video_thruplay_watched_actions` (Meta only).
 	VideoThruplayWatchedActions *int32 `json:"videoThruplayWatchedActions,omitempty"`
-	// Views reaching 25% of the video's length. With the other percentile fields, powers hook/hold/drop-off analysis (e.g. hook rate = videoP25WatchedActions / videoPlayActions). Sources: Meta `video_p25_watched_actions`, TikTok `video_views_p25`, X `video_views_25`, Reddit `video_watched_25_percent`, Google `video_quartile_p25_rate` x impressions.
+	// Views reaching 25% of the video's length. With the other percentile fields, powers hook/hold/drop-off analysis (e.g. hook rate = videoP25WatchedActions / videoPlayActions). Sources: Meta `video_p25_watched_actions`, TikTok `video_views_p25`, X `video_views_25`, Reddit `video_watched_25_percent`, Google `video_quartile_p25_rate` x impressions, Pinterest `TOTAL_VIDEO_P25_COMBINED`.
 	VideoP25WatchedActions *int32 `json:"videoP25WatchedActions,omitempty"`
-	// Views reaching 50% of the video's length. Sources: Meta `video_p50_watched_actions`, TikTok `video_views_p50`, X `video_views_50`, Reddit `video_watched_50_percent`, Google `video_quartile_p50_rate` x impressions.
+	// Views reaching 50% of the video's length. Sources: Meta `video_p50_watched_actions`, TikTok `video_views_p50`, X `video_views_50`, Reddit `video_watched_50_percent`, Google `video_quartile_p50_rate` x impressions, Pinterest `TOTAL_VIDEO_P50_COMBINED`.
 	VideoP50WatchedActions *int32 `json:"videoP50WatchedActions,omitempty"`
-	// Views reaching 75% of the video's length. Sources: Meta `video_p75_watched_actions`, TikTok `video_views_p75`, X `video_views_75`, Reddit `video_watched_75_percent`, Google `video_quartile_p75_rate` x impressions.
+	// Views reaching 75% of the video's length. Sources: Meta `video_p75_watched_actions`, TikTok `video_views_p75`, X `video_views_75`, Reddit `video_watched_75_percent`, Google `video_quartile_p75_rate` x impressions, Pinterest `TOTAL_VIDEO_P75_COMBINED`.
 	VideoP75WatchedActions *int32 `json:"videoP75WatchedActions,omitempty"`
-	// Views reaching 95% of the video's length. Sources: Meta `video_p95_watched_actions` (Meta only).
+	// Views reaching 95% of the video's length. Sources: Meta `video_p95_watched_actions`, Pinterest `TOTAL_VIDEO_P95_COMBINED`.
 	VideoP95WatchedActions *int32 `json:"videoP95WatchedActions,omitempty"`
-	// Views reaching 100% of the video's length. Sources: Meta `video_p100_watched_actions`, TikTok `video_views_p100`, X `video_views_100`, Reddit `video_watched_100_percent`, Google `video_quartile_p100_rate` x impressions.
+	// Views reaching 100% of the video's length. Sources: Meta `video_p100_watched_actions`, TikTok `video_views_p100`, X `video_views_100`, Reddit `video_watched_100_percent`, Google `video_quartile_p100_rate` x impressions, Pinterest `TOTAL_VIDEO_P100_COMPLETE`.
 	VideoP100WatchedActions *int32 `json:"videoP100WatchedActions,omitempty"`
 	// Plays of at least 2 seconds, replays excluded. Hook rate = video2SecWatchedActions / impressions. Sources: TikTok `video_watched_2s` (TikTok only; Meta's closest field, 2-second continuous plays, is not synced). TikTok history note: added 2026-10, and each sync re-fetches only the last 7 days, so older days read 0.
 	Video2SecWatchedActions *int32 `json:"video2SecWatchedActions,omitempty"`
