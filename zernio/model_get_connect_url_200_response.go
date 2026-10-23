@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.342.0
+API version: 1.343.0
 Contact: support@zernio.com
 */
 
@@ -23,7 +23,8 @@ type GetConnectUrl200Response struct {
 	// URL to redirect your user to for OAuth authorization
 	AuthUrl *string `json:"authUrl,omitempty"`
 	// State parameter for security (handled automatically)
-	State *string `json:"state,omitempty"`
+	State   *string             `json:"state,omitempty"`
+	Handoff *ConnectHandoffLink `json:"handoff,omitempty"`
 }
 
 // NewGetConnectUrl200Response instantiates a new GetConnectUrl200Response object
@@ -107,6 +108,38 @@ func (o *GetConnectUrl200Response) SetState(v string) {
 	o.State = &v
 }
 
+// GetHandoff returns the Handoff field value if set, zero value otherwise.
+func (o *GetConnectUrl200Response) GetHandoff() ConnectHandoffLink {
+	if o == nil || IsNil(o.Handoff) {
+		var ret ConnectHandoffLink
+		return ret
+	}
+	return *o.Handoff
+}
+
+// GetHandoffOk returns a tuple with the Handoff field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetConnectUrl200Response) GetHandoffOk() (*ConnectHandoffLink, bool) {
+	if o == nil || IsNil(o.Handoff) {
+		return nil, false
+	}
+	return o.Handoff, true
+}
+
+// HasHandoff returns a boolean if a field has been set.
+func (o *GetConnectUrl200Response) HasHandoff() bool {
+	if o != nil && !IsNil(o.Handoff) {
+		return true
+	}
+
+	return false
+}
+
+// SetHandoff gets a reference to the given ConnectHandoffLink and assigns it to the Handoff field.
+func (o *GetConnectUrl200Response) SetHandoff(v ConnectHandoffLink) {
+	o.Handoff = &v
+}
+
 func (o GetConnectUrl200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -122,6 +155,9 @@ func (o GetConnectUrl200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.State) {
 		toSerialize["state"] = o.State
+	}
+	if !IsNil(o.Handoff) {
+		toSerialize["handoff"] = o.Handoff
 	}
 	return toSerialize, nil
 }

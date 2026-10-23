@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.342.0
+API version: 1.343.0
 Contact: support@zernio.com
 */
 
@@ -28,6 +28,8 @@ type CreateInviteTokenRequest struct {
 	ProfileIds []string `json:"profileIds,omitempty"`
 	// Org role granted to the invitee. Defaults to 'member'. 'admin' can manage the team (invite/remove members, change roles and access) and billing, but not ownership transfer or account deletion. 'billing_admin' (displayed as Billing Manager) manages billing only. 'viewer' creates a read-only member who can view everything in their profile scope but cannot perform any content mutation (publish, edit, delete, connect accounts).
 	Role *string `json:"role,omitempty"`
+	// Resource groups the invitee may not use once they join (the same groups as restricted API keys). Their dashboard hides those sections and every API request into a disabled group, with any credential they hold, is refused with 403. Omitted or empty means full access. Groups the caller lacks themselves are always added.
+	DisabledResourceGroups []string `json:"disabledResourceGroups,omitempty"`
 	// Deprecated. Use role 'viewer' instead. When true, the invite is created with role 'viewer'. Cannot be combined with role 'billing_admin' or 'admin'.
 	// Deprecated
 	ReadOnly *bool `json:"readOnly,omitempty"`
@@ -145,6 +147,38 @@ func (o *CreateInviteTokenRequest) SetRole(v string) {
 	o.Role = &v
 }
 
+// GetDisabledResourceGroups returns the DisabledResourceGroups field value if set, zero value otherwise.
+func (o *CreateInviteTokenRequest) GetDisabledResourceGroups() []string {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		var ret []string
+		return ret
+	}
+	return o.DisabledResourceGroups
+}
+
+// GetDisabledResourceGroupsOk returns a tuple with the DisabledResourceGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInviteTokenRequest) GetDisabledResourceGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		return nil, false
+	}
+	return o.DisabledResourceGroups, true
+}
+
+// HasDisabledResourceGroups returns a boolean if a field has been set.
+func (o *CreateInviteTokenRequest) HasDisabledResourceGroups() bool {
+	if o != nil && !IsNil(o.DisabledResourceGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabledResourceGroups gets a reference to the given []string and assigns it to the DisabledResourceGroups field.
+func (o *CreateInviteTokenRequest) SetDisabledResourceGroups(v []string) {
+	o.DisabledResourceGroups = v
+}
+
 // GetReadOnly returns the ReadOnly field value if set, zero value otherwise.
 // Deprecated
 func (o *CreateInviteTokenRequest) GetReadOnly() bool {
@@ -196,6 +230,9 @@ func (o CreateInviteTokenRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Role) {
 		toSerialize["role"] = o.Role
+	}
+	if !IsNil(o.DisabledResourceGroups) {
+		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	if !IsNil(o.ReadOnly) {
 		toSerialize["readOnly"] = o.ReadOnly

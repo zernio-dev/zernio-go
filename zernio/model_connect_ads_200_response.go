@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.342.0
+API version: 1.343.0
 Contact: support@zernio.com
 */
 
@@ -19,8 +19,8 @@ import (
 
 // ConnectAds200Response - struct for ConnectAds200Response
 type ConnectAds200Response struct {
-	ConnectAds200ResponseOneOf *ConnectAds200ResponseOneOf
-	GetConnectUrl200Response   *GetConnectUrl200Response
+	ConnectAds200ResponseOneOf  *ConnectAds200ResponseOneOf
+	ConnectAds200ResponseOneOf1 *ConnectAds200ResponseOneOf1
 }
 
 // ConnectAds200ResponseOneOfAsConnectAds200Response is a convenience function that returns ConnectAds200ResponseOneOf wrapped in ConnectAds200Response
@@ -30,10 +30,10 @@ func ConnectAds200ResponseOneOfAsConnectAds200Response(v *ConnectAds200ResponseO
 	}
 }
 
-// GetConnectUrl200ResponseAsConnectAds200Response is a convenience function that returns GetConnectUrl200Response wrapped in ConnectAds200Response
-func GetConnectUrl200ResponseAsConnectAds200Response(v *GetConnectUrl200Response) ConnectAds200Response {
+// ConnectAds200ResponseOneOf1AsConnectAds200Response is a convenience function that returns ConnectAds200ResponseOneOf1 wrapped in ConnectAds200Response
+func ConnectAds200ResponseOneOf1AsConnectAds200Response(v *ConnectAds200ResponseOneOf1) ConnectAds200Response {
 	return ConnectAds200Response{
-		GetConnectUrl200Response: v,
+		ConnectAds200ResponseOneOf1: v,
 	}
 }
 
@@ -58,27 +58,27 @@ func (dst *ConnectAds200Response) UnmarshalJSON(data []byte) error {
 		dst.ConnectAds200ResponseOneOf = nil
 	}
 
-	// try to unmarshal data into GetConnectUrl200Response
-	err = newStrictDecoder(data).Decode(&dst.GetConnectUrl200Response)
+	// try to unmarshal data into ConnectAds200ResponseOneOf1
+	err = newStrictDecoder(data).Decode(&dst.ConnectAds200ResponseOneOf1)
 	if err == nil {
-		jsonGetConnectUrl200Response, _ := json.Marshal(dst.GetConnectUrl200Response)
-		if string(jsonGetConnectUrl200Response) == "{}" { // empty struct
-			dst.GetConnectUrl200Response = nil
+		jsonConnectAds200ResponseOneOf1, _ := json.Marshal(dst.ConnectAds200ResponseOneOf1)
+		if string(jsonConnectAds200ResponseOneOf1) == "{}" { // empty struct
+			dst.ConnectAds200ResponseOneOf1 = nil
 		} else {
-			if err = validator.Validate(dst.GetConnectUrl200Response); err != nil {
-				dst.GetConnectUrl200Response = nil
+			if err = validator.Validate(dst.ConnectAds200ResponseOneOf1); err != nil {
+				dst.ConnectAds200ResponseOneOf1 = nil
 			} else {
 				match++
 			}
 		}
 	} else {
-		dst.GetConnectUrl200Response = nil
+		dst.ConnectAds200ResponseOneOf1 = nil
 	}
 
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.ConnectAds200ResponseOneOf = nil
-		dst.GetConnectUrl200Response = nil
+		dst.ConnectAds200ResponseOneOf1 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(ConnectAds200Response)")
 	} else if match == 1 {
@@ -94,8 +94,8 @@ func (src ConnectAds200Response) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.ConnectAds200ResponseOneOf)
 	}
 
-	if src.GetConnectUrl200Response != nil {
-		return json.Marshal(&src.GetConnectUrl200Response)
+	if src.ConnectAds200ResponseOneOf1 != nil {
+		return json.Marshal(&src.ConnectAds200ResponseOneOf1)
 	}
 
 	return nil, nil // no data in oneOf schemas
@@ -110,8 +110,8 @@ func (obj *ConnectAds200Response) GetActualInstance() interface{} {
 		return obj.ConnectAds200ResponseOneOf
 	}
 
-	if obj.GetConnectUrl200Response != nil {
-		return obj.GetConnectUrl200Response
+	if obj.ConnectAds200ResponseOneOf1 != nil {
+		return obj.ConnectAds200ResponseOneOf1
 	}
 
 	// all schemas are nil
@@ -124,8 +124,8 @@ func (obj ConnectAds200Response) GetActualInstanceValue() interface{} {
 		return *obj.ConnectAds200ResponseOneOf
 	}
 
-	if obj.GetConnectUrl200Response != nil {
-		return *obj.GetConnectUrl200Response
+	if obj.ConnectAds200ResponseOneOf1 != nil {
+		return *obj.ConnectAds200ResponseOneOf1
 	}
 
 	// all schemas are nil

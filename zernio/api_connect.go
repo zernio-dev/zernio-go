@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.342.0
+API version: 1.343.0
 Contact: support@zernio.com
 */
 
@@ -2742,6 +2742,132 @@ func (a *ConnectAPIService) CreateYoutubePlaylistExecute(r ConnectAPICreateYoutu
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ConnectAPIGetConnectHandoffRequest struct {
+	ctx        context.Context
+	ApiService *ConnectAPIService
+	handoffId  string
+}
+
+func (r ConnectAPIGetConnectHandoffRequest) Execute() (*ConnectHandoff, *http.Response, error) {
+	return r.ApiService.GetConnectHandoffExecute(r)
+}
+
+/*
+GetConnectHandoff Get a phone handoff
+
+Where a connect started with `handoff=true` on `GET /v1/connect/{platform}` stands: `waiting` until the QR code is scanned, `opened` once the phone opened it, then `connected` with the new accounts or `failed` with the error the flow ended on (the same `error` codes as the redirect flow). `expired` when nobody opened the QR code within its 30 minutes. Poll it every 2 to 5 seconds while your QR code is shown, and stop once it is `connected`, `failed` or `expired`. Readable for 60 minutes after it was created, then 404, as is a handoff created by another workspace.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param handoffId `handoff.id` from the connect response.
+	@return ConnectAPIGetConnectHandoffRequest
+*/
+func (a *ConnectAPIService) GetConnectHandoff(ctx context.Context, handoffId string) ConnectAPIGetConnectHandoffRequest {
+	return ConnectAPIGetConnectHandoffRequest{
+		ApiService: a,
+		ctx:        ctx,
+		handoffId:  handoffId,
+	}
+}
+
+// Execute executes the request
+//
+//	@return ConnectHandoff
+func (a *ConnectAPIService) GetConnectHandoffExecute(r ConnectAPIGetConnectHandoffRequest) (*ConnectHandoff, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ConnectHandoff
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetConnectHandoff")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/connect/handoffs/{handoffId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"handoffId"+"}", url.PathEscape(parameterValueToString(r.handoffId, "handoffId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ConnectAPIGetConnectUrlRequest struct {
 	ctx                    context.Context
 	ApiService             *ConnectAPIService
@@ -2763,6 +2889,7 @@ type ConnectAPIGetConnectUrlRequest struct {
 	welcomeTheme           *string
 	logoUrl                *string
 	language               *string
+	handoff                *bool
 }
 
 // Your Zernio profile ID (get from /v1/profiles). For WhatsApp, a Zernio-provisioned number can only be connected on the profile it was provisioned to; connecting from any other profile is rejected with a 409.
@@ -2864,6 +2991,12 @@ func (r ConnectAPIGetConnectUrlRequest) LogoUrl(logoUrl string) ConnectAPIGetCon
 // Hosted signup page only (&#x60;signup&#x3D;hosted&#x60;, WhatsApp): language of the page and its follow-along guide. Explainer videos stay in English. Default &#x60;en&#x60;. Rejected without &#x60;signup&#x3D;hosted&#x60;.
 func (r ConnectAPIGetConnectUrlRequest) Language(language string) ConnectAPIGetConnectUrlRequest {
 	r.language = &language
+	return r
+}
+
+// Let the user finish on their phone. When &#x60;true&#x60;, the response also carries &#x60;handoff&#x60;: show &#x60;handoff.url&#x60; as a QR code in your app (any QR library), the user scans it and the welcome screen opens on the phone, already carrying this connect, so they log in to the platform there without signing in to anything else. The phone ends on a Zernio result screen telling them to go back to their computer. Learn the outcome by polling &#x60;GET /v1/connect/handoffs/{handoffId}&#x60; (every 2 to 5 seconds is fine) or from the &#x60;account.connected&#x60; webhook. Shows the welcome screen with your branding parameters or saved settings. Cannot be combined with &#x60;welcome&#x3D;false&#x60;, &#x60;headless&#x3D;true&#x60;, &#x60;signup&#x60;, &#x60;redirect&#x3D;true&#x60; or &#x60;redirect_url&#x60; (400 &#x60;INVALID_FIELD_VALUE&#x60;). &#x60;handoff.url&#x60; works for 30 minutes. When the account is re-enabled straight away the response carries &#x60;account&#x60; instead, as without &#x60;handoff&#x60;.
+func (r ConnectAPIGetConnectUrlRequest) Handoff(handoff bool) ConnectAPIGetConnectUrlRequest {
+	r.handoff = &handoff
 	return r
 }
 
@@ -2984,6 +3117,13 @@ func (a *ConnectAPIService) GetConnectUrlExecute(r ConnectAPIGetConnectUrlReques
 	}
 	if r.language != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "language", r.language, "form", "")
+	}
+	if r.handoff != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "handoff", r.handoff, "form", "")
+	} else {
+		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "handoff", defaultValue, "form", "")
+		r.handoff = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4393,7 +4533,7 @@ func (r ConnectAPIGetShopifyConnectUrlRequest) RedirectUrl(redirectUrl string) C
 	return r
 }
 
-func (r ConnectAPIGetShopifyConnectUrlRequest) Execute() (*GetConnectUrl200Response, *http.Response, error) {
+func (r ConnectAPIGetShopifyConnectUrlRequest) Execute() (*ConnectAds200ResponseOneOf1, *http.Response, error) {
 	return r.ApiService.GetShopifyConnectUrlExecute(r)
 }
 
@@ -4429,13 +4569,13 @@ func (a *ConnectAPIService) GetShopifyConnectUrl(ctx context.Context) ConnectAPI
 
 // Execute executes the request
 //
-//	@return GetConnectUrl200Response
-func (a *ConnectAPIService) GetShopifyConnectUrlExecute(r ConnectAPIGetShopifyConnectUrlRequest) (*GetConnectUrl200Response, *http.Response, error) {
+//	@return ConnectAds200ResponseOneOf1
+func (a *ConnectAPIService) GetShopifyConnectUrlExecute(r ConnectAPIGetShopifyConnectUrlRequest) (*ConnectAds200ResponseOneOf1, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *GetConnectUrl200Response
+		localVarReturnValue *ConnectAds200ResponseOneOf1
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConnectAPIService.GetShopifyConnectUrl")

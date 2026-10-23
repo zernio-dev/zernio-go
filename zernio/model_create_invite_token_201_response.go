@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.342.0
+API version: 1.343.0
 Contact: support@zernio.com
 */
 
@@ -21,11 +21,12 @@ var _ MappedNullable = &CreateInviteToken201Response{}
 
 // CreateInviteToken201Response struct for CreateInviteToken201Response
 type CreateInviteToken201Response struct {
-	Token             *string    `json:"token,omitempty"`
-	Scope             *string    `json:"scope,omitempty"`
-	InvitedProfileIds []string   `json:"invitedProfileIds,omitempty"`
-	ExpiresAt         *time.Time `json:"expiresAt,omitempty"`
-	InviteUrl         *string    `json:"inviteUrl,omitempty"`
+	Token                  *string    `json:"token,omitempty"`
+	Scope                  *string    `json:"scope,omitempty"`
+	InvitedProfileIds      []string   `json:"invitedProfileIds,omitempty"`
+	DisabledResourceGroups []string   `json:"disabledResourceGroups,omitempty"`
+	ExpiresAt              *time.Time `json:"expiresAt,omitempty"`
+	InviteUrl              *string    `json:"inviteUrl,omitempty"`
 }
 
 // NewCreateInviteToken201Response instantiates a new CreateInviteToken201Response object
@@ -141,6 +142,38 @@ func (o *CreateInviteToken201Response) SetInvitedProfileIds(v []string) {
 	o.InvitedProfileIds = v
 }
 
+// GetDisabledResourceGroups returns the DisabledResourceGroups field value if set, zero value otherwise.
+func (o *CreateInviteToken201Response) GetDisabledResourceGroups() []string {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		var ret []string
+		return ret
+	}
+	return o.DisabledResourceGroups
+}
+
+// GetDisabledResourceGroupsOk returns a tuple with the DisabledResourceGroups field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateInviteToken201Response) GetDisabledResourceGroupsOk() ([]string, bool) {
+	if o == nil || IsNil(o.DisabledResourceGroups) {
+		return nil, false
+	}
+	return o.DisabledResourceGroups, true
+}
+
+// HasDisabledResourceGroups returns a boolean if a field has been set.
+func (o *CreateInviteToken201Response) HasDisabledResourceGroups() bool {
+	if o != nil && !IsNil(o.DisabledResourceGroups) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabledResourceGroups gets a reference to the given []string and assigns it to the DisabledResourceGroups field.
+func (o *CreateInviteToken201Response) SetDisabledResourceGroups(v []string) {
+	o.DisabledResourceGroups = v
+}
+
 // GetExpiresAt returns the ExpiresAt field value if set, zero value otherwise.
 func (o *CreateInviteToken201Response) GetExpiresAt() time.Time {
 	if o == nil || IsNil(o.ExpiresAt) {
@@ -223,6 +256,9 @@ func (o CreateInviteToken201Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.InvitedProfileIds) {
 		toSerialize["invitedProfileIds"] = o.InvitedProfileIds
+	}
+	if !IsNil(o.DisabledResourceGroups) {
+		toSerialize["disabledResourceGroups"] = o.DisabledResourceGroups
 	}
 	if !IsNil(o.ExpiresAt) {
 		toSerialize["expiresAt"] = o.ExpiresAt
