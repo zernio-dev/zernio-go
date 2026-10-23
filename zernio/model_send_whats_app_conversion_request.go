@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.339.2
+API version: 1.340.0
 Contact: support@zernio.com
 */
 
@@ -24,7 +24,7 @@ var _ MappedNullable = &SendWhatsAppConversionRequest{}
 type SendWhatsAppConversionRequest struct {
 	// WhatsApp SocialAccount ID.
 	AccountId string `json:"accountId"`
-	// Live-verified allowlist of event names accepted by Meta's CAPI for Business Messaging (Graph API v25.0). Other standard pixel events including `Lead`, `CompleteRegistration`, `Subscribe`, `Schedule`, `Contact`, `StartTrial`, `AddPaymentInfo`, `Search`, and `SubmitApplication` are rejected with subcode 2804066 (\"Messaging Event Invalid Event Type\") on `action_source = business_messaging` events. Custom event names are also rejected.  Use `LeadSubmitted` (NOT `Lead`) for lead-style conversions.
+	// Event names accepted by Meta's CAPI for Business Messaging. Other standard pixel events including `Lead`, `CompleteRegistration`, `Subscribe`, `Schedule`, `Contact`, `StartTrial`, `AddPaymentInfo`, `Search`, and `SubmitApplication` are rejected with subcode 2804066 (\"Messaging Event Invalid Event Type\") on `action_source = business_messaging` events. Custom event names are also rejected.  Use `LeadSubmitted` (NOT `Lead`) when a lead comes in and `QualifiedLead` once your team qualifies it. `OrderCreated`, `OrderCanceled` and `OrderReturned` track an order placed in the chat; send `value` and `currency` with them (and with `Purchase`) to report the order amount.
 	EventName string `json:"eventName"`
 	// Unix seconds. Defaults to the time of the request when omitted. Meta's attribution window is 7 days from click; events older than that lose attribution.
 	EventTime *float32 `json:"eventTime,omitempty"`

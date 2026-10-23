@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.339.2
+API version: 1.340.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the ConversionEventMessaging type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ConversionEventMessaging{}
 
-// ConversionEventMessaging Meta only, read when `actionSource` is `business_messaging` (Conversions API for Business Messaging). `channel` is sent as the event's `messaging_channel` (`instagram_direct` goes out as `instagram`). Each id lands in Meta's `user_data` unhashed, and an id that does not belong to `channel` is ignored.
+// ConversionEventMessaging Meta only, read when `actionSource` is `business_messaging` (Conversions API for Business Messaging). `channel` is sent as the event's `messaging_channel` (`instagram_direct` goes out as `instagram`). Each id lands in Meta's `user_data` unhashed, and an id that does not belong to `channel` is ignored. Meta accepts only its business messaging event names here (`LeadSubmitted`, `QualifiedLead`, `Purchase`, `AddToCart`, `InitiateCheckout`, `ViewContent`, `OrderCreated`, `OrderShipped`, `OrderDelivered`, `OrderCanceled`, `OrderReturned`, `CartAbandoned`, `RatingProvided`, `ReviewProvided`); `eventName` is forwarded unchanged.
 type ConversionEventMessaging struct {
 	Channel string `json:"channel"`
 	// WhatsApp only. WhatsApp Business Account id, sent as `whatsapp_business_account_id`.
