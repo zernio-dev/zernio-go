@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.345.0
+API version: 1.346.0
 Contact: support@zernio.com
 */
 
@@ -20,14 +20,16 @@ var _ MappedNullable = &GetTikTokSmartPlusMaterialReport200Response{}
 
 // GetTikTokSmartPlusMaterialReport200Response struct for GetTikTokSmartPlusMaterialReport200Response
 type GetTikTokSmartPlusMaterialReport200Response struct {
-	AdAccountId *string                                                `json:"adAccountId,omitempty"`
-	Level       *string                                                `json:"level,omitempty"`
-	StartDate   *string                                                `json:"startDate,omitempty"`
-	EndDate     *string                                                `json:"endDate,omitempty"`
-	Page        *int32                                                 `json:"page,omitempty"`
-	PageSize    *int32                                                 `json:"pageSize,omitempty"`
-	TotalRows   *int32                                                 `json:"totalRows,omitempty"`
-	TotalPages  *int32                                                 `json:"totalPages,omitempty"`
+	AdAccountId *string `json:"adAccountId,omitempty"`
+	Level       *string `json:"level,omitempty"`
+	StartDate   *string `json:"startDate,omitempty"`
+	EndDate     *string `json:"endDate,omitempty"`
+	Page        *int32  `json:"page,omitempty"`
+	PageSize    *int32  `json:"pageSize,omitempty"`
+	TotalRows   *int32  `json:"totalRows,omitempty"`
+	TotalPages  *int32  `json:"totalPages,omitempty"`
+	// Rows TikTok declared that a read and its retry could not return. 0 when the result is complete.
+	MissingRows *int32                                                 `json:"missingRows,omitempty"`
 	Rows        []GetTikTokSmartPlusMaterialReport200ResponseRowsInner `json:"rows,omitempty"`
 }
 
@@ -304,6 +306,38 @@ func (o *GetTikTokSmartPlusMaterialReport200Response) SetTotalPages(v int32) {
 	o.TotalPages = &v
 }
 
+// GetMissingRows returns the MissingRows field value if set, zero value otherwise.
+func (o *GetTikTokSmartPlusMaterialReport200Response) GetMissingRows() int32 {
+	if o == nil || IsNil(o.MissingRows) {
+		var ret int32
+		return ret
+	}
+	return *o.MissingRows
+}
+
+// GetMissingRowsOk returns a tuple with the MissingRows field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetTikTokSmartPlusMaterialReport200Response) GetMissingRowsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MissingRows) {
+		return nil, false
+	}
+	return o.MissingRows, true
+}
+
+// HasMissingRows returns a boolean if a field has been set.
+func (o *GetTikTokSmartPlusMaterialReport200Response) HasMissingRows() bool {
+	if o != nil && !IsNil(o.MissingRows) {
+		return true
+	}
+
+	return false
+}
+
+// SetMissingRows gets a reference to the given int32 and assigns it to the MissingRows field.
+func (o *GetTikTokSmartPlusMaterialReport200Response) SetMissingRows(v int32) {
+	o.MissingRows = &v
+}
+
 // GetRows returns the Rows field value if set, zero value otherwise.
 func (o *GetTikTokSmartPlusMaterialReport200Response) GetRows() []GetTikTokSmartPlusMaterialReport200ResponseRowsInner {
 	if o == nil || IsNil(o.Rows) {
@@ -369,6 +403,9 @@ func (o GetTikTokSmartPlusMaterialReport200Response) ToMap() (map[string]interfa
 	}
 	if !IsNil(o.TotalPages) {
 		toSerialize["totalPages"] = o.TotalPages
+	}
+	if !IsNil(o.MissingRows) {
+		toSerialize["missingRows"] = o.MissingRows
 	}
 	if !IsNil(o.Rows) {
 		toSerialize["rows"] = o.Rows
