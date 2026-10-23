@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.339.0
+API version: 1.339.1
 Contact: support@zernio.com
 */
 
@@ -4481,7 +4481,8 @@ GetAdsTimeline Get daily account metrics
 Returns an ads account's spend, results and other metrics day by day, ready for a daily performance chart.
 
 Returns daily aggregate metrics across all ads in a SocialAccount as a single
-time series, one row per calendar day in the requested range. Use this for
+time series, one row per calendar day and currency in the requested range (one row
+per day unless the account's ad accounts bill in different currencies). Use this for
 dashboards that draw a daily-spend or daily-conversions chart, instead of
 calling `/v1/ads/tree` once per day.
 

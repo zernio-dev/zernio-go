@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.339.0
+API version: 1.339.1
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,9 @@ var _ MappedNullable = &AdsTimelineResponseRowsInner{}
 // AdsTimelineResponseRowsInner struct for AdsTimelineResponseRowsInner
 type AdsTimelineResponseRowsInner struct {
 	Date *string `json:"date,omitempty"`
-	// Native currency units (matches /ads/tree convention).
+	// ISO 4217 currency of every money field in this row (spend, cpc, cpm, costPerConversion, purchaseValue, actionValues). An account whose ad accounts bill in different currencies gets one row per currency for that day, never a sum across currencies. Null when the currency of the ad accounts in this row is unknown. Added 2026-10-23.
+	Currency NullableString `json:"currency,omitempty"`
+	// Native currency units (matches /ads/tree convention), in `currency`.
 	Spend       *float32 `json:"spend,omitempty"`
 	Impressions *int32   `json:"impressions,omitempty"`
 	// Reach summed across the account's ads for this single day. A person seen by two ads the same day counts twice, and reach is de-duplicated per day only: do NOT sum it across days (people reached on multiple days would be double-counted).
@@ -96,6 +98,49 @@ func (o *AdsTimelineResponseRowsInner) HasDate() bool {
 // SetDate gets a reference to the given string and assigns it to the Date field.
 func (o *AdsTimelineResponseRowsInner) SetDate(v string) {
 	o.Date = &v
+}
+
+// GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdsTimelineResponseRowsInner) GetCurrency() string {
+	if o == nil || IsNil(o.Currency.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Currency.Get()
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdsTimelineResponseRowsInner) GetCurrencyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Currency.Get(), o.Currency.IsSet()
+}
+
+// HasCurrency returns a boolean if a field has been set.
+func (o *AdsTimelineResponseRowsInner) HasCurrency() bool {
+	if o != nil && o.Currency.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrency gets a reference to the given NullableString and assigns it to the Currency field.
+func (o *AdsTimelineResponseRowsInner) SetCurrency(v string) {
+	o.Currency.Set(&v)
+}
+
+// SetCurrencyNil sets the value for Currency to be an explicit nil
+func (o *AdsTimelineResponseRowsInner) SetCurrencyNil() {
+	o.Currency.Set(nil)
+}
+
+// UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
+func (o *AdsTimelineResponseRowsInner) UnsetCurrency() {
+	o.Currency.Unset()
 }
 
 // GetSpend returns the Spend field value if set, zero value otherwise.
@@ -590,6 +635,9 @@ func (o AdsTimelineResponseRowsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Date) {
 		toSerialize["date"] = o.Date
+	}
+	if o.Currency.IsSet() {
+		toSerialize["currency"] = o.Currency.Get()
 	}
 	if !IsNil(o.Spend) {
 		toSerialize["spend"] = o.Spend
