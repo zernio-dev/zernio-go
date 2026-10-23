@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.347.0
+API version: 1.348.0
 Contact: support@zernio.com
 */
 
@@ -6416,6 +6416,9 @@ type AdCampaignsAPIListAdSetsRequest struct {
 	campaignId  *string
 	adSetId     *string
 	platform    *string
+	status      *AdStatus
+	page        *int32
+	limit       *int32
 	live        *bool
 }
 
@@ -6448,6 +6451,22 @@ func (r AdCampaignsAPIListAdSetsRequest) Platform(platform string) AdCampaignsAP
 	return r
 }
 
+// Filter by the ad set&#39;s stored &#x60;status&#x60;, the value each row returns. A live read does not change it. Rows whose &#x60;status&#x60; is null match no filter.
+func (r AdCampaignsAPIListAdSetsRequest) Status(status AdStatus) AdCampaignsAPIListAdSetsRequest {
+	r.status = &status
+	return r
+}
+
+func (r AdCampaignsAPIListAdSetsRequest) Page(page int32) AdCampaignsAPIListAdSetsRequest {
+	r.page = &page
+	return r
+}
+
+func (r AdCampaignsAPIListAdSetsRequest) Limit(limit int32) AdCampaignsAPIListAdSetsRequest {
+	r.limit = &limit
+	return r
+}
+
 // Read the on/off switches live from the platform instead of returning the synced values. The fresh values are stored (so later reads return them too) and the response carries &#x60;statusReadAt&#x60;, the time of the read. At most 20 platform objects are read per request. Where a read fails (credentials, platform error, no reader on that platform), the stored values come back with &#x60;statusReadAt: null&#x60;. See \&quot;Status freshness\&quot; in the operation description. On X the budget is read live in the same read: on GET /v1/ads/{adId} &#x60;budget&#x60;, &#x60;adSetBudget&#x60;, &#x60;campaignBudget&#x60; and &#x60;budgetLevel&#x60; are the line item and campaign budgets X holds now (stored like the switches); on the ad set and campaign listings &#x60;budget&#x60; is the one that line item or campaign holds now (returned, not stored); a row whose budget the other level holds keeps its synced &#x60;budget&#x60;.
 func (r AdCampaignsAPIListAdSetsRequest) Live(live bool) AdCampaignsAPIListAdSetsRequest {
 	r.live = &live
@@ -6468,8 +6487,10 @@ filtered by platform and campaignId. Reads the `ad_sets` table
 directly, independent of the `ads` rollup GET /v1/ads/tree uses, so a
 newly created standalone ad group with no ad yet (POST /v1/ads/ad-sets,
 Google only) is visible here even though it is invisible in the tree
-until an ad joins it via `adSetId` on POST /v1/ads/create. Returns at most 500
-rows, newest first.
+until an ad joins it via `adSetId` on POST /v1/ads/create. Rows come newest first
+(by platform creation time, then id, so pages never overlap), 500 per page unless `limit`
+says otherwise; `pagination.total` counts every matching ad set and `page` reaches the
+rest.
 
 **This list is SYNCED, not live** (refreshed by background sync, see below). Each row also
 carries the ad set's config (`targeting`, `bidStrategy`, `bidAmount`, `optimizationGoal`,
@@ -6488,8 +6509,8 @@ here only after the next sync. Controllers that act on a switch should pass `liv
 which reads the switches from the platform now, stores them, and returns `statusReadAt`
 (null when the read failed and the stored values were returned).
 With `live=true` (which needs a `campaignId` or `adSetId` filter) each listed ad set's own
-switch (`platformAdSetStatus`) is read live, for the first 20 rows; later rows keep their
-synced value with `statusReadAt: null`. Live reads cover TikTok, Meta, Google, OpenAI and Reddit.
+switch (`platformAdSetStatus`) is read live, for the first 20 rows of the page; later rows keep their
+synced value with `statusReadAt: null`. To read more ad sets live, page with `limit=20`. Live reads cover TikTok, Meta, Google, OpenAI and Reddit.
 The rolled-up `status` is not re-derived by a live read. On TikTok the same live read also
 returns the ad group's applied `optimizationGoal` and `billingEvent`, as TikTok's adgroup/get
 reports them, so you can verify the goal TikTok applied rather than the one you requested.
@@ -6547,6 +6568,23 @@ func (a *AdCampaignsAPIService) ListAdSetsExecute(r AdCampaignsAPIListAdSetsRequ
 	}
 	if r.platform != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "platform", r.platform, "form", "")
+	}
+	if r.status != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "")
+	}
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	} else {
+		var defaultValue int32 = 1
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", defaultValue, "form", "")
+		r.page = &defaultValue
+	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	} else {
+		var defaultValue int32 = 500
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", defaultValue, "form", "")
+		r.limit = &defaultValue
 	}
 	if r.live != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "live", r.live, "form", "")

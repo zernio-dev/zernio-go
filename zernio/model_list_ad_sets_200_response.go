@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.347.0
+API version: 1.348.0
 Contact: support@zernio.com
 */
 
@@ -20,7 +20,8 @@ var _ MappedNullable = &ListAdSets200Response{}
 
 // ListAdSets200Response struct for ListAdSets200Response
 type ListAdSets200Response struct {
-	AdSets []ListAdSets200ResponseAdSetsInner `json:"adSets,omitempty"`
+	AdSets     []ListAdSets200ResponseAdSetsInner `json:"adSets,omitempty"`
+	Pagination *Pagination                        `json:"pagination,omitempty"`
 }
 
 // NewListAdSets200Response instantiates a new ListAdSets200Response object
@@ -72,6 +73,38 @@ func (o *ListAdSets200Response) SetAdSets(v []ListAdSets200ResponseAdSetsInner) 
 	o.AdSets = v
 }
 
+// GetPagination returns the Pagination field value if set, zero value otherwise.
+func (o *ListAdSets200Response) GetPagination() Pagination {
+	if o == nil || IsNil(o.Pagination) {
+		var ret Pagination
+		return ret
+	}
+	return *o.Pagination
+}
+
+// GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListAdSets200Response) GetPaginationOk() (*Pagination, bool) {
+	if o == nil || IsNil(o.Pagination) {
+		return nil, false
+	}
+	return o.Pagination, true
+}
+
+// HasPagination returns a boolean if a field has been set.
+func (o *ListAdSets200Response) HasPagination() bool {
+	if o != nil && !IsNil(o.Pagination) {
+		return true
+	}
+
+	return false
+}
+
+// SetPagination gets a reference to the given Pagination and assigns it to the Pagination field.
+func (o *ListAdSets200Response) SetPagination(v Pagination) {
+	o.Pagination = &v
+}
+
 func (o ListAdSets200Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -84,6 +117,9 @@ func (o ListAdSets200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.AdSets) {
 		toSerialize["adSets"] = o.AdSets
+	}
+	if !IsNil(o.Pagination) {
+		toSerialize["pagination"] = o.Pagination
 	}
 	return toSerialize, nil
 }
