@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.346.0
+API version: 1.347.0
 Contact: support@zernio.com
 */
 
@@ -30,7 +30,7 @@ type GetLinkedInMentions200Response struct {
 	MentionFormat *string `json:"mentionFormat,omitempty"`
 	// The vanity name/slug (only for organization mentions)
 	VanityName *string `json:"vanityName,omitempty"`
-	// Warning about clickable mentions (only present for person mentions if displayName was not provided)
+	// Only present for person mentions when displayName was not provided and the real name could not be resolved from LinkedIn
 	Warning *string `json:"warning,omitempty"`
 }
 
