@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.339.1
+API version: 1.339.2
 Contact: support@zernio.com
 */
 
@@ -932,7 +932,7 @@ func (r AdTargetingAPISearchAdTargetingRequest) AdAccountId(adAccountId string) 
 	return r
 }
 
-// Meta only: the language Meta matches &#x60;q&#x60; against and names results and &#x60;path&#x60; in, as language_TERRITORY (e.g. &#x60;pl_PL&#x60;, &#x60;en_US&#x60;). Applies to &#x60;geo&#x60;, &#x60;interest&#x60;, &#x60;interestSuggestion&#x60;, &#x60;behavior&#x60;, &#x60;workPosition&#x60;, &#x60;workEmployer&#x60; and &#x60;workIndustry&#x60;. Without it, &#x60;behavior&#x60; and &#x60;workIndustry&#x60; use &#x60;en_US&#x60; and the other searches use the language of the Facebook user who connected the account. &#x60;income&#x60; always uses &#x60;en_US&#x60;. Ignored on other platforms.
+// Meta only: the language Meta matches &#x60;q&#x60; against and names results and &#x60;path&#x60; in, as language_TERRITORY (e.g. &#x60;pl_PL&#x60;, &#x60;en_US&#x60;). Applies to &#x60;geo&#x60;, &#x60;interest&#x60;, &#x60;interestSuggestion&#x60;, &#x60;behavior&#x60;, &#x60;workPosition&#x60;, &#x60;workEmployer&#x60; and &#x60;workIndustry&#x60;. Without it, &#x60;behavior&#x60;, &#x60;workIndustry&#x60; and &#x60;interestSuggestion&#x60; use &#x60;en_US&#x60; and the other searches use the language of the Facebook user who connected the account. &#x60;income&#x60; always uses &#x60;en_US&#x60;. Ignored on other platforms.
 func (r AdTargetingAPISearchAdTargetingRequest) Locale(locale string) AdTargetingAPISearchAdTargetingRequest {
 	r.locale = &locale
 	return r
@@ -967,8 +967,10 @@ The `dimension` param selects what is searched:
     comma-separated (`NBA,Michael Jordan`) or, for names that contain a comma, a JSON array of
     strings (`["Earth, Wind & Fire","Yoga"]`, URL-encoded). A `q` starting with `[` is always read as
     JSON. A `q` with no name or malformed JSON returns 400 naming `q`. Meta also suggests behaviors
-    and demographics; Zernio keeps only interests (entries whose `path` starts with `Interests`), so
-    every id goes in `TargetingSpec.interests`, like `interest` results. Zernio asks Meta for three
+    and demographics; Zernio keeps only interests, so every id goes in `TargetingSpec.interests`, like
+    `interest` results. Zernio classifies them with a Meta call pinned to `en_US` (ids whose `path`
+    starts with `Interests`). Without `locale` results are in English; with another `locale`, a second
+    call in that locale returns the same interests with localized names and `path`. Zernio asks Meta for three
     times `limit` (at most 100) before filtering, so fewer than `limit` results can come back. Meta
     weights the first name heavily: a multi-name `q` mostly returns suggestions for the first one
   - `behavior`: Meta, TikTok and LinkedIn, matched by name; ids feed `TargetingSpec.behaviors`.
@@ -1097,7 +1099,7 @@ not `"Amsterdam, NL"`). Use `countryCode` to disambiguate.
 
 Meta language: Meta matches `q` against names in one language and returns names and `path` in
 that language. Pass `locale` (e.g. `pl_PL`) to choose it. Without `locale`, the `behavior` and
-`workIndustry` catalogs are in `en_US`, and `interest`, `interestSuggestion`, `geo`, `workPosition`
+`workIndustry` catalogs and `interestSuggestion` are in `en_US`, and `interest`, `geo`, `workPosition`
 and `workEmployer` follow the language of the Facebook user who connected the account (so a
 Russian-language Facebook user gets Russian paths, and Polish names need `locale=pl_PL`).
 A non-English `behavior` or `workIndustry` query without `locale` never matches, so pass the
