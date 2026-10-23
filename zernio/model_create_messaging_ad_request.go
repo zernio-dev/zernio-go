@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.338.5
+API version: 1.339.0
 Contact: support@zernio.com
 */
 
@@ -157,8 +157,8 @@ type CreateMessagingAdRequest struct {
 	DsaPayor *string `json:"dsaPayor,omitempty"`
 	// Meta only. Regional regulation categories required when the ad set targets certain countries (e.g. AUSTRALIA_FINSERV, AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, INDIA_FINSERV, MALAYSIA_UNIVERSAL, SINGAPORE_UNIVERSAL, TAIWAN_FINSERV, TAIWAN_UNIVERSAL, THAILAND_UNIVERSAL). Forwarded to the ad set.
 	RegionalRegulatedCategories []string `json:"regionalRegulatedCategories,omitempty"`
-	// Meta only. Verified identity IDs of the beneficiary and payer for each declared regionalRegulatedCategories value. Meta may require them on ad sets created through the API even when a default beneficiary and payer are set in Ads Manager advertising settings (seen on AUSTRALIA_FINSERV), so sending them explicitly is the reliable path. The value is the Verified identity ID (Meta Business Settings > Verified identities), not a Page or Business ID, and beneficiary and payer may be the same ID. Keys by category: AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, MALAYSIA_UNIVERSAL and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer. When Meta rejects the ad set for a missing verified advertiser, the error carries param regionalRegulationIdentities, details.expectedIdentityKeys (the keys the declared categories expect), details.suggestedCategories (the markets Meta ties to that subcode) and Meta's metaCode, metaSubcode and fbtraceId. Ignored when adSetId adds the ad to an existing ad set.
-	RegionalRegulationIdentities map[string]int32 `json:"regionalRegulationIdentities,omitempty"`
+	// Meta only. Verified identity IDs of the beneficiary and payer for each declared regionalRegulatedCategories value. Meta may require them on ad sets created through the API even when a default beneficiary and payer are set in Ads Manager advertising settings (seen on AUSTRALIA_FINSERV), so sending them explicitly is the reliable path. The value is the Verified identity ID (Meta Business Settings > Verified identities), not a Page or Business ID, and beneficiary and payer may be the same ID. Send each ID as a string of digits: Verified identity IDs can have 17 digits, more than a JSON number holds exactly, and a number that arrives rounded is rejected. Numbers up to 9007199254740991 are still accepted. The IDs reach Meta unchanged. Keys by category: AUSTRALIA_FINSERV uses australia_finserv_beneficiary / australia_finserv_payer; TAIWAN_FINSERV uses taiwan_finserv_beneficiary / taiwan_finserv_payer; INDIA_FINSERV uses india_finserv_beneficiary / india_finserv_payer; TAIWAN_UNIVERSAL uses taiwan_universal_beneficiary / taiwan_universal_payer; SINGAPORE_UNIVERSAL uses singapore_universal_beneficiary / singapore_universal_payer; AUSTRALIA_UNIVERSAL, BRAZIL_REGULATION, MALAYSIA_UNIVERSAL and THAILAND_UNIVERSAL use universal_beneficiary / universal_payer. When Meta rejects the ad set for a missing verified advertiser, the error carries param regionalRegulationIdentities, details.expectedIdentityKeys (the keys the declared categories expect), details.suggestedCategories (the markets Meta ties to that subcode) and Meta's metaCode, metaSubcode and fbtraceId. Ignored when adSetId adds the ad to an existing ad set.
+	RegionalRegulationIdentities map[string]BoostPostRequestRegionalRegulationIdentitiesValue `json:"regionalRegulationIdentities,omitempty"`
 	// Where the conversation opens when the ad is tapped. Set this OR `destinations`, not both.
 	Destination *string `json:"destination,omitempty"`
 	// Two or three messaging apps on ONE ad set, like Ads Manager's \"all messaging apps\": the ad set gets Meta's combined destination_type (e.g. MESSAGING_INSTAGRAM_DIRECT_MESSENGER_WHATSAPP) and the creative one CTA per app, so Meta opens the app each viewer is likeliest to answer from. WhatsApp in the list still needs the Page paired with a WhatsApp Business number. With `adSetId`, the existing ad set must already use that combined destination_type. Set this OR `destination`, not both.
@@ -2477,9 +2477,9 @@ func (o *CreateMessagingAdRequest) SetRegionalRegulatedCategories(v []string) {
 }
 
 // GetRegionalRegulationIdentities returns the RegionalRegulationIdentities field value if set, zero value otherwise.
-func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentities() map[string]int32 {
+func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentities() map[string]BoostPostRequestRegionalRegulationIdentitiesValue {
 	if o == nil || IsNil(o.RegionalRegulationIdentities) {
-		var ret map[string]int32
+		var ret map[string]BoostPostRequestRegionalRegulationIdentitiesValue
 		return ret
 	}
 	return o.RegionalRegulationIdentities
@@ -2487,9 +2487,9 @@ func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentities() map[string]
 
 // GetRegionalRegulationIdentitiesOk returns a tuple with the RegionalRegulationIdentities field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentitiesOk() (map[string]int32, bool) {
+func (o *CreateMessagingAdRequest) GetRegionalRegulationIdentitiesOk() (map[string]BoostPostRequestRegionalRegulationIdentitiesValue, bool) {
 	if o == nil || IsNil(o.RegionalRegulationIdentities) {
-		return map[string]int32{}, false
+		return map[string]BoostPostRequestRegionalRegulationIdentitiesValue{}, false
 	}
 	return o.RegionalRegulationIdentities, true
 }
@@ -2503,8 +2503,8 @@ func (o *CreateMessagingAdRequest) HasRegionalRegulationIdentities() bool {
 	return false
 }
 
-// SetRegionalRegulationIdentities gets a reference to the given map[string]int32 and assigns it to the RegionalRegulationIdentities field.
-func (o *CreateMessagingAdRequest) SetRegionalRegulationIdentities(v map[string]int32) {
+// SetRegionalRegulationIdentities gets a reference to the given map[string]BoostPostRequestRegionalRegulationIdentitiesValue and assigns it to the RegionalRegulationIdentities field.
+func (o *CreateMessagingAdRequest) SetRegionalRegulationIdentities(v map[string]BoostPostRequestRegionalRegulationIdentitiesValue) {
 	o.RegionalRegulationIdentities = v
 }
 
