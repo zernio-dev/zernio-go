@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.341.0
+API version: 1.342.0
 Contact: support@zernio.com
 */
 
@@ -756,6 +756,8 @@ type AccountsAPIGetFollowerStatsRequest struct {
 	fromDate    *string
 	toDate      *string
 	granularity *string
+	limit       *int32
+	cursor      *string
 }
 
 // Comma-separated list of account IDs (optional, defaults to all user&#39;s accounts)
@@ -785,6 +787,18 @@ func (r AccountsAPIGetFollowerStatsRequest) ToDate(toDate string) AccountsAPIGet
 // Data aggregation level
 func (r AccountsAPIGetFollowerStatsRequest) Granularity(granularity string) AccountsAPIGetFollowerStatsRequest {
 	r.granularity = &granularity
+	return r
+}
+
+// Accounts per page, ordered by account id. Send it to page through accounts; the response then carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor every matching account is returned.
+func (r AccountsAPIGetFollowerStatsRequest) Limit(limit int32) AccountsAPIGetFollowerStatsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;; returns the next page of &#x60;limit&#x60; accounts (25 when limit is omitted). A cursor we cannot parse returns 400.
+func (r AccountsAPIGetFollowerStatsRequest) Cursor(cursor string) AccountsAPIGetFollowerStatsRequest {
+	r.cursor = &cursor
 	return r
 }
 
@@ -849,6 +863,12 @@ func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerSta
 		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
 		r.granularity = &defaultValue
 	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -887,6 +907,17 @@ func (a *AccountsAPIService) GetFollowerStatsExecute(r AccountsAPIGetFollowerSta
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
@@ -1688,6 +1719,7 @@ type AccountsAPIListAccountsRequest struct {
 	includeStatusCounts *bool
 	page                *int32
 	limit               *int32
+	cursor              *string
 	profileIds          *string
 	perProfile          *int32
 }
@@ -1722,7 +1754,7 @@ func (r AccountsAPIListAccountsRequest) Category(category string) AccountsAPILis
 	return r
 }
 
-// Sort a paginated listing (page/limit) by account name, platform, profile name, status (accounts needing a reconnect first when ascending) or connection date. Ties keep the default order: platform, then newest first.
+// Sort an offset-paginated listing (page and limit) by account name, platform, profile name, status (accounts needing a reconnect first when ascending) or connection date. Ties keep the default order: platform, then newest first.
 func (r AccountsAPIListAccountsRequest) Sort(sort string) AccountsAPIListAccountsRequest {
 	r.sort = &sort
 	return r
@@ -1746,7 +1778,7 @@ func (r AccountsAPIListAccountsRequest) ExcludeHidden(excludeHidden bool) Accoun
 	return r
 }
 
-// When true, appends the shared WhatsApp sandbox account and the iMessage sandbox account to the list when they are active, honouring &#x60;platform&#x60; but no other filter. Ignored on a paginated request (page/limit) and together with &#x60;perProfile&#x60;. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
+// When true, appends the shared WhatsApp sandbox account and the iMessage sandbox account to the list when they are active, honouring &#x60;platform&#x60; but no other filter. Ignored on a paginated request (page, limit or cursor) and together with &#x60;perProfile&#x60;. Accepts &#x60;true&#x60; or &#x60;false&#x60; in any letter case; any other value returns 400.
 func (r AccountsAPIListAccountsRequest) IncludeSandbox(includeSandbox bool) AccountsAPIListAccountsRequest {
 	r.includeSandbox = &includeSandbox
 	return r
@@ -1758,15 +1790,21 @@ func (r AccountsAPIListAccountsRequest) IncludeStatusCounts(includeStatusCounts 
 	return r
 }
 
-// Page number (1-based). Must be provided together with limit to enable server-side pagination; sending only one of the two returns 400. Omit both for all accounts.
+// Page number (1-based) for offset paging. Requires limit; omit page, limit and cursor for all accounts.
 func (r AccountsAPIListAccountsRequest) Page(page int32) AccountsAPIListAccountsRequest {
 	r.page = &page
 	return r
 }
 
-// Page size. Must be provided together with page; sending only one of the two returns 400.
+// Page size. With page, an offset page; alone or with cursor, a cursor page.
 func (r AccountsAPIListAccountsRequest) Limit(limit int32) AccountsAPIListAccountsRequest {
 	r.limit = &limit
+	return r
+}
+
+// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;; returns the next page of &#x60;limit&#x60; accounts (500 when limit is omitted). A cursor we cannot parse returns 400. Cannot be combined with page.
+func (r AccountsAPIListAccountsRequest) Cursor(cursor string) AccountsAPIListAccountsRequest {
+	r.cursor = &cursor
 	return r
 }
 
@@ -1776,7 +1814,7 @@ func (r AccountsAPIListAccountsRequest) ProfileIds(profileIds string) AccountsAP
 	return r
 }
 
-// Return a preview of each profile in profileIds: the newest account of every platform it has, topped up to at least N. Requires profileIds; cannot be combined with page and limit.
+// Return a preview of each profile in profileIds: the newest account of every platform it has, topped up to at least N. Requires profileIds; cannot be combined with page, limit or cursor.
 func (r AccountsAPIListAccountsRequest) PerProfile(perProfile int32) AccountsAPIListAccountsRequest {
 	r.perProfile = &perProfile
 	return r
@@ -1790,8 +1828,9 @@ func (r AccountsAPIListAccountsRequest) Execute() (*AccountsListResponse, *http.
 ListAccounts List accounts
 
 Returns connected accounts. Only includes accounts within the plan limit by default. Follower data requires analytics add-on.
-Supports optional server-side pagination via page/limit params. When omitted, returns all accounts (backward-compatible).
-page and limit must be supplied together; out-of-range page/limit values are rejected with 400 rather than silently clamped.
+Supports optional server-side pagination. When omitted, returns all accounts (backward-compatible).
+Cursor paging: send `limit` alone for the first page, then pass `pagination.nextCursor` back as `cursor` until it is null. Pages are ordered by account id, so accounts added or removed between calls never shift a page. Cannot be combined with `page`, `sort` or `perProfile`.
+Offset paging: send `page` and `limit` together. Out-of-range page/limit values are rejected with 400 rather than silently clamped.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return AccountsAPIListAccountsRequest
@@ -1883,6 +1922,9 @@ func (a *AccountsAPIService) ListAccountsExecute(r AccountsAPIListAccountsReques
 	}
 	if r.limit != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
 	}
 	if r.profileIds != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "profileIds", r.profileIds, "form", "")

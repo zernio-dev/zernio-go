@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.341.0
+API version: 1.342.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type FollowerStatsResponse struct {
 	Stats       map[string][]FollowerStatsResponseStatsValueInner `json:"stats,omitempty"`
 	DateRange   *FollowerStatsResponseDateRange                   `json:"dateRange,omitempty"`
 	Granularity *string                                           `json:"granularity,omitempty"`
+	// Only present when limit or cursor is sent.
+	Pagination *AccountCursorPagination `json:"pagination,omitempty"`
 }
 
 // NewFollowerStatsResponse instantiates a new FollowerStatsResponse object
@@ -171,6 +173,38 @@ func (o *FollowerStatsResponse) SetGranularity(v string) {
 	o.Granularity = &v
 }
 
+// GetPagination returns the Pagination field value if set, zero value otherwise.
+func (o *FollowerStatsResponse) GetPagination() AccountCursorPagination {
+	if o == nil || IsNil(o.Pagination) {
+		var ret AccountCursorPagination
+		return ret
+	}
+	return *o.Pagination
+}
+
+// GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FollowerStatsResponse) GetPaginationOk() (*AccountCursorPagination, bool) {
+	if o == nil || IsNil(o.Pagination) {
+		return nil, false
+	}
+	return o.Pagination, true
+}
+
+// HasPagination returns a boolean if a field has been set.
+func (o *FollowerStatsResponse) HasPagination() bool {
+	if o != nil && !IsNil(o.Pagination) {
+		return true
+	}
+
+	return false
+}
+
+// SetPagination gets a reference to the given AccountCursorPagination and assigns it to the Pagination field.
+func (o *FollowerStatsResponse) SetPagination(v AccountCursorPagination) {
+	o.Pagination = &v
+}
+
 func (o FollowerStatsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +226,9 @@ func (o FollowerStatsResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Granularity) {
 		toSerialize["granularity"] = o.Granularity
+	}
+	if !IsNil(o.Pagination) {
+		toSerialize["pagination"] = o.Pagination
 	}
 	return toSerialize, nil
 }

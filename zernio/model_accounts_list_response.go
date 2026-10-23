@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.341.0
+API version: 1.342.0
 Contact: support@zernio.com
 */
 
@@ -24,9 +24,8 @@ var _ MappedNullable = &AccountsListResponse{}
 type AccountsListResponse struct {
 	Accounts []SocialAccount `json:"accounts"`
 	// Whether user has analytics add-on access
-	HasAnalyticsAccess bool `json:"hasAnalyticsAccess"`
-	// Only present when page/limit params are provided
-	Pagination *Pagination `json:"pagination,omitempty"`
+	HasAnalyticsAccess bool                            `json:"hasAnalyticsAccess"`
+	Pagination         *AccountsListResponsePagination `json:"pagination,omitempty"`
 	// Only with profileIds and perProfile. Accounts matching the filters per profile ID; a profile with none is absent.
 	ProfileTotals map[string]int32                  `json:"profileTotals,omitempty"`
 	StatusCounts  *AccountsListResponseStatusCounts `json:"statusCounts,omitempty"`
@@ -102,9 +101,9 @@ func (o *AccountsListResponse) SetHasAnalyticsAccess(v bool) {
 }
 
 // GetPagination returns the Pagination field value if set, zero value otherwise.
-func (o *AccountsListResponse) GetPagination() Pagination {
+func (o *AccountsListResponse) GetPagination() AccountsListResponsePagination {
 	if o == nil || IsNil(o.Pagination) {
-		var ret Pagination
+		var ret AccountsListResponsePagination
 		return ret
 	}
 	return *o.Pagination
@@ -112,7 +111,7 @@ func (o *AccountsListResponse) GetPagination() Pagination {
 
 // GetPaginationOk returns a tuple with the Pagination field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AccountsListResponse) GetPaginationOk() (*Pagination, bool) {
+func (o *AccountsListResponse) GetPaginationOk() (*AccountsListResponsePagination, bool) {
 	if o == nil || IsNil(o.Pagination) {
 		return nil, false
 	}
@@ -128,8 +127,8 @@ func (o *AccountsListResponse) HasPagination() bool {
 	return false
 }
 
-// SetPagination gets a reference to the given Pagination and assigns it to the Pagination field.
-func (o *AccountsListResponse) SetPagination(v Pagination) {
+// SetPagination gets a reference to the given AccountsListResponsePagination and assigns it to the Pagination field.
+func (o *AccountsListResponse) SetPagination(v AccountsListResponsePagination) {
 	o.Pagination = &v
 }
 

@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.341.0
+API version: 1.342.0
 Contact: support@zernio.com
 */
 
@@ -2027,6 +2027,8 @@ type AnalyticsAPIGetFollowerStatsRequest struct {
 	fromDate    *string
 	toDate      *string
 	granularity *string
+	limit       *int32
+	cursor      *string
 }
 
 // Comma-separated list of account IDs (optional, defaults to all user&#39;s accounts)
@@ -2056,6 +2058,18 @@ func (r AnalyticsAPIGetFollowerStatsRequest) ToDate(toDate string) AnalyticsAPIG
 // Data aggregation level
 func (r AnalyticsAPIGetFollowerStatsRequest) Granularity(granularity string) AnalyticsAPIGetFollowerStatsRequest {
 	r.granularity = &granularity
+	return r
+}
+
+// Accounts per page, ordered by account id. Send it to page through accounts; the response then carries &#x60;pagination.nextCursor&#x60;. Without limit or cursor every matching account is returned.
+func (r AnalyticsAPIGetFollowerStatsRequest) Limit(limit int32) AnalyticsAPIGetFollowerStatsRequest {
+	r.limit = &limit
+	return r
+}
+
+// Opaque cursor from a previous response&#39;s &#x60;pagination.nextCursor&#x60;; returns the next page of &#x60;limit&#x60; accounts (25 when limit is omitted). A cursor we cannot parse returns 400.
+func (r AnalyticsAPIGetFollowerStatsRequest) Cursor(cursor string) AnalyticsAPIGetFollowerStatsRequest {
+	r.cursor = &cursor
 	return r
 }
 
@@ -2120,6 +2134,12 @@ func (a *AnalyticsAPIService) GetFollowerStatsExecute(r AnalyticsAPIGetFollowerS
 		parameterAddToHeaderOrQuery(localVarQueryParams, "granularity", defaultValue, "form", "")
 		r.granularity = &defaultValue
 	}
+	if r.limit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "limit", r.limit, "form", "")
+	}
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2158,6 +2178,17 @@ func (a *AnalyticsAPIService) GetFollowerStatsExecute(r AnalyticsAPIGetFollowerS
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v ErrorResponse
