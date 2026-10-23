@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.337.0
+API version: 1.338.0
 Contact: support@zernio.com
 */
 
@@ -49,7 +49,8 @@ type ListInboxConversations200ResponseDataInner struct {
 	// Direct link to open the conversation on the platform (if available)
 	Url              NullableString                                              `json:"url,omitempty"`
 	InstagramProfile *ListInboxConversations200ResponseDataInnerInstagramProfile `json:"instagramProfile,omitempty"`
-	Metadata         *ListInboxConversations200ResponseDataInnerMetadata         `json:"metadata,omitempty"`
+	Metadata         *InboxConversationAdMetadata                                `json:"metadata,omitempty"`
+	AdAttribution    *ConversationAdAttribution                                  `json:"adAttribution,omitempty"`
 }
 
 // NewListInboxConversations200ResponseDataInner instantiates a new ListInboxConversations200ResponseDataInner object
@@ -722,9 +723,9 @@ func (o *ListInboxConversations200ResponseDataInner) SetInstagramProfile(v ListI
 }
 
 // GetMetadata returns the Metadata field value if set, zero value otherwise.
-func (o *ListInboxConversations200ResponseDataInner) GetMetadata() ListInboxConversations200ResponseDataInnerMetadata {
+func (o *ListInboxConversations200ResponseDataInner) GetMetadata() InboxConversationAdMetadata {
 	if o == nil || IsNil(o.Metadata) {
-		var ret ListInboxConversations200ResponseDataInnerMetadata
+		var ret InboxConversationAdMetadata
 		return ret
 	}
 	return *o.Metadata
@@ -732,7 +733,7 @@ func (o *ListInboxConversations200ResponseDataInner) GetMetadata() ListInboxConv
 
 // GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListInboxConversations200ResponseDataInner) GetMetadataOk() (*ListInboxConversations200ResponseDataInnerMetadata, bool) {
+func (o *ListInboxConversations200ResponseDataInner) GetMetadataOk() (*InboxConversationAdMetadata, bool) {
 	if o == nil || IsNil(o.Metadata) {
 		return nil, false
 	}
@@ -748,9 +749,41 @@ func (o *ListInboxConversations200ResponseDataInner) HasMetadata() bool {
 	return false
 }
 
-// SetMetadata gets a reference to the given ListInboxConversations200ResponseDataInnerMetadata and assigns it to the Metadata field.
-func (o *ListInboxConversations200ResponseDataInner) SetMetadata(v ListInboxConversations200ResponseDataInnerMetadata) {
+// SetMetadata gets a reference to the given InboxConversationAdMetadata and assigns it to the Metadata field.
+func (o *ListInboxConversations200ResponseDataInner) SetMetadata(v InboxConversationAdMetadata) {
 	o.Metadata = &v
+}
+
+// GetAdAttribution returns the AdAttribution field value if set, zero value otherwise.
+func (o *ListInboxConversations200ResponseDataInner) GetAdAttribution() ConversationAdAttribution {
+	if o == nil || IsNil(o.AdAttribution) {
+		var ret ConversationAdAttribution
+		return ret
+	}
+	return *o.AdAttribution
+}
+
+// GetAdAttributionOk returns a tuple with the AdAttribution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListInboxConversations200ResponseDataInner) GetAdAttributionOk() (*ConversationAdAttribution, bool) {
+	if o == nil || IsNil(o.AdAttribution) {
+		return nil, false
+	}
+	return o.AdAttribution, true
+}
+
+// HasAdAttribution returns a boolean if a field has been set.
+func (o *ListInboxConversations200ResponseDataInner) HasAdAttribution() bool {
+	if o != nil && !IsNil(o.AdAttribution) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdAttribution gets a reference to the given ConversationAdAttribution and assigns it to the AdAttribution field.
+func (o *ListInboxConversations200ResponseDataInner) SetAdAttribution(v ConversationAdAttribution) {
+	o.AdAttribution = &v
 }
 
 func (o ListInboxConversations200ResponseDataInner) MarshalJSON() ([]byte, error) {
@@ -822,6 +855,9 @@ func (o ListInboxConversations200ResponseDataInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
+	}
+	if !IsNil(o.AdAttribution) {
+		toSerialize["adAttribution"] = o.AdAttribution
 	}
 	return toSerialize, nil
 }

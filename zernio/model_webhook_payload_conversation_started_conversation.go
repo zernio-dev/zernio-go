@@ -1,9 +1,9 @@
 /*
 Zernio API
 
-API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).
+API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.0.4
+API version: 1.338.0
 Contact: support@zernio.com
 */
 
@@ -22,9 +22,10 @@ var _ MappedNullable = &WebhookPayloadConversationStartedConversation{}
 
 // WebhookPayloadConversationStartedConversation struct for WebhookPayloadConversationStartedConversation
 type WebhookPayloadConversationStartedConversation struct {
-	// Internal conversation ID
-	Id                     string `json:"id"`
-	Platform               string `json:"platform"`
+	// The platform's conversation id, equal to `conversation.platformConversationId` on inbox webhooks (whose `conversation.id` is Zernio's internal id). Both are accepted by the conversation endpoints.
+	Id       string `json:"id"`
+	Platform string `json:"platform"`
+	// Same value as `id`.
 	PlatformConversationId string `json:"platformConversationId"`
 	// Contact's platform identifier (IGSID, PSID, wa_id, etc.)
 	ParticipantId   *string `json:"participantId,omitempty"`
@@ -34,7 +35,9 @@ type WebhookPayloadConversationStartedConversation struct {
 	ParticipantPicture  *string `json:"participantPicture,omitempty"`
 	Status              string  `json:"status"`
 	// Zernio CRM Contact ID for the participant, when one exists. Resolved by joining `participantId` to the ContactChannel collection (same join used by message.*, reaction.received, and call.* webhooks). Best-effort: omitted when no channel matches or `participantId` is absent. Lets integrators seed the CRM straight from `conversation.started` without waiting for the first `message.*` event.
-	ContactId *string `json:"contactId,omitempty"`
+	ContactId     *string                      `json:"contactId,omitempty"`
+	Metadata      *InboxConversationAdMetadata `json:"metadata,omitempty"`
+	AdAttribution ConversationAdAttribution    `json:"adAttribution"`
 }
 
 type _WebhookPayloadConversationStartedConversation WebhookPayloadConversationStartedConversation
@@ -43,13 +46,14 @@ type _WebhookPayloadConversationStartedConversation WebhookPayloadConversationSt
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadConversationStartedConversation(id string, platform string, platformConversationId string, participantName string, status string) *WebhookPayloadConversationStartedConversation {
+func NewWebhookPayloadConversationStartedConversation(id string, platform string, platformConversationId string, participantName string, status string, adAttribution ConversationAdAttribution) *WebhookPayloadConversationStartedConversation {
 	this := WebhookPayloadConversationStartedConversation{}
 	this.Id = id
 	this.Platform = platform
 	this.PlatformConversationId = platformConversationId
 	this.ParticipantName = participantName
 	this.Status = status
+	this.AdAttribution = adAttribution
 	return &this
 }
 
@@ -309,6 +313,62 @@ func (o *WebhookPayloadConversationStartedConversation) SetContactId(v string) {
 	o.ContactId = &v
 }
 
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *WebhookPayloadConversationStartedConversation) GetMetadata() InboxConversationAdMetadata {
+	if o == nil || IsNil(o.Metadata) {
+		var ret InboxConversationAdMetadata
+		return ret
+	}
+	return *o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadConversationStartedConversation) GetMetadataOk() (*InboxConversationAdMetadata, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return nil, false
+	}
+	return o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *WebhookPayloadConversationStartedConversation) HasMetadata() bool {
+	if o != nil && !IsNil(o.Metadata) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetadata gets a reference to the given InboxConversationAdMetadata and assigns it to the Metadata field.
+func (o *WebhookPayloadConversationStartedConversation) SetMetadata(v InboxConversationAdMetadata) {
+	o.Metadata = &v
+}
+
+// GetAdAttribution returns the AdAttribution field value
+func (o *WebhookPayloadConversationStartedConversation) GetAdAttribution() ConversationAdAttribution {
+	if o == nil {
+		var ret ConversationAdAttribution
+		return ret
+	}
+
+	return o.AdAttribution
+}
+
+// GetAdAttributionOk returns a tuple with the AdAttribution field value
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadConversationStartedConversation) GetAdAttributionOk() (*ConversationAdAttribution, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.AdAttribution, true
+}
+
+// SetAdAttribution sets field value
+func (o *WebhookPayloadConversationStartedConversation) SetAdAttribution(v ConversationAdAttribution) {
+	o.AdAttribution = v
+}
+
 func (o WebhookPayloadConversationStartedConversation) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -336,6 +396,10 @@ func (o WebhookPayloadConversationStartedConversation) ToMap() (map[string]inter
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}
+	if !IsNil(o.Metadata) {
+		toSerialize["metadata"] = o.Metadata
+	}
+	toSerialize["adAttribution"] = o.AdAttribution
 	return toSerialize, nil
 }
 
@@ -349,6 +413,7 @@ func (o *WebhookPayloadConversationStartedConversation) UnmarshalJSON(data []byt
 		"platformConversationId",
 		"participantName",
 		"status",
+		"adAttribution",
 	}
 
 	allProperties := make(map[string]interface{})

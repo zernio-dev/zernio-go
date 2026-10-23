@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.337.0
+API version: 1.338.0
 Contact: support@zernio.com
 */
 
@@ -21,17 +21,17 @@ import (
 // checks if the WebhookPayloadConversationStarted type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadConversationStarted{}
 
-// WebhookPayloadConversationStarted Fired once when a new conversation begins, in either direction. A conversation starts the first time an account and a contact exchange a message on any DM platform (Instagram, Messenger/Facebook, Telegram, WhatsApp, X, Reddit, Bluesky, SMS, TikTok). Platform-agnostic: one subscription covers every DM platform.
+// WebhookPayloadConversationStarted Fired once when a new conversation begins, in either direction. A conversation starts the first time an account and a contact exchange a message on any DM platform (Instagram, Messenger/Facebook, Telegram, WhatsApp, X, Reddit, Bluesky, SMS, TikTok). Platform-agnostic: one subscription covers every DM platform.  `conversation.metadata` (the referral as Meta sent it) and `conversation.adAttribution` (the ad, campaign and ad set from your synced ads) are filled only when the message that created the conversation carried Meta's referral. That holds for WhatsApp Click-to-WhatsApp and Facebook Messenger Click-to-Message, and for ig.me / m.me ref links. On Instagram Click-to-Direct it usually does NOT: Meta creates the thread with the ad post itself, an attachment-only `share` / `ig_post` message with no referral, and attaches the referral to the next message. That conversation.started then has `adAttribution` null and no `metadata`. Read the click from `metadata.ad` and `metadata.referral` on the `message.received` that follows, or from `adAttribution` on `GET /v1/inbox/conversations` and `GET /v1/inbox/conversations/{conversationId}`, which carry it once the referral is stored.
 type WebhookPayloadConversationStarted struct {
 	// Always true when present: only a sample sent by POST /v1/webhooks/test with an event carries it. Real deliveries never do.
 	Test *bool `json:"test,omitempty"`
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery. It identifies the event only, never an account or other resource.
 	Id string `json:"id"`
 	// The profiles this event belongs to, each with the externalId you set on it (null when none is set). Present on every event tied to a profile and absent on events that belong to none. Events spanning several profiles (a post published to accounts of different profiles) list each once. Use it to route the event to your tenant without storing Zernio profile ids.
-	Profiles     []WebhookProfilesInner         `json:"profiles,omitempty"`
-	Event        string                         `json:"event"`
-	Conversation InboxWebhookConversationDetail `json:"conversation"`
-	Account      InboxWebhookAccount            `json:"account"`
+	Profiles     []WebhookProfilesInner                        `json:"profiles,omitempty"`
+	Event        string                                        `json:"event"`
+	Conversation WebhookPayloadConversationStartedConversation `json:"conversation"`
+	Account      InboxWebhookAccount                           `json:"account"`
 	// When the conversation document was created.
 	StartedAt time.Time `json:"startedAt"`
 	// UTC time at which Zernio generated this event (set once when the event payload is built, before delivery is queued). Retries and redeliveries keep the original value, so it reflects the event, not the delivery attempt.
@@ -44,7 +44,7 @@ type _WebhookPayloadConversationStarted WebhookPayloadConversationStarted
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadConversationStarted(id string, event string, conversation InboxWebhookConversationDetail, account InboxWebhookAccount, startedAt time.Time, timestamp time.Time) *WebhookPayloadConversationStarted {
+func NewWebhookPayloadConversationStarted(id string, event string, conversation WebhookPayloadConversationStartedConversation, account InboxWebhookAccount, startedAt time.Time, timestamp time.Time) *WebhookPayloadConversationStarted {
 	this := WebhookPayloadConversationStarted{}
 	this.Id = id
 	this.Event = event
@@ -176,9 +176,9 @@ func (o *WebhookPayloadConversationStarted) SetEvent(v string) {
 }
 
 // GetConversation returns the Conversation field value
-func (o *WebhookPayloadConversationStarted) GetConversation() InboxWebhookConversationDetail {
+func (o *WebhookPayloadConversationStarted) GetConversation() WebhookPayloadConversationStartedConversation {
 	if o == nil {
-		var ret InboxWebhookConversationDetail
+		var ret WebhookPayloadConversationStartedConversation
 		return ret
 	}
 
@@ -187,7 +187,7 @@ func (o *WebhookPayloadConversationStarted) GetConversation() InboxWebhookConver
 
 // GetConversationOk returns a tuple with the Conversation field value
 // and a boolean to check if the value has been set.
-func (o *WebhookPayloadConversationStarted) GetConversationOk() (*InboxWebhookConversationDetail, bool) {
+func (o *WebhookPayloadConversationStarted) GetConversationOk() (*WebhookPayloadConversationStartedConversation, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -195,7 +195,7 @@ func (o *WebhookPayloadConversationStarted) GetConversationOk() (*InboxWebhookCo
 }
 
 // SetConversation sets field value
-func (o *WebhookPayloadConversationStarted) SetConversation(v InboxWebhookConversationDetail) {
+func (o *WebhookPayloadConversationStarted) SetConversation(v WebhookPayloadConversationStartedConversation) {
 	o.Conversation = v
 }
 
