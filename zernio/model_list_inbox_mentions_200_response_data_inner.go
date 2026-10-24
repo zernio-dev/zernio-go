@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.349.0
+API version: 1.350.0
 Contact: support@zernio.com
 */
 
@@ -24,27 +24,29 @@ type ListInboxMentions200ResponseDataInner struct {
 	// Mention document ID
 	Id       *string `json:"id,omitempty"`
 	Platform *string `json:"platform,omitempty"`
-	// Instagram only: `caption` when the account was tagged in a media caption, `comment` when it was tagged in a comment. Null for LinkedIn.
+	// Instagram and Facebook: `caption` when the Instagram account was tagged in a media caption, `post` when the Facebook Page was tagged in a post, `comment` when either was tagged in a comment. Null for LinkedIn.
 	Type NullableString `json:"type,omitempty"`
-	// Instagram only: ID of the media the account was mentioned in (or under). Null for LinkedIn.
+	// Instagram only: ID of the media the account was mentioned in (or under). Null for LinkedIn and Facebook.
 	MediaId NullableString `json:"mediaId,omitempty"`
-	// Instagram only: ID of the comment that mentioned the account. Null for caption mentions and LinkedIn.
+	// Facebook only: ID of the post the Page was mentioned in (or under). Null for LinkedIn and Instagram.
+	PostId NullableString `json:"postId,omitempty"`
+	// Instagram and Facebook: ID of the comment that mentioned the account. Null for caption and post mentions and for LinkedIn.
 	CommentId       NullableString `json:"commentId,omitempty"`
 	AccountId       *string        `json:"accountId,omitempty"`
 	AccountUsername *string        `json:"accountUsername,omitempty"`
-	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram. Empty until it has been read.
+	// Text that mentioned you: the post text on LinkedIn, the caption or comment text on Instagram, the post or comment text on Facebook. Empty until it has been read.
 	Content *string `json:"content,omitempty"`
-	// URL to the source post on LinkedIn. Null on Instagram.
+	// URL to the source post on LinkedIn. Null on Instagram and Facebook.
 	Permalink NullableString `json:"permalink,omitempty"`
-	// LinkedIn URN of the person who mentioned you, or the Instagram-scoped ID of the commenter on an Instagram comment mention.
+	// LinkedIn URN of the person who mentioned you, the Instagram-scoped ID of the commenter on an Instagram comment mention, or the ID of the Facebook user or Page that mentioned your Page when Meta sends it.
 	AuthorUrn NullableString `json:"authorUrn,omitempty"`
-	// Display name of the author, resolved from authorUrn. Null when LinkedIn does not allow resolving the profile.
+	// Display name of the author, resolved from authorUrn on LinkedIn (null when LinkedIn does not allow resolving the profile) and taken from the webhook on Facebook.
 	AuthorName NullableString `json:"authorName,omitempty"`
 	// LinkedIn vanity name of the author (the slug in their profile URL), or the Instagram username of the commenter or media owner.
 	AuthorUsername NullableString `json:"authorUsername,omitempty"`
 	// Profile picture URL of the author. LinkedIn CDN URLs expire after some time, so fetch promptly rather than storing long-term.
 	AuthorPicture NullableString `json:"authorPicture,omitempty"`
-	// URN of the LinkedIn organization that was mentioned, or the Instagram user ID of the mentioned account.
+	// URN of the LinkedIn organization that was mentioned, the Instagram user ID of the mentioned account, or the ID of the mentioned Facebook Page.
 	OrganizationalEntity *string    `json:"organizationalEntity,omitempty"`
 	PublishedAt          *time.Time `json:"publishedAt,omitempty"`
 	CreatedAt            *time.Time `json:"createdAt,omitempty"`
@@ -215,6 +217,49 @@ func (o *ListInboxMentions200ResponseDataInner) SetMediaIdNil() {
 // UnsetMediaId ensures that no value is present for MediaId, not even an explicit nil
 func (o *ListInboxMentions200ResponseDataInner) UnsetMediaId() {
 	o.MediaId.Unset()
+}
+
+// GetPostId returns the PostId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListInboxMentions200ResponseDataInner) GetPostId() string {
+	if o == nil || IsNil(o.PostId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.PostId.Get()
+}
+
+// GetPostIdOk returns a tuple with the PostId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListInboxMentions200ResponseDataInner) GetPostIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PostId.Get(), o.PostId.IsSet()
+}
+
+// HasPostId returns a boolean if a field has been set.
+func (o *ListInboxMentions200ResponseDataInner) HasPostId() bool {
+	if o != nil && o.PostId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPostId gets a reference to the given NullableString and assigns it to the PostId field.
+func (o *ListInboxMentions200ResponseDataInner) SetPostId(v string) {
+	o.PostId.Set(&v)
+}
+
+// SetPostIdNil sets the value for PostId to be an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) SetPostIdNil() {
+	o.PostId.Set(nil)
+}
+
+// UnsetPostId ensures that no value is present for PostId, not even an explicit nil
+func (o *ListInboxMentions200ResponseDataInner) UnsetPostId() {
+	o.PostId.Unset()
 }
 
 // GetCommentId returns the CommentId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -688,6 +733,9 @@ func (o ListInboxMentions200ResponseDataInner) ToMap() (map[string]interface{}, 
 	}
 	if o.MediaId.IsSet() {
 		toSerialize["mediaId"] = o.MediaId.Get()
+	}
+	if o.PostId.IsSet() {
+		toSerialize["postId"] = o.PostId.Get()
 	}
 	if o.CommentId.IsSet() {
 		toSerialize["commentId"] = o.CommentId.Get()
