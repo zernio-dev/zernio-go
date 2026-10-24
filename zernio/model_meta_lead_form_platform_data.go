@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.350.0
+API version: 1.350.1
 Contact: support@zernio.com
 */
 
@@ -29,9 +29,10 @@ type MetaLeadFormPlatformData struct {
 	ThankYouTitle         *string                               `json:"thankYouTitle,omitempty"`
 	ThankYouBody          *string                               `json:"thankYouBody,omitempty"`
 	ThankYouButtonText    *string                               `json:"thankYouButtonText,omitempty"`
-	ThankYouButtonType    *string                               `json:"thankYouButtonType,omitempty"`
-	ThankYouWebsiteUrl    *string                               `json:"thankYouWebsiteUrl,omitempty"`
-	// Adds a 'Continue in Messenger' option to the thank-you page (Meta thank_you_page.enable_messenger), so the lead can carry on chatting with the Page. Set thankYouButtonType to MESSAGE_BUSINESS or P2B_MESSENGER to make the chat the primary button.
+	// Meta thank_you_page.button_type. Defaults to VIEW_WEBSITE. Meta rejects MESSAGE_BUSINESS on thank-you pages with (#100) This button type is not yet supported for Thank You Page.
+	ThankYouButtonType *string `json:"thankYouButtonType,omitempty"`
+	ThankYouWebsiteUrl *string `json:"thankYouWebsiteUrl,omitempty"`
+	// Sent as Meta thank_you_page.enable_messenger (boolean). Accepted only inside platformSpecificData: a top-level thankYouEnableMessenger is a 400.
 	ThankYouEnableMessenger *bool `json:"thankYouEnableMessenger,omitempty"`
 	// Set true for a higher-intent form (adds a review step before submit).
 	IsOptimizedForQuality *bool `json:"isOptimizedForQuality,omitempty"`
