@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.350.9
+API version: 1.351.0
 Contact: support@zernio.com
 */
 
@@ -24,6 +24,8 @@ type CommentAutomationFollowGate struct {
 	Message *string `json:"message,omitempty"`
 	// Confirm button label. Defaults to \"I'm following\" (whenUnknown=verify) or \"Unlock\" (tapToUnlock).
 	ButtonLabel *string `json:"buttonLabel,omitempty"`
+	// Optional. When set, the follow gate DM and the not-following message with the confirm button also carry a URL button with this label that opens the connected Instagram account's profile. Omit for the confirm button only. Instagram only.
+	ProfileButtonLabel *string `json:"profileButtonLabel,omitempty"`
 	// Sent to a commenter we know does not follow (followerStatus=follower), and after a confirm tap that does not unlock the DM. When following is what would unlock it, the message carries the confirm button so they can re-check once they follow; above 640 characters it goes out as plain text without the button. Omit to stay silent on a keyword comment; a confirm tap always gets an answer (a default message is used).
 	NotFollowingMessage *string `json:"notFollowingMessage,omitempty"`
 }
@@ -109,6 +111,38 @@ func (o *CommentAutomationFollowGate) SetButtonLabel(v string) {
 	o.ButtonLabel = &v
 }
 
+// GetProfileButtonLabel returns the ProfileButtonLabel field value if set, zero value otherwise.
+func (o *CommentAutomationFollowGate) GetProfileButtonLabel() string {
+	if o == nil || IsNil(o.ProfileButtonLabel) {
+		var ret string
+		return ret
+	}
+	return *o.ProfileButtonLabel
+}
+
+// GetProfileButtonLabelOk returns a tuple with the ProfileButtonLabel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommentAutomationFollowGate) GetProfileButtonLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.ProfileButtonLabel) {
+		return nil, false
+	}
+	return o.ProfileButtonLabel, true
+}
+
+// HasProfileButtonLabel returns a boolean if a field has been set.
+func (o *CommentAutomationFollowGate) HasProfileButtonLabel() bool {
+	if o != nil && !IsNil(o.ProfileButtonLabel) {
+		return true
+	}
+
+	return false
+}
+
+// SetProfileButtonLabel gets a reference to the given string and assigns it to the ProfileButtonLabel field.
+func (o *CommentAutomationFollowGate) SetProfileButtonLabel(v string) {
+	o.ProfileButtonLabel = &v
+}
+
 // GetNotFollowingMessage returns the NotFollowingMessage field value if set, zero value otherwise.
 func (o *CommentAutomationFollowGate) GetNotFollowingMessage() string {
 	if o == nil || IsNil(o.NotFollowingMessage) {
@@ -156,6 +190,9 @@ func (o CommentAutomationFollowGate) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ButtonLabel) {
 		toSerialize["buttonLabel"] = o.ButtonLabel
+	}
+	if !IsNil(o.ProfileButtonLabel) {
+		toSerialize["profileButtonLabel"] = o.ProfileButtonLabel
 	}
 	if !IsNil(o.NotFollowingMessage) {
 		toSerialize["notFollowingMessage"] = o.NotFollowingMessage
