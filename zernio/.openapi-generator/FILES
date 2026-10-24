@@ -1821,6 +1821,8 @@ model_pending.go
 model_phone_number_stock_watch.go
 model_pin_discord_message_200_response.go
 model_pin_inbox_comment_200_response.go
+model_pin_post_request.go
+model_pin_post_response.go
 model_pinterest_platform_data.go
 model_platform_analytics.go
 model_platform_target.go
