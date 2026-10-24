@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.350.3
+API version: 1.350.4
 Contact: support@zernio.com
 */
 
@@ -28,7 +28,7 @@ type UpdatePostRequestPlatformsInner struct {
 	// Platform-specific text override.
 	CustomContent *string     `json:"customContent,omitempty"`
 	CustomMedia   []MediaItem `json:"customMedia,omitempty"`
-	// Optional per-platform scheduled time override. It is kept when a top-level scheduledFor is also sent, except a date sent back unchanged that matched the post scheduled time or is already past, which follows the new top-level scheduledFor.
+	// Optional per-platform scheduled time override. It is kept when a top-level scheduledFor is also sent, except a date sent back unchanged (same instant, or the same wall-clock time in the post's previous timezone) that matched the post scheduled time or is already past, which follows the new top-level scheduledFor.
 	ScheduledFor *time.Time `json:"scheduledFor,omitempty"`
 	// A <platform>Settings namespace (e.g. facebookSettings, tiktokSettings) omitted from the request is preserved from the stored post. Sending the key replaces the whole namespace; it is not deep-merged.
 	PlatformSpecificData map[string]interface{} `json:"platformSpecificData,omitempty"`
