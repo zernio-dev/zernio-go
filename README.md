@@ -287,12 +287,14 @@ func main() {
 ### Account Settings
 | Method | Description |
 |--------|-------------|
+| `client.AccountSettingsAPI.GetFacebookPageInfo(ctx)` | Get a Facebook Page's public info |
 | `client.AccountSettingsAPI.GetInstagramIceBreakers(ctx)` | Get IG ice breakers |
 | `client.AccountSettingsAPI.GetMessengerGetStarted(ctx)` | Get FB Get Started button |
 | `client.AccountSettingsAPI.GetMessengerGreeting(ctx)` | Get FB greeting text |
 | `client.AccountSettingsAPI.GetMessengerIceBreakers(ctx)` | Get FB ice breakers |
 | `client.AccountSettingsAPI.GetMessengerMenu(ctx)` | Get persistent menu |
 | `client.AccountSettingsAPI.GetTelegramCommands(ctx)` | Get TG bot commands |
+| `client.AccountSettingsAPI.UpdateFacebookPageInfo(ctx)` | Update a Facebook Page's public info |
 | `client.AccountSettingsAPI.DeleteInstagramIceBreakers(ctx)` | Delete IG ice breakers |
 | `client.AccountSettingsAPI.DeleteMessengerGetStarted(ctx)` | Delete FB Get Started button |
 | `client.AccountSettingsAPI.DeleteMessengerGreeting(ctx)` | Delete FB greeting text |
