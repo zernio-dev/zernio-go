@@ -36,6 +36,8 @@ type SubmitWhatsAppNumberKycRequest struct {
 	ReuseFrom *string `json:"reuseFrom,omitempty"`
 	// Area code (NDC) the number must be in. Hard constraint: an empty area pool fails with 409 code AREA_CODE_UNAVAILABLE instead of ordering from another area. Omit for any area. Options come from GET /v1/phone-numbers/availability (areaOptions); the purchase 202 kycUrl echoes the areaCode picked at purchase time so it can be passed here.
 	AreaCode *string `json:"areaCode,omitempty" validate:"regexp=^\\\\d{1,4}$"`
+	// Exact number to order, in E.164, taken from GET /v1/whatsapp/phone-numbers/available. It is ordered as is or the request fails with 409 code phone_number_unavailable; another number is never substituted and a pre-order is never placed. Requires quantity 1 (or omitted). Omit to let the carrier pick a number in the area.
+	PhoneNumber *string `json:"phoneNumber,omitempty" validate:"regexp=^\\\\+[1-9]\\\\d{6,14}$"`
 	// With areaCode: pre-order that area when it has no stock (an area listed in soldOutAreas with preOrderable true) instead of failing with AREA_CODE_UNAVAILABLE. The carrier sources a number in that area. Without areaCode it accepts the pre-order a previous submit offered with 409 code area_pre_order_available (a geographic-match country whose address area has no stock): resend the same body with preOrder true and the order is placed for that area. A whole pair with no stock is pre-ordered without either flag.
 	PreOrder *bool `json:"preOrder,omitempty"`
 	// End user's legal first name. Required when the country has an action/ID-verification (Onfido) requirement.
@@ -314,6 +316,38 @@ func (o *SubmitWhatsAppNumberKycRequest) SetAreaCode(v string) {
 	o.AreaCode = &v
 }
 
+// GetPhoneNumber returns the PhoneNumber field value if set, zero value otherwise.
+func (o *SubmitWhatsAppNumberKycRequest) GetPhoneNumber() string {
+	if o == nil || IsNil(o.PhoneNumber) {
+		var ret string
+		return ret
+	}
+	return *o.PhoneNumber
+}
+
+// GetPhoneNumberOk returns a tuple with the PhoneNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SubmitWhatsAppNumberKycRequest) GetPhoneNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PhoneNumber) {
+		return nil, false
+	}
+	return o.PhoneNumber, true
+}
+
+// HasPhoneNumber returns a boolean if a field has been set.
+func (o *SubmitWhatsAppNumberKycRequest) HasPhoneNumber() bool {
+	if o != nil && !IsNil(o.PhoneNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetPhoneNumber gets a reference to the given string and assigns it to the PhoneNumber field.
+func (o *SubmitWhatsAppNumberKycRequest) SetPhoneNumber(v string) {
+	o.PhoneNumber = &v
+}
+
 // GetPreOrder returns the PreOrder field value if set, zero value otherwise.
 func (o *SubmitWhatsAppNumberKycRequest) GetPreOrder() bool {
 	if o == nil || IsNil(o.PreOrder) {
@@ -535,6 +569,9 @@ func (o SubmitWhatsAppNumberKycRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.AreaCode) {
 		toSerialize["areaCode"] = o.AreaCode
+	}
+	if !IsNil(o.PhoneNumber) {
+		toSerialize["phoneNumber"] = o.PhoneNumber
 	}
 	if !IsNil(o.PreOrder) {
 		toSerialize["preOrder"] = o.PreOrder
