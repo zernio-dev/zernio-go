@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.348.1
+API version: 1.349.0
 Contact: support@zernio.com
 */
 
@@ -36,7 +36,7 @@ type Post struct {
 	Tags []string `json:"tags,omitempty"`
 	// Stored for reference only. Hashtags are NOT automatically appended to the caption when publishing. Include hashtags directly in the content field (platforms like Instagram only support hashtags as caption text). For YouTube keywords, use the tags field instead.
 	Hashtags []string `json:"hashtags,omitempty"`
-	// Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
+	// Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, write them in the post content, for example @[https://www.linkedin.com/in/jane-doe] or @[https://www.linkedin.com/company/acme].
 	Mentions   []string               `json:"mentions,omitempty"`
 	Visibility *string                `json:"visibility,omitempty"`
 	Metadata   map[string]interface{} `json:"metadata,omitempty"`

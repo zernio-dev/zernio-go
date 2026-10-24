@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.348.1
+API version: 1.349.0
 Contact: support@zernio.com
 */
 
@@ -275,6 +275,12 @@ Create a post, and optionally publish it in the same request. A post published i
 
 See each platform's schema for media constraints.
 
+## LinkedIn @mentions
+
+Put the profile or company URL inside `@[...]` in `content`, or in a LinkedIn entry's `customContent`: `@[https://www.linkedin.com/in/jane-doe]` or `@[https://www.linkedin.com/company/acme]`. The post is published with LinkedIn's real name and link, and no lookup call is needed first. Custom text is optional, as in `@[Jane](https://www.linkedin.com/in/jane-doe)`: for a person it must be the first name, last name or full name, for a company the exact company name, both case-sensitive. Any other text is replaced with LinkedIn's name and a `warnings` entry is returned (`linkedin_mention_name_replaced`). `@[Text](urn:li:person:ID)` markup, as returned by `GET /v1/accounts/{accountId}/linkedin-mentions`, is published exactly as you wrote it: it is not looked up, checked or changed, so its text must already be LinkedIn's name.
+
+Resolving a person's profile URL needs one of your LinkedIn accounts to administer a Page; publishing does not. Only profile and company URLs can fail. A scheduled or published post is rejected when one cannot be resolved: `400` with code `linkedin_mentions_invalid`, `429` with `rate_limited` (LinkedIn is rate limiting), `401` with `reconnect_required` (expired token) or a retryable `503` with `temporarily_unavailable` (LinkedIn did not answer within 8 seconds in total). Each failing mention is listed under `details.mentions[]` (`LinkedInMentionIssue`) with its own code: `linkedin_mention_unresolvable`, `linkedin_mention_requires_page_admin` or `linkedin_mention_name_unavailable` (LinkedIn withheld the name and none was given). A post can resolve at most 10 profile or company URL mentions across its shared content and LinkedIn entries: more is a `400` with `linkedin_mentions_limit_exceeded`. Drafts never fail on a mention: unresolved ones (and more than 10) stay as written and come back as `warnings`. A draft is checked again when it is scheduled. On platforms other than LinkedIn, `@[linkedin.com/in/jane]` is posted as its text, or as the vanity (`jane`) when you wrote no text, and `@[Text](urn:li:...)` as `Text`.
+
 ## Scheduling
 
 Pick one of:
@@ -394,7 +400,7 @@ func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*Creat
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v GetYouTubeDailyViews400Response
+			var v CreatePost400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -439,6 +445,17 @@ func (a *PostsAPIService) CreatePostExecute(r PostsAPICreatePostRequest) (*Creat
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
 			var v GetAnalytics400Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1861,6 +1878,17 @@ or `queuedFromProfile`). If `isDraft` is omitted the post keeps its current draf
 Non-draft updates run the same per-platform validation as post creation (media requirements, platform-specific
 field rules, etc.) against the resulting platforms, returning 400 on failure.
 
+## LinkedIn @mentions
+
+Profile and company URLs written as `@[https://www.linkedin.com/in/jane-doe]` or
+`@[Jane](https://www.linkedin.com/company/acme)` in the `content` or LinkedIn `customContent` you send are
+resolved to LinkedIn's name and link, exactly as on `POST /v1/posts` (see Create post for the rules). Only what
+the request sends is looked up: an update of the schedule, status or media makes no LinkedIn call, and
+`@[Text](urn:li:...)` markup is stored as written. Moving a draft out of draft also resolves the stored
+`content` and the stored `customContent` of its LinkedIn entries, and saves the result. A mention that cannot be resolved on a non-draft returns `400` `linkedin_mentions_invalid`, `429`
+`rate_limited`, `401` `reconnect_required` or a retryable `503` `temporarily_unavailable`, with each mention
+under `details.mentions[]` (`LinkedInMentionIssue`). Drafts get `warnings` instead.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param postId
 	@return PostsAPIUpdatePostRequest
@@ -1985,6 +2013,28 @@ func (a *PostsAPIService) UpdatePostExecute(r PostsAPIUpdatePostRequest) (*PostU
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v ErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
 			var v ErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
