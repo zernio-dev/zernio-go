@@ -106,6 +106,7 @@ func main() {
 | Method | Description |
 |--------|-------------|
 | `client.AnalyticsAPI.ListFacebookTaggedPosts(ctx)` | List the posts a Facebook Page is tagged in |
+| `client.AnalyticsAPI.ListFacebookVisitorPosts(ctx)` | List visitor posts on a Facebook Page |
 | `client.AnalyticsAPI.GetAnalytics(ctx)` | Get post analytics |
 | `client.AnalyticsAPI.GetAnalyticsDashboard(ctx)` | Get an analytics dashboard |
 | `client.AnalyticsAPI.GetAnalyticsDelta(ctx)` | Analytics changed since a cursor |

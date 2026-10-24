@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.350.1
+API version: 1.350.3
 Contact: support@zernio.com
 */
 
@@ -32,8 +32,8 @@ type FacebookTaggedPost struct {
 	// Public Facebook URL of the post.
 	PermalinkUrl NullableString `json:"permalinkUrl"`
 	// Full-size picture attached to the post.
-	PictureUrl NullableString         `json:"pictureUrl"`
-	From       FacebookTaggedPostFrom `json:"from"`
+	PictureUrl NullableString          `json:"pictureUrl"`
+	From       FacebookVisitorPostFrom `json:"from"`
 }
 
 type _FacebookTaggedPost FacebookTaggedPost
@@ -42,7 +42,7 @@ type _FacebookTaggedPost FacebookTaggedPost
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFacebookTaggedPost(id string, message NullableString, createdTime NullableString, taggedTime NullableString, permalinkUrl NullableString, pictureUrl NullableString, from FacebookTaggedPostFrom) *FacebookTaggedPost {
+func NewFacebookTaggedPost(id string, message NullableString, createdTime NullableString, taggedTime NullableString, permalinkUrl NullableString, pictureUrl NullableString, from FacebookVisitorPostFrom) *FacebookTaggedPost {
 	this := FacebookTaggedPost{}
 	this.Id = id
 	this.Message = message
@@ -217,9 +217,9 @@ func (o *FacebookTaggedPost) SetPictureUrl(v string) {
 }
 
 // GetFrom returns the From field value
-func (o *FacebookTaggedPost) GetFrom() FacebookTaggedPostFrom {
+func (o *FacebookTaggedPost) GetFrom() FacebookVisitorPostFrom {
 	if o == nil {
-		var ret FacebookTaggedPostFrom
+		var ret FacebookVisitorPostFrom
 		return ret
 	}
 
@@ -228,7 +228,7 @@ func (o *FacebookTaggedPost) GetFrom() FacebookTaggedPostFrom {
 
 // GetFromOk returns a tuple with the From field value
 // and a boolean to check if the value has been set.
-func (o *FacebookTaggedPost) GetFromOk() (*FacebookTaggedPostFrom, bool) {
+func (o *FacebookTaggedPost) GetFromOk() (*FacebookVisitorPostFrom, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,7 +236,7 @@ func (o *FacebookTaggedPost) GetFromOk() (*FacebookTaggedPostFrom, bool) {
 }
 
 // SetFrom sets field value
-func (o *FacebookTaggedPost) SetFrom(v FacebookTaggedPostFrom) {
+func (o *FacebookTaggedPost) SetFrom(v FacebookVisitorPostFrom) {
 	o.From = v
 }
 
