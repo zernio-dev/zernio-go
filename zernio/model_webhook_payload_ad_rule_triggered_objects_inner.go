@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.344.0
+API version: 1.358.0
 Contact: support@zernio.com
 */
 
@@ -30,6 +30,8 @@ type WebhookPayloadAdRuleTriggeredObjectsInner struct {
 	PlatformCampaignId NullableString `json:"platformCampaignId"`
 	// Every condition of the rule, with the value the object reached.
 	Conditions []WebhookPayloadAdRuleTriggeredObjectsInnerConditionsInner `json:"conditions"`
+	// What the rule did to the object. Empty on a rule that only notifies.
+	Actions []WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner `json:"actions"`
 }
 
 type _WebhookPayloadAdRuleTriggeredObjectsInner WebhookPayloadAdRuleTriggeredObjectsInner
@@ -38,12 +40,13 @@ type _WebhookPayloadAdRuleTriggeredObjectsInner WebhookPayloadAdRuleTriggeredObj
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWebhookPayloadAdRuleTriggeredObjectsInner(platformId string, name string, platformCampaignId NullableString, conditions []WebhookPayloadAdRuleTriggeredObjectsInnerConditionsInner) *WebhookPayloadAdRuleTriggeredObjectsInner {
+func NewWebhookPayloadAdRuleTriggeredObjectsInner(platformId string, name string, platformCampaignId NullableString, conditions []WebhookPayloadAdRuleTriggeredObjectsInnerConditionsInner, actions []WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) *WebhookPayloadAdRuleTriggeredObjectsInner {
 	this := WebhookPayloadAdRuleTriggeredObjectsInner{}
 	this.PlatformId = platformId
 	this.Name = name
 	this.PlatformCampaignId = platformCampaignId
 	this.Conditions = conditions
+	this.Actions = actions
 	return &this
 }
 
@@ -153,6 +156,30 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInner) SetConditions(v []WebhookPay
 	o.Conditions = v
 }
 
+// GetActions returns the Actions field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInner) GetActions() []WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner {
+	if o == nil {
+		var ret []WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner
+		return ret
+	}
+
+	return o.Actions
+}
+
+// GetActionsOk returns a tuple with the Actions field value
+// and a boolean to check if the value has been set.
+func (o *WebhookPayloadAdRuleTriggeredObjectsInner) GetActionsOk() ([]WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Actions, true
+}
+
+// SetActions sets field value
+func (o *WebhookPayloadAdRuleTriggeredObjectsInner) SetActions(v []WebhookPayloadAdRuleTriggeredObjectsInnerActionsInner) {
+	o.Actions = v
+}
+
 func (o WebhookPayloadAdRuleTriggeredObjectsInner) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -167,6 +194,7 @@ func (o WebhookPayloadAdRuleTriggeredObjectsInner) ToMap() (map[string]interface
 	toSerialize["name"] = o.Name
 	toSerialize["platformCampaignId"] = o.PlatformCampaignId.Get()
 	toSerialize["conditions"] = o.Conditions
+	toSerialize["actions"] = o.Actions
 	return toSerialize, nil
 }
 
@@ -179,6 +207,7 @@ func (o *WebhookPayloadAdRuleTriggeredObjectsInner) UnmarshalJSON(data []byte) (
 		"name",
 		"platformCampaignId",
 		"conditions",
+		"actions",
 	}
 
 	allProperties := make(map[string]interface{})

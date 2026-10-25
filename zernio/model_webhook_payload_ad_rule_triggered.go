@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.344.0
+API version: 1.358.0
 Contact: support@zernio.com
 */
 
@@ -21,7 +21,7 @@ import (
 // checks if the WebhookPayloadAdRuleTriggered type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &WebhookPayloadAdRuleTriggered{}
 
-// WebhookPayloadAdRuleTriggered Webhook payload for the `ad_rule.triggered` event. Ad rules are in closed beta: the event only fires for accounts in the ad rules pilot.  Fires when a scheduled ad rule run finds campaigns or ad sets that meet every condition of the rule. Each object is announced at most once per rule cooldown, so `objects` lists only the objects the run acted on, never the ones still in cooldown. A run where every matching object is still in cooldown sends nothing.
+// WebhookPayloadAdRuleTriggered Webhook payload for the `ad_rule.triggered` event.  Fires when a scheduled run of a rule with a `notify` action finds campaigns or ad sets that meet every condition of the rule. Each object is announced at most once per rule cooldown, so `objects` lists only the objects the run acted on, never the ones still in cooldown. A run where every matching object is still in cooldown sends nothing. An object whose action failed gets no cooldown: the next run retries it and reports it again.
 type WebhookPayloadAdRuleTriggered struct {
 	// Stable webhook event ID: the dedupe key, also sent as the X-Zernio-Event-Id header and identical on every retry and redelivery.
 	Id string `json:"id"`
@@ -33,7 +33,7 @@ type WebhookPayloadAdRuleTriggered struct {
 	Account WebhookAdsAccount                 `json:"account"`
 	Rule    WebhookPayloadAdRuleTriggeredRule `json:"rule"`
 	Run     WebhookPayloadAdRuleTriggeredRun  `json:"run"`
-	// The campaigns or ad sets this run acted on, at the rule's `level`. Objects still in cooldown are left out.
+	// The campaigns or ad sets this run acted on, at the rule's `level`, including those whose action failed. Objects still in cooldown are left out.
 	Objects []WebhookPayloadAdRuleTriggeredObjectsInner `json:"objects"`
 	// UTC time at which Zernio generated this event.
 	Timestamp time.Time `json:"timestamp"`

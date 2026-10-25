@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.357.0
+API version: 1.358.0
 Contact: support@zernio.com
 */
 
@@ -894,6 +894,107 @@ func (a *WebhookEventsAPIService) OnAdReviewRejectedExecute(r WebhookEventsAPIOn
 	}
 	// body params
 	localVarPostBody = r.webhookPayloadAdReview
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type WebhookEventsAPIOnAdRuleTriggeredRequest struct {
+	ctx                           context.Context
+	ApiService                    *WebhookEventsAPIService
+	webhookPayloadAdRuleTriggered *WebhookPayloadAdRuleTriggered
+}
+
+func (r WebhookEventsAPIOnAdRuleTriggeredRequest) WebhookPayloadAdRuleTriggered(webhookPayloadAdRuleTriggered WebhookPayloadAdRuleTriggered) WebhookEventsAPIOnAdRuleTriggeredRequest {
+	r.webhookPayloadAdRuleTriggered = &webhookPayloadAdRuleTriggered
+	return r
+}
+
+func (r WebhookEventsAPIOnAdRuleTriggeredRequest) Execute() (*http.Response, error) {
+	return r.ApiService.OnAdRuleTriggeredExecute(r)
+}
+
+/*
+OnAdRuleTriggered Ad rule triggered event
+
+Fired when a scheduled ad rule run finds campaigns or ad sets meeting every condition,
+once per object per cooldown.
+See `WebhookPayloadAdRuleTriggered` for when it fires and when it does not.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return WebhookEventsAPIOnAdRuleTriggeredRequest
+*/
+func (a *WebhookEventsAPIService) OnAdRuleTriggered(ctx context.Context) WebhookEventsAPIOnAdRuleTriggeredRequest {
+	return WebhookEventsAPIOnAdRuleTriggeredRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+func (a *WebhookEventsAPIService) OnAdRuleTriggeredExecute(r WebhookEventsAPIOnAdRuleTriggeredRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "WebhookEventsAPIService.OnAdRuleTriggered")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/ad_rule.triggered"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.webhookPayloadAdRuleTriggered == nil {
+		return nil, reportError("webhookPayloadAdRuleTriggered is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.webhookPayloadAdRuleTriggered
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
