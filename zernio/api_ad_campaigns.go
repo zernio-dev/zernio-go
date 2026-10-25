@@ -3,7 +3,7 @@ Zernio API
 
 API reference for Zernio. Authenticate with a Bearer API key. Base URL: https://zernio.com/api  Versioning and deprecation: all endpoints are versioned in the URL path (current version: /v1). Breaking changes only ship in a new path version; existing versions keep working. Deprecated operations are marked 'deprecated: true' in this spec and announced in the changelog (https://zernio.com/changelog) before removal.  Errors: every 4xx/5xx response is application/json with a machine-readable 'code' and a human-readable 'error' message (see the ErrorResponse schema).  Request ids: responses carry an X-Request-Id header with the id we log the request under. Quote it when reporting a problem. A valid x-request-id you send is reused as that id.
 
-API version: 1.358.0
+API version: 1.358.1
 Contact: support@zernio.com
 */
 
@@ -3792,7 +3792,8 @@ placement-specific reason, with that placement in its `forbiddenPlacements`; the
 `forbiddenPlacements` lists every placement with feedback. When Meta returns no feedback (usually
 an ad in review or approved everywhere), the status comes back with empty `rejections` and empty
 `reviewFeedback` maps; an ACTIVE ad rejected on one placement still carries that placement's
-feedback. A deleted ad answers 404. `issues` is Meta's
+feedback. The `effective_status` read is also stored on the ad, so `GET /v1/ads/{adId}` returns
+it next. A deleted ad answers 404. `issues` is Meta's
 `issues_info` verbatim. `forbiddenAges`, `forbiddenLocations` and `forbiddenOperatingSystems`
 are always empty on Meta.
 
